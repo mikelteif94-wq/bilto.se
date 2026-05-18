@@ -8,20 +8,22 @@ interface RegInputProps {
 }
 
 export default function RegInput({ value, onChange, disabled, error }: RegInputProps) {
-  const isValid = /^[A-Z]{3}\d{3}$/.test(value);
+  const isValid = /^[A-Z]{3}\d{2}[A-Z0-9]$/.test(value);
 
   const handleChange = (raw: string) => {
     const cleaned = raw.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    let letters = '';
-    let digits = '';
+    let result = '';
     for (const ch of cleaned) {
-      if (letters.length < 3 && /[A-Z]/.test(ch)) {
-        letters += ch;
-      } else if (letters.length === 3 && digits.length < 3 && /[0-9]/.test(ch)) {
-        digits += ch;
+      const pos = result.length;
+      if (pos < 3 && /[A-Z]/.test(ch)) {
+        result += ch;
+      } else if (pos >= 3 && pos < 5 && /[0-9]/.test(ch)) {
+        result += ch;
+      } else if (pos === 5 && /[A-Z0-9]/.test(ch)) {
+        result += ch;
       }
     }
-    onChange(letters + digits);
+    onChange(result);
   };
 
   return (
@@ -39,7 +41,7 @@ export default function RegInput({ value, onChange, disabled, error }: RegInputP
         type="text"
         value={value}
         onChange={(e) => handleChange(e.target.value)}
-        placeholder="ABC123"
+        placeholder="ABC12M"
         maxLength={6}
         autoComplete="off"
         disabled={disabled}
