@@ -88,27 +88,27 @@ const DIRECT_STEPS: Step[] = [
 const FAQ = [
   {
     q: 'Vad kostar det att använda Bilto?',
-    a: 'Direktbud via vår mäklare är alltid gratis. Maxpris (mäkleri) har ett fast arvode som dras från slutpriset — säljs inte bilen inom avtalstiden betalar du ingenting.',
+    a: 'Det kostar 1 995 kr i administrativ avgift — det är allt. Avgiften täcker vår förhandling, granskning och all administration kring affären.',
   },
   {
-    q: 'Vem tar bilderna?',
-    a: 'Vi kommer ut och tar professionella foton av bilen där du står — ljussatt, bearbetat och redo att publiceras i annonsen.',
+    q: 'Hur hjälper Bilto mig att köpa bil?',
+    a: 'Du berättar vilken bil du är intresserad av och vi tar över därifrån. Vi kontaktar säljaren, granskar annonsens riktighet, förhandlar pris, ränta och tillbehör, och ser till att du inte betalar mer än du behöver.',
   },
   {
-    q: 'Kan jag köra bilen medan ni säljer den?',
-    a: 'Ja. Du kör bilen som vanligt under hela avtalstiden. Våra proffs tar alla samtal och visningar — vi ringer först när det finns ett skarpt bud.',
+    q: 'Hur stor besparing kan jag räkna med?',
+    a: 'Det varierar, men våra kunder sparar i snitt 15 000–40 000 kr per bilaffär när man räknar ihop prisnedförhandling, inbytesvärde, ränta och tillbehör som förhandlas in. Vår avgift på 1 995 kr betalar sig alltså mångfalt.',
   },
   {
-    q: 'Hur fungerar mäklaravtalet?',
-    a: 'Du signerar ett digitalt mäklaravtal som ger Bilto rätt att sälja bilen åt dig under ett bestämt antal dagar. Enkelt, tryggt och utan bindningstid efteråt.',
+    q: 'Kan ni hjälpa mig även om jag inte hittat en bil ännu?',
+    a: 'Absolut. Vi kan hjälpa dig hitta rätt bil via vår bilmatch, smarta sökning eller helt enkelt genom att du berättar vad du söker. Sen sköter vi resten.',
   },
   {
-    q: 'Vem sköter ägarbytet?',
-    a: 'Du hanterar själva ägarbytet när du accepterat ett bud, men vi finns med och hjälper till hela vägen — från kontrakt till Transportstyrelsen.',
+    q: 'Vad händer om säljaren inte går med på förhandlingen?',
+    a: 'Då berättar vi det rakt ut och ger dig vår rekommendation — är bilen rätt prissatt eller inte. Du bestämmer alltid om du vill gå vidare.',
   },
   {
-    q: 'Kan jag ångra mig?',
-    a: 'Ja. Du väljer själv om du vill acceptera ett slutbud. Inget är bindande förrän du skrivit under köpeavtalet med köparen.',
+    q: 'När betalar jag avgiften?',
+    a: 'Avgiften på 1 995 kr betalas när vi påbörjar förhandlingen åt dig. Om affären inte går igenom på grund av att säljaren avböjer kontaktar du oss så löser vi det.',
   },
 ];
 
