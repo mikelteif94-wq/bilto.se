@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Sparkles, Search } from 'lucide-react';
 import type { BuyTrack } from './BuyTrackStep';
 import FieldError from './FieldError';
 import RegInput from '../RegInput';
@@ -55,6 +55,8 @@ interface BuyDetailsStepProps {
   initialBil?: string;
   lockedCar?: string;
   onNext: (data: BuyDetailsData) => void;
+  onExplore?: () => void;
+  onQuiz?: () => void;
 }
 
 function parsePriceInput(raw: string): number {
@@ -63,7 +65,7 @@ function parsePriceInput(raw: string): number {
   return isNaN(n) ? 0 : n;
 }
 
-export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, onNext }: BuyDetailsStepProps) {
+export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, onNext, onExplore, onQuiz }: BuyDetailsStepProps) {
   const [d, setD] = useState<BuyDetailsData>({
     ...initialData,
     carModel: initialData.carModel || initialBil || '',
@@ -292,6 +294,43 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       {/* ── SEARCHING – open (no locked car) ── */}
       {track === 'searching' && !lockedCar && (
         <>
+          {(onExplore || onQuiz) && (
+            <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-[13px] font-semibold text-slate-700 mb-3">Inte redo att fylla i? Du kan också:</p>
+              <div className="flex flex-col gap-2">
+                {onExplore && (
+                  <button
+                    type="button"
+                    onClick={onExplore}
+                    className="flex items-center gap-3 px-4 h-11 rounded-xl bg-white border border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/5 transition-all text-left group"
+                  >
+                    <div className="w-7 h-7 rounded-full bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors">
+                      <Search className="w-3.5 h-3.5 text-[#0e6efe]" strokeWidth={2.2} />
+                    </div>
+                    <span className="text-[13.5px] font-medium text-slate-800">Utforska och jämför bilar</span>
+                  </button>
+                )}
+                {onQuiz && (
+                  <button
+                    type="button"
+                    onClick={onQuiz}
+                    className="flex items-center gap-3 px-4 h-11 rounded-xl bg-white border border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/5 transition-all text-left group"
+                  >
+                    <div className="w-7 h-7 rounded-full bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors">
+                      <Sparkles className="w-3.5 h-3.5 text-[#0e6efe]" strokeWidth={2.2} />
+                    </div>
+                    <span className="text-[13.5px] font-medium text-slate-800">Testa bilmatch — hitta r&auml;tt modell</span>
+                  </button>
+                )}
+              </div>
+              <div className="mt-3 flex items-center gap-2">
+                <div className="flex-1 h-px bg-slate-200" />
+                <span className="text-[11px] text-slate-400 font-medium">eller fortsätt nedan</span>
+                <div className="flex-1 h-px bg-slate-200" />
+              </div>
+            </div>
+          )}
+
           <div className="pb-6 sm:pb-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
               Vilket märke och modell?

@@ -422,6 +422,20 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
                     goNext();
                     setError(null);
                   }}
+                  onExplore={() => {
+                    onClose();
+                    window.history.pushState({}, '', '/jamfor-bilar');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                    window.scrollTo({ top: 0, behavior: 'auto' });
+                  }}
+                  onQuiz={() => {
+                    onClose();
+                    window.history.pushState({}, '', '/jamfor-bilar');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                    setTimeout(() => {
+                      document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 400);
+                  }}
                 />
               )}
 

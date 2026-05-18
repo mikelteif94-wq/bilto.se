@@ -735,51 +735,51 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         <div className="absolute right-0 -bottom-32 w-[400px] h-[400px] rounded-full bg-[#3d8cff] opacity-30" />
         <div className="relative max-w-3xl mx-auto text-center">
           <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
-            Hitta din drombil och förhandla priset
+            Hitta din dr&ouml;mbil och f&ouml;rhandla priset
           </h1>
           <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto">
-            Jamfor bilar, hitta ratt modell och lat oss forhandla fram basta priset at dig. Helt gratis och opartiskt.
+            J&auml;mf&ouml;r bilar, hitta r&auml;tt modell och l&aring;t oss f&ouml;rhandla fram b&auml;sta priset &aring;t dig. Helt gratis och opartiskt.
           </p>
           <div className="mt-6 flex flex-col sm:grid sm:grid-cols-3 gap-2 sm:gap-3 max-w-2xl mx-auto">
             {/* Hittat bil */}
             <button
               onClick={() => openBuyDrawer('', 'found')}
-              className="group flex sm:flex-col items-center sm:items-center gap-3 sm:gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-xl sm:rounded-2xl px-4 py-3 sm:py-5 transition-all duration-200 text-white text-left sm:text-center"
+              className="group flex sm:flex-col items-center sm:items-center gap-2.5 sm:gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-xl sm:rounded-2xl px-3 py-2.5 sm:py-5 transition-all duration-200 text-white text-left sm:text-center"
             >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center shrink-0 transition-colors">
-                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center shrink-0 transition-colors">
+                <CheckCircle className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
               </div>
               <div className="flex-1 sm:flex-none">
-                <span className="font-bold text-[14px] sm:text-[15px] block">Jag har hittat en bil</span>
-                <span className="text-white/70 text-[11px] sm:text-[12px] leading-snug">Låt oss förhandla och granska åt dig</span>
+                <span className="font-bold text-[13px] sm:text-[15px] block leading-snug">Jag har hittat en bil</span>
+                <span className="text-white/70 text-[11px] sm:text-[12px] leading-snug">L&aring;t oss f&ouml;rhandla och granska &aring;t dig</span>
               </div>
             </button>
 
-            {/* Letar bil */}
+            {/* Letar bil — now opens the searching form */}
             <button
-              onClick={() => document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth' })}
-              className="group flex sm:flex-col items-center sm:items-center gap-3 sm:gap-2 bg-white hover:bg-slate-50 rounded-xl sm:rounded-2xl px-4 py-3 sm:py-5 transition-all duration-200 text-[#0e6efe] shadow-lg text-left sm:text-center"
+              onClick={() => openBuyDrawer('', 'searching')}
+              className="group flex sm:flex-col items-center sm:items-center gap-2.5 sm:gap-2 bg-white hover:bg-slate-50 rounded-xl sm:rounded-2xl px-3 py-2.5 sm:py-5 transition-all duration-200 text-[#0e6efe] shadow-lg text-left sm:text-center"
             >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors">
-                <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors">
+                <Search className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
               </div>
               <div className="flex-1 sm:flex-none">
-                <span className="font-bold text-[14px] sm:text-[15px] block">Jag letar efter bil</span>
-                <span className="text-slate-500 text-[11px] sm:text-[12px] leading-snug">Utforska, jämför eller testa bilmatch</span>
+                <span className="font-bold text-[13px] sm:text-[15px] block leading-snug">Jag letar efter bil</span>
+                <span className="text-slate-500 text-[11px] sm:text-[12px] leading-snug">Utforska, j&auml;mf&ouml;r eller testa bilmatch</span>
               </div>
             </button>
 
             {/* Byta bil */}
             <button
               onClick={() => openBuyDrawer('', 'trade')}
-              className="group flex sm:flex-col items-center sm:items-center gap-3 sm:gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-xl sm:rounded-2xl px-4 py-3 sm:py-5 transition-all duration-200 text-white text-left sm:text-center"
+              className="group flex sm:flex-col items-center sm:items-center gap-2.5 sm:gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-xl sm:rounded-2xl px-3 py-2.5 sm:py-5 transition-all duration-200 text-white text-left sm:text-center"
             >
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center shrink-0 transition-colors">
-                <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5" />
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center shrink-0 transition-colors">
+                <ArrowLeftRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
               </div>
               <div className="flex-1 sm:flex-none">
-                <span className="font-bold text-[14px] sm:text-[15px] block">Jag vill byta bil</span>
-                <span className="text-white/70 text-[11px] sm:text-[12px] leading-snug">Vi hittar och förhandlar nästa bil åt dig</span>
+                <span className="font-bold text-[13px] sm:text-[15px] block leading-snug">Jag vill byta bil</span>
+                <span className="text-white/70 text-[11px] sm:text-[12px] leading-snug">Vi hittar och f&ouml;rhandlar n&auml;sta bil &aring;t dig</span>
               </div>
             </button>
           </div>
@@ -1490,7 +1490,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       </section>
 
       {/* Bilmatch Section */}
-      <section ref={quizSectionRef} className="py-14 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-slate-50 to-white border-t border-slate-100">
+      <section id="quiz-section" ref={quizSectionRef} className="py-14 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-slate-50 to-white border-t border-slate-100">
         <div className="max-w-3xl mx-auto">
           <AnimatePresence mode="wait">
             {quizStep === 'idle' && (
