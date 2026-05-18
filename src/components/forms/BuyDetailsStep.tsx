@@ -65,7 +65,256 @@ function parsePriceInput(raw: string): number {
   return isNaN(n) ? 0 : n;
 }
 
+const CAR_TYPES = [
+  { value: 'suv', label: 'SUV' },
+  { value: 'sedan', label: 'Sedan / Kombi' },
+  { value: 'hatchback', label: 'Halvkombi' },
+  { value: 'minivan', label: 'Familjebuss' },
+  { value: 'pickup', label: 'Pickup' },
+  { value: 'cabriolet', label: 'Cabriolet' },
+  { value: 'small', label: 'Liten bil' },
+];
+
+const MUST_HAVES = [
+  { value: 'drag_hook', label: 'Dragkrok' },
+  { value: 'large_boot', label: 'Stort bagageutrymme' },
+  { value: 'awd', label: 'Fyrhjulsdrift' },
+  { value: 'electric', label: 'Elbil' },
+  { value: 'hybrid', label: 'Hybrid / Laddhybrid' },
+  { value: 'low_running_cost', label: 'Låga driftkostnader' },
+  { value: 'safety', label: 'Hög säkerhetsbetyg' },
+  { value: 'automatic', label: 'Automat' },
+  { value: 'low_mileage', label: 'Lågt miltal' },
+];
+
+function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void }) {
+  const [d, setD] = useState<BuyDetailsData>({ ...initialData });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const set = (key: keyof BuyDetailsData, value: string) => {
+    setD(prev => {
+      const next = { ...prev, [key]: value };
+      if (key === 'carBrand') next.carModel = '';
+      return next;
+    });
+    setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
+  };
+
+  const models = d.carBrand ? (CAR_BRANDS[d.carBrand] ?? []) : [];
+
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!d.carBrand) e.carBrand = 'Välj ett märke';
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validate()) onNext(d);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} noValidate className="space-y-6">
+      <div>
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+          Märke och modell
+        </label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="relative">
+            <select
+              value={d.carBrand}
+              onChange={e => set('carBrand', e.target.value)}
+              className={`form-control appearance-none pr-10 ${errors.carBrand ? 'form-control-error' : ''}`}
+            >
+              <option value="">Välj märke</option>
+              {POPULAR_BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            {errors.carBrand && <FieldError message={errors.carBrand} />}
+          </div>
+          <div className="relative">
+            <select
+              value={d.carModel}
+              onChange={e => set('carModel', e.target.value)}
+              disabled={!d.carBrand}
+              className="form-control appearance-none pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="">{d.carBrand ? 'Välj modell' : 'Välj märke först'}</option>
+              {models.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Max budget (kr)
+          <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+        </label>
+        <p className="text-[13.5px] text-slate-500 mb-3">Totalpris för bilen.</p>
+        <div className="relative sm:max-w-xs">
+          <input
+            type="text"
+            inputMode="numeric"
+            value={d.carPrice}
+            onChange={e => set('carPrice', e.target.value)}
+            placeholder="T.ex. 350 000"
+            className="form-control"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+          Drivmedel
+          <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {FUEL_TYPES.map(f => (
+            <button
+              key={f.value}
+              type="button"
+              onClick={() => set('fuelType', d.fuelType === f.value ? '' : f.value)}
+              className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all ${
+                d.fuelType === f.value
+                  ? 'bg-[#0e6efe] text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="pt-2 flex justify-end">
+        <button
+          type="submit"
+          className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-full transition shadow-sm"
+        >
+          Nästa
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function ExploreDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void }) {
+  const [d, setD] = useState<BuyDetailsData>({ ...initialData });
+  const [mustHaves, setMustHaves] = useState<string[]>([]);
+
+  const set = (key: keyof BuyDetailsData, value: string) => {
+    setD(prev => ({ ...prev, [key]: value }));
+  };
+
+  const toggleMustHave = (val: string) => {
+    setMustHaves(prev =>
+      prev.includes(val) ? prev.filter(v => v !== val) : prev.length < 3 ? [...prev, val] : prev
+    );
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const mustHaveText = mustHaves.map(v => MUST_HAVES.find(m => m.value === v)?.label).filter(Boolean).join(', ');
+    onNext({
+      ...d,
+      additionalRequests: [d.additionalRequests, mustHaveText ? `Viktigt: ${mustHaveText}` : ''].filter(Boolean).join('\n'),
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} noValidate className="space-y-7">
+      <div>
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+          Vilken typ av bil söker du?
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {CAR_TYPES.map(t => (
+            <button
+              key={t.value}
+              type="button"
+              onClick={() => set('targetCar', d.targetCar === t.value ? '' : t.value)}
+              className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all ${
+                d.targetCar === t.value
+                  ? 'bg-[#0e6efe] text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Max budget (kr)
+          <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+        </label>
+        <p className="text-[13.5px] text-slate-500 mb-3">Totalpris för bilen.</p>
+        <div className="sm:max-w-xs">
+          <input
+            type="text"
+            inputMode="numeric"
+            value={d.carPrice}
+            onChange={e => set('carPrice', e.target.value)}
+            placeholder="T.ex. 350 000"
+            className="form-control"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Vad är viktigast för dig?
+        </label>
+        <p className="text-[13.5px] text-slate-500 mb-3">Välj upp till 3 saker.</p>
+        <div className="flex flex-wrap gap-2">
+          {MUST_HAVES.map(m => {
+            const selected = mustHaves.includes(m.value);
+            const disabled = !selected && mustHaves.length >= 3;
+            return (
+              <button
+                key={m.value}
+                type="button"
+                onClick={() => toggleMustHave(m.value)}
+                disabled={disabled}
+                className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all ${
+                  selected
+                    ? 'bg-[#0e6efe] text-white shadow-sm'
+                    : disabled
+                    ? 'bg-slate-50 text-slate-300 cursor-not-allowed'
+                    : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+                }`}
+              >
+                {m.label}
+              </button>
+            );
+          })}
+        </div>
+        {mustHaves.length >= 3 && (
+          <p className="mt-2 text-[12.5px] text-slate-500">Max 3 valda. Avmarkera ett för att ändra.</p>
+        )}
+      </div>
+
+      <div className="pt-1 flex justify-end">
+        <button
+          type="submit"
+          className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-full transition shadow-sm"
+        >
+          Nästa
+        </button>
+      </div>
+    </form>
+  );
+}
+
 export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, onNext, onExplore, onQuiz }: BuyDetailsStepProps) {
+  if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} />;
+  if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} />;
+
   const [d, setD] = useState<BuyDetailsData>({
     ...initialData,
     carModel: initialData.carModel || initialBil || '',

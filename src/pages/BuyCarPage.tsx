@@ -43,6 +43,10 @@ export default function BuyCarPage({
     targetCar: '',
     desiredMonthlyCost: '',
     additionalRequests: '',
+    carPrice: '',
+    yearFrom: '',
+    yearTo: '',
+    maxMiltal: '',
   });
 
   const [tradeIn, setTradeIn] = useState<BuyTradeInData>({
@@ -105,6 +109,9 @@ export default function BuyCarPage({
         ? ['details', 'contact']
         : ['track', 'details', 'contact'];
     }
+    if (track === 'know' || track === 'explore') {
+      return ['track', 'details', 'contact'];
+    }
     return skipTrack
       ? ['details', 'tradeIn', 'contact']
       : ['track', 'details', 'tradeIn', 'contact'];
@@ -117,7 +124,15 @@ export default function BuyCarPage({
 
   const titles: Record<FormStep, string> = {
     track: 'Hur kan vi hjälpa dig?',
-    details: track === 'found' ? 'Berätta om bilen' : track === 'searching' ? 'Berätta vad du söker' : 'Berätta om ditt byte',
+    details: track === 'found'
+      ? 'Berätta om bilen'
+      : track === 'know'
+      ? 'Vilken bil söker du?'
+      : track === 'explore'
+      ? 'Vad är viktigt för dig?'
+      : track === 'searching'
+      ? 'Berätta vad du söker'
+      : 'Berätta om ditt byte',
     tradeIn: 'Inbytesbil',
     contact: 'Dina uppgifter',
     done: 'Tack!',
@@ -143,8 +158,9 @@ export default function BuyCarPage({
 
     try {
       const carModelFull = [details.carBrand, details.carModel].filter(Boolean).join(' ').trim();
+      const dbTrack = (track === 'know' || track === 'explore') ? 'searching' : track;
       const { error: dbError } = await supabase.from('quote_requests').insert({
-        search_option: track,
+        search_option: dbTrack,
         regnummer: track === 'trade' ? details.regnummer : '',
         miltal: details.miltal ? parseInt(details.miltal) : 0,
         buying_stage: details.buyingStage,
