@@ -70,18 +70,18 @@ const BROKERAGE_STEPS: Step[] = [
 const DIRECT_STEPS: Step[] = [
   {
     icon: Phone,
-    title: 'Din rådgivare ringer',
-    text: 'En personlig rådgivare tar hand om din försäljning från start till mål.',
+    title: 'Du får en personlig rådgivare',
+    text: 'någon hjälper dig genom hela processen.',
   },
   {
     icon: Gavel,
-    title: 'Vi jämför buden',
-    text: 'Vi samlar in bud från utvalda handlare och presenterar det bästa.',
+    title: 'Vi hittar bästa budet',
+    text: 'jämför erbjudanden från bilhandlare åt dig.',
   },
   {
     icon: Handshake,
-    title: 'Vi bokar upphämtning',
-    text: 'När du tackat ja bokar vi upphämtning där det passar dig.',
+    title: 'Vi hämtar bilen',
+    text: 'när du tackar ja ordnar de upphämtningen.',
   },
 ];
 
