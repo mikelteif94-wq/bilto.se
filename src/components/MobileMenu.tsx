@@ -112,7 +112,7 @@ export default function MobileMenu({ open, onClose, active, onSelect }: MobileMe
             className="inline-flex items-center justify-center gap-2 w-full px-4 h-12 rounded-full bg-[#0e6efe] text-white text-[15px] font-semibold hover:bg-[#0a57cc] transition"
           >
             <User className="w-5 h-5" strokeWidth={2.2} />
-            Logga in
+            Mina erbjudanden
           </a>
         </div>
       </aside>

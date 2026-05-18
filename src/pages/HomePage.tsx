@@ -193,7 +193,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               href="/logga-in"
               className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-[#0e6efe] text-white text-[14px] font-extrabold uppercase tracking-[0.08em] shadow-md hover:bg-[#0a57cc] active:scale-[0.98] transition"
             >
-              LOGGA IN
+              Mina erbjudanden
             </a>
           </div>
         </div>
