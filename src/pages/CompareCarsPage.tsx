@@ -631,8 +631,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
   const visibleCars = useMemo(() => {
     const ids = CATEGORY_IDS[activeCategory];
-    if (ids === null) return getCuratedList(CURATED_IDS);
-    return getCuratedList(ids);
+    const list = ids === null ? getCuratedList(CURATED_IDS) : getCuratedList(ids);
+    return list.slice(0, 16);
   }, [activeCategory, getCuratedList]);
 
   // Selection helpers
