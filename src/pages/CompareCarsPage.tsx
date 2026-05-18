@@ -4,7 +4,7 @@ import {
   Sparkles, Zap, Truck, Leaf, CarFront,
   Send, Loader2, RotateCcw, Info, Calculator,
   GitCompareArrows, X, ArrowDown, Phone, Handshake,
-  ShieldCheck, Megaphone,
+  ShieldCheck, Megaphone, CheckCircle, ArrowLeftRight,
 } from 'lucide-react';
 import ReviewsSection from '../components/ReviewsSection';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -737,20 +737,45 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto">
             Jamfor bilar, hitta ratt modell och lat oss forhandla fram basta priset at dig. Helt gratis och opartiskt.
           </p>
-          <div className="mt-6 flex items-center justify-center gap-3 flex-wrap">
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto">
+            {/* Hittat bil */}
+            <button
+              onClick={() => {
+                window.history.pushState({}, '', `/kop-bil/bestall?source=Köp+bil`);
+                window.dispatchEvent(new PopStateEvent('popstate'));
+                window.scrollTo({ top: 0, behavior: 'auto' });
+              }}
+              className="group flex flex-col items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-2xl px-4 py-5 transition-all duration-200 text-white"
+            >
+              <div className="w-10 h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-colors">
+                <CheckCircle className="w-5 h-5" />
+              </div>
+              <span className="font-bold text-[15px]">Jag har hittat en bil</span>
+              <span className="text-white/70 text-[12px] leading-snug">Låt oss förhandla och granska åt dig</span>
+            </button>
+
+            {/* Letar bil */}
             <button
               onClick={() => document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth' })}
-              className="h-12 px-8 rounded-full bg-white hover:bg-slate-50 text-[#0e6efe] font-bold text-[15px] inline-flex items-center gap-2 group transition shadow-lg"
+              className="group flex flex-col items-center gap-2 bg-white hover:bg-slate-50 rounded-2xl px-4 py-5 transition-all duration-200 text-[#0e6efe] shadow-lg"
             >
-              Utforska bilar
-              <ArrowDown className="w-4.5 h-4.5 group-hover:translate-y-0.5 transition" />
+              <div className="w-10 h-10 rounded-full bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center transition-colors">
+                <Search className="w-5 h-5" />
+              </div>
+              <span className="font-bold text-[15px]">Jag letar efter bil</span>
+              <span className="text-slate-500 text-[12px] leading-snug">Utforska, jämför eller testa bilmatch</span>
             </button>
+
+            {/* Byta bil */}
             <button
-              onClick={scrollToQuiz}
-              className="h-12 px-6 rounded-full border-2 border-white/40 text-white font-semibold text-[14px] hover:bg-white/10 inline-flex items-center gap-2 transition"
+              onClick={() => document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth' })}
+              className="group flex flex-col items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-2xl px-4 py-5 transition-all duration-200 text-white"
             >
-              <Search className="w-4 h-4" />
-              Hitta din bilmatch
+              <div className="w-10 h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-colors">
+                <ArrowLeftRight className="w-5 h-5" />
+              </div>
+              <span className="font-bold text-[15px]">Jag vill byta bil</span>
+              <span className="text-white/70 text-[12px] leading-snug">Vi hittar och förhandlar nästa bil åt dig</span>
             </button>
           </div>
         </div>
