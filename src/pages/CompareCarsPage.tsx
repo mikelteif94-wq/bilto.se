@@ -17,6 +17,7 @@ import CompactCarCard from '../components/CompactCarCard';
 import CompareDrawer from '../components/CompareDrawer';
 import BuyDrawer from '../components/BuyDrawer';
 import { SiteFooter } from './BrokerageLanding';
+import RegInput from '../components/RegInput';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import QuizFlow from '../components/quiz/QuizFlow';
 import { QuizComplete } from '../components/quiz/QuizComplete';
@@ -593,6 +594,9 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
   // Bilto Score info
   const [scoreInfoOpen, setScoreInfoOpen] = useState(false);
+
+  // Bilbyte hero section
+  const [bilbyteReg, setBilbyteReg] = useState('');
 
   // Trade-in calculator
   const [tradeCarValue, setTradeCarValue] = useState('');
@@ -1688,6 +1692,66 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               </button>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Bilbyte Section */}
+      <section className="relative overflow-hidden bg-slate-900">
+        <img
+          src="/BSM_car_sale_key_woman_handover_101122.jpg"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-30"
+          aria-hidden="true"
+        />
+        <div className="relative max-w-4xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+          <div className="max-w-xl">
+            <span className="inline-flex items-center gap-2 text-[11px] font-bold text-white/60 uppercase tracking-[0.18em] mb-5">
+              <ArrowLeftRight className="w-3.5 h-3.5" />
+              Byta bil
+            </span>
+            <h2 className="text-[36px] sm:text-[52px] font-bold text-white leading-[1.05] tracking-tight mb-4">
+              Bilbyte?<br className="sm:hidden" /> Bilto.
+            </h2>
+            <p className="text-white/70 text-[15px] sm:text-[17px] leading-relaxed mb-8 max-w-md">
+              Ange registreringsnumret på din nuvarande bil. Vi hjälper dig förhandla bästa möjliga värde och hitta din nästa.
+            </p>
+
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-5 sm:p-6 max-w-md">
+              <p className="text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-3">
+                Din nuvarande bil
+              </p>
+              <div className="mb-4">
+                <RegInput value={bilbyteReg} onChange={setBilbyteReg} />
+              </div>
+              <button
+                type="button"
+                onClick={() => openBuyDrawer(bilbyteReg ? `inbytesbil ${bilbyteReg}` : '', 'trade')}
+                className="w-full h-12 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] flex items-center justify-center gap-2 transition active:scale-[0.98]"
+              >
+                Starta bilbyte
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={scrollToQuiz}
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Hitta nästa bil – bilmatch
+              </button>
+              <button
+                type="button"
+                onClick={() => openBuyDrawer('', 'searching')}
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
+              >
+                <Search className="w-3.5 h-3.5" />
+                Utforska bilar
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
