@@ -485,17 +485,17 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 statLabel: 'utan förpliktelse',
               },
             ].map(({ icon: Icon, color, title, body, stat, statLabel }) => (
-              <div key={title} className="bg-[#0e6efe] rounded-2xl p-6 flex flex-col gap-4">
-                <div className="w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+              <div key={title} className="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col gap-4">
+                <div className={`w-11 h-11 rounded-xl ${color} flex items-center justify-center shrink-0`}>
                   <Icon className="w-5 h-5 text-white" strokeWidth={2.2} />
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-[16px] font-bold text-white leading-snug mb-2">{title}</h4>
-                  <p className="text-[14px] text-white/80 leading-relaxed">{body}</p>
+                  <h4 className="text-[16px] font-bold text-slate-900 leading-snug mb-2">{title}</h4>
+                  <p className="text-[14px] text-slate-500 leading-relaxed">{body}</p>
                 </div>
-                <div className="pt-3 border-t border-white/20">
-                  <p className="text-[22px] font-bold text-white leading-none">{stat}</p>
-                  <p className="text-[12px] text-white/60 mt-1">{statLabel}</p>
+                <div className="pt-3 border-t border-slate-200">
+                  <p className="text-[22px] font-bold text-slate-900 leading-none">{stat}</p>
+                  <p className="text-[12px] text-slate-400 mt-1">{statLabel}</p>
                 </div>
               </div>
             ))}
