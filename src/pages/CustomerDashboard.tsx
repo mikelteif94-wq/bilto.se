@@ -284,30 +284,30 @@ export default function CustomerDashboard({
 
                   {/* Progress tracker */}
                   {car.status !== 'avbruten' && (
-                    <div className="px-5 sm:px-6 pb-5">
+                    <div className="px-4 sm:px-6 pb-5">
                       <div className="flex items-center gap-0">
                         {STEPS.map((step, i) => {
                           const stepNum = i + 1;
                           const done = activeStep > stepNum;
                           const active = activeStep === stepNum;
                           return (
-                            <div key={step} className="flex items-center flex-1 last:flex-none">
-                              <div className="flex flex-col items-center gap-1">
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                            <div key={step} className="flex items-center flex-1 last:flex-none min-w-0">
+                              <div className="flex flex-col items-center gap-1 min-w-0 w-full">
+                                <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shrink-0 ${
                                   done ? 'bg-emerald-500 text-white'
                                   : active ? 'bg-[#0e6efe] text-white ring-4 ring-[#0e6efe]/20'
                                   : 'bg-slate-100 text-slate-400'
                                 }`}>
                                   {done ? <CheckCircle2 className="w-3.5 h-3.5" /> : stepNum}
                                 </div>
-                                <span className={`text-[10px] font-medium leading-tight text-center ${
+                                <span className={`text-[9px] sm:text-[11px] font-medium leading-tight text-center px-0.5 truncate w-full ${
                                   active ? 'text-[#0e6efe]' : done ? 'text-emerald-600' : 'text-slate-400'
                                 }`}>
                                   {step}
                                 </span>
                               </div>
                               {i < STEPS.length - 1 && (
-                                <div className={`flex-1 h-0.5 mx-1 mb-4 ${done ? 'bg-emerald-400' : 'bg-slate-200'}`} />
+                                <div className={`flex-1 h-0.5 mx-1 mb-5 shrink-0 ${done ? 'bg-emerald-400' : 'bg-slate-200'}`} />
                               )}
                             </div>
                           );

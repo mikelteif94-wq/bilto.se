@@ -230,15 +230,15 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
           </div>
 
           {/* Progress tracker */}
-          <div className="px-6 py-5">
+          <div className="px-4 sm:px-6 py-5">
             <div className="flex items-center gap-0">
               {STATUS_STEPS.map((step, i) => {
                 const done = i < progressStep;
                 const active = i === progressStep;
                 return (
-                  <div key={step.key} className="flex items-center flex-1 last:flex-none">
-                    <div className="flex flex-col items-center gap-1.5 shrink-0">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                  <div key={step.key} className="flex items-center flex-1 last:flex-none min-w-0">
+                    <div className="flex flex-col items-center gap-1.5 min-w-0 w-full">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all shrink-0 ${
                         done
                           ? 'bg-emerald-500 text-white'
                           : active
@@ -247,14 +247,14 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
                       }`}>
                         {done ? <CheckCircle2 className="w-4 h-4" /> : <span>{i + 1}</span>}
                       </div>
-                      <span className={`text-[11px] font-medium text-center whitespace-nowrap ${
+                      <span className={`text-[10px] sm:text-[11px] font-medium text-center px-0.5 truncate w-full ${
                         done ? 'text-emerald-600' : active ? 'text-[#0e6efe]' : 'text-slate-400'
                       }`}>
                         {step.label}
                       </span>
                     </div>
                     {i < STATUS_STEPS.length - 1 && (
-                      <div className={`h-0.5 flex-1 mx-2 rounded-full mb-5 transition-all ${
+                      <div className={`h-0.5 flex-1 mx-2 rounded-full mb-5 transition-all shrink-0 ${
                         i < progressStep ? 'bg-emerald-400' : 'bg-slate-200'
                       }`} />
                     )}

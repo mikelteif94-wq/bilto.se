@@ -81,7 +81,7 @@ export default function CustomerLogin({ onLoggedIn, onBack }: CustomerLoginProps
                 <User className="w-3.5 h-3.5" />
                 Mina bud
               </span>
-              <h1 className="text-white text-[40px] sm:text-[56px] lg:text-[64px] font-semibold leading-[1.05] tracking-tight">
+              <h1 className="text-white text-[32px] sm:text-[48px] lg:text-[64px] font-semibold leading-[1.05] tracking-tight">
                 Logga in på<br />ditt konto.
               </h1>
               <p className="mt-6 text-white/90 text-[17px] leading-[1.6] max-w-lg">

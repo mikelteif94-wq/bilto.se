@@ -987,7 +987,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           <h2 className="text-[22px] sm:text-[32px] font-extrabold text-slate-900 text-center tracking-tight mb-8 sm:mb-10 uppercase">
             Bläddra efter budget
           </h2>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
             {BUDGET_BRACKETS.map((bracket, i) => {
               const car = allCarsRaw.find(c => c.id === bracket.carId);
               const img = car ? resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage) : undefined;
