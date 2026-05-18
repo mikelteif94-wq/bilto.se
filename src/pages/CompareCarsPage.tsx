@@ -459,7 +459,13 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
   // Buy drawer
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
+  const [buyDrawerTrack, setBuyDrawerTrack] = useState<'found' | 'searching' | 'trade' | undefined>(undefined);
   const [quizPreselectedCar, setQuizPreselectedCar] = useState<string | undefined>(undefined);
+
+  const openBuyDrawer = (car: string, track?: 'found' | 'searching' | 'trade') => {
+    setBuyDrawerTrack(track);
+    setBuyDrawerCar(car);
+  };
 
   // Bilto Score info
   const [scoreInfoOpen, setScoreInfoOpen] = useState(false);
@@ -609,7 +615,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   };
 
   const openContactForCar = (car: ComparisonCar | null) => {
-    setBuyDrawerCar(car ? `${car.brand_display} ${car.model_display}` : '');
+    openBuyDrawer(car ? `${car.brand_display} ${car.model_display}` : '', car ? undefined : 'found');
   };
 
   const handleNavSelect = (item: string) => {
@@ -734,41 +740,47 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto">
             Jamfor bilar, hitta ratt modell och lat oss forhandla fram basta priset at dig. Helt gratis och opartiskt.
           </p>
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto">
+          <div className="mt-6 flex flex-col sm:grid sm:grid-cols-3 gap-2 sm:gap-3 max-w-2xl mx-auto">
             {/* Hittat bil */}
             <button
-              onClick={() => setBuyDrawerCar('')}
-              className="group flex flex-col items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-2xl px-4 py-5 transition-all duration-200 text-white"
+              onClick={() => openBuyDrawer('', 'found')}
+              className="group flex sm:flex-col items-center sm:items-center gap-3 sm:gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-xl sm:rounded-2xl px-4 py-3 sm:py-5 transition-all duration-200 text-white text-left sm:text-center"
             >
-              <div className="w-10 h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-colors">
-                <CheckCircle className="w-5 h-5" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center shrink-0 transition-colors">
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="font-bold text-[15px]">Jag har hittat en bil</span>
-              <span className="text-white/70 text-[12px] leading-snug">Låt oss förhandla och granska åt dig</span>
+              <div className="flex-1 sm:flex-none">
+                <span className="font-bold text-[14px] sm:text-[15px] block">Jag har hittat en bil</span>
+                <span className="text-white/70 text-[11px] sm:text-[12px] leading-snug">Låt oss förhandla och granska åt dig</span>
+              </div>
             </button>
 
             {/* Letar bil */}
             <button
               onClick={() => document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth' })}
-              className="group flex flex-col items-center gap-2 bg-white hover:bg-slate-50 rounded-2xl px-4 py-5 transition-all duration-200 text-[#0e6efe] shadow-lg"
+              className="group flex sm:flex-col items-center sm:items-center gap-3 sm:gap-2 bg-white hover:bg-slate-50 rounded-xl sm:rounded-2xl px-4 py-3 sm:py-5 transition-all duration-200 text-[#0e6efe] shadow-lg text-left sm:text-center"
             >
-              <div className="w-10 h-10 rounded-full bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center transition-colors">
-                <Search className="w-5 h-5" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors">
+                <Search className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="font-bold text-[15px]">Jag letar efter bil</span>
-              <span className="text-slate-500 text-[12px] leading-snug">Utforska, jämför eller testa bilmatch</span>
+              <div className="flex-1 sm:flex-none">
+                <span className="font-bold text-[14px] sm:text-[15px] block">Jag letar efter bil</span>
+                <span className="text-slate-500 text-[11px] sm:text-[12px] leading-snug">Utforska, jämför eller testa bilmatch</span>
+              </div>
             </button>
 
             {/* Byta bil */}
             <button
-              onClick={() => setBuyDrawerCar('')}
-              className="group flex flex-col items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-2xl px-4 py-5 transition-all duration-200 text-white"
+              onClick={() => openBuyDrawer('', 'trade')}
+              className="group flex sm:flex-col items-center sm:items-center gap-3 sm:gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-xl sm:rounded-2xl px-4 py-3 sm:py-5 transition-all duration-200 text-white text-left sm:text-center"
             >
-              <div className="w-10 h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-colors">
-                <ArrowLeftRight className="w-5 h-5" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center shrink-0 transition-colors">
+                <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="font-bold text-[15px]">Jag vill byta bil</span>
-              <span className="text-white/70 text-[12px] leading-snug">Vi hittar och förhandlar nästa bil åt dig</span>
+              <div className="flex-1 sm:flex-none">
+                <span className="font-bold text-[14px] sm:text-[15px] block">Jag vill byta bil</span>
+                <span className="text-white/70 text-[11px] sm:text-[12px] leading-snug">Vi hittar och förhandlar nästa bil åt dig</span>
+              </div>
             </button>
           </div>
         </div>
@@ -1918,7 +1930,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       <SiteFooter />
 
       {/* Buy drawer */}
-      <BuyDrawer car={buyDrawerCar} onClose={() => setBuyDrawerCar(null)} />
+      <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} onClose={() => setBuyDrawerCar(null)} />
 
       {/* Compare drawer */}
       <CompareDrawer

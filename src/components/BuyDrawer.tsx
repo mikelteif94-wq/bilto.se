@@ -10,17 +10,19 @@ import { supabase } from '../lib/supabase';
 
 interface BuyDrawerProps {
   car: string | null;
+  initialTrack?: BuyTrack;
   onClose: () => void;
 }
 
 type FormStep = 'track' | 'details' | 'tradeIn' | 'contact' | 'done';
 
-export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
+export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps) {
   const open = car !== null;
   const hasSpecificCar = !!car;
+  const skipTrack = hasSpecificCar || !!initialTrack;
 
-  const [track, setTrack] = useState<BuyTrack>('found');
-  const [step, setStep] = useState<FormStep>(hasSpecificCar ? 'details' : 'track');
+  const [track, setTrack] = useState<BuyTrack>(initialTrack || 'found');
+  const [step, setStep] = useState<FormStep>(skipTrack ? 'details' : 'track');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -61,11 +63,12 @@ export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
   const [guidanceDone, setGuidanceDone] = useState(false);
   const [guidanceError, setGuidanceError] = useState<string | null>(null);
 
-  // Reset form each time a new car is opened
+  // Reset form each time drawer opens
   useEffect(() => {
     if (car !== null) {
-      setTrack('found');
-      setStep(car ? 'details' : 'track');
+      const resolvedTrack = initialTrack || 'found';
+      setTrack(resolvedTrack);
+      setStep((car || initialTrack) ? 'details' : 'track');
       setError(null);
       setDetails({
         linkOrSeller: '',
@@ -97,9 +100,8 @@ export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
   }, [open]);
 
   const buildStepFlow = (): FormStep[] => {
-    if (hasSpecificCar) return ['details', 'tradeIn', 'contact'];
-    if (track === 'trade') return ['track', 'details', 'contact'];
-    return ['track', 'details', 'tradeIn', 'contact'];
+    if (track === 'trade') return skipTrack ? ['details', 'contact'] : ['track', 'details', 'contact'];
+    return skipTrack ? ['details', 'tradeIn', 'contact'] : ['track', 'details', 'tradeIn', 'contact'];
   };
 
   const stepFlow = step === 'done' ? ['done'] as FormStep[] : buildStepFlow();
@@ -109,7 +111,7 @@ export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
 
   const titles: Record<FormStep, string> = {
     track: 'Hur vill du gå vidare?',
-    details: hasSpecificCar ? `Förhandla – ${car}` : (track === 'found' ? 'Berätta om bilen' : track === 'searching' ? 'Berätta vad du söker' : 'Berätta om ditt byte'),
+    details: hasSpecificCar ? `Förhandla – ${car}` : track === 'trade' ? 'Berätta om ditt byte' : track === 'searching' ? 'Berätta vad du söker' : 'Berätta om bilen',
     tradeIn: 'Inbytesbil',
     contact: 'Dina uppgifter',
     done: 'Tack!',
@@ -276,7 +278,7 @@ export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
                   )}
                 </div>
                 <div className="flex items-center gap-2 shrink-0 mt-1">
-                  {step !== 'done' && !(step === 'track') && !(hasSpecificCar && step === 'details') && (
+                  {step !== 'done' && step !== 'track' && !(skipTrack && step === 'details') && (
                     <button
                       type="button"
                       onClick={handleBack}
