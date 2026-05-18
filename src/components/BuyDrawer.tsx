@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, ChevronLeft, Check, Phone } from 'lucide-react';
+import { X, ChevronLeft, Check, Phone, Search, ArrowLeftRight, CheckCircle } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ErrorBanner from './ErrorBanner';
 import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
@@ -14,7 +14,7 @@ interface BuyDrawerProps {
   onClose: () => void;
 }
 
-type FormStep = 'track' | 'details' | 'tradeIn' | 'contact' | 'done';
+type FormStep = 'track' | 'carIntent' | 'details' | 'tradeIn' | 'contact' | 'done';
 
 export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps) {
   const open = car !== null;
@@ -22,7 +22,7 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
   const skipTrack = hasSpecificCar || !!initialTrack;
 
   const [track, setTrack] = useState<BuyTrack>(initialTrack || 'found');
-  const [step, setStep] = useState<FormStep>(skipTrack ? 'details' : 'track');
+  const [step, setStep] = useState<FormStep>(hasSpecificCar ? 'carIntent' : skipTrack ? 'details' : 'track');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -39,6 +39,10 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
     targetCar: '',
     desiredMonthlyCost: '',
     additionalRequests: '',
+    carPrice: '',
+    yearFrom: '',
+    yearTo: '',
+    maxMiltal: '',
   });
 
   const [tradeIn, setTradeIn] = useState<BuyTradeInData>({
@@ -68,7 +72,7 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
     if (car !== null) {
       const resolvedTrack = initialTrack || 'found';
       setTrack(resolvedTrack);
-      setStep((car || initialTrack) ? 'details' : 'track');
+      setStep(car ? 'carIntent' : initialTrack ? 'details' : 'track');
       setError(null);
       setDetails({
         linkOrSeller: '',
@@ -83,6 +87,10 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
         targetCar: car,
         desiredMonthlyCost: '',
         additionalRequests: '',
+        carPrice: '',
+        yearFrom: '',
+        yearTo: '',
+        maxMiltal: '',
       });
       setTradeIn({ hasTradeIn: null, tradeInReg: '', hasLoan: null, loanAmount: '', interestRate: '' });
       setContact({ namn: '', telefon: '', mejl: '', preferredTime: '' });
@@ -100,6 +108,10 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
   }, [open]);
 
   const buildStepFlow = (): FormStep[] => {
+    if (hasSpecificCar) {
+      if (track === 'trade') return ['carIntent', 'details', 'contact'];
+      return ['carIntent', 'details', 'tradeIn', 'contact'];
+    }
     if (track === 'trade') return skipTrack ? ['details', 'contact'] : ['track', 'details', 'contact'];
     return skipTrack ? ['details', 'tradeIn', 'contact'] : ['track', 'details', 'tradeIn', 'contact'];
   };
@@ -111,7 +123,12 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
 
   const titles: Record<FormStep, string> = {
     track: 'Hur vill du gå vidare?',
-    details: hasSpecificCar ? `Förhandla – ${car}` : track === 'trade' ? 'Berätta om ditt byte' : track === 'searching' ? 'Berätta vad du söker' : 'Berätta om bilen',
+    carIntent: car ? `Hur vill du ha din ${car}?` : 'Hur vill du gå vidare?',
+    details: hasSpecificCar
+      ? (track === 'searching' ? `Hitta en ${car}` : `Förhandla – ${car}`)
+      : track === 'trade' ? 'Berätta om ditt byte'
+      : track === 'searching' ? 'Berätta vad du söker'
+      : 'Berätta om bilen',
     tradeIn: 'Inbytesbil',
     contact: 'Dina uppgifter',
     done: 'Tack!',
@@ -148,7 +165,13 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
         fuel_type: details.fuelType === 'no_pref' ? '' : details.fuelType,
         link_or_seller: details.linkOrSeller,
         target_car: details.targetCar || car || '',
-        additional_requests: details.additionalRequests + ` [Källa: Bilkort – ${car}]`,
+        additional_requests: [
+          details.additionalRequests,
+          details.maxMiltal ? `Max mil: ${details.maxMiltal}` : '',
+          details.yearFrom || details.yearTo ? `Årsmodell: ${details.yearFrom || '?'}–${details.yearTo || '?'}` : '',
+          details.carPrice ? `Budget: ${details.carPrice} kr` : '',
+          car ? `[Källa: Bilkort – ${car}]` : '',
+        ].filter(Boolean).join(' | '),
         desired_monthly_cost: details.paymentType === 'cash' ? '' : details.desiredMonthlyCost,
         monthly_payment: details.paymentType === 'cash' ? '' : details.desiredMonthlyCost,
         has_trade_in: track === 'trade' ? true : (tradeIn.hasTradeIn ?? false),
@@ -278,7 +301,7 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
                   )}
                 </div>
                 <div className="flex items-center gap-2 shrink-0 mt-1">
-                  {step !== 'done' && step !== 'track' && !(skipTrack && step === 'details') && (
+                  {step !== 'done' && step !== 'track' && step !== 'carIntent' && !(skipTrack && !hasSpecificCar && step === 'details') && (
                     <button
                       type="button"
                       onClick={handleBack}
@@ -318,6 +341,74 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
                     setGuidanceError(null);
                   }}
                 />
+              )}
+
+              {step === 'carIntent' && car && (
+                <div className="py-2 space-y-3">
+                  <p className="text-[14.5px] text-slate-500 mb-6">
+                    Välj hur du vill gå vidare med <span className="font-semibold text-slate-800">{car}</span>.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTrack('found');
+                      setStep('details');
+                      setError(null);
+                    }}
+                    className="w-full flex items-start gap-4 p-5 rounded-2xl border-2 border-[#0e6efe] bg-[#0e6efe]/5 hover:bg-[#0e6efe]/10 transition-all text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-[#0e6efe] flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-[15px] font-bold text-slate-900">Ja, jag har hittat en {car}</p>
+                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
+                        Vi granskar annonsen, förhandlar priset och hjälper dig hela vägen.
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTrack('searching');
+                      setStep('details');
+                      setError(null);
+                    }}
+                    className="w-full flex items-start gap-4 p-5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 transition-all text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                      <Search className="w-5 h-5 text-slate-600" />
+                    </div>
+                    <div>
+                      <p className="text-[15px] font-bold text-slate-900">Nej, hitta en {car} till mig</p>
+                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
+                        Vi söker, granskar och förhandlar fram rätt bil åt dig.
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTrack('trade');
+                      setStep('details');
+                      setError(null);
+                    }}
+                    className="w-full flex items-start gap-4 p-5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 transition-all text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                      <ArrowLeftRight className="w-5 h-5 text-slate-600" />
+                    </div>
+                    <div>
+                      <p className="text-[15px] font-bold text-slate-900">Jag vill byta in min bil</p>
+                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
+                        Vi sköter inbytet och hjälper dig hitta en {car}.
+                      </p>
+                    </div>
+                  </button>
+                </div>
               )}
 
               {step === 'details' && (

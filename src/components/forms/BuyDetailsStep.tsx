@@ -3,6 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import type { BuyTrack } from './BuyTrackStep';
 import FieldError from './FieldError';
 import RegInput from '../RegInput';
+import FinancingCalc from './FinancingCalc';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 
 const BUYING_STAGES = [
@@ -32,6 +33,9 @@ const PAYMENT_TYPES = [
   { value: 'finance', label: 'Finansiering' },
 ];
 
+const currentYear = new Date().getFullYear();
+const YEARS = Array.from({ length: currentYear - 2004 }, (_, i) => String(currentYear - i));
+
 export interface BuyDetailsData {
   linkOrSeller: string;
   carModel: string;
@@ -45,6 +49,10 @@ export interface BuyDetailsData {
   targetCar: string;
   desiredMonthlyCost: string;
   additionalRequests: string;
+  carPrice: string;
+  yearFrom: string;
+  yearTo: string;
+  maxMiltal: string;
 }
 
 interface BuyDetailsStepProps {
@@ -55,40 +63,57 @@ interface BuyDetailsStepProps {
   onNext: (data: BuyDetailsData) => void;
 }
 
+function parsePriceInput(raw: string): number {
+  const clean = raw.replace(/\s/g, '').replace(/,/g, '.');
+  const n = parseFloat(clean);
+  return isNaN(n) ? 0 : n;
+}
+
 export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, onNext }: BuyDetailsStepProps) {
   const [d, setD] = useState<BuyDetailsData>({
     ...initialData,
     carModel: initialData.carModel || initialBil || '',
     carBrand: initialData.carBrand || '',
     paymentType: initialData.paymentType || '',
+    carPrice: initialData.carPrice || '',
+    yearFrom: initialData.yearFrom || '',
+    yearTo: initialData.yearTo || '',
+    maxMiltal: initialData.maxMiltal || '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = (key: keyof BuyDetailsData, value: string) => {
     setD(prev => {
       const next = { ...prev, [key]: value };
-      if (key === 'carBrand') {
-        next.carModel = '';
-      }
-      if (key === 'paymentType' && value === 'cash') {
-        next.desiredMonthlyCost = '';
-      }
+      if (key === 'carBrand') next.carModel = '';
+      if (key === 'paymentType' && value === 'cash') next.desiredMonthlyCost = '';
       return next;
     });
     setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
   };
 
   const models = d.carBrand ? (CAR_BRANDS[d.carBrand] ?? []) : [];
+  const carPriceNum = parsePriceInput(d.carPrice);
+
+  const calcPrice = (() => {
+    if (carPriceNum >= 50000) return carPriceNum;
+    if (!lockedCar && track === 'searching' && d.budget) {
+      const map: Record<string, number> = {
+        '0-150000': 100000,
+        '150000-250000': 200000,
+        '250000-400000': 325000,
+        '400000-600000': 500000,
+        '600000+': 700000,
+      };
+      return map[d.budget] ?? 0;
+    }
+    return 0;
+  })();
 
   const validate = (): boolean => {
     const e: Record<string, string> = {};
-
     if (!d.buyingStage) e.buyingStage = 'Välj var du är i processen';
-
-    if (!d.paymentType) {
-      e.paymentType = 'Välj hur du vill betala';
-    }
-
+    if (!d.paymentType) e.paymentType = 'Välj hur du vill betala';
     if (d.paymentType === 'finance') {
       if (!d.desiredMonthlyCost.trim()) {
         e.desiredMonthlyCost = 'Fyll i önskad månadskostnad';
@@ -96,14 +121,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         e.desiredMonthlyCost = 'Månadskostnad måste vara en siffra';
       }
     }
-
     if (track === 'found' && !d.linkOrSeller.trim()) {
       e.linkOrSeller = 'Fyll i länk eller säljarens namn';
     }
     if (track === 'trade' && !d.regnummer.trim()) {
       e.regnummer = 'Fyll i regnummer';
     }
-
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -115,6 +138,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
   return (
     <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
+
+      {/* ── FOUND track ── */}
       {track === 'found' && (
         <>
           <div className="pb-6 sm:pb-7">
@@ -148,10 +173,112 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               />
             </div>
           )}
+
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+              Bilens pris (kr)
+              <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+            </label>
+            <p className="text-sm text-slate-500 mb-3">
+              Används för att visa ett finansieringsexempel.
+            </p>
+            <div className="w-full sm:max-w-xs">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.carPrice}
+                onChange={e => set('carPrice', e.target.value)}
+                placeholder="T.ex. 350 000"
+                className="form-control"
+              />
+            </div>
+            {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
+          </div>
         </>
       )}
 
-      {track === 'searching' && (
+      {/* ── SEARCHING – locked car (came from a specific car card) ── */}
+      {track === 'searching' && lockedCar && (
+        <>
+          <div className="pb-6 sm:pb-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+              Max miltal
+            </label>
+            <p className="text-sm text-slate-500 mb-3">
+              Hur många mil får bilen max ha gått?
+            </p>
+            <div className="w-full sm:max-w-xs relative">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.maxMiltal}
+                onChange={e => set('maxMiltal', e.target.value)}
+                placeholder="T.ex. 5 000"
+                className="form-control pr-14"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none">mil</span>
+            </div>
+          </div>
+
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+              Årsmodell
+            </label>
+            <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
+              <div>
+                <p className="text-xs text-slate-500 mb-1.5">Från</p>
+                <div className="relative">
+                  <select
+                    value={d.yearFrom}
+                    onChange={e => set('yearFrom', e.target.value)}
+                    className="form-control appearance-none pr-8 text-[14px]"
+                  >
+                    <option value="">Välj år</option>
+                    {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 mb-1.5">Till</p>
+                <div className="relative">
+                  <select
+                    value={d.yearTo}
+                    onChange={e => set('yearTo', e.target.value)}
+                    className="form-control appearance-none pr-8 text-[14px]"
+                  >
+                    <option value="">Välj år</option>
+                    {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+              Max budget (kr)
+              <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+            </label>
+            <p className="text-sm text-slate-500 mb-3">Totalpris för bilen.</p>
+            <div className="w-full sm:max-w-xs">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.carPrice}
+                onChange={e => set('carPrice', e.target.value)}
+                placeholder="T.ex. 350 000"
+                className="form-control"
+              />
+            </div>
+            {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
+          </div>
+        </>
+      )}
+
+      {/* ── SEARCHING – open (no locked car) ── */}
+      {track === 'searching' && !lockedCar && (
         <>
           <div className="pb-6 sm:pb-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
@@ -208,6 +335,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
             </div>
+            {calcPrice >= 50000 && <FinancingCalc carPrice={calcPrice} />}
           </div>
 
           <div className="py-6 sm:py-7">
@@ -234,15 +362,14 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         </>
       )}
 
+      {/* ── TRADE track ── */}
       {track === 'trade' && (
         <>
           <div className="pb-6 sm:pb-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
               Regnummer på din nuvarande bil
             </label>
-            <p className="text-sm text-slate-500 mb-3">
-              Bilen du vill byta in.
-            </p>
+            <p className="text-sm text-slate-500 mb-3">Bilen du vill byta in.</p>
             <div className="w-full sm:max-w-xs">
               <RegInput
                 value={d.regnummer}
@@ -254,9 +381,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           </div>
 
           <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
-              Miltal
-            </label>
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Miltal</label>
             <div className="w-full sm:max-w-xs">
               <input
                 type="text"
@@ -276,47 +401,76 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             <p className="text-sm text-slate-500 mb-3">
               Välj märke och modell, eller skriv fritt.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="relative">
-                <select
-                  value={d.carBrand}
-                  onChange={e => set('carBrand', e.target.value)}
-                  className="form-control appearance-none pr-10"
-                >
-                  <option value="">Välj märke</option>
-                  {POPULAR_BRANDS.map(b => (
-                    <option key={b} value={b}>{b}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            {lockedCar ? (
+              <div className="flex items-center h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium text-[14px]">
+                {lockedCar}
               </div>
-              <div className="relative">
-                <select
-                  value={d.carModel}
-                  onChange={e => set('carModel', e.target.value)}
-                  disabled={!d.carBrand}
-                  className="form-control appearance-none pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <option value="">{d.carBrand ? 'Välj modell' : 'Välj märke först'}</option>
-                  {models.map(m => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="relative">
+                    <select
+                      value={d.carBrand}
+                      onChange={e => set('carBrand', e.target.value)}
+                      className="form-control appearance-none pr-10"
+                    >
+                      <option value="">Välj märke</option>
+                      {POPULAR_BRANDS.map(b => (
+                        <option key={b} value={b}>{b}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                  </div>
+                  <div className="relative">
+                    <select
+                      value={d.carModel}
+                      onChange={e => set('carModel', e.target.value)}
+                      disabled={!d.carBrand}
+                      className="form-control appearance-none pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <option value="">{d.carBrand ? 'Välj modell' : 'Välj märke först'}</option>
+                      {models.map(m => (
+                        <option key={m} value={m}>{m}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  value={d.targetCar}
+                  onChange={e => set('targetCar', e.target.value)}
+                  placeholder="Eller skriv fritt, t.ex. SUV med bra bagageutrymme"
+                  className="form-control mt-3"
+                />
+              </>
+            )}
+          </div>
+
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+              Budget för nästa bil (kr)
+              <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+            </label>
+            <p className="text-sm text-slate-500 mb-3">
+              Totalpris eller finansiering — vi hjälper dig hitta rätt upplägg.
+            </p>
+            <div className="w-full sm:max-w-xs">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.carPrice}
+                onChange={e => set('carPrice', e.target.value)}
+                placeholder="T.ex. 350 000"
+                className="form-control"
+              />
             </div>
-            <input
-              type="text"
-              value={d.targetCar}
-              onChange={e => set('targetCar', e.target.value)}
-              placeholder="Eller skriv fritt, t.ex. SUV med bra bagageutrymme"
-              className="form-control mt-3"
-            />
+            {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
       )}
 
-      {/* Var i processen */}
+      {/* ── Var i processen ── */}
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Var i processen är du?
@@ -343,7 +497,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         <FieldError message={errors.buyingStage} />
       </div>
 
-      {/* Betalningssätt */}
+      {/* ── Betalningssätt ── */}
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Hur vill du betala?
@@ -370,7 +524,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         <FieldError message={errors.paymentType} />
       </div>
 
-      {/* Önskad månadskostnad — only for finance */}
+      {/* ── Önskad månadskostnad ── */}
       {d.paymentType === 'finance' && (
         <div className="py-6 sm:py-7">
           <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
@@ -390,7 +544,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         </div>
       )}
 
-      {/* Övriga önskemål */}
+      {/* ── Övriga önskemål ── */}
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Övriga önskemål
