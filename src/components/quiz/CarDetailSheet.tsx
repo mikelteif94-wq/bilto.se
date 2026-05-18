@@ -114,11 +114,11 @@ export function CarDetailSheet({ car, open, onClose, onSelect }: CarDetailSheetP
 
   return (
     <Sheet open={isOpen} onClose={onClose}>
-      <div className="px-5 pb-8">
+      <div className="px-4 sm:px-5 pb-8">
         {/* Hero */}
-        <div className="relative mb-6">
+        <div className="relative mb-5">
           {(car.cleaned_image_url || car.image_url) && (
-            <div className="w-full h-48 flex items-center justify-center bg-white rounded-xl">
+            <div className="w-full h-40 sm:h-48 flex items-center justify-center bg-slate-50 rounded-xl overflow-hidden">
               <img
                 src={car.cleaned_image_url || car.image_url || ''}
                 alt={`${car.make} ${car.model}`}
@@ -126,8 +126,8 @@ export function CarDetailSheet({ car, open, onClose, onSelect }: CarDetailSheetP
               />
             </div>
           )}
-          <div className="mt-4">
-            <h2 className="text-2xl font-bold text-slate-900">{car.make} {car.model}</h2>
+          <div className="mt-3 sm:mt-4">
+            <h2 className="text-[20px] sm:text-2xl font-bold text-slate-900 leading-tight">{car.make} {car.model}</h2>
             {comparisonData?.generation && (
               <p className="text-sm text-slate-400 mt-0.5">{comparisonData.generation}</p>
             )}
@@ -142,7 +142,7 @@ export function CarDetailSheet({ car, open, onClose, onSelect }: CarDetailSheetP
             {comparisonData?.safety.euro_ncap_stars && (
               <Badge variant="outline" className="gap-1">
                 <Shield className="w-3 h-3" />
-                {comparisonData.safety.euro_ncap_stars} stjärnor Euro NCAP
+                {comparisonData.safety.euro_ncap_stars} stjärnor NCAP
               </Badge>
             )}
           </div>
@@ -198,20 +198,20 @@ function ComparisonContent({ data, onSelect }: { data: ComparisonCar; onSelect?:
       {/* Pricing */}
       <section>
         <SectionTitle>Pris</SectionTitle>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {data.pricing.new_from_sek && (
-            <div className="p-3.5 bg-slate-50 rounded-xl">
+            <div className="p-3 sm:p-3.5 bg-slate-50 rounded-xl">
               <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Ny från</p>
-              <p className="text-lg font-bold text-slate-900 mt-0.5">{formatPriceSEK(data.pricing.new_from_sek)}</p>
+              <p className="text-[16px] sm:text-lg font-bold text-slate-900 mt-0.5">{formatPriceSEK(data.pricing.new_from_sek)}</p>
               {data.pricing.new_to_sek && (
-                <p className="text-[12px] text-slate-400">till {formatPriceSEK(data.pricing.new_to_sek)}</p>
+                <p className="text-[11px] sm:text-[12px] text-slate-400">till {formatPriceSEK(data.pricing.new_to_sek)}</p>
               )}
             </div>
           )}
           {data.pricing.used_from_sek && (
-            <div className="p-3.5 bg-slate-50 rounded-xl">
+            <div className="p-3 sm:p-3.5 bg-slate-50 rounded-xl">
               <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Begagnad från</p>
-              <p className="text-lg font-bold text-slate-900 mt-0.5">{formatPriceSEK(data.pricing.used_from_sek)}</p>
+              <p className="text-[16px] sm:text-lg font-bold text-slate-900 mt-0.5">{formatPriceSEK(data.pricing.used_from_sek)}</p>
               <p className="text-[11px] text-slate-400">Äldre årsmodeller, pris varierar</p>
             </div>
           )}
@@ -236,7 +236,7 @@ function ComparisonContent({ data, onSelect }: { data: ComparisonCar; onSelect?:
       {/* Specs */}
       <section>
         <SectionTitle>Specifikationer</SectionTitle>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2.5">
           <SpecItem icon={Car} label="Kaross" value={getBodyLabel(data.specs.body_type)} />
           <SpecItem icon={FuelIcon} label="Drivmedel" value={getFuelLabel(data.specs.fuel_types)} />
           <SpecItem icon={Gauge} label="Drivlina" value={getDrivetrainLabel(data.specs.drivetrain)} />
@@ -343,11 +343,11 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 function SpecItem({ icon: Icon, label, value }: { icon: typeof Car; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-2.5 p-3 bg-slate-50 rounded-xl">
-      <Icon className="w-4 h-4 text-slate-400 shrink-0" />
-      <div>
+    <div className="flex items-start gap-2 p-3 bg-slate-50 rounded-xl min-w-0">
+      <Icon className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+      <div className="min-w-0">
         <p className="text-[11px] text-slate-400">{label}</p>
-        <p className="text-[13px] font-medium text-slate-800">{value}</p>
+        <p className="text-[12px] sm:text-[13px] font-medium text-slate-800 leading-snug">{value}</p>
       </div>
     </div>
   );

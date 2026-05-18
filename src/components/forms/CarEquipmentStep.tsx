@@ -48,7 +48,7 @@ export default function CarEquipmentStep({
         <p className="text-sm text-slate-500 mb-4">
           Frivilligt &ndash; välj det som stämmer.
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
           {EQUIPMENT_OPTIONS.map((item) => {
             const active = !unsure && selected.includes(item);
             return (
@@ -57,7 +57,7 @@ export default function CarEquipmentStep({
                 type="button"
                 onClick={() => toggle(item)}
                 disabled={unsure}
-                className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+                className={`px-3 sm:px-5 h-10 rounded-full text-[13px] sm:text-[14px] font-medium transition-all ${
                   active
                     ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                     : 'bg-slate-100 text-slate-900 hover:bg-slate-200'

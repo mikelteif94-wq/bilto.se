@@ -214,14 +214,14 @@ function BudgetSelector({ answers, setAnswers }: { answers: QuizAnswers; setAnsw
         </button>
       </div>
 
-      <div className="flex gap-4">
-        <div className="space-y-1.5 flex-1">
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
           <label className="text-[12px] font-medium text-slate-500">Från</label>
           <Select
             value={answers.budget_min?.toString() || '0'}
             onValueChange={(val) => setAnswers({ ...answers, budget_min: parseInt(val) })}
           >
-            <SelectTrigger className="w-full h-12 rounded-xl border-slate-200 bg-white text-[14px] text-slate-900">
+            <SelectTrigger className="w-full h-11 rounded-xl border-slate-200 bg-white text-[13px] sm:text-[14px] text-slate-900">
               <SelectValue placeholder="Alla" />
             </SelectTrigger>
             <SelectContent>
@@ -231,13 +231,13 @@ function BudgetSelector({ answers, setAnswers }: { answers: QuizAnswers; setAnsw
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-1.5 flex-1">
+        <div className="space-y-1.5">
           <label className="text-[12px] font-medium text-slate-500">Till</label>
           <Select
             value={answers.budget_max?.toString() || '0'}
             onValueChange={(val) => setAnswers({ ...answers, budget_max: parseInt(val) })}
           >
-            <SelectTrigger className="w-full h-12 rounded-xl border-slate-200 bg-white text-[14px] text-slate-900">
+            <SelectTrigger className="w-full h-11 rounded-xl border-slate-200 bg-white text-[13px] sm:text-[14px] text-slate-900">
               <SelectValue placeholder="Alla" />
             </SelectTrigger>
             <SelectContent>
@@ -264,8 +264,8 @@ function OptionCard({ option, questionId, isSelected, isMultiSelect, onClick }: 
       type="button"
       onClick={onClick}
       className={cn(
-        'relative w-full flex items-center gap-3 px-5 py-4 rounded-xl border-2 transition-all duration-150 text-left',
-        questionId === 'body_type' ? 'flex-col items-center justify-center py-5 text-center' : '',
+        'relative w-full flex items-center gap-3 px-4 py-3.5 sm:px-5 sm:py-4 rounded-xl border-2 transition-all duration-150 text-left',
+        questionId === 'body_type' ? 'flex-col items-center justify-center py-4 sm:py-5 text-center' : '',
         isSelected
           ? 'border-[#0e6efe] bg-white shadow-sm'
           : 'border-slate-200 bg-white hover:border-slate-300'
@@ -283,7 +283,7 @@ function OptionCard({ option, questionId, isSelected, isMultiSelect, onClick }: 
       )}
 
       <span className={cn(
-        'font-medium text-[15px] leading-snug transition-colors',
+        'font-medium text-[14px] sm:text-[15px] leading-snug transition-colors',
         isSelected ? 'text-slate-900' : 'text-slate-700'
       )}>
         {option.label}

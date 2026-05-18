@@ -131,18 +131,18 @@ export function QuizExperience({ onComplete, onSkip, isAnalyzing, analysisReady 
       {/* Question content */}
       <main className="flex-1 flex flex-col justify-center px-4 pb-8 pt-6">
         <div className="max-w-lg mx-auto w-full">
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h2 className="text-[20px] sm:text-[22px] font-bold text-slate-900 leading-tight mb-2">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm">
+            <h2 className="text-[18px] sm:text-[22px] font-bold text-slate-900 leading-tight mb-2">
               {question.question}
             </h2>
-            <p className="text-[13px] text-slate-400 mb-5">
+            <p className="text-[13px] text-slate-400 mb-4 sm:mb-5">
               {isMultiSelect
                 ? `Välj upp till ${question.id === 'priorities' ? '3' : 'flera'} alternativ`
                 : 'Välj det alternativ som passar dig bäst'}
             </p>
 
             <div className={cn(
-              'grid gap-2.5',
+              'grid gap-2',
               question.id === 'body_type' ? 'grid-cols-2' : 'grid-cols-1'
             )}>
               {question.options.map((option) => {
@@ -153,8 +153,8 @@ export function QuizExperience({ onComplete, onSkip, isAnalyzing, analysisReady 
                     type="button"
                     onClick={() => handleAnswer(option)}
                     className={cn(
-                      'relative w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 transition-all duration-150 text-left',
-                      question.id === 'body_type' ? 'flex-col items-center justify-center py-4 text-center' : '',
+                      'relative w-full flex items-center gap-3 px-3 sm:px-4 py-3 sm:py-3.5 rounded-xl border-2 transition-all duration-150 text-left',
+                      question.id === 'body_type' ? 'flex-col items-center justify-center py-3.5 sm:py-4 text-center' : '',
                       selected
                         ? 'border-[#0e6efe] bg-white shadow-sm'
                         : 'border-slate-200 bg-white hover:border-slate-300'
@@ -172,14 +172,14 @@ export function QuizExperience({ onComplete, onSkip, isAnalyzing, analysisReady 
                     )}
 
                     <span className={cn(
-                      'font-medium text-[14px] leading-snug',
+                      'font-medium text-[13px] sm:text-[14px] leading-snug',
                       selected ? 'text-slate-900' : 'text-slate-700'
                     )}>
                       {option.label}
                     </span>
 
                     {option.description && (
-                      <span className="text-[12px] text-slate-400 mt-0.5">{option.description}</span>
+                      <span className="text-[11px] sm:text-[12px] text-slate-400 mt-0.5">{option.description}</span>
                     )}
 
                     {!isMultiSelect && selected && (

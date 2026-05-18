@@ -19,8 +19,8 @@ export default function FinancingCalc({ carPrice }: FinancingCalcProps) {
   const formatted = Math.round(monthly).toLocaleString('sv-SE');
 
   return (
-    <div className="mt-3 inline-flex items-center gap-2 px-4 h-10 rounded-full bg-[#0e6efe]/10 border border-[#0e6efe]/20">
-      <div className="w-1.5 h-1.5 rounded-full bg-[#0e6efe]" />
+    <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 px-4 py-2.5 rounded-xl bg-[#0e6efe]/10 border border-[#0e6efe]/20 w-full sm:w-auto sm:inline-flex sm:h-10 sm:rounded-full sm:py-0">
+      <div className="w-1.5 h-1.5 rounded-full bg-[#0e6efe] shrink-0" />
       <span className="text-[13px] text-slate-600">Finansiering ca</span>
       <span className="text-[14px] font-bold text-[#0e6efe]">{formatted} kr/mån</span>
       <span className="text-[11px] text-slate-400">· baserat på marknadsränta</span>

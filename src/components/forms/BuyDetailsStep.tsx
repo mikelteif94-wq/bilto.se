@@ -231,12 +231,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   <select
                     value={d.yearFrom}
                     onChange={e => set('yearFrom', e.target.value)}
-                    className="form-control appearance-none pr-8 text-[14px]"
+                    className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]"
                   >
                     <option value="">Välj år</option>
                     {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
-                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
                 </div>
               </div>
               <div>
@@ -245,12 +245,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   <select
                     value={d.yearTo}
                     onChange={e => set('yearTo', e.target.value)}
-                    className="form-control appearance-none pr-8 text-[14px]"
+                    className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]"
                   >
                     <option value="">Välj år</option>
                     {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
-                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -400,12 +400,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   <select
                     value={d.yearFrom}
                     onChange={e => set('yearFrom', e.target.value)}
-                    className="form-control appearance-none pr-8 text-[14px]"
+                    className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]"
                   >
                     <option value="">Välj år</option>
                     {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
-                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
                 </div>
               </div>
               <div>
@@ -414,12 +414,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   <select
                     value={d.yearTo}
                     onChange={e => set('yearTo', e.target.value)}
-                    className="form-control appearance-none pr-8 text-[14px]"
+                    className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]"
                   >
                     <option value="">Välj år</option>
                     {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
-                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -612,13 +612,13 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         <p className="text-sm text-slate-500 mb-4">
           Välj det alternativ som bäst beskriver dig.
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
           {BUYING_STAGES.map(s => (
             <button
               key={s.value}
               type="button"
               onClick={() => set('buyingStage', s.value)}
-              className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all text-left sm:text-center ${
                 d.buyingStage === s.value
                   ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                   : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
