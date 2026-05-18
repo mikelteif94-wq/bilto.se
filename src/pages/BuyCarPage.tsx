@@ -137,7 +137,7 @@ export default function BuyCarPage({
     setError(null);
 
     try {
-      const { data: insertedRow, error: dbError } = await supabase.from('quote_requests').insert({
+      const { error: dbError } = await supabase.from('quote_requests').insert({
         search_option: track,
         regnummer: track === 'trade' ? details.regnummer : '',
         miltal: details.miltal ? parseInt(details.miltal) : 0,
@@ -159,7 +159,7 @@ export default function BuyCarPage({
         phone: contactData.telefon,
         preferred_time: contactData.preferredTime,
         status: 'new',
-      }).select('id').maybeSingle();
+      });
 
       if (dbError) {
         setError('Kunde inte spara din förfrågan. Försök igen eller ring oss.');
@@ -175,7 +175,6 @@ export default function BuyCarPage({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            quote_request_id: (insertedRow as { id?: string } | null)?.id,
             email: contactData.mejl,
             phone: contactData.telefon,
           }),
