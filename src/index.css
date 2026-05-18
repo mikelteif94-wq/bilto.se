@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    overflow-x: clip;
+  }
+
+  html {
+    background-color: #0e6efe;
+  }
+
+  body {
+    @apply font-sans text-slate-700;
+    background-color: #f5f8fc;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-slate-900;
+  }
+
+  /* Prevent iOS Safari auto-zoom on form focus (triggers when font-size < 16px). */
+  @media (max-width: 1024px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(120%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition;
+  }
+
+  .input-base {
+    @apply px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500;
+  }
+
+  /* Unified form control: use on every input/select/textarea across the app */
+  .form-control {
+    @apply w-full h-12 px-4 text-[15px] bg-white border border-slate-300 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 transition;
+  }
+  .form-control-error {
+    @apply border-red-400 bg-red-50 focus:border-red-500 focus:ring-red-500/20;
+  }
+  textarea.form-control {
+    @apply h-auto py-3 resize-none;
+  }
+  select.form-control {
+    @apply appearance-none pr-10 font-medium bg-no-repeat;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-position: right 12px center;
+  }
+}
