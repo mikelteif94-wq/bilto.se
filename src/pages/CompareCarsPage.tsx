@@ -15,6 +15,7 @@ import { useCarImages } from '../hooks/useCarImages';
 import MobileMenu from '../components/MobileMenu';
 import CompactCarCard from '../components/CompactCarCard';
 import CompareDrawer from '../components/CompareDrawer';
+import BuyDrawer from '../components/BuyDrawer';
 import { SiteFooter } from './BrokerageLanding';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import QuizFlow from '../components/quiz/QuizFlow';
@@ -456,6 +457,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const [analysisReady, setAnalysisReady] = useState(false);
   const quizSectionRef = useRef<HTMLDivElement>(null);
 
+  // Buy drawer
+  const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
+  const [quizPreselectedCar, setQuizPreselectedCar] = useState<string | undefined>(undefined);
+
   // Bilto Score info
   const [scoreInfoOpen, setScoreInfoOpen] = useState(false);
 
@@ -471,14 +476,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const [budgetShowCount, setBudgetShowCount] = useState(15);
   const budgetGridRef = useRef<HTMLDivElement>(null);
 
-  const navigateToBuy = useCallback((carLabel: string) => {
-    const params = new URLSearchParams();
-    params.set('bil', carLabel);
-    params.set('source', 'Köp bil');
-    window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }, []);
 
   const navigateToSell = useCallback(() => {
     window.history.pushState({}, '', '/salj');
@@ -612,7 +609,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   };
 
   const openContactForCar = (car: ComparisonCar | null) => {
-    navigateToBuy(car ? `${car.brand_display} ${car.model_display}` : '');
+    setBuyDrawerCar(car ? `${car.brand_display} ${car.model_display}` : '');
   };
 
   const handleNavSelect = (item: string) => {
@@ -740,11 +737,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto">
             {/* Hittat bil */}
             <button
-              onClick={() => {
-                window.history.pushState({}, '', `/kop-bil/bestall?source=Köp+bil`);
-                window.dispatchEvent(new PopStateEvent('popstate'));
-                window.scrollTo({ top: 0, behavior: 'auto' });
-              }}
+              onClick={() => setBuyDrawerCar('')}
               className="group flex flex-col items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-2xl px-4 py-5 transition-all duration-200 text-white"
             >
               <div className="w-10 h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-colors">
@@ -768,7 +761,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
             {/* Byta bil */}
             <button
-              onClick={() => document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => setBuyDrawerCar('')}
               className="group flex flex-col items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 hover:border-white/50 rounded-2xl px-4 py-5 transition-all duration-200 text-white"
             >
               <div className="w-10 h-10 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-colors">
@@ -1454,7 +1447,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                   Vill du veta exakt vad din bil är värd?
                 </p>
                 <button
-                  onClick={() => navigateToBuy('')}
+                  onClick={() => setBuyDrawerCar('')}
                   className="h-11 px-6 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[14px] font-semibold inline-flex items-center gap-2 transition"
                 >
                   <Phone className="w-4 h-4" />
@@ -1473,7 +1466,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                 Prata med oss så hjälper vi dig hitta en bättre lösning.
               </p>
               <button
-                onClick={() => navigateToBuy('')}
+                onClick={() => setBuyDrawerCar('')}
                 className="h-11 px-6 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[14px] font-semibold inline-flex items-center gap-2 transition"
               >
                 <Phone className="w-4 h-4" />
@@ -1533,7 +1526,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
             {quizStep === 'active' && (
               <motion.div key="quiz-active" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="max-w-lg mx-auto">
-                <QuizFlow onComplete={handleQuizComplete} onBack={handleQuizReset} />
+                <QuizFlow onComplete={handleQuizComplete} onBack={handleQuizReset} preselectedCar={quizPreselectedCar} />
               </motion.div>
             )}
 
@@ -1591,7 +1584,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                         topBadge={i === 0}
                         expertComment={car.matchReasons.join(' · ') || undefined}
                         fuelLabel={car.fuelLabel}
-                        onNegotiate={() => navigateToBuy(`${car.make} ${car.model}`)}
+                        onNegotiate={() => setBuyDrawerCar(`${car.make} ${car.model}`)}
                         onDetail={() => {
                           const compData = findComparisonCarByMakeModel(car.make, car.model);
                           if (compData) setDetailCar(compData);
@@ -1607,7 +1600,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       <Car className="w-6 h-6 text-slate-400" />
                     </div>
                     <p className="text-[14px] text-slate-500 mb-4">Vi hjälper dig ändå -- kontakta oss så hittar vi rätt bil.</p>
-                    <button onClick={() => navigateToBuy('')} className="h-11 px-6 rounded-xl bg-[#0e6efe] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition">
+                    <button onClick={() => setBuyDrawerCar('')} className="h-11 px-6 rounded-xl bg-[#0e6efe] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition">
                       Kontakta oss <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -1850,7 +1843,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                 cta: 'Börja här',
                 ctaColor: 'bg-[#0e6efe]/10 text-[#0e6efe] hover:bg-[#0e6efe]/20',
                 borderAccent: 'group-hover:ring-[#0e6efe]/30',
-                onClick: () => navigateToBuy(''),
+                onClick: () => setBuyDrawerCar(''),
               },
               {
                 icon: <Car className="w-6 h-6 text-emerald-600" />,
@@ -1874,7 +1867,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                 cta: 'Boka samtal',
                 ctaColor: 'bg-amber-50 text-amber-700 hover:bg-amber-100',
                 borderAccent: 'group-hover:ring-amber-200',
-                onClick: () => navigateToBuy(''),
+                onClick: () => setBuyDrawerCar(''),
               },
             ].map((card) => (
               <div
@@ -1923,6 +1916,9 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       </section>
 
       <SiteFooter />
+
+      {/* Buy drawer */}
+      <BuyDrawer car={buyDrawerCar} onClose={() => setBuyDrawerCar(null)} />
 
       {/* Compare drawer */}
       <CompareDrawer

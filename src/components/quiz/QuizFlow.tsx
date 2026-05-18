@@ -1,21 +1,43 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { QuizAnswers, QUIZ_QUESTIONS, QuizOption, MONTHLY_BUDGET_OPTIONS, CASH_BUDGET_OPTIONS } from './QuizTypes';
+import { QuizAnswers, QUIZ_QUESTIONS, QuizOption, MONTHLY_BUDGET_OPTIONS, CASH_BUDGET_OPTIONS, BRAND_CATEGORIES } from './QuizTypes';
 
 interface QuizFlowProps {
   onComplete: (answers: QuizAnswers) => void;
   onBack?: () => void;
+  preselectedCar?: string;
 }
 
-export default function QuizFlow({ onComplete, onBack }: QuizFlowProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState<QuizAnswers>({});
+function inferBrandCategory(car: string): QuizAnswers['brand_preference'] | undefined {
+  const name = car.toLowerCase();
+  for (const [category, brands] of Object.entries(BRAND_CATEGORIES)) {
+    if (brands.some(b => name.startsWith(b.toLowerCase()))) {
+      return category as QuizAnswers['brand_preference'];
+    }
+  }
+  return undefined;
+}
 
-  const currentQuestion = QUIZ_QUESTIONS[currentStep];
-  const progress = ((currentStep + 1) / QUIZ_QUESTIONS.length) * 100;
-  const isLastStep = currentStep === QUIZ_QUESTIONS.length - 1;
+export default function QuizFlow({ onComplete, onBack, preselectedCar }: QuizFlowProps) {
+  const inferredBrand = useMemo(() => preselectedCar ? inferBrandCategory(preselectedCar) : undefined, [preselectedCar]);
+
+  const visibleQuestions = useMemo(() =>
+    inferredBrand
+      ? QUIZ_QUESTIONS.filter(q => q.id !== 'brand_preference')
+      : QUIZ_QUESTIONS,
+    [inferredBrand]
+  );
+
+  const [currentStep, setCurrentStep] = useState(0);
+  const [answers, setAnswers] = useState<QuizAnswers>(
+    inferredBrand ? { brand_preference: inferredBrand } : {}
+  );
+
+  const currentQuestion = visibleQuestions[currentStep];
+  const progress = ((currentStep + 1) / visibleQuestions.length) * 100;
+  const isLastStep = currentStep === visibleQuestions.length - 1;
   const isBudgetQuestion = currentQuestion.id === 'budget';
 
   const getCurrentAnswer = (): string | string[] | undefined => {
@@ -86,9 +108,17 @@ export default function QuizFlow({ onComplete, onBack }: QuizFlowProps) {
         </button>
       )}
 
+      {preselectedCar && (
+        <div className="flex items-center gap-2 mb-4">
+          <span className="inline-flex items-center h-7 px-3 bg-[#0e6efe]/10 text-[#0e6efe] font-semibold text-[13px] rounded-full">
+            {preselectedCar}
+          </span>
+        </div>
+      )}
+
       {/* Step counter */}
       <p className="text-[14px] text-slate-500 mb-2">
-        Fråga {currentStep + 1} av {QUIZ_QUESTIONS.length}
+        Fråga {currentStep + 1} av {visibleQuestions.length}
       </p>
 
       {/* Progress bar */}
