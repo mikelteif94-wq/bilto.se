@@ -444,7 +444,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         </div>
       </section>
 
-      <section className="bg-[#f0f6ff] border-t border-[#0e6efe]/10">
+      <section className="bg-white border-t border-slate-100">
         <div className="max-w-5xl mx-auto px-5 sm:px-6 py-12 sm:py-20">
           <div className="mb-8 sm:mb-10">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] text-[12px] font-semibold mb-4">
@@ -469,7 +469,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
               const fuelLabelStr = car.specs.fuel_types.map(f => fuelLabelsMap[f] || f).join(' / ');
 
               return (
-                <div key={car.id} className="min-w-[260px] w-[75vw] max-w-[300px] snap-start shrink-0 sm:min-w-0 sm:w-auto sm:max-w-none ">
+                <div key={car.id} className="min-w-[260px] w-[75vw] max-w-[300px] snap-start shrink-0 sm:min-w-0 sm:w-auto sm:max-w-none">
                   <CompactCarCard
                     name={`${car.brand_display} ${car.model_display}`}
                     imageUrl={imageUrl}
@@ -485,14 +485,14 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
             })}
           </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
+          <div className="mt-8 text-center sm:text-left">
             <button
               type="button"
               onClick={() => {
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="h-12 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] inline-flex items-center gap-2 group transition"
+              className="h-12 px-8 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] inline-flex items-center gap-2 group transition shadow-sm"
             >
               Utforska alla bilar
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
