@@ -494,7 +494,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
               }}
               className="h-12 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] inline-flex items-center gap-2 group transition"
             >
-              Jämför alla bilar
+              Utforska alla bilar
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
             </button>
           </div>
