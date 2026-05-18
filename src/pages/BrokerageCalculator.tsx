@@ -121,7 +121,7 @@ export default function BrokerageCalculator({ onBackHome, onStartBrokerage }: Br
     };
   }, [marketValue, dealerMarginAmount]);
 
-  const navItems = ['Direktbud', 'Köp bil', 'Förmedlingskalkylator'];
+  const navItems = ['Sälj bil', 'Köp bil', 'Förmedlingskalkylator'];
 
   return (
     <div className="min-h-screen bg-white text-slate-900">

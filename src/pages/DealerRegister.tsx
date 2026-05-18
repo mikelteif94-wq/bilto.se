@@ -42,7 +42,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Direktbud', 'Köp bil'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Köp bil'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);

@@ -59,7 +59,7 @@ export default function BrokerageLanding({ onContinue, onBackHome }: BrokerageLa
     onContinue(reg, 0);
   };
 
-  const navItems = ['Direktbud', 'Förmedling'];
+  const navItems = ['Sälj bil', 'Förmedling'];
 
   return (
     <div className="min-h-screen bg-white text-slate-900">

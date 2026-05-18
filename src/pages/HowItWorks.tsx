@@ -128,7 +128,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
     const params = new URLSearchParams();
     if (carLabel) params.set('bil', carLabel);
     params.set('source', 'Så fungerar det');
-    window.history.pushState({}, '', `/kop-bil?${params.toString()}`);
+    window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'auto' });
   };
@@ -139,6 +139,23 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
   const tradeInCars = TRADE_IN_IDS
     .map(id => allCars.find(c => c.id === id))
     .filter(Boolean);
+
+  const POPULAR_IDS = ['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'toyota_rav4', 'volvo_xc40', 'vw_golf'];
+  const popularCars = POPULAR_IDS
+    .map(id => allCars.find(c => c.id === id))
+    .filter((c): c is ComparisonCar => !!c);
+
+  const FUEL_LABELS: Record<string, string> = {
+    bensin: 'Bensin', diesel: 'Diesel', hybrid: 'Hybrid', laddhybrid: 'Laddhybrid', el: 'El',
+  };
+
+  const BUDGET_PILLS = [
+    { label: 'Under 3 000 kr/mån', max: 3000 },
+    { label: 'Under 5 000 kr/mån', max: 5000 },
+    { label: 'Under 8 000 kr/mån', max: 8000 },
+    { label: 'Öppen budget', max: 0 },
+  ];
+  const [activeBudgetPill, setActiveBudgetPill] = useState<number | null>(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -176,14 +193,14 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
   };
 
   const steps = mode === 'brokerage' ? BROKERAGE_STEPS : DIRECT_STEPS;
-  const navItems = ['Direktbud', 'Köp bil'];
+  const navItems = ['Sälj bil', 'Köp bil'];
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
-        active="Så funkar det"
+        active="Sälj bil"
         onSelect={handleMenuSelect}
       />
       <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]/40 backdrop-blur-md'}`}>
@@ -209,7 +226,10 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 key={item}
                 type="button"
                 onClick={() => {
-                  if (item === 'Så funkar det') return;
+                  if (item === 'Sälj bil') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                  }
                   if (item === 'Köp bil') {
                     window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -218,7 +238,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                   onBackHome();
                 }}
                 className={`text-[15px] transition ${
-                  item === 'Så funkar det'
+                  item === 'Sälj bil'
                     ? 'text-white font-semibold'
                     : 'text-white/80 hover:text-white'
                 }`}
@@ -260,25 +280,26 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
           </div>
 
           <h1 className="text-center text-white text-[30px] font-semibold leading-[1.1] tracking-tight">
-            Få bästa budet på din bil&nbsp;– direkt online
+            Din bilaffär börjar här
           </h1>
 
           <ul className="mt-6 space-y-3.5 text-[17px] font-medium text-white w-fit mx-auto text-left">
             <li className="flex items-center gap-3">
               <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Kostnadsfri värdering online
+              Sälj din bil -- vi hittar bästa budet
             </li>
             <li className="flex items-center gap-3">
               <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Fri hämtning i hela Sverige
+              Köp bil -- vi förhandlar priset åt dig
             </li>
             <li className="flex items-center gap-3">
               <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Snabb utbetalning direkt till konto
+              Byt bil -- vi sköter allt från start till mål
             </li>
           </ul>
 
           <div className="mt-6 bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] p-5">
+            <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Sälj din bil</p>
             <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
               <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
               {formError && (
@@ -296,14 +317,18 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
               </button>
             </form>
 
-            <div className="mt-5 pt-4 border-t border-slate-100 text-center">
+            <div className="mt-5 pt-4 border-t border-slate-100">
+              <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Köp eller byt bil</p>
               <button
                 type="button"
-                onClick={() => setCarsModalOpen(true)}
-                className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#0e6efe] hover:text-[#0a57cc] transition group"
+                onClick={() => {
+                  window.history.pushState({}, '', '/kop-bil');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }}
+                className="w-full h-12 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-900 font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
               >
-                Vilka bilar köper Bilto?
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition" />
+                Hitta din nästa bil
+                <ArrowRight className="w-4 h-4 text-[#0e6efe] group-hover:translate-x-0.5 transition" />
               </button>
             </div>
           </div>
@@ -323,26 +348,27 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
           <div>
             <h1 className="text-white text-[56px] font-semibold leading-[1.05] tracking-tight">
-              Få bästa budet på din bil&nbsp;– direkt online
+              Din bilaffär börjar här
             </h1>
 
             <ul className="mt-8 space-y-4 text-[19px] font-medium text-white">
               <li className="flex items-center gap-3">
                 <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Kostnadsfri värdering online
+                Sälj din bil -- vi hittar bästa budet
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Fri hämtning i hela Sverige
+                Köp bil -- vi förhandlar priset åt dig
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Snabb utbetalning direkt till konto
+                Byt bil -- vi sköter allt från start till mål
               </li>
             </ul>
           </div>
 
           <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] p-6 max-w-[440px] w-full justify-self-end">
+            <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Sälj din bil</p>
             <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
               <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
               {formError && (
@@ -360,14 +386,18 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
               </button>
             </form>
 
-            <div className="mt-6 pt-5 border-t border-slate-100 text-center">
+            <div className="mt-5 pt-4 border-t border-slate-100">
+              <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Köp eller byt bil</p>
               <button
                 type="button"
-                onClick={() => setCarsModalOpen(true)}
-                className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#0e6efe] hover:text-[#0a57cc] transition group"
+                onClick={() => {
+                  window.history.pushState({}, '', '/kop-bil');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }}
+                className="w-full h-12 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-900 font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
               >
-                Vilka bilar köper Bilto?
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition" />
+                Hitta din nästa bil
+                <ArrowRight className="w-4 h-4 text-[#0e6efe] group-hover:translate-x-0.5 transition" />
               </button>
             </div>
           </div>
@@ -379,7 +409,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
           <div className="mb-12 sm:mb-16 flex items-end justify-between flex-wrap gap-6">
             <div className="max-w-xl">
               <span className="text-[12px] font-medium text-slate-500 mb-3 block">
-                {mode === 'direct' ? '— Direktbud' : '— Maxpris'}
+                {mode === 'direct' ? '— Sälj bil' : '— Maxpris'}
               </span>
               <h2 className="text-[34px] sm:text-[48px] font-semibold leading-[1.02] text-slate-900 tracking-[-0.02em]">
                 {mode === 'direct'
@@ -464,12 +494,95 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
             <button
               type="button"
               onClick={() => {
-                window.history.pushState({}, '', '/jamfor-bilar');
+                window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
               className="h-12 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] inline-flex items-center gap-2 group transition"
             >
               Jämför alla bilar
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Popular cars + budget browser */}
+      <section className="bg-white py-14 sm:py-20 px-5 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-[24px] sm:text-[36px] font-semibold text-slate-900 leading-[1.1] tracking-tight">
+              Populära bilar just nu
+            </h2>
+            <p className="mt-3 text-slate-500 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
+              Hitta din nästa bil bland de mest eftertraktade modellerna. Vi förhandlar priset åt dig.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-center gap-2 flex-wrap mb-8">
+            {BUDGET_PILLS.map((pill) => {
+              const isActive = activeBudgetPill === pill.max;
+              return (
+                <button
+                  key={pill.label}
+                  type="button"
+                  onClick={() => setActiveBudgetPill(isActive ? null : pill.max)}
+                  className={`px-4 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
+                    isActive
+                      ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/20'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  {pill.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+            {(() => {
+              let carsToShow = popularCars;
+              if (activeBudgetPill !== null) {
+                carsToShow = allCars
+                  .filter(car => {
+                    if (!car.pricing.new_from_sek) return false;
+                    if (!getCarImage(car.brand_display, car.model_display)) return false;
+                    const monthly = Math.round(car.pricing.new_from_sek / 60);
+                    return activeBudgetPill === 0 ? true : monthly <= activeBudgetPill;
+                  })
+                  .sort((a, b) => (a.pricing.new_from_sek || 0) - (b.pricing.new_from_sek || 0))
+                  .slice(0, 6);
+              }
+              return carsToShow.map((car, i) => {
+                const imageUrl = getCarImage(car.brand_display, car.model_display);
+                const fuelLabelStr = car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ');
+                return (
+                  <CompactCarCard
+                    key={car.id}
+                    name={`${car.brand_display} ${car.model_display}`}
+                    imageUrl={imageUrl}
+                    rating={car.ratings.overall}
+                    topBadge={i === 0 && activeBudgetPill === null}
+                    expertComment={car.pros[0]}
+                    fuelLabel={fuelLabelStr}
+                    onNegotiate={() => navigateToBuy(`${car.brand_display} ${car.model_display}`)}
+                    onDetail={() => setDetailCar(car)}
+                    index={i}
+                  />
+                );
+              });
+            })()}
+          </div>
+
+          <div className="mt-8 text-center">
+            <button
+              type="button"
+              onClick={() => {
+                window.history.pushState({}, '', '/kop-bil');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }}
+              className="h-12 px-8 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] inline-flex items-center gap-2 group transition shadow-sm"
+            >
+              Se alla bilar och jämför
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
             </button>
           </div>
@@ -766,8 +879,45 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         </div>
       </section>
 
-      <ReviewsSection variant="muted" />
+      {/* Jonas testimonial */}
+      <section className="bg-white relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
+          <div className="grid md:grid-cols-12 gap-10 items-center">
+            <div className="md:col-span-5 order-2 md:order-1">
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-4 block">
+                Kundcase
+              </span>
+              <h2 className="text-[24px] sm:text-[42px] font-semibold leading-[1.15] sm:leading-[1.08] text-slate-900 tracking-[-0.02em]">
+                "Bilto fixade en fantastisk deal -- jag behövde inte lyfta ett finger."
+              </h2>
+              <p className="text-slate-600 mt-5 text-[15px] sm:text-[16px] leading-[1.65] max-w-md">
+                Jonas ville ha en Toyota RAV4 men visste att handlare ofta trycker upp priset och tar extra betalt för tillval. Bilto tog förhandlingen, pressade ner räntan och fick med däck och garanti som inte ingick från början.
+              </p>
+              <div className="mt-8 px-4 py-5 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl">
+                <div className="flex items-baseline justify-between">
+                  <dt className="text-[15px] font-semibold text-[#0e6efe]">Total besparing</dt>
+                  <dd className="text-[22px] sm:text-[26px] font-bold text-[#0e6efe] tabular-nums">~32 390 kr</dd>
+                </div>
+              </div>
+              <p className="text-[13px] text-slate-500 mt-5">
+                Jonas A. -- Toyota RAV4, 2021
+              </p>
+            </div>
+            <div className="md:col-span-7 order-1 md:order-2">
+              <div className="relative rounded-2xl overflow-hidden">
+                <img
+                  src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(Instagram_Post_(45))_copy_copy_copy_copy_copy.jpg"
+                  alt="Jonas framför sin Toyota RAV4"
+                  className="w-full h-[380px] sm:h-[580px] md:h-[680px] object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
+      <ReviewsSection variant="muted" />
 
       <section className="bg-slate-50 py-14 sm:py-20 px-6">
         <div className="max-w-3xl mx-auto">

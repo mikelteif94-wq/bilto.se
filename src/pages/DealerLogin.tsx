@@ -36,7 +36,7 @@ export default function DealerLogin({
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navItems: MobileMenuItem[] = ['Direktbud', 'Köp bil'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Köp bil'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);

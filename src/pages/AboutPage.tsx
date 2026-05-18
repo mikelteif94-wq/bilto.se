@@ -10,7 +10,7 @@ interface AboutPageProps {
 export default function AboutPage({ onBackHome }: AboutPageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Direktbud', 'Köp bil'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Köp bil'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);

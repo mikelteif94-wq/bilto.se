@@ -41,7 +41,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
   }, []);
 
   const handleMenuSelect = (item: MobileMenuItem) => {
-    if (item === 'Direktbud') {
+    if (item === 'Sälj bil') {
       setTab('direkt');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -130,14 +130,14 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     onNavigate(regTrim, telTrim);
   };
 
-  const navItems = ['Direktbud', 'Köp bil'];
+  const navItems = ['Sälj bil', 'Köp bil'];
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
-        active="Direktbud"
+        active="Sälj bil"
         onSelect={handleMenuSelect}
       />
       <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-slate-200 transition-colors duration-300 ${scrolled ? 'bg-white' : 'bg-white/80 backdrop-blur-md'}`}>
@@ -164,7 +164,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (item === 'Direktbud') {
+                  if (item === 'Sälj bil') {
                     setTab('direkt');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;

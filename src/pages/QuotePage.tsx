@@ -64,7 +64,7 @@ export default function QuotePage({
     onBackHome();
   };
 
-  const navItems = ['Direktbud', 'Vi förhandlar åt dig'];
+  const navItems = ['Sälj bil', 'Köp bil'];
 
   return (
     <div className="min-h-screen bg-white text-slate-900">

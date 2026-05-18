@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { X, User } from 'lucide-react';
 
 export type MobileMenuItem =
-  | 'Direktbud'
+  | 'Sälj bil'
   | 'Förmedling'
   | 'Köp bil'
   | 'Om oss'
@@ -16,7 +16,7 @@ interface MobileMenuProps {
 }
 
 const ITEMS: MobileMenuItem[] = [
-  'Direktbud',
+  'Sälj bil',
   'Köp bil',
   'Om oss',
 ];
@@ -76,6 +76,12 @@ export default function MobileMenu({ open, onClose, active, onSelect }: MobileMe
                 onClick={() => {
                   if (item === 'Om oss') {
                     window.history.pushState({}, '', '/om-oss');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                    onClose();
+                    return;
+                  }
+                  if (item === 'Sälj bil') {
+                    window.history.pushState({}, '', '/');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                     onClose();
                     return;
