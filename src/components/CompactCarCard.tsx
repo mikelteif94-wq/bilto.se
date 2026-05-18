@@ -33,7 +33,7 @@ export default function CompactCarCard({
       animate={disableMotion ? { opacity: 1, y: 0 } : undefined}
       {...(!disableMotion && { whileInView: { opacity: 1, y: 0 }, viewport: { once: true } })}
       transition={{ duration: disableMotion ? 0 : 0.35, delay: disableMotion ? 0 : index * 0.04 }}
-      className={`group relative bg-white rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
+      className={`group relative bg-[#f0f7ff] rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
         isSelected
           ? 'ring-2 ring-[#0e6efe] shadow-[0_0_0_4px_rgba(14,110,254,0.12)]'
           : 'ring-1 ring-slate-100 hover:ring-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)]'
