@@ -585,9 +585,9 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Vilket märke och modell?
             </label>
             <p className="text-sm text-slate-500 mb-3">
-              Välj märke och modell, eller lämna tomt om du är öppen.
+              Välj märke och modell, eller använd bilmatch om du är osäker.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
               <div className="relative">
                 <select
                   value={d.carBrand}
@@ -615,6 +615,29 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
+            </div>
+            <div className="flex flex-wrap gap-2 items-center">
+              <button
+                type="button"
+                onClick={() => { set('carBrand', 'Vet ej'); set('carModel', 'Vet ej'); }}
+                className={`inline-flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-medium transition-all border ${
+                  d.carBrand === 'Vet ej'
+                    ? 'bg-slate-900 text-white border-slate-900'
+                    : 'bg-white text-slate-600 border-slate-300 hover:border-slate-400'
+                }`}
+              >
+                Vet ej
+              </button>
+              {onQuiz && (
+                <button
+                  type="button"
+                  onClick={onQuiz}
+                  className="inline-flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-medium bg-[#0e6efe]/10 text-[#0e6efe] hover:bg-[#0e6efe]/20 transition-all"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Hitta med bilmatch
+                </button>
+              )}
             </div>
           </div>
 

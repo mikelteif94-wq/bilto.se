@@ -597,6 +597,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
   // Bilbyte hero section
   const [bilbyteReg, setBilbyteReg] = useState('');
+  const [bilbyteRegError, setBilbyteRegError] = useState(false);
 
   // Trade-in calculator
   const [tradeCarValue, setTradeCarValue] = useState('');
@@ -985,6 +986,244 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         </div>
       </section>
 
+      {/* Bilmatch Section — moved up */}
+      <section id="quiz-section" ref={quizSectionRef} className="py-14 sm:py-20 lg:py-28 px-4 sm:px-6 bg-gradient-to-b from-slate-50 to-white border-t border-slate-100">
+        <div className="max-w-5xl mx-auto">
+          <AnimatePresence mode="wait">
+            {quizStep === 'idle' && (
+              <motion.div key="quiz-idle" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }}>
+                <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
+                  <div className="text-center lg:text-left lg:flex-1">
+                    <span className="inline-flex items-center gap-2 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-4">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Bilmatch
+                    </span>
+                    <h2 className="text-[28px] sm:text-[38px] lg:text-[52px] font-bold text-slate-900 tracking-tight leading-[1.05] mb-4">
+                      Hitta din<br />bilmatch
+                    </h2>
+                    <p className="text-slate-500 text-[15px] sm:text-[16px] lg:text-[18px] leading-relaxed mb-6 max-w-md mx-auto lg:mx-0">
+                      Svara på 5 korta frågor om hur du kör, vad du prioriterar och din budget — vi matchar dig med de bilar som passar dig bäst.
+                    </p>
+                    <ul className="hidden lg:flex flex-col gap-3 mb-8">
+                      {[
+                        'Personlig rekommendation på under 60 sekunder',
+                        'Jämför matchade bilar sida vid sida',
+                        'Låt oss förhandla fram bästa priset åt dig',
+                      ].map(item => (
+                        <li key={item} className="flex items-center gap-3 text-[15px] text-slate-600">
+                          <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                            <Check className="w-3 h-3 text-emerald-600" strokeWidth={3} />
+                          </div>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                    <button
+                      type="button"
+                      onClick={() => setQuizStep('active')}
+                      className="w-full max-w-sm mx-auto lg:mx-0 h-14 lg:h-16 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[16px] lg:text-[18px] flex items-center justify-center gap-3 group transition-all duration-200 shadow-xl shadow-[#0e6efe]/25 active:scale-[0.98]"
+                    >
+                      Hitta din bilmatch
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                    <p className="text-[12px] text-slate-400 mt-3 text-center lg:text-left">Tar 60 sekunder · Helt gratis</p>
+                  </div>
+                  <div className="hidden lg:grid lg:grid-cols-2 lg:gap-4 lg:w-[380px] lg:shrink-0">
+                    {['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'hyundai_ioniq5'].map((cid, i) => {
+                      const car = allCarsRaw.find(c => c.id === cid);
+                      if (!car) return null;
+                      const img = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
+                      return (
+                        <motion.div
+                          key={cid}
+                          initial={{ opacity: 0, y: 16 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.1 + i * 0.1 }}
+                          className="aspect-[4/3] rounded-2xl bg-white border border-slate-100 shadow-sm flex items-end justify-center overflow-hidden p-2"
+                        >
+                          {img && <img src={img} alt={`${car.brand_display} ${car.model_display}`} className="w-full h-auto object-contain" />}
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                  <div className="flex lg:hidden items-center justify-center gap-3 mt-8">
+                    {['tesla_model_y', 'volvo_xc60', 'kia_ev6'].map((cid) => {
+                      const car = allCarsRaw.find(c => c.id === cid);
+                      if (!car) return null;
+                      const img = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
+                      return (
+                        <div key={cid} className="w-[100px] sm:w-[130px] aspect-[4/3] rounded-xl bg-white border border-slate-100 flex items-end justify-center overflow-hidden">
+                          {img && <img src={img} alt="" className="w-full h-auto object-contain" />}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            {quizStep === 'active' && (
+              <motion.div key="quiz-active-top" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="max-w-lg mx-auto">
+                <QuizFlow onComplete={handleQuizComplete} onBack={handleQuizReset} preselectedCar={quizPreselectedCar} />
+              </motion.div>
+            )}
+            {quizStep === 'analyzing' && quizAnswers && (
+              <motion.div key="quiz-analyzing-top" initial={isMobile ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="max-w-sm mx-auto">
+                <QuizComplete answers={quizAnswers} isAnalysisReady={analysisReady} onShowResults={handleQuizShowResults} />
+              </motion.div>
+            )}
+            {quizStep === 'results' && (
+              <motion.div key="quiz-results-top" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }}>
+                <div className="mb-6">
+                  <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900">
+                    {quizResults.length > 0 ? `Vi hittade ${quizResults.length} bilar som passar dig` : 'Inga exakta matchningar'}
+                  </h2>
+                  <p className="text-slate-500 text-[14px] mt-1">
+                    Baserat på dina svar har vi valt ut bilar som matchar dina önskemål.
+                  </p>
+                  {quizAnswers && (
+                    <div className="flex items-center gap-2 mt-4 overflow-x-auto no-scrollbar">
+                      {quizAnswers.priorities?.map(p => {
+                        const names: Record<string, string> = {
+                          economy: 'Låga driftskostnader', safety: 'Säkerhet', comfort: 'Komfort',
+                          performance: 'Prestanda', space: 'Utrymme', tech: 'Modern teknik',
+                          resale: 'Andrahandsvärde', reliability: 'Pålitlighet',
+                        };
+                        return <span key={p} className="shrink-0 px-3 py-1.5 rounded-full bg-[#0e6efe]/10 text-[12px] font-medium text-[#0e6efe]">{names[p] || p}</span>;
+                      })}
+                      {quizAnswers.body_type?.map(bt => (
+                        <span key={bt} className="shrink-0 px-3 py-1.5 rounded-full bg-slate-200 text-[12px] font-medium text-slate-700 capitalize">
+                          {bt === 'hatchback' ? 'Halvkombi' : bt === 'coupe' ? 'Coupe' : bt.charAt(0).toUpperCase() + bt.slice(1)}
+                        </span>
+                      ))}
+                      {quizAnswers.fuel_type?.map(ft => (
+                        <span key={ft} className="shrink-0 px-3 py-1.5 rounded-full bg-slate-200 text-[12px] font-medium text-slate-700">
+                          {ft === 'electric' ? 'Elbil' : ft === 'hybrid' ? 'Hybrid' : ft === 'petrol' ? 'Bensin' : 'Diesel'}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {quizLoading ? (
+                  <div className="flex items-center justify-center py-20">
+                    <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+                  </div>
+                ) : quizResults.length > 0 ? (
+                  <>
+                    <p className="text-[12px] text-slate-400 mb-3">
+                      {selectedQuizCars.size === 0
+                        ? 'Välj upp till 3 bilar du är intresserad av'
+                        : selectedQuizCars.size === 3
+                        ? 'Max 3 bilar valda — avmarkera för att byta'
+                        : `${selectedQuizCars.size} av 3 bil${selectedQuizCars.size > 1 ? 'ar' : ''} vald${selectedQuizCars.size > 1 ? 'a' : ''}`}
+                    </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                      {quizResults.map((car, i) => {
+                        const key = `${car.make}-${car.model}`;
+                        const isSelected = selectedQuizCars.has(key);
+                        const atMax = selectedQuizCars.size >= 3 && !isSelected;
+                        return (
+                          <div key={key} className={atMax ? 'opacity-50 pointer-events-none' : ''}>
+                            <CompactCarCard
+                              name={`${car.make} ${car.model}`}
+                              imageUrl={car.cleaned_image_url || car.image_url}
+                              rating={car.rating}
+                              topBadge={i === 0}
+                              expertComment={car.matchReasons.join(' · ') || undefined}
+                              fuelLabel={car.fuelLabel}
+                              estimatedMonthly={car.estimatedMonthly}
+                              isSelected={isSelected}
+                              onSelect={() => toggleQuizCarSelection(key)}
+                              onNegotiate={() => setBuyDrawerCar(`${car.make} ${car.model}`)}
+                              onDetail={() => {
+                                const compData = findComparisonCarByMakeModel(car.make, car.model);
+                                if (compData) setDetailCar(compData);
+                              }}
+                              index={i}
+                              disableMotion={isMobile}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <AnimatePresence>
+                      {selectedQuizCars.size > 0 && (
+                        <motion.div
+                          key="quiz-action-bar-top"
+                          initial={{ opacity: 0, y: 16 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 16 }}
+                          transition={{ duration: 0.22, ease: 'easeOut' }}
+                          style={{ touchAction: 'pan-y' }}
+                          className="mt-6 rounded-2xl bg-slate-900 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 shadow-xl"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[13px] font-semibold text-white mb-1">
+                              {selectedQuizCars.size === 1 ? '1 bil vald' : `${selectedQuizCars.size} bilar valda`}
+                            </p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {quizResults
+                                .filter(c => selectedQuizCars.has(`${c.make}-${c.model}`))
+                                .map(c => (
+                                  <span key={`${c.make}-${c.model}`} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[11px] font-medium text-white/90">
+                                    {c.make} {c.model}
+                                  </span>
+                                ))}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedQuizCars(new Set())}
+                              className="h-10 px-3 rounded-xl text-[12px] font-medium text-white/60 hover:text-white hover:bg-white/10 transition"
+                            >
+                              Rensa
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const names = quizResults
+                                  .filter(c => selectedQuizCars.has(`${c.make}-${c.model}`))
+                                  .map(c => `${c.make} ${c.model}`)
+                                  .join(', ');
+                                openBuyDrawer(names, 'searching');
+                              }}
+                              className="h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold inline-flex items-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-[#0e6efe]/30"
+                            >
+                              Gå vidare — vi ringer dig
+                              <ArrowRight className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </>
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center mx-auto mb-4">
+                      <Car className="w-6 h-6 text-slate-400" />
+                    </div>
+                    <p className="text-[14px] text-slate-500 mb-4">Vi hjälper dig ändå -- kontakta oss så hittar vi rätt bil.</p>
+                    <button onClick={() => setBuyDrawerCar('')} className="h-11 px-6 rounded-xl bg-[#0e6efe] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition">
+                      Kontakta oss <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+                <div className="mt-6 flex items-center justify-center">
+                  <button
+                    type="button"
+                    onClick={handleQuizReset}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    Gör om bilmatch
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </section>
+
       {/* Browse by budget */}
       <section className="py-10 sm:py-16 px-4 sm:px-6 bg-white">
         <div className="max-w-6xl mx-auto">
@@ -1263,6 +1502,75 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         )}
       </AnimatePresence>
 
+      {/* Bilbyte Section */}
+      <section className="relative overflow-hidden bg-slate-900">
+        <img
+          src="/BSM_car_sale_key_woman_handover_101122.jpg"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-30"
+          aria-hidden="true"
+        />
+        <div className="relative max-w-4xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+          <div className="max-w-xl">
+            <span className="inline-flex items-center gap-2 text-[11px] font-bold text-white/60 uppercase tracking-[0.18em] mb-5">
+              <ArrowLeftRight className="w-3.5 h-3.5" />
+              Byta bil
+            </span>
+            <h2 className="text-[36px] sm:text-[52px] font-bold text-white leading-[1.05] tracking-tight mb-4">
+              Bilbyte?<br className="sm:hidden" /> Bilto.
+            </h2>
+            <p className="text-white/70 text-[15px] sm:text-[17px] leading-relaxed mb-8 max-w-md">
+              Ange registreringsnumret på din nuvarande bil. Vi hjälper dig förhandla bästa möjliga värde och hitta din nästa.
+            </p>
+
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-5 sm:p-6 max-w-md">
+              <p className="text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-3">
+                Din nuvarande bil
+              </p>
+              <div className="mb-1">
+                <RegInput value={bilbyteReg} onChange={(v) => { setBilbyteReg(v); if (v) setBilbyteRegError(false); }} error={bilbyteRegError} />
+                {bilbyteRegError && (
+                  <p className="mt-2 text-[12.5px] text-red-300 font-medium">Ange registreringsnumret på din nuvarande bil först.</p>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!bilbyteReg.trim()) {
+                    setBilbyteRegError(true);
+                    return;
+                  }
+                  openBuyDrawer(`inbytesbil ${bilbyteReg}`, 'trade');
+                }}
+                className="mt-4 w-full h-12 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] flex items-center justify-center gap-2 transition active:scale-[0.98]"
+              >
+                Starta bilbyte
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={scrollToQuiz}
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Hitta nästa bil – bilmatch
+              </button>
+              <button
+                type="button"
+                onClick={() => document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
+              >
+                <Search className="w-3.5 h-3.5" />
+                Utforska bilar
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Electric cars spotlight */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto">
@@ -1515,462 +1823,256 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         </div>
       </section>
 
-      {/* Trade-in Calculator */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white border-t border-slate-100">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-[13px] font-medium text-emerald-700 mb-4">
-              <Calculator className="w-4 h-4" />
-              Inbyteskalkylator
-            </div>
-            <h2 className="text-[22px] sm:text-[32px] font-bold text-slate-900 mb-2">
-              Få ner din månadskostnad
-            </h2>
-            <p className="text-slate-500 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
-              Fyll i din nuvarande bilsituation så visar vi vilka bilar du kan byta till med lägre månadskostnad.
-            </p>
-          </div>
+      {/* Trade-in Calculator + Vi hjälper dig */}
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-5xl mx-auto space-y-12 sm:space-y-16">
 
-          <div className="bg-slate-50 rounded-2xl ring-1 ring-slate-200 p-5 sm:p-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-              <div>
-                <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Uppskattat bilvärde</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    value={tradeCarValue}
-                    onChange={(e) => { setTradeCarValue(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
-                    placeholder="T.ex. 200 000"
-                    className="w-full h-11 px-4 pr-10 rounded-xl border border-slate-200 bg-white text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition placeholder:text-slate-400"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-slate-400">kr</span>
-                </div>
-              </div>
-              <div>
-                <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Kvarvarande lån</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    value={tradeLoanAmount}
-                    onChange={(e) => { setTradeLoanAmount(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
-                    placeholder="T.ex. 155 000"
-                    className="w-full h-11 px-4 pr-10 rounded-xl border border-slate-200 bg-white text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition placeholder:text-slate-400"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-slate-400">kr</span>
-                </div>
-              </div>
-              <div>
-                <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Ränta på nytt lån</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    value={tradeInterestRate}
-                    onChange={(e) => { setTradeInterestRate(e.target.value.replace(/[^\d,.\s]/g, '')); setTradeCalculated(false); }}
-                    placeholder="T.ex. 6,5"
-                    className="w-full h-11 px-4 pr-10 rounded-xl border border-slate-200 bg-white text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition placeholder:text-slate-400"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-slate-400">%</span>
-                </div>
-              </div>
-              <div>
-                <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Nuvarande månadskostnad</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    value={tradeMonthlyPayment}
-                    onChange={(e) => { setTradeMonthlyPayment(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
-                    placeholder="T.ex. 4 500"
-                    className="w-full h-11 px-4 pr-10 rounded-xl border border-slate-200 bg-white text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition placeholder:text-slate-400"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-slate-400">kr/mån</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6 flex flex-col sm:flex-row items-center gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  const cv = parseFloat(tradeCarValue.replace(/\s/g, '')) || 0;
-                  const mp = parseFloat(tradeMonthlyPayment.replace(/\s/g, '')) || 0;
-                  if (cv > 0 && mp > 0) setTradeCalculated(true);
-                }}
-                disabled={!tradeCarValue || !tradeMonthlyPayment}
-                className="h-11 px-8 rounded-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-semibold text-[14px] transition-all inline-flex items-center gap-2"
-              >
-                <Calculator className="w-4 h-4" />
-                Beräkna
-              </button>
-              {tradeCalculated && tradeEquity > 0 && (
-                <p className="text-[14px] text-slate-600">
-                  Ditt beräknade kapital: <span className="font-bold text-emerald-600">{formatSEK(tradeEquity)}</span>
-                </p>
-              )}
-              {tradeCalculated && tradeEquity <= 0 && (
-                <p className="text-[13px] text-amber-600 font-medium">
-                  Ditt lån överstiger bilvärdet. Ring oss för att hitta en lösning.
-                </p>
-              )}
-            </div>
-          </div>
-
-          {tradeCalculated && tradeResults.length > 0 && (
-            <div className="mt-8">
-              <p className="text-[15px] font-semibold text-slate-900 mb-4">
-                {tradeResults.length} {tradeResults.length === 1 ? 'bil' : 'bilar'} med lägre månadskostnad
+          {/* Inbyteskalkylator */}
+          <div>
+            <div className="mb-8">
+              <span className="inline-flex items-center gap-2 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
+                <Calculator className="w-3.5 h-3.5" />
+                Inbyteskalkylator
+              </span>
+              <h2 className="text-[24px] sm:text-[36px] font-bold text-slate-900 leading-tight tracking-tight">
+                Få ner din månadskostnad
+              </h2>
+              <p className="text-slate-500 text-[14px] sm:text-[16px] mt-2 max-w-lg leading-relaxed">
+                Fyll i din nuvarande bilsituation så visar vi vilka bilar du kan byta till med lägre månadskostnad.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                {tradeResults.map((r, i) => {
-                  const isSelected = selectedIds.has(r.car.id);
-                  return (
-                    <div key={r.car.id} className="relative">
-                      <div className="absolute top-2 left-2 z-10">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-500 text-[10px] font-bold text-white shadow-sm">
-                          {formatSEK(r.monthly)}/mån
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); toggleSelect(r.car.id); }}
-                        className={`absolute top-2 right-9 z-10 w-6 h-6 rounded-md flex items-center justify-center transition-all ${
-                          isSelected ? 'bg-[#0e6efe] text-white' : 'bg-white/90 text-slate-400 ring-1 ring-slate-200/50'
-                        }`}
-                      >
-                        {isSelected ? <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> : <GitCompareArrows className="w-3 h-3" />}
-                      </button>
-                      <div className={`rounded-xl transition-all ${isSelected ? 'ring-2 ring-[#0e6efe]' : ''}`}>
-                        <CompactCarCard
-                          name={`${r.car.brand_display} ${r.car.model_display}`}
-                          imageUrl={resolveCarImage(r.car.id, r.car.brand_display, r.car.model_display, getCarImage)}
-                          rating={r.car.ratings.overall}
-                          expertComment={getExpertComment(r.car)}
-                          fuelLabel={r.car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                          onNegotiate={() => openContactForCar(r.car)}
-                          onDetail={() => setDetailCar(r.car)}
-                          index={i}
-                          disableMotion={isMobile}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+            </div>
+
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div>
+                  <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Uppskattat bilvärde</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={tradeCarValue}
+                      onChange={(e) => { setTradeCarValue(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
+                      placeholder="T.ex. 200 000"
+                      className="w-full h-12 px-4 pr-12 rounded-xl border border-slate-200 bg-slate-50 text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-400"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] font-medium text-slate-400">kr</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Kvarvarande lån</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={tradeLoanAmount}
+                      onChange={(e) => { setTradeLoanAmount(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
+                      placeholder="T.ex. 155 000"
+                      className="w-full h-12 px-4 pr-12 rounded-xl border border-slate-200 bg-slate-50 text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-400"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] font-medium text-slate-400">kr</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Ränta på nytt lån</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={tradeInterestRate}
+                      onChange={(e) => { setTradeInterestRate(e.target.value.replace(/[^\d,.\s]/g, '')); setTradeCalculated(false); }}
+                      placeholder="T.ex. 6,5"
+                      className="w-full h-12 px-4 pr-12 rounded-xl border border-slate-200 bg-slate-50 text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-400"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] font-medium text-slate-400">%</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Nuvarande månadskostnad</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={tradeMonthlyPayment}
+                      onChange={(e) => { setTradeMonthlyPayment(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
+                      placeholder="T.ex. 4 500"
+                      className="w-full h-12 px-4 pr-16 rounded-xl border border-slate-200 bg-slate-50 text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-400"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] font-medium text-slate-400">kr/mån</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="mt-6 text-center">
-                <p className="text-[13px] text-slate-500 mb-3">
-                  Vill du veta exakt vad din bil är värd?
+              <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const cv = parseFloat(tradeCarValue.replace(/\s/g, '')) || 0;
+                    const mp = parseFloat(tradeMonthlyPayment.replace(/\s/g, '')) || 0;
+                    if (cv > 0 && mp > 0) setTradeCalculated(true);
+                  }}
+                  disabled={!tradeCarValue || !tradeMonthlyPayment}
+                  className="h-12 px-8 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-[14px] transition-all inline-flex items-center gap-2 shadow-sm"
+                >
+                  <Calculator className="w-4 h-4" />
+                  Beräkna
+                </button>
+                {tradeCalculated && tradeEquity > 0 && (
+                  <div className="flex items-center gap-2 px-4 h-10 rounded-full bg-emerald-50 border border-emerald-200">
+                    <span className="text-[13px] text-emerald-700">Ditt kapital:</span>
+                    <span className="text-[14px] font-bold text-emerald-700">{formatSEK(tradeEquity)}</span>
+                  </div>
+                )}
+                {tradeCalculated && tradeEquity <= 0 && (
+                  <p className="text-[13px] text-amber-600 font-medium">
+                    Ditt lån överstiger bilvärdet. Ring oss för att hitta en lösning.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {tradeCalculated && tradeResults.length > 0 && (
+              <div className="mt-8">
+                <p className="text-[15px] font-semibold text-slate-900 mb-4">
+                  {tradeResults.length} {tradeResults.length === 1 ? 'bil' : 'bilar'} med lägre månadskostnad
                 </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                  {tradeResults.map((r, i) => {
+                    const isSelected = selectedIds.has(r.car.id);
+                    return (
+                      <div key={r.car.id} className="relative">
+                        <div className="absolute top-2 left-2 z-10">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-500 text-[10px] font-bold text-white shadow-sm">
+                            {formatSEK(r.monthly)}/mån
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); toggleSelect(r.car.id); }}
+                          className={`absolute top-2 right-9 z-10 w-6 h-6 rounded-md flex items-center justify-center transition-all ${
+                            isSelected ? 'bg-[#0e6efe] text-white' : 'bg-white/90 text-slate-400 ring-1 ring-slate-200/50'
+                          }`}
+                        >
+                          {isSelected ? <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> : <GitCompareArrows className="w-3 h-3" />}
+                        </button>
+                        <div className={`rounded-xl transition-all ${isSelected ? 'ring-2 ring-[#0e6efe]' : ''}`}>
+                          <CompactCarCard
+                            name={`${r.car.brand_display} ${r.car.model_display}`}
+                            imageUrl={resolveCarImage(r.car.id, r.car.brand_display, r.car.model_display, getCarImage)}
+                            rating={r.car.ratings.overall}
+                            expertComment={getExpertComment(r.car)}
+                            fuelLabel={r.car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                            onNegotiate={() => openContactForCar(r.car)}
+                            onDetail={() => setDetailCar(r.car)}
+                            index={i}
+                            disableMotion={isMobile}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="mt-6 text-center">
+                  <button
+                    onClick={() => setBuyDrawerCar('')}
+                    className="h-11 px-6 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[14px] font-semibold inline-flex items-center gap-2 transition"
+                  >
+                    <Phone className="w-4 h-4" />
+                    Kontakta oss för en exakt värdering
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {tradeCalculated && tradeEquity > 0 && tradeResults.length === 0 && (
+              <div className="mt-6 bg-white rounded-2xl border border-slate-200 p-6 text-center">
+                <p className="text-[15px] text-slate-600 mb-1">Vi hittade inga bilar med lägre månadskostnad just nu.</p>
+                <p className="text-[13px] text-slate-400 mb-4">Prata med oss så hjälper vi dig hitta en bättre lösning.</p>
                 <button
                   onClick={() => setBuyDrawerCar('')}
                   className="h-11 px-6 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[14px] font-semibold inline-flex items-center gap-2 transition"
                 >
                   <Phone className="w-4 h-4" />
-                  Kontakta oss för en exakt värdering
+                  Kontakta oss
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Vi hjälper dig */}
+          <div>
+            <div className="mb-8">
+              <span className="inline-flex items-center gap-2 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
+                <Handshake className="w-3.5 h-3.5" />
+                Vi hjälper dig
+              </span>
+              <h2 className="text-[24px] sm:text-[36px] font-bold text-slate-900 leading-tight tracking-tight">
+                Hur kan vi hjälpa dig?
+              </h2>
+              <p className="text-slate-500 text-[14px] sm:text-[16px] mt-2 max-w-lg leading-relaxed">
+                Bilto är med dig hela vägen — oavsett om du köper, säljer eller bara vill veta mer.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* Förhandla priset */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col">
+                <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mb-4">
+                  <Megaphone className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
+                </div>
+                <h3 className="text-[16px] font-bold text-slate-900 mb-2">Vi förhandlar priset</h3>
+                <p className="text-[13.5px] text-slate-500 leading-relaxed flex-1">
+                  Hittat en bil du gillar? Vi kontaktar säljaren och förhandlar fram bästa möjliga pris åt dig — helt gratis.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => openBuyDrawer('', 'found')}
+                  className="mt-5 inline-flex items-center gap-2 h-10 px-5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-semibold transition self-start"
+                >
+                  Börja här
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Sälj din bil */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-4">
+                  <ArrowLeftRight className="w-5 h-5 text-emerald-600" strokeWidth={2.2} />
+                </div>
+                <h3 className="text-[16px] font-bold text-slate-900 mb-2">Sälj din bil</h3>
+                <p className="text-[13.5px] text-slate-500 leading-relaxed flex-1">
+                  Vi hjälper dig sälja snabbt och enkelt. Handlare lägger bud direkt — du väljer det bästa.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                  className="mt-5 inline-flex items-center gap-2 h-10 px-5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold transition self-start"
+                >
+                  Kom igång
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Prata med en expert */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center mb-4">
+                  <Phone className="w-5 h-5 text-slate-700" strokeWidth={2.2} />
+                </div>
+                <h3 className="text-[16px] font-bold text-slate-900 mb-2">Prata med en expert</h3>
+                <p className="text-[13.5px] text-slate-500 leading-relaxed flex-1">
+                  Osäker på vad du behöver? Boka ett kostnadsfritt samtal med en av våra bilexperter.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => openBuyDrawer('', 'searching')}
+                  className="mt-5 inline-flex items-center gap-2 h-10 px-5 rounded-full border border-slate-300 hover:border-slate-400 bg-white text-slate-800 text-[13px] font-semibold transition self-start"
+                >
+                  Boka samtal
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
-          )}
-
-          {tradeCalculated && tradeEquity > 0 && tradeResults.length === 0 && (
-            <div className="mt-8 text-center py-8">
-              <p className="text-[15px] text-slate-600 mb-3">
-                Vi hittade inga bilar med lägre månadskostnad just nu.
-              </p>
-              <p className="text-[13px] text-slate-500 mb-4">
-                Prata med oss så hjälper vi dig hitta en bättre lösning.
-              </p>
-              <button
-                onClick={() => setBuyDrawerCar('')}
-                className="h-11 px-6 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[14px] font-semibold inline-flex items-center gap-2 transition"
-              >
-                <Phone className="w-4 h-4" />
-                Kontakta oss
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Bilbyte Section */}
-      <section className="relative overflow-hidden bg-slate-900">
-        <img
-          src="/BSM_car_sale_key_woman_handover_101122.jpg"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover object-center opacity-30"
-          aria-hidden="true"
-        />
-        <div className="relative max-w-4xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
-          <div className="max-w-xl">
-            <span className="inline-flex items-center gap-2 text-[11px] font-bold text-white/60 uppercase tracking-[0.18em] mb-5">
-              <ArrowLeftRight className="w-3.5 h-3.5" />
-              Byta bil
-            </span>
-            <h2 className="text-[36px] sm:text-[52px] font-bold text-white leading-[1.05] tracking-tight mb-4">
-              Bilbyte?<br className="sm:hidden" /> Bilto.
-            </h2>
-            <p className="text-white/70 text-[15px] sm:text-[17px] leading-relaxed mb-8 max-w-md">
-              Ange registreringsnumret på din nuvarande bil. Vi hjälper dig förhandla bästa möjliga värde och hitta din nästa.
-            </p>
-
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-5 sm:p-6 max-w-md">
-              <p className="text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-3">
-                Din nuvarande bil
-              </p>
-              <div className="mb-4">
-                <RegInput value={bilbyteReg} onChange={setBilbyteReg} />
-              </div>
-              <button
-                type="button"
-                onClick={() => openBuyDrawer(bilbyteReg ? `inbytesbil ${bilbyteReg}` : '', 'trade')}
-                className="w-full h-12 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] flex items-center justify-center gap-2 transition active:scale-[0.98]"
-              >
-                Starta bilbyte
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={scrollToQuiz}
-                className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                Hitta nästa bil – bilmatch
-              </button>
-              <button
-                type="button"
-                onClick={() => openBuyDrawer('', 'searching')}
-                className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
-              >
-                <Search className="w-3.5 h-3.5" />
-                Utforska bilar
-              </button>
-            </div>
           </div>
-        </div>
-      </section>
 
-      {/* Bilmatch Section */}
-      <section id="quiz-section" ref={quizSectionRef} className="py-14 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-slate-50 to-white border-t border-slate-100">
-        <div className="max-w-3xl mx-auto">
-          <AnimatePresence mode="wait">
-            {quizStep === 'idle' && (
-              <motion.div key="quiz-idle" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="text-center">
-                <div className="max-w-lg mx-auto">
-                  {/* Car image teasers */}
-                  <div className="flex items-center justify-center gap-3 mb-8">
-                    {['tesla_model_y', 'volvo_xc60', 'kia_ev6'].map((cid, i) => {
-                      const car = allCarsRaw.find(c => c.id === cid);
-                      if (!car) return null;
-                      const img = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
-                      return (
-                        <motion.div
-                          key={cid}
-                          initial={isMobile ? false : { opacity: 0, y: 16 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: isMobile ? 0 : 0.1 + i * 0.12 }}
-                          style={{ touchAction: 'pan-y' }}
-                          className="w-[100px] sm:w-[130px] aspect-[4/3] rounded-xl bg-white flex items-end justify-center overflow-hidden"
-                        >
-                          {img && <img src={img} alt="" className="w-full h-auto object-contain" />}
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-
-                  <h2 className="text-[24px] sm:text-[36px] font-bold text-slate-900 tracking-tight leading-[1.1]">
-                    Hitta din bilmatch
-                  </h2>
-                  <p className="text-slate-400 text-[14px] mt-2 mb-8">
-                    Vi matchar dig med rätt bil baserat på dina behov.
-                  </p>
-
-                  <button
-                    type="button"
-                    onClick={() => setQuizStep('active')}
-                    className="w-full max-w-sm mx-auto h-14 sm:h-16 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[16px] sm:text-[18px] flex items-center justify-center gap-3 group transition-all duration-200 shadow-xl shadow-[#0e6efe]/25 active:scale-[0.98]"
-                  >
-                    Hitta din bilmatch
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                  <p className="text-[12px] text-slate-400 mt-3">Tar 60 sekunder</p>
-                </div>
-              </motion.div>
-            )}
-
-            {quizStep === 'active' && (
-              <motion.div key="quiz-active" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="max-w-lg mx-auto">
-                <QuizFlow onComplete={handleQuizComplete} onBack={handleQuizReset} preselectedCar={quizPreselectedCar} />
-              </motion.div>
-            )}
-
-            {quizStep === 'analyzing' && quizAnswers && (
-              <motion.div key="quiz-analyzing" initial={isMobile ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="max-w-sm mx-auto">
-                <QuizComplete answers={quizAnswers} isAnalysisReady={analysisReady} onShowResults={handleQuizShowResults} />
-              </motion.div>
-            )}
-
-            {quizStep === 'results' && (
-              <motion.div key="quiz-results" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }}>
-                <div className="mb-6">
-                  <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900">
-                    {quizResults.length > 0 ? `Vi hittade ${quizResults.length} bilar som passar dig` : 'Inga exakta matchningar'}
-                  </h2>
-                  <p className="text-slate-500 text-[14px] mt-1">
-                    Baserat på dina svar har vi valt ut bilar som matchar dina önskemål.
-                  </p>
-                  {quizAnswers && (
-                    <div className="flex items-center gap-2 mt-4 overflow-x-auto no-scrollbar">
-                      {quizAnswers.priorities?.map(p => {
-                        const names: Record<string, string> = {
-                          economy: 'Låga driftskostnader', safety: 'Säkerhet', comfort: 'Komfort',
-                          performance: 'Prestanda', space: 'Utrymme', tech: 'Modern teknik',
-                          resale: 'Andrahandsvärde', reliability: 'Pålitlighet',
-                        };
-                        return <span key={p} className="shrink-0 px-3 py-1.5 rounded-full bg-[#0e6efe]/10 text-[12px] font-medium text-[#0e6efe]">{names[p] || p}</span>;
-                      })}
-                      {quizAnswers.body_type?.map(bt => (
-                        <span key={bt} className="shrink-0 px-3 py-1.5 rounded-full bg-slate-200 text-[12px] font-medium text-slate-700 capitalize">
-                          {bt === 'hatchback' ? 'Halvkombi' : bt === 'coupe' ? 'Coupe' : bt.charAt(0).toUpperCase() + bt.slice(1)}
-                        </span>
-                      ))}
-                      {quizAnswers.fuel_type?.map(ft => (
-                        <span key={ft} className="shrink-0 px-3 py-1.5 rounded-full bg-slate-200 text-[12px] font-medium text-slate-700">
-                          {ft === 'electric' ? 'Elbil' : ft === 'hybrid' ? 'Hybrid' : ft === 'petrol' ? 'Bensin' : 'Diesel'}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {quizLoading ? (
-                  <div className="flex items-center justify-center py-20">
-                    <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-                  </div>
-                ) : quizResults.length > 0 ? (
-                  <>
-                    {/* Selection hint */}
-                    <p className="text-[12px] text-slate-400 mb-3">
-                      {selectedQuizCars.size === 0
-                        ? 'Välj upp till 3 bilar du är intresserad av'
-                        : selectedQuizCars.size === 3
-                        ? 'Max 3 bilar valda — avmarkera för att byta'
-                        : `${selectedQuizCars.size} av 3 bil${selectedQuizCars.size > 1 ? 'ar' : ''} vald${selectedQuizCars.size > 1 ? 'a' : ''}`}
-                    </p>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                      {quizResults.map((car, i) => {
-                        const key = `${car.make}-${car.model}`;
-                        const isSelected = selectedQuizCars.has(key);
-                        const atMax = selectedQuizCars.size >= 3 && !isSelected;
-                        return (
-                          <div key={key} className={atMax ? 'opacity-50 pointer-events-none' : ''}>
-                            <CompactCarCard
-                              name={`${car.make} ${car.model}`}
-                              imageUrl={car.cleaned_image_url || car.image_url}
-                              rating={car.rating}
-                              topBadge={i === 0}
-                              expertComment={car.matchReasons.join(' · ') || undefined}
-                              fuelLabel={car.fuelLabel}
-                              estimatedMonthly={car.estimatedMonthly}
-                              isSelected={isSelected}
-                              onSelect={() => toggleQuizCarSelection(key)}
-                              onNegotiate={() => setBuyDrawerCar(`${car.make} ${car.model}`)}
-                              onDetail={() => {
-                                const compData = findComparisonCarByMakeModel(car.make, car.model);
-                                if (compData) setDetailCar(compData);
-                              }}
-                              index={i}
-                              disableMotion={isMobile}
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Sticky action bar */}
-                    <AnimatePresence>
-                      {selectedQuizCars.size > 0 && (
-                        <motion.div
-                          key="quiz-action-bar"
-                          initial={{ opacity: 0, y: 16 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 16 }}
-                          transition={{ duration: 0.22, ease: 'easeOut' }}
-                          style={{ touchAction: 'pan-y' }}
-                          className="mt-6 rounded-2xl bg-slate-900 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 shadow-xl"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[13px] font-semibold text-white mb-1">
-                              {selectedQuizCars.size === 1 ? '1 bil vald' : `${selectedQuizCars.size} bilar valda`}
-                            </p>
-                            <div className="flex flex-wrap gap-1.5">
-                              {quizResults
-                                .filter(c => selectedQuizCars.has(`${c.make}-${c.model}`))
-                                .map(c => (
-                                  <span key={`${c.make}-${c.model}`} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[11px] font-medium text-white/90">
-                                    {c.make} {c.model}
-                                  </span>
-                                ))}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            <button
-                              type="button"
-                              onClick={() => setSelectedQuizCars(new Set())}
-                              className="h-10 px-3 rounded-xl text-[12px] font-medium text-white/60 hover:text-white hover:bg-white/10 transition"
-                            >
-                              Rensa
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const names = quizResults
-                                  .filter(c => selectedQuizCars.has(`${c.make}-${c.model}`))
-                                  .map(c => `${c.make} ${c.model}`)
-                                  .join(', ');
-                                openBuyDrawer(names, 'searching');
-                              }}
-                              className="h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold inline-flex items-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-[#0e6efe]/30"
-                            >
-                              Gå vidare — vi ringer dig
-                              <ArrowRight className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </>
-                ) : (
-                  <div className="text-center py-12">
-                    <div className="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center mx-auto mb-4">
-                      <Car className="w-6 h-6 text-slate-400" />
-                    </div>
-                    <p className="text-[14px] text-slate-500 mb-4">Vi hjälper dig ändå -- kontakta oss så hittar vi rätt bil.</p>
-                    <button onClick={() => setBuyDrawerCar('')} className="h-11 px-6 rounded-xl bg-[#0e6efe] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition">
-                      Kontakta oss <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-
-                <div className="mt-6 flex items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={handleQuizReset}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    Gör om bilmatch
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </section>
 
