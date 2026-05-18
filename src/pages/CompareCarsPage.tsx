@@ -1742,8 +1742,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             </div>
             <div className="lg:col-span-3 order-1 lg:order-2 flex items-center justify-center">
               <img
-                src="/Blå_bilikon_i_vit_cirkel.png"
-                alt="Bilinspektion med datapunkter"
+                src="/infographic_antal_agare.svg"
+                alt="Infografik: antal ägare och bilhistorik"
                 className="w-full max-w-[600px] sm:max-w-[700px] h-auto"
               />
             </div>
