@@ -25,6 +25,7 @@ import AdminOfferEditor from './pages/AdminOfferEditor';
 import AdminBulkUpload from './pages/AdminBulkUpload';
 import AdminQuizSubmissions from './pages/AdminQuizSubmissions';
 import MyCarPage from './pages/MyCarPage';
+import MyQuotePage from './pages/MyQuotePage';
 import SetPasswordPage from './pages/SetPasswordPage';
 import CustomerLogin from './pages/CustomerLogin';
 import CustomerDashboard from './pages/CustomerDashboard';
@@ -80,6 +81,11 @@ function matchDealerCarDetail(path: string): string | null {
 
 function matchMyCar(path: string): string | null {
   const m = path.match(/^\/min-bil\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchMyQuote(path: string): string | null {
+  const m = path.match(/^\/min-forfragan\/([^/]+)\/?$/);
   return m ? decodeURIComponent(m[1]) : null;
 }
 
@@ -173,6 +179,11 @@ function App() {
   const myCarToken = matchMyCar(path);
   if (myCarToken) {
     return <MyCarPage token={myCarToken} onBack={() => navigate('/')} />;
+  }
+
+  const myQuoteToken = matchMyQuote(path);
+  if (myQuoteToken) {
+    return <MyQuotePage token={myQuoteToken} onBack={() => navigate('/')} />;
   }
 
   if (onCustomerLogin) {

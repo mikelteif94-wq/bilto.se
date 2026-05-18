@@ -33,6 +33,8 @@ export default function BuyCarPage({
   const [details, setDetails] = useState<BuyDetailsData>({
     linkOrSeller: '',
     carModel: initialBil,
+    carBrand: '',
+    paymentType: '',
     buyingStage: '',
     budget: '',
     fuelType: '',
@@ -137,18 +139,21 @@ export default function BuyCarPage({
     setError(null);
 
     try {
+      const carModelFull = [details.carBrand, details.carModel].filter(Boolean).join(' ').trim();
       const { error: dbError } = await supabase.from('quote_requests').insert({
         search_option: track,
         regnummer: track === 'trade' ? details.regnummer : '',
         miltal: details.miltal ? parseInt(details.miltal) : 0,
         buying_stage: details.buyingStage,
         budget: details.budget,
-        car_model: details.carModel,
+        payment_type: details.paymentType || '',
+        car_model: carModelFull || details.targetCar,
         fuel_type: details.fuelType === 'no_pref' ? '' : details.fuelType,
         link_or_seller: details.linkOrSeller,
         target_car: details.targetCar,
         additional_requests: details.additionalRequests + (source ? ` [Källa: ${source}]` : ''),
-        desired_monthly_cost: details.desiredMonthlyCost,
+        desired_monthly_cost: details.paymentType === 'cash' ? '' : details.desiredMonthlyCost,
+        monthly_payment: details.paymentType === 'cash' ? '' : details.desiredMonthlyCost,
         has_trade_in: track === 'trade' ? true : (tradeIn.hasTradeIn ?? false),
         trade_in_reg: track === 'trade' ? details.regnummer : (tradeIn.hasTradeIn ? tradeIn.tradeInReg : ''),
         current_loan: tradeIn.hasTradeIn && tradeIn.hasLoan ? tradeIn.loanAmount : '',

@@ -533,6 +533,8 @@ export type Database = {
           current_loan: string;
           current_interest_rate: string;
           desired_monthly_cost: string;
+          access_token: string | null;
+          access_token_created_at: string | null;
         };
         Insert: {
           id?: string;
@@ -564,6 +566,8 @@ export type Database = {
           current_loan?: string;
           current_interest_rate?: string;
           desired_monthly_cost?: string;
+          access_token?: string | null;
+          access_token_created_at?: string | null;
         };
         Update: {
           id?: string;
@@ -595,6 +599,49 @@ export type Database = {
           current_loan?: string;
           current_interest_rate?: string;
           desired_monthly_cost?: string;
+          access_token?: string | null;
+          access_token_created_at?: string | null;
+        };
+      };
+      quote_suggestions: {
+        Row: {
+          id: string;
+          quote_request_id: string;
+          car_description: string;
+          car_image_url: string;
+          price: number;
+          monthly_cost: number | null;
+          link: string;
+          admin_comment: string;
+          status: string;
+          sent_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          quote_request_id: string;
+          car_description?: string;
+          car_image_url?: string;
+          price?: number;
+          monthly_cost?: number | null;
+          link?: string;
+          admin_comment?: string;
+          status?: string;
+          sent_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          quote_request_id?: string;
+          car_description?: string;
+          car_image_url?: string;
+          price?: number;
+          monthly_cost?: number | null;
+          link?: string;
+          admin_comment?: string;
+          status?: string;
+          sent_at?: string | null;
+          created_at?: string;
         };
       };
     };

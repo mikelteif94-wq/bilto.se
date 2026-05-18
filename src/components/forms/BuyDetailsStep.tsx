@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import type { BuyTrack } from './BuyTrackStep';
 import FieldError from './FieldError';
 import RegInput from '../RegInput';
+import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 
 const BUYING_STAGES = [
   { value: 'just_started', label: 'Precis börjat kolla' },
@@ -25,9 +27,16 @@ const FUEL_TYPES = [
   { value: 'no_pref', label: 'Spelar ingen roll' },
 ];
 
+const PAYMENT_TYPES = [
+  { value: 'cash', label: 'Kontant' },
+  { value: 'finance', label: 'Finansiering' },
+];
+
 export interface BuyDetailsData {
   linkOrSeller: string;
   carModel: string;
+  carBrand: string;
+  paymentType: string;
   buyingStage: string;
   budget: string;
   fuelType: string;
@@ -49,22 +58,42 @@ export default function BuyDetailsStep({ track, initialData, initialBil, onNext 
   const [d, setD] = useState<BuyDetailsData>({
     ...initialData,
     carModel: initialData.carModel || initialBil || '',
+    carBrand: initialData.carBrand || '',
+    paymentType: initialData.paymentType || '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = (key: keyof BuyDetailsData, value: string) => {
-    setD(prev => ({ ...prev, [key]: value }));
+    setD(prev => {
+      const next = { ...prev, [key]: value };
+      if (key === 'carBrand') {
+        next.carModel = '';
+      }
+      if (key === 'paymentType' && value === 'cash') {
+        next.desiredMonthlyCost = '';
+      }
+      return next;
+    });
     setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
   };
+
+  const models = d.carBrand ? (CAR_BRANDS[d.carBrand] ?? []) : [];
 
   const validate = (): boolean => {
     const e: Record<string, string> = {};
 
     if (!d.buyingStage) e.buyingStage = 'Välj var du är i processen';
-    if (!d.desiredMonthlyCost.trim()) {
-      e.desiredMonthlyCost = 'Fyll i önskad månadskostnad';
-    } else if (!/^\d+([.,]\d+)?$/.test(d.desiredMonthlyCost.trim().replace(/\s/g, ''))) {
-      e.desiredMonthlyCost = 'Månadskostnad måste vara en siffra';
+
+    if (!d.paymentType) {
+      e.paymentType = 'Välj hur du vill betala';
+    }
+
+    if (d.paymentType === 'finance') {
+      if (!d.desiredMonthlyCost.trim()) {
+        e.desiredMonthlyCost = 'Fyll i önskad månadskostnad';
+      } else if (!/^\d+([.,]\d+)?$/.test(d.desiredMonthlyCost.trim().replace(/\s/g, ''))) {
+        e.desiredMonthlyCost = 'Månadskostnad måste vara en siffra';
+      }
     }
 
     if (track === 'found' && !d.linkOrSeller.trim()) {
@@ -123,35 +152,58 @@ export default function BuyDetailsStep({ track, initialData, initialBil, onNext 
         <>
           <div className="pb-6 sm:pb-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-              Vilken bil eller typ letar du efter?
+              Vilket märke och modell?
             </label>
             <p className="text-sm text-slate-500 mb-3">
-              Skriv t.ex. "Volvo XC60", "SUV" eller "kombi med bra bagageutrymme".
+              Välj märke och modell, eller lämna tomt om du är öppen.
             </p>
-            <input
-              type="text"
-              value={d.carModel}
-              onChange={e => set('carModel', e.target.value)}
-              placeholder="T.ex. Volvo XC60, SUV, kombi..."
-              className="form-control"
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="relative">
+                <select
+                  value={d.carBrand}
+                  onChange={e => set('carBrand', e.target.value)}
+                  className="form-control appearance-none pr-10"
+                >
+                  <option value="">Välj märke</option>
+                  {POPULAR_BRANDS.map(b => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              </div>
+              <div className="relative">
+                <select
+                  value={d.carModel}
+                  onChange={e => set('carModel', e.target.value)}
+                  disabled={!d.carBrand}
+                  className="form-control appearance-none pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <option value="">{d.carBrand ? 'Välj modell' : 'Välj märke först'}</option>
+                  {models.map(m => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              </div>
+            </div>
           </div>
 
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
               Budget
             </label>
-            <div className="w-full sm:max-w-xs">
+            <div className="w-full sm:max-w-xs relative">
               <select
                 value={d.budget}
                 onChange={e => set('budget', e.target.value)}
-                className="form-control"
+                className="form-control appearance-none pr-10"
               >
                 <option value="">Välj budget</option>
                 {BUDGETS.map(b => (
                   <option key={b.value} value={b.value}>{b.label}</option>
                 ))}
               </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
             </div>
           </div>
 
@@ -219,14 +271,43 @@ export default function BuyDetailsStep({ track, initialData, initialBil, onNext 
               Vilken bil vill du ha istället?
             </label>
             <p className="text-sm text-slate-500 mb-3">
-              Skriv fritt — vi hjälper dig hitta rätt.
+              Välj märke och modell, eller skriv fritt.
             </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="relative">
+                <select
+                  value={d.carBrand}
+                  onChange={e => set('carBrand', e.target.value)}
+                  className="form-control appearance-none pr-10"
+                >
+                  <option value="">Välj märke</option>
+                  {POPULAR_BRANDS.map(b => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              </div>
+              <div className="relative">
+                <select
+                  value={d.carModel}
+                  onChange={e => set('carModel', e.target.value)}
+                  disabled={!d.carBrand}
+                  className="form-control appearance-none pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <option value="">{d.carBrand ? 'Välj modell' : 'Välj märke först'}</option>
+                  {models.map(m => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              </div>
+            </div>
             <input
               type="text"
               value={d.targetCar}
               onChange={e => set('targetCar', e.target.value)}
-              placeholder="T.ex. Volvo XC40 El"
-              className="form-control"
+              placeholder="Eller skriv fritt, t.ex. SUV med bra bagageutrymme"
+              className="form-control mt-3"
             />
           </div>
         </>
@@ -259,23 +340,52 @@ export default function BuyDetailsStep({ track, initialData, initialBil, onNext 
         <FieldError message={errors.buyingStage} />
       </div>
 
-      {/* Önskad månadskostnad */}
+      {/* Betalningssätt */}
       <div className="py-6 sm:py-7">
-        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
-          Önskad månadskostnad (kr)
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Hur vill du betala?
         </label>
-        <div className="w-full sm:max-w-xs">
-          <input
-            type="text"
-            inputMode="numeric"
-            value={d.desiredMonthlyCost}
-            onChange={e => set('desiredMonthlyCost', e.target.value)}
-            placeholder="T.ex. 4 500"
-            className={`form-control ${errors.desiredMonthlyCost ? 'form-control-error' : ''}`}
-          />
+        <p className="text-sm text-slate-500 mb-4">
+          Välj betalningssätt — det hjälper oss hitta rätt upplägg.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {PAYMENT_TYPES.map(p => (
+            <button
+              key={p.value}
+              type="button"
+              onClick={() => set('paymentType', p.value)}
+              className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+                d.paymentType === p.value
+                  ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
+                  : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
         </div>
-        <FieldError message={errors.desiredMonthlyCost} />
+        <FieldError message={errors.paymentType} />
       </div>
+
+      {/* Önskad månadskostnad — only for finance */}
+      {d.paymentType === 'finance' && (
+        <div className="py-6 sm:py-7">
+          <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+            Önskad månadskostnad (kr)
+          </label>
+          <div className="w-full sm:max-w-xs">
+            <input
+              type="text"
+              inputMode="numeric"
+              value={d.desiredMonthlyCost}
+              onChange={e => set('desiredMonthlyCost', e.target.value)}
+              placeholder="T.ex. 4 500"
+              className={`form-control ${errors.desiredMonthlyCost ? 'form-control-error' : ''}`}
+            />
+          </div>
+          <FieldError message={errors.desiredMonthlyCost} />
+        </div>
+      )}
 
       {/* Övriga önskemål */}
       <div className="py-6 sm:py-7">
