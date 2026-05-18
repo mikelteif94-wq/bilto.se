@@ -286,15 +286,15 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
           <ul className="mt-6 space-y-3.5 text-[17px] font-medium text-white w-fit mx-auto text-left">
             <li className="flex items-center gap-3">
               <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Sälj din bil och få bästa budet
+              Du får en personlig rådgivare – någon hjälper dig genom hela processen.
             </li>
             <li className="flex items-center gap-3">
               <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Köp bil och vi förhandlar priset åt dig
+              Vi hittar bästa budet – jämför erbjudanden från bilhandlare åt dig.
             </li>
             <li className="flex items-center gap-3">
               <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Byt bil och vi sköter allt från start till mål
+              Vi hämtar bilen – när du tackar ja ordnar de upphämtningen.
             </li>
           </ul>
 
@@ -354,15 +354,15 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
             <ul className="mt-8 space-y-4 text-[19px] font-medium text-white">
               <li className="flex items-center gap-3">
                 <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Sälj din bil och få bästa budet
+                Du får en personlig rådgivare – någon hjälper dig genom hela processen.
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Köp bil och vi förhandlar priset åt dig
+                Vi hittar bästa budet – jämför erbjudanden från bilhandlare åt dig.
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Byt bil och vi sköter allt från start till mål
+                Vi hämtar bilen – när du tackar ja ordnar de upphämtningen.
               </li>
             </ul>
           </div>
