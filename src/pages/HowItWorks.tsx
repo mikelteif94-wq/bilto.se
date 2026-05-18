@@ -156,6 +156,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
     { label: 'Öppen budget', max: 0 },
   ];
   const [activeBudgetPill, setActiveBudgetPill] = useState<number | null>(null);
+  const [showAllCars, setShowAllCars] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -511,11 +512,25 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-[24px] sm:text-[36px] font-semibold text-slate-900 leading-[1.1] tracking-tight">
-              Populära bilar just nu
+              Experternas val
             </h2>
             <p className="mt-3 text-slate-500 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
               Hitta din nästa bil bland de mest eftertraktade modellerna. Vi förhandlar priset åt dig.
             </p>
+          </div>
+
+          {/* Total besparing highlight */}
+          <div className="mb-8 sm:mb-10 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-2xl px-5 py-4 sm:px-7 sm:py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <p className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.12em] mb-1">Vad vi sparar åt dig</p>
+              <p className="text-[15px] text-slate-700 leading-snug max-w-sm">
+                Jonas ville ha en Toyota RAV4 — vi förhandlade ner priset, pressade räntan och fick med däck och garanti.
+              </p>
+            </div>
+            <div className="shrink-0 flex flex-col items-start sm:items-end">
+              <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-[0.1em] mb-0.5">Total besparing</p>
+              <p className="text-[28px] sm:text-[32px] font-bold text-[#0e6efe] tabular-nums leading-none">~32 390 kr</p>
+            </div>
           </div>
 
           <div className="flex items-center justify-center gap-2 flex-wrap mb-8">
@@ -525,7 +540,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 <button
                   key={pill.label}
                   type="button"
-                  onClick={() => setActiveBudgetPill(isActive ? null : pill.max)}
+                  onClick={() => { setActiveBudgetPill(isActive ? null : pill.max); setShowAllCars(false); }}
                   className={`px-4 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                     isActive
                       ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/20'
@@ -538,40 +553,58 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
             })}
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-            {(() => {
-              let carsToShow = popularCars;
-              if (activeBudgetPill !== null) {
-                carsToShow = allCars
-                  .filter(car => {
-                    if (!car.pricing.new_from_sek) return false;
-                    if (!getCarImage(car.brand_display, car.model_display)) return false;
-                    const monthly = Math.round(car.pricing.new_from_sek / 60);
-                    return activeBudgetPill === 0 ? true : monthly <= activeBudgetPill;
-                  })
-                  .sort((a, b) => (a.pricing.new_from_sek || 0) - (b.pricing.new_from_sek || 0))
-                  .slice(0, 6);
-              }
-              return carsToShow.map((car, i) => {
-                const imageUrl = getCarImage(car.brand_display, car.model_display);
-                const fuelLabelStr = car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ');
-                return (
-                  <CompactCarCard
-                    key={car.id}
-                    name={`${car.brand_display} ${car.model_display}`}
-                    imageUrl={imageUrl}
-                    rating={car.ratings.overall}
-                    topBadge={i === 0 && activeBudgetPill === null}
-                    expertComment={car.pros[0]}
-                    fuelLabel={fuelLabelStr}
-                    onNegotiate={() => navigateToBuy(`${car.brand_display} ${car.model_display}`)}
-                    onDetail={() => setDetailCar(car)}
-                    index={i}
-                  />
-                );
-              });
-            })()}
-          </div>
+          {(() => {
+            let carsToShow = popularCars;
+            if (activeBudgetPill !== null) {
+              carsToShow = allCars
+                .filter(car => {
+                  if (!car.pricing.new_from_sek) return false;
+                  if (!getCarImage(car.brand_display, car.model_display)) return false;
+                  const monthly = Math.round(car.pricing.new_from_sek / 60);
+                  return activeBudgetPill === 0 ? true : monthly <= activeBudgetPill;
+                })
+                .sort((a, b) => (a.pricing.new_from_sek || 0) - (b.pricing.new_from_sek || 0))
+                .slice(0, 12);
+            }
+            const visibleCars = showAllCars ? carsToShow : carsToShow.slice(0, 6);
+            const hasMore = carsToShow.length > 6;
+            return (
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                  {visibleCars.map((car, i) => {
+                    const imageUrl = getCarImage(car.brand_display, car.model_display);
+                    const fuelLabelStr = car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ');
+                    return (
+                      <CompactCarCard
+                        key={car.id}
+                        name={`${car.brand_display} ${car.model_display}`}
+                        imageUrl={imageUrl}
+                        rating={car.ratings.overall}
+                        topBadge={i === 0 && activeBudgetPill === null}
+                        expertComment={car.pros[0]}
+                        fuelLabel={fuelLabelStr}
+                        onNegotiate={() => navigateToBuy(`${car.brand_display} ${car.model_display}`)}
+                        onDetail={() => setDetailCar(car)}
+                        index={i}
+                      />
+                    );
+                  })}
+                </div>
+                {hasMore && !showAllCars && (
+                  <div className="mt-6 text-center">
+                    <button
+                      type="button"
+                      onClick={() => setShowAllCars(true)}
+                      className="h-11 px-7 rounded-full border border-slate-300 hover:border-[#0e6efe] text-slate-700 hover:text-[#0e6efe] font-semibold text-[14px] inline-flex items-center gap-2 transition-all duration-200"
+                    >
+                      Se fler bilar
+                      <ChevronDown className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </>
+            );
+          })()}
 
           <div className="mt-8 text-center">
             <button
@@ -893,13 +926,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
               <p className="text-slate-600 mt-5 text-[15px] sm:text-[16px] leading-[1.65] max-w-md">
                 Jonas ville ha en Toyota RAV4 men visste att handlare ofta trycker upp priset och tar extra betalt för tillval. Bilto tog förhandlingen, pressade ner räntan och fick med däck och garanti som inte ingick från början.
               </p>
-              <div className="mt-8 px-4 py-5 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl">
-                <div className="flex items-baseline justify-between">
-                  <dt className="text-[15px] font-semibold text-[#0e6efe]">Total besparing</dt>
-                  <dd className="text-[22px] sm:text-[26px] font-bold text-[#0e6efe] tabular-nums">~32 390 kr</dd>
-                </div>
-              </div>
-              <p className="text-[13px] text-slate-500 mt-5">
+              <p className="text-[13px] text-slate-500 mt-8">
                 Jonas A. -- Toyota RAV4, 2021
               </p>
             </div>
@@ -961,47 +988,6 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         </div>
       </section>
 
-      <section className="bg-[#f5f8fc] py-14 sm:py-20 px-6">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-4 block">
-              Kom igång
-            </span>
-            <h3 className="text-[34px] sm:text-[44px] font-semibold text-slate-900 leading-[1.08] tracking-tight">
-              Redo att sälja din bil?
-            </h3>
-            <p className="text-[17px] text-slate-600 mt-5 leading-[1.6] max-w-md">
-              Fyll i ditt regnummer så startar vi värderingen direkt. Kostnadsfritt och utan bindning.
-            </p>
-
-            <div className="mt-8 bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.25)] border border-slate-100 p-5 max-w-md">
-              <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
-                <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
-                {formError && (
-                  <div role="alert" className="flex items-start gap-2 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold px-3 py-2 shadow-sm">
-                  <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-[1px]" strokeWidth={2.5} />
-                  <span className="leading-snug">{formError}</span>
-                </div>
-                )}
-                <button
-                  type="submit"
-                  className="mt-1 h-12 w-full rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
-                >
-                  Värdera bilen gratis
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-                </button>
-              </form>
-            </div>
-          </div>
-          <div className="rounded-2xl overflow-hidden aspect-[3/4] md:aspect-square max-w-[520px] mx-auto">
-            <img
-              src="/ChatGPT_Image_8_maj_2026_09_33_53.png"
-              alt="Nöjd Bilto-kund"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </div>
-      </section>
 
       {showSeo && <SeoCarsSection />}
 
