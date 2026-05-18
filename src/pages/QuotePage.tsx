@@ -107,6 +107,8 @@ export default function QuotePage({
                 className={`text-[15px] transition ${
                   item === 'Vi förhandlar åt dig'
                     ? 'text-white font-semibold'
+                    : item === 'Köp bil'
+                    ? 'inline-flex items-center h-8 px-4 rounded-full bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0a57cc] shadow-sm'
                     : 'text-white/80 hover:text-white'
                 }`}
               >
