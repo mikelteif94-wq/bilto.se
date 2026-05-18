@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
-import { ArrowRight, Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { QuizAnswers, MONTHLY_BUDGET_OPTIONS, CASH_BUDGET_OPTIONS } from './QuizTypes';
+import { useState, useMemo } from 'react';
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+import { QuizAnswers, QUIZ_QUESTIONS, QuizOption, MONTHLY_BUDGET_OPTIONS, CASH_BUDGET_OPTIONS, BRAND_CATEGORIES } from './QuizTypes';
 
 interface QuizFlowProps {
   onComplete: (answers: QuizAnswers) => void;
@@ -10,188 +10,288 @@ interface QuizFlowProps {
   preselectedCar?: string;
 }
 
-const SUGGESTION_CHIPS = [
-  { label: 'Familj med hund', text: 'Vi är en familj med hund och behöver stor bagageutrymme' },
-  { label: 'Elbil till pendling', text: 'Elbil för daglig pendling, bra räckvidd' },
-  { label: 'Sportig men praktisk', text: 'Sportig kombi eller SUV, kul att köra' },
-  { label: 'Billig och pålitlig', text: 'Billig och pålitlig bil, låga driftskostnader' },
-  { label: 'Liten stadsbil', text: 'Liten kompakt stadsbil, smidig att parkera' },
-  { label: 'Premium SUV', text: 'Premium SUV, rymlig och bekväm' },
-];
-
-export default function QuizFlow({ onComplete, onBack }: QuizFlowProps) {
-  const [step, setStep] = useState<'text' | 'budget'>('text');
-  const [freeText, setFreeText] = useState('');
-  const [budgetType, setBudgetType] = useState<'monthly' | 'cash'>('monthly');
-  const [budgetMax, setBudgetMax] = useState<number>(0);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (step === 'text') textareaRef.current?.focus();
-  }, [step]);
-
-  const handleChip = (text: string) => {
-    setFreeText(text);
-    setTimeout(() => textareaRef.current?.focus(), 50);
-  };
-
-  const handleTextNext = () => {
-    if (!freeText.trim()) return;
-    setStep('budget');
-  };
-
-  const handleComplete = () => {
-    const answers: QuizAnswers = {
-      freeText: freeText.trim(),
-      budget_type: budgetType,
-      budget_max: budgetMax || undefined,
-    };
-    onComplete(answers);
-  };
-
-  if (step === 'budget') {
-    const options = budgetType === 'monthly' ? MONTHLY_BUDGET_OPTIONS : CASH_BUDGET_OPTIONS;
-    return (
-      <div className="flex flex-col gap-6">
-        <button
-          type="button"
-          onClick={() => setStep('text')}
-          className="self-start text-[13px] text-white/70 hover:text-white flex items-center gap-1 transition-colors"
-        >
-          ← Tillbaka
-        </button>
-
-        <div>
-          <h2 className="text-[22px] sm:text-[26px] font-bold text-white leading-tight mb-1">
-            Vad är din budget?
-          </h2>
-          <p className="text-white/70 text-[14px]">Frivilligt — vi hittar rätt oavsett</p>
-        </div>
-
-        <div className="inline-flex rounded-full bg-white/10 p-1 self-start">
-          <button
-            type="button"
-            onClick={() => setBudgetType('monthly')}
-            className={cn(
-              'px-4 py-2 rounded-full text-[13px] font-semibold transition-all duration-200',
-              budgetType === 'monthly' ? 'bg-white text-[#0e6efe] shadow-sm' : 'text-white/80 hover:text-white'
-            )}
-          >
-            Per månad
-          </button>
-          <button
-            type="button"
-            onClick={() => setBudgetType('cash')}
-            className={cn(
-              'px-4 py-2 rounded-full text-[13px] font-semibold transition-all duration-200',
-              budgetType === 'cash' ? 'bg-white text-[#0e6efe] shadow-sm' : 'text-white/80 hover:text-white'
-            )}
-          >
-            Kontant
-          </button>
-        </div>
-
-        <Select
-          value={budgetMax.toString()}
-          onValueChange={(v) => setBudgetMax(parseInt(v))}
-        >
-          <SelectTrigger className="w-full h-12 rounded-xl border-white/20 bg-white/10 text-white text-[14px] placeholder:text-white/50">
-            <SelectValue placeholder="Välj max budget" />
-          </SelectTrigger>
-          <SelectContent>
-            {options.map(opt => (
-              <SelectItem key={opt.value} value={opt.value.toString()}>{opt.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <button
-          type="button"
-          onClick={handleComplete}
-          className="w-full h-14 rounded-2xl bg-white text-[#0e6efe] font-bold text-[16px] flex items-center justify-center gap-2 group hover:bg-slate-50 transition-all shadow-xl active:scale-[0.98]"
-        >
-          Hitta min bilmatch
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-        </button>
-      </div>
-    );
+function inferBrandCategory(car: string): QuizAnswers['brand_preference'] | undefined {
+  const name = car.toLowerCase();
+  for (const [category, brands] of Object.entries(BRAND_CATEGORIES)) {
+    if (brands.some(b => name.startsWith(b.toLowerCase()))) {
+      return category as QuizAnswers['brand_preference'];
+    }
   }
+  return undefined;
+}
+
+export default function QuizFlow({ onComplete, onBack, preselectedCar }: QuizFlowProps) {
+  const inferredBrand = useMemo(() => preselectedCar ? inferBrandCategory(preselectedCar) : undefined, [preselectedCar]);
+
+  const visibleQuestions = useMemo(() =>
+    inferredBrand
+      ? QUIZ_QUESTIONS.filter(q => q.id !== 'brand_preference')
+      : QUIZ_QUESTIONS,
+    [inferredBrand]
+  );
+
+  const [currentStep, setCurrentStep] = useState(0);
+  const [answers, setAnswers] = useState<QuizAnswers>(
+    inferredBrand ? { brand_preference: inferredBrand } : {}
+  );
+
+  const currentQuestion = visibleQuestions[currentStep];
+  const progress = ((currentStep + 1) / visibleQuestions.length) * 100;
+  const isLastStep = currentStep === visibleQuestions.length - 1;
+  const isBudgetQuestion = currentQuestion.id === 'budget';
+
+  const getCurrentAnswer = (): string | string[] | undefined => {
+    const value = (answers as Record<string, unknown>)[currentQuestion.id];
+    return value as string | string[] | undefined;
+  };
+
+  const handleOptionSelect = (optionId: string) => {
+    const key = currentQuestion.id;
+    if (currentQuestion.multiSelect) {
+      const currentValue = ((answers as Record<string, unknown>)[key] as string[]) || [];
+      const maxItems = key === 'priorities' ? 3 : undefined;
+      let newValue: string[];
+      if (currentValue.includes(optionId)) {
+        newValue = currentValue.filter(id => id !== optionId);
+      } else {
+        if (maxItems && currentValue.length >= maxItems) return;
+        newValue = [...currentValue, optionId];
+      }
+      setAnswers({ ...answers, [key]: newValue });
+    } else {
+      const updatedAnswers = { ...answers, [key]: optionId };
+      setAnswers(updatedAnswers);
+      if (isLastStep) {
+        setTimeout(() => onComplete(updatedAnswers), 200);
+      } else {
+        setTimeout(() => setCurrentStep(currentStep + 1), 200);
+      }
+    }
+  };
+
+  const handleNext = () => {
+    if (isLastStep) onComplete(answers);
+    else setCurrentStep(currentStep + 1);
+  };
+
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    } else if (onBack) {
+      onBack();
+    }
+  };
+
+  const isOptionSelected = (optionId: string): boolean => {
+    const currentAnswer = getCurrentAnswer();
+    if (Array.isArray(currentAnswer)) return currentAnswer.includes(optionId);
+    return currentAnswer === optionId;
+  };
+
+  const canProceed = (): boolean => {
+    if (isBudgetQuestion) return true;
+    const currentAnswer = getCurrentAnswer();
+    if (currentQuestion.multiSelect) return Array.isArray(currentAnswer) && currentAnswer.length > 0;
+    return !!currentAnswer;
+  };
 
   return (
-    <div className="flex flex-col gap-5">
-      {onBack && (
+    <div className="flex flex-col min-h-0 w-full">
+      {currentStep > 0 && (
         <button
           type="button"
-          onClick={onBack}
-          className="self-start text-[13px] text-white/70 hover:text-white flex items-center gap-1 transition-colors"
+          onClick={handleBack}
+          className="inline-flex items-center gap-1.5 text-[14px] text-slate-500 hover:text-slate-800 transition-colors mb-4 self-start"
         >
-          ← Tillbaka
+          <ArrowLeft className="w-4 h-4" />
+          Tillbaka
         </button>
       )}
 
-      <div>
-        <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-5 h-5 text-white/80" strokeWidth={2} />
-          <span className="text-[13px] font-semibold text-white/70 uppercase tracking-wider">Bilmatch</span>
+      {preselectedCar && (
+        <div className="flex items-center gap-2 mb-4">
+          <span className="inline-flex items-center h-7 px-3 bg-[#0e6efe]/10 text-[#0e6efe] font-semibold text-[13px] rounded-full">
+            {preselectedCar}
+          </span>
         </div>
-        <h2 className="text-[22px] sm:text-[28px] font-bold text-white leading-tight">
-          Beskriv din drömtil med egna ord
-        </h2>
-        <p className="text-white/70 text-[14px] mt-1">
-          Skriv vad som är viktigt — storlek, användning, budget, hund, familj, pendling...
-        </p>
-      </div>
+      )}
 
-      <div className="relative">
-        <textarea
-          ref={textareaRef}
-          value={freeText}
-          onChange={e => setFreeText(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleTextNext(); }}
-          placeholder="T.ex. &quot;Vi är en familj med två barn och en stor hund. Behöver mycket bagageutrymme, gärna elbil eller hybrid. Budget runt 4 000 kr/mån.&quot;"
-          rows={4}
-          className="w-full rounded-2xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 text-[15px] px-4 py-3.5 resize-none focus:outline-none focus:border-white/50 focus:bg-white/15 transition-all"
+      {/* Step counter */}
+      <p className="text-[14px] text-slate-500 mb-2">
+        Fråga {currentStep + 1} av {visibleQuestions.length}
+      </p>
+
+      {/* Progress bar */}
+      <div className="relative h-1 bg-slate-200 rounded-full overflow-hidden mb-8">
+        <div
+          className="absolute inset-y-0 left-0 bg-[#0047B3] rounded-full transition-all duration-300"
+          style={{ width: `${progress}%` }}
         />
-        {freeText && (
-          <span className="absolute bottom-3 right-3 text-[11px] text-white/30 select-none">⌘↵ för att gå vidare</span>
-        )}
       </div>
 
-      <div>
-        <p className="text-[12px] text-white/50 mb-2 font-medium">Snabbval:</p>
-        <div className="flex flex-wrap gap-2">
-          {SUGGESTION_CHIPS.map(chip => (
-            <button
-              key={chip.label}
-              type="button"
-              onClick={() => handleChip(chip.text)}
-              className={cn(
-                'px-3 py-1.5 rounded-full border text-[12.5px] font-medium transition-all',
-                freeText === chip.text
-                  ? 'bg-white text-[#0e6efe] border-white'
-                  : 'bg-white/10 text-white/80 border-white/20 hover:bg-white/20 hover:border-white/40'
-              )}
-            >
-              {chip.label}
-            </button>
-          ))}
+      {/* Question */}
+      <div key={currentStep}>
+        <h2 className="text-[22px] sm:text-[26px] font-bold text-slate-900 leading-tight mb-2">
+          {currentQuestion.question}
+        </h2>
+        <p className="text-[14px] text-slate-500 mb-6">
+          Välj det alternativ som passar dig bäst
+        </p>
+
+        {/* Options */}
+        {isBudgetQuestion ? (
+          <BudgetSelector answers={answers} setAnswers={setAnswers} />
+        ) : (
+          <div className={cn(
+            'grid gap-3',
+            currentQuestion.id === 'body_type' ? 'grid-cols-2' : 'grid-cols-1'
+          )}>
+            {currentQuestion.options.map((option) => (
+              <OptionCard
+                key={option.id}
+                option={option}
+                questionId={currentQuestion.id}
+                isSelected={isOptionSelected(option.id)}
+                isMultiSelect={currentQuestion.multiSelect || false}
+                onClick={() => handleOptionSelect(option.id)}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Next button for multi-select and budget */}
+        {(currentQuestion.multiSelect || isBudgetQuestion) && (
+          <button
+            type="button"
+            onClick={handleNext}
+            disabled={!canProceed() && !isBudgetQuestion}
+            className={cn(
+              'w-full mt-8 py-3.5 rounded-xl text-[14px] font-semibold flex items-center justify-center gap-2 transition-all',
+              canProceed() || isBudgetQuestion
+                ? 'bg-[#0047B3] text-white hover:bg-[#003a94] active:scale-[0.98]'
+                : 'bg-slate-100 text-slate-300 cursor-not-allowed'
+            )}
+          >
+            {isLastStep ? 'Visa resultat' : 'Nästa'}
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function BudgetSelector({ answers, setAnswers }: { answers: QuizAnswers; setAnswers: (a: QuizAnswers) => void }) {
+  const budgetType = answers.budget_type || 'monthly';
+  const options = budgetType === 'monthly' ? MONTHLY_BUDGET_OPTIONS : CASH_BUDGET_OPTIONS;
+
+  return (
+    <div className="space-y-5">
+      <div className="inline-flex rounded-full bg-slate-100 p-1">
+        <button
+          type="button"
+          onClick={() => setAnswers({ ...answers, budget_type: 'monthly', budget_min: undefined, budget_max: undefined })}
+          className={cn(
+            'px-5 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200',
+            budgetType === 'monthly'
+              ? 'bg-white text-slate-900 shadow-sm'
+              : 'text-slate-500 hover:text-slate-700'
+          )}
+        >
+          Månadsbetalning
+        </button>
+        <button
+          type="button"
+          onClick={() => setAnswers({ ...answers, budget_type: 'cash', budget_min: undefined, budget_max: undefined })}
+          className={cn(
+            'px-5 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200',
+            budgetType === 'cash'
+              ? 'bg-white text-slate-900 shadow-sm'
+              : 'text-slate-500 hover:text-slate-700'
+          )}
+        >
+          Kontant
+        </button>
+      </div>
+
+      <div className="flex gap-4">
+        <div className="space-y-1.5 flex-1">
+          <label className="text-[12px] font-medium text-slate-500">Från</label>
+          <Select
+            value={answers.budget_min?.toString() || '0'}
+            onValueChange={(val) => setAnswers({ ...answers, budget_min: parseInt(val) })}
+          >
+            <SelectTrigger className="w-full h-12 rounded-xl border-slate-200 bg-white text-[14px] text-slate-900">
+              <SelectValue placeholder="Alla" />
+            </SelectTrigger>
+            <SelectContent>
+              {options.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value.toString()}>{opt.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5 flex-1">
+          <label className="text-[12px] font-medium text-slate-500">Till</label>
+          <Select
+            value={answers.budget_max?.toString() || '0'}
+            onValueChange={(val) => setAnswers({ ...answers, budget_max: parseInt(val) })}
+          >
+            <SelectTrigger className="w-full h-12 rounded-xl border-slate-200 bg-white text-[14px] text-slate-900">
+              <SelectValue placeholder="Alla" />
+            </SelectTrigger>
+            <SelectContent>
+              {options.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value.toString()}>{opt.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
-
-      <button
-        type="button"
-        onClick={handleTextNext}
-        disabled={!freeText.trim()}
-        className={cn(
-          'w-full h-14 rounded-2xl font-bold text-[16px] flex items-center justify-center gap-2 group transition-all shadow-xl active:scale-[0.98]',
-          freeText.trim()
-            ? 'bg-white text-[#0e6efe] hover:bg-slate-50'
-            : 'bg-white/20 text-white/50 cursor-not-allowed'
-        )}
-      >
-        Nästa
-        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-      </button>
     </div>
+  );
+}
+
+function OptionCard({ option, questionId, isSelected, isMultiSelect, onClick }: {
+  option: QuizOption;
+  questionId: string;
+  isSelected: boolean;
+  isMultiSelect: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'relative w-full flex items-center gap-3 px-5 py-4 rounded-xl border-2 transition-all duration-150 text-left',
+        questionId === 'body_type' ? 'flex-col items-center justify-center py-5 text-center' : '',
+        isSelected
+          ? 'border-[#0e6efe] bg-white shadow-sm'
+          : 'border-slate-200 bg-white hover:border-slate-300'
+      )}
+    >
+      {isMultiSelect && (
+        <span className={cn(
+          'absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all',
+          isSelected
+            ? 'border-[#0e6efe] bg-[#0e6efe] text-white'
+            : 'border-slate-300'
+        )}>
+          {isSelected && <Check className="w-3 h-3" strokeWidth={3} />}
+        </span>
+      )}
+
+      <span className={cn(
+        'font-medium text-[15px] leading-snug transition-colors',
+        isSelected ? 'text-slate-900' : 'text-slate-700'
+      )}>
+        {option.label}
+      </span>
+
+      {!isMultiSelect && isSelected && (
+        <ArrowRight className="w-4 h-4 text-[#0047B3] ml-auto shrink-0" />
+      )}
+    </button>
   );
 }

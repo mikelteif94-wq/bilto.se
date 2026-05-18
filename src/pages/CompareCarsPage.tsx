@@ -19,8 +19,11 @@ import BuyDrawer from '../components/BuyDrawer';
 import { SiteFooter } from './BrokerageLanding';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import QuizFlow from '../components/quiz/QuizFlow';
-import { QuizResults } from '../components/quiz/QuizResults';
+import { QuizComplete } from '../components/quiz/QuizComplete';
 import type { QuizAnswers } from '../components/quiz/QuizTypes';
+import {
+  BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS, BRAND_CATEGORIES, PRIORITY_TRAITS,
+} from '../components/quiz/QuizTypes';
 import { supabase } from '../lib/supabase';
 
 /* ───────────── constants ───────────── */
@@ -252,6 +255,156 @@ function searchScoreCar(car: ComparisonCar, query: string): number {
   return Math.min(score, 100);
 }
 
+/* ───────────── quiz scoring ───────────── */
+
+interface QuizRecommendation {
+  make: string;
+  model: string;
+  image_url: string | null;
+  cleaned_image_url?: string | null;
+  matchScore: number;
+  matchReasons: string[];
+  bodyType?: string;
+  fuelType?: string;
+  rating?: number;
+  fuelLabel?: string;
+  trunkLiters?: number;
+}
+
+function detectBodyType(model: string): string | null {
+  const modelLower = model.toLowerCase();
+  let bestMatch: string | null = null;
+  let bestLength = 0;
+  for (const [bodyType, keywords] of Object.entries(BODY_TYPE_KEYWORDS)) {
+    for (const k of keywords) {
+      if (modelLower.includes(k) && k.length > bestLength) { bestMatch = bodyType; bestLength = k.length; }
+    }
+  }
+  return bestMatch;
+}
+
+function detectFuelType(model: string, make: string): string | null {
+  const modelLower = model.toLowerCase();
+  const makeLower = make.toLowerCase();
+  if (FUEL_TYPE_KEYWORDS.electric.some(k => modelLower.includes(k) || makeLower.includes(k))) return 'electric';
+  if (FUEL_TYPE_KEYWORDS.hybrid.some(k => modelLower.includes(k))) return 'hybrid';
+  if (FUEL_TYPE_KEYWORDS.diesel.some(k => modelLower.includes(k))) return 'diesel';
+  return 'petrol';
+}
+
+function getBrandCategory(make: string): 'premium' | 'mainstream' | 'value' {
+  const makeUpper = make.toUpperCase();
+  if (BRAND_CATEGORIES.premium.some(b => makeUpper.includes(b.toUpperCase()))) return 'premium';
+  if (BRAND_CATEGORIES.value.some(b => makeUpper.includes(b.toUpperCase()))) return 'value';
+  return 'mainstream';
+}
+
+function scoreCarMatch(car: { make: string; model: string }, answers: QuizAnswers): { score: number; reasons: string[] } {
+  const reasons: string[] = [];
+  const modelLower = car.model.toLowerCase();
+  const makeUpper = car.make.toUpperCase();
+  const detectedBodyType = detectBodyType(car.model);
+  const detectedFuelType = detectFuelType(car.model, car.make);
+  const brandCategory = getBrandCategory(car.make);
+  const compData = findComparisonCarByMakeModel(car.make, car.model);
+  const actualBodyType = detectedBodyType || compData?.specs.body_type || null;
+
+  if (answers.body_type && answers.body_type.length > 0) {
+    if (!(actualBodyType && answers.body_type.includes(actualBodyType))) return { score: 0, reasons: [] };
+  }
+  if (answers.fuel_type && answers.fuel_type.length > 0) {
+    const actualFuels = compData?.specs.fuel_types || [];
+    const fuelMap: Record<string, string[]> = { electric: ['el'], hybrid: ['hybrid', 'laddhybrid'], petrol: ['bensin'], diesel: ['diesel'] };
+    const matchesFuel = answers.fuel_type.some(userFuel => {
+      const mapped = fuelMap[userFuel] || [userFuel];
+      return mapped.some(f => actualFuels.includes(f as never)) || detectedFuelType === userFuel;
+    });
+    if (matchesFuel) {
+      const fuelNames: Record<string, string> = { electric: 'Elbil', hybrid: 'Hybrid', petrol: 'Bensin', diesel: 'Diesel' };
+      const matchedFuel = answers.fuel_type.find(f => {
+        const mapped = fuelMap[f] || [f];
+        return mapped.some(m => actualFuels.includes(m as never)) || detectedFuelType === f;
+      });
+      if (matchedFuel) reasons.push(fuelNames[matchedFuel]);
+    } else {
+      return { score: 0, reasons: [] };
+    }
+  }
+
+  let totalWeight = 0;
+  let weightedScore = 0;
+
+  const BODY_WEIGHT = 25;
+  totalWeight += BODY_WEIGHT;
+  if (answers.body_type && answers.body_type.length > 0 && actualBodyType && answers.body_type.includes(actualBodyType)) weightedScore += BODY_WEIGHT;
+
+  const FUEL_WEIGHT = 20;
+  totalWeight += FUEL_WEIGHT;
+  if (answers.fuel_type && answers.fuel_type.length > 0) {
+    const actualFuels = compData?.specs.fuel_types || [];
+    const fuelMap: Record<string, string[]> = { electric: ['el'], hybrid: ['hybrid', 'laddhybrid'], petrol: ['bensin'], diesel: ['diesel'] };
+    if (answers.fuel_type.some(uf => { const m = fuelMap[uf] || [uf]; return m.some(f => actualFuels.includes(f as never)) || detectedFuelType === uf; })) weightedScore += FUEL_WEIGHT;
+  }
+
+  const BRAND_WEIGHT = 15;
+  totalWeight += BRAND_WEIGHT;
+  if (answers.brand_preference && answers.brand_preference !== 'no_preference') {
+    if (brandCategory === answers.brand_preference) { weightedScore += BRAND_WEIGHT; const names: Record<string, string> = { premium: 'Premiummärke', mainstream: 'Pålitligt märke', value: 'Prisvärt' }; reasons.push(names[brandCategory]); }
+    else if ((answers.brand_preference === 'premium' && brandCategory === 'mainstream') || (answers.brand_preference === 'mainstream' && brandCategory !== 'mainstream')) weightedScore += BRAND_WEIGHT * 0.3;
+  } else { weightedScore += BRAND_WEIGHT; }
+
+  const PRIORITY_WEIGHT = 20;
+  totalWeight += PRIORITY_WEIGHT;
+  if (answers.priorities && answers.priorities.length > 0) {
+    let priorityMatches = 0;
+    for (const priority of answers.priorities) {
+      const trait = PRIORITY_TRAITS[priority as keyof typeof PRIORITY_TRAITS];
+      if (!trait) continue;
+      let pMatched = false;
+      if (trait.brands.some(b => makeUpper.includes(b.toUpperCase()))) pMatched = true;
+      if (trait.keywords.some(k => modelLower.includes(k))) pMatched = true;
+      if (compData) {
+        if (priority === 'safety' && compData.safety.euro_ncap_stars === 5) pMatched = true;
+        if (priority === 'comfort' && (compData.ratings.comfort ?? 0) >= 8) pMatched = true;
+        if (priority === 'space' && (compData.specs.trunk_liters ?? 0) >= 450) pMatched = true;
+        if (priority === 'economy' && compData.specs.fuel_types.some(f => ['el', 'hybrid', 'laddhybrid'].includes(f))) pMatched = true;
+      }
+      if (pMatched) {
+        priorityMatches++;
+        const pNames: Record<string, string> = { economy: 'Låga kostnader', safety: 'Hög säkerhet', comfort: 'Hög komfort', performance: 'Bra prestanda', space: 'Rymlig', tech: 'Modern teknik', resale: 'Bra andrahandsvärde', reliability: 'Pålitlig' };
+        if (!reasons.includes(pNames[priority])) reasons.push(pNames[priority]);
+      }
+    }
+    weightedScore += PRIORITY_WEIGHT * (priorityMatches / answers.priorities.length);
+  } else { weightedScore += PRIORITY_WEIGHT; }
+
+  const USE_WEIGHT = 10;
+  totalWeight += USE_WEIGHT;
+  if (answers.daily_use === 'family') {
+    const familyKw = ['xc', 'x3', 'x5', 'q5', 'q7', 'gle', 'glc', 'v60', 'v90', 'kombi', 'touring', 'avant', 'tiguan', 'kodiaq'];
+    if (familyKw.some(k => modelLower.includes(k)) || (compData && (compData.specs.seats ?? 0) >= 5 && (compData.specs.trunk_liters ?? 0) >= 400)) { weightedScore += USE_WEIGHT; reasons.push('Familjevänlig'); }
+  } else if (answers.daily_use === 'solo') {
+    const soloKw = ['golf', 'a3', 'polo', '1-serie', 'a-klass', 'model 3', 'id.3', 'i20', 'i30', 'corolla', 'yaris'];
+    if (soloKw.some(k => modelLower.includes(k)) || actualBodyType === 'hatchback') { weightedScore += USE_WEIGHT; reasons.push('Pendlarval'); }
+  } else if (answers.daily_use === 'cargo') {
+    const cargoKw = ['v90', 'v60', 'xc90', 'x5', 'q7', 'gle', 'kodiaq', 'superb'];
+    if (cargoKw.some(k => modelLower.includes(k)) || (compData && (compData.specs.trunk_liters ?? 0) >= 500)) { weightedScore += USE_WEIGHT; reasons.push('Stort lastutrymme'); }
+  } else { weightedScore += USE_WEIGHT; }
+
+  const MILEAGE_WEIGHT = 10;
+  totalWeight += MILEAGE_WEIGHT;
+  if (answers.annual_mileage === 'high') {
+    if (detectedFuelType === 'diesel' || detectedFuelType === 'hybrid') { weightedScore += MILEAGE_WEIGHT; reasons.push('Bra för långpendling'); }
+    else if (detectedFuelType === 'electric') weightedScore += MILEAGE_WEIGHT * 0.5;
+  } else if (answers.annual_mileage === 'low') {
+    if (detectedFuelType === 'electric') { weightedScore += MILEAGE_WEIGHT; reasons.push('Perfekt för stadskörning'); }
+    else weightedScore += MILEAGE_WEIGHT * 0.7;
+  } else { weightedScore += MILEAGE_WEIGHT; }
+
+  const finalScore = totalWeight > 0 ? Math.round((weightedScore / totalWeight) * 100) : 50;
+  return { score: Math.min(100, Math.max(0, finalScore)), reasons: reasons.slice(0, 3) };
+}
+
 /* ───────────── chat types ───────────── */
 
 interface ChatMessage {
@@ -260,7 +413,7 @@ interface ChatMessage {
   cars?: ComparisonCar[];
 }
 
-type QuizStep = 'idle' | 'active' | 'results';
+type QuizStep = 'idle' | 'active' | 'analyzing' | 'results';
 
 /* ───────────── nav ───────────── */
 
@@ -299,6 +452,9 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   // Quiz state
   const [quizStep, setQuizStep] = useState<QuizStep>('idle');
   const [quizAnswers, setQuizAnswers] = useState<QuizAnswers | null>(null);
+  const [quizResults, setQuizResults] = useState<QuizRecommendation[]>([]);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [analysisReady, setAnalysisReady] = useState(false);
   const quizSectionRef = useRef<HTMLDivElement>(null);
 
   // Buy drawer
@@ -467,8 +623,15 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   };
 
   // Quiz handlers
-  const handleQuizComplete = (answers: QuizAnswers) => {
+  const handleQuizComplete = async (answers: QuizAnswers) => {
     setQuizAnswers(answers);
+    setQuizStep('analyzing');
+    setAnalysisReady(false);
+    loadQuizRecommendations(answers);
+    setTimeout(() => setAnalysisReady(true), 3500);
+  };
+
+  const handleQuizShowResults = () => {
     setQuizStep('results');
     setTimeout(() => quizSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   };
@@ -476,7 +639,48 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const handleQuizReset = () => {
     setQuizStep('idle');
     setQuizAnswers(null);
+    setQuizResults([]);
+    setAnalysisReady(false);
   };
+
+  async function loadQuizRecommendations(answers: QuizAnswers) {
+    setQuizLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('car_catalog')
+        .select('make, model, image_url, cleaned_image_url')
+        .not('image_url', 'is', null);
+      if (error) throw error;
+      const catalogCars = (data || []) as { make: string; model: string; image_url: string | null; cleaned_image_url: string | null }[];
+      const fuelLabelMap: Record<string, string> = { bensin: 'Bensin', diesel: 'Diesel', hybrid: 'Hybrid', laddhybrid: 'Laddhybrid', el: 'El' };
+      const scoredCars = catalogCars
+        .map(car => {
+          const { score, reasons } = scoreCarMatch(car, answers);
+          const compData = findComparisonCarByMakeModel(car.make, car.model);
+          const bodyType = detectBodyType(car.model) || compData?.specs.body_type || undefined;
+          const fuelType = detectFuelType(car.model, car.make) || undefined;
+          const fuelLabel = compData?.specs.fuel_types
+            ? compData.specs.fuel_types.map(f => fuelLabelMap[f] || f).join(' / ')
+            : fuelType === 'electric' ? 'El' : fuelType === 'hybrid' ? 'Hybrid' : fuelType === 'diesel' ? 'Diesel' : 'Bensin';
+          return {
+            make: car.make, model: car.model,
+            image_url: car.image_url, cleaned_image_url: car.cleaned_image_url,
+            matchScore: score, matchReasons: reasons,
+            bodyType, fuelType, fuelLabel,
+            rating: compData?.ratings.overall ?? undefined,
+            trunkLiters: compData?.specs.trunk_liters ?? undefined,
+          };
+        })
+        .filter(car => car.matchScore >= 40)
+        .sort((a, b) => b.matchScore - a.matchScore)
+        .slice(0, 6);
+      setQuizResults(scoredCars);
+    } catch (err) {
+      console.error('Error loading quiz recommendations:', err);
+    } finally {
+      setQuizLoading(false);
+    }
+  }
 
   const scrollToQuiz = () => {
     quizSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1286,12 +1490,13 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       </section>
 
       {/* Bilmatch Section */}
-      <section id="quiz-section" ref={quizSectionRef} className="py-14 sm:py-20 px-4 sm:px-6 bg-[#0e6efe]">
-        <div className="max-w-2xl mx-auto">
+      <section id="quiz-section" ref={quizSectionRef} className="py-14 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-slate-50 to-white border-t border-slate-100">
+        <div className="max-w-3xl mx-auto">
           <AnimatePresence mode="wait">
             {quizStep === 'idle' && (
               <motion.div key="quiz-idle" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-center">
                 <div className="max-w-lg mx-auto">
+                  {/* Car image teasers */}
                   <div className="flex items-center justify-center gap-3 mb-8">
                     {['tesla_model_y', 'volvo_xc60', 'kia_ev6'].map((cid, i) => {
                       const car = allCarsRaw.find(c => c.id === cid);
@@ -1303,7 +1508,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                           initial={isMobile ? false : { opacity: 0, y: 16 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: isMobile ? 0 : 0.1 + i * 0.12 }}
-                          className="w-[100px] sm:w-[130px] aspect-[4/3] rounded-xl bg-white/20 flex items-end justify-center overflow-hidden"
+                          className="w-[100px] sm:w-[130px] aspect-[4/3] rounded-xl bg-white flex items-end justify-center overflow-hidden"
                         >
                           {img && <img src={img} alt="" className="w-full h-auto object-contain" />}
                         </motion.div>
@@ -1311,39 +1516,118 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     })}
                   </div>
 
-                  <h2 className="text-[24px] sm:text-[36px] font-bold text-white tracking-tight leading-[1.1]">
+                  <h2 className="text-[24px] sm:text-[36px] font-bold text-slate-900 tracking-tight leading-[1.1]">
                     Hitta din bilmatch
                   </h2>
-                  <p className="text-white/70 text-[14px] mt-2 mb-8">
-                    Beskriv vad du letar efter — vi hittar rätt bilar och förhandlar priset åt dig.
+                  <p className="text-slate-400 text-[14px] mt-2 mb-8">
+                    Vi matchar dig med rätt bil baserat på dina behov.
                   </p>
 
                   <button
                     type="button"
                     onClick={() => setQuizStep('active')}
-                    className="w-full max-w-sm mx-auto h-14 sm:h-16 rounded-2xl bg-white hover:bg-slate-50 text-[#0e6efe] font-bold text-[16px] sm:text-[18px] flex items-center justify-center gap-3 group transition-all duration-200 shadow-xl active:scale-[0.98]"
+                    className="w-full max-w-sm mx-auto h-14 sm:h-16 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[16px] sm:text-[18px] flex items-center justify-center gap-3 group transition-all duration-200 shadow-xl shadow-[#0e6efe]/25 active:scale-[0.98]"
                   >
-                    Starta bilmatch
+                    Hitta din bilmatch
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
-                  <p className="text-[12px] text-white/50 mt-3">Tar under 60 sekunder</p>
+                  <p className="text-[12px] text-slate-400 mt-3">Tar 60 sekunder</p>
                 </div>
               </motion.div>
             )}
 
             {quizStep === 'active' && (
-              <motion.div key="quiz-active" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-                <QuizFlow onComplete={handleQuizComplete} onBack={handleQuizReset} />
+              <motion.div key="quiz-active" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="max-w-lg mx-auto">
+                <QuizFlow onComplete={handleQuizComplete} onBack={handleQuizReset} preselectedCar={quizPreselectedCar} />
               </motion.div>
             )}
 
-            {quizStep === 'results' && quizAnswers && (
+            {quizStep === 'analyzing' && quizAnswers && (
+              <motion.div key="quiz-analyzing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-sm mx-auto">
+                <QuizComplete answers={quizAnswers} isAnalysisReady={analysisReady} onShowResults={handleQuizShowResults} />
+              </motion.div>
+            )}
+
+            {quizStep === 'results' && (
               <motion.div key="quiz-results" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                <QuizResults
-                  answers={quizAnswers}
-                  onBack={() => setQuizStep('active')}
-                  onReset={handleQuizReset}
-                />
+                <div className="mb-6">
+                  <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900">
+                    {quizResults.length > 0 ? `Vi hittade ${quizResults.length} bilar som passar dig` : 'Inga exakta matchningar'}
+                  </h2>
+                  <p className="text-slate-500 text-[14px] mt-1">
+                    Baserat på dina svar har vi valt ut bilar som matchar dina önskemål.
+                  </p>
+                  {quizAnswers && (
+                    <div className="flex items-center gap-2 mt-4 overflow-x-auto no-scrollbar">
+                      {quizAnswers.priorities?.map(p => {
+                        const names: Record<string, string> = {
+                          economy: 'Låga driftskostnader', safety: 'Säkerhet', comfort: 'Komfort',
+                          performance: 'Prestanda', space: 'Utrymme', tech: 'Modern teknik',
+                          resale: 'Andrahandsvärde', reliability: 'Pålitlighet',
+                        };
+                        return <span key={p} className="shrink-0 px-3 py-1.5 rounded-full bg-[#0e6efe]/10 text-[12px] font-medium text-[#0e6efe]">{names[p] || p}</span>;
+                      })}
+                      {quizAnswers.body_type?.map(bt => (
+                        <span key={bt} className="shrink-0 px-3 py-1.5 rounded-full bg-slate-200 text-[12px] font-medium text-slate-700 capitalize">
+                          {bt === 'hatchback' ? 'Halvkombi' : bt === 'coupe' ? 'Coupe' : bt.charAt(0).toUpperCase() + bt.slice(1)}
+                        </span>
+                      ))}
+                      {quizAnswers.fuel_type?.map(ft => (
+                        <span key={ft} className="shrink-0 px-3 py-1.5 rounded-full bg-slate-200 text-[12px] font-medium text-slate-700">
+                          {ft === 'electric' ? 'Elbil' : ft === 'hybrid' ? 'Hybrid' : ft === 'petrol' ? 'Bensin' : 'Diesel'}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {quizLoading ? (
+                  <div className="flex items-center justify-center py-20">
+                    <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+                  </div>
+                ) : quizResults.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                    {quizResults.map((car, i) => (
+                      <CompactCarCard
+                        key={`${car.make}-${car.model}`}
+                        name={`${car.make} ${car.model}`}
+                        imageUrl={car.cleaned_image_url || car.image_url}
+                        rating={car.rating}
+                        topBadge={i === 0}
+                        expertComment={car.matchReasons.join(' · ') || undefined}
+                        fuelLabel={car.fuelLabel}
+                        onNegotiate={() => setBuyDrawerCar(`${car.make} ${car.model}`)}
+                        onDetail={() => {
+                          const compData = findComparisonCarByMakeModel(car.make, car.model);
+                          if (compData) setDetailCar(compData);
+                        }}
+                        index={i}
+                        disableMotion={isMobile}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center mx-auto mb-4">
+                      <Car className="w-6 h-6 text-slate-400" />
+                    </div>
+                    <p className="text-[14px] text-slate-500 mb-4">Vi hjälper dig ändå -- kontakta oss så hittar vi rätt bil.</p>
+                    <button onClick={() => setBuyDrawerCar('')} className="h-11 px-6 rounded-xl bg-[#0e6efe] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition">
+                      Kontakta oss <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                <div className="mt-8 flex items-center justify-center">
+                  <button
+                    type="button"
+                    onClick={handleQuizReset}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    Gör om bilmatch
+                  </button>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
