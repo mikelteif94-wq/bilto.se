@@ -36,12 +36,12 @@ export default function DealerLogin({
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navItems: MobileMenuItem[] = ['Direktbud', 'Vi förhandlar åt dig'];
+  const navItems: MobileMenuItem[] = ['Direktbud', 'Köp bil'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
-    if (item === 'Vi förhandlar åt dig') {
-      window.history.pushState({}, '', '/forhandling');
+    if (item === 'Köp bil') {
+      window.history.pushState({}, '', '/kop-bil');
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }

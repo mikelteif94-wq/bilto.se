@@ -29,8 +29,8 @@ export default function BrokerageLanding({ onContinue, onBackHome }: BrokerageLa
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     if (item === 'Förmedling') return;
-    if (item === 'Vi förhandlar åt dig') {
-      window.history.pushState({}, '', '/forhandling');
+    if (item === 'Köp bil') {
+      window.history.pushState({}, '', '/kop-bil');
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }
@@ -657,7 +657,7 @@ export function SiteFooter() {
             <ul className="space-y-3 text-sm">
               <li><a href="/" className="hover:text-white transition">Värdera din bil</a></li>
               <li><a href="/salj-din-bil" className="hover:text-white transition">Sälj din bil</a></li>
-              <li><a href="/forhandling" className="hover:text-white transition">Vi förhandlar åt dig</a></li>
+              <li><a href="/kop-bil" className="hover:text-white transition">Köp bil</a></li>
               <li><a href="#" className="hover:text-white transition">Elbilar</a></li>
             </ul>
           </div>
@@ -694,7 +694,7 @@ export function SiteFooter() {
             <ul className="space-y-2.5 text-[14px]">
               <li><a href="/" className="hover:text-white transition">Värdera din bil</a></li>
               <li><a href="/salj-din-bil" className="hover:text-white transition">Sälj din bil</a></li>
-              <li><a href="/forhandling" className="hover:text-white transition">Vi förhandlar åt dig</a></li>
+              <li><a href="/kop-bil" className="hover:text-white transition">Köp bil</a></li>
             </ul>
           </div>
           <div>

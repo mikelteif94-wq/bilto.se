@@ -4,7 +4,9 @@ import {
   Sparkles, Zap, Truck, Leaf, CarFront,
   Send, Loader2, RotateCcw, Info, Calculator,
   GitCompareArrows, X, ArrowDown, Phone, Handshake,
+  ShieldCheck, Megaphone,
 } from 'lucide-react';
+import ReviewsSection from '../components/ReviewsSection';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAllComparisonCars } from '../lib/comparison';
 import { findComparisonCarByMakeModel } from '../lib/comparison';
@@ -414,7 +416,7 @@ type QuizStep = 'idle' | 'active' | 'analyzing' | 'results';
 
 /* ───────────── nav ───────────── */
 
-const NAV_ITEMS = ['Så funkar det', 'Vi förhandlar åt dig', 'Jämför bilar'] as const;
+const NAV_ITEMS = ['Så funkar det', 'Köp bil'] as const;
 
 interface CompareCarsPageProps {
   onBackHome: () => void;
@@ -472,8 +474,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const navigateToBuy = useCallback((carLabel: string) => {
     const params = new URLSearchParams();
     params.set('bil', carLabel);
-    params.set('source', 'Jämför bilar');
-    window.history.pushState({}, '', `/kop-bil?${params.toString()}`);
+    params.set('source', 'Köp bil');
+    window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
@@ -485,7 +487,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   }, []);
 
   useEffect(() => {
-    document.title = 'Jämför bilar -- Bilto';
+    document.title = 'Köp bil -- Jämför, hitta & förhandla | Bilto';
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -615,7 +617,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
   const handleNavSelect = (item: string) => {
     if (item === 'Så funkar det') { window.history.pushState({}, '', '/sa-funkar-det'); window.dispatchEvent(new PopStateEvent('popstate')); }
-    else if (item === 'Vi förhandlar åt dig') { window.history.pushState({}, '', '/forhandling'); window.dispatchEvent(new PopStateEvent('popstate')); }
   };
 
   // Quiz handlers
@@ -700,7 +701,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {NAV_ITEMS.map((item) => (
-              <button key={item} type="button" onClick={() => handleNavSelect(item)} className={`text-[15px] transition ${item === 'Jämför bilar' ? 'text-white font-semibold' : 'text-white/80 hover:text-white'}`}>
+              <button key={item} type="button" onClick={() => handleNavSelect(item)} className={`text-[15px] transition ${item === 'Köp bil' ? 'text-white font-semibold' : 'text-white/80 hover:text-white'}`}>
                 {item}
               </button>
             ))}
@@ -717,11 +718,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
-        active="Jämför bilar"
+        active="Köp bil"
         onSelect={(item) => {
           setMenuOpen(false);
-          if (item === 'Vi förhandlar åt dig') { window.history.pushState({}, '', '/forhandling'); window.dispatchEvent(new PopStateEvent('popstate')); }
-          else if (item === 'Så funkar det') { window.history.pushState({}, '', '/sa-funkar-det'); window.dispatchEvent(new PopStateEvent('popstate')); }
+          if (item === 'Så funkar det') { window.history.pushState({}, '', '/sa-funkar-det'); window.dispatchEvent(new PopStateEvent('popstate')); }
           else onBackHome();
         }}
       />
@@ -732,10 +732,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         <div className="absolute right-0 -bottom-32 w-[400px] h-[400px] rounded-full bg-[#3d8cff] opacity-30" />
         <div className="relative max-w-3xl mx-auto text-center">
           <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
-            Jämför bilar sida vid sida
+            Hitta din drombil -- vi forhandlar priset
           </h1>
           <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto">
-            Markera upp till {MAX_COMPARE} bilar och jämför betyg, specifikationer och priser. Helt gratis och opartiskt.
+            Jamfor bilar, hitta ratt modell och lat oss forhandla fram basta priset at dig. Helt gratis och opartiskt.
           </p>
           <div className="mt-6 flex items-center justify-center gap-3 flex-wrap">
             <button
@@ -1577,24 +1577,225 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         </div>
       </section>
 
+      {/* Jonas testimonial */}
+      <section className="bg-white relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
+          <div className="grid md:grid-cols-12 gap-10 items-center">
+            <div className="md:col-span-5 order-2 md:order-1">
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-4 block">
+                Kundcase
+              </span>
+              <h2 className="text-[24px] sm:text-[42px] font-semibold leading-[1.15] sm:leading-[1.08] text-slate-900 tracking-[-0.02em]">
+                "Bilto fixade en fantastisk deal -- jag behövde inte lyfta ett finger."
+              </h2>
+              <p className="text-slate-600 mt-5 text-[15px] sm:text-[16px] leading-[1.65] max-w-md">
+                Jonas ville ha en Toyota RAV4 men visste att handlare ofta trycker upp priset och tar extra betalt för tillval. Bilto tog förhandlingen, pressade ner räntan och fick med däck och garanti som inte ingick från början.
+              </p>
+              <div className="mt-8 px-4 py-5 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl">
+                <div className="flex items-baseline justify-between">
+                  <dt className="text-[15px] font-semibold text-[#0e6efe]">Total besparing</dt>
+                  <dd className="text-[22px] sm:text-[26px] font-bold text-[#0e6efe] tabular-nums">~32 390 kr</dd>
+                </div>
+              </div>
+              <p className="text-[13px] text-slate-500 mt-5">
+                Jonas A. -- Toyota RAV4, 2021
+              </p>
+            </div>
+            <div className="md:col-span-7 order-1 md:order-2">
+              <div className="relative rounded-2xl overflow-hidden">
+                <img
+                  src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(Instagram_Post_(45))_copy_copy_copy_copy_copy.jpg"
+                  alt="Jonas framför sin Toyota RAV4"
+                  className="w-full h-[380px] sm:h-[580px] md:h-[680px] object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why us stats */}
+      <section className="bg-[#0e6efe] py-12 sm:py-20 px-5 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-[22px] sm:text-[40px] font-semibold leading-[1.15] sm:leading-[1.08] text-white tracking-[-0.02em]">
+              Erfarna förhandlare -- på din sida
+            </h2>
+            <p className="text-white/80 mt-3 sm:mt-4 text-[14px] sm:text-[17px] leading-[1.55] max-w-lg mx-auto">
+              Vårt team har jobbat som toppsäljare hos Sveriges största bilhandlare. Nu jobbar vi för dig istället.
+            </p>
+          </div>
+          <div className="flex items-center justify-center gap-6 sm:gap-12 flex-wrap">
+            {[
+              { value: '5 000+', label: 'Bilar sålda' },
+              { value: '10+', label: 'År i branschen' },
+              { value: '100%', label: 'På kundens sida' },
+            ].map((stat, i, arr) => (
+              <div key={stat.label} className="flex items-center gap-6 sm:gap-12">
+                <div className="text-center">
+                  <div className="text-[24px] sm:text-[32px] font-bold text-white tabular-nums tracking-tight">
+                    {stat.value}
+                  </div>
+                  <div className="text-[11px] sm:text-[13px] text-white/70 font-medium mt-0.5">
+                    {stat.label}
+                  </div>
+                </div>
+                {i < arr.length - 1 && (
+                  <div className="w-px h-8 sm:h-10 bg-white/25" />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* What you get */}
+      <section className="bg-[#f5f8fc] py-16 sm:py-24 px-5 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10 sm:mb-14 max-w-2xl mx-auto">
+            <span className="text-[12px] font-medium text-slate-500 mb-3 block">
+              &mdash; Vad ingår
+            </span>
+            <h2 className="text-[28px] sm:text-[44px] font-semibold leading-[1.1] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
+              En personlig bilförhandlare i fickan
+            </h2>
+            <p className="text-slate-600 mt-5 text-[15px] sm:text-[17px] leading-[1.6]">
+              Tjänsten är gjord för dig som inte vill spendera dagar på att jaga bilar, ringa annonser eller känna dig pressad i en handlares showroom.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5 sm:gap-6">
+            {[
+              {
+                icon: Search,
+                title: 'Vi letar bilen åt dig',
+                text: 'Vi kontrollerar hela marknaden -- inte bara en handlares lager -- och hittar bilar som matchar dina önskemål och budget.',
+                svg: '/certified-pre-own.75373bb7.svg',
+              },
+              {
+                icon: ShieldCheck,
+                title: 'Vi kollar att den håller',
+                text: 'Vi kontrollerar servicehistorik, eventuella skador och tidigare ägare. Inga otrevliga överraskningar efter köpet.',
+                svg: '/BSM_car_sale_key_woman_handover_101122.jpg',
+                imgClass: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300',
+              },
+              {
+                icon: Phone,
+                title: 'Vi förhandlar priset',
+                text: 'Vi vet hur handlare räknar och vågar säga nej. Det betyder att du sparar mer än vad tjänsten kostar.',
+                svg: '/info-content.a96a55cf.svg',
+              },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.title}
+                  className="group rounded-2xl border border-slate-200 bg-white p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-slate-50 group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
+                    <img
+                      src={item.svg}
+                      alt=""
+                      aria-hidden="true"
+                      className={item.imgClass || "w-auto h-[110px] sm:h-[130px] object-contain group-hover:scale-105 transition-transform duration-300"}
+                    />
+                  </div>
+                  <div className="w-11 h-11 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center mb-4">
+                    <Icon className="w-5 h-5" strokeWidth={2.2} />
+                  </div>
+                  <h3 className="text-[18px] font-semibold text-slate-900 mb-2 leading-tight tracking-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-[14.5px] text-slate-600 leading-[1.6]">{item.text}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Vehicle inspection infographic */}
+      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-16 sm:py-28 px-5 sm:px-6 overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-10 sm:mb-16 max-w-3xl mx-auto">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
+              Grundlig genomgång
+            </span>
+            <h2 className="text-[26px] sm:text-[48px] font-semibold leading-[1.1] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
+              Vi granskar varje detalj -- så slipper du oroa dig
+            </h2>
+            <p className="text-slate-600 mt-4 sm:mt-6 text-[15px] sm:text-[18px] leading-[1.6] max-w-2xl mx-auto">
+              Innan vi rekommenderar en bil till dig går vi igenom fem kritiska datapunkter. Inget lämnas åt slumpen.
+            </p>
+          </div>
+          <div className="grid lg:grid-cols-5 gap-8 lg:gap-12 items-center">
+            <div className="lg:col-span-1 space-y-6 sm:space-y-8 order-2 lg:order-1">
+              {[
+                { label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
+                { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
+              ].map((point) => (
+                <div key={point.label} className="text-right lg:text-right">
+                  <h4 className="text-[16px] sm:text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[13px] sm:text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                </div>
+              ))}
+            </div>
+            <div className="lg:col-span-3 order-1 lg:order-2 flex items-center justify-center">
+              <img
+                src="/Blå_bilikon_i_vit_cirkel.png"
+                alt="Bilinspektion med datapunkter"
+                className="w-full max-w-[600px] sm:max-w-[700px] h-auto"
+              />
+            </div>
+            <div className="lg:col-span-1 space-y-6 sm:space-y-8 order-3">
+              {[
+                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik -- vi bedömer det faktiska skicket, inte bara foton i annonsen.' },
+                { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
+                { label: 'Bilalternativ', desc: 'Vi jämför att din bil ligger rätt till i marknaden så att du inte betalar för mycket.' },
+              ].map((point) => (
+                <div key={point.label}>
+                  <h4 className="text-[16px] sm:text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[13px] sm:text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-12 sm:mt-16 text-center">
+            <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-full px-5 sm:px-7 py-3 sm:py-4 shadow-sm">
+              <ShieldCheck className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
+              <span className="text-[14px] sm:text-[15px] text-slate-700 font-medium">
+                Alla bilar vi rekommenderar har klarat vår 5-punktskontroll
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <ReviewsSection variant="muted" />
+
       {/* How it works */}
       <section className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-t border-slate-100">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 text-center mb-8 sm:mb-10">Så fungerar det</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
             {[
-              { step: '1', title: 'Hitta din bil', desc: 'Jämför våra toppval, använd vår smarta sökning eller testa bilmatch för att hitta rätt.' },
-              { step: '2', title: 'Vi granskar och förhandlar', desc: 'Vi kontrollerar historik, skick och marknadspris -- sen förhandlar vi med säljaren åt dig.' },
-              { step: '3', title: 'Du bestämmer', desc: 'Du får ett förslag med bästa pris. Ingen affär utan ditt godkännande.' },
-            ].map(s => (
+              { step: '1', title: 'Hitta din bil', desc: 'Jämför våra toppval, använd vår smarta sökning eller testa bilmatch för att hitta rätt.', icon: Search },
+              { step: '2', title: 'Vi förhandlar åt dig', desc: 'Vi kontaktar säljaren, pressar priset och granskar bilen åt dig. Du slipper förhandla själv.', icon: Megaphone },
+              { step: '3', title: 'Affären är klar', desc: 'Du kan tuta och köra med gott samvete -- vi har sett till att du gjort en riktigt bra deal.', icon: Handshake },
+            ].map(s => {
+              const StepIcon = s.icon;
+              return (
               <div key={s.step} className="flex sm:flex-col items-start sm:items-center gap-4 sm:gap-0 sm:text-center">
-                <div className="w-10 h-10 rounded-full bg-[#0e6efe] text-white text-[14px] font-bold flex items-center justify-center shrink-0 sm:mb-3">{s.step}</div>
+                <div className="w-10 h-10 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0 sm:mb-3">
+                  <StepIcon className="w-[18px] h-[18px]" strokeWidth={2.4} />
+                </div>
                 <div>
                   <p className="text-[15px] font-semibold text-slate-900 mb-1">{s.title}</p>
                   <p className="text-[13px] text-slate-500 leading-relaxed">{s.desc}</p>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -1679,14 +1880,14 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       <section className="bg-[#0e6efe] py-14 sm:py-20 px-5 sm:px-6">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-[22px] sm:text-[36px] font-bold text-white leading-[1.1] tracking-tight">
-            Hittat en bil du gillar?
+            Redo att låta oss förhandla åt dig?
           </h2>
           <p className="mt-3 text-white/80 text-[14px] sm:text-[16px] max-w-md mx-auto">
-            Vi kontaktar säljaren och förhandlar fram bästa möjliga pris åt dig.
+            Det tar två minuter att skicka in. Vi hör av oss inom 24 timmar.
           </p>
           <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button onClick={() => openContactForCar(null)} className="h-12 px-8 rounded-full bg-white text-[#0e6efe] font-semibold text-[15px] inline-flex items-center gap-2 group hover:bg-slate-50 transition shadow-lg">
-              Förhandla <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+              Kom igång <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
             </button>
             <button onClick={scrollToQuiz} className="h-12 px-6 rounded-full border-2 border-white/40 text-white font-semibold text-[14px] hover:bg-white/10 inline-flex items-center gap-2 transition">
               <Search className="w-4 h-4" />

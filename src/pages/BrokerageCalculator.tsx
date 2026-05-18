@@ -89,8 +89,8 @@ export default function BrokerageCalculator({ onBackHome, onStartBrokerage }: Br
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     if (item === 'Förmedlingskalkylator') return;
-    if (item === 'Vi förhandlar åt dig') {
-      window.history.pushState({}, '', '/forhandling');
+    if (item === 'Köp bil') {
+      window.history.pushState({}, '', '/kop-bil');
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }
@@ -121,7 +121,7 @@ export default function BrokerageCalculator({ onBackHome, onStartBrokerage }: Br
     };
   }, [marketValue, dealerMarginAmount]);
 
-  const navItems = ['Direktbud', 'Vi förhandlar åt dig', 'Förmedlingskalkylator'];
+  const navItems = ['Direktbud', 'Köp bil', 'Förmedlingskalkylator'];
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
@@ -155,8 +155,8 @@ export default function BrokerageCalculator({ onBackHome, onStartBrokerage }: Br
                 type="button"
                 onClick={() => {
                   if (item === 'Förmedlingskalkylator') return;
-                  if (item === 'Vi förhandlar åt dig') {
-                    window.history.pushState({}, '', '/forhandling');
+                  if (item === 'Köp bil') {
+                    window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                     return;
                   }
@@ -209,7 +209,7 @@ export default function BrokerageCalculator({ onBackHome, onStartBrokerage }: Br
               <button
                 type="button"
                 onClick={() => {
-                  window.history.pushState({}, '', '/forhandling');
+                  window.history.pushState({}, '', '/kop-bil');
                   window.dispatchEvent(new PopStateEvent('popstate'));
                 }}
                 className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-white text-[#0e6efe] font-semibold text-[14px] hover:bg-slate-100 transition group"
@@ -235,7 +235,7 @@ export default function BrokerageCalculator({ onBackHome, onStartBrokerage }: Br
               <button
                 type="button"
                 onClick={() => {
-                  window.history.pushState({}, '', '/forhandling');
+                  window.history.pushState({}, '', '/kop-bil');
                   window.dispatchEvent(new PopStateEvent('popstate'));
                 }}
                 className="mt-7 inline-flex items-center gap-2 h-12 px-7 rounded-full bg-white text-[#0e6efe] font-semibold text-[15px] hover:bg-slate-100 transition group"
@@ -415,7 +415,7 @@ export default function BrokerageCalculator({ onBackHome, onStartBrokerage }: Br
             <button
               type="button"
               onClick={() => {
-                window.history.pushState({}, '', '/forhandling');
+                window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
               className="inline-flex items-center gap-2 h-12 px-7 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] transition group shadow-[0_10px_24px_-8px_rgba(14,110,254,0.5)]"

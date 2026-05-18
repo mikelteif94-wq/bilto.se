@@ -46,8 +46,8 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    if (item === 'Vi förhandlar åt dig') {
-      window.history.pushState({}, '', '/forhandling');
+    if (item === 'Köp bil') {
+      window.history.pushState({}, '', '/kop-bil');
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }
@@ -130,7 +130,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     onNavigate(regTrim, telTrim);
   };
 
-  const navItems = ['Direktbud', 'Vi förhandlar åt dig'];
+  const navItems = ['Direktbud', 'Köp bil'];
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
@@ -169,8 +169,8 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                   }
-                  if (item === 'Vi förhandlar åt dig') {
-                    window.history.pushState({}, '', '/forhandling');
+                  if (item === 'Köp bil') {
+                    window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                     return;
                   }
@@ -299,7 +299,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               <button
                 type="button"
                 onClick={() => {
-                  window.history.pushState({}, '', '/forhandling');
+                  window.history.pushState({}, '', '/kop-bil');
                   window.dispatchEvent(new PopStateEvent('popstate'));
                 }}
                 className="relative pb-1 text-[18px] font-semibold text-white"
@@ -375,7 +375,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             <button
               type="button"
               onClick={() => {
-                window.history.pushState({}, '', '/forhandling');
+                window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
               className="flex-1 h-10 rounded-full text-[14px] font-semibold transition bg-transparent text-slate-600"
@@ -504,7 +504,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
           <div className="mt-12 flex flex-col sm:flex-row sm:items-center gap-5">
             <button
               onClick={() => {
-                window.history.pushState({}, '', '/forhandling');
+                window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
               className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] transition"

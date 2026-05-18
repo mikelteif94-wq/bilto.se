@@ -152,8 +152,8 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     if (item === 'Så funkar det') return;
-    if (item === 'Vi förhandlar åt dig') {
-      window.history.pushState({}, '', '/forhandling');
+    if (item === 'Köp bil') {
+      window.history.pushState({}, '', '/kop-bil');
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }
@@ -176,7 +176,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
   };
 
   const steps = mode === 'brokerage' ? BROKERAGE_STEPS : DIRECT_STEPS;
-  const navItems = ['Direktbud', 'Vi förhandlar åt dig'];
+  const navItems = ['Direktbud', 'Köp bil'];
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
@@ -210,8 +210,8 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 type="button"
                 onClick={() => {
                   if (item === 'Så funkar det') return;
-                  if (item === 'Vi förhandlar åt dig') {
-                    window.history.pushState({}, '', '/forhandling');
+                  if (item === 'Köp bil') {
+                    window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                     return;
                   }
@@ -729,7 +729,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 <button
                   type="button"
                   onClick={() => {
-                    window.history.pushState({}, '', '/forhandling');
+                    window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }}
                   className="h-12 px-7 rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import QuotePage from './pages/QuotePage';
 import BrokerageCalculator from './pages/BrokerageCalculator';
 import HowItWorks from './pages/HowItWorks';
 import SellCarPage from './pages/SellCarPage';
@@ -470,7 +469,7 @@ function App() {
     );
   }
 
-  if (path === '/kop-bil') {
+  if (path === '/kop-bil/bestall') {
     const buyParams = new URLSearchParams(window.location.search);
     const buyBil = buyParams.get('bil') || '';
     const buyTyp = buyParams.get('typ');
@@ -483,20 +482,14 @@ function App() {
         initialReg={buyReg}
         source={buySource}
         onBack={() => {
-          window.history.pushState({}, '', '/forhandling');
-          setPath('/forhandling');
+          window.history.pushState({}, '', '/kop-bil');
+          setPath('/kop-bil');
         }}
       />
     );
   }
 
-  if (path === '/hitta-bil') {
-    window.history.replaceState({}, '', '/jamfor-bilar');
-    setPath('/jamfor-bilar');
-    return null;
-  }
-
-  if (path === '/jamfor-bilar') {
+  if (path === '/kop-bil') {
     return (
       <CompareCarsPage
         onBackHome={() => {
@@ -506,6 +499,12 @@ function App() {
         }}
       />
     );
+  }
+
+  if (path === '/hitta-bil' || path === '/jamfor-bilar') {
+    window.history.replaceState({}, '', '/kop-bil');
+    setPath('/kop-bil');
+    return null;
   }
 
   if (path === '/blogg' || path === '/blogg/salja-begagnad-bil') {
@@ -557,23 +556,9 @@ function App() {
   }
 
   if (path === '/forhandling') {
-    return (
-      <QuotePage
-        onBackHome={() => {
-          window.history.pushState({}, '', '/');
-          setPath('/');
-          setPublicRoute({ page: 'home' });
-        }}
-        onNavigateCalculator={() => {
-          window.history.pushState({}, '', '/formedlingskalkylator');
-          setPath('/formedlingskalkylator');
-        }}
-        onNavigateHowItWorks={() => {
-          window.history.pushState({}, '', '/sa-funkar-det');
-          setPath('/sa-funkar-det');
-        }}
-      />
-    );
+    window.history.replaceState({}, '', '/kop-bil');
+    setPath('/kop-bil');
+    return null;
   }
 
   if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
@@ -628,12 +613,12 @@ function App() {
   }
 
   if (path === '/formedla') {
-    navigate('/forhandling');
+    navigate('/kop-bil');
     return null;
   }
 
   if (path === '/salj' && publicRoute.page !== 'sell') {
-    navigate('/forhandling');
+    navigate('/kop-bil');
     return null;
   }
 
@@ -683,8 +668,8 @@ function App() {
             const params = new URLSearchParams({ typ: 'trade' });
             if (reg) params.set('reg', reg);
             if (mil) params.set('mil', mil.toString());
-            window.history.pushState({}, '', `/forhandling?${params.toString()}`);
-            setPath('/forhandling');
+            window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
+            setPath('/kop-bil/bestall');
             setPublicRoute({ page: 'home' });
           }}
         />
