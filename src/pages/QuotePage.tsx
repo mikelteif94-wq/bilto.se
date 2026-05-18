@@ -457,8 +457,8 @@ export default function QuotePage({
                 icon: ShieldCheck,
                 title: 'Vi kollar att den håller',
                 text: 'Vi kontrollerar servicehistorik, eventuella skador och tidigare ägare. Inga otrevliga överraskningar efter köpet.',
-                svg: '/BSM_car_sale_key_woman_handover_101122.jpg',
-                imgClass: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300',
+                svg: '/infographic_antal_agare.svg',
+                imgClass: 'w-full h-full object-contain group-hover:scale-105 transition-transform duration-300',
               },
               {
                 icon: Phone,
