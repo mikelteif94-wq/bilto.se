@@ -248,19 +248,21 @@ export default function QuotePage({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="flex flex-col divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
             {[
               {
                 icon: Search,
-                color: 'bg-[#0e6efe]',
+                accent: 'text-[#0e6efe]',
+                accentBg: 'bg-[#0e6efe]/8',
                 title: 'Vi hittar rätt bil åt dig',
                 body: 'Berätta vad du söker — märke, budget eller bara ett behov. Vi söker i hela marknaden och presenterar de bästa alternativen.',
-                stat: '10 år',
-                statLabel: 'erfarenhet av bilaffärer',
+                stat: null,
+                statLabel: null,
               },
               {
                 icon: TrendingDown,
-                color: 'bg-emerald-500',
+                accent: 'text-emerald-600',
+                accentBg: 'bg-emerald-50',
                 title: 'Vi förhandlar priset',
                 body: 'Vår expert tar dialogen med handlaren, pressar priset och förhandlar fram bästa ränta, tillval och villkor.',
                 stat: '~15 000 kr',
@@ -268,25 +270,26 @@ export default function QuotePage({
               },
               {
                 icon: Lock,
-                color: 'bg-slate-700',
+                accent: 'text-slate-700',
+                accentBg: 'bg-slate-100',
                 title: 'Trygg och utan press',
                 body: 'Du bestämmer. Vi granskar historik och skick innan affär. Ingen bindning, inga dolda avgifter — du tackar ja eller nej.',
                 stat: '100%',
                 statLabel: 'utan förpliktelse',
               },
-            ].map(({ icon: Icon, color, title, body, stat, statLabel }) => (
-              <div key={title} className="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col gap-4">
-                <div className={`w-11 h-11 rounded-xl ${color} flex items-center justify-center shrink-0`}>
-                  <Icon className="w-5 h-5 text-white" strokeWidth={2.2} />
+            ].map(({ icon: Icon, accent, accentBg, title, body, stat, statLabel }) => (
+              <div key={title} className="flex items-start gap-5 sm:gap-8 px-6 py-6 sm:py-7">
+                <div className={`shrink-0 w-11 h-11 rounded-xl ${accentBg} flex items-center justify-center mt-0.5`}>
+                  <Icon className={`w-5 h-5 ${accent}`} strokeWidth={2.2} />
                 </div>
-                <div className="flex-1">
-                  <h4 className="text-[16px] font-bold text-slate-900 leading-snug mb-2">{title}</h4>
-                  <p className="text-[14px] text-slate-500 leading-relaxed">{body}</p>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-[16px] sm:text-[17px] font-semibold text-slate-900 leading-snug mb-1">{title}</h4>
+                  <p className="text-[14px] sm:text-[14.5px] text-slate-500 leading-relaxed">{body}</p>
                 </div>
                 {stat && (
-                  <div className="pt-3 border-t border-slate-200">
-                    <p className="text-[22px] font-bold text-slate-900 leading-none">{stat}</p>
-                    <p className="text-[12px] text-slate-400 mt-1">{statLabel}</p>
+                  <div className="shrink-0 text-right pl-4 hidden sm:block">
+                    <p className={`text-[22px] font-bold leading-none ${accent}`}>{stat}</p>
+                    <p className="text-[11px] text-slate-400 mt-1 whitespace-nowrap">{statLabel}</p>
                   </div>
                 )}
               </div>
