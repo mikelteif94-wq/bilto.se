@@ -389,6 +389,7 @@ interface QuizRecommendation {
   rating?: number;
   fuelLabel?: string;
   trunkLiters?: number;
+  estimatedMonthly?: number;
 }
 
 function detectBodyType(model: string): string | null {
@@ -577,6 +578,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const [quizLoading, setQuizLoading] = useState(false);
   const [analysisReady, setAnalysisReady] = useState(false);
   const quizSectionRef = useRef<HTMLDivElement>(null);
+  const [selectedQuizCars, setSelectedQuizCars] = useState<Set<string>>(new Set());
 
   // Buy drawer
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
@@ -787,6 +789,19 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
     setQuizAnswers(null);
     setQuizResults([]);
     setAnalysisReady(false);
+    setSelectedQuizCars(new Set());
+  };
+
+  const toggleQuizCarSelection = (key: string) => {
+    setSelectedQuizCars(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else if (next.size < 3) {
+        next.add(key);
+      }
+      return next;
+    });
   };
 
   async function loadQuizRecommendations(answers: QuizAnswers) {
@@ -808,6 +823,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           const fuelLabel = compData?.specs.fuel_types
             ? compData.specs.fuel_types.map(f => fuelLabelMap[f] || f).join(' / ')
             : fuelType === 'electric' ? 'El' : fuelType === 'hybrid' ? 'Hybrid' : fuelType === 'diesel' ? 'Diesel' : 'Bensin';
+          const basePrice = compData?.pricing.used_from_sek || compData?.pricing.new_from_sek;
+          const estimatedMonthly = basePrice ? Math.round((basePrice * 0.009) / 100) * 100 : undefined;
           return {
             make: car.make, model: car.model,
             image_url: car.image_url, cleaned_image_url: car.cleaned_image_url,
@@ -815,6 +832,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             bodyType, fuelType, fuelLabel,
             rating: compData?.ratings.overall ?? undefined,
             trunkLiters: compData?.specs.trunk_liters ?? undefined,
+            estimatedMonthly,
           };
         })
         .filter(car => car.matchScore >= 40)
@@ -1754,26 +1772,99 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
                   </div>
                 ) : quizResults.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                    {quizResults.map((car, i) => (
-                      <CompactCarCard
-                        key={`${car.make}-${car.model}`}
-                        name={`${car.make} ${car.model}`}
-                        imageUrl={car.cleaned_image_url || car.image_url}
-                        rating={car.rating}
-                        topBadge={i === 0}
-                        expertComment={car.matchReasons.join(' · ') || undefined}
-                        fuelLabel={car.fuelLabel}
-                        onNegotiate={() => setBuyDrawerCar(`${car.make} ${car.model}`)}
-                        onDetail={() => {
-                          const compData = findComparisonCarByMakeModel(car.make, car.model);
-                          if (compData) setDetailCar(compData);
-                        }}
-                        index={i}
-                        disableMotion={isMobile}
-                      />
-                    ))}
-                  </div>
+                  <>
+                    {/* Selection hint */}
+                    <p className="text-[12px] text-slate-400 mb-3">
+                      {selectedQuizCars.size === 0
+                        ? 'Välj upp till 3 bilar du är intresserad av'
+                        : selectedQuizCars.size === 3
+                        ? 'Max 3 bilar valda — avmarkera för att byta'
+                        : `${selectedQuizCars.size} av 3 bil${selectedQuizCars.size > 1 ? 'ar' : ''} vald${selectedQuizCars.size > 1 ? 'a' : ''}`}
+                    </p>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                      {quizResults.map((car, i) => {
+                        const key = `${car.make}-${car.model}`;
+                        const isSelected = selectedQuizCars.has(key);
+                        const atMax = selectedQuizCars.size >= 3 && !isSelected;
+                        return (
+                          <div key={key} className={atMax ? 'opacity-50 pointer-events-none' : ''}>
+                            <CompactCarCard
+                              name={`${car.make} ${car.model}`}
+                              imageUrl={car.cleaned_image_url || car.image_url}
+                              rating={car.rating}
+                              topBadge={i === 0}
+                              expertComment={car.matchReasons.join(' · ') || undefined}
+                              fuelLabel={car.fuelLabel}
+                              estimatedMonthly={car.estimatedMonthly}
+                              isSelected={isSelected}
+                              onSelect={() => toggleQuizCarSelection(key)}
+                              onNegotiate={() => setBuyDrawerCar(`${car.make} ${car.model}`)}
+                              onDetail={() => {
+                                const compData = findComparisonCarByMakeModel(car.make, car.model);
+                                if (compData) setDetailCar(compData);
+                              }}
+                              index={i}
+                              disableMotion={isMobile}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Sticky action bar */}
+                    <AnimatePresence>
+                      {selectedQuizCars.size > 0 && (
+                        <motion.div
+                          key="quiz-action-bar"
+                          initial={{ opacity: 0, y: 16 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 16 }}
+                          transition={{ duration: 0.22, ease: 'easeOut' }}
+                          style={{ touchAction: 'pan-y' }}
+                          className="mt-6 rounded-2xl bg-slate-900 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 shadow-xl"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[13px] font-semibold text-white mb-1">
+                              {selectedQuizCars.size === 1 ? '1 bil vald' : `${selectedQuizCars.size} bilar valda`}
+                            </p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {quizResults
+                                .filter(c => selectedQuizCars.has(`${c.make}-${c.model}`))
+                                .map(c => (
+                                  <span key={`${c.make}-${c.model}`} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[11px] font-medium text-white/90">
+                                    {c.make} {c.model}
+                                  </span>
+                                ))}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedQuizCars(new Set())}
+                              className="h-10 px-3 rounded-xl text-[12px] font-medium text-white/60 hover:text-white hover:bg-white/10 transition"
+                            >
+                              Rensa
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const names = quizResults
+                                  .filter(c => selectedQuizCars.has(`${c.make}-${c.model}`))
+                                  .map(c => `${c.make} ${c.model}`)
+                                  .join(', ');
+                                openBuyDrawer(names, 'searching');
+                              }}
+                              className="h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold inline-flex items-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-[#0e6efe]/30"
+                            >
+                              Gå vidare — vi ringer dig
+                              <ArrowRight className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </>
                 ) : (
                   <div className="text-center py-12">
                     <div className="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center mx-auto mb-4">
@@ -1786,7 +1877,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                   </div>
                 )}
 
-                <div className="mt-8 flex items-center justify-center">
+                <div className="mt-6 flex items-center justify-center">
                   <button
                     type="button"
                     onClick={handleQuizReset}

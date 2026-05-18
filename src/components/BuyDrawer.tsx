@@ -18,11 +18,15 @@ type FormStep = 'track' | 'carIntent' | 'details' | 'tradeIn' | 'contact' | 'don
 
 export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps) {
   const open = car !== null;
-  const hasSpecificCar = !!car;
+  // When initialTrack is 'searching', car is a pre-filled target (possibly multiple), not a specific single car
+  const isSearchingWithPrefill = initialTrack === 'searching' && !!car;
+  const hasSpecificCar = !!car && !isSearchingWithPrefill;
   const skipTrack = hasSpecificCar || !!initialTrack;
 
   const [track, setTrack] = useState<BuyTrack>(initialTrack || 'found');
-  const [step, setStep] = useState<FormStep>(hasSpecificCar ? 'carIntent' : skipTrack ? 'details' : 'track');
+  const [step, setStep] = useState<FormStep>(
+    isSearchingWithPrefill ? 'details' : hasSpecificCar ? 'carIntent' : skipTrack ? 'details' : 'track'
+  );
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -72,12 +76,13 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
   useEffect(() => {
     if (car !== null) {
       const resolvedTrack = initialTrack || 'found';
+      const searchingPrefill = resolvedTrack === 'searching' && !!car;
       setTrack(resolvedTrack);
-      setStep(car ? 'carIntent' : initialTrack ? 'details' : 'track');
+      setStep(searchingPrefill ? 'details' : car ? 'carIntent' : initialTrack ? 'details' : 'track');
       setError(null);
       setDetails({
         linkOrSeller: '',
-        carModel: car,
+        carModel: searchingPrefill ? '' : car,
         carBrand: '',
         paymentType: '',
         buyingStage: '',
@@ -87,7 +92,7 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
         miltal: '',
         targetCar: car,
         desiredMonthlyCost: '',
-        additionalRequests: '',
+        additionalRequests: searchingPrefill ? `Intresserad av: ${car}` : '',
         carPrice: '',
         yearFrom: '',
         yearTo: '',
@@ -109,6 +114,9 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
   }, [open]);
 
   const buildStepFlow = (): FormStep[] => {
+    if (isSearchingWithPrefill) {
+      return ['details', 'tradeIn', 'contact'];
+    }
     if (hasSpecificCar) {
       if (track === 'trade') return ['carIntent', 'details', 'contact'];
       return ['carIntent', 'details', 'tradeIn', 'contact'];
@@ -125,7 +133,9 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
   const titles: Record<FormStep, string> = {
     track: 'Hur vill du gå vidare?',
     carIntent: car ? `Hur vill du ha din ${car}?` : 'Hur vill du gå vidare?',
-    details: hasSpecificCar
+    details: isSearchingWithPrefill
+      ? 'Berätta lite mer om dig'
+      : hasSpecificCar
       ? (track === 'searching' ? `Hitta en ${car}` : `Förhandla – ${car}`)
       : track === 'trade' ? 'Berätta om ditt byte'
       : track === 'searching' ? 'Berätta vad du söker'
@@ -419,7 +429,7 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
                   track={track}
                   initialData={details}
                   initialBil={car ?? ''}
-                  lockedCar={hasSpecificCar ? car! : undefined}
+                  lockedCar={hasSpecificCar ? car! : isSearchingWithPrefill ? car! : undefined}
                   onNext={(data) => {
                     setDetails(data);
                     goNext();
