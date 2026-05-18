@@ -137,64 +137,155 @@ function resolveCarImage(carId: string, brand: string, model: string, getCarImag
 
 /* ───────────── search scoring ───────────── */
 
-function searchScoreCar(car: ComparisonCar, query: string): number {
+const BODY_ALIASES: Record<string, string[]> = {
+  suv: ['suv', 'jeep', 'crossover', 'terrängbil', 'stadsjeep', 'offroad', 'fyra'],
+  kombi: ['kombi', 'stationsvagn', 'herrgårdsvagn', 'estate', 'touring', 'avant'],
+  sedan: ['sedan', 'saloon', 'limousine'],
+  hatchback: ['halvkombi', 'hatchback', 'småbil', 'kompakt', 'liten', 'stadsbil', 'stadsbi'],
+  mpv: ['mpv', 'minivan', 'familjebuss', 'skåpbil'],
+};
+const FUEL_ALIASES: Record<string, string[]> = {
+  el: ['el', 'elbil', 'electric', 'elektrisk', 'batteri', 'räckvidd', 'ladda', 'ev'],
+  hybrid: ['hybrid', 'phev', 'laddhybrid', 'plug', 'mild'],
+  bensin: ['bensin', 'petrol', 'fossilt', 'icke-el'],
+  diesel: ['diesel', 'olj'],
+};
+// Maps a query token to a predicate and its score weight
+const TRAIT_MAP: Array<{ keys: string[]; check: (c: ComparisonCar) => boolean; weight: number }> = [
+  { keys: ['familj', 'barn', 'barnfamilj', 'syskon'], check: c => c.specs.seats >= 5 && (c.specs.trunk_liters || 0) >= 400, weight: 20 },
+  { keys: ['hund', 'hundar', 'husdjur', 'djur'], check: c => (c.specs.trunk_liters || 0) >= 450 && (c.specs.body_type === 'suv' || c.specs.body_type === 'kombi'), weight: 22 },
+  { keys: ['stor bagage', 'stort bagageutrymme', 'bagageutrymme', 'bagage', 'lastförmåga', 'lastbar'], check: c => (c.specs.trunk_liters || 0) >= 450, weight: 18 },
+  { keys: ['billig', 'prisvärd', 'budget', 'förmånlig', 'billigt', 'prisvä'], check: c => c.ratings.value >= 8, weight: 18 },
+  { keys: ['ekonomisk', 'snål', 'låg förbrukning', 'driftskostnad', 'drifts'], check: c => c.ratings.value >= 7, weight: 14 },
+  { keys: ['lyxig', 'lyx', 'premium', 'exklusiv', 'prestige'], check: c => c.segment === 'premium' || c.segment === 'luxury', weight: 18 },
+  { keys: ['sportig', 'sport', 'kul', 'rolig'], check: c => c.ratings.driving >= 8, weight: 18 },
+  { keys: ['snabb', 'prestanda', 'perf', 'kraft'], check: c => c.ratings.driving >= 8, weight: 16 },
+  { keys: ['bekväm', 'komfort', 'tyst', 'mjuk'], check: c => c.ratings.comfort >= 8, weight: 16 },
+  { keys: ['rymlig', 'plats', 'stor', 'utrymme'], check: c => c.ratings.practicality >= 8, weight: 14 },
+  { keys: ['säker', 'säkerhet', 'ncap', 'trygg'], check: c => (c.safety.euro_ncap_stars || 0) >= 5, weight: 14 },
+  { keys: ['pendl', 'pendling', 'arbetsresa', 'daglig'], check: c => c.ratings.comfort >= 7 && c.ratings.value >= 7, weight: 12 },
+  { keys: ['stad', 'stadsk', 'city', 'urban', 'parkera'], check: c => c.specs.body_type === 'hatchback' || c.specs.body_type === 'suv', weight: 14 },
+  { keys: ['fyrhjuls', 'allhjuls', 'awd', '4wd', '4x4', 'offroad'], check: c => c.specs.drivetrain.some(d => d === 'awd'), weight: 18 },
+  { keys: ['sju', 'sjusitsig', '7-sitsig', '7 sits', '7sits'], check: c => c.specs.seats >= 7, weight: 22 },
+  { keys: ['sju sits', 'sjusits', '7sitsig'], check: c => c.specs.seats >= 7, weight: 22 },
+  { keys: ['första bil', 'ny bil', 'nybörjar', 'ung', 'unga', 'ung bil'], check: c => c.ratings.value >= 8 && (c.specs.body_type === 'hatchback' || c.specs.body_type === 'suv'), weight: 20 },
+  { keys: ['pålitlig', 'tillförlitlig', 'driftsäker', 'robust'], check: c => c.ratings.value >= 7 && (c.safety.euro_ncap_stars || 0) >= 4, weight: 14 },
+  { keys: ['lång räckvidd', 'räckvidd', 'lång trip', 'långkörning'], check: c => c.specs.fuel_types.includes('el') && c.ratings.comfort >= 7, weight: 16 },
+  { keys: ['miljövänlig', 'grön', 'klimat', 'utsläpp', 'co2'], check: c => c.specs.fuel_types.some(f => f === 'el' || f === 'hybrid' || f === 'laddhybrid'), weight: 16 },
+  { keys: ['bäst', 'bästa', 'topp', 'rekommendera', 'populär'], check: c => c.ratings.overall >= 8, weight: 12 },
+];
+
+// Detect which body types the query is asking for (may be multiple)
+function parseBodyTypes(q: string): string[] {
+  const found: string[] = [];
+  for (const [bt, aliases] of Object.entries(BODY_ALIASES)) {
+    if (aliases.some(a => q.includes(a)) || q.includes(bt)) found.push(bt);
+  }
+  return found;
+}
+
+// Detect which fuel types the query is asking for
+function parseFuelTypes(q: string): string[] {
+  const found: string[] = [];
+  for (const [ft, aliases] of Object.entries(FUEL_ALIASES)) {
+    if (aliases.some(a => q.includes(a)) || q.includes(ft)) found.push(ft);
+  }
+  return found;
+}
+
+// Detect brand mention in query — returns brand_id fragments matched
+function detectBrandInQuery(q: string): string | null {
+  const brands: [string, string][] = [
+    ['volvo', 'volvo'], ['tesla', 'tesla'], ['bmw', 'bmw'], ['audi', 'audi'],
+    ['mercedes', 'mercedes'], ['toyota', 'toyota'], ['vw', 'volkswagen'], ['volkswagen', 'volkswagen'],
+    ['hyundai', 'hyundai'], ['kia', 'kia'], ['skoda', 'skoda'], ['ford', 'ford'],
+    ['peugeot', 'peugeot'], ['renault', 'renault'], ['opel', 'opel'], ['seat', 'seat'],
+    ['cupra', 'cupra'], ['polestar', 'polestar'], ['honda', 'honda'], ['mazda', 'mazda'],
+    ['lexus', 'lexus'], ['porsche', 'porsche'], ['mini', 'mini'], ['subaru', 'subaru'],
+    ['nissan', 'nissan'], ['mitsubishi', 'mitsubishi'], ['suzuki', 'suzuki'],
+    ['alfa', 'alfa romeo'], ['genesis', 'genesis'], ['mg', 'mg'], ['byd', 'byd'],
+    ['landrover', 'land rover'], ['land rover', 'land rover'], ['jeep', 'jeep'],
+  ];
+  for (const [alias, brand] of brands) {
+    if (q.includes(alias)) return brand;
+  }
+  return null;
+}
+
+interface SearchResult {
+  score: number;
+  qualityBonus: number;
+  matchedBody: boolean;
+  matchedFuel: boolean;
+  matchedBrand: boolean;
+}
+
+function searchScoreCar(car: ComparisonCar, query: string): SearchResult {
   const q = query.toLowerCase().replace(/[?!.,]/g, '');
   const name = `${car.brand_display} ${car.model_display}`.toLowerCase();
+  const brandLower = car.brand_display.toLowerCase();
   let score = 0;
-  if (name.includes(q)) return 100;
-  const tokens = q.split(/[\s,]+/).filter(t => t.length >= 2);
 
-  const bodyAliases: Record<string, string[]> = {
-    suv: ['suv', 'jeep', 'crossover', 'terrängbil', 'stadsjeep'],
-    kombi: ['kombi', 'stationsvagn', 'herrgårdsvagn', 'lastvagn'],
-    sedan: ['sedan', 'saloon', 'limousine'],
-    hatchback: ['halvkombi', 'hatchback', 'småbil', 'kompakt', 'liten'],
-  };
-  const fuelAliases: Record<string, string[]> = {
-    el: ['el', 'elbil', 'electric', 'elektrisk', 'batteri', 'räckvidd'],
-    hybrid: ['hybrid', 'phev', 'laddhybrid', 'plug'],
-    bensin: ['bensin', 'petrol', 'fossilt'],
-    diesel: ['diesel'],
-  };
-  const traitTokens: Record<string, (c: ComparisonCar) => boolean> = {
-    familj: c => c.specs.seats >= 5 && (c.specs.trunk_liters || 0) >= 400,
-    barn: c => c.specs.seats >= 5 && (c.specs.trunk_liters || 0) >= 400,
-    barnfamilj: c => c.specs.seats >= 5 && (c.specs.trunk_liters || 0) >= 400,
-    billig: c => c.ratings.value >= 8,
-    prisvärd: c => c.ratings.value >= 8,
-    budget: c => c.ratings.value >= 8,
-    ekonomisk: c => c.ratings.value >= 7,
-    lyxig: c => c.segment === 'premium' || c.segment === 'luxury',
-    premium: c => c.segment === 'premium' || c.segment === 'luxury',
-    exklusiv: c => c.segment === 'premium' || c.segment === 'luxury',
-    sportig: c => c.ratings.driving >= 8,
-    snabb: c => c.ratings.driving >= 8,
-    kul: c => c.ratings.driving >= 7,
-    bekväm: c => c.ratings.comfort >= 8,
-    komfort: c => c.ratings.comfort >= 8,
-    tyst: c => c.ratings.comfort >= 8,
-    rymlig: c => c.ratings.practicality >= 8,
-    stor: c => c.ratings.practicality >= 8,
-    plats: c => c.ratings.practicality >= 7,
-    lastförmåga: c => (c.specs.trunk_liters || 0) >= 500,
-    bagage: c => (c.specs.trunk_liters || 0) >= 400,
-    säker: c => (c.safety.euro_ncap_stars || 0) >= 5,
-    säkerhet: c => (c.safety.euro_ncap_stars || 0) >= 5,
-    pendl: c => c.ratings.comfort >= 7 && c.ratings.value >= 7,
-    stad: c => c.specs.body_type === 'hatchback' || c.specs.body_type === 'suv',
-    fyrhjuls: c => c.specs.drivetrain.some(d => d === 'awd'),
-    allhjuls: c => c.specs.drivetrain.some(d => d === 'awd'),
-    awd: c => c.specs.drivetrain.some(d => d === 'awd'),
-    '4wd': c => c.specs.drivetrain.some(d => d === 'awd'),
-    sju: c => c.specs.seats >= 7,
-    '7': c => c.specs.seats >= 7,
-  };
+  const requestedBodyTypes = parseBodyTypes(q);
+  const requestedFuelTypes = parseFuelTypes(q);
+  const requestedBrand = detectBrandInQuery(q);
 
-  // Parse price targets from query: "under 400k", "400 000", "400000", "max 350k"
+  // Exact name match
+  if (name.includes(q.replace(/\s+/g, ' ').trim())) return { score: 100, qualityBonus: car.ratings.overall, matchedBody: true, matchedFuel: true, matchedBrand: true };
+
+  // Brand matching — if a brand is specified, only that brand gets brand points
+  let matchedBrand = false;
+  if (requestedBrand) {
+    if (brandLower.includes(requestedBrand) || requestedBrand.includes(brandLower)) {
+      score += 35;
+      matchedBrand = true;
+    } else {
+      // Brand was requested but doesn't match — heavy penalty so off-brand cars rank last
+      score -= 50;
+    }
+  } else {
+    // No brand requested — small generic name-token match
+    const tokens = q.split(/[\s,\-+]+/).filter(t => t.length >= 2);
+    for (const token of tokens) {
+      if (name.includes(token)) score += 12;
+    }
+  }
+
+  // Body type compound matching — must match if body type words are present
+  let matchedBody = false;
+  if (requestedBodyTypes.length > 0) {
+    if (requestedBodyTypes.includes(car.specs.body_type)) {
+      score += 30;
+      matchedBody = true;
+    } else {
+      score -= 20;
+    }
+  }
+
+  // Fuel type compound matching
+  let matchedFuel = false;
+  if (requestedFuelTypes.length > 0) {
+    if (requestedFuelTypes.some(ft => car.specs.fuel_types.includes(ft as never))) {
+      score += 28;
+      matchedFuel = true;
+    } else {
+      score -= 20;
+    }
+  }
+
+  // Trait matching — scan the full query for known trait keywords
+  for (const { keys, check, weight } of TRAIT_MAP) {
+    if (keys.some(k => q.includes(k))) {
+      if (check(car)) score += weight;
+      // No penalty for not matching traits — they are additive signals
+    }
+  }
+
+  // Price parsing
   let priceTarget: number | null = null;
   let priceCap = false;
   const pricePatterns = [
-    /(?:under|max|upp till)\s*(\d[\d\s]*)\s*(?:kr|sek|tusen|000)/i,
+    /(?:under|max|upp till|billigare än)\s*(\d[\d\s]*)\s*(?:kr|sek|tusen)?/i,
     /(\d{3,})\s*(?:kr|sek)/i,
     /(\d+)\s*k\b/i,
   ];
@@ -203,56 +294,85 @@ function searchScoreCar(car: ComparisonCar, query: string): number {
     if (m) {
       const raw = m[1].replace(/\s/g, '');
       priceTarget = parseInt(raw);
-      if (priceTarget < 1000) priceTarget *= 1000;
-      priceCap = /under|max|upp till/i.test(q);
+      if (priceTarget < 2000) priceTarget *= 1000;
+      priceCap = /under|max|upp till|billigare/i.test(q);
       break;
     }
   }
 
-  for (const token of tokens) {
-    if (name.includes(token)) { score += 30; continue; }
-    if (car.specs.fuel_types.some(f => f.includes(token) || token.includes(f))) { score += 20; continue; }
-    if (car.specs.body_type.includes(token) || token.includes(car.specs.body_type)) { score += 20; continue; }
-
-    let matched = false;
-    for (const [bt, aliases] of Object.entries(bodyAliases)) {
-      if (aliases.some(a => a.includes(token) || token.includes(a)) && car.specs.body_type === bt) { score += 18; matched = true; break; }
-    }
-    if (matched) continue;
-
-    for (const [ft, aliases] of Object.entries(fuelAliases)) {
-      if (aliases.some(a => a.includes(token) || token.includes(a)) && car.specs.fuel_types.includes(ft as never)) { score += 18; matched = true; break; }
-    }
-    if (matched) continue;
-
-    for (const [trait, check] of Object.entries(traitTokens)) {
-      if (token.includes(trait) || trait.includes(token)) { if (check(car)) score += 15; matched = true; break; }
-    }
-    if (matched) continue;
-  }
-
-  // Price-based scoring
-  if (priceTarget && car.pricing.new_from_sek) {
+  if (priceTarget) {
+    const newP = car.pricing.new_from_sek;
+    const usedP = car.pricing.used_from_sek;
     if (priceCap) {
-      if (car.pricing.new_from_sek <= priceTarget) score += 15;
-      else if (car.pricing.new_from_sek <= priceTarget * 1.1) score += 5;
+      if (newP && newP <= priceTarget) score += 18;
+      else if (newP && newP <= priceTarget * 1.1) score += 6;
+      else if (newP && newP > priceTarget * 1.2) score -= 10;
+      if (usedP && usedP <= priceTarget) score += 10;
     } else {
-      const diff = Math.abs(car.pricing.new_from_sek - priceTarget);
-      if (diff < 50000) score += 15;
-      else if (diff < 100000) score += 10;
-      else if (diff < 200000) score += 5;
-    }
-  }
-  if (priceTarget && car.pricing.used_from_sek) {
-    if (priceCap && car.pricing.used_from_sek <= priceTarget) score += 8;
-    else {
-      const diff = Math.abs(car.pricing.used_from_sek - priceTarget);
-      if (diff < 50000) score += 8;
-      else if (diff < 100000) score += 4;
+      if (newP) {
+        const diff = Math.abs(newP - priceTarget);
+        if (diff < 50000) score += 18;
+        else if (diff < 100000) score += 10;
+        else if (diff < 200000) score += 5;
+      }
+      if (usedP) {
+        const diff = Math.abs(usedP - priceTarget);
+        if (diff < 50000) score += 10;
+        else if (diff < 100000) score += 5;
+      }
     }
   }
 
-  return Math.min(score, 100);
+  // Quality bonus for tiebreaking — not added to score directly, used in sort
+  const qualityBonus = car.ratings.overall * 1.5 + car.ratings.value;
+
+  return { score: Math.max(0, score), qualityBonus, matchedBody, matchedFuel, matchedBrand };
+}
+
+function buildResponseText(q: string, count: number, isFuzzy: boolean): string {
+  const requestedBrand = detectBrandInQuery(q.toLowerCase());
+  const requestedBodyTypes = parseBodyTypes(q.toLowerCase());
+  const requestedFuelTypes = parseFuelTypes(q.toLowerCase());
+
+  const fuelLabel: Record<string, string> = { el: 'elbilar', hybrid: 'hybridbilar', bensin: 'bensinbilar', diesel: 'dieselbilar' };
+  const bodyLabel: Record<string, string> = { suv: 'SUV', kombi: 'kombis', sedan: 'sedaner', hatchback: 'halvkombis', mpv: 'familjebilar' };
+
+  if (count === 0) {
+    const tips: string[] = [];
+    if (requestedBrand) tips.push(`Prova utan märkesfilter`);
+    if (requestedBodyTypes.length > 0 && requestedFuelTypes.length > 0) tips.push(`Prova bara "${requestedBodyTypes[0]}" eller bara "${requestedFuelTypes[0] === 'el' ? 'elbil' : requestedFuelTypes[0]}"`);
+    const tipText = tips.length > 0 ? ` ${tips[0]}, eller beskriv med andra ord.` : ' Prova t.ex. "familje-SUV", "elbil under 400 000 kr" eller "sportig kombi".';
+    return `Inga bilar matchade exakt vad du sökte.${tipText}`;
+  }
+
+  if (isFuzzy) return 'Jag är inte 100% säker, men dessa liknar det du söker:';
+
+  const parts: string[] = [];
+  if (requestedBrand) parts.push(requestedBrand.charAt(0).toUpperCase() + requestedBrand.slice(1));
+  if (requestedBodyTypes.length > 0) parts.push(bodyLabel[requestedBodyTypes[0]] || requestedBodyTypes[0]);
+  if (requestedFuelTypes.length > 0) parts.push(fuelLabel[requestedFuelTypes[0]] || requestedFuelTypes[0]);
+
+  const q_lower = q.toLowerCase();
+  const traitHints: string[] = [];
+  if (/sportig|sport/.test(q_lower)) traitHints.push('sportig körning');
+  if (/hund|husdjur/.test(q_lower)) traitHints.push('stort lastutrymme');
+  if (/familj|barn/.test(q_lower)) traitHints.push('familjepraktisk');
+  if (/billig|budget|prisvärd/.test(q_lower)) traitHints.push('prisvärda');
+  if (/bästa|bäst|topp/.test(q_lower)) traitHints.push('högst betyg');
+
+  let intro = '';
+  if (parts.length > 0) {
+    intro = `Här är de bästa ${parts.join('-')} alternativen`;
+    if (traitHints.length > 0) intro += ` med ${traitHints[0]}`;
+    intro += ':';
+  } else if (traitHints.length > 0) {
+    intro = `Här är ${count === 1 ? 'ett förslag' : `${count} förslag`} med ${traitHints.join(' och ')}:`;
+  } else {
+    intro = count <= 2
+      ? `Här är ${count === 1 ? 'ett förslag' : 'två förslag'} som matchar:`
+      : `Jag hittade ${count} bilar som passar ditt behov:`;
+  }
+  return intro;
 }
 
 /* ───────────── quiz scoring ───────────── */
@@ -411,6 +531,7 @@ interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
   cars?: ComparisonCar[];
+  reformulations?: string[];
 }
 
 type QuizStep = 'idle' | 'active' | 'analyzing' | 'results';
@@ -580,35 +701,60 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   }, [tradeCalculated, tradeEquity, tradeMonthlyPayment, tradeInterestRate, allCarsRaw, getCarImage]);
 
   // Chat
-  const handleChatSubmit = () => {
-    const q = chatInput.trim();
+  const handleChatSubmit = (overrideInput?: string) => {
+    const q = (overrideInput ?? chatInput).trim();
     if (!q) return;
     const userMsg: ChatMessage = { role: 'user', text: q };
-    let scored = allCarsRaw
-      .map(car => ({ car, score: searchScoreCar(car, q) }))
-      .filter(r => r.score >= 10)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 6);
-    let responseText: string;
+
+    const allScored = allCarsRaw
+      .map(car => {
+        const result = searchScoreCar(car, q);
+        return { car, ...result };
+      })
+      .sort((a, b) => (b.score + b.qualityBonus * 0.3) - (a.score + a.qualityBonus * 0.3));
+
+    // Primary: score >= 15 (meaningful match)
+    let candidates = allScored.filter(r => r.score >= 15);
+
+    // Ensure brand diversity: max 2 per brand
+    const brandCount: Record<string, number> = {};
+    const diverse = candidates.filter(r => {
+      const b = r.car.brand_display;
+      brandCount[b] = (brandCount[b] || 0) + 1;
+      return brandCount[b] <= 2;
+    });
+    candidates = diverse.slice(0, 6);
+
     let isFuzzy = false;
-    if (scored.length === 0) {
-      scored = allCarsRaw
-        .map(car => ({ car, score: searchScoreCar(car, q) }))
-        .filter(r => r.score >= 5)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 4);
-      isFuzzy = scored.length > 0;
+    if (candidates.length === 0) {
+      // Fuzzy fallback: best 4 by quality+score
+      candidates = allScored.filter(r => r.score >= 5).slice(0, 4);
+      isFuzzy = candidates.length > 0;
     }
-    if (scored.length === 0) {
-      responseText = 'Jag hittade inga bilar som matchar just det. Prova att beskriva vad du letar efter -- t.ex. "familje-SUV", "elbil under 400 000 kr" eller "sportig kombi med fyrhjulsdrift".';
-    } else if (isFuzzy) {
-      responseText = 'Jag är inte helt säker, men dessa kanske passar det du söker:';
-    } else if (scored.length <= 2) {
-      responseText = `Här är ${scored.length === 1 ? 'ett förslag' : 'två förslag'} som matchar:`;
-    } else {
-      responseText = `Jag hittade ${scored.length} bilar som passar. Här är mina bästa förslag:`;
+
+    // Zero-result reformulation hints
+    let reformulationSuggestions: string[] = [];
+    if (candidates.length === 0) {
+      const qLower = q.toLowerCase();
+      const rb = detectBrandInQuery(qLower);
+      const rbt = parseBodyTypes(qLower);
+      const rft = parseFuelTypes(qLower);
+      if (rb && (rbt.length > 0 || rft.length > 0)) {
+        if (rbt.length > 0) reformulationSuggestions.push(`Bästa ${rbt[0]}`);
+        if (rft.length > 0) reformulationSuggestions.push(`Bästa ${rft[0] === 'el' ? 'elbilen' : rft[0]}`);
+        reformulationSuggestions.push(`${rb.charAt(0).toUpperCase() + rb.slice(1)} ${rbt[0] || rft[0] || 'SUV'}`);
+      } else {
+        reformulationSuggestions = ['Familje-SUV under 400k', 'Bästa elbilen', 'Sportig kombi'];
+      }
     }
-    const assistantMsg: ChatMessage = { role: 'assistant', text: responseText, cars: scored.map(r => r.car) };
+
+    const responseText = buildResponseText(q, candidates.length, isFuzzy);
+    const assistantMsg: ChatMessage = {
+      role: 'assistant',
+      text: responseText,
+      cars: candidates.map(r => r.car),
+      reformulations: reformulationSuggestions,
+    };
     setChatMessages(prev => [...prev, userMsg, assistantMsg]);
     setChatInput('');
     setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
@@ -1270,6 +1416,19 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                             })}
                           </div>
                         )}
+                        {msg.role === 'assistant' && msg.reformulations && msg.reformulations.length > 0 && (
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {msg.reformulations.map(r => (
+                              <button
+                                key={r}
+                                onClick={() => handleChatSubmit(r)}
+                                className="px-3 py-1.5 rounded-full bg-slate-100 text-[12px] text-slate-600 font-medium hover:bg-[#0e6efe] hover:text-white transition-all"
+                              >
+                                {r}
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -1281,13 +1440,20 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             <div className="p-3 sm:p-4 border-t border-slate-200 bg-white">
               {chatMessages.length === 0 && (
                 <div className="mb-3 flex flex-wrap gap-2">
-                  {['Familje-SUV under 400k', 'Bästa elbilen', 'Sportig kombi', 'Billig första bil'].map(suggestion => (
+                  {[
+                    { label: 'Familje-SUV under 400k', query: 'Familje-SUV under 400k' },
+                    { label: 'Bästa elbilen', query: 'Bästa elbilen' },
+                    { label: 'Sportig kombi', query: 'Sportig kombi' },
+                    { label: 'Billig första bil', query: 'Billig första bil' },
+                    { label: 'SUV med stor bagage', query: 'SUV med stor bagage' },
+                    { label: 'Bil för hund', query: 'Bil för hund' },
+                  ].map(({ label, query }) => (
                     <button
-                      key={suggestion}
-                      onClick={() => setChatInput(suggestion)}
-                      className="px-3 py-1.5 rounded-full bg-slate-100 text-[12px] text-slate-600 font-medium hover:bg-slate-200 transition"
+                      key={label}
+                      onClick={() => handleChatSubmit(query)}
+                      className="px-3 py-1.5 rounded-full bg-slate-100 text-[12px] text-slate-600 font-medium hover:bg-[#0e6efe] hover:text-white transition-all"
                     >
-                      {suggestion}
+                      {label}
                     </button>
                   ))}
                 </div>
@@ -1297,7 +1463,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                   type="text"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  placeholder='T.ex. "elbil för familj" eller "Toyota SUV"...'
+                  placeholder='T.ex. "elbil för familj", "Toyota SUV" eller "bil med hund"...'
                   className="flex-1 h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] transition placeholder:text-slate-400"
                 />
                 <button type="submit" disabled={!chatInput.trim()} className="h-11 w-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:opacity-40 text-white flex items-center justify-center transition shrink-0">
