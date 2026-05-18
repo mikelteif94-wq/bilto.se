@@ -409,9 +409,6 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         <div className="max-w-5xl mx-auto">
           <div className="mb-12 sm:mb-16 flex items-end justify-between flex-wrap gap-6">
             <div className="max-w-xl">
-              <span className="text-[12px] font-medium text-slate-500 mb-3 block">
-                {mode === 'direct' ? '— Sälj bil' : '— Maxpris'}
-              </span>
               <h2 className="text-[34px] sm:text-[48px] font-semibold leading-[1.02] text-slate-900 tracking-[-0.02em]">
                 {mode === 'direct'
                   ? 'Så enkelt är det'
