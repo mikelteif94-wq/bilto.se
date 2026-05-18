@@ -6,6 +6,7 @@ import {
   GitCompareArrows, X, ArrowDown, Phone, Handshake,
   ShieldCheck, Megaphone,
 } from 'lucide-react';
+import InlineFunnel from '../components/InlineFunnel';
 import ReviewsSection from '../components/ReviewsSection';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAllComparisonCars } from '../lib/comparison';
@@ -471,6 +472,21 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const [budgetShowCount, setBudgetShowCount] = useState(15);
   const budgetGridRef = useRef<HTMLDivElement>(null);
 
+  // Inline funnel state
+  const [inlineFunnelCarId, setInlineFunnelCarId] = useState<string | null>(null);
+  const [inlineFunnelCarName, setInlineFunnelCarName] = useState('');
+  const [inlineFunnelMonthlyCost, setInlineFunnelMonthlyCost] = useState<number | undefined>(undefined);
+
+  const openInlineFunnel = useCallback((carId: string, carName: string, monthlyCost?: number) => {
+    setInlineFunnelCarId(prev => prev === carId ? null : carId);
+    setInlineFunnelCarName(carName);
+    setInlineFunnelMonthlyCost(monthlyCost);
+  }, []);
+
+  const closeInlineFunnel = useCallback(() => {
+    setInlineFunnelCarId(null);
+  }, []);
+
   const navigateToBuy = useCallback((carLabel: string) => {
     const params = new URLSearchParams();
     params.set('bil', carLabel);
@@ -612,7 +628,13 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   };
 
   const openContactForCar = (car: ComparisonCar | null) => {
-    navigateToBuy(car ? `${car.brand_display} ${car.model_display}` : '');
+    if (!car) {
+      navigateToBuy('');
+      return;
+    }
+    const carName = `${car.brand_display} ${car.model_display}`;
+    const monthlyCost = car.pricing.new_from_sek ? Math.round(car.pricing.new_from_sek / 60) : undefined;
+    openInlineFunnel(car.id, carName, monthlyCost);
   };
 
   const handleNavSelect = (item: string) => {
@@ -919,6 +941,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             >
               {visibleCars.map((car, i) => {
                 const isSelected = selectedIds.has(car.id);
+                const isFunnelOpen = inlineFunnelCarId === car.id;
+                const monthlyCost = car.pricing.new_from_sek ? Math.round(car.pricing.new_from_sek / 60) : undefined;
                 return (
                   <div key={car.id} className="relative">
                     {/* Selection checkbox */}
@@ -939,7 +963,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       )}
                     </button>
 
-                    <div className={`rounded-xl transition-all duration-200 ${isSelected ? 'ring-2 ring-[#0e6efe] ring-offset-2' : ''}`}>
+                    <div className={`rounded-xl transition-all duration-200 ${isSelected ? 'ring-2 ring-[#0e6efe] ring-offset-2' : ''} ${isFunnelOpen ? 'ring-2 ring-[#0e6efe] ring-offset-2' : ''}`}>
                       <CompactCarCard
                         name={`${car.brand_display} ${car.model_display}`}
                         imageUrl={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
@@ -947,6 +971,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                         topBadge={i < 3 && activeCategory === 'popular'}
                         expertComment={getExpertComment(car)}
                         fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                        monthlyCost={monthlyCost}
                         onNegotiate={() => openContactForCar(car)}
                         onDetail={() => setDetailCar(car)}
                         index={i}
@@ -956,6 +981,28 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                   </div>
                 );
               })}
+              {/* Inline funnel -- spans full grid width below cards */}
+              {inlineFunnelCarId && visibleCars.some(c => c.id === inlineFunnelCarId) && (
+                <div className="col-span-2 sm:col-span-3 lg:col-span-4 mt-2">
+                  <AnimatePresence>
+                    <motion.div
+                      key={inlineFunnelCarId}
+                      initial={{ opacity: 0, y: -10, height: 0 }}
+                      animate={{ opacity: 1, y: 0, height: 'auto' }}
+                      exit={{ opacity: 0, y: -10, height: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="overflow-hidden"
+                    >
+                      <InlineFunnel
+                        carName={inlineFunnelCarName}
+                        monthlyCost={inlineFunnelMonthlyCost}
+                        onClose={closeInlineFunnel}
+                        source="Köp bil"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -1202,6 +1249,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                                       rating={car.ratings.overall}
                                       expertComment={getExpertComment(car)}
                                       fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                                      monthlyCost={car.pricing.new_from_sek ? Math.round(car.pricing.new_from_sek / 60) : undefined}
                                       onNegotiate={() => openContactForCar(car)}
                                       onDetail={() => setDetailCar(car)}
                                       index={ci}
@@ -1386,7 +1434,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                           rating={r.car.ratings.overall}
                           expertComment={getExpertComment(r.car)}
                           fuelLabel={r.car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                          onNegotiate={() => openContactForCar(r.car)}
+                          monthlyCost={r.monthly}
+                          onNegotiate={() => openInlineFunnel(r.car.id, `${r.car.brand_display} ${r.car.model_display}`, r.monthly)}
                           onDetail={() => setDetailCar(r.car)}
                           index={i}
                           disableMotion={isMobile}
@@ -1529,26 +1578,40 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
                   </div>
                 ) : quizResults.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                    {quizResults.map((car, i) => (
-                      <CompactCarCard
-                        key={`${car.make}-${car.model}`}
-                        name={`${car.make} ${car.model}`}
-                        imageUrl={car.cleaned_image_url || car.image_url}
-                        rating={car.rating}
-                        topBadge={i === 0}
-                        expertComment={car.matchReasons.join(' · ') || undefined}
-                        fuelLabel={car.fuelLabel}
-                        onNegotiate={() => navigateToBuy(`${car.make} ${car.model}`)}
-                        onDetail={() => {
-                          const compData = findComparisonCarByMakeModel(car.make, car.model);
-                          if (compData) setDetailCar(compData);
-                        }}
-                        index={i}
-                        disableMotion={isMobile}
-                      />
-                    ))}
-                  </div>
+                  <>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                      {quizResults.map((car, i) => {
+                        const compData = findComparisonCarByMakeModel(car.make, car.model);
+                        const carKey = compData?.id || `${car.make}-${car.model}`;
+                        const monthlyCost = compData?.pricing.new_from_sek ? Math.round(compData.pricing.new_from_sek / 60) : undefined;
+                        return (
+                          <CompactCarCard
+                            key={carKey}
+                            name={`${car.make} ${car.model}`}
+                            imageUrl={car.cleaned_image_url || car.image_url}
+                            rating={car.rating}
+                            topBadge={i === 0}
+                            expertComment={car.matchReasons.join(' · ') || undefined}
+                            fuelLabel={car.fuelLabel}
+                            monthlyCost={monthlyCost}
+                            onNegotiate={() => openInlineFunnel(carKey, `${car.make} ${car.model}`, monthlyCost)}
+                            onDetail={() => {
+                              if (compData) setDetailCar(compData);
+                            }}
+                            index={i}
+                            disableMotion={isMobile}
+                          />
+                        );
+                      })}
+                    </div>
+                    {inlineFunnelCarId && quizResults.some(r => (findComparisonCarByMakeModel(r.make, r.model)?.id || `${r.make}-${r.model}`) === inlineFunnelCarId) && (
+                      <AnimatePresence>
+                        <motion.div key={inlineFunnelCarId + '-quiz'} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} className="mt-4">
+                          <InlineFunnel carName={inlineFunnelCarName} monthlyCost={inlineFunnelMonthlyCost} onClose={closeInlineFunnel} source="Bilmatch" />
+                        </motion.div>
+                      </AnimatePresence>
+                    )}
+                  </>
                 ) : (
                   <div className="text-center py-12">
                     <div className="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center mx-auto mb-4">

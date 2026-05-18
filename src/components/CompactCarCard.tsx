@@ -8,6 +8,8 @@ interface CompactCarCardProps {
   topBadge?: boolean;
   expertComment?: string;
   fuelLabel?: string;
+  monthlyCost?: number;
+  negotiateLabel?: string;
   onNegotiate: () => void;
   onDetail?: () => void;
   index?: number;
@@ -16,7 +18,7 @@ interface CompactCarCardProps {
 
 export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
-  fuelLabel,
+  fuelLabel, monthlyCost, negotiateLabel,
   onNegotiate, onDetail, index = 0, disableMotion,
 }: CompactCarCardProps) {
   return (
@@ -72,16 +74,21 @@ export default function CompactCarCard({
         )}
 
         <div className="flex items-center justify-between mt-2.5">
-          {fuelLabel && (
-            <p className="text-[11px] text-slate-400 truncate">{fuelLabel}</p>
-          )}
+          <div className="flex flex-col gap-0.5 min-w-0">
+            {fuelLabel && (
+              <p className="text-[11px] text-slate-400 truncate">{fuelLabel}</p>
+            )}
+            {monthlyCost && (
+              <p className="text-[11px] text-slate-500 font-medium">~{monthlyCost.toLocaleString('sv-SE')} kr/mån</p>
+            )}
+          </div>
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); onDetail ? onDetail() : onNegotiate(); }}
-            className="shrink-0 ml-auto h-8 px-3.5 rounded-lg bg-slate-100 hover:bg-[#0e6efe] text-slate-600 hover:text-white text-[12px] font-semibold inline-flex items-center gap-1 transition-all duration-200"
+            onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
+            className="shrink-0 ml-2 h-8 px-3.5 rounded-lg bg-[#0e6efe] hover:bg-[#0047B3] text-white text-[11px] font-semibold inline-flex items-center gap-1 transition-all duration-200"
           >
-            Läs mer
-            <ChevronRight className="w-3.5 h-3.5" />
+            {negotiateLabel || 'Hitta pris'}
+            <ChevronRight className="w-3 h-3" />
           </button>
         </div>
       </div>
