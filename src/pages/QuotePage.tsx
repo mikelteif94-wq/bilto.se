@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Menu, User, Check, Phone, Handshake, ShieldCheck, Megaphone, Search, Sparkles, Gavel,
-  ArrowRight,
+  ArrowRight, TrendingDown, Lock,
 } from 'lucide-react';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import ReviewsSection from '../components/ReviewsSection';
@@ -241,10 +241,10 @@ export default function QuotePage({
               Funderar du på att byta bil?
             </span>
             <h3 className="text-[24px] sm:text-[34px] font-semibold leading-[1.1] tracking-tight text-slate-900">
-              Vi hjälper dig hitta och förhandla din nästa bil.
+              Din partner för en trygg och smart bilaffär.
             </h3>
             <p className="mt-3 text-slate-600 text-[15px] sm:text-[16px] leading-[1.6] max-w-lg">
-              Vi granskar historik och skick, jämför marknadspriser och förhandlar fram bästa villkoren — helt utan press.
+              Vi hjälper dig hitta och förhandla din nästa bil. Vi granskar historik och skick, jämför marknadspriser och förhandlar fram bästa villkoren — helt utan press.
             </p>
           </div>
 
@@ -255,11 +255,11 @@ export default function QuotePage({
                 color: 'bg-[#0e6efe]',
                 title: 'Vi hittar rätt bil åt dig',
                 body: 'Berätta vad du söker — märke, budget eller bara ett behov. Vi söker i hela marknaden och presenterar de bästa alternativen.',
-                stat: '100+',
-                statLabel: 'märken i vår databas',
+                stat: null,
+                statLabel: null,
               },
               {
-                icon: Gavel,
+                icon: TrendingDown,
                 color: 'bg-emerald-500',
                 title: 'Vi förhandlar priset',
                 body: 'Vår expert tar dialogen med handlaren, pressar priset och förhandlar fram bästa ränta, tillval och villkor.',
@@ -267,8 +267,8 @@ export default function QuotePage({
                 statLabel: 'genomsnittlig besparing',
               },
               {
-                icon: ShieldCheck,
-                color: 'bg-amber-500',
+                icon: Lock,
+                color: 'bg-slate-700',
                 title: 'Trygg och utan press',
                 body: 'Du bestämmer. Vi granskar historik och skick innan affär. Ingen bindning, inga dolda avgifter — du tackar ja eller nej.',
                 stat: '100%',
@@ -283,10 +283,12 @@ export default function QuotePage({
                   <h4 className="text-[16px] font-bold text-slate-900 leading-snug mb-2">{title}</h4>
                   <p className="text-[14px] text-slate-500 leading-relaxed">{body}</p>
                 </div>
-                <div className="pt-3 border-t border-slate-200">
-                  <p className="text-[22px] font-bold text-slate-900 leading-none">{stat}</p>
-                  <p className="text-[12px] text-slate-400 mt-1">{statLabel}</p>
-                </div>
+                {stat && (
+                  <div className="pt-3 border-t border-slate-200">
+                    <p className="text-[22px] font-bold text-slate-900 leading-none">{stat}</p>
+                    <p className="text-[12px] text-slate-400 mt-1">{statLabel}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
