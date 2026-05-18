@@ -51,10 +51,11 @@ interface BuyDetailsStepProps {
   track: BuyTrack;
   initialData: BuyDetailsData;
   initialBil?: string;
+  lockedCar?: string;
   onNext: (data: BuyDetailsData) => void;
 }
 
-export default function BuyDetailsStep({ track, initialData, initialBil, onNext }: BuyDetailsStepProps) {
+export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, onNext }: BuyDetailsStepProps) {
   const [d, setD] = useState<BuyDetailsData>({
     ...initialData,
     carModel: initialData.carModel || initialBil || '',
@@ -133,18 +134,20 @@ export default function BuyDetailsStep({ track, initialData, initialBil, onNext 
             <FieldError message={errors.linkOrSeller} />
           </div>
 
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
-              Vilken bil?
-            </label>
-            <input
-              type="text"
-              value={d.carModel}
-              onChange={e => set('carModel', e.target.value)}
-              placeholder="T.ex. BMW X3 2022"
-              className="form-control"
-            />
-          </div>
+          {!lockedCar && (
+            <div className="py-6 sm:py-7">
+              <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+                Vilken bil?
+              </label>
+              <input
+                type="text"
+                value={d.carModel}
+                onChange={e => set('carModel', e.target.value)}
+                placeholder="T.ex. BMW X3 2022"
+                className="form-control"
+              />
+            </div>
+          )}
         </>
       )}
 

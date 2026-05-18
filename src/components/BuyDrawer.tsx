@@ -17,9 +17,10 @@ type FormStep = 'track' | 'details' | 'tradeIn' | 'contact' | 'done';
 
 export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
   const open = car !== null;
+  const hasSpecificCar = !!car;
 
   const [track, setTrack] = useState<BuyTrack>('found');
-  const [step, setStep] = useState<FormStep>('track');
+  const [step, setStep] = useState<FormStep>(hasSpecificCar ? 'details' : 'track');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -64,7 +65,7 @@ export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
   useEffect(() => {
     if (car !== null) {
       setTrack('found');
-      setStep('track');
+      setStep(car ? 'details' : 'track');
       setError(null);
       setDetails({
         linkOrSeller: '',
@@ -96,6 +97,7 @@ export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
   }, [open]);
 
   const buildStepFlow = (): FormStep[] => {
+    if (hasSpecificCar) return ['details', 'tradeIn', 'contact'];
     if (track === 'trade') return ['track', 'details', 'contact'];
     return ['track', 'details', 'tradeIn', 'contact'];
   };
@@ -107,7 +109,7 @@ export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
 
   const titles: Record<FormStep, string> = {
     track: 'Hur vill du gå vidare?',
-    details: track === 'found' ? 'Berätta om bilen' : track === 'searching' ? 'Berätta vad du söker' : 'Berätta om ditt byte',
+    details: hasSpecificCar ? `Förhandla – ${car}` : (track === 'found' ? 'Berätta om bilen' : track === 'searching' ? 'Berätta vad du söker' : 'Berätta om ditt byte'),
     tradeIn: 'Inbytesbil',
     contact: 'Dina uppgifter',
     done: 'Tack!',
@@ -243,7 +245,7 @@ export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
             <div className="px-5 sm:px-6 pt-2 pb-4 border-b border-slate-100 shrink-0">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  {car && step !== 'done' && (
+                  {car && !hasSpecificCar && step !== 'done' && (
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="inline-flex items-center h-7 px-3 bg-[#0e6efe]/10 text-[#0e6efe] font-semibold text-[13px] rounded-full">
                         {car}
@@ -274,7 +276,7 @@ export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
                   )}
                 </div>
                 <div className="flex items-center gap-2 shrink-0 mt-1">
-                  {step !== 'track' && step !== 'done' && (
+                  {step !== 'done' && !(step === 'track') && !(hasSpecificCar && step === 'details') && (
                     <button
                       type="button"
                       onClick={handleBack}
@@ -321,6 +323,7 @@ export default function BuyDrawer({ car, onClose }: BuyDrawerProps) {
                   track={track}
                   initialData={details}
                   initialBil={car ?? ''}
+                  lockedCar={hasSpecificCar ? car! : undefined}
                   onNext={(data) => {
                     setDetails(data);
                     goNext();
