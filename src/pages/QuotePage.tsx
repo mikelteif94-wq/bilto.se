@@ -457,8 +457,8 @@ export default function QuotePage({
                 icon: ShieldCheck,
                 title: 'Vi kollar att den håller',
                 text: 'Vi kontrollerar servicehistorik, eventuella skador och tidigare ägare. Inga otrevliga överraskningar efter köpet.',
-                svg: '/benefit2.e5b8ac47 copy.svg',
-                imgClass: 'w-auto h-[80px] sm:h-[100px] object-contain group-hover:scale-105 transition-transform duration-300',
+                svg: '/BSM_car_sale_key_woman_handover_101122.jpg',
+                imgClass: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300',
               },
               {
                 icon: Phone,
@@ -525,7 +525,7 @@ export default function QuotePage({
 
             <div className="lg:col-span-3 order-1 lg:order-2 flex items-center justify-center">
               <img
-                src="/infographic_svenska_updated copy.svg"
+                src="/Blå_bilikon_i_vit_cirkel.png"
                 alt="Bilinspektion med datapunkter: olyckshistorik, antal ägare, bilens skick, körsträcka och bilalternativ"
                 className="w-full max-w-[600px] sm:max-w-[700px] h-auto"
               />

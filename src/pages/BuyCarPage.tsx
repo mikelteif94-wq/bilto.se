@@ -159,7 +159,7 @@ export default function BuyCarPage({
         phone: contactData.telefon,
         preferred_time: contactData.preferredTime,
         status: 'new',
-      } as never).select('id').maybeSingle();
+      }).select('id').maybeSingle();
 
       if (dbError) {
         setError('Kunde inte spara din förfrågan. Försök igen eller ring oss.');

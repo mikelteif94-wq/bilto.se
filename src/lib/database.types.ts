@@ -506,6 +506,7 @@ export type Database = {
         Row: {
           id: string;
           created_at: string;
+          updated_at: string;
           search_option: string;
           regnummer: string;
           miltal: number;
@@ -526,10 +527,17 @@ export type Database = {
           status: string;
           handled_by: string | null;
           notes: string;
+          quiz_answers: Record<string, unknown> | null;
+          has_trade_in: boolean;
+          trade_in_reg: string;
+          current_loan: string;
+          current_interest_rate: string;
+          desired_monthly_cost: string;
         };
         Insert: {
           id?: string;
           created_at?: string;
+          updated_at?: string;
           search_option?: string;
           regnummer?: string;
           miltal?: number;
@@ -550,10 +558,17 @@ export type Database = {
           status?: string;
           handled_by?: string | null;
           notes?: string;
+          quiz_answers?: Record<string, unknown> | null;
+          has_trade_in?: boolean;
+          trade_in_reg?: string;
+          current_loan?: string;
+          current_interest_rate?: string;
+          desired_monthly_cost?: string;
         };
         Update: {
           id?: string;
           created_at?: string;
+          updated_at?: string;
           search_option?: string;
           regnummer?: string;
           miltal?: number;
@@ -574,6 +589,12 @@ export type Database = {
           status?: string;
           handled_by?: string | null;
           notes?: string;
+          quiz_answers?: Record<string, unknown> | null;
+          has_trade_in?: boolean;
+          trade_in_reg?: string;
+          current_loan?: string;
+          current_interest_rate?: string;
+          desired_monthly_cost?: string;
         };
       };
     };
