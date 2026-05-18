@@ -158,6 +158,7 @@ export default function ReviewsSection({ variant = 'light' }: Props) {
         <div className="sm:hidden -mx-6">
           <div
             ref={scrollerRef}
+            style={{ touchAction: 'pan-y' }}
             className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-6 pb-4 scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           >
             {REVIEWS.map((r, idx) => (

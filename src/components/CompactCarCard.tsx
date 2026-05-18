@@ -26,6 +26,7 @@ export default function CompactCarCard({
       {...(!disableMotion && { whileInView: { opacity: 1, y: 0 }, viewport: { once: true } })}
       transition={{ duration: disableMotion ? 0 : 0.35, delay: disableMotion ? 0 : index * 0.04 }}
       className="group relative bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all duration-300 cursor-pointer ring-1 ring-slate-100 hover:ring-slate-200"
+      style={{ touchAction: 'pan-y' }}
       onClick={onDetail}
     >
       {/* Image */}

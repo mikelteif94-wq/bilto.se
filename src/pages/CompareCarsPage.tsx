@@ -1308,6 +1308,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     {...(!isMobile && { whileInView: { opacity: 1, y: 0 }, viewport: { once: true } })}
                     transition={{ duration: isMobile ? 0 : 0.35, delay: isMobile ? 0 : i * 0.06 }}
                     onClick={() => setDetailCar(car)}
+                    style={{ touchAction: 'pan-y' }}
                     className="flex flex-col rounded-2xl overflow-hidden cursor-pointer group hover:shadow-lg transition-all duration-300 ring-1 ring-white hover:ring-slate-200"
                   >
                     <div className="relative w-full aspect-[4/3] bg-white flex items-end justify-center overflow-hidden">

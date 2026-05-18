@@ -246,7 +246,7 @@ export default function QuotePage({
             </p>
           </div>
 
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-2 -mx-5 px-5 scrollbar-hide sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:pb-0">
+          <div style={{ touchAction: 'pan-y' }} className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-2 -mx-5 px-5 scrollbar-hide sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:pb-0">
             {tradeInCars.map((car, i) => {
               if (!car) return null;
               const imageUrl = getCarImage(car.brand_display, car.model_display);

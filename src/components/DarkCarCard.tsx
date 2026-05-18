@@ -69,6 +69,7 @@ export default function DarkCarCard({
       viewport={{ once: true }}
       transition={{ delay: index * 0.06, duration: 0.4 }}
       className="group relative bg-white rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] transition-all duration-400 cursor-pointer ring-1 ring-slate-100 hover:ring-slate-200"
+      style={{ touchAction: 'pan-y' }}
       onClick={onDetail}
     >
       {/* Image */}
