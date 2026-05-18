@@ -23,7 +23,7 @@ export default function FinancingCalc({ carPrice }: FinancingCalcProps) {
       <div className="w-1.5 h-1.5 rounded-full bg-[#0e6efe]" />
       <span className="text-[13px] text-slate-600">Finansiering ca</span>
       <span className="text-[14px] font-bold text-[#0e6efe]">{formatted} kr/mån</span>
-      <span className="text-[11px] text-slate-400">· 6,49% · 36 mån</span>
+      <span className="text-[11px] text-slate-400">· baserat på marknadsränta</span>
     </div>
   );
 }
