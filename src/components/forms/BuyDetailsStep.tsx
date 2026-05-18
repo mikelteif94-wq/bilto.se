@@ -12,13 +12,6 @@ const BUYING_STAGES = [
   { value: 'ready_to_buy', label: 'Redo att köpa' },
 ];
 
-const BUDGETS = [
-  { value: '0-150000', label: '0 – 150 000 kr' },
-  { value: '150000-250000', label: '150 000 – 250 000 kr' },
-  { value: '250000-400000', label: '250 000 – 400 000 kr' },
-  { value: '400000-600000', label: '400 000 – 600 000 kr' },
-  { value: '600000+', label: '600 000 kr+' },
-];
 
 const FUEL_TYPES = [
   { value: 'petrol', label: 'Bensin' },
@@ -95,32 +88,11 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   const models = d.carBrand ? (CAR_BRANDS[d.carBrand] ?? []) : [];
   const carPriceNum = parsePriceInput(d.carPrice);
 
-  const calcPrice = (() => {
-    if (carPriceNum >= 50000) return carPriceNum;
-    if (!lockedCar && track === 'searching' && d.budget) {
-      const map: Record<string, number> = {
-        '0-150000': 100000,
-        '150000-250000': 200000,
-        '250000-400000': 325000,
-        '400000-600000': 500000,
-        '600000+': 700000,
-      };
-      return map[d.budget] ?? 0;
-    }
-    return 0;
-  })();
 
   const validate = (): boolean => {
     const e: Record<string, string> = {};
     if (!d.buyingStage) e.buyingStage = 'Välj var du är i processen';
     if (!d.paymentType) e.paymentType = 'Välj hur du vill betala';
-    if (d.paymentType === 'finance') {
-      if (!d.desiredMonthlyCost.trim()) {
-        e.desiredMonthlyCost = 'Fyll i önskad månadskostnad';
-      } else if (!/^\d+([.,]\d+)?$/.test(d.desiredMonthlyCost.trim().replace(/\s/g, ''))) {
-        e.desiredMonthlyCost = 'Månadskostnad måste vara en siffra';
-      }
-    }
     if (track === 'found' && !d.linkOrSeller.trim()) {
       e.linkOrSeller = 'Fyll i länk eller säljarens namn';
     }
@@ -319,23 +291,78 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           </div>
 
           <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
-              Budget
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+              Max miltal
             </label>
+            <p className="text-sm text-slate-500 mb-3">
+              Hur många mil får bilen max ha gått?
+            </p>
             <div className="w-full sm:max-w-xs relative">
-              <select
-                value={d.budget}
-                onChange={e => set('budget', e.target.value)}
-                className="form-control appearance-none pr-10"
-              >
-                <option value="">Välj budget</option>
-                {BUDGETS.map(b => (
-                  <option key={b.value} value={b.value}>{b.label}</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.maxMiltal}
+                onChange={e => set('maxMiltal', e.target.value)}
+                placeholder="T.ex. 5 000"
+                className="form-control pr-14"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none">mil</span>
             </div>
-            {calcPrice >= 50000 && <FinancingCalc carPrice={calcPrice} />}
+          </div>
+
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+              Årsmodell
+            </label>
+            <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
+              <div>
+                <p className="text-xs text-slate-500 mb-1.5">Från</p>
+                <div className="relative">
+                  <select
+                    value={d.yearFrom}
+                    onChange={e => set('yearFrom', e.target.value)}
+                    className="form-control appearance-none pr-8 text-[14px]"
+                  >
+                    <option value="">Välj år</option>
+                    {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 mb-1.5">Till</p>
+                <div className="relative">
+                  <select
+                    value={d.yearTo}
+                    onChange={e => set('yearTo', e.target.value)}
+                    className="form-control appearance-none pr-8 text-[14px]"
+                  >
+                    <option value="">Välj år</option>
+                    {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+              Max budget (kr)
+              <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+            </label>
+            <p className="text-sm text-slate-500 mb-3">Totalpris för bilen.</p>
+            <div className="w-full sm:max-w-xs">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.carPrice}
+                onChange={e => set('carPrice', e.target.value)}
+                placeholder="T.ex. 350 000"
+                className="form-control"
+              />
+            </div>
+            {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
 
           <div className="py-6 sm:py-7">
@@ -523,26 +550,6 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         </div>
         <FieldError message={errors.paymentType} />
       </div>
-
-      {/* ── Önskad månadskostnad ── */}
-      {d.paymentType === 'finance' && (
-        <div className="py-6 sm:py-7">
-          <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
-            Önskad månadskostnad (kr)
-          </label>
-          <div className="w-full sm:max-w-xs">
-            <input
-              type="text"
-              inputMode="numeric"
-              value={d.desiredMonthlyCost}
-              onChange={e => set('desiredMonthlyCost', e.target.value)}
-              placeholder="T.ex. 4 500"
-              className={`form-control ${errors.desiredMonthlyCost ? 'form-control-error' : ''}`}
-            />
-          </div>
-          <FieldError message={errors.desiredMonthlyCost} />
-        </div>
-      )}
 
       {/* ── Övriga önskemål ── */}
       <div className="py-6 sm:py-7">
