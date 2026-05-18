@@ -756,6 +756,33 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         </div>
       </section>
 
+      {/* How it works */}
+      <section className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-b border-slate-100">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 text-center mb-8 sm:mb-10">Så fungerar det</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+            {[
+              { step: '1', title: 'Hitta din bil', desc: 'Jämför våra toppval, använd vår smarta sökning eller testa bilmatch för att hitta rätt.', icon: Search },
+              { step: '2', title: 'Vi förhandlar åt dig', desc: 'Vi kontaktar säljaren, pressar priset och granskar bilen åt dig. Du slipper förhandla själv.', icon: Megaphone },
+              { step: '3', title: 'Affären är klar', desc: 'Du kan tuta och köra med gott samvete -- vi har sett till att du gjort en riktigt bra deal.', icon: Handshake },
+            ].map(s => {
+              const StepIcon = s.icon;
+              return (
+              <div key={s.step} className="flex sm:flex-col items-start sm:items-center gap-4 sm:gap-0 sm:text-center">
+                <div className="w-10 h-10 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0 sm:mb-3">
+                  <StepIcon className="w-[18px] h-[18px]" strokeWidth={2.4} />
+                </div>
+                <div>
+                  <p className="text-[15px] font-semibold text-slate-900 mb-1">{s.title}</p>
+                  <p className="text-[13px] text-slate-500 leading-relaxed">{s.desc}</p>
+                </div>
+              </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* Browse by budget */}
       <section className="py-10 sm:py-16 px-4 sm:px-6 bg-white">
         <div className="max-w-6xl mx-auto">
@@ -1772,33 +1799,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       </section>
 
       <ReviewsSection variant="muted" />
-
-      {/* How it works */}
-      <section className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-t border-slate-100">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 text-center mb-8 sm:mb-10">Så fungerar det</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
-            {[
-              { step: '1', title: 'Hitta din bil', desc: 'Jämför våra toppval, använd vår smarta sökning eller testa bilmatch för att hitta rätt.', icon: Search },
-              { step: '2', title: 'Vi förhandlar åt dig', desc: 'Vi kontaktar säljaren, pressar priset och granskar bilen åt dig. Du slipper förhandla själv.', icon: Megaphone },
-              { step: '3', title: 'Affären är klar', desc: 'Du kan tuta och köra med gott samvete -- vi har sett till att du gjort en riktigt bra deal.', icon: Handshake },
-            ].map(s => {
-              const StepIcon = s.icon;
-              return (
-              <div key={s.step} className="flex sm:flex-col items-start sm:items-center gap-4 sm:gap-0 sm:text-center">
-                <div className="w-10 h-10 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0 sm:mb-3">
-                  <StepIcon className="w-[18px] h-[18px]" strokeWidth={2.4} />
-                </div>
-                <div>
-                  <p className="text-[15px] font-semibold text-slate-900 mb-1">{s.title}</p>
-                  <p className="text-[13px] text-slate-500 leading-relaxed">{s.desc}</p>
-                </div>
-              </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       {/* Contextual CTAs */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white border-t border-slate-100">
