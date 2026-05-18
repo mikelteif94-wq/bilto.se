@@ -2182,27 +2182,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="bg-[#0e6efe] py-14 sm:py-20 px-5 sm:px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-[22px] sm:text-[36px] font-bold text-white leading-[1.1] tracking-tight">
-            Redo att låta oss förhandla åt dig?
-          </h2>
-          <p className="mt-3 text-white/80 text-[14px] sm:text-[16px] max-w-md mx-auto">
-            Det tar två minuter att skicka in. Vi hör av oss inom 24 timmar.
-          </p>
-          <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <button onClick={() => openContactForCar(null)} className="h-12 px-8 rounded-full bg-white text-[#0e6efe] font-semibold text-[15px] inline-flex items-center gap-2 group hover:bg-slate-50 transition shadow-lg">
-              Kom igång <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-            </button>
-            <button onClick={scrollToQuiz} className="h-12 px-6 rounded-full border-2 border-white/40 text-white font-semibold text-[14px] hover:bg-white/10 inline-flex items-center gap-2 transition">
-              <Search className="w-4 h-4" />
-              Hitta din bilmatch
-            </button>
-          </div>
-        </div>
-      </section>
-
       <SiteFooter />
 
       {/* Buy drawer */}
