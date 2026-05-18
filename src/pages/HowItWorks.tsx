@@ -519,20 +519,6 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
             </p>
           </div>
 
-          {/* Total besparing highlight */}
-          <div className="mb-8 sm:mb-10 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-2xl px-5 py-4 sm:px-7 sm:py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-              <p className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.12em] mb-1">Vad vi sparar åt dig</p>
-              <p className="text-[15px] text-slate-700 leading-snug max-w-sm">
-                Josefin köpte en Volvo XC40 — vi förhandlade ner räntan, fick med dubbdäck, 2 års garanti och 7 000 kr mer för hennes inbyte.
-              </p>
-            </div>
-            <div className="shrink-0 flex flex-col items-start sm:items-end">
-              <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-[0.1em] mb-0.5">Total besparing</p>
-              <p className="text-[28px] sm:text-[32px] font-bold text-[#0e6efe] tabular-nums leading-none">~39 000 kr</p>
-            </div>
-          </div>
-
           <div className="flex items-center justify-center gap-2 flex-wrap mb-8">
             {BUDGET_PILLS.map((pill) => {
               const isActive = activeBudgetPill === pill.max;

@@ -31,13 +31,17 @@ export function Select({ value, onValueChange, children }: SelectProps) {
 
   useEffect(() => {
     if (!open) return;
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleOutside = (e: MouseEvent | TouchEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleOutside);
+    document.addEventListener('touchstart', handleOutside, { passive: true });
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      document.removeEventListener('touchstart', handleOutside);
+    };
   }, [open]);
 
   return (
@@ -88,7 +92,7 @@ export function SelectContent({ children }: SelectContentProps) {
   if (!open) return null;
 
   return (
-    <div className="absolute z-50 mt-1 w-full min-w-[160px] max-h-60 overflow-y-auto rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+    <div className="absolute z-50 mt-1 w-full min-w-[160px] max-h-60 overflow-y-auto overscroll-contain rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
       {children}
     </div>
   );

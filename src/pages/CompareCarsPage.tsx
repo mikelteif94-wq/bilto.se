@@ -1362,7 +1362,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
           <div className="bg-slate-50 rounded-2xl ring-1 ring-slate-200 overflow-hidden">
             {chatMessages.length > 0 && (
-              <div className="max-h-[500px] overflow-y-auto">
+              <div className="max-h-[500px] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
                 <div className="p-4 sm:p-6 space-y-4">
                   {chatMessages.map((msg, i) => (
                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -1661,7 +1661,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         <div className="max-w-3xl mx-auto">
           <AnimatePresence mode="wait">
             {quizStep === 'idle' && (
-              <motion.div key="quiz-idle" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-center">
+              <motion.div key="quiz-idle" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="text-center">
                 <div className="max-w-lg mx-auto">
                   {/* Car image teasers */}
                   <div className="flex items-center justify-center gap-3 mb-8">
@@ -1675,6 +1675,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                           initial={isMobile ? false : { opacity: 0, y: 16 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: isMobile ? 0 : 0.1 + i * 0.12 }}
+                          style={{ touchAction: 'pan-y' }}
                           className="w-[100px] sm:w-[130px] aspect-[4/3] rounded-xl bg-white flex items-end justify-center overflow-hidden"
                         >
                           {img && <img src={img} alt="" className="w-full h-auto object-contain" />}
@@ -1704,19 +1705,19 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             )}
 
             {quizStep === 'active' && (
-              <motion.div key="quiz-active" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="max-w-lg mx-auto">
+              <motion.div key="quiz-active" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="max-w-lg mx-auto">
                 <QuizFlow onComplete={handleQuizComplete} onBack={handleQuizReset} preselectedCar={quizPreselectedCar} />
               </motion.div>
             )}
 
             {quizStep === 'analyzing' && quizAnswers && (
-              <motion.div key="quiz-analyzing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-sm mx-auto">
+              <motion.div key="quiz-analyzing" initial={isMobile ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="max-w-sm mx-auto">
                 <QuizComplete answers={quizAnswers} isAnalysisReady={analysisReady} onShowResults={handleQuizShowResults} />
               </motion.div>
             )}
 
             {quizStep === 'results' && (
-              <motion.div key="quiz-results" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <motion.div key="quiz-results" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }}>
                 <div className="mb-6">
                   <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900">
                     {quizResults.length > 0 ? `Vi hittade ${quizResults.length} bilar som passar dig` : 'Inga exakta matchningar'}
