@@ -524,12 +524,12 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
             <div>
               <p className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.12em] mb-1">Vad vi sparar åt dig</p>
               <p className="text-[15px] text-slate-700 leading-snug max-w-sm">
-                Jonas ville ha en Toyota RAV4 — vi förhandlade ner priset, pressade räntan och fick med däck och garanti.
+                Josefin köpte en Volvo XC40 — vi förhandlade ner räntan, fick med dubbdäck, 2 års garanti och 7 000 kr mer för hennes inbyte.
               </p>
             </div>
             <div className="shrink-0 flex flex-col items-start sm:items-end">
               <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-[0.1em] mb-0.5">Total besparing</p>
-              <p className="text-[28px] sm:text-[32px] font-bold text-[#0e6efe] tabular-nums leading-none">~32 390 kr</p>
+              <p className="text-[28px] sm:text-[32px] font-bold text-[#0e6efe] tabular-nums leading-none">~39 000 kr</p>
             </div>
           </div>
 
@@ -912,7 +912,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         </div>
       </section>
 
-      {/* Jonas testimonial */}
+      {/* Josefin testimonial */}
       <section className="bg-white relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
           <div className="grid md:grid-cols-12 gap-10 items-center">
@@ -920,24 +920,37 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
               <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-4 block">
                 Kundcase
               </span>
-              <h2 className="text-[24px] sm:text-[42px] font-semibold leading-[1.15] sm:leading-[1.08] text-slate-900 tracking-[-0.02em]">
-                "Bilto fixade en fantastisk deal -- jag behövde inte lyfta ett finger."
+              <h2 className="text-[24px] sm:text-[38px] font-semibold leading-[1.15] sm:leading-[1.08] text-slate-900 tracking-[-0.02em]">
+                "Jag visste ingenting om bilar — Bilto skötte allt och jag fick mer än jag vågat hoppas på."
               </h2>
               <p className="text-slate-600 mt-5 text-[15px] sm:text-[16px] leading-[1.65] max-w-md">
-                Jonas ville ha en Toyota RAV4 men visste att handlare ofta trycker upp priset och tar extra betalt för tillval. Bilto tog förhandlingen, pressade ner räntan och fick med däck och garanti som inte ingick från början.
+                Josefin hade hittat en Volvo XC40 men kände sig osäker. Annonsen visade elstolar som inte fanns — Bilto fick 15 000 kr i ersättning för det, förhandlade ner räntan 2 %, fick med dubbdäck och 2 års garanti, och pressade upp inbytesvärdet med 7 000 kr.
               </p>
-              <p className="text-[13px] text-slate-500 mt-8">
-                Jonas A. -- Toyota RAV4, 2021
+              <dl className="mt-6 grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Ränta', value: '−2 %' },
+                  { label: 'Inbyte', value: '+7 000 kr' },
+                  { label: 'Felaktig annons', value: '15 000 kr' },
+                  { label: 'Dubbdäck + garanti', value: 'ingår' },
+                ].map((item) => (
+                  <div key={item.label} className="bg-slate-50 rounded-xl px-4 py-3">
+                    <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.1em]">{item.label}</p>
+                    <p className="text-[17px] font-bold text-slate-900 mt-0.5">{item.value}</p>
+                  </div>
+                ))}
+              </dl>
+              <p className="text-[13px] text-slate-500 mt-6">
+                Josefin L. — Volvo XC40, 2022
               </p>
             </div>
             <div className="md:col-span-7 order-1 md:order-2">
               <div className="relative rounded-2xl overflow-hidden">
                 <img
-                  src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(Instagram_Post_(45))_copy_copy_copy_copy_copy.jpg"
-                  alt="Jonas framför sin Toyota RAV4"
-                  className="w-full h-[380px] sm:h-[580px] md:h-[680px] object-cover object-center"
+                  src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(1200_x_1400_px)_(2000_x_2000_px)_(1).png"
+                  alt="Josefin framför sin Volvo XC40"
+                  className="w-full h-[380px] sm:h-[580px] md:h-[680px] object-cover object-top"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
               </div>
             </div>
           </div>
