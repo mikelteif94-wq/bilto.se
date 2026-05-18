@@ -433,9 +433,6 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                     <Icon className="w-[16px] h-[16px] sm:w-[18px] sm:h-[18px] text-white" strokeWidth={2.4} />
                   </div>
                   <div className="flex items-baseline gap-3 mb-2">
-                    <span className="text-[13px] font-medium text-slate-400 tabular-nums">
-                      0{i + 1}
-                    </span>
                     <h3 className="text-[20px] sm:text-[24px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
                       {step.title}
                     </h3>
