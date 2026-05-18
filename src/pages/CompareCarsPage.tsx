@@ -4,7 +4,7 @@ import {
   Sparkles, Zap, Truck, Leaf, CarFront,
   Send, Loader2, RotateCcw, Info, Calculator,
   GitCompareArrows, X, ArrowDown, Phone, Handshake,
-  ShieldCheck, Megaphone, CheckCircle, ArrowLeftRight,
+  ShieldCheck, Megaphone, CheckCircle, ArrowLeftRight, ChevronDown,
 } from 'lucide-react';
 import ReviewsSection from '../components/ReviewsSection';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -561,6 +561,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   }, []);
   const [detailCar, setDetailCar] = useState<ComparisonCar | null>(null);
   const [activeCategory, setActiveCategory] = useState<CategoryKey>('alla');
+  const [showAllCars, setShowAllCars] = useState(false);
 
   // Selection state
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -629,11 +630,14 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
     ids.map(id => allCarsMap.get(id)).filter((c): c is ComparisonCar => !!c),
   [allCarsMap]);
 
-  const visibleCars = useMemo(() => {
+  const allCategoryCars = useMemo(() => {
     const ids = CATEGORY_IDS[activeCategory];
-    const list = ids === null ? getCuratedList(CURATED_IDS) : getCuratedList(ids);
-    return list.slice(0, 16);
+    return ids === null ? getCuratedList(CURATED_IDS) : getCuratedList(ids);
   }, [activeCategory, getCuratedList]);
+
+  const visibleCars = useMemo(() => {
+    return showAllCars ? allCategoryCars.slice(0, 16) : allCategoryCars.slice(0, 8);
+  }, [allCategoryCars, showAllCars]);
 
   // Selection helpers
   const toggleSelect = useCallback((id: string) => {
@@ -1115,7 +1119,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               return (
                 <button
                   key={cat.key}
-                  onClick={() => setActiveCategory(cat.key)}
+                  onClick={() => { setActiveCategory(cat.key); setShowAllCars(false); }}
                   className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                     isActive
                       ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/20'
@@ -1179,6 +1183,19 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               })}
             </motion.div>
           </AnimatePresence>
+
+          {!showAllCars && allCategoryCars.length > 8 && (
+            <div className="flex justify-center mt-6">
+              <button
+                type="button"
+                onClick={() => setShowAllCars(true)}
+                className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white text-slate-700 text-[14px] font-semibold ring-1 ring-slate-200 hover:ring-slate-300 hover:shadow-sm transition-all duration-200"
+              >
+                Visa fler bilar
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
