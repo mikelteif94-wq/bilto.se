@@ -70,7 +70,8 @@ Deno.serve(async (req: Request) => {
       const html = `<!doctype html>
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:32px;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
-    <tr><td style="padding:28px 32px;background:#0e6efe;">
+    <tr><td style="padding:24px 32px 20px;background:#0e6efe;text-align:center;">
+      <img src="https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" style="height:48px;width:auto;display:inline-block;margin-bottom:12px;" />
       <h1 style="margin:0;color:#ffffff;font-size:22px;line-height:1.3;">Hej ${escapeHtml(firstName)}!</h1>
       <p style="margin:6px 0 0;color:rgba(255,255,255,0.9);font-size:15px;">Vi har hittat en bil som matchar din förfrågan.</p>
     </td></tr>
@@ -254,7 +255,8 @@ function renderOfferHtml(row: OfferRow, portalUrl: string): string {
   return `<!doctype html>
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:32px;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
-    <tr><td style="padding:28px 32px;background:#0e6efe;">
+    <tr><td style="padding:24px 32px 20px;background:#0e6efe;text-align:center;">
+      <img src="https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" style="height:48px;width:auto;display:inline-block;margin-bottom:12px;" />
       <h1 style="margin:0;color:#ffffff;font-size:22px;line-height:1.3;">Hej ${escapeHtml(firstName)}!</h1>
       <p style="margin:6px 0 0;color:rgba(255,255,255,0.9);font-size:15px;">Här är vad vi förhandlat fram åt dig.</p>
     </td></tr>

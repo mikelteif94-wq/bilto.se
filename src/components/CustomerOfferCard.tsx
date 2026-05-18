@@ -1,4 +1,4 @@
-import { Star, Snowflake, Shield, Truck, TrendingDown, Percent, CreditCard, Gift } from 'lucide-react';
+import { Star, Snowflake, Shield, Truck, TrendingDown, Percent, CreditCard, Gift, ArrowLeftRight } from 'lucide-react';
 
 interface Offer {
   id: string;
@@ -18,6 +18,9 @@ interface Offer {
   home_delivery_value: number;
   other_savings_description: string;
   other_savings_value: number;
+  trade_in_included?: boolean;
+  trade_in_reg?: string;
+  trade_in_value?: number;
   total_savings: number;
   total_deal_price: number;
   deal_rating: string;
@@ -141,6 +144,16 @@ export default function CustomerOfferCard({ offer }: { offer: Offer }) {
               label={offer.other_savings_description || 'Ovrigt'}
               value={offer.other_savings_value}
               badge="Ingar"
+            />
+          )}
+
+          {/* Trade-in */}
+          {offer.trade_in_included && (
+            <ExtraRow
+              icon={ArrowLeftRight}
+              label={offer.trade_in_reg ? `Inbyte ${offer.trade_in_reg}` : 'Inbytesbil'}
+              value={offer.trade_in_value ?? 0}
+              badge="Inkluderat"
             />
           )}
         </div>

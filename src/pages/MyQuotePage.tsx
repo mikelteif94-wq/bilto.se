@@ -9,6 +9,10 @@ import {
   Phone,
   Search,
   Sparkles,
+  CheckCircle2,
+  ArrowLeftRight,
+  CalendarDays,
+  CircleDollarSign,
 } from 'lucide-react';
 import CustomerOfferCard from '../components/CustomerOfferCard';
 
@@ -27,6 +31,8 @@ interface QuoteData {
   payment_type: string;
   status: string;
   created_at: string;
+  has_trade_in?: boolean;
+  trade_in_reg?: string;
 }
 
 interface Suggestion {
@@ -65,6 +71,9 @@ interface Offer {
   deal_rating: string;
   admin_comment: string;
   sent_at: string | null;
+  trade_in_included?: boolean;
+  trade_in_reg?: string;
+  trade_in_value?: number;
 }
 
 function endpoint(): string {
@@ -82,11 +91,24 @@ function formatKr(v: number): string {
   return v.toLocaleString('sv-SE');
 }
 
+function capitalize(s: string): string {
+  if (!s) return s;
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
 const OPTION_LABELS: Record<string, string> = {
-  searching: 'Soker bil',
+  searching: 'Söker bil',
+  know: 'Söker bil',
+  explore: 'Söker bil',
   found: 'Hittat bil',
   trade: 'Byta in',
 };
+
+const STATUS_STEPS = [
+  { key: 'received', label: 'Förfrågan mottagen' },
+  { key: 'working', label: 'Din expert jobbar' },
+  { key: 'offer', label: 'Erbjudande redo' },
+];
 
 export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
   const [loading, setLoading] = useState(true);
@@ -109,7 +131,7 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
       );
       const json = await resp.json();
       if (!resp.ok) {
-        setError(json.error ?? 'Kunde inte hamta din forfragan.');
+        setError(json.error ?? 'Kunde inte hämta din förfrågan.');
         setQuote(null);
       } else {
         setQuote(json.quote);
@@ -134,10 +156,8 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
   if (error && !quote) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white rounded-md border border-slate-200 p-10 text-center shadow-sm">
-          <h1 className="text-xl font-bold text-slate-900 mb-2">
-            Lanken ar ogiltig
-          </h1>
+        <div className="max-w-md w-full bg-white rounded-2xl border border-slate-200 p-10 text-center shadow-sm">
+          <h1 className="text-xl font-bold text-slate-900 mb-2">Länken är ogiltig</h1>
           <p className="text-slate-500 mb-6">{error}</p>
           <button
             onClick={onBack}
@@ -153,69 +173,138 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
 
   if (!quote) return null;
 
-  const fornamn = quote.firstname || '';
-  const hasContent = suggestions.length > 0 || offers.length > 0;
+  const fornamn = capitalize(quote.firstname || '');
+  const hasOffers = offers.length > 0;
+  const hasSuggestions = suggestions.length > 0;
+  const hasContent = hasSuggestions || hasOffers;
+
+  // Progress: offers = step 3, suggestions = step 2, else step 1
+  const progressStep = hasOffers ? 2 : hasSuggestions ? 1 : 0;
+
+  // Context-aware status message
+  const carLabel = quote.car_model
+    ? quote.car_model
+    : OPTION_LABELS[quote.search_option] || 'din bil';
+
+  const statusMessage = quote.car_model
+    ? `Din expert håller på och letar en ${quote.car_model} åt dig.`
+    : 'Din personliga bilmäklare söker efter de bästa alternativen åt dig.';
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-[#0e6efe] h-16 flex items-center px-5 lg:px-8 sticky top-0 z-10">
-        <a href="/" className="flex items-center">
-          <img
-            src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
-            alt="Bilto"
-            className="h-20 lg:h-32 w-auto object-contain"
-          />
-        </a>
-        <button
-          onClick={onBack}
-          className="ml-auto flex items-center gap-2 text-white/90 hover:text-white transition"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm font-medium">Startsida</span>
-        </button>
+    <div className="min-h-screen bg-[#f8fafc]">
+      <header className="bg-[#0e6efe] sticky top-0 z-10 shadow-md">
+        <div className="max-w-4xl mx-auto px-5 lg:px-8 h-16 flex items-center">
+          <a href="/" className="flex items-center">
+            <img
+              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
+              alt="Bilto"
+              className="h-20 lg:h-32 w-auto object-contain"
+            />
+          </a>
+          <button
+            onClick={onBack}
+            className="ml-auto flex items-center gap-2 text-white/90 hover:text-white transition text-sm font-medium"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Startsida
+          </button>
+        </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6 sm:space-y-8">
-        {/* Greeting */}
-        <div>
-          <p className="text-sm text-slate-500 mb-1">
-            Hej {fornamn || 'och valkommen'}
-          </p>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            Din bilforfragan
-          </h1>
-          {quote.car_model && (
-            <p className="text-slate-600 mt-1">
-              {OPTION_LABELS[quote.search_option] || quote.search_option}
-              {quote.car_model ? ` -- ${quote.car_model}` : ''}
-            </p>
-          )}
-        </div>
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-7 sm:py-10 space-y-6 sm:space-y-8">
 
-        {/* Status */}
-        <div className="rounded-md border bg-teal-50 border-teal-200 p-6 flex gap-4">
-          <div className="text-teal-600 mt-0.5">
-            <Search className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold text-teal-900 mb-1">
-              Vi jobbar med din forfragan
-            </h2>
-            <p className="text-sm text-slate-700 leading-relaxed">
-              Din personliga bilmaklare soker efter de basta alternativen at dig.
-              Nar vi hittar nagot bra dyker det upp har nedan.
+        {/* Hero greeting */}
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-gradient-to-br from-[#0e6efe] to-[#1a7cff] px-6 py-6 sm:py-7">
+            <p className="text-white/75 text-sm font-medium mb-0.5">Hej {fornamn || 'och välkommen'}!</p>
+            <h1 className="text-[22px] sm:text-[26px] font-bold text-white leading-tight">
+              {hasOffers
+                ? `Ditt erbjudande på ${carLabel} är klart`
+                : hasSuggestions
+                ? `Vi har hittat alternativ åt dig`
+                : `Vi jobbar med din förfrågan`}
+            </h1>
+            <p className="text-white/80 text-[14px] mt-2 leading-relaxed">
+              {statusMessage}
             </p>
           </div>
+
+          {/* Progress tracker */}
+          <div className="px-6 py-5">
+            <div className="flex items-center gap-0">
+              {STATUS_STEPS.map((step, i) => {
+                const done = i < progressStep;
+                const active = i === progressStep;
+                return (
+                  <div key={step.key} className="flex items-center flex-1 last:flex-none">
+                    <div className="flex flex-col items-center gap-1.5 shrink-0">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                        done
+                          ? 'bg-emerald-500 text-white'
+                          : active
+                          ? 'bg-[#0e6efe] text-white ring-4 ring-[#0e6efe]/20'
+                          : 'bg-slate-100 text-slate-400'
+                      }`}>
+                        {done ? <CheckCircle2 className="w-4 h-4" /> : <span>{i + 1}</span>}
+                      </div>
+                      <span className={`text-[11px] font-medium text-center whitespace-nowrap ${
+                        done ? 'text-emerald-600' : active ? 'text-[#0e6efe]' : 'text-slate-400'
+                      }`}>
+                        {step.label}
+                      </span>
+                    </div>
+                    {i < STATUS_STEPS.length - 1 && (
+                      <div className={`h-0.5 flex-1 mx-2 rounded-full mb-5 transition-all ${
+                        i < progressStep ? 'bg-emerald-400' : 'bg-slate-200'
+                      }`} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
-        {/* Offers from admin */}
-        {offers.length > 0 && (
+        {/* Summary card */}
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+          <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Din förfrågan</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <SummaryItem
+              icon={quote.search_option === 'trade' ? ArrowLeftRight : quote.search_option === 'found' ? Car : Search}
+              label="Typ"
+              value={OPTION_LABELS[quote.search_option] || quote.search_option}
+            />
+            {quote.car_model && (
+              <SummaryItem icon={Car} label="Söker" value={quote.car_model} />
+            )}
+            {quote.budget && (
+              <SummaryItem
+                icon={CircleDollarSign}
+                label="Budget"
+                value={quote.budget.includes('kr') ? quote.budget : `${Number(quote.budget).toLocaleString('sv-SE')} kr`}
+              />
+            )}
+            <SummaryItem
+              icon={CalendarDays}
+              label="Inkom"
+              value={new Date(quote.created_at).toLocaleDateString('sv-SE', { day: 'numeric', month: 'long', year: 'numeric' })}
+            />
+            {quote.has_trade_in && (
+              <SummaryItem
+                icon={ArrowLeftRight}
+                label="Inbytesbil"
+                value={quote.trade_in_reg || 'Ja'}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Offers */}
+        {hasOffers && (
           <section>
             <div className="flex items-center gap-2 mb-4">
               <Sparkles className="w-5 h-5 text-[#0e6efe]" />
-              <h2 className="text-lg font-bold text-slate-900">
-                Dina erbjudanden
-              </h2>
+              <h2 className="text-lg font-bold text-slate-900">Dina erbjudanden</h2>
             </div>
             <div className="space-y-5">
               {offers.map((offer) => (
@@ -225,14 +314,12 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
           </section>
         )}
 
-        {/* Car suggestions */}
-        {suggestions.length > 0 && (
+        {/* Suggestions */}
+        {hasSuggestions && (
           <section>
             <div className="flex items-center gap-2 mb-4">
               <Car className="w-5 h-5 text-[#0e6efe]" />
-              <h2 className="text-lg font-bold text-slate-900">
-                Bilforslag fran Bilto
-              </h2>
+              <h2 className="text-lg font-bold text-slate-900">Bilförslag från din expert</h2>
             </div>
             <div className="grid gap-4">
               {suggestions.map((s) => (
@@ -243,30 +330,22 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
         )}
 
         {!hasContent && (
-          <div className="bg-white rounded-md border border-slate-200 p-8 text-center">
+          <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center shadow-sm">
             <Clock className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-            <h3 className="text-base font-semibold text-slate-900 mb-1">
-              Inget att visa annu
-            </h3>
+            <h3 className="text-base font-semibold text-slate-900 mb-1">Inget att visa ännu</h3>
             <p className="text-sm text-slate-500 max-w-sm mx-auto">
-              Vi arbetar med din forfragan. Sa snart vi har forslag eller
-              erbjudanden visas de har. Du far aven ett mejl nar nagot nytt
-              finns.
+              Vi arbetar med din förfrågan. Så snart vi har förslag eller erbjudanden visas de här. Du får även ett mejl när något nytt finns.
             </p>
           </div>
         )}
 
         {/* Contact */}
-        <div className="bg-white rounded-md border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
             <MessageSquare className="w-5 h-5 text-slate-400" />
-            <h3 className="text-base font-semibold text-slate-900">
-              Fragor?
-            </h3>
+            <h3 className="text-base font-semibold text-slate-900">Frågor?</h3>
           </div>
-          <p className="text-sm text-slate-600 mb-4">
-            Din bilmaklare hjalper dig garna. Ring eller mejla oss.
-          </p>
+          <p className="text-sm text-slate-600 mb-4">Din bilmäklare hjälper dig gärna. Ring eller mejla oss.</p>
           <a
             href="tel:+46855550200"
             className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-slate-100 text-slate-700 text-sm font-medium hover:bg-slate-200 transition"
@@ -275,14 +354,29 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
             08-5555 0200
           </a>
         </div>
+
       </main>
+    </div>
+  );
+}
+
+function SummaryItem({ icon: Icon, label, value }: { icon: typeof Car; label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+        <Icon className="w-4 h-4 text-slate-500" />
+      </div>
+      <div className="min-w-0">
+        <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{label}</p>
+        <p className="text-sm font-semibold text-slate-800 leading-snug truncate">{value}</p>
+      </div>
     </div>
   );
 }
 
 function SuggestionCard({ suggestion: s }: { suggestion: Suggestion }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
       {s.car_image_url && (
         <img
           src={s.car_image_url}
@@ -291,29 +385,19 @@ function SuggestionCard({ suggestion: s }: { suggestion: Suggestion }) {
         />
       )}
       <div className="p-5 sm:p-6">
-        <h3 className="text-lg font-bold text-slate-900 mb-1">
-          {s.car_description || 'Bilforslag'}
-        </h3>
+        <h3 className="text-lg font-bold text-slate-900 mb-1">{s.car_description || 'Bilförslag'}</h3>
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-3">
           {s.price > 0 && (
-            <span className="text-xl font-bold text-[#0e6efe]">
-              {formatKr(s.price)} kr
-            </span>
+            <span className="text-xl font-bold text-[#0e6efe]">{formatKr(s.price)} kr</span>
           )}
           {s.monthly_cost != null && s.monthly_cost > 0 && (
-            <span className="text-sm text-slate-500">
-              {formatKr(s.monthly_cost)} kr/man
-            </span>
+            <span className="text-sm text-slate-500">{formatKr(s.monthly_cost)} kr/mån</span>
           )}
         </div>
         {s.admin_comment && (
-          <div className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 mb-4">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-              Biltos kommentar
-            </p>
-            <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
-              {s.admin_comment}
-            </p>
+          <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-4">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Biltos kommentar</p>
+            <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{s.admin_comment}</p>
           </div>
         )}
         {s.link && (

@@ -13,6 +13,7 @@ import {
   Percent,
   CreditCard,
   Star,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -48,6 +49,9 @@ interface OfferData {
   deal_rating: 'good' | 'great' | 'excellent';
   admin_comment: string;
   status: string;
+  trade_in_included: boolean;
+  trade_in_reg: string;
+  trade_in_value: number;
   _access_token?: string;
 }
 
@@ -82,6 +86,9 @@ const emptyOffer: OfferData = {
   deal_rating: 'good',
   admin_comment: '',
   status: 'draft',
+  trade_in_included: false,
+  trade_in_reg: '',
+  trade_in_value: 0,
 };
 
 export default function AdminOfferEditor({
@@ -137,6 +144,9 @@ export default function AdminOfferEditor({
         deal_rating: o.deal_rating as OfferData['deal_rating'],
         admin_comment: o.admin_comment as string,
         status: o.status as string,
+        trade_in_included: (o.trade_in_included as boolean) || false,
+        trade_in_reg: (o.trade_in_reg as string) || '',
+        trade_in_value: (o.trade_in_value as number) || 0,
         _access_token: '',
       });
       // Fetch access_token for the linked quote_request
@@ -191,6 +201,7 @@ export default function AdminOfferEditor({
     if (d.warranty_included) savings += d.warranty_value;
     if (d.home_delivery_included) savings += d.home_delivery_value;
     savings += d.other_savings_value;
+    if (d.trade_in_included) savings += d.trade_in_value;
     return savings;
   };
 
@@ -591,6 +602,39 @@ export default function AdminOfferEditor({
               </div>
             </Section>
 
+            {/* Trade-in */}
+            <Section title="Inbytesbil" icon={ArrowLeftRight}>
+              <ToggleRow
+                icon={ArrowLeftRight}
+                label="Inbyte ingår i erbjudandet"
+                checked={data.trade_in_included}
+                onToggle={(v) => updateAndCalc({ trade_in_included: v })}
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField label="Regnummer">
+                    <input
+                      type="text"
+                      value={data.trade_in_reg}
+                      onChange={(e) => updateAndCalc({ trade_in_reg: e.target.value })}
+                      className={inputClass}
+                      placeholder="ABC123"
+                    />
+                  </FormField>
+                  <FormField label="Värdering (kr)">
+                    <input
+                      type="number"
+                      value={data.trade_in_value || ''}
+                      onChange={(e) =>
+                        updateAndCalc({ trade_in_value: parseInt(e.target.value) || 0 })
+                      }
+                      className={inputClass}
+                      placeholder="85 000"
+                    />
+                  </FormField>
+                </div>
+              </ToggleRow>
+            </Section>
+
             {/* Deal summary */}
             <Section title="Totalt & bedomning" icon={Star}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -707,6 +751,14 @@ export default function AdminOfferEditor({
                     </dt>
                     <dd className="font-semibold text-emerald-600">
                       {data.other_savings_value.toLocaleString('sv-SE')} kr
+                    </dd>
+                  </div>
+                )}
+                {data.trade_in_included && (
+                  <div className="flex justify-between py-2.5">
+                    <dt className="text-slate-500">Inbyte {data.trade_in_reg}</dt>
+                    <dd className="font-semibold text-emerald-600">
+                      {data.trade_in_value.toLocaleString('sv-SE')} kr
                     </dd>
                   </div>
                 )}

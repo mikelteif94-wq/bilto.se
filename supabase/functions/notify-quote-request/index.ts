@@ -342,7 +342,8 @@ function renderInternalHtml(row: QuoteRequestRow, optionLabel: string, isPhoneQu
   return `<!doctype html>
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:32px;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
-    <tr><td style="padding:28px 32px 16px;background:#0e6efe;">
+    <tr><td style="padding:20px 32px 16px;background:#0e6efe;text-align:center;">
+      <img src="https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" style="height:40px;width:auto;display:inline-block;margin-bottom:10px;" />
       <p style="margin:0 0 6px;color:rgba(255,255,255,0.85);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Ny köp-/inbyteslead</p>
       <h1 style="margin:0;color:#ffffff;font-size:22px;line-height:1.3;">${escapeHtml(optionLabel)}${isPhoneQuiz ? ' <span style="background:#fbbf24;color:#78350f;font-size:12px;padding:3px 8px;border-radius:6px;font-weight:700;margin-left:8px;">QUIZ VIA TELEFON</span>' : ''}</h1>
     </td></tr>
@@ -451,18 +452,28 @@ function renderInternalText(row: QuoteRequestRow, optionLabel: string, isPhoneQu
   return lines.join("\n");
 }
 
+function capitalize(s: string): string {
+  if (!s) return s;
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
 function renderCustomerHtml(row: QuoteRequestRow, optionLabel: string): string {
+  const firstName = capitalize(row.firstname || "");
   const timeText = row.preferred_time
     ? `En av våra bilexperter ringer dig ${preferredTimePhrase(row.preferred_time)}.`
     : "En av våra bilexperter hör av sig inom kort — oftast redan samma dag.";
+  const contextGreeting = row.car_model
+    ? `Vad kul! Din expert håller på och letar en <strong>${escapeHtml(row.car_model)}</strong> åt dig.`
+    : `Vad kul att du vill ha hjälp med: <strong>${escapeHtml(optionLabel.toLowerCase())}</strong>.`;
   return `<!doctype html>
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:32px;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
-    <tr><td style="padding:28px 32px;background:#0e6efe;">
-      <h1 style="margin:0;color:#ffffff;font-size:22px;line-height:1.3;">Tack ${escapeHtml(row.firstname || "")}! Vi har fått din förfrågan.</h1>
+    <tr><td style="padding:24px 32px 20px;background:#0e6efe;text-align:center;">
+      <img src="https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" style="height:48px;width:auto;display:inline-block;margin-bottom:12px;" />
+      <h1 style="margin:0;color:#ffffff;font-size:22px;line-height:1.3;">Tack ${escapeHtml(firstName)}! Vi har fått din förfrågan.</h1>
     </td></tr>
     <tr><td style="padding:24px 32px;color:#334155;font-size:15px;line-height:1.7;">
-      <p style="margin:0 0 14px;">Vad kul att du vill ha hjälp med: <strong>${escapeHtml(optionLabel.toLowerCase())}</strong>.</p>
+      <p style="margin:0 0 14px;">${contextGreeting}</p>
       <p style="margin:0 0 14px;">${escapeHtml(timeText)} Vi går igenom dina önskemål och berättar hur vi kan hjälpa dig vidare — helt utan förpliktelse.</p>
       <p style="margin:0 0 14px;">Du behöver inte förbereda något. Vi har all info från formuläret och ställer eventuella följdfrågor när vi pratar.</p>
       <p style="margin:0 0 14px;color:#64748b;font-size:14px;">Behöver du nå oss innan dess? Mejla <a href="mailto:hej@bilto.se" style="color:#0e6efe;">hej@bilto.se</a>.</p>
@@ -475,13 +486,17 @@ function renderCustomerHtml(row: QuoteRequestRow, optionLabel: string): string {
 }
 
 function renderCustomerText(row: QuoteRequestRow, optionLabel: string): string {
+  const firstName = capitalize(row.firstname || "");
   const timeText = row.preferred_time
     ? `En av våra bilexperter ringer dig ${preferredTimePhrase(row.preferred_time)}.`
     : "En av våra bilexperter hör av sig inom kort — oftast redan samma dag.";
+  const contextGreeting = row.car_model
+    ? `Vad kul! Din expert håller på och letar en ${row.car_model} åt dig.`
+    : `Vad kul att du vill ha hjälp med: ${optionLabel.toLowerCase()}.`;
   return [
-    `Tack ${row.firstname || ""}! Vi har fått din förfrågan.`,
+    `Tack ${firstName}! Vi har fått din förfrågan.`,
     "",
-    `Vad kul att du vill ha hjälp med: ${optionLabel.toLowerCase()}.`,
+    contextGreeting,
     timeText,
     "Vi går igenom dina önskemål och berättar hur vi kan hjälpa dig vidare — helt utan förpliktelse.",
     "",

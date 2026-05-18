@@ -2246,6 +2246,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             usedPrice: detailCar.pricing.used_from_sek,
             fuelLabel: detailCar.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / '),
           }}
+          quizAnswers={quizAnswers ?? undefined}
           onClose={() => setDetailCar(null)}
           onSelect={() => { const car = detailCar; setDetailCar(null); openContactForCar(car); }}
         />
