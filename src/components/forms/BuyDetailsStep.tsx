@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ChevronDown } from 'lucide-react';
 import type { BuyTrack } from './BuyTrackStep';
 import FieldError from './FieldError';
 import RegInput from '../RegInput';
 import FinancingCalc from './FinancingCalc';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
+import { findComparisonCarByMakeModel } from '../../lib/comparison/lookup';
 
 const BUYING_STAGES = [
   { value: 'just_started', label: 'Precis börjat kolla' },
@@ -88,6 +89,17 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   const models = d.carBrand ? (CAR_BRANDS[d.carBrand] ?? []) : [];
   const carPriceNum = parsePriceInput(d.carPrice);
 
+  const lookupBrand = d.carBrand || (lockedCar ? lockedCar.split(' ')[0] : '');
+  const lookupModel = d.carModel || (lockedCar ? lockedCar.split(' ').slice(1).join(' ') : '');
+  const priceHint = useMemo(() => {
+    if (!lookupBrand || !lookupModel) return null;
+    const found = findComparisonCarByMakeModel(lookupBrand, lookupModel);
+    if (!found) return null;
+    const { used_from_sek, new_from_sek } = found.pricing;
+    if (!used_from_sek && !new_from_sek) return null;
+    const fmt = (n: number) => Math.round(n / 1000) * 1000;
+    return { used: used_from_sek ? fmt(used_from_sek) : null, newFrom: new_from_sek ? fmt(new_from_sek) : null };
+  }, [lookupBrand, lookupModel]);
 
   const validate = (): boolean => {
     const e: Record<string, string> = {};
@@ -164,6 +176,20 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
+            {priceHint && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {priceHint.used && (
+                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
+                    <span className="font-medium text-slate-800">Beg.</span> från ~{priceHint.used.toLocaleString('sv-SE')} kr
+                  </span>
+                )}
+                {priceHint.newFrom && (
+                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
+                    <span className="font-medium text-slate-800">Ny</span> från ~{priceHint.newFrom.toLocaleString('sv-SE')} kr
+                  </span>
+                )}
+              </div>
+            )}
             {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
@@ -244,6 +270,20 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
+            {priceHint && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {priceHint.used && (
+                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
+                    <span className="font-medium text-slate-800">Beg.</span> från ~{priceHint.used.toLocaleString('sv-SE')} kr
+                  </span>
+                )}
+                {priceHint.newFrom && (
+                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
+                    <span className="font-medium text-slate-800">Ny</span> från ~{priceHint.newFrom.toLocaleString('sv-SE')} kr
+                  </span>
+                )}
+              </div>
+            )}
             {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
@@ -362,6 +402,20 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
+            {priceHint && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {priceHint.used && (
+                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
+                    <span className="font-medium text-slate-800">Beg.</span> från ~{priceHint.used.toLocaleString('sv-SE')} kr
+                  </span>
+                )}
+                {priceHint.newFrom && (
+                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
+                    <span className="font-medium text-slate-800">Ny</span> från ~{priceHint.newFrom.toLocaleString('sv-SE')} kr
+                  </span>
+                )}
+              </div>
+            )}
             {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
 
@@ -492,6 +546,20 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
+            {priceHint && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {priceHint.used && (
+                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
+                    <span className="font-medium text-slate-800">Beg.</span> från ~{priceHint.used.toLocaleString('sv-SE')} kr
+                  </span>
+                )}
+                {priceHint.newFrom && (
+                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
+                    <span className="font-medium text-slate-800">Ny</span> från ~{priceHint.newFrom.toLocaleString('sv-SE')} kr
+                  </span>
+                )}
+              </div>
+            )}
             {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
