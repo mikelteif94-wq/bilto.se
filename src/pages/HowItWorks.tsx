@@ -80,7 +80,7 @@ const DIRECT_STEPS: Step[] = [
   },
   {
     icon: Handshake,
-    title: 'Vi hämtar bilen',
+    title: 'Vi hämtar eller lämnar bilen',
     text: 'när du tackar ja ordnar de upphämtningen.',
   },
 ];
