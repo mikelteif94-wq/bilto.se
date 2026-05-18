@@ -71,17 +71,17 @@ const DIRECT_STEPS: Step[] = [
   {
     icon: Phone,
     title: 'Du får en personlig rådgivare',
-    text: 'någon hjälper dig genom hela processen.',
+    text: 'Oavsett om du säljer, byter eller köper bil — en rådgivare hjälper dig genom hela processen.',
   },
   {
     icon: Gavel,
     title: 'Vi hittar bästa budet',
-    text: 'jämför erbjudanden från bilhandlare åt dig.',
+    text: 'Vi jämför erbjudanden från bilhandlare åt dig — oavsett om du ska sälja din bil, byta in den eller köpa en ny.',
   },
   {
     icon: Handshake,
     title: 'Vi hämtar eller lämnar bilen',
-    text: 'när du tackar ja ordnar de upphämtningen.',
+    text: 'När du tackar ja ordnar vi upphämtning av din sålda bil eller leverans av din nya — gäller vid försäljning, inbyte och köp.',
   },
 ];
 
