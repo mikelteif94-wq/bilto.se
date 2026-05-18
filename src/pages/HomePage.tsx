@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Menu, Search, Phone, XCircle, Car, Sparkles, Handshake } from 'lucide-react';
+import { User, Menu, Search, Phone, XCircle, Car, Sparkles, Handshake, Mail } from 'lucide-react';
 
 import { supabase } from '../lib/supabase';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
@@ -24,6 +24,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
   const [tab, setTab] = useState<'direkt' | 'maxpris'>('direkt');
   const [regnummer, setRegnummer] = useState('');
   const [telefon, setTelefon] = useState('');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [variant, setVariant] = useState<'default' | 'elbil'>('default');
@@ -114,7 +115,8 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     }
     setError('');
     setSubmitting(true);
-    await supabase.from('leads').insert({ regnummer: regTrim, telefon: telTrim });
+    const emailTrim = email.trim();
+    await supabase.from('leads').insert({ regnummer: regTrim, telefon: telTrim, email: emailTrim });
     try {
       const notifyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-new-lead`;
       await fetch(notifyUrl, {
@@ -123,7 +125,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ telefon: telTrim, regnummer: regTrim, source: 'Startsidan' }),
+        body: JSON.stringify({ telefon: telTrim, regnummer: regTrim, email: emailTrim, source: 'Startsidan' }),
       });
     } catch { /* best effort */ }
     setSubmitting(false);
@@ -242,6 +244,20 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                     className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
                   />
                 </div>
+                <div className="flex items-center h-12 rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
+                  <span className="flex items-center justify-center w-11 shrink-0">
+                    <Mail className="w-5 h-5 text-slate-400" />
+                  </span>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setError(''); }}
+                    placeholder="E-postadress (valfritt)"
+                    autoComplete="email"
+                    disabled={submitting}
+                    className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
+                  />
+                </div>
                 <button
                   type="submit"
                   disabled={submitting}
@@ -263,6 +279,20 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                     onChange={(e) => { setTelefon(e.target.value); setError(''); }}
                     placeholder="Telefonnummer"
                     autoComplete="tel"
+                    disabled={submitting}
+                    className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
+                  />
+                </div>
+                <div className="flex items-center h-12 rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
+                  <span className="flex items-center justify-center w-11 shrink-0">
+                    <Mail className="w-5 h-5 text-slate-400" />
+                  </span>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setError(''); }}
+                    placeholder="E-postadress (valfritt)"
+                    autoComplete="email"
                     disabled={submitting}
                     className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
                   />
@@ -395,6 +425,18 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               }}
               placeholder="Telefonnummer"
               autoComplete="tel"
+              disabled={submitting}
+              className="form-control"
+            />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError('');
+              }}
+              placeholder="E-postadress (valfritt)"
+              autoComplete="email"
               disabled={submitting}
               className="form-control"
             />
@@ -658,6 +700,23 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                     }}
                     placeholder="Telefonnummer"
                     autoComplete="tel"
+                    disabled={submitting}
+                    className="flex-1 min-w-0 w-0 h-full pl-[60px] pr-3 bg-transparent text-[15px] text-slate-900 focus:outline-none placeholder:text-slate-400"
+                  />
+                </label>
+                <label className="relative flex items-center h-12 rounded-lg border border-slate-300 bg-white focus-within:border-slate-900 transition">
+                  <span className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center pointer-events-none">
+                    <Mail className="w-5 h-5 text-slate-500" strokeWidth={2} />
+                  </span>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError('');
+                    }}
+                    placeholder="E-postadress (valfritt)"
+                    autoComplete="email"
                     disabled={submitting}
                     className="flex-1 min-w-0 w-0 h-full pl-[60px] pr-3 bg-transparent text-[15px] text-slate-900 focus:outline-none placeholder:text-slate-400"
                   />

@@ -63,6 +63,7 @@ export default function BuyCarPage({
   const [guidanceOpen, setGuidanceOpen] = useState(false);
   const [guidanceName, setGuidanceName] = useState('');
   const [guidancePhone, setGuidancePhone] = useState('');
+  const [guidanceEmail, setGuidanceEmail] = useState('');
   const [guidanceSubmitting, setGuidanceSubmitting] = useState(false);
   const [guidanceDone, setGuidanceDone] = useState(false);
   const [guidanceError, setGuidanceError] = useState<string | null>(null);
@@ -70,6 +71,7 @@ export default function BuyCarPage({
   const submitGuidance = async () => {
     const namn = guidanceName.trim();
     const telefon = guidancePhone.trim();
+    const emailVal = guidanceEmail.trim();
     if (namn.length < 2) { setGuidanceError('Fyll i ditt namn.'); return; }
     if (telefon.length < 6) { setGuidanceError('Fyll i ett giltigt telefonnummer.'); return; }
     setGuidanceError(null);
@@ -77,6 +79,7 @@ export default function BuyCarPage({
     const { error: insertError } = await supabase.from('leads').insert({
       regnummer: '',
       telefon,
+      email: emailVal,
       miltal: 0,
       guidance_requested: true,
     } as never);
@@ -90,7 +93,7 @@ export default function BuyCarPage({
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ telefon, namn, regnummer: '', miltal: 0, source: 'Köp-rådgivning', guidance_requested: true }),
+        body: JSON.stringify({ telefon, namn, email: emailVal, regnummer: '', miltal: 0, source: 'Köp-rådgivning', guidance_requested: true }),
       });
     } catch { /* best effort */ }
     setGuidanceDone(true);
@@ -423,6 +426,18 @@ export default function BuyCarPage({
                   value={guidancePhone}
                   onChange={(e) => setGuidancePhone(e.target.value)}
                   placeholder="070-123 45 67"
+                  className="form-control mb-3"
+                />
+
+                <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">
+                  E-postadress <span className="font-normal text-slate-400">(valfritt)</span>
+                </label>
+                <input
+                  type="email"
+                  value={guidanceEmail}
+                  onChange={(e) => setGuidanceEmail(e.target.value)}
+                  placeholder="din@email.se"
+                  autoComplete="email"
                   className="form-control"
                 />
 

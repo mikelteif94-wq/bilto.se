@@ -48,6 +48,7 @@ interface OfferData {
   deal_rating: 'good' | 'great' | 'excellent';
   admin_comment: string;
   status: string;
+  _access_token?: string;
 }
 
 const RATING_OPTIONS = [
@@ -136,7 +137,20 @@ export default function AdminOfferEditor({
         deal_rating: o.deal_rating as OfferData['deal_rating'],
         admin_comment: o.admin_comment as string,
         status: o.status as string,
+        _access_token: '',
       });
+      // Fetch access_token for the linked quote_request
+      if (o.quote_request_id) {
+        const { data: qr } = await supabase
+          .from('quote_requests' as never)
+          .select('access_token')
+          .eq('id', o.quote_request_id as string)
+          .maybeSingle();
+        const qrRow = qr as { access_token?: string } | null;
+        if (qrRow?.access_token) {
+          setData((d) => ({ ...d, _access_token: qrRow.access_token! }));
+        }
+      }
     }
     setLoading(false);
   };
@@ -144,7 +158,7 @@ export default function AdminOfferEditor({
   const loadQuoteInfo = async (qId: string) => {
     const { data: q } = await supabase
       .from('quote_requests' as never)
-      .select('id, firstname, lastname, email, car_model')
+      .select('id, firstname, lastname, email, car_model, access_token')
       .eq('id', qId)
       .maybeSingle();
     const row = q as Record<string, unknown> | null;
@@ -155,6 +169,7 @@ export default function AdminOfferEditor({
         customer_email: (row.email as string) || '',
         customer_name: `${row.firstname} ${row.lastname}`.trim(),
         car_description: (row.car_model as string) || '',
+        _access_token: (row.access_token as string) || '',
       }));
     }
   };
@@ -230,6 +245,20 @@ export default function AdminOfferEditor({
 
     if (id) {
       try {
+        // Fetch access_token from quote_request if not already loaded
+        let accessToken = data._access_token || '';
+        if (!accessToken && data.quote_request_id) {
+          const { data: qr } = await supabase
+            .from('quote_requests' as never)
+            .select('access_token')
+            .eq('id', data.quote_request_id)
+            .maybeSingle();
+          const qrRow = qr as { access_token?: string } | null;
+          accessToken = qrRow?.access_token || '';
+        }
+        const portalUrl = accessToken
+          ? `${window.location.origin}/min-forfragan/${accessToken}`
+          : '';
         const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-car-offer`;
         await fetch(url, {
           method: 'POST',
@@ -237,7 +266,7 @@ export default function AdminOfferEditor({
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ offer_id: id }),
+          body: JSON.stringify({ offer_id: id, portal_url: portalUrl }),
         });
       } catch {
         // best effort

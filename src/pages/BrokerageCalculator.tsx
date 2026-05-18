@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Menu, User, ArrowRight, Info, XCircle, Camera, Megaphone, Phone } from 'lucide-react';
+import { Menu, User, ArrowRight, Info, XCircle, Camera, Megaphone, Phone, Mail } from 'lucide-react';
 import { SiteFooter } from './BrokerageLanding';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { supabase } from '../lib/supabase';
@@ -55,6 +55,7 @@ export default function BrokerageCalculator({ onBackHome, onStartBrokerage }: Br
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
   const [leadReg, setLeadReg] = useState('');
+  const [leadEmail, setLeadEmail] = useState('');
   const [leadError, setLeadError] = useState('');
   const [leadSubmitting, setLeadSubmitting] = useState(false);
 
@@ -69,9 +70,10 @@ export default function BrokerageCalculator({ onBackHome, onStartBrokerage }: Br
       setLeadError('Registreringsnummer måste vara 3 bokstäver följt av 3 tecken (t.ex. ABC123)');
       return;
     }
+    const emailTrim = leadEmail.trim();
     setLeadError('');
     setLeadSubmitting(true);
-    await supabase.from('leads').insert({ regnummer: regTrim });
+    await supabase.from('leads').insert({ regnummer: regTrim, email: emailTrim });
     try {
       const notifyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-new-lead`;
       await fetch(notifyUrl, {
@@ -80,7 +82,7 @@ export default function BrokerageCalculator({ onBackHome, onStartBrokerage }: Br
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ regnummer: regTrim, source: 'Förmedlingskalkylator' }),
+        body: JSON.stringify({ regnummer: regTrim, email: emailTrim, source: 'Förmedlingskalkylator' }),
       });
     } catch { /* best effort */ }
     setLeadSubmitting(false);
@@ -444,6 +446,20 @@ export default function BrokerageCalculator({ onBackHome, onStartBrokerage }: Br
             <div className="bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] p-5">
               <form onSubmit={handleLeadSubmit} className="flex flex-col gap-2.5">
                 <RegInput value={leadReg} onChange={(v) => { setLeadReg(v); setLeadError(''); }} disabled={leadSubmitting} />
+                <div className="flex items-center h-12 rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
+                  <span className="flex items-center justify-center w-11 shrink-0">
+                    <Mail className="w-5 h-5 text-slate-400" />
+                  </span>
+                  <input
+                    type="email"
+                    value={leadEmail}
+                    onChange={(e) => setLeadEmail(e.target.value)}
+                    placeholder="E-postadress (valfritt)"
+                    autoComplete="email"
+                    disabled={leadSubmitting}
+                    className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
+                  />
+                </div>
                 {leadError && (
                   <div role="alert" className="flex items-start gap-2 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold px-3 py-2 shadow-sm">
                     <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-[1px]" strokeWidth={2.5} />

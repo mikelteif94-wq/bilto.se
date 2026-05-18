@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Calendar, User, Check, Loader2, Car } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Check, Loader2, Car, Mail } from 'lucide-react';
 import { SiteFooter } from './BrokerageLanding';
 import { supabase } from '../lib/supabase';
 import ErrorBanner from '../components/ErrorBanner';
@@ -11,6 +11,7 @@ interface BlogPageProps {
 export default function BlogPage({ onBackHome }: BlogPageProps) {
   const [regnummer, setRegnummer] = useState('');
   const [telefon, setTelefon] = useState('');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -31,11 +32,13 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
       setError('Ange ett giltigt telefonnummer');
       return;
     }
+    const emailTrim = email.trim();
     setError('');
     setSubmitting(true);
     const { error: insertError } = await supabase.from('leads').insert({
       regnummer: reg,
       telefon: tel,
+      email: emailTrim,
     });
     setSubmitting(false);
     if (insertError) {
@@ -50,7 +53,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ telefon: tel, regnummer: reg, source: 'Blogg' }),
+        body: JSON.stringify({ telefon: tel, regnummer: reg, email: emailTrim, source: 'Blogg' }),
       });
     } catch { /* best effort */ }
     setSuccess(true);
@@ -600,6 +603,22 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
                   placeholder="070-123 45 67"
                   className="form-control"
                 />
+              </div>
+              <div>
+                <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">
+                  E-postadress <span className="font-normal text-slate-400">(valfritt)</span>
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="din@email.se"
+                    autoComplete="email"
+                    className="form-control pl-9"
+                  />
+                </div>
               </div>
               <ErrorBanner message={error} />
               <button
