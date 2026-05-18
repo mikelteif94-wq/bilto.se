@@ -1146,17 +1146,17 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); toggleSelect(car.id); }}
-                      className={`absolute top-2.5 left-2.5 z-10 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 shadow-sm ${
+                      className={`absolute top-2.5 left-2.5 z-10 h-6 px-2.5 rounded-full flex items-center gap-1 transition-all duration-200 shadow-sm text-[11px] font-semibold ${
                         isSelected
-                          ? 'bg-[#0e6efe] text-white scale-110'
-                          : 'bg-white/90 backdrop-blur-sm text-slate-400 hover:text-[#0e6efe] hover:bg-white ring-1 ring-slate-200/50'
+                          ? 'bg-[#0e6efe] text-white'
+                          : 'bg-[#0e6efe] text-white hover:bg-[#0a57cc]'
                       }`}
                       aria-label={isSelected ? 'Ta bort från jämförelse' : 'Lägg till i jämförelse'}
                     >
                       {isSelected ? (
-                        <Check className="w-4 h-4" strokeWidth={2.5} />
+                        <><Check className="w-3 h-3" strokeWidth={2.5} />Jämför</>
                       ) : (
-                        <GitCompareArrows className="w-3.5 h-3.5" />
+                        <>Jämför</>
                       )}
                     </button>
 
