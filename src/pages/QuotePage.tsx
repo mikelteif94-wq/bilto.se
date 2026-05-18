@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  Menu, User, Check, Phone, Handshake, ShieldCheck, Megaphone, Search, Sparkles,
+  Menu, User, Check, Phone, Handshake, ShieldCheck, Megaphone, Search, Sparkles, Gavel,
   ArrowRight,
 } from 'lucide-react';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
@@ -248,31 +248,47 @@ export default function QuotePage({
             </p>
           </div>
 
-          <div style={{ touchAction: 'pan-y' }} className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-2 -mx-5 px-5 scrollbar-hide sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:pb-0">
-            {tradeInCars.map((car, i) => {
-              if (!car) return null;
-              const imageUrl = getCarImage(car.brand_display, car.model_display);
-              const fuelLabelsMap: Record<string, string> = {
-                bensin: 'Bensin', diesel: 'Diesel', hybrid: 'Hybrid',
-                laddhybrid: 'Laddhybrid', el: 'El',
-              };
-              const fuelLabelStr = car.specs.fuel_types.map(f => fuelLabelsMap[f] || f).join(' / ');
-
-              return (
-                <div key={car.id} className="min-w-[260px] w-[75vw] max-w-[300px] snap-start shrink-0 sm:min-w-0 sm:w-auto sm:max-w-none">
-                  <CompactCarCard
-                    name={`${car.brand_display} ${car.model_display}`}
-                    imageUrl={imageUrl}
-                    rating={car.ratings.overall}
-                    expertComment={car.pros[0]}
-                    fuelLabel={fuelLabelStr}
-                    onNegotiate={() => navigateToBuy(`${car.brand_display} ${car.model_display}`)}
-                    onDetail={() => setDetailCar(car)}
-                    index={i}
-                  />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              {
+                icon: Search,
+                color: 'bg-[#0e6efe]',
+                title: 'Vi hittar rätt bil åt dig',
+                body: 'Berätta vad du söker — märke, budget eller bara ett behov. Vi söker i hela marknaden och presenterar de bästa alternativen.',
+                stat: '100+',
+                statLabel: 'märken i vår databas',
+              },
+              {
+                icon: Gavel,
+                color: 'bg-emerald-500',
+                title: 'Vi förhandlar priset',
+                body: 'Vår expert tar dialogen med handlaren, pressar priset och förhandlar fram bästa ränta, tillval och villkor.',
+                stat: '~15 000 kr',
+                statLabel: 'genomsnittlig besparing',
+              },
+              {
+                icon: ShieldCheck,
+                color: 'bg-amber-500',
+                title: 'Trygg och utan press',
+                body: 'Du bestämmer. Vi granskar historik och skick innan affär. Ingen bindning, inga dolda avgifter — du tackar ja eller nej.',
+                stat: '100%',
+                statLabel: 'utan förpliktelse',
+              },
+            ].map(({ icon: Icon, color, title, body, stat, statLabel }) => (
+              <div key={title} className="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col gap-4">
+                <div className={`w-11 h-11 rounded-xl ${color} flex items-center justify-center shrink-0`}>
+                  <Icon className="w-5 h-5 text-white" strokeWidth={2.2} />
                 </div>
-              );
-            })}
+                <div className="flex-1">
+                  <h4 className="text-[16px] font-bold text-slate-900 leading-snug mb-2">{title}</h4>
+                  <p className="text-[14px] text-slate-500 leading-relaxed">{body}</p>
+                </div>
+                <div className="pt-3 border-t border-slate-200">
+                  <p className="text-[22px] font-bold text-slate-900 leading-none">{stat}</p>
+                  <p className="text-[12px] text-slate-400 mt-1">{statLabel}</p>
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="mt-8 text-center sm:text-left">
