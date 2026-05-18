@@ -286,15 +286,15 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
           <ul className="mt-6 space-y-3.5 text-[17px] font-medium text-white w-fit mx-auto text-left">
             <li className="flex items-center gap-3">
               <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Sälj din bil -- vi hittar bästa budet
+              Sälj din bil och få bästa budet
             </li>
             <li className="flex items-center gap-3">
               <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Köp bil -- vi förhandlar priset åt dig
+              Köp bil och vi förhandlar priset åt dig
             </li>
             <li className="flex items-center gap-3">
               <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Byt bil -- vi sköter allt från start till mål
+              Byt bil och vi sköter allt från start till mål
             </li>
           </ul>
 
@@ -354,15 +354,15 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
             <ul className="mt-8 space-y-4 text-[19px] font-medium text-white">
               <li className="flex items-center gap-3">
                 <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Sälj din bil -- vi hittar bästa budet
+                Sälj din bil och få bästa budet
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Köp bil -- vi förhandlar priset åt dig
+                Köp bil och vi förhandlar priset åt dig
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Byt bil -- vi sköter allt från start till mål
+                Byt bil och vi sköter allt från start till mål
               </li>
             </ul>
           </div>
