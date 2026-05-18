@@ -255,8 +255,8 @@ export default function QuotePage({
                 color: 'bg-[#0e6efe]',
                 title: 'Vi hittar rätt bil åt dig',
                 body: 'Berätta vad du söker — märke, budget eller bara ett behov. Vi söker i hela marknaden och presenterar de bästa alternativen.',
-                stat: null,
-                statLabel: null,
+                stat: '10 år',
+                statLabel: 'erfarenhet av bilaffärer',
               },
               {
                 icon: TrendingDown,
