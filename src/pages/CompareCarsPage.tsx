@@ -2197,96 +2197,29 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
       <ReviewsSection variant="muted" />
 
-      {/* Vi hjälper dig */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-[#0e6efe]">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-8 sm:mb-10">
-            <h2 className="text-[26px] sm:text-[40px] font-bold text-white leading-tight tracking-tight max-w-2xl">
-              Vi hjälper dig hitta och förhandla din nästa bil.
+      {/* Hero image CTA */}
+      <section className="relative overflow-hidden">
+        <img
+          src="/BSM_car_sale_key_woman_handover_101122.jpg"
+          alt="Bilaffär med Bilto"
+          className="w-full h-[340px] sm:h-[480px] object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/50 to-transparent" />
+        <div className="absolute inset-0 flex items-center">
+          <div className="max-w-5xl mx-auto px-5 sm:px-8 w-full">
+            <p className="text-[11px] font-bold text-white/60 uppercase tracking-[0.18em] mb-3">Bilto — din bilexpert</p>
+            <h2 className="text-[32px] sm:text-[52px] font-bold text-white leading-[1.05] tracking-tight mb-4 max-w-xl">
+              Vi gör din bilaffär trygg och enkel.
             </h2>
-            <p className="text-white/70 text-[14px] sm:text-[16px] mt-3 max-w-lg leading-relaxed">
-              Vi granskar historik och skick, jämför marknadspriser och förhandlar fram bästa villkoren — helt utan press.
+            <p className="text-white/70 text-[15px] sm:text-[17px] leading-relaxed mb-8 max-w-md">
+              Ingen bindning. Inga dolda avgifter. Du tackar ja eller nej.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Köp bil */}
-            <div className="bg-white rounded-2xl p-6 flex flex-col shadow-sm">
-              <div className="w-12 h-12 rounded-xl bg-[#0e6efe] flex items-center justify-center mb-5">
-                <Search className="w-5 h-5 text-white" strokeWidth={2.2} />
-              </div>
-              <h3 className="text-[16px] font-bold text-slate-900 mb-2">Vi hittar rätt bil åt dig</h3>
-              <p className="text-[13.5px] text-slate-500 leading-relaxed flex-1">
-                Berätta vad du söker — märke, budget eller bara ett behov. Vi söker i hela marknaden och presenterar de bästa alternativen.
-              </p>
-              <div className="mt-5 pt-4 border-t border-slate-100">
-                <p className="text-[22px] font-bold text-slate-900 leading-none">100+</p>
-                <p className="text-[12px] text-slate-400 mt-0.5">märken i vår databas</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => openBuyDrawer('', 'searching')}
-                className="mt-4 inline-flex items-center gap-2 h-10 px-5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-semibold transition self-start"
-              >
-                Börja här
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* Bilbyte */}
-            <div className="bg-white rounded-2xl p-6 flex flex-col shadow-sm">
-              <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center mb-5">
-                <Megaphone className="w-5 h-5 text-white" strokeWidth={2.2} />
-              </div>
-              <h3 className="text-[16px] font-bold text-slate-900 mb-2">Vi förhandlar priset</h3>
-              <p className="text-[13.5px] text-slate-500 leading-relaxed flex-1">
-                Vår expert tar dialogen med handlaren, pressar priset och förhandlar fram bästa ränta, tillval och villkor.
-              </p>
-              <div className="mt-5 pt-4 border-t border-slate-100">
-                <p className="text-[22px] font-bold text-slate-900 leading-none">~15 000 kr</p>
-                <p className="text-[12px] text-slate-400 mt-0.5">genomsnittlig besparing</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => openBuyDrawer('', 'found')}
-                className="mt-4 inline-flex items-center gap-2 h-10 px-5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white text-[13px] font-semibold transition self-start"
-              >
-                Förhandla nu
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* Bilto */}
-            <div className="bg-white rounded-2xl p-6 flex flex-col shadow-sm">
-              <div className="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center mb-5">
-                <ShieldCheck className="w-5 h-5 text-white" strokeWidth={2.2} />
-              </div>
-              <h3 className="text-[16px] font-bold text-slate-900 mb-2">Trygg och utan press</h3>
-              <p className="text-[13.5px] text-slate-500 leading-relaxed flex-1">
-                Du bestämmer. Vi granskar historik och skick innan affär. Ingen bindning, inga dolda avgifter — du tackar ja eller nej.
-              </p>
-              <div className="mt-5 pt-4 border-t border-slate-100">
-                <p className="text-[22px] font-bold text-slate-900 leading-none">100%</p>
-                <p className="text-[12px] text-slate-400 mt-0.5">utan förpliktelse</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                className="mt-4 inline-flex items-center gap-2 h-10 px-5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[13px] font-semibold transition self-start"
-              >
-                Sälj din bil
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-          <div className="mt-8">
             <button
               type="button"
-              onClick={() => document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-              className="inline-flex items-center gap-2 text-white text-[14px] font-semibold hover:opacity-80 transition-opacity"
+              onClick={() => openBuyDrawer('', 'searching')}
+              className="inline-flex items-center gap-2 h-12 px-7 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition active:scale-[0.98] shadow-lg"
             >
-              Utforska alla bilar
+              Kom igång gratis
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
