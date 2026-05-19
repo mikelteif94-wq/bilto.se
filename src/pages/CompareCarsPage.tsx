@@ -37,12 +37,12 @@ const MAX_COMPARE = 4;
 
 function getExpertComment(car: ComparisonCar): string {
   const n = `${car.brand_display} ${car.model_display}`.toLowerCase();
-  if (n.includes('tesla model y')) return 'Sveriges mest sålda bil -- snabb, rymlig och billig i drift.';
+  if (n.includes('tesla model y')) return 'Sveriges mest sålda bil – snabb, rymlig och billig i drift.';
   if (n.includes('tesla model 3')) return 'Sportig elsedan med lång räckvidd och låga driftskostnader.';
   if (n.includes('volvo xc60')) return 'Klassisk svensk SUV med hög komfort och starka andrahandsvärden.';
   if (n.includes('volvo xc40')) return 'Kompakt premium-SUV som funkar lika bra i stan som på landsväg.';
-  if (n.includes('volvo xc90')) return 'Stor och lyxig 7-sitsare -- perfekt för familjen som vill ha allt.';
-  if (n.includes('volvo ex30')) return 'Liten, snabb och prisvärd -- Volvos mest tillgängliga elbil.';
+  if (n.includes('volvo xc90')) return 'Stor och lyxig 7-sitsare – perfekt för familjen som vill ha allt.';
+  if (n.includes('volvo ex30')) return 'Liten, snabb och prisvärd – Volvos mest tillgängliga elbil.';
   if (n.includes('volvo ex40')) return 'Eldrivna XC40 med bra räckvidd och typisk Volvo-komfort.';
   if (n.includes('volvo v60')) return 'Stilren kombi med bra utrymme och balanserade köregenskaper.';
   if (n.includes('kia ev6')) return 'Snabbladdningskung med sportig design och bra teknik.';
@@ -51,7 +51,7 @@ function getExpertComment(car: ComparisonCar): string {
   if (n.includes('hyundai ioniq')) return 'Ultrasnabb laddning och futuristisk design till bra pris.';
   if (n.includes('toyota rav4')) return 'Pålitlig hybrid-SUV med låg förbrukning och bra utrymme.';
   if (n.includes('toyota corolla')) return 'Självladdande hybrid som är snål och enkel att äga.';
-  if (n.includes('toyota yaris cross')) return 'Kompakt crossover med bra bränsle-ekonomi och hög sittposition.';
+  if (n.includes('toyota yaris cross')) return 'Kompakt crossover med bra bränsleekonomi och hög sittposition.';
   if (n.includes('toyota c-hr')) return 'Stilfull hybrid-crossover med sportig karaktär.';
   if (n.includes('vw golf')) return 'Tidlös halvkombi med balanserad körning och bra kvalitet.';
   if (n.includes('vw id.4') || n.includes('vw id4')) return 'Rymlig el-SUV med bra komfort och familjevänligt utrymme.';
@@ -59,18 +59,32 @@ function getExpertComment(car: ComparisonCar): string {
   if (n.includes('vw id.7') || n.includes('vw id7')) return 'Elegant elkombi med lång räckvidd för storbilisterna.';
   if (n.includes('vw tiguan')) return 'Populär familje-SUV med bra kvalitet och mångsidighet.';
   if (n.includes('vw passat')) return 'Rymlig kombi med hög komfort på långresor.';
-  if (n.includes('skoda enyaq')) return 'Rymligaste el-SUV:en i sin klass -- bra val för familjen.';
-  if (n.includes('skoda octavia')) return 'Enormt bagageutrymme och prisvärd -- den praktiska favoriten.';
+  if (n.includes('skoda enyaq')) return 'Rymligaste el-SUV:en i sin klass – bra val för familjen.';
+  if (n.includes('skoda octavia')) return 'Enormt bagageutrymme och prisvärd – den praktiska favoriten.';
+  if (n.includes('bmw 6-serie gt') || n.includes('bmw 6 serie gt')) return 'Imponerande bagageutrymme och lyxig komfort – utmärkt långfärdsbil.';
+  if (n.includes('bmw 2-serie active tourer') || n.includes('bmw 2 serie active tourer')) return 'Praktisk familjebil med laddhybrid och rymlig kupé i BMW-klass.';
   if (n.includes('bmw x3')) return 'Sportig premium-SUV med engagerande köregenskaper.';
   if (n.includes('bmw ix3')) return 'Eldrivna X3 med BMW-känsla och bra vardagsräckvidd.';
+  if (n.includes('bmw 3-serie') || n.includes('bmw 3 serie')) return 'Referensbilen för körglädje – sportig, bekväm och tidlös.';
+  if (n.includes('bmw 5-serie') || n.includes('bmw 5 serie')) return 'Lyxig businesssedan med toppmodern teknik och stark motorutbud.';
   if (n.includes('audi a3')) return 'Premium-halvkombi med stilfull interiör och kvick styrning.';
   if (n.includes('polestar 2')) return 'Svensk-kinesisk elsedan med skarp design och sportig körning.';
   if (n.includes('cupra born')) return 'Sportig elbil med rolig körkänsla och bra pris.';
   if (n.includes('honda civic')) return 'Välbyggd halvkombi med smart hybrid och bra körglädje.';
   if (n.includes('honda cr-v') || n.includes('honda crv')) return 'Rymlig och pålitlig SUV med effektiv hybridmotor.';
+  if (n.includes('mercedes c-klass') || n.includes('mercedes c class')) return 'Elegant och tekniskt avancerad – ett starkt alternativ till BMW 3-serie.';
+  if (n.includes('mercedes e-klass') || n.includes('mercedes e class')) return 'Lyxig businesssedan med mjuk gång och toppklassad komfort.';
+  if (n.includes('audi a4') || n.includes('audi a5')) return 'Välbalanserad premium med stilfull design och stark motorutbud.';
+  if (n.includes('audi q5')) return 'Välbyggd premium-SUV med quattro-driften som säljer sig själv.';
   if (car.specs.fuel_types.includes('el')) return `Ren eldrift med ${car.ratings.comfort >= 8 ? 'hög komfort' : 'bra teknik'} och låga löpkostnader.`;
-  if (car.specs.fuel_types.includes('hybrid')) return `Effektiv hybrid med ${car.ratings.value >= 8 ? 'bra totalvärde' : 'balanserad prestanda'}.`;
-  return 'Prisvärd och pålitlig -- ett säkert val.';
+  if (car.specs.fuel_types.includes('laddhybrid')) return `Laddhybrid med ${car.ratings.value >= 8 ? 'utmärkt totalvärde' : 'bra vardag'} och låg förbrukning vid laddad.`;
+  if (car.specs.fuel_types.includes('hybrid')) return `Självladdande hybrid med ${car.ratings.value >= 8 ? 'bra totalvärde' : 'balanserad prestanda'}.`;
+  if (car.specs.body_type === 'suv' && car.ratings.practicality >= 8) return 'Rymlig och mångsidig SUV med bra lastutrymme och bekväm körning.';
+  if (car.specs.body_type === 'suv') return `${car.ratings.driving >= 8 ? 'Sportig och rolig' : 'Bekväm och praktisk'} SUV för vardagen.`;
+  if (car.ratings.comfort >= 9) return 'Exceptionell komfort och lyxig känsla i sin klass.';
+  if (car.ratings.driving >= 9) return 'Sportiga köregenskaper i toppklass – riktigt rolig att köra.';
+  if (car.ratings.value >= 8) return 'Utmärkt värde för pengarna med bra utrustning och pålitlighet.';
+  return `${car.ratings.overall >= 8 ? 'Välbetygsatt' : 'Gedigen'} bil med balanserade egenskaper.`;
 }
 
 function formatSEK(n: number): string {
@@ -1466,6 +1480,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                         topBadge={i < 3 && activeCategory === 'popular'}
                         expertComment={getExpertComment(car)}
                         fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                        searchLabel={`Byt min nuvarande mot denna`}
                         onNegotiate={() => openContactForCar(car)}
                         onSearch={() => openContactForCar(car)}
                         onDetail={() => setDetailCar(car)}

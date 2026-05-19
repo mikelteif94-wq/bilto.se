@@ -15,6 +15,8 @@ interface CompactCarCardProps {
   onNegotiate: () => void;
   onSearch?: () => void;
   onDetail?: () => void;
+  /** Label for the secondary CTA (default: "Sök en åt mig") */
+  searchLabel?: string;
   index?: number;
   disableMotion?: boolean;
 }
@@ -22,7 +24,7 @@ interface CompactCarCardProps {
 export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
   fuelLabel, estimatedMonthly, isSelected, onSelect,
-  onNegotiate, onSearch, onDetail, index = 0, disableMotion,
+  onNegotiate, onSearch, onDetail, searchLabel, index = 0, disableMotion,
 }: CompactCarCardProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -81,8 +83,8 @@ export default function CompactCarCard({
         )}
 
         {rating != null && (
-          <div className={`absolute top-2 right-2 w-8 h-8 rounded-full shadow-md flex items-center justify-center ${rating >= 9 ? 'bg-emerald-500' : 'bg-[#0e6efe]'}`}>
-            <span className="text-[11px] font-bold text-white">{rating}</span>
+          <div className={`absolute top-2 right-2 min-w-[2rem] h-8 px-1.5 rounded-full shadow-md flex items-center justify-center ${rating >= 9 ? 'bg-emerald-500' : 'bg-[#0e6efe]'}`}>
+            <span className="text-[11px] font-bold text-white tabular-nums">{Number.isInteger(rating) ? rating : rating.toFixed(1)}</span>
           </div>
         )}
       </div>
@@ -149,7 +151,7 @@ export default function CompactCarCard({
                   onClick={(e) => { e.stopPropagation(); setExpanded(false); onSearch ? onSearch() : onNegotiate(); }}
                   className="h-9 rounded-lg bg-white border border-[#0e6efe] hover:bg-[#f0f7ff] active:scale-[0.98] text-[#0e6efe] text-[11px] font-bold transition-all duration-150 leading-tight px-2"
                 >
-                  Sök en åt mig
+                  {searchLabel ?? 'Sök en åt mig'}
                 </button>
               </motion.div>
             )}
