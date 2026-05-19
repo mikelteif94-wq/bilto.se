@@ -223,53 +223,75 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               {heroSubtitle}
             </p>
 
-            {/* Sälj-formulär */}
-            <form onSubmit={handleSubmit} className="mt-8 w-full max-w-sm sm:max-w-md">
-              <div className="flex flex-col gap-2.5">
-                <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-                <div className="flex items-center h-12 sm:h-14 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden focus-within:border-white/50 transition">
-                  <span className="flex items-center justify-center w-11 shrink-0">
-                    <Phone className="w-4.5 h-4.5 text-white/60" />
-                  </span>
-                  <input
-                    type="tel"
-                    value={telefon}
-                    onChange={(e) => { setTelefon(e.target.value); setError(''); }}
-                    placeholder="Telefonnummer"
-                    autoComplete="tel"
-                    disabled={submitting}
-                    className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/40"
-                  />
-                </div>
+            {/* Tab-toggle + formulär */}
+            <div className="mt-8 w-full max-w-sm sm:max-w-md">
+              {/* Tabs */}
+              <div className="flex border-b border-white/20 mb-5">
+                <span className="flex-1 pb-3 text-center text-white font-bold text-[13px] sm:text-[14px] tracking-[0.08em] uppercase border-b-2 border-white">
+                  Sälj din bil
+                </span>
                 <button
-                  type="submit"
-                  disabled={submitting}
-                  className="h-12 sm:h-14 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] sm:text-[16px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]"
+                  type="button"
+                  onClick={() => {
+                    window.history.pushState({}, '', '/kop-bil');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                  className="flex-1 pb-3 text-center text-white/45 hover:text-white/70 font-bold text-[13px] sm:text-[14px] tracking-[0.08em] uppercase transition-colors duration-150"
                 >
-                  {submitting ? '...' : 'Värdera bilen gratis'}
+                  Hitta bil
                 </button>
               </div>
-              {error && (
-                <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-400/30 text-white text-[13px] font-medium px-3.5 py-2.5">
-                  <XCircle className="w-4 h-4 text-red-300 shrink-0" strokeWidth={2.5} />
-                  <span>{error}</span>
-                </div>
-              )}
-            </form>
 
-            {/* Carwow-style bilmatch CTA */}
-            <div className="mt-6 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-              <span className="text-white/60 text-[14px] sm:text-[16px] font-medium">eller låt oss hitta din bil</span>
+              {/* Formulär */}
+              <form onSubmit={handleSubmit}>
+                <div className="flex flex-col gap-2.5">
+                  <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
+                  <div className="flex items-center h-12 sm:h-14 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden focus-within:border-white/50 transition">
+                    <span className="flex items-center justify-center w-11 shrink-0">
+                      <Phone className="w-4.5 h-4.5 text-white/60" />
+                    </span>
+                    <input
+                      type="tel"
+                      value={telefon}
+                      onChange={(e) => { setTelefon(e.target.value); setError(''); }}
+                      placeholder="Telefonnummer"
+                      autoComplete="tel"
+                      disabled={submitting}
+                      className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/40"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="h-12 sm:h-14 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] sm:text-[16px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]"
+                  >
+                    {submitting ? '...' : 'Värdera bilen gratis'}
+                  </button>
+                </div>
+                {error && (
+                  <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-400/30 text-white text-[13px] font-medium px-3.5 py-2.5">
+                    <XCircle className="w-4 h-4 text-red-300 shrink-0" strokeWidth={2.5} />
+                    <span>{error}</span>
+                  </div>
+                )}
+              </form>
+
+              {/* Bilmatch CTA */}
+              <div className="mt-5 flex items-center gap-3">
+                <div className="flex-1 h-px bg-white/20" />
+                <span className="text-white/50 text-[12px] font-medium tracking-wide">eller</span>
+                <div className="flex-1 h-px bg-white/20" />
+              </div>
               <button
                 type="button"
                 onClick={() => {
                   window.history.pushState({}, '', '/kop-bil');
                   window.dispatchEvent(new PopStateEvent('popstate'));
                 }}
-                className="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full border-2 border-white/80 text-white font-bold text-[14px] sm:text-[16px] hover:bg-white hover:text-slate-900 hover:border-white active:scale-[0.97] transition-all duration-200 group"
+                className="mt-3 h-12 sm:h-14 w-full rounded-xl border border-white/30 bg-white/8 backdrop-blur-sm text-white font-bold text-[15px] sm:text-[16px] hover:bg-white/15 hover:border-white/50 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
               >
-                <Sparkles className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                Bilmatch
+                Hitta din bilmatch
+                <span className="text-white/60">→</span>
               </button>
             </div>
 
