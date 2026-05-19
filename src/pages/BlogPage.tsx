@@ -3,6 +3,7 @@ import { ArrowLeft, Calendar, User, Check, Loader2, Car, Mail } from 'lucide-rea
 import { SiteFooter } from './BrokerageLanding';
 import { supabase } from '../lib/supabase';
 import ErrorBanner from '../components/ErrorBanner';
+import { validateSwedishPhone } from '../lib/utils';
 
 interface BlogPageProps {
   onBackHome: () => void;
@@ -28,10 +29,8 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
       setError('Registreringsnummer måste vara 3 bokstäver följt av 3 tecken (t.ex. ABC123)');
       return;
     }
-    if (!tel || tel.replace(/\D/g, '').length < 7) {
-      setError('Ange ett giltigt telefonnummer');
-      return;
-    }
+    const phoneErr = validateSwedishPhone(tel);
+    if (phoneErr) { setError(phoneErr); return; }
     const emailTrim = email.trim();
     setError('');
     setSubmitting(true);

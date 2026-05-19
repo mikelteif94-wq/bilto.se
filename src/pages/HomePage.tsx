@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User, Menu, Search, Phone, XCircle, Car, Sparkles, Handshake, Mail } from 'lucide-react';
+import { validateSwedishPhone } from '../lib/utils';
 
 import { supabase } from '../lib/supabase';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
@@ -109,8 +110,9 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       setError('Registreringsnummer måste vara 3 bokstäver följt av 3 tecken (t.ex. ABC123)');
       return;
     }
-    if (!telTrim || telTrim.replace(/\D/g, '').length < 6) {
-      setError('Ange ett giltigt telefonnummer');
+    const phoneErr = validateSwedishPhone(telTrim);
+    if (phoneErr) {
+      setError(phoneErr);
       return;
     }
     setError('');

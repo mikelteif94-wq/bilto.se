@@ -144,21 +144,21 @@ export default function QuotePage({
           </div>
 
           <h1 className="text-center text-white text-[28px] font-semibold leading-[1.15] tracking-tight px-2">
-            Köp bil tryggt — vi förhandlar åt dig
+            Hitta rätt bil — vi hjälper dig få rätt affär
           </h1>
 
           <ul className="mt-6 space-y-3.5 text-[16px] font-medium text-white flex flex-col items-center">
             <li className="flex items-center gap-3">
               <Check className="w-5 h-5 text-white shrink-0" strokeWidth={3} />
-              Köp, byt eller hitta drömbilen
+              Jämför bilar och hitta rätt modell
             </li>
             <li className="flex items-center gap-3">
               <Check className="w-5 h-5 text-white shrink-0" strokeWidth={3} />
-              Vi pressar priset och kollar bilen
+              Vi hjälper med pris, villkor och granskning
             </li>
             <li className="flex items-center gap-3">
               <Check className="w-5 h-5 text-white shrink-0" strokeWidth={3} />
-              Du sparar pengar vid köp, byte eller inbyte
+              Helt gratis och opartiskt
             </li>
           </ul>
 
@@ -190,27 +190,26 @@ export default function QuotePage({
           <div>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-[13px] font-semibold mb-5">
               <Sparkles className="w-4 h-4" />
-              Vi förhandlar åt dig
+              Gratis och opartiskt
             </span>
             <h1 className="text-white text-[56px] font-semibold leading-[1.05] tracking-tight">
-              Köp bil tryggt — vi förhandlar åt dig
+              Hitta rätt bil — vi hjälper dig få rätt affär
             </h1>
             <p className="mt-5 text-white/90 text-[19px] leading-[1.55] max-w-xl">
-              Letar du, har hittat eller vill byta in din bil? Vi tar kontakten,
-              kollar bilen och pressar priset så att du kan luta dig tillbaka.
+              Jämför bilar, hitta rätt modell och få hjälp genom hela köpet. Vi hjälper dig med pris, villkor och granskning så att du inte betalar mer än du behöver.
             </p>
             <ul className="mt-8 space-y-3.5 text-[18px] font-medium text-white">
               <li className="flex items-center gap-3">
                 <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-                Vi förhandlar med säljaren och pressar priset
+                Jag har hittat en bil — få hjälp med pris, villkor och granskning
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-                Vi värderar och hjälper dig byta in din nuvarande bil
+                Jag letar efter bil — utforska, jämför och hitta bilen som passar
               </li>
               <li className="flex items-center gap-3">
                 <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-                Du betalar bara om vi hittar bilen åt dig
+                Jag vill byta bil — sälj nuvarande och hitta nästa
               </li>
             </ul>
           </div>
@@ -238,13 +237,13 @@ export default function QuotePage({
         <div className="max-w-5xl mx-auto px-5 sm:px-6 py-12 sm:py-20">
           <div className="mb-8 sm:mb-10">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] text-[12px] font-semibold mb-4">
-              Funderar du på att byta bil?
+              Vad behöver du hjälp med?
             </span>
             <h3 className="text-[24px] sm:text-[34px] font-semibold leading-[1.1] tracking-tight text-slate-900">
-              Din partner för en trygg och smart bilaffär.
+              Vi möter dig där du är i din bilresa.
             </h3>
             <p className="mt-3 text-slate-600 text-[15px] sm:text-[16px] leading-[1.6] max-w-lg">
-              Vi hjälper dig hitta och förhandla din nästa bil. Vi granskar historik och skick, jämför marknadspriser och förhandlar fram bästa villkoren — helt utan press.
+              Oavsett om du redan hittat en bil, letar aktivt eller vill byta — vi granskar historik, jämför priser och hjälper dig igenom hela affären. Helt gratis och opartiskt.
             </p>
           </div>
 

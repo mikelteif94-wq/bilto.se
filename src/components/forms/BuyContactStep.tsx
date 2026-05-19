@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import FieldError from './FieldError';
+import { validateSwedishPhone } from '../../lib/utils';
 
 const TIMES = [
   { value: 'morning', label: '08–12' },
@@ -28,11 +29,8 @@ export default function BuyContactStep({ initialData, onNext, submitting = false
   const validate = (): boolean => {
     const e: Record<string, string> = {};
     if (!d.namn.trim()) e.namn = 'Namn är obligatoriskt';
-    if (!d.telefon.trim()) {
-      e.telefon = 'Telefonnummer är obligatoriskt';
-    } else if (!/^[\d\s\-+().]{6,}$/.test(d.telefon.trim()) || d.telefon.replace(/\D/g, '').length < 6) {
-      e.telefon = 'Ange ett giltigt telefonnummer (endast siffror)';
-    }
+    const phoneErr = validateSwedishPhone(d.telefon);
+    if (phoneErr) e.telefon = phoneErr;
     if (!d.mejl.trim()) {
       e.mejl = 'E-post är obligatorisk';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.mejl)) {

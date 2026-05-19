@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Lock, Eye, BarChart3 } from 'lucide-react';
 import { CustomerData } from '../../pages/SellCarPage';
 import FieldError from './FieldError';
+import { validateSwedishPhone } from '../../lib/utils';
 
 interface CustomerFormProps {
   initialData: CustomerData;
@@ -16,11 +17,8 @@ export default function CustomerForm({ initialData, onNext, requirePassword = tr
   const validate = () => {
     const e: Record<string, string> = {};
     if (!data.namn.trim()) e.namn = 'Namn är obligatoriskt';
-    if (!data.telefon.trim()) {
-      e.telefon = 'Telefonnummer är obligatoriskt';
-    } else if (!/^[\d\s\-+().]{6,}$/.test(data.telefon.trim()) || data.telefon.replace(/\D/g, '').length < 6) {
-      e.telefon = 'Ange ett giltigt telefonnummer (endast siffror)';
-    }
+    const phoneErr = validateSwedishPhone(data.telefon);
+    if (phoneErr) e.telefon = phoneErr;
     if (!data.mejl.trim()) {
       e.mejl = 'E-post är obligatorisk';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.mejl)) {

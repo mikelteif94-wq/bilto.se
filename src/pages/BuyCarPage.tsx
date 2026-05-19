@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronLeft, Phone, Check, X, User } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
+import { validateSwedishPhone } from '../lib/utils';
 import BuyTrackStep, { type BuyTrack } from '../components/forms/BuyTrackStep';
 import BuyDetailsStep, { type BuyDetailsData } from '../components/forms/BuyDetailsStep';
 import BuyTradeInStep, { type BuyTradeInData } from '../components/forms/BuyTradeInStep';
@@ -77,7 +78,8 @@ export default function BuyCarPage({
     const telefon = guidancePhone.trim();
     const emailVal = guidanceEmail.trim();
     if (namn.length < 2) { setGuidanceError('Fyll i ditt namn.'); return; }
-    if (!/^[\d\s\-+().]{6,}$/.test(telefon) || telefon.replace(/\D/g, '').length < 6) { setGuidanceError('Ange ett giltigt telefonnummer (endast siffror).'); return; }
+    const phoneErr = validateSwedishPhone(telefon);
+    if (phoneErr) { setGuidanceError(phoneErr); return; }
     setGuidanceError(null);
     setGuidanceSubmitting(true);
     const { error: insertError } = await supabase.from('leads').insert({

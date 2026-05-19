@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronLeft, Phone, Check, X, User } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
+import { validateSwedishPhone } from '../lib/utils';
 import CarConditionStep from '../components/forms/CarConditionStep';
 import CarEquipmentStep from '../components/forms/CarEquipmentStep';
 import CustomerForm from '../components/forms/CustomerForm';
@@ -90,8 +91,9 @@ export default function SellCarPage({
       setGuidanceError('Fyll i ditt namn.');
       return;
     }
-    if (!/^[\d\s\-+().]{6,}$/.test(telefon) || telefon.replace(/\D/g, '').length < 6) {
-      setGuidanceError('Ange ett giltigt telefonnummer (endast siffror).');
+    const phoneErr = validateSwedishPhone(telefon);
+    if (phoneErr) {
+      setGuidanceError(phoneErr);
       return;
     }
     setGuidanceError(null);
