@@ -153,6 +153,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
   ];
   const [activeBudgetPill, setActiveBudgetPill] = useState<number | null>(null);
   const [showAllCars, setShowAllCars] = useState(false);
+  const [heroTab, setHeroTab] = useState<'salj' | 'kop'>('salj');
 
   useEffect(() => {
     const onScroll = () => {
@@ -364,38 +365,68 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
             </ul>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] p-6 max-w-[440px] w-full justify-self-end">
-            <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Sälj din bil</p>
-            <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
-              <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
-              {formError && (
-                <div role="alert" className="flex items-start gap-2 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold px-3 py-2 shadow-sm">
-                  <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-[1px]" strokeWidth={2.5} />
-                  <span className="leading-snug">{formError}</span>
-                </div>
-              )}
-              <button
-                type="submit"
-                className="mt-1 h-12 w-full rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
-              >
-                Värdera bilen gratis
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-              </button>
-            </form>
-
-            <div className="mt-5 pt-4 border-t border-slate-100">
-              <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Köp eller byt bil</p>
+          <div className="bg-[#1a1f2e] rounded-2xl shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] p-2 max-w-[460px] w-full justify-self-end">
+            {/* Tab bar */}
+            <div className="flex rounded-xl overflow-hidden mb-2 p-1 gap-1">
               <button
                 type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="w-full h-12 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-900 font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
+                onClick={() => setHeroTab('salj')}
+                className={`flex-1 py-2.5 text-[14px] font-bold tracking-wide transition rounded-lg ${heroTab === 'salj' ? 'bg-white text-slate-900 shadow-sm' : 'text-white/60 hover:text-white/90'}`}
               >
-                Hitta din nästa bil
-                <ArrowRight className="w-4 h-4 text-[#0e6efe] group-hover:translate-x-0.5 transition" />
+                Sälj min bil
               </button>
+              <button
+                type="button"
+                onClick={() => setHeroTab('kop')}
+                className={`flex-1 py-2.5 text-[14px] font-bold tracking-wide transition rounded-lg ${heroTab === 'kop' ? 'bg-white text-slate-900 shadow-sm' : 'text-white/60 hover:text-white/90'}`}
+              >
+                Hitta en bil
+              </button>
+            </div>
+
+            <div className="px-4 pb-5 pt-3">
+              {heroTab === 'salj' ? (
+                <form onSubmit={handleHeroSubmit} className="flex flex-col gap-3">
+                  <label className="text-[11px] font-semibold text-white/40 uppercase tracking-widest">Registreringsnummer</label>
+                  <div className="rounded-xl overflow-hidden bg-white">
+                    <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
+                  </div>
+                  {formError && (
+                    <div role="alert" className="flex items-start gap-2 rounded-lg bg-red-500/20 border border-red-400/30 text-red-300 text-[13px] font-semibold px-3 py-2">
+                      <XCircle className="w-4 h-4 shrink-0 mt-[1px]" strokeWidth={2.5} />
+                      <span className="leading-snug">{formError}</span>
+                    </div>
+                  )}
+                  <button
+                    type="submit"
+                    className="mt-1 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[15px] tracking-wide transition inline-flex items-center justify-center gap-2 group shadow-[0_8px_24px_-6px_rgba(14,110,254,0.6)] py-3.5"
+                  >
+                    Värdera bilen gratis
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+                  </button>
+                  <p className="text-center text-[12px] text-white/35 mt-0.5">Gratis &amp; utan förbindelser</p>
+                </form>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <label className="text-[11px] font-semibold text-white/40 uppercase tracking-widest">Vad letar du efter?</label>
+                  <div className="flex items-center h-12 rounded-xl bg-white overflow-hidden">
+                    <Search className="w-5 h-5 text-slate-400 ml-4 shrink-0" />
+                    <span className="flex-1 px-3 text-[15px] text-slate-400 select-none">Märke, modell eller typ...</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/kop-bil');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[15px] tracking-wide transition inline-flex items-center justify-center gap-2 group shadow-[0_8px_24px_-6px_rgba(14,110,254,0.6)] py-3.5"
+                  >
+                    Hitta din nästa bil
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+                  </button>
+                  <p className="text-center text-[12px] text-white/35 mt-0.5">Vi förhandlar priset åt dig</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
