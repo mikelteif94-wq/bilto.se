@@ -1162,7 +1162,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       onClick={() => setQuizStep('active')}
                       className="w-full max-w-sm mx-auto lg:mx-0 h-16 lg:h-16 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[18px] lg:text-[18px] flex items-center justify-center gap-3 group transition-all duration-200 shadow-xl shadow-[#0e6efe]/25 active:scale-[0.98]"
                     >
-                      Hitta din nästa bil
+                      Hitta din bilmatch
                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
                     <p className="text-[14px] text-slate-400 mt-3 text-center lg:text-left">Tar 60 sekunder · Helt gratis</p>
