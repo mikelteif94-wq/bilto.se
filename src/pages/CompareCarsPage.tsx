@@ -1162,7 +1162,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       onClick={() => setQuizStep('active')}
                       className="w-full max-w-sm mx-auto lg:mx-0 h-16 lg:h-16 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[18px] lg:text-[18px] flex items-center justify-center gap-3 group transition-all duration-200 shadow-xl shadow-[#0e6efe]/25 active:scale-[0.98]"
                     >
-                      Hitta din bilmatch
+                      Hitta din nästa bil
                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
                     <p className="text-[14px] text-slate-400 mt-3 text-center lg:text-left">Tar 60 sekunder · Helt gratis</p>
@@ -2022,39 +2022,27 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                 <p className="text-[15px] font-semibold text-slate-900 mb-4">
                   {tradeResults.length} {tradeResults.length === 1 ? 'bil' : 'bilar'} med lägre månadskostnad
                 </p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                   {tradeResults.map((r, i) => {
-                    const isSelected = selectedIds.has(r.car.id);
                     return (
                       <div key={r.car.id} className="relative">
-                        <div className="absolute top-2 left-2 z-10">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-500 text-[10px] font-bold text-white shadow-sm">
+                        <div className="absolute top-3 left-3 z-10">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-emerald-500 text-[12px] font-bold text-white shadow">
                             {formatSEK(r.monthly)}/mån
                           </span>
                         </div>
-                        <button
-                          type="button"
-                          onClick={(e) => { e.stopPropagation(); toggleSelect(r.car.id); }}
-                          className={`absolute top-2 right-9 z-10 w-6 h-6 rounded-md flex items-center justify-center transition-all ${
-                            isSelected ? 'bg-[#0e6efe] text-white' : 'bg-white/90 text-slate-400 ring-1 ring-slate-200/50'
-                          }`}
-                        >
-                          {isSelected ? <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> : <GitCompareArrows className="w-3 h-3" />}
-                        </button>
-                        <div className={`rounded-xl transition-all ${isSelected ? 'ring-2 ring-[#0e6efe]' : ''}`}>
-                          <CompactCarCard
-                            name={`${r.car.brand_display} ${r.car.model_display}`}
-                            imageUrl={resolveCarImage(r.car.id, r.car.brand_display, r.car.model_display, getCarImage)}
-                            rating={r.car.ratings.overall}
-                            expertComment={getExpertComment(r.car)}
-                            fuelLabel={r.car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                            onNegotiate={() => openContactForCar(r.car)}
-                            onSearch={() => openContactForCar(r.car)}
-                            onDetail={() => setDetailCar(r.car)}
-                            index={i}
-                            disableMotion={isMobile}
-                          />
-                        </div>
+                        <CompactCarCard
+                          name={`${r.car.brand_display} ${r.car.model_display}`}
+                          imageUrl={resolveCarImage(r.car.id, r.car.brand_display, r.car.model_display, getCarImage)}
+                          rating={r.car.ratings.overall}
+                          expertComment={getExpertComment(r.car)}
+                          fuelLabel={r.car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                          onNegotiate={() => openContactForCar(r.car)}
+                          onSearch={() => openContactForCar(r.car)}
+                          onDetail={() => setDetailCar(r.car)}
+                          index={i}
+                          disableMotion={isMobile}
+                        />
                       </div>
                     );
                   })}
