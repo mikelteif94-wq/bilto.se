@@ -172,7 +172,8 @@ export default function ConfirmationForm({
       }
     }
 
-    const url = `${window.location.origin}/min-bil/${accessToken}`;
+    const origin = import.meta.env.VITE_APP_URL ?? 'https://bilto.se';
+    const url = `${origin.replace(/\/$/, '')}/min-bil/${accessToken}`;
     setTrackingUrl(url);
 
     const headers = {
