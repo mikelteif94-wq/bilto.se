@@ -369,93 +369,85 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
         </div>
       </section>
 
-      <section className="lg:hidden pt-16 bg-white">
-        <div className="bg-[#e8f4ef]">
-          <div className="relative w-full">
-            <img
-              src={HERO_IMAGE}
-              alt=""
-              fetchPriority="high"
-              decoding="async"
-              className="w-full h-[220px] object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/70" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-              <h1 className="text-white font-bold leading-[1.1] text-[30px] tracking-tight drop-shadow-[0_3px_12px_rgba(0,0,0,0.6)]">
-                {heroTitleMobile}
-              </h1>
-              <p className="text-white mt-2 text-[14px] font-medium max-w-xs drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
-                {heroSubtitleMobile}
-              </p>
-            </div>
-          </div>
+      <section className="lg:hidden pt-16 relative bg-[#0e6efe] overflow-hidden">
+        {/* Background decorative circles */}
+        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
+        <div className="absolute top-24 -left-20 w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
+
+        {/* Hero text */}
+        <div className="relative px-6 pt-8 pb-2 text-center">
+          <h1 className="text-white font-bold leading-[1.1] text-[28px] tracking-tight">
+            {heroTitleMobile}
+          </h1>
+          <p className="text-white/80 mt-2 text-[14px] font-medium">
+            {heroSubtitleMobile}
+          </p>
         </div>
 
-        <div className="px-5 py-8 bg-white">
-          <div className="flex items-center mb-4 rounded-full bg-slate-100 p-1">
-            <button
-              type="button"
-              onClick={() => setTab('direkt')}
-              className={`flex-1 h-10 rounded-full text-[14px] font-semibold transition ${
-                tab === 'direkt'
-                  ? 'bg-black text-white'
-                  : 'bg-transparent text-slate-600'
-              }`}
-            >
-              Direktbud
-            </button>
+        {/* Card */}
+        <div className="relative px-6 pt-4 pb-10">
+          <div className="bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] p-5">
+            {/* Sälj din bil */}
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400 mb-3">
+              Sälj din bil
+            </p>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
+              <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
+              <div className="flex items-center h-12 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
+                <span className="flex items-center justify-center w-11 shrink-0">
+                  <Phone className="w-4 h-4 text-slate-400" />
+                </span>
+                <input
+                  type="tel"
+                  value={telefon}
+                  onChange={(e) => { setTelefon(e.target.value); setError(''); }}
+                  placeholder="Telefonnummer"
+                  autoComplete="tel"
+                  disabled={submitting}
+                  className="flex-1 min-w-0 w-0 h-full pr-4 text-[14px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
+                />
+              </div>
+              {error && (
+                <div role="alert" className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[12px] font-medium px-3 py-2">
+                  <XCircle className="w-3.5 h-3.5 shrink-0" strokeWidth={2.5} />
+                  <span>{error}</span>
+                </div>
+              )}
+              <button
+                type="submit"
+                disabled={submitting}
+                className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] disabled:bg-slate-300 text-white font-bold text-[14px] tracking-wide transition-all flex items-center justify-center gap-2 shadow-[0_4px_16px_-4px_rgba(14,110,254,0.5)]"
+              >
+                {submitting ? (
+                  <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>Värdera bilen gratis <span className="opacity-70">→</span></>
+                )}
+              </button>
+            </form>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 my-4">
+              <div className="flex-1 h-px bg-slate-100" />
+              <span className="text-[11px] text-slate-400 font-medium">eller</span>
+              <div className="flex-1 h-px bg-slate-100" />
+            </div>
+
+            {/* Köp eller byt bil */}
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400 mb-3">
+              Köp eller byt bil
+            </p>
             <button
               type="button"
               onClick={() => {
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="flex-1 h-10 rounded-full text-[14px] font-semibold transition bg-transparent text-slate-600"
+              className="h-12 w-full rounded-xl border-2 border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-800 font-bold text-[14px] tracking-wide transition-all flex items-center justify-center gap-2"
             >
-              Maxpris
+              Hitta din nästa bil <span className="opacity-50">→</span>
             </button>
           </div>
-
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
-            <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-            <input
-              type="tel"
-              value={telefon}
-              onChange={(e) => {
-                setTelefon(e.target.value);
-                setError('');
-              }}
-              placeholder="Telefonnummer"
-              autoComplete="tel"
-              disabled={submitting}
-              className="form-control"
-            />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setError('');
-              }}
-              placeholder="E-postadress (valfritt)"
-              autoComplete="email"
-              disabled={submitting}
-              className="form-control"
-            />
-            {error && (
-              <div role="alert" className="flex items-start gap-2 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold px-3 py-2 shadow-sm">
-                <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-[1px]" strokeWidth={2.5} />
-                <span className="leading-snug">{error}</span>
-              </div>
-            )}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="mt-2 h-12 w-full rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[15px] transition"
-            >
-              {submitting ? '...' : tab === 'maxpris' ? 'Maxbud' : 'Värdera'}
-            </button>
-          </form>
         </div>
       </section>
 
