@@ -385,68 +385,85 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
         </div>
 
         {/* Card */}
-        <div className="relative px-6 pt-4 pb-10">
-          <div className="bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] p-5">
-            {/* Sälj din bil */}
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400 mb-3">
-              Sälj din bil
-            </p>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
-              <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-              <div className="flex items-center h-12 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
-                <span className="flex items-center justify-center w-11 shrink-0">
-                  <Phone className="w-4 h-4 text-slate-400" />
-                </span>
-                <input
-                  type="tel"
-                  value={telefon}
-                  onChange={(e) => { setTelefon(e.target.value); setError(''); }}
-                  placeholder="Telefonnummer"
-                  autoComplete="tel"
-                  disabled={submitting}
-                  className="flex-1 min-w-0 w-0 h-full pr-4 text-[14px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
-                />
-              </div>
-              {error && (
-                <div role="alert" className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[12px] font-medium px-3 py-2">
-                  <XCircle className="w-3.5 h-3.5 shrink-0" strokeWidth={2.5} />
-                  <span>{error}</span>
-                </div>
-              )}
+        <div className="relative px-5 pt-4 pb-10">
+          <div className="bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] overflow-hidden">
+
+            {/* Toggle */}
+            <div className="flex border-b border-slate-100">
               <button
-                type="submit"
-                disabled={submitting}
-                className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] disabled:bg-slate-300 text-white font-bold text-[14px] tracking-wide transition-all flex items-center justify-center gap-2 shadow-[0_4px_16px_-4px_rgba(14,110,254,0.5)]"
+                type="button"
+                onClick={() => setTab('direkt')}
+                className={`flex-1 py-3 text-[12px] font-bold uppercase tracking-[0.12em] transition-colors relative ${
+                  tab === 'direkt' ? 'text-[#0e6efe]' : 'text-slate-400 hover:text-slate-600'
+                }`}
               >
-                {submitting ? (
-                  <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                ) : (
-                  <>Värdera bilen gratis <span className="opacity-70">→</span></>
+                Sälj din bil
+                {tab === 'direkt' && (
+                  <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0e6efe] rounded-t-full" />
                 )}
               </button>
-            </form>
-
-            {/* Divider */}
-            <div className="flex items-center gap-3 my-4">
-              <div className="flex-1 h-px bg-slate-100" />
-              <span className="text-[11px] text-slate-400 font-medium">eller</span>
-              <div className="flex-1 h-px bg-slate-100" />
+              <div className="w-px bg-slate-100 my-2" />
+              <button
+                type="button"
+                onClick={() => {
+                  window.history.pushState({}, '', '/kop-bil');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }}
+                className="flex-1 py-3 text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                Köp bil
+              </button>
             </div>
 
-            {/* Köp eller byt bil */}
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400 mb-3">
-              Köp eller byt bil
-            </p>
-            <button
-              type="button"
-              onClick={() => {
-                window.history.pushState({}, '', '/kop-bil');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-              }}
-              className="h-12 w-full rounded-xl border-2 border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-800 font-bold text-[14px] tracking-wide transition-all flex items-center justify-center gap-2"
-            >
-              Hitta din nästa bil <span className="opacity-50">→</span>
-            </button>
+            <div className="p-4">
+              {tab === 'direkt' ? (
+                <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+                  <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
+                  <div className="flex items-center h-10 rounded-lg border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
+                    <span className="flex items-center justify-center w-9 shrink-0">
+                      <Phone className="w-3.5 h-3.5 text-slate-400" />
+                    </span>
+                    <input
+                      type="tel"
+                      value={telefon}
+                      onChange={(e) => { setTelefon(e.target.value); setError(''); }}
+                      placeholder="Telefonnummer"
+                      autoComplete="tel"
+                      disabled={submitting}
+                      className="flex-1 min-w-0 w-0 h-full pr-3 text-[13px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
+                    />
+                  </div>
+                  {error && (
+                    <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
+                      <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
+                      <span>{error}</span>
+                    </div>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="mt-1 h-10 w-full rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] disabled:bg-slate-300 text-white font-bold text-[13px] tracking-wide transition-all flex items-center justify-center gap-1.5 shadow-[0_4px_14px_-4px_rgba(14,110,254,0.55)]"
+                  >
+                    {submitting ? (
+                      <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <>Värdera bilen gratis <span className="opacity-60 text-[12px]">→</span></>
+                    )}
+                  </button>
+                </form>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    window.history.pushState({}, '', '/kop-bil');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                  className="mt-1 h-10 w-full rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all flex items-center justify-center gap-1.5"
+                >
+                  Hitta din nästa bil <span className="opacity-50 text-[12px]">→</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </section>
