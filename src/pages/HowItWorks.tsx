@@ -483,7 +483,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                   }}
                   className="h-12 px-7 rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
                 >
-                  Läs mer om förhandling
+                  Läs mer om hur det fungerar
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
                 </button>
               </div>
