@@ -123,6 +123,7 @@ export default function BidsPanel({
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
           },
           body: JSON.stringify({ car_id: carId }),
         },

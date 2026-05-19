@@ -215,6 +215,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: Bu
           method: 'POST',
           headers: {
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ email: contactData.mejl, phone: contactData.telefon }),
@@ -251,6 +252,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: Bu
         method: 'POST',
         headers: {
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ telefon, namn, email: emailVal, regnummer: '', miltal: 0, source: 'Köp-rådgivning', guidance_requested: true }),

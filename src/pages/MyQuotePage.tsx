@@ -83,6 +83,7 @@ function endpoint(): string {
 function authHeaders(): Record<string, string> {
   return {
     Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+    Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
     'Content-Type': 'application/json',
   };
 }

@@ -347,7 +347,7 @@ export default function AdminCarDetail({
                       {(car as unknown as { skick_kommentar?: string }).skick_kommentar && (
                         <div className="col-span-2">
                           <dt className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
-                            Skickkbeskrivning
+                            Skickbeskrivning
                           </dt>
                           <dd className="text-slate-900 whitespace-pre-wrap text-sm">
                             {(car as unknown as { skick_kommentar: string }).skick_kommentar}

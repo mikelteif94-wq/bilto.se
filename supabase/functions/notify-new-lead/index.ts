@@ -26,6 +26,7 @@ Deno.serve(async (req: Request) => {
   try {
     const resendKey = Deno.env.get("RESEND_API_KEY");
     const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") ?? "Bilto <hej@bilto.se>";
+    const internalRecipient = Deno.env.get("INTERNAL_INBOX_EMAIL") ?? Deno.env.get("ADMIN_EMAIL") ?? "hej@bilto.se";
 
     const body = await req.json().catch(() => ({}));
     const telefon: string = body?.telefon ?? "";
@@ -84,7 +85,7 @@ Deno.serve(async (req: Request) => {
           },
           body: JSON.stringify({
             from: fromEmail,
-            to: ["hej@bilto.se"],
+            to: [internalRecipient],
             subject: internalSubject,
             html: internalHtml,
           }),
@@ -100,7 +101,7 @@ Deno.serve(async (req: Request) => {
 
     await supabase.from("notifications_log").insert({
       typ: "lead_internal",
-      mottagare_mejl: "hej@bilto.se",
+      mottagare_mejl: internalRecipient,
       status: internalOk ? "sent" : "failed",
       detaljer: internalDetails.slice(0, 500),
     });

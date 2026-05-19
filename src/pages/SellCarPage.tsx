@@ -116,6 +116,7 @@ export default function SellCarPage({
         method: 'POST',
         headers: {
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ telefon, namn, email: emailVal, regnummer: car.regnummer || '', miltal: car.miltal || 0, source: 'Telefonrådgivning', guidance_requested: true }),

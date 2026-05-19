@@ -125,6 +125,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
         method: 'POST',
         headers: {
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ telefon: telTrim, regnummer: regTrim, email: emailTrim, source: 'Startsidan' }),

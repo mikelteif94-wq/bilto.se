@@ -151,13 +151,19 @@ export default function CustomerDashboard({
         const ids = list.map((c) => c.id);
         const { data: bids } = await supabase
           .from('bids')
-          .select('id, car_id, belopp, created_at')
+          .select('id, car_id, belopp, created_at, dealers(foretagsnamn)')
           .in('car_id', ids)
           .order('belopp', { ascending: false });
 
         const grouped: Record<string, BidRow[]> = {};
-        for (const b of (bids ?? []) as Omit<BidRow, 'foretagsnamn'>[]) {
-          (grouped[b.car_id] = grouped[b.car_id] ?? []).push({ ...b, foretagsnamn: null });
+        for (const b of (bids ?? []) as (Omit<BidRow, 'foretagsnamn'> & { dealers: { foretagsnamn: string } | null })[]) {
+          (grouped[b.car_id] = grouped[b.car_id] ?? []).push({
+            id: b.id,
+            car_id: b.car_id,
+            belopp: b.belopp,
+            created_at: b.created_at,
+            foretagsnamn: b.dealers?.foretagsnamn ?? null,
+          });
         }
         setBidsByCar(grouped);
       }

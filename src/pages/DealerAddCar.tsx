@@ -145,6 +145,7 @@ export default function DealerAddCar({
       const trackingUrl = `${window.location.origin}/min-bil/${accessToken}`;
       const headers = {
         Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
         'Content-Type': 'application/json',
       };
       void fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-customer-submitted`, {

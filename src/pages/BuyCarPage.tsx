@@ -198,6 +198,7 @@ export default function BuyCarPage({
           method: 'POST',
           headers: {
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({

@@ -288,7 +288,8 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
           await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-car-offer`, {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token ?? ''}`,
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+              Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -315,7 +316,8 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
       await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-dealers-new-car`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token ?? ''}`,
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

@@ -138,6 +138,7 @@ export default function DealerDispatchPanel({
           method: 'POST',
           headers: {
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ dispatch_ids: inserted.map((r: { id: string }) => r.id), is_nudge: false }),
@@ -175,6 +176,7 @@ export default function DealerDispatchPanel({
         method: 'POST',
         headers: {
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ dispatch_ids: [dispatchId], is_nudge: true }),
