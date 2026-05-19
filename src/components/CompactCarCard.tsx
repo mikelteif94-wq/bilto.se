@@ -125,7 +125,7 @@ export default function CompactCarCard({
                 onClick={(e) => { e.stopPropagation(); setExpanded(true); }}
                 className="w-full h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1.5"
               >
-                Fa hjälp att köpa
+                Få hjälp att köpa
                 <ChevronRight className="w-3.5 h-3.5 opacity-80" />
               </motion.button>
             ) : (
