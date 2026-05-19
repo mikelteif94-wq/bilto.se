@@ -109,20 +109,20 @@ export default function CompactCarCard({
 
       {/* Action buttons */}
       {!onSelect && (
-        <div className="px-3 pb-3 grid grid-cols-2 gap-1.5">
+        <div className="px-3 pb-3 grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-            className="h-8 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[11px] font-semibold transition-colors duration-200 leading-tight px-2"
+            className="h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 leading-tight px-2"
           >
-            Jag har hittat en {name}
+            Jag har hittat en
           </button>
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onSearch ? onSearch() : onNegotiate(); }}
-            className="h-8 rounded-lg bg-white border border-[#0e6efe] hover:bg-[#f0f7ff] text-[#0e6efe] text-[11px] font-semibold transition-colors duration-200 leading-tight px-2"
+            className="h-9 rounded-lg bg-white border border-[#0e6efe] hover:bg-[#f0f7ff] active:scale-[0.98] text-[#0e6efe] text-[11px] font-bold transition-all duration-150 leading-tight px-2"
           >
-            Sök en {name} åt mig
+            Sök en åt mig
           </button>
         </div>
       )}
