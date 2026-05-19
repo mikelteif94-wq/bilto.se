@@ -715,21 +715,43 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
     id: string;
     foretagsnamn: string;
     godkand: boolean;
+    isOwner: boolean;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data, error: fetchError } = await supabase
+      // First try owner lookup (user_id directly on dealers table)
+      const { data: ownerData, error: ownerError } = await supabase
         .from('dealers')
         .select('id, foretagsnamn, godkand')
         .eq('user_id', userId)
         .maybeSingle();
-      if (fetchError) {
+      if (ownerError) {
         setError('Kunde inte hämta handlarprofil.');
-      } else {
-        setDealer(data);
+        setLoading(false);
+        return;
+      }
+      if (ownerData) {
+        setDealer({ ...ownerData, isOwner: true });
+        setLoading(false);
+        return;
+      }
+      // Fallback: member lookup via dealer_members table
+      const { data: memberData, error: memberError } = await supabase
+        .from('dealer_members')
+        .select('dealer_id, dealers(id, foretagsnamn, godkand)')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (memberError) {
+        setError('Kunde inte hämta handlarprofil.');
+        setLoading(false);
+        return;
+      }
+      if (memberData && memberData.dealers) {
+        const d = memberData.dealers as { id: string; foretagsnamn: string; godkand: boolean };
+        setDealer({ id: d.id, foretagsnamn: d.foretagsnamn, godkand: d.godkand, isOwner: false });
       }
       setLoading(false);
     })();
@@ -792,6 +814,7 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
     return (
       <DealerSettings
         dealerId={dealer.id}
+        isOwner={dealer.isOwner}
         onBack={() => navigate('/handlare/oversikt')}
       />
     );
