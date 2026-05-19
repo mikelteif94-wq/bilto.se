@@ -29,6 +29,7 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
   );
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [portalToken, setPortalToken] = useState<string | null>(null);
 
   const [details, setDetails] = useState<BuyDetailsData>({
     linkOrSeller: '',
@@ -165,7 +166,7 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
 
     try {
       const carModelFull = [details.carBrand, details.carModel].filter(Boolean).join(' ').trim();
-      const { error: dbError } = await supabase.from('quote_requests').insert({
+      const { data: insertedRows, error: dbError } = await supabase.from('quote_requests').insert({
         search_option: track,
         regnummer: track === 'trade' ? details.regnummer : '',
         miltal: details.miltal ? parseInt(details.miltal) : 0,
@@ -195,13 +196,16 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
         phone: contactData.telefon,
         preferred_time: contactData.preferredTime,
         status: 'new',
-      });
+      }).select('access_token').maybeSingle();
 
       if (dbError) {
         setError('Kunde inte spara din förfrågan. Försök igen.');
         setSubmitting(false);
         return;
       }
+
+      const token = (insertedRows as { access_token?: string } | null)?.access_token ?? null;
+      setPortalToken(token);
 
       try {
         await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-quote-request`, {
@@ -504,6 +508,15 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
                     ))}
                   </div>
 
+                  {portalToken && (
+                    <a
+                      href={`/min-forfragan/${portalToken}`}
+                      className="flex items-center justify-center gap-2 w-full max-w-sm h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold rounded-full transition mb-3 shadow-sm"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      Gå till min portal
+                    </a>
+                  )}
                   <button
                     type="button"
                     onClick={onClose}

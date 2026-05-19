@@ -268,7 +268,7 @@ export default function AdminOfferEditor({
           accessToken = qrRow?.access_token || '';
         }
         const portalUrl = accessToken
-          ? `${window.location.origin}/min-forfragan/${accessToken}`
+          ? `https://bilto.se/min-forfragan/${accessToken}`
           : '';
         const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-car-offer`;
         await fetch(url, {

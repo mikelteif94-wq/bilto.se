@@ -247,7 +247,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
   const handleCopyPortalLink = async () => {
     const token = await ensureAccessToken();
     if (!token) return;
-    const url = `${window.location.origin}/min-forfragan/${token}`;
+    const url = `https://bilto.se/min-forfragan/${token}`;
     try {
       await navigator.clipboard.writeText(url);
       setCopiedLink(true);
@@ -294,7 +294,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
               type: 'suggestion',
               email: quote.email,
               firstname: quote.firstname,
-              portal_url: `${window.location.origin}/min-forfragan/${token}`,
+              portal_url: `https://bilto.se/min-forfragan/${token}`,
             }),
           });
         } catch { /* best effort */ }

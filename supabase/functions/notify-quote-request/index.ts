@@ -78,6 +78,7 @@ interface QuoteRequestRow {
   current_interest_rate: string;
   desired_monthly_cost: string;
   quiz_answers?: QuizAnswers | null;
+  access_token?: string | null;
 }
 
 Deno.serve(async (req: Request) => {
@@ -147,8 +148,9 @@ Deno.serve(async (req: Request) => {
     const html = renderInternalHtml(row, optionLabel, isPhoneQuiz);
     const text = renderInternalText(row, optionLabel, isPhoneQuiz);
 
-    const customerHtml = renderCustomerHtml(row, optionLabel);
-    const customerText = renderCustomerText(row, optionLabel);
+    const portalUrl = row.access_token ? `https://bilto.se/min-forfragan/${row.access_token}` : '';
+    const customerHtml = renderCustomerHtml(row, optionLabel, portalUrl);
+    const customerText = renderCustomerText(row, optionLabel, portalUrl);
     const customerSubject = "Tack för din förfrågan — vi hör av oss snart";
 
     const results: { channel: string; ok: boolean; detaljer: string }[] = [];
@@ -457,7 +459,7 @@ function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
-function renderCustomerHtml(row: QuoteRequestRow, optionLabel: string): string {
+function renderCustomerHtml(row: QuoteRequestRow, optionLabel: string, portalUrl: string): string {
   const firstName = capitalize(row.firstname || "");
   const timeText = row.preferred_time
     ? `En av våra bilexperter ringer dig ${preferredTimePhrase(row.preferred_time)}.`
@@ -465,6 +467,16 @@ function renderCustomerHtml(row: QuoteRequestRow, optionLabel: string): string {
   const contextGreeting = row.car_model
     ? `Vad kul! Din expert håller på och letar en <strong>${escapeHtml(row.car_model)}</strong> åt dig.`
     : `Vad kul att du vill ha hjälp med: <strong>${escapeHtml(optionLabel.toLowerCase())}</strong>.`;
+  const portalBlock = portalUrl ? `
+    <tr><td style="padding:0 32px 24px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:12px;overflow:hidden;">
+        <tr><td style="padding:20px 24px;">
+          <p style="margin:0 0 6px;color:#1e40af;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Din personliga portal</p>
+          <p style="margin:0 0 14px;color:#334155;font-size:14px;line-height:1.6;">Följ din förfrågan, se bilförslag och erbjudanden vi skickar till dig — allt på ett ställe.</p>
+          <a href="${escapeAttr(portalUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;padding:12px 28px;border-radius:8px;">Gå till min portal &rarr;</a>
+        </td></tr>
+      </table>
+    </td></tr>` : '';
   return `<!doctype html>
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:32px;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
@@ -472,12 +484,12 @@ function renderCustomerHtml(row: QuoteRequestRow, optionLabel: string): string {
       <img src="https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" style="height:48px;width:auto;display:inline-block;margin-bottom:12px;" />
       <h1 style="margin:0;color:#ffffff;font-size:22px;line-height:1.3;">Tack ${escapeHtml(firstName)}! Vi har fått din förfrågan.</h1>
     </td></tr>
-    <tr><td style="padding:24px 32px;color:#334155;font-size:15px;line-height:1.7;">
+    <tr><td style="padding:24px 32px 20px;color:#334155;font-size:15px;line-height:1.7;">
       <p style="margin:0 0 14px;">${contextGreeting}</p>
       <p style="margin:0 0 14px;">${escapeHtml(timeText)} Vi går igenom dina önskemål och berättar hur vi kan hjälpa dig vidare — helt utan förpliktelse.</p>
-      <p style="margin:0 0 14px;">Du behöver inte förbereda något. Vi har all info från formuläret och ställer eventuella följdfrågor när vi pratar.</p>
-      <p style="margin:0 0 14px;color:#64748b;font-size:14px;">Behöver du nå oss innan dess? Mejla <a href="mailto:hej@bilto.se" style="color:#0e6efe;">hej@bilto.se</a>.</p>
+      <p style="margin:0 0 0;color:#64748b;font-size:14px;">Behöver du nå oss? Mejla <a href="mailto:hej@bilto.se" style="color:#0e6efe;">hej@bilto.se</a>.</p>
     </td></tr>
+    ${portalBlock}
     <tr><td style="padding:0 32px 28px;color:#94a3b8;font-size:12px;">
       Med vänliga hälsningar,<br/>Teamet på Bilto
     </td></tr>
@@ -485,7 +497,7 @@ function renderCustomerHtml(row: QuoteRequestRow, optionLabel: string): string {
 </body></html>`;
 }
 
-function renderCustomerText(row: QuoteRequestRow, optionLabel: string): string {
+function renderCustomerText(row: QuoteRequestRow, optionLabel: string, portalUrl: string): string {
   const firstName = capitalize(row.firstname || "");
   const timeText = row.preferred_time
     ? `En av våra bilexperter ringer dig ${preferredTimePhrase(row.preferred_time)}.`
@@ -493,20 +505,20 @@ function renderCustomerText(row: QuoteRequestRow, optionLabel: string): string {
   const contextGreeting = row.car_model
     ? `Vad kul! Din expert håller på och letar en ${row.car_model} åt dig.`
     : `Vad kul att du vill ha hjälp med: ${optionLabel.toLowerCase()}.`;
-  return [
+  const lines = [
     `Tack ${firstName}! Vi har fått din förfrågan.`,
     "",
     contextGreeting,
     timeText,
     "Vi går igenom dina önskemål och berättar hur vi kan hjälpa dig vidare — helt utan förpliktelse.",
     "",
-    "Du behöver inte förbereda något. Vi har all info från formuläret och ställer eventuella följdfrågor när vi pratar.",
-    "",
-    "Behöver du nå oss innan dess? Mejla hej@bilto.se.",
-    "",
-    "Med vänliga hälsningar,",
-    "Teamet på Bilto",
-  ].join("\n");
+    "Behöver du nå oss? Mejla hej@bilto.se.",
+  ];
+  if (portalUrl) {
+    lines.push("", "--- Din personliga portal ---", `Följ din förfrågan och se bilförslag vi skickar till dig: ${portalUrl}`);
+  }
+  lines.push("", "Med vänliga hälsningar,", "Teamet på Bilto");
+  return lines.join("\n");
 }
 
 function preferredTimePhrase(t: string): string {
