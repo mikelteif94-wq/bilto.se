@@ -330,9 +330,16 @@ export default function BuyCarPage({
               <h1 className="text-[24px] sm:text-[28px] font-bold text-slate-900 mb-3">
                 Tack, {contact.namn.split(' ')[0]}!
               </h1>
-              <p className="text-[15px] text-slate-600 leading-relaxed max-w-sm mx-auto mb-8">
-                Vi har tagit emot din förfrågan och ringer dig snart för att gå igenom allting.
+              <p className="text-[15px] text-slate-600 leading-relaxed max-w-sm mx-auto mb-6">
+                Din förfrågan är skickad. En av våra bilexperter hör av sig och tar det därifrån — du behöver inte göra ett dugg mer.
               </p>
+
+              <div className="max-w-sm mx-auto bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-8 flex items-start gap-2.5 text-left">
+                <span className="text-amber-500 text-[16px] shrink-0 mt-px">✉</span>
+                <p className="text-[13px] text-amber-800 leading-relaxed">
+                  Vi har skickat en bekräftelse till din mejl. Hamnar den inte i inkorgen? Kolla skräpposten — den kan ha hamnat där.
+                </p>
+              </div>
 
               <div className="max-w-sm mx-auto space-y-3 text-left mb-10">
                 <div className="flex items-start gap-3 px-4 py-3 bg-slate-50 rounded-xl">
@@ -349,7 +356,7 @@ export default function BuyCarPage({
                     <span className="text-[11px] font-bold text-slate-500">2</span>
                   </div>
                   <div>
-                    <p className="text-[14px] font-semibold text-slate-900">Vi ringer dig</p>
+                    <p className="text-[14px] font-semibold text-slate-900">Vi hör av oss</p>
                     <p className="text-[13px] text-slate-500">
                       {contact.preferredTime
                         ? `Klockan ${contact.preferredTime === 'morning' ? '08–12' : contact.preferredTime === 'lunch' ? '12–14' : contact.preferredTime === 'afternoon' ? '14–17' : '17–20'}`
@@ -363,7 +370,7 @@ export default function BuyCarPage({
                   </div>
                   <div>
                     <p className="text-[14px] font-semibold text-slate-900">Vi förhandlar och levererar</p>
-                    <p className="text-[13px] text-slate-500">Du lutar dig tillbaka.</p>
+                    <p className="text-[13px] text-slate-500">Du lutar dig tillbaka — vi sköter resten.</p>
                   </div>
                 </div>
               </div>

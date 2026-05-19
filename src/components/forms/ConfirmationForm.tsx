@@ -233,7 +233,7 @@ export default function ConfirmationForm({
             {firstName ? `Tack ${firstName}!` : 'Tack!'}
           </h2>
           <p className="text-slate-600 px-2">
-            Vi har tagit emot din bil och kommer att ringa dig så fort budgivningen är klar.
+            Vi har tagit emot din bil och hör av oss när budgivningen är klar — du behöver inte göra något mer.
           </p>
         </div>
 
@@ -318,6 +318,13 @@ export default function ConfirmationForm({
             <span className="text-slate-500 shrink-0">Bud skickas till</span>
             <span className="font-semibold text-slate-900 break-all text-right">{customer.mejl}</span>
           </div>
+        </div>
+
+        <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-2.5">
+          <span className="text-amber-500 text-[16px] shrink-0 mt-px">✉</span>
+          <p className="text-[13px] text-amber-800 leading-relaxed">
+            Vi har skickat en bekräftelse till din mejl. Hamnar den inte i inkorgen? Kolla skräpposten — den kan ha hamnat där.
+          </p>
         </div>
 
         {trackingUrl && (

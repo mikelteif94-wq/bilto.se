@@ -486,15 +486,22 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: Bu
                   <h2 className="text-[22px] sm:text-[26px] font-bold text-slate-900 mb-3">
                     Tack, {contact.namn.split(' ')[0]}!
                   </h2>
-                  <p className="text-[15px] text-slate-600 leading-relaxed max-w-sm mx-auto mb-8">
-                    Vi har tagit emot din förfrågan och ringer dig snart för att gå igenom allting.
+                  <p className="text-[15px] text-slate-600 leading-relaxed max-w-sm mx-auto mb-6">
+                    Din förfrågan är skickad. En av våra bilexperter hör av sig och tar det därifrån — du behöver inte göra ett dugg mer.
                   </p>
+
+                  <div className="max-w-sm mx-auto bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 flex items-start gap-2.5 text-left">
+                    <span className="text-amber-500 text-[16px] shrink-0 mt-px">✉</span>
+                    <p className="text-[13px] text-amber-800 leading-relaxed">
+                      Vi har skickat en bekräftelse till din mejl. Hamnar den inte i inkorgen? Kolla skräpposten — den kan ha hamnat där.
+                    </p>
+                  </div>
 
                   <div className="max-w-sm mx-auto space-y-3 text-left mb-8">
                     {[
                       { label: 'Förfrågan mottagen', sub: 'Vi har all information vi behöver.', done: true },
-                      { label: 'Vi ringer dig', sub: contact.preferredTime ? `Klockan ${contact.preferredTime === 'morning' ? '08–12' : contact.preferredTime === 'lunch' ? '12–14' : contact.preferredTime === 'afternoon' ? '14–17' : '17–20'}` : 'Inom en arbetsdag', done: false },
-                      { label: 'Vi förhandlar och levererar', sub: 'Du lutar dig tillbaka.', done: false },
+                      { label: 'Vi hör av oss', sub: contact.preferredTime ? `Klockan ${contact.preferredTime === 'morning' ? '08–12' : contact.preferredTime === 'lunch' ? '12–14' : contact.preferredTime === 'afternoon' ? '14–17' : '17–20'}` : 'Inom en arbetsdag', done: false },
+                      { label: 'Vi förhandlar och levererar', sub: 'Du lutar dig tillbaka — vi sköter resten.', done: false },
                     ].map((item, i) => (
                       <div key={i} className="flex items-start gap-3 px-4 py-3 bg-slate-50 rounded-xl">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${item.done ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}>
