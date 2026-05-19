@@ -277,22 +277,6 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 )}
               </form>
 
-              {/* Bilmatch CTA */}
-              <div className="mt-5 flex items-center gap-3">
-                <div className="flex-1 h-px bg-white/20" />
-                <span className="text-white/50 text-[12px] font-medium tracking-wide">eller</span>
-                <div className="flex-1 h-px bg-white/20" />
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="mt-3 h-12 sm:h-14 w-full rounded-xl border border-white/30 bg-white/8 backdrop-blur-sm text-white font-bold text-[15px] sm:text-[16px] hover:bg-white/15 hover:border-white/50 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
-              >
-                Eller låt oss hjälpa dig hitta en bil.
-              </button>
             </div>
 
             {/* Scroll-indikator */}

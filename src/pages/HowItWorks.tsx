@@ -339,22 +339,6 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 </button>
               </form>
 
-              <div className="flex items-center gap-3 my-3">
-                <div className="flex-1 h-px bg-slate-100" />
-                <span className="text-[10px] text-slate-400 font-medium">eller</span>
-                <div className="flex-1 h-px bg-slate-100" />
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil?quiz=start');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
-              >
-                Eller låt oss hjälpa dig hitta en bil.
-              </button>
             </div>
           </div>
         </div>
@@ -430,22 +414,6 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 </button>
               </form>
 
-              <div className="flex items-center gap-3 my-3">
-                <div className="flex-1 h-px bg-slate-100" />
-                <span className="text-[10px] text-slate-400 font-medium">eller</span>
-                <div className="flex-1 h-px bg-slate-100" />
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil?quiz=start');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
-              >
-                Eller låt oss hjälpa dig hitta en bil.
-              </button>
             </div>
           </div>
         </div>

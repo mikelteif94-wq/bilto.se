@@ -6,11 +6,9 @@ import {
   Building2,
   Sparkles,
   Bell,
-  Plus,
   EyeOff,
   LayoutDashboard,
   MessageSquareText,
-  TrendingUp,
   Upload,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -38,15 +36,15 @@ interface CarRow extends Car {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  ny: 'bg-slate-900 text-white ring-slate-900',
-  aktiv: 'bg-green-600 text-white ring-green-600',
+  ny: 'bg-slate-900 text-white ring-slate-700',
+  aktiv: 'bg-emerald-500 text-white ring-emerald-500',
   sald: 'bg-blue-600 text-white ring-blue-600',
-  avslutad: 'bg-slate-100 text-slate-600 ring-slate-200',
+  avslutad: 'bg-transparent text-slate-400 ring-slate-200',
   auktion_avslutad: 'bg-amber-100 text-amber-800 ring-amber-200',
   inga_bud: 'bg-rose-100 text-rose-700 ring-rose-200',
   avbruten: 'bg-red-100 text-red-700 ring-red-200',
   godkand: 'bg-emerald-100 text-emerald-700 ring-emerald-200',
-  paused: 'bg-slate-100 text-slate-600 ring-slate-200',
+  paused: 'bg-slate-100 text-slate-500 ring-slate-200',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -83,12 +81,15 @@ const CRM_STATUS_COLORS: Record<string, string> = {
   forlorad: 'bg-slate-200 text-slate-500',
 };
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('sv-SE', {
-    year: '2-digit',
-    month: '2-digit',
-    day: '2-digit',
-  });
+function daysAgo(iso: string): number {
+  return Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
+}
+
+function formatInkom(iso: string): { label: string; cls: string } {
+  const d = daysAgo(iso);
+  if (d <= 14) return { label: d === 0 ? 'Idag' : d === 1 ? '1 dag sen' : `${d} dagar sen`, cls: 'text-emerald-600 font-semibold' };
+  if (d <= 40) return { label: `${d} dagar sen`, cls: 'text-amber-600 font-semibold' };
+  return { label: `${d} dagar sen`, cls: 'text-red-600 font-semibold' };
 }
 
 function formatDateTime(iso: string) {
@@ -266,25 +267,15 @@ export default function AdminCars({
               </span>
             )}
           </h1>
-          <div className="flex items-center gap-2">
-            {onNavigateBulkUpload && (
-              <button
-                onClick={onNavigateBulkUpload}
-                className="inline-flex items-center gap-1.5 h-10 px-4 rounded-full border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-medium text-sm transition"
-              >
-                <Upload className="w-4 h-4" />
-                <span className="hidden sm:inline">Bulk-bilder</span>
-              </button>
-            )}
+          {onNavigateBulkUpload && (
             <button
-              onClick={onAddCar}
-              className="inline-flex items-center gap-1.5 h-10 px-4 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-sm shadow-sm transition"
+              onClick={onNavigateBulkUpload}
+              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 font-medium text-sm transition"
             >
-              <Plus className="w-4 h-4" strokeWidth={2.5} />
-              <span className="hidden xs:inline">Lägg till bil</span>
-              <span className="xs:hidden">Ny bil</span>
+              <Upload className="w-4 h-4" />
+              <span className="hidden sm:inline">Bulk-bilder</span>
             </button>
-          </div>
+          )}
         </div>
 
         <ErrorBanner message={error} className="mb-6" />
@@ -340,9 +331,11 @@ export default function AdminCars({
                         <div className="text-sm font-medium text-slate-900 truncate">
                           {mm || '—'} {car.ar ? `· ${car.ar}` : ''}
                         </div>
-                        <div className="text-xs text-slate-500 mt-0.5 truncate">
-                          {car.miltal.toLocaleString('sv-SE')} mil · {car.customers?.namn || '—'} ·{' '}
-                          {formatDate(car.created_at)}
+                        <div className="text-xs text-slate-500 mt-0.5 truncate flex items-center gap-1 flex-wrap">
+                          <span>{car.miltal.toLocaleString('sv-SE')} mil · {car.customers?.namn || '—'} ·</span>
+                          <span className={formatInkom(car.created_at).cls + ' text-xs'}>
+                            {formatInkom(car.created_at).label}
+                          </span>
                         </div>
                       </div>
                       <ChevronRight className="w-4 h-4 text-slate-300 mt-1 shrink-0" />
@@ -434,8 +427,8 @@ export default function AdminCars({
                           <td className="px-4 lg:px-6 py-4 text-slate-900">
                             {car.customers?.namn || <span className="text-slate-400">—</span>}
                           </td>
-                          <td className="px-4 lg:px-6 py-4 text-slate-500 whitespace-nowrap">
-                            {formatDate(car.created_at)}
+                          <td className={`px-4 lg:px-6 py-4 whitespace-nowrap text-xs ${formatInkom(car.created_at).cls}`}>
+                            {formatInkom(car.created_at).label}
                           </td>
                           <td className="px-4 py-4 text-slate-300 group-hover:text-slate-500 transition">
                             <ChevronRight className="w-4 h-4" />
