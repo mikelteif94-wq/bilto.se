@@ -21,6 +21,7 @@ import AdminDealerDetail from './pages/AdminDealerDetail';
 import AdminQuoteRequests from './pages/AdminQuoteRequests';
 import AdminQuoteDetail from './pages/AdminQuoteDetail';
 import AdminOfferEditor from './pages/AdminOfferEditor';
+import AdminDealerProposalEditor from './pages/AdminDealerProposalEditor';
 import AdminBulkUpload from './pages/AdminBulkUpload';
 import AdminQuizSubmissions from './pages/AdminQuizSubmissions';
 import AdminLeadCommandCenter from './pages/AdminLeadCommandCenter';
@@ -61,6 +62,11 @@ function matchAdminDealerDetail(path: string): string | null {
 
 function matchAdminQuoteDetail(path: string): string | null {
   const m = path.match(/^\/admin\/forfragningar\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchAdminProposalNew(path: string): string | null {
+  const m = path.match(/^\/admin\/bilar\/([^/]+)\/forslag\/nytt\/?$/);
   return m ? decodeURIComponent(m[1]) : null;
 }
 
@@ -359,6 +365,18 @@ function App() {
       );
     }
 
+    const proposalNewCarId = matchAdminProposalNew(path);
+    if (proposalNewCarId) {
+      return (
+        <AdminDealerProposalEditor
+          carId={proposalNewCarId}
+          onBack={() => navigate(`/admin/bilar/${proposalNewCarId}`)}
+          onLoggedOut={() => navigate('/admin')}
+          onSent={() => navigate(`/admin/bilar/${proposalNewCarId}`)}
+        />
+      );
+    }
+
     const carDetailId = matchAdminCarDetail(path);
     if (carDetailId) {
       return (
@@ -366,6 +384,7 @@ function App() {
           carId={carDetailId}
           onBack={() => navigate('/admin/bilar')}
           onLoggedOut={() => navigate('/admin')}
+          onCreateProposal={(id) => navigate(`/admin/bilar/${id}/forslag/nytt`)}
         />
       );
     }

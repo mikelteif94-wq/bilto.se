@@ -13,6 +13,7 @@ import {
   Check,
   Pencil,
   Repeat,
+  Send,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
@@ -27,6 +28,7 @@ interface AdminCarDetailProps {
   carId: string;
   onBack: () => void;
   onLoggedOut: () => void;
+  onCreateProposal?: (carId: string) => void;
 }
 
 type Car = Database['public']['Tables']['cars']['Row'];
@@ -60,6 +62,7 @@ export default function AdminCarDetail({
   carId,
   onBack,
   onLoggedOut,
+  onCreateProposal,
 }: AdminCarDetailProps) {
   const [car, setCar] = useState<CarDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -238,13 +241,24 @@ export default function AdminCarDetail({
       ) : car ? (
         <div className="max-w-6xl mx-auto px-3 sm:px-6 py-5 sm:py-8">
           <div className="mb-5 sm:mb-8">
-            <div className="flex items-baseline gap-2 sm:gap-3 mb-1 flex-wrap">
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-                {[car.marke, car.modell].filter(Boolean).join(' ') || 'Bil'}
-              </h1>
-              <span className="font-mono text-base sm:text-lg font-semibold text-slate-500 tracking-wider">
-                {car.regnummer}
-              </span>
+            <div className="flex items-start justify-between gap-4 flex-wrap mb-1">
+              <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+                  {[car.marke, car.modell].filter(Boolean).join(' ') || 'Bil'}
+                </h1>
+                <span className="font-mono text-base sm:text-lg font-semibold text-slate-500 tracking-wider">
+                  {car.regnummer}
+                </span>
+              </div>
+              {onCreateProposal && (
+                <button
+                  onClick={() => onCreateProposal(carId)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition shadow-sm shrink-0"
+                >
+                  <Send className="w-4 h-4" />
+                  Skicka handlarförslag
+                </button>
+              )}
             </div>
             <p className="text-sm text-slate-500">Inkom {formatDate(car.created_at)}</p>
           </div>

@@ -13,6 +13,7 @@ import {
   ThumbsUp,
   Trophy,
   Handshake,
+  MessageSquare,
 } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
 import ConditionReportForm, {
@@ -24,6 +25,10 @@ import CarImageUploader, {
   PendingImage,
 } from '../components/forms/CarImageUploader';
 import { supabase } from '../lib/supabase';
+import DealerProposalCard from '../components/DealerProposalCard';
+import type { Database } from '../lib/database.types';
+
+type DealerProposal = Database['public']['Tables']['dealer_proposals']['Row'];
 
 interface MyCarPageProps {
   token: string;
@@ -109,6 +114,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
   const [car, setCar] = useState<CarResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [proposals, setProposals] = useState<DealerProposal[]>([]);
 
   useEffect(() => {
     void fetchCar();
@@ -127,11 +133,35 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
         setCar(null);
       } else {
         setCar(json.car);
+        // Load dealer proposals for this car (anon read via RLS)
+        void loadProposals(json.car?.id);
       }
     } catch {
       setError('Kunde inte kontakta servern.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadProposals = async (carId: string | undefined) => {
+    if (!carId) return;
+    const { data } = await supabase
+      .from('dealer_proposals')
+      .select('*')
+      .eq('car_id', carId)
+      .in('status', ['sent', 'viewed'])
+      .order('created_at', { ascending: false });
+    if (data && data.length > 0) {
+      setProposals(data as DealerProposal[]);
+      // Mark as viewed
+      for (const p of data) {
+        if (p.status === 'sent') {
+          void supabase
+            .from('dealer_proposals')
+            .update({ status: 'viewed', viewed_at: new Date().toISOString() })
+            .eq('id', p.id);
+        }
+      }
     }
   };
 
@@ -320,6 +350,25 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
               error={error}
             />
           )}
+
+        {proposals.length > 0 && (
+          <div>
+            <div className="flex items-center gap-2.5 mb-4">
+              <MessageSquare className="w-5 h-5 text-[#0e6efe]" />
+              <h2 className="text-lg font-semibold text-slate-900">
+                {proposals.length === 1 ? '1 handlarförslag' : `${proposals.length} handlarförslag`}
+              </h2>
+            </div>
+            <p className="text-sm text-slate-500 mb-5">
+              Handlare har skickat dig personliga erbjudanden — jämför och välj det som passar bäst.
+            </p>
+            <div className="grid gap-5">
+              {proposals.map((p) => (
+                <DealerProposalCard key={p.id} proposal={p} />
+              ))}
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
