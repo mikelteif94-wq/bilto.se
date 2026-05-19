@@ -334,7 +334,7 @@ function NumberField({
 export function isConditionReportFilled(r: ConditionReport | null | undefined): boolean {
   if (!r) return false;
   const sections = [r.mekaniskt, r.kosmetiskt, r.inredning];
-  const anyStatus = sections.some((sec) => Object.values(sec).some((v) => v && v !== ''));
+  const anyStatus = sections.some((sec) => sec && Object.values(sec).some((v) => v && v !== ''));
   const anyHistory =
     !!r.historik &&
     (r.historik.servicehistorik !== '' ||
