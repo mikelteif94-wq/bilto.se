@@ -350,12 +350,61 @@ function formatKr(v: number): string {
   return (v ?? 0).toLocaleString("sv-SE");
 }
 
-function shell(inner: string): string {
-  return `<!doctype html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:32px;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
-      ${inner}
-    </table>
-  </body></html>`;
+const LOGO_URL = "https://bilto.se/ChatGPT_Image_19_maj_2026_08_52_17.png";
+const SITE = "https://bilto.se";
+
+function emailShell(opts: { preheader: string; heroContent: string; bodyContent: string; footerExtra?: string }): string {
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="x-apple-disable-message-reformatting"/>
+<title>Bilto</title>
+</head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${opts.preheader}&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;</div>
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;">
+        <tr><td align="center" style="padding-bottom:24px;">
+          <a href="${SITE}" style="text-decoration:none;">
+            <img src="${LOGO_URL}" alt="Bilto" width="120" style="width:120px;height:auto;display:block;" />
+          </a>
+        </td></tr>
+        <tr><td style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="background:linear-gradient(135deg,#0a4fd4 0%,#0e6efe 60%,#3b87ff 100%);padding:40px 40px 36px;text-align:center;">
+              ${opts.heroContent}
+            </td></tr>
+          </table>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="padding:36px 40px 32px;">
+              ${opts.bodyContent}
+            </td></tr>
+          </table>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="padding:0 40px;"><div style="border-top:1px solid #e2e8f0;"></div></td></tr>
+          </table>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="padding:24px 40px 36px;">
+              <p style="margin:0 0 2px;font-size:14px;color:#64748b;line-height:1.6;">Med vänliga hälsningar,</p>
+              <p style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Teamet på Bilto</p>
+            </td></tr>
+          </table>
+        </td></tr>
+        <tr><td align="center" style="padding-top:28px;">
+          <p style="margin:0 0 8px;font-size:13px;color:#94a3b8;">
+            <a href="mailto:hej@bilto.se" style="color:#64748b;text-decoration:none;font-weight:500;">hej@bilto.se</a>
+            &nbsp;&middot;&nbsp;
+            <a href="${SITE}" style="color:#64748b;text-decoration:none;font-weight:500;">bilto.se</a>
+          </p>
+          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${new Date().getFullYear()} Bilto. Alla rättigheter förbehållna.</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
 }
 
 function renderWinnerEmail(
@@ -368,30 +417,29 @@ function renderWinnerEmail(
   const detailUrl = appUrl
     ? `${appUrl.replace(/\/$/, "")}/handlare/bilar/${car.id}`
     : `/handlare/bilar/${car.id}`;
-  return shell(`
-    <tr><td style="padding:32px 32px 16px;">
-      <p style="margin:0 0 6px;color:#047857;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Du vann auktionen</p>
-      <h1 style="margin:0;color:#0f172a;font-size:24px;">${esc(buildTitle(car))}</h1>
-      <p style="margin:6px 0 0;color:#64748b;font-family:monospace;font-weight:600;">${esc(car.regnummer)}</p>
-    </td></tr>
-    <tr><td style="padding:0 32px 20px;color:#334155;font-size:15px;line-height:1.6;">
-      <p style="margin:0 0 10px;">Hej ${esc(dealer.kontaktperson?.split(" ")[0] || dealer.foretagsnamn)},</p>
-      <p style="margin:0 0 10px;">Grattis — ditt bud på <strong>${formatKr(bid.belopp)} kr</strong> var högst och du har vunnit auktionen.</p>
-      <p style="margin:0 0 10px;">Kontakta säljaren inom 24 timmar för att slutföra affären.</p>
-    </td></tr>
-    ${customer ? `
-    <tr><td style="padding:0 32px 24px;">
-      <h2 style="margin:0 0 12px;font-size:14px;color:#0f172a;text-transform:uppercase;letter-spacing:0.06em;">Säljarens kontakt</h2>
-      <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;color:#334155;">
-        <tr><td style="padding:6px 0;color:#64748b;width:140px;">Namn</td><td>${esc(customer.namn)}</td></tr>
-        <tr><td style="padding:6px 0;color:#64748b;">Telefon</td><td><a href="tel:${escAttr(customer.telefon)}" style="color:#0f172a;text-decoration:none;">${esc(customer.telefon)}</a></td></tr>
-        <tr><td style="padding:6px 0;color:#64748b;">Mejl</td><td><a href="mailto:${escAttr(customer.mejl)}" style="color:#0f172a;text-decoration:none;">${esc(customer.mejl)}</a></td></tr>
-      </table>
-    </td></tr>` : ""}
-    <tr><td style="padding:0 32px 32px;">
-      <a href="${escAttr(detailUrl)}" style="display:inline-block;background:#0f172a;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600;font-size:14px;">Öppna bilen</a>
-    </td></tr>
-  `);
+  const firstName = dealer.kontaktperson?.split(" ")[0] || dealer.foretagsnamn;
+  return emailShell({
+    preheader: `Grattis ${esc(firstName)}! Du vann auktionen för ${esc(buildTitle(car))}.`,
+    heroContent: `
+      <p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);">Du vann auktionen</p>
+      <h1 style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;">Grattis ${esc(firstName)}!</h1>
+      <p style="margin:10px 0 0;font-size:15px;color:rgba(255,255,255,0.85);">${esc(buildTitle(car))}</p>
+    `,
+    bodyContent: `
+      <p style="margin:0 0 16px;font-size:16px;color:#1e293b;line-height:1.7;font-weight:500;">Ditt bud på <strong>${formatKr(bid.belopp)} kr</strong> var högst — du har vunnit auktionen!</p>
+      <p style="margin:0 0 24px;font-size:15px;color:#475569;line-height:1.7;">Kontakta säljaren inom 24 timmar för att slutföra affären.</p>
+      ${customer ? `
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;margin-bottom:24px;">
+        <p style="margin:0 0 10px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;">Säljarens kontakt</p>
+        <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;color:#334155;">
+          <tr><td style="padding:5px 0;color:#64748b;width:80px;">Namn</td><td style="font-weight:600;color:#0f172a;">${esc(customer.namn)}</td></tr>
+          <tr><td style="padding:5px 0;color:#64748b;">Telefon</td><td><a href="tel:${escAttr(customer.telefon)}" style="color:#0e6efe;text-decoration:none;font-weight:600;">${esc(customer.telefon)}</a></td></tr>
+          <tr><td style="padding:5px 0;color:#64748b;">Mejl</td><td><a href="mailto:${escAttr(customer.mejl)}" style="color:#0e6efe;text-decoration:none;font-weight:600;">${esc(customer.mejl)}</a></td></tr>
+        </table>
+      </div>` : ""}
+      <a href="${escAttr(detailUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:15px 32px;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.02em;">Öppna bilen &rarr;</a>
+    `,
+  });
 }
 
 function renderWinnerText(
@@ -424,23 +472,25 @@ function renderCustomerEmail(
   customer: Customer,
   trackingUrl: string,
 ): string {
-  return shell(`
-    <tr><td style="padding:32px 32px 16px;">
-      <p style="margin:0 0 6px;color:#0f766e;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Din auktion är avslutad</p>
-      <h1 style="margin:0;color:#0f172a;font-size:24px;">${esc(buildTitle(car))}</h1>
-      <p style="margin:6px 0 0;color:#64748b;font-family:monospace;font-weight:600;">${esc(car.regnummer)}</p>
-    </td></tr>
-    <tr><td style="padding:0 32px 24px;color:#334155;font-size:15px;line-height:1.7;">
-      <p style="margin:0 0 12px;">Hej ${esc(customer.namn?.split(" ")[0] || customer.namn)},</p>
-      <p style="margin:0 0 12px;">Ditt högsta bud är <strong>${formatKr(bid.belopp)} kr</strong> från <strong>${esc(dealer.foretagsnamn)}</strong>. De kontaktar dig inom 24 timmar.</p>
-      <p style="margin:0 0 12px;color:#64748b;font-size:14px;">Du kan svara ja eller nej på budet redan nu via din personliga länk — eller vänta tills handlaren ringer.</p>
-    </td></tr>
-    ${trackingUrl ? `
-    <tr><td style="padding:0 32px 32px;">
-      <a href="${escAttr(trackingUrl)}" style="display:inline-block;background:#0f172a;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600;font-size:14px;">Se budet och svara</a>
-      <p style="margin:16px 0 0;color:#94a3b8;font-size:12px;word-break:break-all;">${esc(trackingUrl)}</p>
-    </td></tr>` : ""}
-  `);
+  const firstName = customer.namn?.split(" ")[0] || customer.namn;
+  return emailShell({
+    preheader: `Hej ${esc(firstName)}! Din auktion är avslutad — du har fått ett bud på ${formatKr(bid.belopp)} kr.`,
+    heroContent: `
+      <p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);">Auktionen är avslutad</p>
+      <h1 style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;">Du har fått ett bud!</h1>
+      <p style="margin:10px 0 0;font-size:15px;color:rgba(255,255,255,0.85);">${esc(buildTitle(car))} &middot; ${esc(car.regnummer)}</p>
+    `,
+    bodyContent: `
+      <p style="margin:0 0 16px;font-size:16px;color:#1e293b;line-height:1.7;font-weight:500;">Hej ${esc(firstName)},</p>
+      <div style="background:#f0f9ff;border:1px solid #bfdbfe;border-radius:10px;padding:20px 24px;margin-bottom:24px;">
+        <p style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#1e40af;">Högsta bud</p>
+        <p style="margin:0;font-size:28px;font-weight:800;color:#0f172a;">${formatKr(bid.belopp)} kr</p>
+        <p style="margin:4px 0 0;font-size:14px;color:#475569;">från <strong>${esc(dealer.foretagsnamn)}</strong></p>
+      </div>
+      <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.7;">Handlaren kontaktar dig inom 24 timmar. Du kan också svara på budet redan nu via din personliga länk.</p>
+      ${trackingUrl ? `<a href="${escAttr(trackingUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:15px 32px;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.02em;">Se budet och svara &rarr;</a>` : ""}
+    `,
+  });
 }
 
 function renderCustomerText(
@@ -489,22 +539,23 @@ function renderNoBidsCustomerEmail(
   customer: Customer,
   trackingUrl: string,
 ): string {
-  return shell(`
-    <tr><td style="padding:32px 32px 16px;">
-      <p style="margin:0 0 6px;color:#b45309;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Auktionen är avslutad</p>
-      <h1 style="margin:0;color:#0f172a;font-size:24px;">${esc(buildTitle(car))}</h1>
-      <p style="margin:6px 0 0;color:#64748b;font-family:monospace;font-weight:600;">${esc(car.regnummer)}</p>
-    </td></tr>
-    <tr><td style="padding:0 32px 28px;color:#334155;font-size:15px;line-height:1.7;">
-      <p style="margin:0 0 12px;">Hej ${esc(customer.namn?.split(" ")[0] || customer.namn)},</p>
-      <p style="margin:0 0 12px;">Tyvärr kom inga bud in på din bil. Vårt team hör av sig inom kort för att diskutera nästa steg.</p>
-    </td></tr>
-    ${trackingUrl ? `
-    <tr><td style="padding:0 32px 32px;">
-      <a href="${escAttr(trackingUrl)}" style="display:inline-block;background:#0f172a;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600;font-size:14px;">Se din bil</a>
-      <p style="margin:16px 0 0;color:#94a3b8;font-size:12px;word-break:break-all;">${esc(trackingUrl)}</p>
-    </td></tr>` : ""}
-  `);
+  const firstName = customer.namn?.split(" ")[0] || customer.namn;
+  return emailShell({
+    preheader: `Hej ${esc(firstName)}. Auktionen för ${esc(buildTitle(car))} är avslutad — vi hör av oss om nästa steg.`,
+    heroContent: `
+      <p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);">Auktionen är avslutad</p>
+      <h1 style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;">${esc(buildTitle(car))}</h1>
+      <p style="margin:10px 0 0;font-size:14px;font-family:monospace;letter-spacing:0.08em;color:rgba(255,255,255,0.7);">${esc(car.regnummer)}</p>
+    `,
+    bodyContent: `
+      <p style="margin:0 0 16px;font-size:16px;color:#1e293b;line-height:1.7;font-weight:500;">Hej ${esc(firstName)},</p>
+      <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.7;">Tyvärr kom inga bud in på din bil den här gången. Vi vet att det kan kännas frustrerande — men ge inte upp!</p>
+      <div style="background:#fefce8;border-left:4px solid #eab308;border-radius:0 8px 8px 0;padding:14px 18px;margin:20px 0;">
+        <p style="margin:0;font-size:14px;color:#713f12;line-height:1.6;">Vårt team hör av sig inom kort för att diskutera nästa steg och hitta den bästa vägen framåt för dig.</p>
+      </div>
+      ${trackingUrl ? `<a href="${escAttr(trackingUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:15px 32px;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.02em;">Se din bil &rarr;</a>` : ""}
+    `,
+  });
 }
 
 function jsonResp(data: unknown, status: number): Response {

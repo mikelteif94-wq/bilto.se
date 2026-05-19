@@ -9,6 +9,7 @@ const corsHeaders = {
 };
 
 const LOGO_URL = "https://bilto.se/ChatGPT_Image_19_maj_2026_08_52_17.png";
+const SITE = "https://bilto.se";
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -20,7 +21,7 @@ Deno.serve(async (req: Request) => {
     const fromEmail =
       Deno.env.get("RESEND_FROM_EMAIL") ?? "Bilto <hej@bilto.se>";
     const rawAppUrl = Deno.env.get("APP_URL") ?? "";
-    const appUrl = isPublicUrl(rawAppUrl) ? rawAppUrl : "https://bilto.se";
+    const appUrl = isPublicUrl(rawAppUrl) ? rawAppUrl : SITE;
 
     const body = await req.json().catch(() => ({}));
     const carId: string | undefined = body?.car_id;
@@ -55,10 +56,6 @@ Deno.serve(async (req: Request) => {
       return jsonResp({ skipped: true, reason: "Ingen kundmejl" }, 200);
     }
 
-    const titel = [car.marke, car.modell, car.ar]
-      .filter((v) => v !== null && v !== undefined && String(v).trim() !== "")
-      .join(" ") || "bil";
-
     const safeProvidedUrl = providedUrl && isPublicUrl(providedUrl) ? providedUrl : null;
     const trackingUrl =
       safeProvidedUrl ||
@@ -79,13 +76,7 @@ Deno.serve(async (req: Request) => {
 
     const fornamn = (customer.namn ?? "").trim().split(" ")[0] || customer.namn;
 
-    const html = renderEmail({
-      fornamn,
-      titel,
-      regnummer: car.regnummer,
-      trackingUrl,
-      appUrl,
-    });
+    const html = renderEmail({ fornamn, regnummer: car.regnummer, trackingUrl, appUrl });
 
     const text = [
       `Hej ${fornamn}!`,
@@ -94,7 +85,6 @@ Deno.serve(async (req: Request) => {
       "En av våra experter ringer dig inom kort för att gå igenom nästa steg.",
       "",
       "Under tiden kan du luta dig tillbaka.",
-      trackingUrl ? "" : undefined,
       trackingUrl ? `Följ ärendet här: ${trackingUrl}` : undefined,
       "",
       "Vi hörs snart!",
@@ -143,54 +133,105 @@ Deno.serve(async (req: Request) => {
 
 function renderEmail(d: {
   fornamn: string;
-  titel: string;
   regnummer: string;
   trackingUrl: string;
   appUrl: string;
 }): string {
-  const site = d.appUrl ? d.appUrl.replace(/\/$/, "") : "https://bilto.se";
+  const site = d.appUrl ? d.appUrl.replace(/\/$/, "") : SITE;
+  return emailShell({
+    site,
+    preheader: `Tack ${esc(d.fornamn)}! Vi har tagit emot din bil och hör av oss snart.`,
+    heroContent: `
+      <p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);">Nu kör vi!</p>
+      <h1 style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;">Tack ${esc(d.fornamn)}!</h1>
+      ${d.regnummer ? `<p style="margin:10px 0 0;font-size:14px;font-family:monospace;letter-spacing:0.08em;color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.12);display:inline-block;padding:4px 12px;border-radius:6px;">${esc(d.regnummer)}</p>` : ""}
+    `,
+    bodyContent: `
+      <p style="margin:0 0 16px;font-size:16px;color:#1e293b;line-height:1.7;font-weight:500;">Vi har tagit emot din bil och är redo att sätta igång!</p>
+      <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.7;">En av våra experter ringer dig inom kort för att gå igenom nästa steg och svara på alla frågor du har.</p>
+      <div style="background:#f0f9ff;border-left:4px solid #0e6efe;border-radius:0 8px 8px 0;padding:14px 18px;margin:20px 0;">
+        <p style="margin:0;font-size:14px;color:#0369a1;line-height:1.6;">Under tiden kan du luta dig tillbaka — vi sköter allt och hör av oss snart!</p>
+      </div>
+      ${d.trackingUrl ? `
+      <div style="margin-top:28px;">
+        <a href="${escAttr(d.trackingUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:15px 32px;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.02em;">Följ din bil &rarr;</a>
+      </div>` : ""}
+    `,
+  });
+}
+
+function emailShell(opts: {
+  site: string;
+  preheader: string;
+  heroContent: string;
+  bodyContent: string;
+}): string {
   return `<!doctype html>
-<html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;margin:0;padding:32px;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;">
-    <tr><td style="padding:0 0 20px;text-align:center;">
-      <a href="${escAttr(site)}" style="display:inline-block;text-decoration:none;">
-        <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="160" style="width:160px;height:auto;display:inline-block;" />
-      </a>
-    </td></tr>
-    <tr><td style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
-      <table width="100%" cellpadding="0" cellspacing="0">
-        <tr><td style="background:#0e6efe;text-align:center;padding:32px 16px;">
-          <a href="${escAttr(site)}" style="display:inline-block;text-decoration:none;">
-            <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="220" style="width:220px;height:auto;display:inline-block;" />
+<html lang="sv">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="x-apple-disable-message-reformatting"/>
+<title>Bilto</title>
+</head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${opts.preheader}&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;</div>
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:40px 16px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;">
+
+        <!-- Logo bar -->
+        <tr><td align="center" style="padding-bottom:24px;">
+          <a href="${escAttr(opts.site)}" style="text-decoration:none;">
+            <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="120" style="width:120px;height:auto;display:block;" />
           </a>
         </td></tr>
-        <tr><td style="padding:32px 32px 16px;">
-          <p style="margin:0 0 6px;color:#0e6efe;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Nu kör vi</p>
-          <h1 style="margin:0;color:#0f172a;font-size:26px;">Tack ${esc(d.fornamn)}!</h1>
-          ${d.regnummer ? `<p style="margin:6px 0 0;color:#64748b;font-family:monospace;letter-spacing:0.05em;font-weight:600;">${esc(d.regnummer)}</p>` : ""}
+
+        <!-- Card -->
+        <tr><td style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+
+          <!-- Hero -->
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="background:linear-gradient(135deg,#0a4fd4 0%,#0e6efe 60%,#3b87ff 100%);padding:40px 40px 36px;text-align:center;">
+              ${opts.heroContent}
+            </td></tr>
+          </table>
+
+          <!-- Body -->
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="padding:36px 40px 32px;">
+              ${opts.bodyContent}
+            </td></tr>
+          </table>
+
+          <!-- Divider -->
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="padding:0 40px;">
+              <div style="border-top:1px solid #e2e8f0;"></div>
+            </td></tr>
+          </table>
+
+          <!-- Signature -->
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="padding:24px 40px 36px;">
+              <p style="margin:0 0 2px;font-size:14px;color:#64748b;line-height:1.6;">Med vänliga hälsningar,</p>
+              <p style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Teamet på Bilto</p>
+            </td></tr>
+          </table>
+
         </td></tr>
-        <tr><td style="padding:0 32px 20px;color:#334155;font-size:15px;line-height:1.7;">
-          <p style="margin:0 0 12px;">Tack — nu är vi igång!</p>
-          <p style="margin:0 0 12px;">En av våra experter ringer dig inom kort för att gå igenom nästa steg och svara på alla frågor.</p>
-          <p style="margin:0 0 12px;color:#64748b;font-size:14px;">Under tiden kan du luta dig tillbaka — vi hör av oss snart!</p>
+
+        <!-- Footer -->
+        <tr><td align="center" style="padding-top:28px;">
+          <p style="margin:0 0 8px;font-size:13px;color:#94a3b8;">
+            <a href="mailto:hej@bilto.se" style="color:#64748b;text-decoration:none;font-weight:500;">hej@bilto.se</a>
+            &nbsp;&middot;&nbsp;
+            <a href="${escAttr(opts.site)}" style="color:#64748b;text-decoration:none;font-weight:500;">bilto.se</a>
+          </p>
+          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${new Date().getFullYear()} Bilto. Alla rättigheter förbehållna.</p>
         </td></tr>
-        ${d.trackingUrl ? `
-        <tr><td style="padding:0 32px 32px;">
-          <a href="${escAttr(d.trackingUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:10px;font-weight:600;font-size:15px;">Se min bil</a>
-        </td></tr>` : ""}
+
       </table>
-    </td></tr>
-    <tr><td style="padding:28px 16px 8px;text-align:center;">
-      <a href="${escAttr(site)}" style="display:inline-block;text-decoration:none;">
-        <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="100" style="width:100px;height:auto;display:inline-block;" />
-      </a>
-      <p style="margin:10px 0 4px;color:#475569;font-size:13px;font-weight:600;">Trygg bilförsäljning</p>
-      <p style="margin:0 0 10px;color:#94a3b8;font-size:12px;">
-        <a href="mailto:hej@bilto.se" style="color:#64748b;text-decoration:none;">hej@bilto.se</a>
-        &nbsp;·&nbsp;
-        <a href="${escAttr(site)}" style="color:#64748b;text-decoration:none;">bilto.se</a>
-      </p>
-      <p style="margin:0;color:#cbd5e1;font-size:11px;">© ${new Date().getFullYear()} Bilto. Alla rättigheter förbehållna.</p>
     </td></tr>
   </table>
 </body></html>`;
