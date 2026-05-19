@@ -94,7 +94,7 @@ export const CARS_ALFA_AUDI: ComparisonCar[] = [
     safety: { euro_ncap_stars: 5, euro_ncap_year: 2018 },
     pros: ['Vacker fyrdörrarscoupé', 'Stor lucka (kombiluck)', 'Lyxig interiör', 'Stark RS7'],
     cons: ['Dyra tillval', 'Sjunkande andrahandsvärde', 'Sämre sikt bakåt', 'Komplext infotainment'],
-    segment: 'premium', competitors: ['bmw_6_series_gt', 'mercedes_cls'],
+    segment: 'premium', competitors: ['bmw_2_active_tourer', 'mercedes_cls'],
     is_active: false, updated_at: '2025-01-15',
   },
   {

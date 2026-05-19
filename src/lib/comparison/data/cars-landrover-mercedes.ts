@@ -202,7 +202,7 @@ export const CARS_LANDROVER_MERCEDES: ComparisonCar[] = [
     safety: { euro_ncap_stars: 5, euro_ncap_year: 2018 },
     pros: ['Vacker fyrdörrarscoupé', 'Lyxig interiör', 'Bra långfärdsbil', 'Stark 53 AMG'],
     cons: ['Sjunkande andrahandsvärde', 'Mindre rymlig än E-Klass', 'Dyr', 'Utgående modell'],
-    segment: 'premium', competitors: ['audi_a7', 'bmw_6_series_gt'],
+    segment: 'premium', competitors: ['audi_a7', 'bmw_2_active_tourer'],
     is_active: false, updated_at: '2025-01-15',
   },
   {
