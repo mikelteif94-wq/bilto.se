@@ -217,10 +217,14 @@ function App() {
       navigate('/logga-in');
       return null;
     }
+    if (sessionStorage.getItem('bilto_portal') === 'dealer') {
+      navigate('/handlare/oversikt');
+      return null;
+    }
     return (
       <CustomerDashboard
         userId={session.user.id}
-        onLoggedOut={() => navigate('/logga-in')}
+        onLoggedOut={() => { sessionStorage.removeItem('bilto_portal'); navigate('/logga-in'); }}
         onOpenCar={(token) => navigate(`/min-bil/${token}`)}
       />
     );
@@ -274,11 +278,15 @@ function App() {
       navigate('/handlare/logga-in');
       return null;
     }
+    if (sessionStorage.getItem('bilto_portal') === 'customer') {
+      navigate('/mina-bilar');
+      return null;
+    }
     return (
       <DealerArea
         userId={session.user.id}
         path={path}
-        onLoggedOut={() => navigate('/handlare/logga-in')}
+        onLoggedOut={() => { sessionStorage.removeItem('bilto_portal'); navigate('/handlare/logga-in'); }}
       />
     );
   }

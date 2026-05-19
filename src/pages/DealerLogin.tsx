@@ -111,6 +111,7 @@ export default function DealerLogin({
     }
 
     setLoading(false);
+    sessionStorage.setItem('bilto_portal', 'dealer');
     onLoggedIn();
   };
 

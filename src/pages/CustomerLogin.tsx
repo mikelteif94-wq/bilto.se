@@ -49,6 +49,7 @@ export default function CustomerLogin({ onLoggedIn, onBack }: CustomerLoginProps
       return;
     }
     setLoading(false);
+    sessionStorage.setItem('bilto_portal', 'customer');
     onLoggedIn();
   };
 
