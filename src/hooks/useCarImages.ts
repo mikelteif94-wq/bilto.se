@@ -38,7 +38,11 @@ export function useCarImages() {
         const imageMap = new Map<string, string>();
         const entries = (data || []) as unknown as CatalogEntry[];
 
-        entries.forEach((car) => {
+        // Sort longest model names first so specific variants (e.g. "XC40 Recharge")
+        // are inserted before their shorter aliases ("XC40") and won't be overwritten.
+        const sorted = [...entries].sort((a, b) => b.model.length - a.model.length);
+
+        sorted.forEach((car) => {
           const imageUrl = car.cleaned_image_url || car.image_url;
           if (imageUrl) {
             const brand = normalize(car.make);

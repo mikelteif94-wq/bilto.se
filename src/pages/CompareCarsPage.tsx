@@ -100,16 +100,12 @@ const LOCAL_IMAGES: Record<string, string> = {
   bmw_2_series: '/getImage_(8).webp',
   skoda_superb: '/getImage_(9).webp',
   volvo_xc90: '/getImage_(11).webp',
-  volvo_ex40: '/getImage_(12).webp',
-  volvo_ex90: '/getImage_(13).webp',
   volvo_c40: '/getImage_(14).webp',
   volvo_c40_recharge: '/getImage_(14).webp',
-  volvo_ec40: '/getImage_(14).webp',
   volvo_v60: '/getImage_(15).webp',
   volvo_v40: '/getImage_(17).webp',
   volvo_v40_cross_country: '/getImage_(17).webp',
   volvo_xc70: '/getImage_(18).webp',
-  volvo_v70: '/getImage_(19).webp',
   volvo_v60_cross_country: '/getImage_(20).webp',
   volvo_v90_cross_country: '/getImage_(21).webp',
 };
@@ -133,11 +129,11 @@ type CategoryKey = 'alla' | 'popular' | 'el' | 'suv' | 'hybrid' | 'sedan';
 
 const CATEGORY_IDS: Record<CategoryKey, string[] | null> = {
   alla: null,
-  popular: ['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'vw_golf', 'toyota_rav4'],
-  el: ['tesla_model_y', 'volvo_ex30', 'volvo_ex40', 'kia_ev6', 'hyundai_ioniq5', 'vw_id4', 'polestar_2', 'tesla_model_3', 'skoda_enyaq'],
-  suv: ['tesla_model_y', 'volvo_xc60', 'volvo_xc40', 'toyota_rav4', 'kia_sportage', 'bmw_x3', 'hyundai_ioniq5', 'honda_crv'],
+  popular: ['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'vw_golf', 'toyota_rav4', 'volvo_ex60', 'volvo_xc40_recharge', 'volvo_es90'],
+  el: ['tesla_model_y', 'volvo_ex30', 'volvo_ex40', 'volvo_ex60', 'volvo_xc40_recharge', 'volvo_ec40', 'kia_ev6', 'hyundai_ioniq5', 'vw_id4', 'polestar_2', 'tesla_model_3', 'skoda_enyaq'],
+  suv: ['tesla_model_y', 'volvo_xc60', 'volvo_xc40', 'volvo_ex60', 'toyota_rav4', 'kia_sportage', 'bmw_x3', 'hyundai_ioniq5', 'honda_crv'],
   hybrid: ['toyota_rav4', 'toyota_corolla', 'volvo_xc60', 'kia_sportage', 'toyota_yaris_cross', 'kia_niro', 'honda_crv'],
-  sedan: ['vw_golf', 'tesla_model_3', 'toyota_corolla', 'audi_a3', 'honda_civic', 'volvo_v60', 'polestar_2'],
+  sedan: ['vw_golf', 'tesla_model_3', 'volvo_es90', 'toyota_corolla', 'audi_a3', 'honda_civic', 'volvo_v60', 'polestar_2'],
 };
 
 const CATEGORIES: { key: CategoryKey; label: string; icon: typeof Car }[] = [
