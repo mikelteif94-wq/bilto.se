@@ -101,7 +101,9 @@ const LOCAL_IMAGES: Record<string, string> = {
   skoda_superb: '/getImage_(9).webp',
   volvo_xc90: '/getImage_(11).webp',
   volvo_ex40: '/getImage_(12).webp',
+  volvo_xc40_recharge: '/getImage_(12).webp',
   volvo_ex90: '/getImage_(13).webp',
+  volvo_ex60: '/getImage_(13).webp',
   volvo_c40: '/getImage_(14).webp',
   volvo_c40_recharge: '/getImage_(14).webp',
   volvo_ec40: '/getImage_(14).webp',
@@ -658,19 +660,18 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const [carSearchQuery, setCarSearchQuery] = useState('');
 
   const allCategoryCars = useMemo(() => {
-    const q = carSearchQuery.trim().toLowerCase();
-    if (q) {
-      return allCarsRaw.filter(c =>
-        `${c.brand_display} ${c.model_display}`.toLowerCase().includes(q)
-      );
-    }
     const ids = CATEGORY_IDS[activeCategory];
-    return ids === null ? getCuratedList(CURATED_IDS) : getCuratedList(ids);
-  }, [activeCategory, getCuratedList, carSearchQuery, allCarsRaw]);
+    const base = ids === null ? getCuratedList(CURATED_IDS) : getCuratedList(ids);
+    const q = carSearchQuery.trim().toLowerCase();
+    if (!q) return base;
+    return base.filter(c =>
+      `${c.brand_display} ${c.model_display}`.toLowerCase().includes(q)
+    );
+  }, [activeCategory, getCuratedList, carSearchQuery]);
 
   const visibleCars = useMemo(() => {
     if (carSearchQuery.trim()) return allCategoryCars;
-    return showAllCars ? allCategoryCars : allCategoryCars.slice(0, 8);
+    return showAllCars ? allCategoryCars.slice(0, 16) : allCategoryCars.slice(0, 8);
   }, [allCategoryCars, showAllCars, carSearchQuery]);
 
   // Selection helpers
