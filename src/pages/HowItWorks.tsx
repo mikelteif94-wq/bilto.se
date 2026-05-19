@@ -22,6 +22,7 @@ import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import SeoCarsSection from '../components/SeoCarsSection';
 import ReviewsSection from '../components/ReviewsSection';
 import CompactCarCard from '../components/CompactCarCard';
+import BuyDrawer from '../components/BuyDrawer';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import { getAllComparisonCars, type ComparisonCar } from '../lib/comparison';
 import { useCarImages } from '../hooks/useCarImages';
@@ -124,14 +125,9 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
   const [scrolled, setScrolled] = useState(false);
   const [carsModalOpen, setCarsModalOpen] = useState(false);
   const [detailCar, setDetailCar] = useState<ComparisonCar | null>(null);
-  const navigateToBuy = (carLabel?: string) => {
-    const params = new URLSearchParams();
-    if (carLabel) params.set('bil', carLabel);
-    params.set('source', 'Så fungerar det');
-    window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  };
+  const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
+
+  const openDrawer = (carLabel: string) => setBuyDrawerCar(carLabel);
 
   const { getCarImage } = useCarImages();
   const allCars = getAllComparisonCars();
@@ -577,7 +573,8 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                         topBadge={i === 0 && activeBudgetPill === null}
                         expertComment={car.pros[0]}
                         fuelLabel={fuelLabelStr}
-                        onNegotiate={() => navigateToBuy(`${car.brand_display} ${car.model_display}`)}
+                        onNegotiate={() => openDrawer(`${car.brand_display} ${car.model_display}`)}
+                        onSearch={() => openDrawer(`${car.brand_display} ${car.model_display}`)}
                         onDetail={() => setDetailCar(car)}
                         index={i}
                       />
@@ -1009,6 +1006,11 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         </a>
       )}
 
+      <BuyDrawer
+        car={buyDrawerCar}
+        onClose={() => setBuyDrawerCar(null)}
+      />
+
       {detailCar && (
         <CarDetailSheet
           car={{
@@ -1026,7 +1028,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
           onSelect={() => {
             const car = detailCar;
             setDetailCar(null);
-            navigateToBuy(`${car.brand_display} ${car.model_display}`);
+            openDrawer(`${car.brand_display} ${car.model_display}`);
           }}
         />
       )}
