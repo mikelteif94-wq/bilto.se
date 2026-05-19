@@ -124,11 +124,25 @@ export default function DealerDispatchPanel({
       message,
     }));
 
-    const { error: insertErr } = await supabase.from('dealer_dispatches').insert(rows);
+    const { data: inserted, error: insertErr } = await supabase.from('dealer_dispatches').insert(rows).select('id');
     if (insertErr) {
       console.error('Dispatch insert error:', insertErr);
       setSending(false);
       return;
+    }
+
+    // Send emails to dispatched dealers
+    if (inserted && inserted.length > 0) {
+      try {
+        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-dealer-dispatch`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ dispatch_ids: inserted.map((r: { id: string }) => r.id), is_nudge: false }),
+        });
+      } catch { /* best effort */ }
     }
 
     // Log activity
@@ -155,8 +169,19 @@ export default function DealerDispatchPanel({
       deadline_at: newDeadline,
     }).eq('id', dispatchId);
 
-    const logRef = carId ? { car_id: carId } : quoteRequestId ? { car_id: null } : null;
-    if (logRef !== null && carId) {
+    // Send reminder email
+    try {
+      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-dealer-dispatch`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ dispatch_ids: [dispatchId], is_nudge: true }),
+      });
+    } catch { /* best effort */ }
+
+    if (carId) {
       await supabase.from('car_activities').insert({
         car_id: carId,
         type: 'nudge',
