@@ -76,12 +76,26 @@ export default function DealerSettings({ dealerId, onBack }: DealerSettingsProps
     setError(null);
     setSavedProfile(false);
     setSaving(true);
+
+    const newMejl = info.mejl.trim();
+
+    // Sync email with auth if it has changed
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user && user.email !== newMejl) {
+      const { error: authErr } = await supabase.auth.updateUser({ email: newMejl });
+      if (authErr) {
+        setError('Kunde inte uppdatera mejl: ' + authErr.message);
+        setSaving(false);
+        return;
+      }
+    }
+
     const { error: err } = await supabase
       .from('dealers')
       .update({
         kontaktperson: info.kontaktperson.trim(),
         telefon: info.telefon.trim(),
-        mejl: info.mejl.trim(),
+        mejl: newMejl,
         faktura_epost: info.faktura_epost.trim(),
       })
       .eq('id', dealerId);

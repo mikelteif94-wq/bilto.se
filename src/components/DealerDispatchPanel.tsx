@@ -73,15 +73,17 @@ export default function DealerDispatchPanel({
   const [expanded, setExpanded] = useState(true);
 
   async function load() {
-    const [{ data: allDealers }, { data: existingDispatches }] = await Promise.all([
-      supabase.from('dealers').select('id, foretagsnamn, kontaktperson, mejl, godkand').eq('godkand', true).order('foretagsnamn'),
-      supabase.from('dealer_dispatches').select(`
+    let dispatchQuery = supabase.from('dealer_dispatches').select(`
         id, dealer_id, response_status, opened_at, read_at, replied_at, offered_at,
         deadline_at, message, created_at,
         dealers(foretagsnamn, kontaktperson)
-      `)
-      .match(carId ? { car_id: carId } : { quote_request_id: quoteRequestId })
-      .order('created_at', { ascending: false }),
+      `).order('created_at', { ascending: false });
+    if (carId) dispatchQuery = dispatchQuery.eq('car_id', carId);
+    else if (quoteRequestId) dispatchQuery = dispatchQuery.eq('quote_request_id', quoteRequestId);
+
+    const [{ data: allDealers }, { data: existingDispatches }] = await Promise.all([
+      supabase.from('dealers').select('id, foretagsnamn, kontaktperson, mejl, godkand').eq('godkand', true).order('foretagsnamn'),
+      dispatchQuery,
     ]);
 
     setDealers(allDealers ?? []);
@@ -106,7 +108,11 @@ export default function DealerDispatchPanel({
     setSending(true);
     const deadline = new Date(Date.now() + deadlineHours * 3600000).toISOString();
 
-    const rows = [...selectedDealers].map((dealerId) => ({
+    const alreadySentIds = new Set(dispatches.map((d) => d.dealer_id));
+    const newDealers = [...selectedDealers].filter((id) => !alreadySentIds.has(id));
+    if (newDealers.length === 0) { setSending(false); return; }
+
+    const rows = newDealers.map((dealerId) => ({
       car_id: carId ?? null,
       quote_request_id: quoteRequestId ?? null,
       dealer_id: dealerId,
@@ -118,7 +124,12 @@ export default function DealerDispatchPanel({
       message,
     }));
 
-    await supabase.from('dealer_dispatches').upsert(rows, { onConflict: 'car_id,quote_request_id,dealer_id' });
+    const { error: insertErr } = await supabase.from('dealer_dispatches').insert(rows);
+    if (insertErr) {
+      console.error('Dispatch insert error:', insertErr);
+      setSending(false);
+      return;
+    }
 
     // Log activity
     if (carId) {
@@ -138,14 +149,19 @@ export default function DealerDispatchPanel({
   }
 
   async function nudgeDealer(dispatchId: string, dealerName: string) {
-    // In a real implementation this would trigger an email/SMS
-    await supabase.from('dealer_dispatches').update({ response_status: 'sent' }).eq('id', dispatchId);
-    if (carId) {
+    const newDeadline = new Date(Date.now() + deadlineHours * 3600000).toISOString();
+    await supabase.from('dealer_dispatches').update({
+      response_status: 'sent',
+      deadline_at: newDeadline,
+    }).eq('id', dispatchId);
+
+    const logRef = carId ? { car_id: carId } : quoteRequestId ? { car_id: null } : null;
+    if (logRef !== null && carId) {
       await supabase.from('car_activities').insert({
         car_id: carId,
         type: 'nudge',
         title: `Påminnelse skickad till ${dealerName}`,
-        body: '',
+        body: `Ny deadline: ${new Date(newDeadline).toLocaleString('sv-SE')}`,
         created_by: adminUserId,
         created_by_name: adminName,
       });

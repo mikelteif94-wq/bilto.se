@@ -682,8 +682,8 @@ function Field({ label, value, onChange, type = 'text', placeholder }: FieldProp
     <label className="block">
       <span className="block text-[13px] font-medium text-slate-700 mb-1.5">{label}</span>
       <input
-        type={type === 'email' ? 'text' : type}
-        inputMode={type === 'email' ? 'email' : type === 'tel' ? 'tel' : undefined}
+        type={type}
+        inputMode={type === 'tel' ? 'tel' : undefined}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}

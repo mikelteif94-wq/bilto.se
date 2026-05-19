@@ -56,7 +56,7 @@ export default function DealerLogin({
     }
     setResetting(true);
     const { error: rErr } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/handlare`,
+      redirectTo: `${window.location.origin}/handlare/installningar`,
     });
     setResetting(false);
     if (rErr) {
