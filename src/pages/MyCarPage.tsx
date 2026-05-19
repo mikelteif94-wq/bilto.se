@@ -703,9 +703,15 @@ function CompleteListingCard({
 }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<'rapport' | 'bilder'>('rapport');
-  const [report, setReport] = useState<ConditionReport>(
-    car.condition_report ?? EMPTY_CONDITION_REPORT,
-  );
+  const [report, setReport] = useState<ConditionReport>({
+    ...EMPTY_CONDITION_REPORT,
+    ...car.condition_report,
+    mekaniskt: car.condition_report?.mekaniskt ?? {},
+    kosmetiskt: car.condition_report?.kosmetiskt ?? {},
+    inredning: car.condition_report?.inredning ?? {},
+    historik: { ...EMPTY_CONDITION_REPORT.historik, ...car.condition_report?.historik },
+    kommentarer: { ...EMPTY_CONDITION_REPORT.kommentarer, ...car.condition_report?.kommentarer },
+  });
   const [pendingImages, setPendingImages] = useState<PendingImage[]>([]);
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState<string | null>(null);
