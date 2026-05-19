@@ -1137,10 +1137,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       <Sparkles className="w-3.5 h-3.5" />
                       Bilmatch
                     </span>
-                    <h2 className="text-[28px] sm:text-[38px] lg:text-[52px] font-bold text-slate-900 tracking-tight leading-[1.05] mb-4">
+                    <h2 className="text-[36px] sm:text-[38px] lg:text-[52px] font-bold text-slate-900 tracking-tight leading-[1.05] mb-4">
                       Hitta din<br />bilmatch
                     </h2>
-                    <p className="text-slate-500 text-[15px] sm:text-[16px] lg:text-[18px] leading-relaxed mb-6 max-w-md mx-auto lg:mx-0">
+                    <p className="text-slate-500 text-[16px] sm:text-[16px] lg:text-[18px] leading-relaxed mb-6 max-w-md mx-auto lg:mx-0">
                       Svara på 5 korta frågor om hur du kör, vad du prioriterar och din budget — vi matchar dig med de bilar som passar dig bäst.
                     </p>
                     <ul className="hidden lg:flex flex-col gap-3 mb-8">
@@ -1160,12 +1160,12 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     <button
                       type="button"
                       onClick={() => setQuizStep('active')}
-                      className="w-full max-w-sm mx-auto lg:mx-0 h-14 lg:h-16 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[16px] lg:text-[18px] flex items-center justify-center gap-3 group transition-all duration-200 shadow-xl shadow-[#0e6efe]/25 active:scale-[0.98]"
+                      className="w-full max-w-sm mx-auto lg:mx-0 h-16 lg:h-16 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[18px] lg:text-[18px] flex items-center justify-center gap-3 group transition-all duration-200 shadow-xl shadow-[#0e6efe]/25 active:scale-[0.98]"
                     >
                       Hitta din bilmatch
                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
-                    <p className="text-[12px] text-slate-400 mt-3 text-center lg:text-left">Tar 60 sekunder · Helt gratis</p>
+                    <p className="text-[14px] text-slate-400 mt-3 text-center lg:text-left">Tar 60 sekunder · Helt gratis</p>
                   </div>
                   <div className="hidden lg:grid lg:grid-cols-2 lg:gap-4 lg:w-[380px] lg:shrink-0">
                     {['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'hyundai_ioniq5'].map((cid, i) => {
@@ -1911,85 +1911,85 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       </section>
 
       {/* Trade-in Calculator + Vi hjälper dig */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-50 border-t border-slate-100">
-        <div className="max-w-5xl mx-auto space-y-12 sm:space-y-16">
+      <section className="py-10 sm:py-16 px-4 sm:px-6 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-5xl mx-auto space-y-10 sm:space-y-16">
 
           {/* Inbyteskalkylator */}
-          <div>
-            <div className="mb-8">
-              <span className="inline-flex items-center gap-2 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
-                <Calculator className="w-3.5 h-3.5" />
+          <div className="max-w-xl">
+            <div className="mb-5">
+              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-2">
+                <Calculator className="w-3 h-3" />
                 Inbyteskalkylator
               </span>
-              <h2 className="text-[24px] sm:text-[36px] font-bold text-slate-900 leading-tight tracking-tight">
+              <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 leading-tight tracking-tight">
                 Få ner din månadskostnad
               </h2>
-              <p className="text-slate-500 text-[14px] sm:text-[16px] mt-2 max-w-lg leading-relaxed">
-                Fyll i din nuvarande bilsituation så visar vi vilka bilar du kan byta till med lägre månadskostnad.
+              <p className="text-slate-500 text-[13px] sm:text-[14px] mt-1.5 leading-relaxed">
+                Fyll i din bilsituation — vi visar bilar med lägre månadskostnad.
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-8">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Uppskattat bilvärde</label>
+                  <label className="block text-[12px] font-semibold text-slate-600 mb-1">Bilvärde</label>
                   <div className="relative">
                     <input
                       type="text"
                       inputMode="numeric"
                       value={tradeCarValue}
                       onChange={(e) => { setTradeCarValue(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
-                      placeholder="T.ex. 200 000"
-                      className="w-full h-12 px-4 pr-12 rounded-xl border border-slate-200 bg-slate-50 text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-400"
+                      placeholder="200 000"
+                      className="w-full h-10 px-3 pr-10 rounded-lg border border-slate-200 bg-slate-50 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-300"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] font-medium text-slate-400">kr</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-400">kr</span>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Kvarvarande lån</label>
+                  <label className="block text-[12px] font-semibold text-slate-600 mb-1">Kvarvarande lån</label>
                   <div className="relative">
                     <input
                       type="text"
                       inputMode="numeric"
                       value={tradeLoanAmount}
                       onChange={(e) => { setTradeLoanAmount(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
-                      placeholder="T.ex. 155 000"
-                      className="w-full h-12 px-4 pr-12 rounded-xl border border-slate-200 bg-slate-50 text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-400"
+                      placeholder="155 000"
+                      className="w-full h-10 px-3 pr-10 rounded-lg border border-slate-200 bg-slate-50 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-300"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] font-medium text-slate-400">kr</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-400">kr</span>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Ränta på nytt lån</label>
+                  <label className="block text-[12px] font-semibold text-slate-600 mb-1">Ränta på nytt lån</label>
                   <div className="relative">
                     <input
                       type="text"
                       inputMode="decimal"
                       value={tradeInterestRate}
                       onChange={(e) => { setTradeInterestRate(e.target.value.replace(/[^\d,.\s]/g, '')); setTradeCalculated(false); }}
-                      placeholder="T.ex. 6,5"
-                      className="w-full h-12 px-4 pr-12 rounded-xl border border-slate-200 bg-slate-50 text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-400"
+                      placeholder="6,5"
+                      className="w-full h-10 px-3 pr-8 rounded-lg border border-slate-200 bg-slate-50 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-300"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] font-medium text-slate-400">%</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-400">%</span>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Nuvarande månadskostnad</label>
+                  <label className="block text-[12px] font-semibold text-slate-600 mb-1">Nuv. månadskostnad</label>
                   <div className="relative">
                     <input
                       type="text"
                       inputMode="numeric"
                       value={tradeMonthlyPayment}
                       onChange={(e) => { setTradeMonthlyPayment(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
-                      placeholder="T.ex. 4 500"
-                      className="w-full h-12 px-4 pr-16 rounded-xl border border-slate-200 bg-slate-50 text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-400"
+                      placeholder="4 500"
+                      className="w-full h-10 px-3 pr-14 rounded-lg border border-slate-200 bg-slate-50 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-300"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] font-medium text-slate-400">kr/mån</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-400">kr/mån</span>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                 <button
                   type="button"
                   onClick={() => {
@@ -1998,19 +1998,19 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     if (cv > 0 && mp > 0) setTradeCalculated(true);
                   }}
                   disabled={!tradeCarValue || !tradeMonthlyPayment}
-                  className="h-12 px-8 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-[14px] transition-all inline-flex items-center gap-2 shadow-sm"
+                  className="h-11 px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold text-[14px] transition-all inline-flex items-center justify-center gap-2 shadow-md shadow-[#0e6efe]/20 active:scale-[0.98]"
                 >
-                  <Calculator className="w-4 h-4" />
-                  Beräkna
+                  <ArrowRight className="w-4 h-4" />
+                  Börja
                 </button>
                 {tradeCalculated && tradeEquity > 0 && (
-                  <div className="flex items-center gap-2 px-4 h-10 rounded-full bg-emerald-50 border border-emerald-200">
-                    <span className="text-[13px] text-emerald-700">Ditt kapital:</span>
-                    <span className="text-[14px] font-bold text-emerald-700">{formatSEK(tradeEquity)}</span>
+                  <div className="flex items-center gap-2 px-4 h-11 rounded-xl bg-emerald-50 border border-emerald-200">
+                    <span className="text-[12px] text-emerald-700">Ditt kapital:</span>
+                    <span className="text-[13px] font-bold text-emerald-700">{formatSEK(tradeEquity)}</span>
                   </div>
                 )}
                 {tradeCalculated && tradeEquity <= 0 && (
-                  <p className="text-[13px] text-amber-600 font-medium">
+                  <p className="text-[12px] text-amber-600 font-medium">
                     Ditt lån överstiger bilvärdet. Ring oss för att hitta en lösning.
                   </p>
                 )}
