@@ -317,7 +317,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 }}
                 className="flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 hover:text-slate-600 transition-colors"
               >
-                Köp bil
+                Hitta bil
               </button>
             </div>
 
@@ -353,8 +353,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 }}
                 className="w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
               >
-                Hitta din bilmatch
-                <ArrowRight className="w-3.5 h-3.5 opacity-60" />
+                Eller låt oss hjälpa dig hitta en bil.
               </button>
             </div>
           </div>
@@ -409,7 +408,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 }}
                 className="flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 hover:text-slate-600 transition-colors"
               >
-                Köp bil
+                Hitta bil
               </button>
             </div>
 
@@ -445,8 +444,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 }}
                 className="w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
               >
-                Hitta din bilmatch
-                <ArrowRight className="w-3.5 h-3.5 opacity-60" />
+                Eller låt oss hjälpa dig hitta en bil.
               </button>
             </div>
           </div>
