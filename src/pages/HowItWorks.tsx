@@ -444,6 +444,76 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         </div>
       </section>
 
+      <section className="bg-white">
+        <div className="max-w-6xl mx-auto px-6 py-16 sm:py-24">
+          <div className="grid md:grid-cols-12 gap-10 lg:gap-16 items-center">
+            <div className="md:col-span-6 order-1 md:order-1">
+              <span className="text-[11px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-4 block">
+                Vi förhandlar åt dig
+              </span>
+              <h2 className="text-[32px] sm:text-[44px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
+                Ska du köpa eller byta bil? Vi förhandlar åt dig.
+              </h2>
+              <p className="text-[17px] text-slate-600 mt-5 leading-[1.6] max-w-lg">
+                Oavsett om du letar ny bil, har hittat en eller vill byta in din nuvarande — vi sköter förhandlingen och ser till att du får bästa möjliga pris och villkor.
+              </p>
+              <ul className="mt-8 space-y-3.5">
+                {[
+                  'En erfaren förhandlare på din sida',
+                  'Vi granskar avtal och villkor åt dig',
+                  'Du betalar bara vid genomförd affär',
+                  'Fungerar vid köp, byte och leasing',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0">
+                      <Check className="w-3 h-3" strokeWidth={3} />
+                    </span>
+                    <span className="text-[15.5px] text-slate-700 leading-[1.55]">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-10">
+                <button
+                  type="button"
+                  onClick={() => {
+                    window.history.pushState({}, '', '/kop-bil');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                  className="h-12 px-7 rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
+                >
+                  Läs mer om förhandling
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+                </button>
+              </div>
+            </div>
+            <div className="md:col-span-6 order-2 md:order-2">
+              <div className="relative rounded-2xl overflow-hidden">
+                <img
+                  src="/BSM_car_sale_key_woman_handover_101122.jpg"
+                  alt="Personlig mäklare hjälper bilsäljare"
+                  className="w-full h-[220px] sm:h-[380px] md:h-[540px] object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+                <div className="hidden sm:block absolute left-4 bottom-4 right-4 sm:left-6 sm:bottom-6 sm:right-auto bg-white rounded-xl p-4 sm:p-5 shadow-lg sm:max-w-xs">
+                  <div className="flex items-center gap-3 mb-1.5">
+                    <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
+                      <Handshake className="w-5 h-5" strokeWidth={2} />
+                    </div>
+                    <div className="text-[14px] font-semibold text-slate-900">
+                      Vi förhandlar åt dig
+                    </div>
+                  </div>
+                  <p className="text-[13.5px] text-slate-600 leading-[1.55]">
+                    Oavsett om du köper, byter eller leasar — vi ser till att du får bästa villkor.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Popular cars + budget browser */}
       <section className="bg-white py-14 sm:py-20 px-5 sm:px-6">
@@ -758,77 +828,6 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                       Expert tillgänglig nu
                     </span>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white">
-        <div className="max-w-6xl mx-auto px-6 py-16 sm:py-24">
-          <div className="grid md:grid-cols-12 gap-10 lg:gap-16 items-center">
-            <div className="md:col-span-6 order-1 md:order-1">
-              <span className="text-[11px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-4 block">
-                Vi förhandlar åt dig
-              </span>
-              <h2 className="text-[32px] sm:text-[44px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
-                Ska du köpa eller byta bil? Vi förhandlar åt dig.
-              </h2>
-              <p className="text-[17px] text-slate-600 mt-5 leading-[1.6] max-w-lg">
-                Oavsett om du letar ny bil, har hittat en eller vill byta in din nuvarande — vi sköter förhandlingen och ser till att du får bästa möjliga pris och villkor.
-              </p>
-              <ul className="mt-8 space-y-3.5">
-                {[
-                  'En erfaren förhandlare på din sida',
-                  'Vi granskar avtal och villkor åt dig',
-                  'Du betalar bara vid genomförd affär',
-                  'Fungerar vid köp, byte och leasing',
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span className="mt-0.5 w-5 h-5 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3" strokeWidth={3} />
-                    </span>
-                    <span className="text-[15.5px] text-slate-700 leading-[1.55]">
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-10">
-                <button
-                  type="button"
-                  onClick={() => {
-                    window.history.pushState({}, '', '/kop-bil');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }}
-                  className="h-12 px-7 rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
-                >
-                  Läs mer om förhandling
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-                </button>
-              </div>
-            </div>
-            <div className="md:col-span-6 order-2 md:order-2">
-              <div className="relative rounded-2xl overflow-hidden">
-                <img
-                  src="/BSM_car_sale_key_woman_handover_101122.jpg"
-                  alt="Personlig mäklare hjälper bilsäljare"
-                  className="w-full h-[220px] sm:h-[380px] md:h-[540px] object-cover object-center"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-                <div className="hidden sm:block absolute left-4 bottom-4 right-4 sm:left-6 sm:bottom-6 sm:right-auto bg-white rounded-xl p-4 sm:p-5 shadow-lg sm:max-w-xs">
-                  <div className="flex items-center gap-3 mb-1.5">
-                    <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
-                      <Handshake className="w-5 h-5" strokeWidth={2} />
-                    </div>
-                    <div className="text-[14px] font-semibold text-slate-900">
-                      Vi förhandlar åt dig
-                    </div>
-                  </div>
-                  <p className="text-[13.5px] text-slate-600 leading-[1.55]">
-                    Oavsett om du köper, byter eller leasar — vi ser till att du får bästa villkor.
-                  </p>
                 </div>
               </div>
             </div>
