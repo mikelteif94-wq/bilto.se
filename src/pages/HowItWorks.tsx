@@ -387,37 +387,60 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
             </ul>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] p-6 max-w-[440px] w-full justify-self-end">
-            <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Sälj din bil</p>
-            <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
-              <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
-              {formError && (
-                <div role="alert" className="flex items-start gap-2 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold px-3 py-2 shadow-sm">
-                  <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-[1px]" strokeWidth={2.5} />
-                  <span className="leading-snug">{formError}</span>
-                </div>
-              )}
-              <button
-                type="submit"
-                className="mt-1 h-12 w-full rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
-              >
-                Värdera bilen gratis
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-              </button>
-            </form>
-
-            <div className="mt-5 pt-4 border-t border-slate-100">
-              <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Köp eller byt bil</p>
+          <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden max-w-[440px] w-full justify-self-end">
+            {/* Tab strip */}
+            <div className="flex border-b border-slate-100">
+              <div className="flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#0e6efe] relative">
+                Sälj din bil
+                <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-[#0e6efe] rounded-t-full" />
+              </div>
+              <div className="w-px bg-slate-100 my-2" />
               <button
                 type="button"
                 onClick={() => {
                   window.history.pushState({}, '', '/kop-bil');
                   window.dispatchEvent(new PopStateEvent('popstate'));
                 }}
-                className="w-full h-12 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-900 font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
+                className="flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                Köp bil
+              </button>
+            </div>
+
+            <div className="p-4">
+              <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2">
+                <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
+                {formError && (
+                  <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
+                    <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
+                    <span className="leading-snug">{formError}</span>
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  className="h-10 w-full rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5 shadow-[0_4px_14px_-4px_rgba(14,110,254,0.55)]"
+                >
+                  Värdera bilen gratis
+                  <ArrowRight className="w-3.5 h-3.5 opacity-80" />
+                </button>
+              </form>
+
+              <div className="flex items-center gap-3 my-3">
+                <div className="flex-1 h-px bg-slate-100" />
+                <span className="text-[10px] text-slate-400 font-medium">eller</span>
+                <div className="flex-1 h-px bg-slate-100" />
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  window.history.pushState({}, '', '/kop-bil');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }}
+                className="w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
               >
                 Hitta din nästa bil
-                <ArrowRight className="w-4 h-4 text-[#0e6efe] group-hover:translate-x-0.5 transition" />
+                <ArrowRight className="w-3.5 h-3.5 opacity-60" />
               </button>
             </div>
           </div>
