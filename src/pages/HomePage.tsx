@@ -339,6 +339,25 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 Maxpris
               </button>
             </div>
+
+            {/* Bilmatch CTA — Carwow-style */}
+            <div className="mt-8 flex items-center gap-4">
+              <span className="text-white/70 text-[17px] font-medium">eller låt oss hitta din bil</span>
+              <button
+                type="button"
+                onClick={() => {
+                  window.history.pushState({}, '', '/kop-bil');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                  setTimeout(() => {
+                    document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 400);
+                }}
+                className="relative inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full border-2 border-white text-white font-bold text-[16px] hover:bg-white hover:text-slate-900 transition-all duration-200 group"
+              >
+                <Sparkles className="w-4 h-4 transition-transform group-hover:scale-110" />
+                Bilmatch
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -452,16 +471,37 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                   </button>
                 </form>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    window.history.pushState({}, '', '/kop-bil');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }}
-                  className="mt-1 h-10 w-full rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all flex items-center justify-center gap-1.5"
-                >
-                  Hitta din nästa bil <span className="opacity-50 text-[12px]">→</span>
-                </button>
+                <div className="flex flex-col gap-2.5 mt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/kop-bil');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="h-10 w-full rounded-lg border-2 border-slate-900 bg-slate-900 text-white font-bold text-[13px] tracking-wide transition-all active:scale-[0.98] flex items-center justify-center gap-2 hover:bg-slate-800"
+                  >
+                    Hitta din nästa bil <span className="opacity-60 text-[12px]">→</span>
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-px bg-slate-100" />
+                    <span className="text-[11px] text-slate-400 font-medium whitespace-nowrap">eller låt oss hjälpa dig</span>
+                    <div className="flex-1 h-px bg-slate-100" />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/kop-bil');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                      setTimeout(() => {
+                        document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 400);
+                    }}
+                    className="h-10 w-full rounded-lg border-2 border-[#0e6efe] text-[#0e6efe] font-bold text-[13px] tracking-wide transition-all active:scale-[0.98] flex items-center justify-center gap-2 hover:bg-[#0e6efe]/5"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Bilmatch — hitta rätt bil
+                  </button>
+                </div>
               )}
             </div>
           </div>
