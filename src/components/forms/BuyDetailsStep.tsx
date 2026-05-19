@@ -133,18 +133,11 @@ function CarImagePreview({ brand, model }: { brand: string; model: string }) {
         <p className="text-[13px] font-semibold text-slate-900 truncate">
           {brand}{model && model !== 'Annan' ? ` ${model}` : ''}
         </p>
-        {compData && (
+        {compData && compData.specs.fuel_types.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
             {compData.specs.fuel_types.slice(0, 2).map(f => (
               <span key={f} className="text-[11px] px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-500 capitalize">{f}</span>
             ))}
-            {compData.pricing.used_from_sek && (
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-500">
-                Beg. fr. ~{Math.round(compData.pricing.used_from_sek / 1000) * 1000 < 1000000
-                  ? `${Math.round(compData.pricing.used_from_sek / 1000)}k`
-                  : `${(compData.pricing.used_from_sek / 1000000).toFixed(1)}M`} kr
-              </span>
-            )}
           </div>
         )}
       </div>
@@ -498,18 +491,6 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
   const carPriceNum = parsePriceInput(d.carPrice);
 
-  const lookupBrand = d.carBrand || (lockedCar ? lockedCar.split(' ')[0] : '');
-  const lookupModel = d.carModel || (lockedCar ? lockedCar.split(' ').slice(1).join(' ') : '');
-  const priceHint = useMemo(() => {
-    if (!lookupBrand || !lookupModel) return null;
-    const found = findComparisonCarByMakeModel(lookupBrand, lookupModel);
-    if (!found) return null;
-    const { used_from_sek, new_from_sek } = found.pricing;
-    if (!used_from_sek && !new_from_sek) return null;
-    const fmt = (n: number) => Math.round(n / 1000) * 1000;
-    return { used: used_from_sek ? fmt(used_from_sek) : null, newFrom: new_from_sek ? fmt(new_from_sek) : null };
-  }, [lookupBrand, lookupModel]);
-
   const linkStatus = getLinkStatus(d.linkOrSeller);
 
   const validate = (): boolean => {
@@ -530,6 +511,54 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     e.preventDefault();
     if (validate()) onNext(d);
   };
+
+  const fuelTypeSelector = (
+    <div className="py-6 sm:py-7">
+      <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Drivmedel</label>
+      <div className="flex flex-wrap gap-2">
+        {FUEL_TYPES.map(f => (
+          <button
+            key={f.value}
+            type="button"
+            onClick={() => set('fuelType', d.fuelType === f.value ? '' : f.value)}
+            className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+              d.fuelType === f.value
+                ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
+                : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const paymentSection = (
+    <div className="py-6 sm:py-7">
+      <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+        Hur vill du betala?
+      </label>
+      <p className="text-sm text-slate-500 mb-4">Välj betalningssätt — det hjälper oss hitta rätt upplägg.</p>
+      <div className="flex flex-wrap gap-2">
+        {PAYMENT_TYPES.map(p => (
+          <button
+            key={p.value}
+            type="button"
+            onClick={() => set('paymentType', p.value)}
+            className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+              d.paymentType === p.value
+                ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
+                : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+            }`}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+      <FieldError message={errors.paymentType} />
+    </div>
+  );
 
   return (
     <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
@@ -559,6 +588,10 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             </div>
           )}
 
+          {fuelTypeSelector}
+
+          {paymentSection}
+
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
               Bilens pris (kr)
@@ -577,21 +610,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
-            {priceHint && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {priceHint.used && (
-                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
-                    <span className="font-medium text-slate-800">Beg.</span> från ~{priceHint.used.toLocaleString('sv-SE')} kr
-                  </span>
-                )}
-                {priceHint.newFrom && (
-                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
-                    <span className="font-medium text-slate-800">Ny</span> från ~{priceHint.newFrom.toLocaleString('sv-SE')} kr
-                  </span>
-                )}
-              </div>
-            )}
-            {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
+            {d.paymentType !== 'cash' && carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
       )}
@@ -647,6 +666,10 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             </div>
           </div>
 
+          {fuelTypeSelector}
+
+          {paymentSection}
+
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
               Max budget (kr)
@@ -663,21 +686,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
-            {priceHint && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {priceHint.used && (
-                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
-                    <span className="font-medium text-slate-800">Beg.</span> från ~{priceHint.used.toLocaleString('sv-SE')} kr
-                  </span>
-                )}
-                {priceHint.newFrom && (
-                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
-                    <span className="font-medium text-slate-800">Ny</span> från ~{priceHint.newFrom.toLocaleString('sv-SE')} kr
-                  </span>
-                )}
-              </div>
-            )}
-            {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
+            {d.paymentType !== 'cash' && carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
       )}
@@ -802,6 +811,10 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             </div>
           </div>
 
+          {fuelTypeSelector}
+
+          {paymentSection}
+
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
               Max budget (kr)
@@ -818,41 +831,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
-            {priceHint && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {priceHint.used && (
-                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
-                    <span className="font-medium text-slate-800">Beg.</span> från ~{priceHint.used.toLocaleString('sv-SE')} kr
-                  </span>
-                )}
-                {priceHint.newFrom && (
-                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
-                    <span className="font-medium text-slate-800">Ny</span> från ~{priceHint.newFrom.toLocaleString('sv-SE')} kr
-                  </span>
-                )}
-              </div>
-            )}
-            {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
-          </div>
-
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Drivmedel</label>
-            <div className="flex flex-wrap gap-2">
-              {FUEL_TYPES.map(f => (
-                <button
-                  key={f.value}
-                  type="button"
-                  onClick={() => set('fuelType', d.fuelType === f.value ? '' : f.value)}
-                  className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
-                    d.fuelType === f.value
-                      ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
-                      : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
-            </div>
+            {d.paymentType !== 'cash' && carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
       )}
@@ -913,6 +892,10 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             )}
           </div>
 
+          {fuelTypeSelector}
+
+          {paymentSection}
+
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
               Budget för nästa bil (kr)
@@ -929,21 +912,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
-            {priceHint && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {priceHint.used && (
-                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
-                    <span className="font-medium text-slate-800">Beg.</span> från ~{priceHint.used.toLocaleString('sv-SE')} kr
-                  </span>
-                )}
-                {priceHint.newFrom && (
-                  <span className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full bg-slate-100 text-[12.5px] text-slate-600">
-                    <span className="font-medium text-slate-800">Ny</span> från ~{priceHint.newFrom.toLocaleString('sv-SE')} kr
-                  </span>
-                )}
-              </div>
-            )}
-            {carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
+            {d.paymentType !== 'cash' && carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
       )}
@@ -971,31 +940,6 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           ))}
         </div>
         <FieldError message={errors.buyingStage} />
-      </div>
-
-      {/* ── Betalningssätt ── */}
-      <div className="py-6 sm:py-7">
-        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Hur vill du betala?
-        </label>
-        <p className="text-sm text-slate-500 mb-4">Välj betalningssätt — det hjälper oss hitta rätt upplägg.</p>
-        <div className="flex flex-wrap gap-2">
-          {PAYMENT_TYPES.map(p => (
-            <button
-              key={p.value}
-              type="button"
-              onClick={() => set('paymentType', p.value)}
-              className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
-                d.paymentType === p.value
-                  ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
-                  : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
-        <FieldError message={errors.paymentType} />
       </div>
 
       {/* ── Övriga önskemål ── */}
