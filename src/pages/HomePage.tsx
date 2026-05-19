@@ -201,40 +201,35 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
         </div>
       </header>
 
-      <section className="hidden lg:block relative pt-16">
-        <div
-          className="relative w-full overflow-hidden"
-          style={{
-            minHeight: 'calc((100vh - 72px) * 1.05)',
-            backgroundColor: '#0a1220',
-          }}
-        >
+      {/* ── HERO (alla skärmar) ── */}
+      <section className="relative pt-16" style={{ backgroundColor: '#1a1a2e' }}>
+        <div className="relative w-full overflow-hidden" style={{ minHeight: '100svh' }}>
           <img
             src={HERO_IMAGE}
             alt=""
             fetchPriority="high"
             decoding="async"
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: 'center 80%' }}
+            style={{ objectPosition: 'center 75%' }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
-          <div className="relative z-10 h-full flex flex-col items-center pt-16 px-0 lg:px-4">
-            <h1 className="text-center text-white font-bold leading-[1.05] text-[44px] lg:text-[64px] tracking-tight px-6 lg:px-0 drop-shadow-[0_4px_16px_rgba(0,0,0,0.55)]">
-              {heroTitle}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/55 to-black/80" />
+
+          <div className="relative z-10 flex flex-col items-center justify-center min-h-[100svh] px-5 py-24 text-center">
+            {/* Rubrik */}
+            <h1 className="text-white font-bold leading-[1.05] text-[32px] sm:text-[52px] lg:text-[68px] tracking-tight max-w-4xl drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
+              {heroTitleMobile}
             </h1>
-            <p className="text-center text-white mt-6 text-[20px] lg:text-[26px] font-medium max-w-3xl px-8 lg:px-0 drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
+            <p className="text-white/80 mt-4 text-[15px] sm:text-[20px] lg:text-[22px] font-medium max-w-2xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
               {heroSubtitle}
             </p>
 
-            <form
-              onSubmit={handleSubmit}
-              className="mt-8 w-full max-w-[640px] px-6 lg:px-0"
-            >
-              <div className="hidden lg:flex flex-col gap-2.5 w-full max-w-md">
+            {/* Sälj-formulär */}
+            <form onSubmit={handleSubmit} className="mt-8 w-full max-w-sm sm:max-w-md">
+              <div className="flex flex-col gap-2.5">
                 <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-                <div className="flex items-center h-12 rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
+                <div className="flex items-center h-12 sm:h-14 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden focus-within:border-white/50 transition">
                   <span className="flex items-center justify-center w-11 shrink-0">
-                    <Phone className="w-5 h-5 text-slate-400" />
+                    <Phone className="w-4.5 h-4.5 text-white/60" />
                   </span>
                   <input
                     type="tel"
@@ -243,270 +238,49 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                     placeholder="Telefonnummer"
                     autoComplete="tel"
                     disabled={submitting}
-                    className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
-                  />
-                </div>
-                <div className="flex items-center h-12 rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
-                  <span className="flex items-center justify-center w-11 shrink-0">
-                    <Mail className="w-5 h-5 text-slate-400" />
-                  </span>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => { setEmail(e.target.value); setError(''); }}
-                    placeholder="E-postadress (valfritt)"
-                    autoComplete="email"
-                    disabled={submitting}
-                    className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
+                    className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/40"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[15px] transition"
+                  className="h-12 sm:h-14 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] sm:text-[16px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]"
                 >
-                  {submitting ? '...' : tab === 'maxpris' ? 'Maxbud' : 'Värdera'}
-                </button>
-              </div>
-
-              <div className="lg:hidden flex flex-col gap-2.5">
-                <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-                <div className="flex items-center h-12 rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
-                  <span className="flex items-center justify-center w-11 shrink-0">
-                    <Phone className="w-5 h-5 text-slate-400" />
-                  </span>
-                  <input
-                    type="tel"
-                    value={telefon}
-                    onChange={(e) => { setTelefon(e.target.value); setError(''); }}
-                    placeholder="Telefonnummer"
-                    autoComplete="tel"
-                    disabled={submitting}
-                    className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
-                  />
-                </div>
-                <div className="flex items-center h-12 rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
-                  <span className="flex items-center justify-center w-11 shrink-0">
-                    <Mail className="w-5 h-5 text-slate-400" />
-                  </span>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => { setEmail(e.target.value); setError(''); }}
-                    placeholder="E-postadress (valfritt)"
-                    autoComplete="email"
-                    disabled={submitting}
-                    className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="h-11 w-full rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14px] transition"
-                >
-                  {submitting ? '...' : tab === 'maxpris' ? 'Maxbud' : 'Värdera'}
+                  {submitting ? '...' : 'Värdera bilen gratis'}
                 </button>
               </div>
               {error && (
-                <div className="flex justify-center mt-3">
-                  <div role="alert" className="inline-flex items-center gap-2 rounded-full bg-[#0e6efe] text-white text-[13px] font-semibold px-4 py-1.5 shadow-sm">
-                    <XCircle className="w-4 h-4 text-red-400 shrink-0" strokeWidth={2.5} />
-                    <span>{error}</span>
-                  </div>
+                <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-400/30 text-white text-[13px] font-medium px-3.5 py-2.5">
+                  <XCircle className="w-4 h-4 text-red-300 shrink-0" strokeWidth={2.5} />
+                  <span>{error}</span>
                 </div>
               )}
             </form>
 
-            <div className="mt-6 flex items-center gap-8">
-              <button
-                type="button"
-                onClick={() => setTab('direkt')}
-                className="relative pb-1 text-[18px] font-semibold text-white"
-              >
-                Direktbud
-                {tab === 'direkt' && (
-                  <span className="absolute left-0 right-0 -bottom-0 h-[2px] bg-white" />
-                )}
-              </button>
+            {/* Carwow-style bilmatch CTA */}
+            <div className="mt-6 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+              <span className="text-white/60 text-[14px] sm:text-[16px] font-medium">eller låt oss hitta din bil</span>
               <button
                 type="button"
                 onClick={() => {
                   window.history.pushState({}, '', '/kop-bil');
                   window.dispatchEvent(new PopStateEvent('popstate'));
                 }}
-                className="relative pb-1 text-[18px] font-semibold text-white"
+                className="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full border-2 border-white/80 text-white font-bold text-[14px] sm:text-[16px] hover:bg-white hover:text-slate-900 hover:border-white active:scale-[0.97] transition-all duration-200 group"
               >
-                Maxpris
-              </button>
-            </div>
-
-            {/* Bilmatch CTA — Carwow-style */}
-            <div className="mt-8 flex items-center gap-4">
-              <span className="text-white/70 text-[17px] font-medium">eller låt oss hitta din bil</span>
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                  setTimeout(() => {
-                    document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
-                  }, 400);
-                }}
-                className="relative inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full border-2 border-white text-white font-bold text-[16px] hover:bg-white hover:text-slate-900 transition-all duration-200 group"
-              >
-                <Sparkles className="w-4 h-4 transition-transform group-hover:scale-110" />
+                <Sparkles className="w-4 h-4 group-hover:scale-110 transition-transform" />
                 Bilmatch
               </button>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="hidden lg:block bg-white">
-        <div className="max-w-6xl mx-auto px-8 py-20">
-          <div className="flex items-center gap-12">
-            <div className="flex-1">
-              <p className="text-[#0e6efe] text-sm font-bold uppercase tracking-[0.12em] mb-4">
-                Så enkelt är det
-              </p>
-              <h2 className="text-slate-900 font-bold text-[44px] leading-[1.1] tracking-tight mb-5">
-                Värdera, sälj och luta dig tillbaka.
-              </h2>
-              <p className="text-slate-600 text-[18px] leading-relaxed max-w-xl">
-                Ange ditt registreringsnummer, få ett bud från en verifierad bilhandlare
-                och få bilen hämtad — helt gratis och utan krångel.
-              </p>
-            </div>
-            <div className="shrink-0">
-              <img
-                src="/Bl%C3%A5_bilikon_i_vit_cirkel.png"
-                alt="Bilto"
-                className="w-[340px] h-auto object-contain"
-              />
+            {/* Scroll-indikator */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-40">
+              <div className="w-px h-8 bg-white animate-[pulse_2s_ease-in-out_infinite]" />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="lg:hidden pt-16 relative bg-[#0e6efe] overflow-hidden">
-        {/* Background decorative circles */}
-        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
-        <div className="absolute top-24 -left-20 w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
-
-        {/* Hero text */}
-        <div className="relative px-6 pt-8 pb-2 text-center">
-          <h1 className="text-white font-bold leading-[1.1] text-[28px] tracking-tight">
-            {heroTitleMobile}
-          </h1>
-          <p className="text-white/80 mt-2 text-[14px] font-medium">
-            {heroSubtitleMobile}
-          </p>
-        </div>
-
-        {/* Card */}
-        <div className="relative px-5 pt-4 pb-10">
-          <div className="bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] overflow-hidden">
-
-            {/* Toggle */}
-            <div className="flex border-b border-slate-100">
-              <button
-                type="button"
-                onClick={() => setTab('direkt')}
-                className={`flex-1 py-3 text-[12px] font-bold uppercase tracking-[0.12em] transition-colors relative ${
-                  tab === 'direkt' ? 'text-[#0e6efe]' : 'text-slate-400 hover:text-slate-600'
-                }`}
-              >
-                Sälj din bil
-                {tab === 'direkt' && (
-                  <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0e6efe] rounded-t-full" />
-                )}
-              </button>
-              <div className="w-px bg-slate-100 my-2" />
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="flex-1 py-3 text-[12px] font-bold uppercase tracking-[0.12em] text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                Köp bil
-              </button>
-            </div>
-
-            <div className="p-4">
-              {tab === 'direkt' ? (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                  <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-                  <div className="flex items-center h-10 rounded-lg border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
-                    <span className="flex items-center justify-center w-9 shrink-0">
-                      <Phone className="w-3.5 h-3.5 text-slate-400" />
-                    </span>
-                    <input
-                      type="tel"
-                      value={telefon}
-                      onChange={(e) => { setTelefon(e.target.value); setError(''); }}
-                      placeholder="Telefonnummer"
-                      autoComplete="tel"
-                      disabled={submitting}
-                      className="flex-1 min-w-0 w-0 h-full pr-3 text-[13px] text-slate-900 bg-transparent focus:outline-none placeholder:text-slate-400"
-                    />
-                  </div>
-                  {error && (
-                    <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
-                      <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
-                      <span>{error}</span>
-                    </div>
-                  )}
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="mt-1 h-10 w-full rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] disabled:bg-slate-300 text-white font-bold text-[13px] tracking-wide transition-all flex items-center justify-center gap-1.5 shadow-[0_4px_14px_-4px_rgba(14,110,254,0.55)]"
-                  >
-                    {submitting ? (
-                      <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                    ) : (
-                      <>Värdera bilen gratis <span className="opacity-60 text-[12px]">→</span></>
-                    )}
-                  </button>
-                </form>
-              ) : (
-                <div className="flex flex-col gap-2.5 mt-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      window.history.pushState({}, '', '/kop-bil');
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }}
-                    className="h-10 w-full rounded-lg border-2 border-slate-900 bg-slate-900 text-white font-bold text-[13px] tracking-wide transition-all active:scale-[0.98] flex items-center justify-center gap-2 hover:bg-slate-800"
-                  >
-                    Hitta din nästa bil <span className="opacity-60 text-[12px]">→</span>
-                  </button>
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 h-px bg-slate-100" />
-                    <span className="text-[11px] text-slate-400 font-medium whitespace-nowrap">eller låt oss hjälpa dig</span>
-                    <div className="flex-1 h-px bg-slate-100" />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      window.history.pushState({}, '', '/kop-bil');
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                      setTimeout(() => {
-                        document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
-                      }, 400);
-                    }}
-                    className="h-10 w-full rounded-lg border-2 border-[#0e6efe] text-[#0e6efe] font-bold text-[13px] tracking-wide transition-all active:scale-[0.98] flex items-center justify-center gap-2 hover:bg-[#0e6efe]/5"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Bilmatch — hitta rätt bil
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="bg-[#f5f8fc] py-14 sm:py-20 px-6">
         <div className="max-w-5xl mx-auto">
