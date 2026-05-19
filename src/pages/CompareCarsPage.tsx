@@ -145,11 +145,11 @@ type CategoryKey = 'alla' | 'popular' | 'el' | 'suv' | 'hybrid' | 'sedan';
 
 const CATEGORY_IDS: Record<CategoryKey, string[] | null> = {
   alla: null,
-  popular: ['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'vw_golf', 'toyota_rav4', 'volvo_ex60', 'volvo_xc40_recharge', 'volvo_es90'],
-  el: ['tesla_model_y', 'volvo_ex30', 'volvo_ex40', 'volvo_ex60', 'volvo_xc40_recharge', 'volvo_ec40', 'kia_ev6', 'hyundai_ioniq5', 'vw_id4', 'polestar_2', 'tesla_model_3', 'skoda_enyaq'],
-  suv: ['tesla_model_y', 'volvo_xc60', 'volvo_xc40', 'volvo_ex60', 'toyota_rav4', 'kia_sportage', 'bmw_x3', 'hyundai_ioniq5', 'honda_crv'],
-  hybrid: ['toyota_rav4', 'toyota_corolla', 'volvo_xc60', 'kia_sportage', 'toyota_yaris_cross', 'kia_niro', 'honda_crv'],
-  sedan: ['vw_golf', 'tesla_model_3', 'volvo_es90', 'toyota_corolla', 'audi_a3', 'honda_civic', 'volvo_v60', 'polestar_2'],
+  popular: ['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'vw_golf', 'toyota_rav4', 'bmw_x3', 'audi_q5', 'mercedes_c_class', 'volvo_ex60', 'volvo_xc40_recharge', 'volvo_es90'],
+  el: ['tesla_model_y', 'volvo_ex30', 'volvo_ex40', 'volvo_ex60', 'volvo_xc40_recharge', 'volvo_ec40', 'kia_ev6', 'hyundai_ioniq5', 'vw_id4', 'polestar_2', 'tesla_model_3', 'skoda_enyaq', 'bmw_ix3', 'bmw_i4', 'audi_q4_etron', 'audi_a6_e_tron', 'mercedes_eqc', 'mercedes_eqa', 'mercedes_eqb'],
+  suv: ['tesla_model_y', 'volvo_xc60', 'volvo_xc40', 'volvo_ex60', 'toyota_rav4', 'kia_sportage', 'bmw_x3', 'bmw_x5', 'bmw_x1', 'audi_q5', 'audi_q3', 'audi_q6_etron', 'mercedes_glc', 'mercedes_gle', 'mercedes_gla', 'hyundai_ioniq5', 'honda_crv'],
+  hybrid: ['toyota_rav4', 'toyota_corolla', 'volvo_xc60', 'kia_sportage', 'toyota_yaris_cross', 'kia_niro', 'honda_crv', 'bmw_3_series', 'bmw_5_series', 'audi_a3', 'audi_q5', 'mercedes_c_class', 'mercedes_e_class'],
+  sedan: ['vw_golf', 'tesla_model_3', 'volvo_es90', 'toyota_corolla', 'audi_a3', 'audi_a4', 'audi_a6', 'bmw_1_series', 'bmw_3_series', 'bmw_5_series', 'mercedes_a_class', 'mercedes_c_class', 'mercedes_e_class', 'honda_civic', 'volvo_v60', 'polestar_2'],
 };
 
 const CATEGORIES: { key: CategoryKey; label: string; icon: typeof Car }[] = [
@@ -688,7 +688,16 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       );
     }
     const ids = CATEGORY_IDS[activeCategory];
-    return ids === null ? getCuratedList(CURATED_IDS) : getCuratedList(ids);
+    if (ids === null) {
+      // "Alla" — visa alla aktiva bilar sorterade: kurerade först, sedan resten alfabetiskt
+      const curatedSet = new Set(CURATED_IDS);
+      const curated = getCuratedList(CURATED_IDS);
+      const rest = allCarsRaw
+        .filter(c => !curatedSet.has(c.id))
+        .sort((a, b) => `${a.brand_display} ${a.model_display}`.localeCompare(`${b.brand_display} ${b.model_display}`, 'sv'));
+      return [...curated, ...rest];
+    }
+    return getCuratedList(ids);
   }, [activeCategory, getCuratedList, carSearchQuery, allCarsRaw]);
 
   const visibleCars = useMemo(() => {
