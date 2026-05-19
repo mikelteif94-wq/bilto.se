@@ -1004,34 +1004,128 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         </div>
       </section>
 
-      {/* How it works */}
-      <section id="sa-funkar-det" className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-b border-slate-100">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 text-center mb-8 sm:mb-10">Så fungerar det</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
-            {[
-              { step: '1', title: 'Hitta din bil', desc: 'Jämför våra toppval, använd vår smarta sökning eller testa bilmatch för att hitta rätt.', icon: Search },
-              { step: '2', title: 'Vi förhandlar åt dig', desc: 'Vi kontaktar säljaren, pressar priset och granskar bilen åt dig. Du slipper förhandla själv.', icon: Megaphone },
-              { step: '3', title: 'Affären är klar', desc: 'Du kan tuta och köra med gott samvete -- vi har sett till att du gjort en riktigt bra deal.', icon: Handshake },
-            ].map(s => {
-              const StepIcon = s.icon;
+      {/* Browse by budget */}
+      <section className="py-10 sm:py-16 px-4 sm:px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-[22px] sm:text-[32px] font-extrabold text-slate-900 text-center tracking-tight mb-8 sm:mb-10 uppercase">
+            Bläddra efter budget
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+            {BUDGET_BRACKETS.map((bracket, i) => {
+              const car = allCarsRaw.find(c => c.id === bracket.carId);
+              const img = car ? resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage) : undefined;
+              const isActive = activeBudget === bracket.maxMonthly;
               return (
-              <div key={s.step} className="flex sm:flex-col items-start sm:items-center gap-4 sm:gap-0 sm:text-center">
-                <div className="w-10 h-10 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0 sm:mb-3">
-                  <StepIcon className="w-[18px] h-[18px]" strokeWidth={2.4} />
-                </div>
-                <div>
-                  <p className="text-[15px] font-semibold text-slate-900 mb-1">{s.title}</p>
-                  <p className="text-[13px] text-slate-500 leading-relaxed">{s.desc}</p>
-                </div>
-              </div>
+                <motion.button
+                  key={bracket.label}
+                  type="button"
+                  initial={isMobile ? false : { opacity: 0, y: 20 }}
+                  animate={isMobile ? { opacity: 1, y: 0 } : undefined}
+                  {...(!isMobile && { whileInView: { opacity: 1, y: 0 }, viewport: { once: true } })}
+                  transition={{ duration: isMobile ? 0 : 0.35, delay: isMobile ? 0 : i * 0.06 }}
+                  onClick={() => {
+                    if (isActive) {
+                      setActiveBudget(null);
+                    } else {
+                      setActiveBudget(bracket.maxMonthly);
+                      setBudgetShowCount(15);
+                      setTimeout(() => budgetGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                    }
+                  }}
+                  className={`flex flex-col rounded-2xl overflow-hidden group transition-all duration-300 ${isActive ? 'ring-2 ring-[#0e6efe] shadow-lg' : 'hover:shadow-lg'}`}
+                >
+                  <div className="w-full aspect-[4/3] bg-white flex items-end justify-center overflow-hidden relative">
+                    {img ? (
+                      <img src={img} alt="" loading="lazy" className="w-full h-auto object-contain group-hover:scale-[1.05] transition-transform duration-500" />
+                    ) : (
+                      <Car className="w-12 h-12 text-slate-300 mb-4" />
+                    )}
+                  </div>
+                  <div className="px-2 py-3 bg-white">
+                    <p className={`text-[12px] sm:text-[13px] font-bold text-center leading-tight transition-colors ${isActive ? 'text-[#0e6efe]' : 'text-slate-900 group-hover:text-[#0e6efe]'}`}>
+                      {bracket.label}
+                    </p>
+                  </div>
+                </motion.button>
               );
             })}
           </div>
+
+          {/* Budget filtered results */}
+          <AnimatePresence>
+            {activeBudget !== null && (
+              <motion.div
+                ref={budgetGridRef}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-8 sm:pt-10">
+                  <div className="flex items-center justify-between mb-5">
+                    <p className="text-[14px] sm:text-[16px] font-bold text-slate-900">
+                      {activeBudget === 0
+                        ? 'Alla bilar'
+                        : `Bilar under ${activeBudget.toLocaleString('sv-SE')} kr/mån`}
+                      <span className="text-slate-400 font-normal ml-2">({budgetFilteredCars.length} st)</span>
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setActiveBudget(null)}
+                      className="text-[13px] text-slate-400 hover:text-slate-600 font-medium transition-colors"
+                    >
+                      Stäng
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+                    {budgetFilteredCars.slice(0, budgetShowCount).map((car, i) => (
+                      <motion.div
+                        key={car.id}
+                        initial={isMobile ? false : { opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: isMobile ? 0 : i * 0.03, duration: isMobile ? 0 : 0.3 }}
+                        onClick={() => setDetailCar(car)}
+                        className="flex flex-col rounded-2xl overflow-hidden cursor-pointer group hover:shadow-lg transition-all duration-300 ring-1 ring-white hover:ring-slate-200"
+                      >
+                        <div className="w-full aspect-[4/3] bg-white flex items-end justify-center overflow-hidden">
+                          <img
+                            src={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
+                            alt={`${car.brand_display} ${car.model_display}`}
+                            loading="lazy"
+                            className="w-full h-auto object-contain group-hover:scale-[1.04] transition-transform duration-500"
+                          />
+                        </div>
+                        <div className="px-3 py-3 bg-white">
+                          <h3 className="text-[13px] sm:text-[14px] font-bold text-slate-900 group-hover:text-[#0e6efe] transition-colors truncate">
+                            {car.brand_display} {car.model_display}
+                          </h3>
+                          <p className="text-[11px] text-slate-400 mt-0.5">
+                            Ny från {formatSEK(car.pricing.new_from_sek!)}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                  {budgetFilteredCars.length > budgetShowCount && (
+                    <div className="text-center mt-6">
+                      <button
+                        type="button"
+                        onClick={() => setBudgetShowCount(prev => prev + 15)}
+                        className="h-11 px-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-[14px] font-semibold transition-colors"
+                      >
+                        Visa fler bilar
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
-      {/* Bilmatch Section — moved up */}
+      {/* Bilmatch Section */}
       <section id="quiz-section" ref={quizSectionRef} className="py-14 sm:py-20 lg:py-28 px-4 sm:px-6 bg-gradient-to-b from-slate-50 to-white border-t border-slate-100">
         <div className="max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
@@ -1270,124 +1364,30 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         </div>
       </section>
 
-      {/* Browse by budget */}
-      <section className="py-10 sm:py-16 px-4 sm:px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-[22px] sm:text-[32px] font-extrabold text-slate-900 text-center tracking-tight mb-8 sm:mb-10 uppercase">
-            Bläddra efter budget
-          </h2>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
-            {BUDGET_BRACKETS.map((bracket, i) => {
-              const car = allCarsRaw.find(c => c.id === bracket.carId);
-              const img = car ? resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage) : undefined;
-              const isActive = activeBudget === bracket.maxMonthly;
+      {/* How it works */}
+      <section id="sa-funkar-det" className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-b border-slate-100">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 text-center mb-8 sm:mb-10">Så fungerar det</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+            {[
+              { step: '1', title: 'Hitta din bil', desc: 'Jämför våra toppval, använd vår smarta sökning eller testa bilmatch för att hitta rätt.', icon: Search },
+              { step: '2', title: 'Vi förhandlar åt dig', desc: 'Vi kontaktar säljaren, pressar priset och granskar bilen åt dig. Du slipper förhandla själv.', icon: Megaphone },
+              { step: '3', title: 'Affären är klar', desc: 'Du kan tuta och köra med gott samvete -- vi har sett till att du gjort en riktigt bra deal.', icon: Handshake },
+            ].map(s => {
+              const StepIcon = s.icon;
               return (
-                <motion.button
-                  key={bracket.label}
-                  type="button"
-                  initial={isMobile ? false : { opacity: 0, y: 20 }}
-                  animate={isMobile ? { opacity: 1, y: 0 } : undefined}
-                  {...(!isMobile && { whileInView: { opacity: 1, y: 0 }, viewport: { once: true } })}
-                  transition={{ duration: isMobile ? 0 : 0.35, delay: isMobile ? 0 : i * 0.06 }}
-                  onClick={() => {
-                    if (isActive) {
-                      setActiveBudget(null);
-                    } else {
-                      setActiveBudget(bracket.maxMonthly);
-                      setBudgetShowCount(15);
-                      setTimeout(() => budgetGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-                    }
-                  }}
-                  className={`flex flex-col rounded-2xl overflow-hidden group transition-all duration-300 ${isActive ? 'ring-2 ring-[#0e6efe] shadow-lg' : 'hover:shadow-lg'}`}
-                >
-                  <div className="w-full aspect-[4/3] bg-white flex items-end justify-center overflow-hidden relative">
-                    {img ? (
-                      <img src={img} alt="" loading="lazy" className="w-full h-auto object-contain group-hover:scale-[1.05] transition-transform duration-500" />
-                    ) : (
-                      <Car className="w-12 h-12 text-slate-300 mb-4" />
-                    )}
-                  </div>
-                  <div className="px-2 py-3 bg-white">
-                    <p className={`text-[12px] sm:text-[13px] font-bold text-center leading-tight transition-colors ${isActive ? 'text-[#0e6efe]' : 'text-slate-900 group-hover:text-[#0e6efe]'}`}>
-                      {bracket.label}
-                    </p>
-                  </div>
-                </motion.button>
+              <div key={s.step} className="flex sm:flex-col items-start sm:items-center gap-4 sm:gap-0 sm:text-center">
+                <div className="w-10 h-10 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0 sm:mb-3">
+                  <StepIcon className="w-[18px] h-[18px]" strokeWidth={2.4} />
+                </div>
+                <div>
+                  <p className="text-[15px] font-semibold text-slate-900 mb-1">{s.title}</p>
+                  <p className="text-[13px] text-slate-500 leading-relaxed">{s.desc}</p>
+                </div>
+              </div>
               );
             })}
           </div>
-
-          {/* Budget filtered results */}
-          <AnimatePresence>
-            {activeBudget !== null && (
-              <motion.div
-                ref={budgetGridRef}
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden"
-              >
-                <div className="pt-8 sm:pt-10">
-                  <div className="flex items-center justify-between mb-5">
-                    <p className="text-[14px] sm:text-[16px] font-bold text-slate-900">
-                      {activeBudget === 0
-                        ? 'Alla bilar'
-                        : `Bilar under ${activeBudget.toLocaleString('sv-SE')} kr/mån`}
-                      <span className="text-slate-400 font-normal ml-2">({budgetFilteredCars.length} st)</span>
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setActiveBudget(null)}
-                      className="text-[13px] text-slate-400 hover:text-slate-600 font-medium transition-colors"
-                    >
-                      Stäng
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-                    {budgetFilteredCars.slice(0, budgetShowCount).map((car, i) => (
-                      <motion.div
-                        key={car.id}
-                        initial={isMobile ? false : { opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: isMobile ? 0 : i * 0.03, duration: isMobile ? 0 : 0.3 }}
-                        onClick={() => setDetailCar(car)}
-                        className="flex flex-col rounded-2xl overflow-hidden cursor-pointer group hover:shadow-lg transition-all duration-300 ring-1 ring-white hover:ring-slate-200"
-                      >
-                        <div className="w-full aspect-[4/3] bg-white flex items-end justify-center overflow-hidden">
-                          <img
-                            src={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
-                            alt={`${car.brand_display} ${car.model_display}`}
-                            loading="lazy"
-                            className="w-full h-auto object-contain group-hover:scale-[1.04] transition-transform duration-500"
-                          />
-                        </div>
-                        <div className="px-3 py-3 bg-white">
-                          <h3 className="text-[13px] sm:text-[14px] font-bold text-slate-900 group-hover:text-[#0e6efe] transition-colors truncate">
-                            {car.brand_display} {car.model_display}
-                          </h3>
-                          <p className="text-[11px] text-slate-400 mt-0.5">
-                            Ny från {formatSEK(car.pricing.new_from_sek!)}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                  {budgetFilteredCars.length > budgetShowCount && (
-                    <div className="text-center mt-6">
-                      <button
-                        type="button"
-                        onClick={() => setBudgetShowCount(prev => prev + 15)}
-                        className="h-11 px-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-[14px] font-semibold transition-colors"
-                      >
-                        Visa fler bilar
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </section>
 
