@@ -34,7 +34,6 @@ import PrivacyPage from './pages/PrivacyPage';
 import BlogPage from './pages/BlogPage';
 import AboutPage from './pages/AboutPage';
 import CompareCarsPage from './pages/CompareCarsPage';
-import BilmatchPage from './pages/BilmatchPage';
 import { supabase } from './lib/supabase';
 import type { Session } from '@supabase/supabase-js';
 
@@ -636,10 +635,6 @@ function App() {
         }}
       />
     );
-  }
-
-  if (path === '/bilmatch') {
-    return <BilmatchPage onBack={() => { navigate('/'); }} />;
   }
 
   if (path === '/formedla') {
