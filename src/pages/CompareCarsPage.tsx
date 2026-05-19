@@ -584,10 +584,12 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   // Buy drawer
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
   const [buyDrawerTrack, setBuyDrawerTrack] = useState<'found' | 'searching' | 'trade' | undefined>(undefined);
+  const [buyDrawerSkipIntent, setBuyDrawerSkipIntent] = useState(false);
   const [quizPreselectedCar, setQuizPreselectedCar] = useState<string | undefined>(undefined);
 
-  const openBuyDrawer = (car: string, track?: 'found' | 'searching' | 'trade') => {
+  const openBuyDrawer = (car: string, track?: 'found' | 'searching' | 'trade', skipIntent?: boolean) => {
     setBuyDrawerTrack(track);
+    setBuyDrawerSkipIntent(!!skipIntent);
     setBuyDrawerCar(car);
   };
 
@@ -770,8 +772,9 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
     setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
   };
 
-  const openContactForCar = (car: ComparisonCar | null) => {
-    openBuyDrawer(car ? `${car.brand_display} ${car.model_display}` : '', car ? undefined : 'found');
+  const openContactForCar = (car: ComparisonCar | null, track: 'found' | 'searching' = 'found') => {
+    const name = car ? `${car.brand_display} ${car.model_display}` : '';
+    openBuyDrawer(name || '', track, true);
   };
 
   const handleNavSelect = (item: string) => {
@@ -1135,7 +1138,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                               estimatedMonthly={car.estimatedMonthly}
                               isSelected={isSelected}
                               onSelect={() => toggleQuizCarSelection(key)}
-                              onNegotiate={() => setBuyDrawerCar(`${car.make} ${car.model}`)}
+                              onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, 'found', true)}
+                              onSearch={() => openBuyDrawer(`${car.make} ${car.model}`, 'searching', true)}
                               onDetail={() => {
                                 const compData = findComparisonCarByMakeModel(car.make, car.model);
                                 if (compData) setDetailCar(compData);
@@ -1417,7 +1421,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                         topBadge={i < 3 && activeCategory === 'popular'}
                         expertComment={getExpertComment(car)}
                         fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                        onNegotiate={() => openContactForCar(car)}
+                        onNegotiate={() => openContactForCar(car, 'found')}
+                        onSearch={() => openContactForCar(car, 'searching')}
                         onDetail={() => setDetailCar(car)}
                         index={i}
                         disableMotion={isMobile}
@@ -1755,7 +1760,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                                       rating={car.ratings.overall}
                                       expertComment={getExpertComment(car)}
                                       fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                                      onNegotiate={() => openContactForCar(car)}
+                                      onNegotiate={() => openContactForCar(car, 'found')}
+                                      onSearch={() => openContactForCar(car, 'searching')}
                                       onDetail={() => setDetailCar(car)}
                                       index={ci}
                                       disableMotion={isMobile}
@@ -1963,7 +1969,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                             rating={r.car.ratings.overall}
                             expertComment={getExpertComment(r.car)}
                             fuelLabel={r.car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                            onNegotiate={() => openContactForCar(r.car)}
+                            onNegotiate={() => openContactForCar(r.car, 'found')}
+                            onSearch={() => openContactForCar(r.car, 'searching')}
                             onDetail={() => setDetailCar(r.car)}
                             index={i}
                             disableMotion={isMobile}
@@ -2231,7 +2238,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       <SiteFooter />
 
       {/* Buy drawer */}
-      <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} onClose={() => setBuyDrawerCar(null)} />
+      <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} skipIntent={buyDrawerSkipIntent} onClose={() => setBuyDrawerCar(null)} />
 
       {/* Compare drawer */}
       <CompareDrawer

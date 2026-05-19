@@ -11,21 +11,22 @@ import { supabase } from '../lib/supabase';
 interface BuyDrawerProps {
   car: string | null;
   initialTrack?: BuyTrack;
+  skipIntent?: boolean;
   onClose: () => void;
 }
 
 type FormStep = 'track' | 'carIntent' | 'details' | 'tradeIn' | 'contact' | 'done';
 
-export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps) {
+export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: BuyDrawerProps) {
   const open = car !== null;
   // When initialTrack is 'searching', car is a pre-filled target (possibly multiple), not a specific single car
-  const isSearchingWithPrefill = initialTrack === 'searching' && !!car;
+  const isSearchingWithPrefill = (initialTrack === 'searching' || skipIntent) && !!car;
   const hasSpecificCar = !!car && !isSearchingWithPrefill;
   const skipTrack = hasSpecificCar || !!initialTrack;
 
   const [track, setTrack] = useState<BuyTrack>(initialTrack || 'found');
   const [step, setStep] = useState<FormStep>(
-    isSearchingWithPrefill ? 'details' : hasSpecificCar ? 'carIntent' : skipTrack ? 'details' : 'track'
+    skipIntent ? 'details' : isSearchingWithPrefill ? 'details' : hasSpecificCar ? 'carIntent' : skipTrack ? 'details' : 'track'
   );
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -77,9 +78,9 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
   useEffect(() => {
     if (car !== null) {
       const resolvedTrack = initialTrack || 'found';
-      const searchingPrefill = resolvedTrack === 'searching' && !!car;
+      const searchingPrefill = (resolvedTrack === 'searching' || skipIntent) && !!car;
       setTrack(resolvedTrack);
-      setStep(searchingPrefill ? 'details' : car ? 'carIntent' : initialTrack ? 'details' : 'track');
+      setStep(skipIntent ? 'details' : searchingPrefill ? 'details' : car ? 'carIntent' : initialTrack ? 'details' : 'track');
       setError(null);
       setDetails({
         linkOrSeller: '',
@@ -134,7 +135,9 @@ export default function BuyDrawer({ car, initialTrack, onClose }: BuyDrawerProps
   const titles: Record<FormStep, string> = {
     track: 'Hur vill du gå vidare?',
     carIntent: car ? `Hur vill du ha din ${car}?` : 'Hur vill du gå vidare?',
-    details: isSearchingWithPrefill
+    details: skipIntent
+      ? (track === 'searching' ? `Hitta en ${car}` : `Förhandla – ${car}`)
+      : isSearchingWithPrefill
       ? 'Berätta lite mer om dig'
       : hasSpecificCar
       ? (track === 'searching' ? `Hitta en ${car}` : `Förhandla – ${car}`)

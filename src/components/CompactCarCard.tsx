@@ -1,4 +1,4 @@
-import { Star, Car, Check, ChevronRight } from 'lucide-react';
+import { Star, Car, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface CompactCarCardProps {
@@ -12,6 +12,7 @@ interface CompactCarCardProps {
   isSelected?: boolean;
   onSelect?: () => void;
   onNegotiate: () => void;
+  onSearch?: () => void;
   onDetail?: () => void;
   index?: number;
   disableMotion?: boolean;
@@ -20,7 +21,7 @@ interface CompactCarCardProps {
 export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
   fuelLabel, estimatedMonthly, isSelected, onSelect,
-  onNegotiate, onDetail, index = 0, disableMotion,
+  onNegotiate, onSearch, onDetail, index = 0, disableMotion,
 }: CompactCarCardProps) {
   const handleClick = () => {
     if (onSelect) onSelect();
@@ -101,22 +102,30 @@ export default function CompactCarCard({
           </p>
         )}
 
-        <div className="flex items-center justify-between mt-2">
-          {fuelLabel && (
-            <p className="text-[10px] text-slate-400 truncate">{fuelLabel}</p>
-          )}
-          {!onSelect && (
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onDetail ? onDetail() : onNegotiate(); }}
-              className="shrink-0 ml-auto h-7 px-3 rounded-lg bg-slate-100 hover:bg-[#0e6efe] text-slate-600 hover:text-white text-[11px] font-semibold inline-flex items-center gap-1 transition-all duration-200"
-            >
-              Läs mer
-              <ChevronRight className="w-3 h-3" />
-            </button>
-          )}
-        </div>
+        {fuelLabel && (
+          <p className="mt-1 text-[10px] text-slate-400 truncate">{fuelLabel}</p>
+        )}
       </div>
+
+      {/* Action buttons */}
+      {!onSelect && (
+        <div className="px-3 pb-3 grid grid-cols-2 gap-1.5">
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
+            className="h-8 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[11px] font-semibold transition-colors duration-200 leading-tight px-2"
+          >
+            Jag har hittat en {name}
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onSearch ? onSearch() : onNegotiate(); }}
+            className="h-8 rounded-lg bg-white border border-[#0e6efe] hover:bg-[#f0f7ff] text-[#0e6efe] text-[11px] font-semibold transition-colors duration-200 leading-tight px-2"
+          >
+            Sök en {name} åt mig
+          </button>
+        </div>
+      )}
     </motion.div>
   );
 }
