@@ -278,64 +278,7 @@ export default function BrokerageLanding({ onContinue, onBackHome }: BrokerageLa
         </div>
       </section>
 
-      <section className="bg-[#f5f8fc] py-12 sm:py-24 px-5 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-8 sm:mb-16 flex items-end justify-between flex-wrap gap-6">
-            <div className="max-w-xl">
-              <span className="text-[11px] sm:text-[12px] font-medium text-slate-500 mb-2 sm:mb-3 block">
-                &mdash; Maxpris
-              </span>
-              <h2 className="text-[26px] sm:text-[48px] font-semibold leading-[1.05] text-slate-900 tracking-[-0.02em]">
-                Så enkelt är det
-              </h2>
-            </div>
-          </div>
-
-          <ol className="relative lg:grid lg:grid-cols-3 lg:gap-10">
-            {[
-              {
-                icon: Camera,
-                title: 'Vi fixar proffsiga bilder',
-                text: 'Vi tar fram professionella annonsbilder åt dig och skapar en skarp annons som lyfter bilens bästa sidor.',
-              },
-              {
-                icon: Megaphone,
-                title: 'Vi hittar köparen och driver budgivningen',
-                text: 'Vi lägger upp annonsen, tar alla samtal och driver budgivningen med spekulanterna. Du sköter själva visningen — köparen kommer till dig.',
-              },
-              {
-                icon: Phone,
-                title: 'Du tar ställning först när det finns ett skarpt bud',
-                text: 'Vi ringer dig när ett konkret bud är på bordet. Du betalar bara om bilen säljs.',
-              },
-            ].map((step, i, arr) => {
-              const Icon = step.icon;
-              const isLast = i === arr.length - 1;
-              return (
-                <li key={step.title} className="relative pl-12 sm:pl-14 pb-10 sm:pb-12 last:pb-0 lg:pl-0 lg:pb-0 lg:pt-[54px]">
-                  {!isLast && (
-                    <span aria-hidden className="absolute left-[17px] sm:left-[21px] top-9 sm:top-[46px] bottom-0 w-px bg-slate-200 lg:left-[44px] lg:right-0 lg:top-[21px] lg:bottom-auto lg:w-auto lg:h-px" />
-                  )}
-                  <div className="absolute left-0 top-0 flex items-center justify-center w-9 h-9 sm:w-[42px] sm:h-[42px] rounded-full bg-[#0e6efe] shadow-[0_8px_18px_-6px_rgba(14,110,254,0.5)] ring-4 ring-[#0e6efe]/10">
-                    <Icon className="w-[16px] h-[16px] sm:w-[18px] sm:h-[18px] text-white" strokeWidth={2.4} />
-                  </div>
-                  <div className="flex items-baseline gap-3 mb-2">
-                    <span className="text-[13px] font-medium text-slate-400 tabular-nums">
-                      0{i + 1}
-                    </span>
-                    <h3 className="text-[20px] sm:text-[24px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
-                      {step.title}
-                    </h3>
-                  </div>
-                  <p className="text-slate-600 text-[15px] sm:text-[16px] leading-[1.65] max-w-xl">
-                    {step.text}
-                  </p>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      </section>
+      <ThreeStepsSection />
 
       <section className="bg-white py-12 sm:py-24 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
@@ -733,5 +676,119 @@ export function SiteFooter() {
         </div>
       </div>
     </footer>
+  );
+}
+
+const STEPS = [
+  {
+    num: '01',
+    title: 'Få en omedelbar värdering',
+    text: 'Slipp gissningsleken. Få en gratis och rättvis värdering baserad på aktuella marknadstrender och återförsäljarnas efterfrågan.',
+    image: '/ChatGPT_Image_19_maj_2026_23_46_06.png',
+  },
+  {
+    num: '02',
+    title: 'Få den såld',
+    text: 'Slutför din annons och sätt ditt reservationspris. Vi visar din bil hos fler än 6 000 återförsäljare. Bästa erbjudandet vinner!',
+    image: '/e66827b0-71c5-48a7-8d91-5123f7db4a0d.png',
+  },
+  {
+    num: '03',
+    title: 'Få betalt snabbt',
+    text: 'Klart! Återförsäljaren hämtar din bil och kan betala dig direkt. Inga överraskande avgifter, bara en enkel och gratis försäljning.',
+    image: '/55e96830-06e0-436b-8559-63a5b9cf41af.png',
+  },
+];
+
+function ThreeStepsSection() {
+  const [active, setActive] = useState(0);
+
+  return (
+    <section className="bg-[#f5f8fc] py-12 sm:py-24 px-5 sm:px-6 overflow-hidden">
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
+        <div className="mb-8 sm:mb-16">
+          <span className="text-[11px] sm:text-[12px] font-medium text-slate-500 mb-2 sm:mb-3 block">
+            &mdash; Tre enkla steg till en fri försäljning
+          </span>
+          <h2 className="text-[26px] sm:text-[48px] font-semibold leading-[1.05] text-slate-900 tracking-[-0.02em]">
+            Så enkelt är det
+          </h2>
+        </div>
+
+        {/* MOBILE: image slide + dots */}
+        <div className="sm:hidden">
+          <div className="relative rounded-2xl overflow-hidden aspect-[16/10] mb-5 shadow-lg">
+            {STEPS.map((s, i) => (
+              <img
+                key={i}
+                src={s.image}
+                alt={s.title}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${i === active ? 'opacity-100' : 'opacity-0'}`}
+              />
+            ))}
+          </div>
+
+          {/* Step indicator dots */}
+          <div className="flex items-center justify-center gap-2 mb-5">
+            {STEPS.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                className={`transition-all duration-300 rounded-full ${i === active ? 'w-6 h-2 bg-[#0e6efe]' : 'w-2 h-2 bg-slate-300'}`}
+                aria-label={`Steg ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Content for active step */}
+          <div className="space-y-5">
+            {STEPS.map((s, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                className={`w-full text-left rounded-2xl p-4 transition-all duration-200 border ${i === active ? 'bg-white border-[#0e6efe]/30 shadow-sm' : 'bg-white/60 border-transparent'}`}
+              >
+                <div className="flex items-start gap-3">
+                  <span className={`text-[11px] font-bold tabular-nums shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-colors ${i === active ? 'bg-[#0e6efe] text-white' : 'bg-slate-200 text-slate-500'}`}>
+                    {s.num}
+                  </span>
+                  <div>
+                    <h3 className={`text-[16px] font-semibold leading-tight tracking-tight transition-colors ${i === active ? 'text-slate-900' : 'text-slate-600'}`}>
+                      {s.title}
+                    </h3>
+                    {i === active && (
+                      <p className="text-slate-600 text-[14px] leading-[1.65] mt-1.5">{s.text}</p>
+                    )}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* DESKTOP: original 3-column layout with images */}
+        <div className="hidden sm:grid sm:grid-cols-3 sm:gap-8">
+          {STEPS.map((step, i) => (
+            <div key={i} className="group">
+              <div className="rounded-2xl overflow-hidden aspect-[16/10] mb-5 shadow-md">
+                <img
+                  src={step.image}
+                  alt={step.title}
+                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                />
+              </div>
+              <div className="flex items-baseline gap-3 mb-2">
+                <span className="text-[13px] font-bold text-[#0e6efe] tabular-nums">{step.num}</span>
+                <h3 className="text-[20px] sm:text-[22px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
+                  {step.title}
+                </h3>
+              </div>
+              <p className="text-slate-600 text-[15px] leading-[1.65]">{step.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
