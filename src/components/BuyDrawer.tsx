@@ -134,7 +134,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: Bu
 
   const titles: Record<FormStep, string> = {
     track: 'Hur vill du gå vidare?',
-    carIntent: car ? `Hur vill du ha din ${car}?` : 'Hur vill du gå vidare?',
+    carIntent: 'Hur vill du gå vidare?',
     details: skipIntent
       ? (track === 'searching' ? `Hitta en ${car}` : `Förhandla – ${car}`)
       : isSearchingWithPrefill
@@ -366,7 +366,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: Bu
               {step === 'carIntent' && car && (
                 <div className="py-2 space-y-3">
                   <p className="text-[14.5px] text-slate-500 mb-6">
-                    Välj hur du vill gå vidare med <span className="font-semibold text-slate-800">{car}</span>.
+                    Låt oss hitta det bästa priset åt dig. Välj hur du vill gå vidare med <span className="font-semibold text-slate-800">{car}</span>.
                   </p>
 
                   <button
