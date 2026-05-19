@@ -449,19 +449,19 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
           <div className="grid md:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="md:col-span-6 order-1 md:order-1">
               <span className="text-[11px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-4 block">
-                Vi förhandlar åt dig
+                Din personliga bilmäklare
               </span>
               <h2 className="text-[32px] sm:text-[44px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
-                Ska du köpa eller byta bil? Vi förhandlar åt dig.
+                Ska du köpa eller byta bil? Din personliga bilmäklare hjälper dig hela vägen.
               </h2>
               <p className="text-[17px] text-slate-600 mt-5 leading-[1.6] max-w-lg">
-                Oavsett om du letar ny bil, har hittat en eller vill byta in din nuvarande — vi sköter förhandlingen och ser till att du får bästa möjliga pris och villkor.
+                Oavsett om du letar efter en ny bil, redan hittat en eller vill byta in din nuvarande hjälper vi dig genom hela affären — från pris och villkor till avtal och trygghet.
               </p>
               <ul className="mt-8 space-y-3.5">
                 {[
-                  'En erfaren förhandlare på din sida',
-                  'Vi granskar avtal och villkor åt dig',
-                  'Du betalar bara vid genomförd affär',
+                  'En personlig bilmäklare på din sida',
+                  'Vi granskar pris, villkor och avtal',
+                  'Betala bara om affären blir av',
                   'Fungerar vid köp, byte och leasing',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
