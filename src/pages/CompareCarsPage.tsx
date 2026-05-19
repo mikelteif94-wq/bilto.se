@@ -1389,7 +1389,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={isMobile ? undefined : { opacity: 0, y: -10 }}
               transition={{ duration: isMobile ? 0 : 0.2 }}
-              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"
             >
               {visibleCars.map((car, i) => {
                 const isSelected = selectedIds.has(car.id);
@@ -1943,7 +1943,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                 <p className="text-[15px] font-semibold text-slate-900 mb-4">
                   {tradeResults.length} {tradeResults.length === 1 ? 'bil' : 'bilar'} med lägre månadskostnad
                 </p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                   {tradeResults.map((r, i) => {
                     const isSelected = selectedIds.has(r.car.id);
                     return (

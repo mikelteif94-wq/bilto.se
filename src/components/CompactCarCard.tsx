@@ -34,7 +34,7 @@ export default function CompactCarCard({
       animate={disableMotion ? { opacity: 1, y: 0 } : undefined}
       {...(!disableMotion && { whileInView: { opacity: 1, y: 0 }, viewport: { once: true } })}
       transition={{ duration: disableMotion ? 0 : 0.35, delay: disableMotion ? 0 : index * 0.04 }}
-      className={`group relative bg-[#f0f7ff] rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
+      className={`group relative bg-[#f0f7ff] rounded-2xl overflow-hidden transition-all duration-200 cursor-pointer ${
         isSelected
           ? 'ring-2 ring-[#0e6efe] shadow-[0_0_0_4px_rgba(14,110,254,0.12)]'
           : 'ring-1 ring-slate-100 hover:ring-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)]'
@@ -42,8 +42,8 @@ export default function CompactCarCard({
       style={{ touchAction: 'pan-y' }}
       onClick={handleClick}
     >
-      {/* Image */}
-      <div className="relative aspect-[16/9] bg-gradient-to-b from-slate-50 to-slate-100 overflow-hidden">
+      {/* Image — taller on mobile (4:3), widescreen on desktop */}
+      <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-gradient-to-b from-slate-50 to-slate-100 overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -53,14 +53,14 @@ export default function CompactCarCard({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <Car className="w-10 h-10 text-slate-200" />
+            <Car className="w-12 h-12 text-slate-200" />
           </div>
         )}
 
         {topBadge && !isSelected && (
-          <div className="absolute top-2.5 left-2.5">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/95 backdrop-blur-sm text-[10px] font-bold text-[#0e6efe] shadow-sm">
-              <Star className="w-2.5 h-2.5 fill-[#0e6efe] text-[#0e6efe]" />
+          <div className="absolute top-3 left-3">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/95 backdrop-blur-sm text-[11px] font-bold text-[#0e6efe] shadow-sm">
+              <Star className="w-3 h-3 fill-[#0e6efe] text-[#0e6efe]" />
               Toppval
             </span>
           </div>
@@ -68,7 +68,7 @@ export default function CompactCarCard({
 
         {/* Selection indicator */}
         {onSelect && (
-          <div className={`absolute top-2 left-2 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+          <div className={`absolute top-3 left-3 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
             isSelected
               ? 'bg-[#0e6efe] border-[#0e6efe] shadow-md scale-110'
               : 'bg-white/85 border-slate-300 backdrop-blur-sm'
@@ -78,49 +78,49 @@ export default function CompactCarCard({
         )}
 
         {rating != null && (
-          <div className={`absolute top-2 right-2 w-8 h-8 rounded-full shadow-md flex items-center justify-center ${rating >= 9 ? 'bg-emerald-500' : 'bg-[#0e6efe]'}`}>
-            <span className="text-[11px] font-bold text-white">{rating}</span>
+          <div className={`absolute top-3 right-3 w-9 h-9 rounded-full shadow-md flex items-center justify-center ${rating >= 9 ? 'bg-emerald-500' : 'bg-[#0e6efe]'}`}>
+            <span className="text-[12px] font-bold text-white">{rating}</span>
           </div>
         )}
       </div>
 
       {/* Content */}
-      <div className="px-3.5 pt-2.5 pb-3">
-        <h3 className="text-[13px] font-bold text-slate-900 leading-tight truncate group-hover:text-[#0e6efe] transition-colors duration-200">
+      <div className="px-4 pt-3 pb-3">
+        <h3 className="text-sm font-bold text-slate-900 leading-tight truncate group-hover:text-[#0e6efe] transition-colors duration-200">
           {name}
         </h3>
 
         {estimatedMonthly ? (
-          <p className="mt-0.5 text-[12px] font-semibold text-[#0e6efe]">
+          <p className="mt-1 text-[13px] font-semibold text-[#0e6efe]">
             ca {estimatedMonthly.toLocaleString('sv-SE')} kr/mån
           </p>
         ) : null}
 
         {expertComment && (
-          <p className="mt-1 text-[11px] text-slate-400 leading-snug line-clamp-2 min-h-[28px]">
+          <p className="mt-1.5 text-xs text-slate-400 leading-snug line-clamp-2">
             {expertComment}
           </p>
         )}
 
         {fuelLabel && (
-          <p className="mt-1 text-[10px] text-slate-400 truncate">{fuelLabel}</p>
+          <p className="mt-1.5 text-[11px] text-slate-400 truncate">{fuelLabel}</p>
         )}
       </div>
 
       {/* Action buttons */}
       {!onSelect && (
-        <div className="px-3 pb-3 grid grid-cols-2 gap-2">
+        <div className="px-4 pb-4 grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-            className="h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 leading-tight px-2"
+            className="h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-xs font-bold transition-all duration-150 px-2"
           >
             Jag har hittat en
           </button>
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onSearch ? onSearch() : onNegotiate(); }}
-            className="h-9 rounded-lg bg-white border border-[#0e6efe] hover:bg-[#f0f7ff] active:scale-[0.98] text-[#0e6efe] text-[11px] font-bold transition-all duration-150 leading-tight px-2"
+            className="h-10 rounded-xl bg-white border border-[#0e6efe] hover:bg-[#f0f7ff] active:scale-[0.98] text-[#0e6efe] text-xs font-bold transition-all duration-150 px-2"
           >
             Sök en åt mig
           </button>
