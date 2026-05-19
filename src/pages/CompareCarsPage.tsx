@@ -101,12 +101,19 @@ const LOCAL_IMAGES: Record<string, string> = {
   skoda_superb: '/getImage_(9).webp',
   volvo_xc90: '/getImage_(11).webp',
   volvo_ex40: '/getImage_(12).webp',
+  volvo_xc40_recharge: '/getImage_(12).webp',
   volvo_ex90: '/getImage_(13).webp',
+  volvo_ex60: '/getImage_(13).webp',
   volvo_c40: '/getImage_(14).webp',
   volvo_c40_recharge: '/getImage_(14).webp',
   volvo_ec40: '/getImage_(14).webp',
   volvo_v60: '/getImage_(15).webp',
-  volvo_v60_cross_country: '/getImage_(15).webp',
+  volvo_v40: '/getImage_(17).webp',
+  volvo_v40_cross_country: '/getImage_(17).webp',
+  volvo_xc70: '/getImage_(18).webp',
+  volvo_v70: '/getImage_(19).webp',
+  volvo_v60_cross_country: '/getImage_(20).webp',
+  volvo_v90_cross_country: '/getImage_(21).webp',
 };
 
 const CURATED_IDS = [
@@ -116,6 +123,12 @@ const CURATED_IDS = [
   'tesla_model_3', 'polestar_2', 'toyota_yaris_cross',
   'volvo_v60', 'honda_crv', 'bmw_ix1', 'mercedes_eqc',
   'bmw_2_series', 'skoda_superb',
+  // Volvo-utökning
+  'volvo_xc90', 'volvo_ex40', 'volvo_ex90', 'volvo_c40_recharge',
+  'volvo_ec40', 'volvo_xc40_recharge', 'volvo_ex60', 'volvo_es90',
+  'volvo_ex30_cross_country', 'volvo_v60_cross_country', 'volvo_v90_cross_country',
+  'volvo_s60', 'volvo_s90', 'volvo_v90', 'volvo_v70',
+  'volvo_v40', 'volvo_v40_cross_country', 'volvo_xc70',
 ];
 
 type CategoryKey = 'alla' | 'popular' | 'el' | 'suv' | 'hybrid' | 'sedan';
