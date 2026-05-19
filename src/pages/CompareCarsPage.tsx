@@ -636,14 +636,22 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
     ids.map(id => allCarsMap.get(id)).filter((c): c is ComparisonCar => !!c),
   [allCarsMap]);
 
+  const [carSearchQuery, setCarSearchQuery] = useState('');
+
   const allCategoryCars = useMemo(() => {
     const ids = CATEGORY_IDS[activeCategory];
-    return ids === null ? getCuratedList(CURATED_IDS) : getCuratedList(ids);
-  }, [activeCategory, getCuratedList]);
+    const base = ids === null ? getCuratedList(CURATED_IDS) : getCuratedList(ids);
+    const q = carSearchQuery.trim().toLowerCase();
+    if (!q) return base;
+    return base.filter(c =>
+      `${c.brand_display} ${c.model_display}`.toLowerCase().includes(q)
+    );
+  }, [activeCategory, getCuratedList, carSearchQuery]);
 
   const visibleCars = useMemo(() => {
+    if (carSearchQuery.trim()) return allCategoryCars;
     return showAllCars ? allCategoryCars.slice(0, 16) : allCategoryCars.slice(0, 8);
-  }, [allCategoryCars, showAllCars]);
+  }, [allCategoryCars, showAllCars, carSearchQuery]);
 
   // Selection helpers
   const toggleSelect = useCallback((id: string) => {
@@ -1354,21 +1362,40 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       {/* Curated grid */}
       <section id="cars-grid" className="py-10 sm:py-16 px-4 sm:px-6 bg-slate-50">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
             <div>
               <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900">Experternas val</h2>
               <p className="text-[13px] text-slate-400 mt-0.5">Markera bilar för att jämföra dem sida vid sida</p>
+            </div>
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                value={carSearchQuery}
+                onChange={e => { setCarSearchQuery(e.target.value); setActiveCategory('alla'); setShowAllCars(false); }}
+                placeholder="Sök märke eller modell…"
+                className="w-full h-10 pl-9 pr-9 rounded-full bg-white ring-1 ring-slate-200 focus:ring-2 focus:ring-[#0e6efe] outline-none text-[13px] text-slate-800 placeholder:text-slate-400 transition-all"
+              />
+              {carSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setCarSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
           </div>
 
           <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide -mx-1 px-1">
             {CATEGORIES.map(cat => {
               const Icon = cat.icon;
-              const isActive = activeCategory === cat.key;
+              const isActive = activeCategory === cat.key && !carSearchQuery;
               return (
                 <button
                   key={cat.key}
-                  onClick={() => { setActiveCategory(cat.key); setShowAllCars(false); }}
+                  onClick={() => { setActiveCategory(cat.key); setShowAllCars(false); setCarSearchQuery(''); }}
                   className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                     isActive
                       ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/20'
@@ -1431,10 +1458,29 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                   </div>
                 );
               })}
+
+              {/* "Hittar du inte bilen?" card — always last in grid */}
+              <button
+                type="button"
+                onClick={() => openBuyDrawer(carSearchQuery.trim() || '', 'found')}
+                className="group flex flex-col items-center justify-center gap-3 p-5 rounded-2xl bg-white border-2 border-dashed border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/[0.03] transition-all duration-200 min-h-[180px] text-center"
+              >
+                <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center transition-colors">
+                  <Search className="w-5 h-5 text-slate-400 group-hover:text-[#0e6efe] transition-colors" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-bold text-slate-700 group-hover:text-[#0e6efe] transition-colors leading-snug">
+                    {carSearchQuery.trim() ? `Hitta en ${carSearchQuery.trim()}` : 'Hittar du inte bilen?'}
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-1 leading-snug">
+                    Vi hjälper dig hitta och förhandla
+                  </p>
+                </div>
+              </button>
             </motion.div>
           </AnimatePresence>
 
-          {!showAllCars && allCategoryCars.length > 8 && (
+          {!carSearchQuery && !showAllCars && allCategoryCars.length > 8 && (
             <div className="flex justify-center mt-6">
               <button
                 type="button"
