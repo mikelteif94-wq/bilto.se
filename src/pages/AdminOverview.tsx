@@ -28,6 +28,7 @@ interface AdminOverviewProps {
   onNavigateDealers: () => void;
   onNavigateQuotes?: () => void;
   onNavigateQuiz?: () => void;
+  onNavigateLeads?: () => void;
 }
 
 interface Stats {
@@ -102,6 +103,7 @@ export default function AdminOverview({
   onNavigateDealers,
   onNavigateQuotes,
   onNavigateQuiz,
+  onNavigateLeads,
 }: AdminOverviewProps) {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Stats>({
@@ -215,6 +217,7 @@ export default function AdminOverview({
           {[
             { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Översikt', active: true, onClick: undefined },
             { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', active: false, onClick: onNavigateCars },
+            onNavigateLeads ? { icon: <TrendingUp className="w-4 h-4" />, label: 'Leads', active: false, onClick: onNavigateLeads } : null,
             onNavigateQuotes ? { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', active: false, onClick: onNavigateQuotes } : null,
             { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', active: false, onClick: onNavigateDealers },
             onNavigateQuiz ? { icon: <ClipboardList className="w-4 h-4" />, label: 'Quiz', active: false, onClick: onNavigateQuiz } : null,
@@ -483,6 +486,7 @@ export default function AdminOverview({
                 <div className="bg-white border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100">
                   {[
                     { icon: <CarIcon className="w-4 h-4" />, label: 'Alla bilar', sub: `${stats.carsTotal} totalt`, onClick: onNavigateCars, iconBg: 'bg-[#0e6efe]/10 text-[#0e6efe]' },
+                    onNavigateLeads ? { icon: <TrendingUp className="w-4 h-4" />, label: 'Lead Command Center', sub: 'Pipeline-översikt', onClick: onNavigateLeads, iconBg: 'bg-emerald-50 text-emerald-600' } : null,
                     onNavigateQuotes ? { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', sub: stats.newQuotes > 0 ? `${stats.newQuotes} ej hanterade` : 'Inga nya', onClick: onNavigateQuotes, iconBg: 'bg-sky-50 text-sky-600' } : null,
                     { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', sub: `${stats.totalDealers} aktiva${stats.pendingDealers > 0 ? ` · ${stats.pendingDealers} väntar` : ''}`, onClick: onNavigateDealers, iconBg: 'bg-slate-100 text-slate-600' },
                     { icon: <Gavel className="w-4 h-4" />, label: 'Aktiva auktioner', sub: `${stats.carsActive} pågår`, onClick: onNavigateCars, iconBg: 'bg-emerald-50 text-emerald-600' },

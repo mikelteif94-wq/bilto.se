@@ -23,6 +23,7 @@ import AdminQuoteDetail from './pages/AdminQuoteDetail';
 import AdminOfferEditor from './pages/AdminOfferEditor';
 import AdminBulkUpload from './pages/AdminBulkUpload';
 import AdminQuizSubmissions from './pages/AdminQuizSubmissions';
+import AdminLeadCommandCenter from './pages/AdminLeadCommandCenter';
 import MyCarPage from './pages/MyCarPage';
 import MyQuotePage from './pages/MyQuotePage';
 import SetPasswordPage from './pages/SetPasswordPage';
@@ -338,6 +339,7 @@ function App() {
           onNavigateDealers={() => navigate('/admin/handlare')}
           onNavigateQuotes={() => navigate('/admin/forfragningar')}
           onNavigateQuiz={() => navigate('/admin/quiz')}
+          onNavigateLeads={() => navigate('/admin/leads')}
         />
       );
     }
@@ -421,6 +423,21 @@ function App() {
           onNavigateCars={() => navigate('/admin/bilar')}
           onNavigateDealers={() => navigate('/admin/handlare')}
           onNavigateOverview={() => navigate('/admin/oversikt')}
+        />
+      );
+    }
+
+    if (path === '/admin/leads') {
+      return (
+        <AdminLeadCommandCenter
+          adminUserId={session.user.id}
+          adminName={session.user.email ?? 'Admin'}
+          onLoggedOut={() => navigate('/admin')}
+          onOpenCar={(id) => navigate(`/admin/bilar/${id}`)}
+          onOpenQuote={(id) => navigate(`/admin/forfragningar/${id}`)}
+          onNavigateOverview={() => navigate('/admin/oversikt')}
+          onNavigateCars={() => navigate('/admin/bilar')}
+          onNavigateDealers={() => navigate('/admin/handlare')}
         />
       );
     }

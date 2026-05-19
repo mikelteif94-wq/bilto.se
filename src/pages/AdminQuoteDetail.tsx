@@ -21,6 +21,7 @@ import {
   Image,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import DealerDispatchPanel from '../components/DealerDispatchPanel';
 
 interface AdminQuoteDetailProps {
   quoteId: string;
@@ -735,25 +736,17 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
               )}
             </div>
 
-            {/* Forward to dealers */}
+            {/* Dealer Dispatch */}
             <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <h3 className="text-sm font-bold text-slate-900 mb-2">Skicka till handlare</h3>
-              <p className="text-xs text-slate-500 mb-4">
-                Vidarebefordra detta lead till godkanda handlare sa de kan kontakta kunden.
-              </p>
-              <button
-                onClick={handleForwardToDealers}
-                disabled={forwarding}
-                className="w-full inline-flex items-center justify-center gap-2 h-10 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white text-sm font-semibold transition"
-              >
-                {forwarding ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : forwarded ? (
-                  <><Check className="w-4 h-4" /> Skickat!</>
-                ) : (
-                  <><Send className="w-4 h-4" /> Skicka till handlare</>
-                )}
-              </button>
+              <h3 className="text-sm font-bold text-slate-900 mb-4">Dealer Dispatch</h3>
+              {quote && (
+                <DealerDispatchPanel
+                  quoteRequestId={quote.id}
+                  adminUserId={''}
+                  adminName={'Admin'}
+                  itemLabel={quote.car_model || quote.budget ? `${quote.car_model || 'Bil'} (${quote.budget || '—'})` : 'Köplead'}
+                />
+              )}
             </div>
 
             {/* Create offer */}

@@ -20,6 +20,7 @@ import type { Database } from '../lib/database.types';
 import AdminUserLabel from '../components/AdminUserLabel';
 import CrmPanel from '../components/CrmPanel';
 import BidsPanel from '../components/BidsPanel';
+import DealerDispatchPanel from '../components/DealerDispatchPanel';
 import ConditionReportForm, { EMPTY_CONDITION_REPORT } from '../components/forms/ConditionReportForm';
 import type { ConditionReport } from '../components/forms/ConditionReportForm';
 
@@ -415,6 +416,17 @@ export default function AdminCarDetail({
                   setCar((prev) => (prev ? { ...prev, ...changes } : prev))
                 }
               />
+
+              {/* Dealer Dispatch */}
+              <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
+                <h2 className="text-lg font-bold text-slate-900 mb-4">Dealer Dispatch</h2>
+                <DealerDispatchPanel
+                  carId={car.id}
+                  adminUserId={adminUserId ?? ''}
+                  adminName={adminName}
+                  itemLabel={[car.marke, car.modell, car.ar].filter(Boolean).join(' ') || car.regnummer}
+                />
+              </div>
             </div>
 
             <div className="space-y-5 sm:space-y-6">

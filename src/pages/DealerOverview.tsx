@@ -16,6 +16,12 @@ import {
   Circle,
   CheckCircle2,
   Flame,
+  Send,
+  ShoppingCart,
+  RefreshCw,
+  Star,
+  Inbox,
+  ChevronDown,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { formatKr, formatTimeLeftSimple } from '../lib/dealer-utils';
@@ -37,6 +43,24 @@ interface Stats {
   leadingCount: number;
   outbidCount: number;
   wonCount: number;
+  conversionRate: number;
+  avgResponseMin: number;
+  dispatchedLeads: number;
+}
+
+type LeadTab = 'sell' | 'buy' | 'all';
+
+interface DispatchedLead {
+  id: string;
+  response_status: string;
+  deadline_at: string | null;
+  message: string;
+  created_at: string;
+  car_id: string | null;
+  quote_request_id: string | null;
+  car_label: string;
+  lead_type: 'sell' | 'buy';
+  budget?: string;
 }
 
 interface CarLite {
@@ -62,6 +86,15 @@ interface MyBidRow {
 
 const formatTimeLeft = formatTimeLeftSimple;
 
+const DISPATCH_STATUS: Record<string, { label: string; cls: string }> = {
+  sent: { label: 'Mottaget', cls: 'bg-slate-100 text-slate-600' },
+  opened: { label: 'Öppnat', cls: 'bg-blue-100 text-blue-600' },
+  read: { label: 'Läst', cls: 'bg-blue-100 text-blue-700' },
+  replied: { label: 'Svarat', cls: 'bg-amber-100 text-amber-700' },
+  offered: { label: 'Offert lämnad', cls: 'bg-green-100 text-green-700' },
+  ignored: { label: 'Ej besvarat', cls: 'bg-red-100 text-red-600' },
+};
+
 export default function DealerOverview({
   dealerId,
   foretagsnamn,
@@ -80,10 +113,15 @@ export default function DealerOverview({
     leadingCount: 0,
     outbidCount: 0,
     wonCount: 0,
+    conversionRate: 0,
+    avgResponseMin: 0,
+    dispatchedLeads: 0,
   });
   const [endingCars, setEndingCars] = useState<CarLite[]>([]);
   const [myBids, setMyBids] = useState<MyBidRow[]>([]);
   const [newCars, setNewCars] = useState<CarLite[]>([]);
+  const [dispatchedLeads, setDispatchedLeads] = useState<DispatchedLead[]>([]);
+  const [leadTab, setLeadTab] = useState<LeadTab>('all');
 
   useEffect(() => {
     const t = window.setInterval(() => setNow(Date.now()), 60_000);
@@ -99,16 +137,44 @@ export default function DealerOverview({
     const nowIso = new Date().toISOString();
     const in24h = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
-    const [activeRes, endingRes, myBidsRes, wonRes, recentRes] = await Promise.all([
+    const [activeRes, endingRes, myBidsRes, wonRes, recentRes, dealerRes, dispatchRes] = await Promise.all([
       supabase.from('cars').select('id', { count: 'exact', head: true }).eq('status', 'aktiv').neq('sales_type', 'brokerage').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso),
       supabase.from('cars').select('id, regnummer, marke, modell, ar, miltal, auktion_slut, status, car_images(id)').eq('status', 'aktiv').neq('sales_type', 'brokerage').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso).lte('auktion_slut', in24h).order('auktion_slut', { ascending: true }).limit(8),
       supabase.from('bids').select('car_id, belopp, max_bid, cars:car_id(id, regnummer, marke, modell, ar, miltal, auktion_slut, status, car_images(id))').eq('dealer_id', dealerId).order('created_at', { ascending: false }),
       supabase.from('bids').select('id', { count: 'exact', head: true }).eq('dealer_id', dealerId).eq('status', 'vinnande'),
       supabase.from('cars').select('id, regnummer, marke, modell, ar, miltal, auktion_slut, status, car_images(id)').eq('status', 'aktiv').neq('sales_type', 'brokerage').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso).order('created_at', { ascending: false }).limit(6),
+      supabase.from('dealers').select('win_count, lost_count, avg_response_minutes, conversion_rate').eq('id', dealerId).maybeSingle(),
+      supabase.from('dealer_dispatches').select(`
+        id, car_id, quote_request_id, response_status, deadline_at, message, created_at,
+        cars(regnummer, marke, modell, ar),
+        quote_requests(car_model, budget, search_option)
+      `).eq('dealer_id', dealerId).order('created_at', { ascending: false }).limit(50),
     ]);
 
     setEndingCars((endingRes.data ?? []) as unknown as CarLite[]);
     setNewCars((recentRes.data ?? []) as unknown as CarLite[]);
+
+    // Process dispatched leads
+    const dLeads: DispatchedLead[] = (dispatchRes.data ?? []).map((d: any) => {
+      const car = Array.isArray(d.cars) ? d.cars[0] : d.cars;
+      const quote = Array.isArray(d.quote_requests) ? d.quote_requests[0] : d.quote_requests;
+      const isSell = !!d.car_id;
+      return {
+        id: d.id,
+        response_status: d.response_status,
+        deadline_at: d.deadline_at,
+        message: d.message,
+        created_at: d.created_at,
+        car_id: d.car_id,
+        quote_request_id: d.quote_request_id,
+        lead_type: isSell ? 'sell' : 'buy',
+        car_label: isSell
+          ? [car?.marke, car?.modell, car?.ar].filter(Boolean).join(' ') || car?.regnummer || '—'
+          : (quote?.car_model || 'Bil sökes'),
+        budget: quote?.budget,
+      };
+    });
+    setDispatchedLeads(dLeads);
 
     const myBidRowsRaw = (myBidsRes.data ?? []) as unknown as Array<{
       car_id: string;
@@ -145,6 +211,8 @@ export default function DealerOverview({
       (r) => r.car && r.car.status === 'aktiv' && r.car.auktion_slut && new Date(r.car.auktion_slut).getTime() > Date.now(),
     );
 
+    const dealerData = dealerRes.data;
+
     setMyBids(activeRows.slice(0, 8));
     setStats({
       aktiva: activeRes.count ?? 0,
@@ -153,6 +221,9 @@ export default function DealerOverview({
       leadingCount: activeRows.filter((r) => r.isLeading).length,
       outbidCount: activeRows.filter((r) => !r.isLeading).length,
       wonCount: wonRes.count ?? 0,
+      conversionRate: dealerData?.conversion_rate ?? 0,
+      avgResponseMin: dealerData?.avg_response_minutes ?? 0,
+      dispatchedLeads: dLeads.length,
     });
 
     setLoading(false);
@@ -289,33 +360,95 @@ export default function DealerOverview({
               />
             </div>
 
-            {/* Bid status row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {/* Extended KPI row */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              <StatusPill icon={<Circle className="w-2.5 h-2.5 fill-emerald-400 text-emerald-400" />} label="Leder" value={stats.leadingCount} valueColor={stats.leadingCount > 0 ? 'text-emerald-700' : 'text-slate-900'} />
+              <StatusPill icon={<Circle className="w-2.5 h-2.5 fill-red-400 text-red-400" />} label="Överbjuden" value={stats.outbidCount} valueColor={stats.outbidCount > 0 ? 'text-red-600' : 'text-slate-900'} />
+              <StatusPill icon={<Circle className="w-2.5 h-2.5 fill-sky-400 text-sky-400" />} label="Nya bilar" value={newCars.length} valueColor="text-slate-900" />
+              <StatusPill icon={<Circle className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />} label="Slutar snart" value={endingCars.length} valueColor="text-slate-900" />
+              <StatusPill icon={<Circle className="w-2.5 h-2.5 fill-blue-400 text-blue-400" />} label="Mottagna leads" value={stats.dispatchedLeads} valueColor="text-slate-900" />
               <StatusPill
-                icon={<Circle className="w-2.5 h-2.5 fill-emerald-400 text-emerald-400" />}
-                label="Leder"
-                value={stats.leadingCount}
-                valueColor={stats.leadingCount > 0 ? 'text-emerald-700' : 'text-slate-900'}
-              />
-              <StatusPill
-                icon={<Circle className="w-2.5 h-2.5 fill-red-400 text-red-400" />}
-                label="Överbjuden"
-                value={stats.outbidCount}
-                valueColor={stats.outbidCount > 0 ? 'text-red-600' : 'text-slate-900'}
-              />
-              <StatusPill
-                icon={<Circle className="w-2.5 h-2.5 fill-sky-400 text-sky-400" />}
-                label="Nya bilar"
-                value={newCars.length}
+                icon={<Circle className="w-2.5 h-2.5 fill-purple-400 text-purple-400" />}
+                label={stats.avgResponseMin > 0 ? `Svarstid ${stats.avgResponseMin}m` : 'Svarstid'}
+                value={stats.conversionRate ? Math.round(stats.conversionRate) : 0}
                 valueColor="text-slate-900"
-              />
-              <StatusPill
-                icon={<Circle className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />}
-                label="Slutar snart"
-                value={endingCars.length}
-                valueColor="text-slate-900"
+                suffix="%"
               />
             </div>
+
+            {/* Dispatched leads panel */}
+            {dispatchedLeads.length > 0 && (
+              <div>
+                <SectionHeader
+                  title={
+                    <span className="flex items-center gap-2">
+                      <Inbox className="w-4 h-4 text-blue-500" />
+                      Mina leads
+                    </span>
+                  }
+                  action={undefined}
+                />
+                {/* Lead type tabs */}
+                <div className="flex gap-1 mb-3">
+                  {([
+                    { key: 'all' as LeadTab, label: 'Alla', count: dispatchedLeads.length },
+                    { key: 'sell' as LeadTab, label: 'Säljleads', count: dispatchedLeads.filter((d) => d.lead_type === 'sell').length },
+                    { key: 'buy' as LeadTab, label: 'Köpleads', count: dispatchedLeads.filter((d) => d.lead_type === 'buy').length },
+                  ]).map((tab) => (
+                    <button
+                      key={tab.key}
+                      onClick={() => setLeadTab(tab.key)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
+                        leadTab === tab.key
+                          ? 'bg-slate-900 text-white border-slate-900'
+                          : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                      }`}
+                    >
+                      {tab.label} <span className={leadTab === tab.key ? 'text-slate-300' : 'text-slate-400'}>{tab.count}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100">
+                  {dispatchedLeads
+                    .filter((d) => leadTab === 'all' || d.lead_type === leadTab)
+                    .map((lead) => {
+                      const status = DISPATCH_STATUS[lead.response_status] ?? DISPATCH_STATUS.sent;
+                      const isOverdue = lead.deadline_at && new Date(lead.deadline_at) < new Date() && !['replied', 'offered'].includes(lead.response_status);
+                      const deadlineDiff = lead.deadline_at ? new Date(lead.deadline_at).getTime() - Date.now() : null;
+                      const deadlineLabel = deadlineDiff == null ? null : deadlineDiff < 0 ? 'Förfallen' : `${Math.floor(deadlineDiff / 3600000)}h kvar`;
+                      return (
+                        <div
+                          key={lead.id}
+                          className={`px-4 py-3.5 ${isOverdue ? 'bg-red-50' : ''} ${lead.car_id ? 'cursor-pointer hover:bg-slate-50' : ''} transition`}
+                          onClick={() => lead.car_id && onOpenCar(lead.car_id)}
+                        >
+                          <div className="flex items-start justify-between gap-3 mb-1">
+                            <div className="flex items-center gap-2">
+                              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${lead.lead_type === 'buy' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
+                                {lead.lead_type === 'buy' ? 'Köplead' : 'Säljlead'}
+                              </span>
+                              <span className="font-semibold text-sm text-slate-900">{lead.car_label}</span>
+                            </div>
+                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${status.cls}`}>
+                              {status.label}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3 text-xs text-slate-500">
+                            {lead.budget && <span>Budget: {lead.budget}</span>}
+                            {deadlineLabel && (
+                              <span className={isOverdue ? 'text-red-600 font-medium' : ''}>{deadlineLabel}</span>
+                            )}
+                            <span className="ml-auto">{new Date(lead.created_at).toLocaleDateString('sv-SE')}</span>
+                          </div>
+                          {lead.message && (
+                            <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">{lead.message}</p>
+                          )}
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
 
             {/* Main two-col */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -493,13 +626,13 @@ function KpiCard({
   );
 }
 
-function StatusPill({ icon, label, value, valueColor }: { icon: React.ReactNode; label: string; value: number; valueColor: string }) {
+function StatusPill({ icon, label, value, valueColor, suffix }: { icon: React.ReactNode; label: string; value: number; valueColor: string; suffix?: string }) {
   return (
     <div className="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-3">
       <span className="shrink-0 mt-0.5">{icon}</span>
       <div>
         <div className="text-[11px] text-slate-500 leading-none">{label}</div>
-        <div className={`text-lg font-semibold mt-0.5 ${valueColor}`}>{value}</div>
+        <div className={`text-lg font-semibold mt-0.5 ${valueColor}`}>{value}{suffix}</div>
       </div>
     </div>
   );
