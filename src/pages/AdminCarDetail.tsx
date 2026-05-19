@@ -20,6 +20,8 @@ import type { Database } from '../lib/database.types';
 import AdminUserLabel from '../components/AdminUserLabel';
 import CrmPanel from '../components/CrmPanel';
 import BidsPanel from '../components/BidsPanel';
+import ConditionReportForm, { EMPTY_CONDITION_REPORT } from '../components/forms/ConditionReportForm';
+import type { ConditionReport } from '../components/forms/ConditionReportForm';
 
 interface AdminCarDetailProps {
   carId: string;
@@ -340,8 +342,57 @@ export default function AdminCarDetail({
                       {SKICK_LABELS[car.skick] ?? car.skick}
                     </dd>
                   </div>
+                  <>
+                      {(car as unknown as { skick_kommentar?: string }).skick_kommentar && (
+                        <div className="col-span-2">
+                          <dt className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                            Skickkbeskrivning
+                          </dt>
+                          <dd className="text-slate-900 whitespace-pre-wrap text-sm">
+                            {(car as unknown as { skick_kommentar: string }).skick_kommentar}
+                          </dd>
+                        </div>
+                      )}
+                      {((car as unknown as { utrustning?: string[] }).utrustning ?? []).length > 0 && (
+                        <div className="col-span-2">
+                          <dt className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                            Utrustning
+                          </dt>
+                          <dd className="flex flex-wrap gap-1.5 mt-1">
+                            {((car as unknown as { utrustning: string[] }).utrustning ?? []).map((u) => (
+                              <span
+                                key={u}
+                                className="inline-block text-xs font-medium bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full"
+                              >
+                                {u}
+                              </span>
+                            ))}
+                          </dd>
+                        </div>
+                      )}
+                  </>
                 </dl>
               </div>
+
+              {(() => {
+                const raw = (car as unknown as { condition_report?: Record<string, unknown> }).condition_report;
+                if (!raw) return null;
+                const report: ConditionReport = {
+                  ...EMPTY_CONDITION_REPORT,
+                  ...raw,
+                  mekaniskt: (raw.mekaniskt as Record<string, string>) ?? {},
+                  kosmetiskt: (raw.kosmetiskt as Record<string, string>) ?? {},
+                  inredning: (raw.inredning as Record<string, string>) ?? {},
+                  historik: { ...EMPTY_CONDITION_REPORT.historik, ...(raw.historik as object ?? {}) },
+                  kommentarer: { ...EMPTY_CONDITION_REPORT.kommentarer, ...(raw.kommentarer as object ?? {}) },
+                };
+                return (
+                  <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
+                    <h2 className="text-lg font-bold text-slate-900 mb-4">Skickrapport</h2>
+                    <ConditionReportForm value={report} onChange={() => {}} readOnly />
+                  </div>
+                );
+              })()}
 
               <BidsPanel
                 carId={car.id}

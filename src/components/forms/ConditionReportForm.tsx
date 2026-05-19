@@ -67,16 +67,18 @@ interface ConditionReportFormProps {
   value: ConditionReport;
   onChange: (next: ConditionReport) => void;
   collapsible?: boolean;
+  readOnly?: boolean;
 }
 
 export default function ConditionReportForm({
   value,
   onChange,
   collapsible = false,
+  readOnly = false,
 }: ConditionReportFormProps) {
   const [open, setOpen] = useState(!collapsible);
 
-  const update = (patch: Partial<ConditionReport>) => onChange({ ...value, ...patch });
+  const update = (patch: Partial<ConditionReport>) => { if (!readOnly) onChange({ ...value, ...patch }); };
 
   return (
     <div className="space-y-4">
@@ -92,7 +94,7 @@ export default function ConditionReportForm({
       )}
 
       {open && (
-        <div className="space-y-5">
+        <div className={`space-y-5 ${readOnly ? 'pointer-events-none select-none opacity-90' : ''}`}>
           <Section
             title="Mekaniskt"
             items={MEKANISKT_ITEMS}

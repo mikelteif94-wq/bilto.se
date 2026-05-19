@@ -8,6 +8,8 @@ const corsHeaders = {
     "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
+const LOGO_URL = "https://bilto.se/ChatGPT_Image_19_maj_2026_08_52_17.png";
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 200, headers: corsHeaders });
@@ -91,12 +93,12 @@ Deno.serve(async (req: Request) => {
       "Tack — nu är vi igång!",
       "En av våra experter ringer dig inom kort för att gå igenom nästa steg.",
       "",
-      "Under tiden kan du luta dig tillbaka ☕",
+      "Under tiden kan du luta dig tillbaka.",
       trackingUrl ? "" : undefined,
       trackingUrl ? `Följ ärendet här: ${trackingUrl}` : undefined,
       "",
       "Vi hörs snart!",
-      "Hälsningar, Bilto 🚗",
+      "Hälsningar, Bilto",
     ].filter((v): v is string => v !== undefined).join("\n");
 
     let status: "sent" | "failed" = "sent";
@@ -147,22 +149,19 @@ function renderEmail(d: {
   appUrl: string;
 }): string {
   const site = d.appUrl ? d.appUrl.replace(/\/$/, "") : "https://bilto.se";
-  const iconUrl = `${site}/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(1).png`;
   return `<!doctype html>
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;margin:0;padding:32px;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;">
     <tr><td style="padding:0 0 20px;text-align:center;">
       <a href="${escAttr(site)}" style="display:inline-block;text-decoration:none;">
-        <img src="${escAttr(iconUrl)}" alt="Bilto" width="40" height="40" style="width:40px;height:40px;border-radius:10px;display:inline-block;vertical-align:middle;" />
-        <span style="display:inline-block;vertical-align:middle;margin-left:10px;font-size:22px;font-weight:700;color:#0f172a;letter-spacing:-0.02em;">Bilto</span>
+        <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="160" style="width:160px;height:auto;display:inline-block;" />
       </a>
     </td></tr>
     <tr><td style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
       <table width="100%" cellpadding="0" cellspacing="0">
-        <tr><td style="background:#0e6efe;text-align:center;padding:36px 16px;">
+        <tr><td style="background:#0e6efe;text-align:center;padding:32px 16px;">
           <a href="${escAttr(site)}" style="display:inline-block;text-decoration:none;">
-            <img src="${escAttr(iconUrl)}" alt="Bilto" width="56" height="56" style="width:56px;height:56px;border-radius:14px;display:inline-block;vertical-align:middle;" />
-            <span style="display:inline-block;vertical-align:middle;margin-left:12px;font-size:32px;font-weight:700;color:#ffffff;letter-spacing:-0.02em;">Bilto</span>
+            <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="220" style="width:220px;height:auto;display:inline-block;" />
           </a>
         </td></tr>
         <tr><td style="padding:32px 32px 16px;">
@@ -183,8 +182,7 @@ function renderEmail(d: {
     </td></tr>
     <tr><td style="padding:28px 16px 8px;text-align:center;">
       <a href="${escAttr(site)}" style="display:inline-block;text-decoration:none;">
-        <img src="${escAttr(iconUrl)}" alt="Bilto" width="28" height="28" style="width:28px;height:28px;border-radius:7px;display:inline-block;vertical-align:middle;" />
-        <span style="display:inline-block;vertical-align:middle;margin-left:6px;font-size:15px;font-weight:700;color:#475569;">Bilto</span>
+        <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="100" style="width:100px;height:auto;display:inline-block;" />
       </a>
       <p style="margin:10px 0 4px;color:#475569;font-size:13px;font-weight:600;">Trygg bilförsäljning</p>
       <p style="margin:0 0 10px;color:#94a3b8;font-size:12px;">

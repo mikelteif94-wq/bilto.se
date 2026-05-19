@@ -8,6 +8,8 @@ const corsHeaders = {
     "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
+const LOGO_URL = "https://bilto.se/ChatGPT_Image_19_maj_2026_08_52_17.png";
+
 const RATING_LABELS: Record<string, string> = {
   good: "Bra deal",
   great: "Mycket bra deal",
@@ -69,21 +71,39 @@ Deno.serve(async (req: Request) => {
       const subject = "Du har fått ett nytt bilförslag från Bilto";
       const html = `<!doctype html>
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:32px;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
-    <tr><td style="padding:24px 32px 20px;background:#0e6efe;text-align:center;">
-      <img src="https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" style="height:48px;width:auto;display:inline-block;margin-bottom:12px;" />
-      <h1 style="margin:0;color:#ffffff;font-size:22px;line-height:1.3;">Hej ${escapeHtml(firstName)}!</h1>
-      <p style="margin:6px 0 0;color:rgba(255,255,255,0.9);font-size:15px;">Vi har hittat en bil som matchar din förfrågan.</p>
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;">
+    <tr><td style="padding:0 0 20px;text-align:center;">
+      <a href="https://bilto.se" style="display:inline-block;text-decoration:none;">
+        <img src="${LOGO_URL}" alt="Bilto" width="160" style="width:160px;height:auto;display:inline-block;" />
+      </a>
     </td></tr>
-    <tr><td style="padding:24px 32px;">
-      <p style="margin:0 0 16px;color:#334155;font-size:15px;line-height:1.7;">Vi har lagt till ett nytt bilförslag i din portal. Klicka nedan för att se alla detaljer, pris och mer information.</p>
-      ${portalUrl ? `<a href="${escapeHtml(portalUrl)}" style="display:inline-block;margin-top:8px;padding:12px 24px;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:600;border-radius:8px;text-decoration:none;">Se mitt bilförslag</a>` : ""}
+    <tr><td style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr><td style="padding:28px 32px 24px;background:#0e6efe;text-align:center;">
+          <a href="https://bilto.se" style="display:inline-block;text-decoration:none;">
+            <img src="${LOGO_URL}" alt="Bilto" width="220" style="width:220px;height:auto;display:inline-block;margin-bottom:16px;" />
+          </a>
+          <h1 style="margin:0;color:#ffffff;font-size:22px;line-height:1.3;">Hej ${escapeHtml(firstName)}!</h1>
+          <p style="margin:6px 0 0;color:rgba(255,255,255,0.9);font-size:15px;">Vi har hittat en bil som matchar din förfrågan.</p>
+        </td></tr>
+        <tr><td style="padding:24px 32px;">
+          <p style="margin:0 0 16px;color:#334155;font-size:15px;line-height:1.7;">Vi har lagt till ett nytt bilförslag i din portal. Klicka nedan för att se alla detaljer, pris och mer information.</p>
+          ${portalUrl ? `<a href="${escapeHtml(portalUrl)}" style="display:inline-block;margin-top:8px;padding:12px 24px;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:600;border-radius:8px;text-decoration:none;">Se mitt bilförslag</a>` : ""}
+        </td></tr>
+        <tr><td style="padding:0 32px 28px;color:#64748b;font-size:14px;line-height:1.7;">
+          <p style="margin:0;">Med vänliga hälsningar,<br><strong style="color:#334155;">Teamet på Bilto</strong></p>
+        </td></tr>
+      </table>
     </td></tr>
-    <tr><td style="padding:0 32px 28px;color:#64748b;font-size:14px;line-height:1.7;">
-      <p style="margin:0;">Med vänliga hälsningar,<br><strong style="color:#334155;">Teamet på Bilto</strong></p>
-    </td></tr>
-    <tr><td style="padding:0 32px 24px;color:#94a3b8;font-size:12px;">
-      Bilto AB &middot; hej@bilto.se
+    <tr><td style="padding:24px 16px 8px;text-align:center;">
+      <a href="https://bilto.se" style="display:inline-block;text-decoration:none;">
+        <img src="${LOGO_URL}" alt="Bilto" width="100" style="width:100px;height:auto;display:inline-block;" />
+      </a>
+      <p style="margin:8px 0 4px;color:#94a3b8;font-size:12px;">
+        <a href="mailto:hej@bilto.se" style="color:#64748b;text-decoration:none;">hej@bilto.se</a>
+        &nbsp;·&nbsp;
+        <a href="https://bilto.se" style="color:#64748b;text-decoration:none;">bilto.se</a>
+      </p>
     </td></tr>
   </table>
 </body></html>`;
@@ -254,37 +274,56 @@ function renderOfferHtml(row: OfferRow, portalUrl: string): string {
 
   return `<!doctype html>
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:32px;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
-    <tr><td style="padding:24px 32px 20px;background:#0e6efe;text-align:center;">
-      <img src="https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" style="height:48px;width:auto;display:inline-block;margin-bottom:12px;" />
-      <h1 style="margin:0;color:#ffffff;font-size:22px;line-height:1.3;">Hej ${escapeHtml(firstName)}!</h1>
-      <p style="margin:6px 0 0;color:rgba(255,255,255,0.9);font-size:15px;">Här är vad vi förhandlat fram åt dig.</p>
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;">
+    <tr><td style="padding:0 0 20px;text-align:center;">
+      <a href="https://bilto.se" style="display:inline-block;text-decoration:none;">
+        <img src="${LOGO_URL}" alt="Bilto" width="160" style="width:160px;height:auto;display:inline-block;" />
+      </a>
     </td></tr>
-    <tr><td style="padding:24px 32px;">
-      <p style="margin:0 0 16px;color:#0f172a;font-size:18px;font-weight:700;">${escapeHtml(row.car_description)}</p>
-      <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e2e8f0;">
-        ${savingsRows.join("")}
+    <tr><td style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr><td style="padding:28px 32px 24px;background:#0e6efe;text-align:center;">
+          <a href="https://bilto.se" style="display:inline-block;text-decoration:none;">
+            <img src="${LOGO_URL}" alt="Bilto" width="220" style="width:220px;height:auto;display:inline-block;margin-bottom:16px;" />
+          </a>
+          <h1 style="margin:0;color:#ffffff;font-size:22px;line-height:1.3;">Hej ${escapeHtml(firstName)}!</h1>
+          <p style="margin:6px 0 0;color:rgba(255,255,255,0.9);font-size:15px;">Här är vad vi förhandlat fram åt dig.</p>
+        </td></tr>
+        <tr><td style="padding:24px 32px;">
+          <p style="margin:0 0 16px;color:#0f172a;font-size:18px;font-weight:700;">${escapeHtml(row.car_description)}</p>
+          <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e2e8f0;">
+            ${savingsRows.join("")}
+          </table>
+          ${row.total_savings > 0 ? `
+          <div style="margin-top:16px;padding:14px 16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;">
+            <table width="100%"><tr>
+              <td style="color:#1d4ed8;font-size:14px;font-weight:700;">Total besparing</td>
+              <td align="right" style="color:#1d4ed8;font-size:22px;font-weight:800;">~${fmt(row.total_savings)} kr</td>
+            </tr></table>
+          </div>` : ""}
+          ${row.total_deal_price > 0 ? `<p style="margin:12px 0 0;color:#334155;font-size:14px;">Totalt dealpris: <strong>${fmt(row.total_deal_price)} kr</strong></p>` : ""}
+          ${row.negotiated_monthly_cost != null && row.negotiated_monthly_cost > 0 ? `<p style="margin:4px 0 0;color:#334155;font-size:14px;">Månadskostnad: <strong>${fmt(row.negotiated_monthly_cost)} kr/mån</strong></p>` : ""}
+          <p style="margin:14px 0 0;display:inline-block;padding:4px 12px;background:#ecfdf5;color:#065f46;border-radius:99px;font-size:12px;font-weight:700;">${escapeHtml(ratingLabel)}</p>
+          ${row.admin_comment ? `<div style="margin-top:16px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;"><p style="margin:0 0 4px;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Vår bedömning</p><p style="margin:0;color:#334155;font-size:14px;line-height:1.6;">${escapeHtml(row.admin_comment)}</p></div>` : ""}
+        </td></tr>
+        <tr><td style="padding:16px 32px 28px;">
+          <a href="${escapeHtml(portalLink)}" style="display:inline-block;padding:12px 24px;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:600;border-radius:8px;text-decoration:none;">Se mitt erbjudande</a>
+        </td></tr>
+        <tr><td style="padding:0 32px 28px;color:#64748b;font-size:14px;line-height:1.7;">
+          <p style="margin:0;">Med vänliga hälsningar,<br><strong style="color:#334155;">Teamet på Bilto</strong></p>
+        </td></tr>
       </table>
-      ${row.total_savings > 0 ? `
-      <div style="margin-top:16px;padding:14px 16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;">
-        <table width="100%"><tr>
-          <td style="color:#1d4ed8;font-size:14px;font-weight:700;">Total besparing</td>
-          <td align="right" style="color:#1d4ed8;font-size:22px;font-weight:800;">~${fmt(row.total_savings)} kr</td>
-        </tr></table>
-      </div>` : ""}
-      ${row.total_deal_price > 0 ? `<p style="margin:12px 0 0;color:#334155;font-size:14px;">Totalt dealpris: <strong>${fmt(row.total_deal_price)} kr</strong></p>` : ""}
-      ${row.negotiated_monthly_cost != null && row.negotiated_monthly_cost > 0 ? `<p style="margin:4px 0 0;color:#334155;font-size:14px;">Månadskostnad: <strong>${fmt(row.negotiated_monthly_cost)} kr/mån</strong></p>` : ""}
-      <p style="margin:14px 0 0;display:inline-block;padding:4px 12px;background:#ecfdf5;color:#065f46;border-radius:99px;font-size:12px;font-weight:700;">${escapeHtml(ratingLabel)}</p>
-      ${row.admin_comment ? `<div style="margin-top:16px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;"><p style="margin:0 0 4px;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Biltos bedömning</p><p style="margin:0;color:#334155;font-size:14px;line-height:1.6;">${escapeHtml(row.admin_comment)}</p></div>` : ""}
     </td></tr>
-    <tr><td style="padding:16px 32px 28px;">
-      <a href="${escapeHtml(portalLink)}" style="display:inline-block;padding:12px 24px;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:600;border-radius:8px;text-decoration:none;">Se mitt erbjudande</a>
-    </td></tr>
-    <tr><td style="padding:0 32px 28px;color:#64748b;font-size:14px;line-height:1.7;">
-      <p style="margin:0;">Med vänliga hälsningar,<br><strong style="color:#334155;">Teamet på Bilto</strong></p>
-    </td></tr>
-    <tr><td style="padding:0 32px 24px;color:#94a3b8;font-size:12px;">
-      Bilto AB &middot; hej@bilto.se
+    <tr><td style="padding:24px 16px 8px;text-align:center;">
+      <a href="https://bilto.se" style="display:inline-block;text-decoration:none;">
+        <img src="${LOGO_URL}" alt="Bilto" width="100" style="width:100px;height:auto;display:inline-block;" />
+      </a>
+      <p style="margin:8px 0 4px;color:#94a3b8;font-size:12px;">
+        <a href="mailto:hej@bilto.se" style="color:#64748b;text-decoration:none;">hej@bilto.se</a>
+        &nbsp;·&nbsp;
+        <a href="https://bilto.se" style="color:#64748b;text-decoration:none;">bilto.se</a>
+      </p>
+      <p style="margin:0;color:#cbd5e1;font-size:11px;">© ${new Date().getFullYear()} Bilto. Alla rättigheter förbehållna.</p>
     </td></tr>
   </table>
 </body></html>`;
@@ -318,7 +357,7 @@ function renderOfferText(row: OfferRow, portalUrl: string): string {
   if (row.total_deal_price > 0) lines.push(`Totalt dealpris: ${fmt(row.total_deal_price)} kr`);
   if (row.admin_comment) {
     lines.push("");
-    lines.push(`Biltos bedömning: ${row.admin_comment}`);
+    lines.push(`Vår bedömning: ${row.admin_comment}`);
   }
   lines.push("");
   lines.push(`Se ditt erbjudande: ${portalLink}`);
