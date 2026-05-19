@@ -419,7 +419,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         </div>
       </section>
 
-      <section className="bg-[#f5f8fc] py-16 sm:py-24 px-5 sm:px-6 overflow-hidden">
+      <section className="bg-[#f5f8fc] py-16 sm:py-24 sm:overflow-hidden px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-16">
             <h2 className="text-[34px] sm:text-[48px] font-semibold leading-[1.02] text-slate-900 tracking-[-0.02em]">
@@ -1067,54 +1067,57 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
 
 function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] }) {
   const [active, setActive] = useState(0);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const cardWidth = el.scrollWidth / steps.length;
+    const idx = Math.round(el.scrollLeft / cardWidth);
+    setActive(Math.min(Math.max(idx, 0), steps.length - 1));
+  };
+
   return (
-    <div className="sm:hidden mb-10">
-      {/* Image slider */}
-      <div className="relative rounded-2xl overflow-hidden aspect-[16/10] mb-5 shadow-lg">
-        {images.map((src, i) => (
-          <img
+    <div className="sm:hidden mb-10 -mx-5">
+      {/* Horizontal scroll carousel — peek left/right */}
+      <div
+        className="flex overflow-x-auto snap-x snap-mandatory gap-3 px-5 pb-1 scrollbar-hide"
+        style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+        onScroll={handleScroll}
+      >
+        {steps.map((step, i) => (
+          <div
             key={i}
-            src={src}
-            alt={steps[i]?.title ?? ''}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${i === active ? 'opacity-100' : 'opacity-0'}`}
-          />
+            className="snap-center shrink-0 w-[82vw] max-w-[340px]"
+          >
+            {/* Image with step badge */}
+            <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-md">
+              <img
+                src={images[i]}
+                alt={step.title}
+                className="w-full h-full object-cover"
+              />
+              {/* Step number badge */}
+              <div className="absolute bottom-3 left-3 w-9 h-9 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg">
+                <span className="text-white text-[14px] font-bold tabular-nums">{i + 1}</span>
+              </div>
+            </div>
+            {/* Text below image */}
+            <div className="px-1 pt-4 pb-2">
+              <h3 className="text-[18px] font-bold text-slate-900 leading-tight tracking-tight mb-1.5">
+                {step.title}
+              </h3>
+              <p className="text-[14px] text-slate-600 leading-[1.6]">{step.text}</p>
+            </div>
+          </div>
         ))}
       </div>
 
       {/* Dot indicators */}
-      <div className="flex items-center justify-center gap-2 mb-5">
+      <div className="flex items-center justify-center gap-2 mt-5">
         {steps.map((_, i) => (
-          <button
+          <div
             key={i}
-            onClick={() => setActive(i)}
             className={`transition-all duration-300 rounded-full ${i === active ? 'w-6 h-2 bg-[#0e6efe]' : 'w-2 h-2 bg-slate-300'}`}
-            aria-label={`Steg ${i + 1}`}
           />
-        ))}
-      </div>
-
-      {/* Step cards */}
-      <div className="space-y-3">
-        {steps.map((step, i) => (
-          <button
-            key={i}
-            onClick={() => setActive(i)}
-            className={`w-full text-left rounded-2xl p-4 transition-all duration-200 border ${i === active ? 'bg-white border-[#0e6efe]/30 shadow-sm' : 'bg-white/60 border-transparent'}`}
-          >
-            <div className="flex items-start gap-3">
-              <span className={`text-[11px] font-bold tabular-nums shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-colors ${i === active ? 'bg-[#0e6efe] text-white' : 'bg-slate-200 text-slate-500'}`}>
-                0{i + 1}
-              </span>
-              <div>
-                <h3 className={`text-[16px] font-semibold leading-tight tracking-tight transition-colors ${i === active ? 'text-slate-900' : 'text-slate-600'}`}>
-                  {step.title}
-                </h3>
-                {i === active && (
-                  <p className="text-slate-600 text-[14px] leading-[1.65] mt-1.5">{step.text}</p>
-                )}
-              </div>
-            </div>
-          </button>
         ))}
       </div>
     </div>
