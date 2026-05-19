@@ -189,6 +189,14 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
     onStartBrokerage(reg, 0);
   };
 
+  const [activeTab, setActiveTab] = useState('Sälja bil');
+  const [carSearch, setCarSearch] = useState('');
+
+  const navigate = (url: string) => {
+    window.history.pushState({}, '', url);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
   const steps = mode === 'brokerage' ? BROKERAGE_STEPS : DIRECT_STEPS;
   const navItems = ['Sälj bil', 'Köp bil'];
 
@@ -256,147 +264,149 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         </div>
       </header>
 
-      <section className="lg:hidden pt-16 relative bg-[#0e6efe] overflow-hidden">
-        <img
-          src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
-          alt=""
-          aria-hidden="true"
-          className="absolute -left-24 -top-6 w-[280px] h-[280px] object-contain pointer-events-none select-none opacity-30"
-        />
-        <div className="absolute -right-20 top-80 w-[240px] h-[240px] rounded-full bg-[#3d8cff] opacity-50" />
-
-        <div className="relative px-6 pt-4 pb-10">
-          <div className="flex items-center justify-center mb-3">
-            <img
-              src="/module-4-img.ce21cba7.svg"
-              alt=""
-              loading="eager"
-              fetchPriority="high"
-              className="w-full h-auto max-h-[150px] object-contain"
-            />
-          </div>
-
-          <h1 className="text-center text-white text-[30px] font-semibold leading-[1.1] tracking-tight">
+      {/* Hero */}
+      <section className="bg-[#0e6efe] pt-28 pb-14">
+        <div className="px-4 flex flex-col items-center text-center">
+          <h1 className="text-white text-[32px] sm:text-[52px] font-semibold leading-[1.08] tracking-tight max-w-2xl">
             Din bilaffär börjar här
           </h1>
+          <p className="mt-4 text-white/80 text-[16px] sm:text-[18px] max-w-lg leading-relaxed">
+            Sälj, köp eller byt bil — vi sköter förhandlingen och hela affären åt dig.
+          </p>
 
-          <ul className="mt-6 space-y-3.5 text-[17px] font-medium text-white w-fit mx-auto text-left">
-            <li className="flex items-center gap-3">
-              <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Sälj din bil och få bästa budet
-            </li>
-            <li className="flex items-center gap-3">
-              <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Köp bil och vi förhandlar priset åt dig
-            </li>
-            <li className="flex items-center gap-3">
-              <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Byt bil och vi sköter allt från start till mål
-            </li>
-          </ul>
+          {/* Action card */}
+          <div className="mt-8 w-full max-w-[700px] bg-white rounded-2xl shadow-[0_24px_64px_-20px_rgba(15,23,42,0.30)] overflow-hidden">
+            {/* Tabs */}
+            <div className="flex overflow-x-auto scrollbar-hide border-b border-slate-100">
+              {(['Hitta bil', 'Sälja bil', 'Leta bil', 'Byta bil'] as const).map((tab) => {
+                const isActive = activeTab === tab;
+                return (
+                  <button
+                    key={tab}
+                    type="button"
+                    onClick={() => setActiveTab(tab)}
+                    className={`flex-shrink-0 px-5 sm:px-7 py-4 text-[14px] sm:text-[15px] font-semibold transition-colors whitespace-nowrap border-b-2 -mb-px ${
+                      isActive
+                        ? 'text-[#0e6efe] border-[#0e6efe]'
+                        : 'text-slate-400 border-transparent hover:text-slate-700'
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                );
+              })}
+            </div>
 
-          <div className="mt-6 bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] p-5">
-            <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Sälj din bil</p>
-            <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
-              <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
-              {formError && (
-                <div role="alert" className="flex items-start gap-2 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold px-3 py-2 shadow-sm">
-                  <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-[1px]" strokeWidth={2.5} />
-                  <span className="leading-snug">{formError}</span>
+            {/* Tab content */}
+            <div className="p-5 sm:p-7">
+              {activeTab === 'Sälja bil' && (
+                <form onSubmit={handleHeroSubmit} className="flex flex-col gap-3">
+                  <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider">
+                    Ange ditt registreringsnummer
+                  </p>
+                  <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
+                  {formError && (
+                    <div role="alert" className="flex items-start gap-2 rounded-lg bg-red-50 text-red-700 border border-red-200 text-[13px] font-semibold px-3 py-2">
+                      <XCircle className="w-4 h-4 shrink-0 mt-[1px]" strokeWidth={2.5} />
+                      <span className="leading-snug">{formError}</span>
+                    </div>
+                  )}
+                  <button
+                    type="submit"
+                    className="h-13 w-full rounded-xl bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group py-3"
+                  >
+                    Värdera gratis
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+                  </button>
+                  <p className="text-center text-[12px] text-slate-400">Gratis och utan förbindelser</p>
+                </form>
+              )}
+
+              {activeTab === 'Hitta bil' && (
+                <div className="flex flex-col gap-3">
+                  <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider">
+                    Vad letar du efter?
+                  </p>
+                  <input
+                    type="text"
+                    value={carSearch}
+                    onChange={(e) => setCarSearch(e.target.value)}
+                    placeholder="Vilken bil letar du efter?"
+                    className="h-12 w-full rounded-xl border border-slate-200 px-4 text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe]"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') navigate(`/kop-bil${carSearch.trim() ? `?q=${encodeURIComponent(carSearch.trim())}` : ''}`);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/kop-bil${carSearch.trim() ? `?q=${encodeURIComponent(carSearch.trim())}` : ''}`)}
+                    className="h-13 w-full rounded-xl bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group py-3"
+                  >
+                    Sök bil
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+                  </button>
+                  <p className="text-center text-[12px] text-slate-400">Vi förhandlar priset åt dig</p>
                 </div>
               )}
-              <button
-                type="submit"
-                className="mt-1 h-12 w-full rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
-              >
-                Värdera bilen gratis
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-              </button>
-            </form>
 
-            <div className="mt-5 pt-4 border-t border-slate-100">
-              <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Köp eller byt bil</p>
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="w-full h-12 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-900 font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
-              >
-                Hitta din nästa bil
-                <ArrowRight className="w-4 h-4 text-[#0e6efe] group-hover:translate-x-0.5 transition" />
-              </button>
+              {activeTab === 'Leta bil' && (
+                <div className="flex flex-col gap-3">
+                  <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider">
+                    Beskriv din drömbil
+                  </p>
+                  <p className="text-[15px] text-slate-600 leading-relaxed">
+                    Vet du inte exakt vilken bil du vill ha? Berätta vad som är viktigt för dig — vi hittar rätt bil och förhandlar priset åt dig.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/kop-bil')}
+                    className="h-13 w-full rounded-xl bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group py-3"
+                  >
+                    Berätta vad du söker
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+                  </button>
+                  <p className="text-center text-[12px] text-slate-400">En personlig rådgivare hjälper dig</p>
+                </div>
+              )}
+
+              {activeTab === 'Byta bil' && (
+                <div className="flex flex-col gap-3">
+                  <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider">
+                    Byt in din bil
+                  </p>
+                  <p className="text-[15px] text-slate-600 leading-relaxed">
+                    Vi hanterar hela bytet — värdering av din nuvarande bil, förhandling på den nya, och all administration. Du behöver inte göra något.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/kop-bil?typ=trade')}
+                    className="h-13 w-full rounded-xl bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group py-3"
+                  >
+                    Börja byte
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+                  </button>
+                  <p className="text-center text-[12px] text-slate-400">Vi sköter allt från start till mål</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="hidden lg:block relative bg-[#0e6efe] pt-28 pb-32 overflow-hidden">
-        <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60" />
-        <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50" />
-        <img
-          src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
-          alt=""
-          aria-hidden="true"
-          className="absolute left-1/2 -translate-x-1/2 top-0 w-[780px] h-[780px] object-contain pointer-events-none select-none opacity-40"
-        />
-
-        <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
-          <div>
-            <h1 className="text-white text-[56px] font-semibold leading-[1.05] tracking-tight">
-              Din bilaffär börjar här
-            </h1>
-
-            <ul className="mt-8 space-y-4 text-[19px] font-medium text-white">
-              <li className="flex items-center gap-3">
-                <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Sälj din bil och få bästa budet
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Köp bil och vi förhandlar priset åt dig
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Byt bil och vi sköter allt från start till mål
-              </li>
-            </ul>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] p-6 max-w-[440px] w-full justify-self-end">
-            <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Sälj din bil</p>
-            <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
-              <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
-              {formError && (
-                <div role="alert" className="flex items-start gap-2 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold px-3 py-2 shadow-sm">
-                  <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-[1px]" strokeWidth={2.5} />
-                  <span className="leading-snug">{formError}</span>
-                </div>
-              )}
+      {/* Quick-filter chips */}
+      <section className="bg-white border-b border-slate-100 py-4">
+        <div className="overflow-x-auto scrollbar-hide">
+          <div className="flex gap-2 px-4 w-max mx-auto sm:w-auto sm:flex-wrap sm:justify-center">
+            {['Elbilar', 'Begagnad', 'SUV', 'Hybrid', 'Familjebil', 'Under 300 000 kr'].map((chip) => (
               <button
-                type="submit"
-                className="mt-1 h-12 w-full rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
-              >
-                Värdera bilen gratis
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-              </button>
-            </form>
-
-            <div className="mt-5 pt-4 border-t border-slate-100">
-              <p className="text-[13px] font-semibold text-slate-500 uppercase tracking-wider mb-3">Köp eller byt bil</p>
-              <button
+                key={chip}
                 type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="w-full h-12 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-900 font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
+                onClick={() => navigate(`/kop-bil?q=${encodeURIComponent(chip)}`)}
+                className="flex-shrink-0 px-4 py-2 rounded-full bg-slate-100 hover:bg-[#0e6efe] hover:text-white text-slate-700 text-[13px] font-semibold transition-colors whitespace-nowrap"
               >
-                Hitta din nästa bil
-                <ArrowRight className="w-4 h-4 text-[#0e6efe] group-hover:translate-x-0.5 transition" />
+                {chip}
               </button>
-            </div>
+            ))}
           </div>
         </div>
       </section>
