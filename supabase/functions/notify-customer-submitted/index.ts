@@ -57,8 +57,9 @@ Deno.serve(async (req: Request) => {
       .filter((v) => v !== null && v !== undefined && String(v).trim() !== "")
       .join(" ") || "bil";
 
+    const safeProvidedUrl = providedUrl && isPublicUrl(providedUrl) ? providedUrl : null;
     const trackingUrl =
-      providedUrl ||
+      safeProvidedUrl ||
       (appUrl && car.access_token
         ? `${appUrl.replace(/\/$/, "")}/min-bil/${car.access_token}`
         : "");
