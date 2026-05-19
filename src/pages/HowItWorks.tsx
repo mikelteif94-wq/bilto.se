@@ -899,9 +899,9 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                   { label: 'Felaktig annons', value: '15 000 kr' },
                   { label: 'Dubbdäck + garanti', value: 'ingår' },
                 ].map((item) => (
-                  <div key={item.label} className="bg-slate-50 rounded-xl px-4 py-3">
-                    <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.1em]">{item.label}</p>
-                    <p className="text-[17px] font-bold text-slate-900 mt-0.5">{item.value}</p>
+                  <div key={item.label} className="bg-[#0e6efe] rounded-xl px-4 py-3">
+                    <p className="text-[11px] font-semibold text-white/70 uppercase tracking-[0.1em]">{item.label}</p>
+                    <p className="text-[17px] font-bold text-white mt-0.5">{item.value}</p>
                   </div>
                 ))}
               </dl>
