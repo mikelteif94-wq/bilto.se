@@ -100,7 +100,7 @@ const STATUS_OPTIONS = [
 ];
 
 const OPTION_LABELS: Record<string, string> = {
-  searching: 'Soker bil',
+  searching: 'Letar efter bil',
   found: 'Hittat bil',
   trade: 'Byta in',
 };

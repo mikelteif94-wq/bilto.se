@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, Star, Gauge, Armchair, Briefcase, TrendingDown,
@@ -49,6 +49,14 @@ function RatingDot({ value, best }: { value: number; best: boolean }) {
 }
 
 export default function CompareDrawer({ cars, open, onClose, onRemove, onNegotiate, getImageUrl }: CompareDrawerProps) {
+  useEffect(() => {
+    if (open) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [open]);
+
   const bestRatings = useMemo(() => {
     if (cars.length < 2) return null;
     return {

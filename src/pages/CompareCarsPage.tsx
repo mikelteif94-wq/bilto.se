@@ -70,7 +70,6 @@ function getExpertComment(car: ComparisonCar): string {
   if (n.includes('honda cr-v') || n.includes('honda crv')) return 'Rymlig och pålitlig SUV med effektiv hybridmotor.';
   if (car.specs.fuel_types.includes('el')) return `Ren eldrift med ${car.ratings.comfort >= 8 ? 'hög komfort' : 'bra teknik'} och låga löpkostnader.`;
   if (car.specs.fuel_types.includes('hybrid')) return `Effektiv hybrid med ${car.ratings.value >= 8 ? 'bra totalvärde' : 'balanserad prestanda'}.`;
-  if (car.pros.length > 0) return car.pros[0];
   return 'Prisvärd och pålitlig -- ett säkert val.';
 }
 

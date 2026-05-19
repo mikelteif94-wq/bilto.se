@@ -54,7 +54,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const OPTION_LABELS: Record<string, string> = {
-  searching: 'Söker bil',
+  searching: 'Letar efter bil',
   found: 'Hittat bil',
   trade: 'Byta in',
 };

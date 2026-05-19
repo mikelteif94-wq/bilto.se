@@ -97,9 +97,9 @@ function capitalize(s: string): string {
 }
 
 const OPTION_LABELS: Record<string, string> = {
-  searching: 'Söker bil',
-  know: 'Söker bil',
-  explore: 'Söker bil',
+  searching: 'Letar efter bil',
+  know: 'Letar efter bil',
+  explore: 'Letar efter bil',
   found: 'Hittat bil',
   trade: 'Byta in',
 };

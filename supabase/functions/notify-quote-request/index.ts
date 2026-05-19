@@ -9,7 +9,7 @@ const corsHeaders = {
 };
 
 const SEARCH_OPTION_LABEL: Record<string, string> = {
-  searching: "Letar efter en bil",
+  searching: "Letar efter bil",
   found: "Har hittat en bil",
   trade: "Vill byta in sin bil",
 };
