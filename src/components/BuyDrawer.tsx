@@ -444,17 +444,34 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: Bu
                   }}
                   onExplore={() => {
                     onClose();
-                    window.history.pushState({}, '', '/jamfor-bilar');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                    window.scrollTo({ top: 0, behavior: 'auto' });
+                    const onBuyPage = window.location.pathname === '/kop-bil';
+                    if (onBuyPage) {
+                      setTimeout(() => {
+                        document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 200);
+                    } else {
+                      window.history.pushState({}, '', '/kop-bil');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                      window.scrollTo({ top: 0, behavior: 'auto' });
+                      setTimeout(() => {
+                        document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 400);
+                    }
                   }}
                   onQuiz={() => {
                     onClose();
-                    window.history.pushState({}, '', '/jamfor-bilar');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                    setTimeout(() => {
-                      document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 400);
+                    const onBuyPage = window.location.pathname === '/kop-bil';
+                    if (onBuyPage) {
+                      setTimeout(() => {
+                        document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 200);
+                    } else {
+                      window.history.pushState({}, '', '/kop-bil');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                      setTimeout(() => {
+                        document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 400);
+                    }
                   }}
                 />
               )}
