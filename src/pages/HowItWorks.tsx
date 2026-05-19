@@ -71,18 +71,18 @@ const BROKERAGE_STEPS: Step[] = [
 const DIRECT_STEPS: Step[] = [
   {
     icon: Phone,
-    title: 'Få en omedelbar värdering',
-    text: 'Slipp gissningsleken. Få en gratis och rättvis värdering baserad på aktuella marknadstrender och återförsäljarnas efterfrågan.',
+    title: 'Du får en personlig rådgivare',
+    text: 'Oavsett om du säljer, byter eller köper bil — en rådgivare hjälper dig genom hela processen.',
   },
   {
     icon: Gavel,
-    title: 'Få den såld',
-    text: 'Slutför din annons och sätt ditt reservationspris. Vi visar din bil hos fler än 6 000 återförsäljare. Bästa erbjudandet vinner!',
+    title: 'Vi hittar bästa budet',
+    text: 'Vi jämför erbjudanden från bilhandlare åt dig — oavsett om du ska sälja din bil, byta in den eller köpa en ny. Bästa erbjudandet vinner!',
   },
   {
     icon: Handshake,
-    title: 'Få betalt snabbt',
-    text: 'Klart! Återförsäljaren hämtar din bil och kan betala dig direkt. Inga överraskande avgifter, bara en enkel och gratis försäljning.',
+    title: 'Vi hämtar eller lämnar bilen',
+    text: 'När du tackar ja ordnar vi upphämtning av din sålda bil eller leverans av din nya — gäller vid försäljning, inbyte och köp. Ingen krångel.',
   },
 ];
 
