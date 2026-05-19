@@ -30,8 +30,8 @@ export default function BuyContactStep({ initialData, onNext, submitting = false
     if (!d.namn.trim()) e.namn = 'Namn är obligatoriskt';
     if (!d.telefon.trim()) {
       e.telefon = 'Telefonnummer är obligatoriskt';
-    } else if (d.telefon.replace(/[\s\-()]/g, '').replace(/\D/g, '').length < 7) {
-      e.telefon = 'Ange ett giltigt telefonnummer';
+    } else if (!/^[\d\s\-+().]{6,}$/.test(d.telefon.trim()) || d.telefon.replace(/\D/g, '').length < 6) {
+      e.telefon = 'Ange ett giltigt telefonnummer (endast siffror)';
     }
     if (!d.mejl.trim()) {
       e.mejl = 'E-post är obligatorisk';

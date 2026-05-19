@@ -90,8 +90,8 @@ export default function SellCarPage({
       setGuidanceError('Fyll i ditt namn.');
       return;
     }
-    if (telefon.length < 6) {
-      setGuidanceError('Fyll i ett giltigt telefonnummer.');
+    if (!/^[\d\s\-+().]{6,}$/.test(telefon) || telefon.replace(/\D/g, '').length < 6) {
+      setGuidanceError('Ange ett giltigt telefonnummer (endast siffror).');
       return;
     }
     setGuidanceError(null);
