@@ -537,8 +537,8 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                   onClick={() => { setActiveBudgetPill(isActive ? null : pill.max); setShowAllCars(false); }}
                   className={`px-4 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                     isActive
-                      ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/20'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      ? 'bg-[#0047B3] text-white shadow-md shadow-[#0047B3]/20'
+                      : 'bg-[#0e6efe] text-white hover:bg-[#0056d6]'
                   }`}
                 >
                   {pill.label}
