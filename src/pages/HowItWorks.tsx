@@ -267,28 +267,28 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
       {/* Hero */}
       <section className="relative bg-[#0e6efe] pt-24 pb-0 overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="mx-auto max-w-4xl text-[38px] sm:text-[52px] lg:text-[64px] leading-[0.95] font-black tracking-[-0.04em] text-white">
+          <h1 className="mx-auto max-w-[900px] text-[34px] sm:text-[52px] lg:text-[58px] leading-[0.95] font-black tracking-[-0.04em] text-white">
             Din bilaffär börjar här
           </h1>
 
-          <p className="mx-auto mt-5 max-w-2xl text-base sm:text-lg font-medium text-white/85">
+          <p className="mx-auto mt-4 max-w-[650px] text-base sm:text-lg font-medium text-white/80 leading-relaxed">
             Sälj, köp eller byt bil — vi sköter förhandlingen och hela affären åt dig.
           </p>
 
-          <div className="relative z-10 mx-auto mt-10 max-w-[760px] rounded-[22px] bg-[#252525] shadow-2xl overflow-hidden text-white">
-            <div className="flex overflow-x-auto border-b border-white/10 px-4 sm:px-8">
+          <div className="relative z-10 mx-auto mt-5 sm:mt-6 w-[calc(100%-20px)] sm:w-full max-w-[720px] rounded-[24px] bg-[#252525] shadow-[0_20px_60px_rgba(0,0,0,0.25)] overflow-hidden text-white">
+            <div className="flex overflow-x-auto border-b border-white/10 px-3 sm:px-8 gap-1 sm:gap-0">
               {['Hitta bil', 'Sälj min bil', 'Leta bil', 'Byt bil'].map((tab) => (
                 <button
                   key={tab}
                   type="button"
                   onClick={() => setActiveTab(tab)}
-                  className={`relative shrink-0 px-4 sm:px-6 py-5 text-sm sm:text-base font-extrabold transition ${
+                  className={`relative shrink-0 px-3 sm:px-6 py-6 text-[14px] sm:text-base font-extrabold transition ${
                     activeTab === tab ? 'text-white' : 'text-white/60 hover:text-white'
                   }`}
                 >
                   {tab}
                   {activeTab === tab && (
-                    <span className="absolute bottom-0 left-4 right-4 h-[3px] rounded-full bg-white" />
+                    <span className="absolute bottom-0 left-3 right-3 sm:left-4 sm:right-4 h-[3px] rounded-full bg-white" />
                   )}
                 </button>
               ))}
@@ -297,8 +297,8 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
             <div className="p-5 sm:p-8">
               {activeTab === 'Sälj min bil' && (
                 <form onSubmit={handleHeroSubmit} className="space-y-4">
-                  <div className="rounded-full bg-white p-1">
-                    <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
+                  <div className="bg-white rounded-[16px] p-2">
+                    <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} className="w-full" />
                   </div>
                   {formError && (
                     <div role="alert" className="flex items-start gap-2 rounded-xl bg-red-500/20 text-red-200 border border-red-400/30 text-[13px] font-semibold px-4 py-3">
@@ -308,7 +308,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                   )}
                   <button
                     type="submit"
-                    className="h-14 w-full rounded-xl bg-[#0047B3] text-white font-extrabold text-[15px] hover:bg-[#003a91] transition"
+                    className="h-14 w-full rounded-[14px] bg-[#0047B3] text-white font-black text-[15px] hover:bg-[#003a91] transition"
                   >
                     Värdera gratis →
                   </button>
@@ -317,13 +317,13 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
 
               {activeTab === 'Hitta bil' && (
                 <div className="space-y-4">
-                  <div className="flex items-center rounded-full bg-white p-1">
+                  <div className="flex items-center rounded-[16px] bg-white p-2 gap-2">
                     <input
                       type="text"
                       value={carSearch}
                       onChange={(e) => setCarSearch(e.target.value)}
                       placeholder="Vilken bil letar du efter?"
-                      className="h-12 flex-1 rounded-full px-5 text-slate-900 outline-none text-[15px] placeholder:text-slate-400"
+                      className="h-11 flex-1 rounded-xl px-4 text-slate-900 outline-none text-[15px] placeholder:text-slate-400 bg-transparent"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') navigateTo(`/kop-bil${carSearch.trim() ? `?q=${encodeURIComponent(carSearch.trim())}` : ''}`);
                       }}
@@ -331,7 +331,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                     <button
                       type="button"
                       onClick={() => navigateTo(`/kop-bil${carSearch.trim() ? `?q=${encodeURIComponent(carSearch.trim())}` : ''}`)}
-                      className="h-12 rounded-full bg-[#0e6efe] px-6 font-extrabold text-white text-[15px] hover:bg-[#0057d9] transition shrink-0"
+                      className="h-11 rounded-[12px] bg-[#0e6efe] px-5 font-black text-white text-[15px] hover:bg-[#0057d9] transition shrink-0"
                     >
                       Sök
                     </button>
@@ -345,7 +345,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                   <button
                     type="button"
                     onClick={() => navigateTo('/kop-bil')}
-                    className="h-14 w-full rounded-xl bg-[#0e6efe] font-extrabold text-white text-[15px] hover:bg-[#0057d9] transition"
+                    className="h-14 w-full rounded-[14px] bg-[#0e6efe] font-black text-white text-[15px] hover:bg-[#0057d9] transition"
                   >
                     Berätta vad du söker →
                   </button>
@@ -358,7 +358,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                   <button
                     type="button"
                     onClick={() => navigateTo('/kop-bil?typ=trade')}
-                    className="h-14 w-full rounded-xl bg-[#0e6efe] font-extrabold text-white text-[15px] hover:bg-[#0057d9] transition"
+                    className="h-14 w-full rounded-[14px] bg-[#0e6efe] font-black text-white text-[15px] hover:bg-[#0057d9] transition"
                   >
                     Börja byte →
                   </button>
@@ -370,15 +370,15 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
       </section>
 
       {/* Quick-filter chips */}
-      <section className="bg-[#f7f4fb] py-6">
+      <section className="bg-[#f7f4fb] py-8 mt-[-10px]">
         <div className="mx-auto max-w-7xl overflow-x-auto px-4">
-          <div className="flex min-w-max justify-center gap-3">
+          <div className="flex min-w-max justify-center gap-6">
             {['Elbilar', 'Begagnad', 'SUV', 'Hybrid', 'Familjebil', 'Under 300 000 kr'].map((chip) => (
               <button
                 key={chip}
                 type="button"
                 onClick={() => navigateTo(`/kop-bil?q=${encodeURIComponent(chip)}`)}
-                className="rounded-xl bg-white/80 px-5 py-3 text-sm font-extrabold text-slate-800 shadow-sm hover:bg-[#0e6efe] hover:text-white transition"
+                className="rounded-xl bg-white px-5 py-3 text-sm font-extrabold text-slate-800 shadow-sm hover:bg-[#0e6efe] hover:text-white transition whitespace-nowrap"
               >
                 {chip}
               </button>
