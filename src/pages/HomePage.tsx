@@ -418,7 +418,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             <div className="p-4">
               {tab === 'direkt' ? (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                  <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
+                  <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
                   <div className="flex items-center h-10 rounded-lg border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
                     <span className="flex items-center justify-center w-9 shrink-0">
                       <Phone className="w-3.5 h-3.5 text-slate-400" />
