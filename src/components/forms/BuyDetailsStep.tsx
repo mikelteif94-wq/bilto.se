@@ -1,18 +1,18 @@
 import { useState, useMemo } from 'react';
-import { ChevronDown, Sparkles, Search } from 'lucide-react';
+import { ChevronDown, Sparkles, Search, CheckCircle, XCircle } from 'lucide-react';
 import type { BuyTrack } from './BuyTrackStep';
 import FieldError from './FieldError';
 import RegInput from '../RegInput';
 import FinancingCalc from './FinancingCalc';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 import { findComparisonCarByMakeModel } from '../../lib/comparison/lookup';
+import { useCarImages } from '../../hooks/useCarImages';
 
 const BUYING_STAGES = [
   { value: 'just_started', label: 'Precis börjat kolla' },
   { value: 'comparing', label: 'Jämför alternativ' },
   { value: 'ready_to_buy', label: 'Redo att köpa' },
 ];
-
 
 const FUEL_TYPES = [
   { value: 'petrol', label: 'Bensin' },
@@ -87,6 +87,186 @@ const MUST_HAVES = [
   { value: 'low_mileage', label: 'Lågt miltal' },
 ];
 
+function isValidUrl(val: string): boolean {
+  try {
+    const url = new URL(val.trim());
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+function getLinkStatus(val: string): 'empty' | 'valid_url' | 'text' {
+  if (!val.trim()) return 'empty';
+  if (isValidUrl(val)) return 'valid_url';
+  return 'text';
+}
+
+/* ── Car image preview component ── */
+function CarImagePreview({ brand, model }: { brand: string; model: string }) {
+  const { getCarImage } = useCarImages();
+  const compData = useMemo(() => {
+    if (!brand || !model || model === 'Annan') return null;
+    return findComparisonCarByMakeModel(brand, model);
+  }, [brand, model]);
+
+  const imgUrl = useMemo(() => {
+    if (!brand) return undefined;
+    const modelToUse = model && model !== 'Annan' ? model : '';
+    return getCarImage(brand, modelToUse);
+  }, [brand, model, getCarImage]);
+
+  if (!brand || (!compData && !imgUrl)) return null;
+
+  return (
+    <div className="mt-3 flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+      {imgUrl ? (
+        <img
+          src={imgUrl}
+          alt={`${brand} ${model}`}
+          className="w-24 h-16 object-contain flex-shrink-0"
+        />
+      ) : (
+        <div className="w-24 h-16 bg-slate-100 rounded-lg flex-shrink-0" />
+      )}
+      <div className="min-w-0">
+        <p className="text-[13px] font-semibold text-slate-900 truncate">
+          {brand}{model && model !== 'Annan' ? ` ${model}` : ''}
+        </p>
+        {compData && (
+          <div className="flex flex-wrap gap-1 mt-1">
+            {compData.specs.fuel_types.slice(0, 2).map(f => (
+              <span key={f} className="text-[11px] px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-500 capitalize">{f}</span>
+            ))}
+            {compData.pricing.used_from_sek && (
+              <span className="text-[11px] px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-500">
+                Beg. fr. ~{Math.round(compData.pricing.used_from_sek / 1000) * 1000 < 1000000
+                  ? `${Math.round(compData.pricing.used_from_sek / 1000)}k`
+                  : `${(compData.pricing.used_from_sek / 1000000).toFixed(1)}M`} kr
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── Brand + Model selector with Annan fallback ── */
+function BrandModelSelector({
+  brand,
+  model,
+  onBrandChange,
+  onModelChange,
+  brandError,
+}: {
+  brand: string;
+  model: string;
+  onBrandChange: (v: string) => void;
+  onModelChange: (v: string) => void;
+  brandError?: string;
+}) {
+  const models = brand && brand !== 'Annan' ? (CAR_BRANDS[brand] ?? []) : [];
+  const modelIsAnnan = model === 'Annan';
+
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="relative">
+          <select
+            value={brand}
+            onChange={e => { onBrandChange(e.target.value); onModelChange(''); }}
+            className={`form-control appearance-none pr-10 ${brandError ? 'form-control-error' : ''}`}
+          >
+            <option value="">Välj märke</option>
+            {POPULAR_BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+          {brandError && <FieldError message={brandError} />}
+        </div>
+        <div className="relative">
+          <select
+            value={model}
+            onChange={e => onModelChange(e.target.value)}
+            disabled={!brand || brand === 'Annan'}
+            className="form-control appearance-none pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <option value="">{brand && brand !== 'Annan' ? 'Välj modell' : 'Välj märke först'}</option>
+            {models.map(m => <option key={m} value={m}>{m}</option>)}
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+        </div>
+      </div>
+
+      {modelIsAnnan && (
+        <input
+          type="text"
+          autoFocus
+          placeholder={`Ange modell för ${brand}…`}
+          className="form-control"
+          onChange={e => onModelChange(e.target.value || 'Annan')}
+        />
+      )}
+
+      <CarImagePreview brand={brand} model={model} />
+    </div>
+  );
+}
+
+/* ── URL / text link field with live validation ── */
+function LinkField({
+  value,
+  onChange,
+  error,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  error?: string;
+}) {
+  const status = getLinkStatus(value);
+
+  return (
+    <div>
+      <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+        Länk till annonsen eller säljarens namn
+      </label>
+      <p className="text-sm text-slate-500 mb-3">
+        Klistra in Blocket-länken, eller skriv handlarens namn.
+      </p>
+      <div className="relative">
+        <input
+          type="text"
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          placeholder="https://... eller handlarens namn"
+          className={`form-control pr-10 ${error ? 'form-control-error' : ''}`}
+        />
+        {status !== 'empty' && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2">
+            {status === 'valid_url' ? (
+              <CheckCircle className="w-5 h-5 text-emerald-500" />
+            ) : (
+              <XCircle className="w-5 h-5 text-slate-400" />
+            )}
+          </span>
+        )}
+      </div>
+      {status === 'valid_url' && (
+        <p className="mt-1.5 text-[12px] text-emerald-600 font-medium flex items-center gap-1">
+          <CheckCircle className="w-3.5 h-3.5" />
+          Giltig länk
+        </p>
+      )}
+      {status === 'text' && (
+        <p className="mt-1.5 text-[12px] text-slate-400">
+          Ingen länk — vi tar kontakt med handlaren åt dig.
+        </p>
+      )}
+      <FieldError message={error} />
+    </div>
+  );
+}
+
 function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void }) {
   const [d, setD] = useState<BuyDetailsData>({ ...initialData });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -99,8 +279,6 @@ function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData;
     });
     setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
   };
-
-  const models = d.carBrand ? (CAR_BRANDS[d.carBrand] ?? []) : [];
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -120,32 +298,13 @@ function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData;
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
           Märke och modell
         </label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="relative">
-            <select
-              value={d.carBrand}
-              onChange={e => set('carBrand', e.target.value)}
-              className={`form-control appearance-none pr-10 ${errors.carBrand ? 'form-control-error' : ''}`}
-            >
-              <option value="">Välj märke</option>
-              {POPULAR_BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-            {errors.carBrand && <FieldError message={errors.carBrand} />}
-          </div>
-          <div className="relative">
-            <select
-              value={d.carModel}
-              onChange={e => set('carModel', e.target.value)}
-              disabled={!d.carBrand}
-              className="form-control appearance-none pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <option value="">{d.carBrand ? 'Välj modell' : 'Välj märke först'}</option>
-              {models.map(m => <option key={m} value={m}>{m}</option>)}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-          </div>
-        </div>
+        <BrandModelSelector
+          brand={d.carBrand}
+          model={d.carModel}
+          onBrandChange={v => set('carBrand', v)}
+          onModelChange={v => set('carModel', v)}
+          brandError={errors.carBrand}
+        />
       </div>
 
       <div>
@@ -337,7 +496,6 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
   };
 
-  const models = d.carBrand ? (CAR_BRANDS[d.carBrand] ?? []) : [];
   const carPriceNum = parsePriceInput(d.carPrice);
 
   const lookupBrand = d.carBrand || (lockedCar ? lockedCar.split(' ')[0] : '');
@@ -351,6 +509,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     const fmt = (n: number) => Math.round(n / 1000) * 1000;
     return { used: used_from_sek ? fmt(used_from_sek) : null, newFrom: new_from_sek ? fmt(new_from_sek) : null };
   }, [lookupBrand, lookupModel]);
+
+  const linkStatus = getLinkStatus(d.linkOrSeller);
 
   const validate = (): boolean => {
     const e: Record<string, string> = {};
@@ -378,20 +538,11 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       {track === 'found' && (
         <>
           <div className="pb-6 sm:pb-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-              Länk till annonsen eller säljarens namn
-            </label>
-            <p className="text-sm text-slate-500 mb-3">
-              Klistra in Blocket-länken, eller skriv handlarens namn.
-            </p>
-            <input
-              type="text"
+            <LinkField
               value={d.linkOrSeller}
-              onChange={e => set('linkOrSeller', e.target.value)}
-              placeholder="https://... eller handlarens namn"
-              className={`form-control ${errors.linkOrSeller ? 'form-control-error' : ''}`}
+              onChange={v => set('linkOrSeller', v)}
+              error={errors.linkOrSeller}
             />
-            <FieldError message={errors.linkOrSeller} />
           </div>
 
           {!lockedCar && (
@@ -399,12 +550,11 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
                 Vilken bil?
               </label>
-              <input
-                type="text"
-                value={d.carModel}
-                onChange={e => set('carModel', e.target.value)}
-                placeholder="T.ex. BMW X3 2022"
-                className="form-control"
+              <BrandModelSelector
+                brand={d.carBrand}
+                model={d.carModel}
+                onBrandChange={v => set('carBrand', v)}
+                onModelChange={v => set('carModel', v)}
               />
             </div>
           )}
@@ -446,7 +596,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         </>
       )}
 
-      {/* ── SEARCHING – locked car (came from a specific car card) ── */}
+      {/* ── SEARCHING – locked car ── */}
       {track === 'searching' && lockedCar && (
         <>
           <div className="pb-6 sm:pb-7">
@@ -477,11 +627,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
                 <div className="relative">
-                  <select
-                    value={d.yearFrom}
-                    onChange={e => set('yearFrom', e.target.value)}
-                    className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]"
-                  >
+                  <select value={d.yearFrom} onChange={e => set('yearFrom', e.target.value)} className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]">
                     <option value="">Välj år</option>
                     {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
@@ -491,11 +637,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Till</p>
                 <div className="relative">
-                  <select
-                    value={d.yearTo}
-                    onChange={e => set('yearTo', e.target.value)}
-                    className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]"
-                  >
+                  <select value={d.yearTo} onChange={e => set('yearTo', e.target.value)} className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]">
                     <option value="">Välj år</option>
                     {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
@@ -540,7 +682,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         </>
       )}
 
-      {/* ── SEARCHING – open (no locked car) ── */}
+      {/* ── SEARCHING – open ── */}
       {track === 'searching' && !lockedCar && (
         <>
           {(onExplore || onQuiz) && (
@@ -587,36 +729,13 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             <p className="text-sm text-slate-500 mb-3">
               Välj märke och modell, eller använd bilmatch om du är osäker.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-              <div className="relative">
-                <select
-                  value={d.carBrand}
-                  onChange={e => set('carBrand', e.target.value)}
-                  className="form-control appearance-none pr-10"
-                >
-                  <option value="">Välj märke</option>
-                  {POPULAR_BRANDS.map(b => (
-                    <option key={b} value={b}>{b}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-              </div>
-              <div className="relative">
-                <select
-                  value={d.carModel}
-                  onChange={e => set('carModel', e.target.value)}
-                  disabled={!d.carBrand}
-                  className="form-control appearance-none pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <option value="">{d.carBrand ? 'Välj modell' : 'Välj märke först'}</option>
-                  {models.map(m => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2 items-center">
+            <BrandModelSelector
+              brand={d.carBrand}
+              model={d.carModel}
+              onBrandChange={v => set('carBrand', v)}
+              onModelChange={v => set('carModel', v)}
+            />
+            <div className="flex flex-wrap gap-2 items-center mt-3">
               <button
                 type="button"
                 onClick={() => { set('carBrand', 'Vet ej'); set('carModel', 'Vet ej'); }}
@@ -642,12 +761,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           </div>
 
           <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-              Max miltal
-            </label>
-            <p className="text-sm text-slate-500 mb-3">
-              Hur många mil får bilen max ha gått?
-            </p>
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">Max miltal</label>
+            <p className="text-sm text-slate-500 mb-3">Hur många mil får bilen max ha gått?</p>
             <div className="w-full sm:max-w-xs relative">
               <input
                 type="text"
@@ -662,18 +777,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           </div>
 
           <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
-              Årsmodell
-            </label>
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Årsmodell</label>
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
                 <div className="relative">
-                  <select
-                    value={d.yearFrom}
-                    onChange={e => set('yearFrom', e.target.value)}
-                    className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]"
-                  >
+                  <select value={d.yearFrom} onChange={e => set('yearFrom', e.target.value)} className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]">
                     <option value="">Välj år</option>
                     {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
@@ -683,11 +792,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Till</p>
                 <div className="relative">
-                  <select
-                    value={d.yearTo}
-                    onChange={e => set('yearTo', e.target.value)}
-                    className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]"
-                  >
+                  <select value={d.yearTo} onChange={e => set('yearTo', e.target.value)} className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]">
                     <option value="">Välj år</option>
                     {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
@@ -731,9 +836,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           </div>
 
           <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
-              Drivmedel
-            </label>
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Drivmedel</label>
             <div className="flex flex-wrap gap-2">
               {FUEL_TYPES.map(f => (
                 <button
@@ -763,11 +866,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             </label>
             <p className="text-sm text-slate-500 mb-3">Bilen du vill byta in.</p>
             <div className="w-full sm:max-w-xs">
-              <RegInput
-                value={d.regnummer}
-                onChange={v => set('regnummer', v)}
-                error={!!errors.regnummer}
-              />
+              <RegInput value={d.regnummer} onChange={v => set('regnummer', v)} error={!!errors.regnummer} />
               <FieldError message={errors.regnummer} />
             </div>
           </div>
@@ -790,44 +889,19 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
               Vilken bil vill du ha istället?
             </label>
-            <p className="text-sm text-slate-500 mb-3">
-              Välj märke och modell, eller skriv fritt.
-            </p>
+            <p className="text-sm text-slate-500 mb-3">Välj märke och modell, eller skriv fritt.</p>
             {lockedCar ? (
               <div className="flex items-center h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium text-[14px]">
                 {lockedCar}
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="relative">
-                    <select
-                      value={d.carBrand}
-                      onChange={e => set('carBrand', e.target.value)}
-                      className="form-control appearance-none pr-10"
-                    >
-                      <option value="">Välj märke</option>
-                      {POPULAR_BRANDS.map(b => (
-                        <option key={b} value={b}>{b}</option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                  </div>
-                  <div className="relative">
-                    <select
-                      value={d.carModel}
-                      onChange={e => set('carModel', e.target.value)}
-                      disabled={!d.carBrand}
-                      className="form-control appearance-none pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <option value="">{d.carBrand ? 'Välj modell' : 'Välj märke först'}</option>
-                      {models.map(m => (
-                        <option key={m} value={m}>{m}</option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                  </div>
-                </div>
+                <BrandModelSelector
+                  brand={d.carBrand}
+                  model={d.carModel}
+                  onBrandChange={v => set('carBrand', v)}
+                  onModelChange={v => set('carModel', v)}
+                />
                 <input
                   type="text"
                   value={d.targetCar}
@@ -844,9 +918,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Budget för nästa bil (kr)
               <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-sm text-slate-500 mb-3">
-              Totalpris eller finansiering — vi hjälper dig hitta rätt upplägg.
-            </p>
+            <p className="text-sm text-slate-500 mb-3">Totalpris eller finansiering — vi hjälper dig hitta rätt upplägg.</p>
             <div className="w-full sm:max-w-xs">
               <input
                 type="text"
@@ -881,9 +953,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Var i processen är du?
         </label>
-        <p className="text-sm text-slate-500 mb-4">
-          Välj det alternativ som bäst beskriver dig.
-        </p>
+        <p className="text-sm text-slate-500 mb-4">Välj det alternativ som bäst beskriver dig.</p>
         <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
           {BUYING_STAGES.map(s => (
             <button
@@ -908,9 +978,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Hur vill du betala?
         </label>
-        <p className="text-sm text-slate-500 mb-4">
-          Välj betalningssätt — det hjälper oss hitta rätt upplägg.
-        </p>
+        <p className="text-sm text-slate-500 mb-4">Välj betalningssätt — det hjälper oss hitta rätt upplägg.</p>
         <div className="flex flex-wrap gap-2">
           {PAYMENT_TYPES.map(p => (
             <button
