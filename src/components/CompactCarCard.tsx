@@ -1,5 +1,6 @@
-import { Star, Car, Check } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Star, Car, Check, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 
 interface CompactCarCardProps {
   name: string;
@@ -23,6 +24,8 @@ export default function CompactCarCard({
   fuelLabel, estimatedMonthly, isSelected, onSelect,
   onNegotiate, onSearch, onDetail, index = 0, disableMotion,
 }: CompactCarCardProps) {
+  const [expanded, setExpanded] = useState(false);
+
   const handleClick = () => {
     if (onSelect) onSelect();
     else if (onDetail) onDetail();
@@ -107,23 +110,50 @@ export default function CompactCarCard({
         )}
       </div>
 
-      {/* Action buttons */}
+      {/* Action CTA */}
       {!onSelect && (
-        <div className="px-3 pb-3 grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-            className="h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 leading-tight px-2"
-          >
-            Jag har hittat en
-          </button>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onSearch ? onSearch() : onNegotiate(); }}
-            className="h-9 rounded-lg bg-white border border-[#0e6efe] hover:bg-[#f0f7ff] active:scale-[0.98] text-[#0e6efe] text-[11px] font-bold transition-all duration-150 leading-tight px-2"
-          >
-            Sök en åt mig
-          </button>
+        <div className="px-3 pb-3">
+          <AnimatePresence initial={false}>
+            {!expanded ? (
+              <motion.button
+                key="cta"
+                type="button"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.15 }}
+                onClick={(e) => { e.stopPropagation(); setExpanded(true); }}
+                className="w-full h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1.5"
+              >
+                Fa hjälp att köpa
+                <ChevronRight className="w-3.5 h-3.5 opacity-80" />
+              </motion.button>
+            ) : (
+              <motion.div
+                key="options"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.15 }}
+                className="grid grid-cols-2 gap-2"
+              >
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setExpanded(false); onNegotiate(); }}
+                  className="h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 leading-tight px-2"
+                >
+                  Jag har hittat en
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setExpanded(false); onSearch ? onSearch() : onNegotiate(); }}
+                  className="h-9 rounded-lg bg-white border border-[#0e6efe] hover:bg-[#f0f7ff] active:scale-[0.98] text-[#0e6efe] text-[11px] font-bold transition-all duration-150 leading-tight px-2"
+                >
+                  Sök en åt mig
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
     </motion.div>
