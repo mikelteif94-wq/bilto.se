@@ -775,7 +775,9 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   };
 
   const handleNavSelect = (item: string) => {
-    if (item === 'Så funkar det') { window.history.pushState({}, '', '/sa-funkar-det'); window.dispatchEvent(new PopStateEvent('popstate')); }
+    if (item === 'Så funkar det') {
+      document.getElementById('sa-funkar-det')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   // Quiz handlers
@@ -896,8 +898,9 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         active="Köp bil"
         onSelect={(item) => {
           setMenuOpen(false);
-          if (item === 'Så funkar det') { window.history.pushState({}, '', '/sa-funkar-det'); window.dispatchEvent(new PopStateEvent('popstate')); }
-          else onBackHome();
+          if (item === 'Så funkar det') {
+            setTimeout(() => document.getElementById('sa-funkar-det')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+          } else onBackHome();
         }}
       />
 
@@ -959,7 +962,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       </section>
 
       {/* How it works */}
-      <section className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-b border-slate-100">
+      <section id="sa-funkar-det" className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-b border-slate-100">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 text-center mb-8 sm:mb-10">Så fungerar det</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
