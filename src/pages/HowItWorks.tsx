@@ -456,9 +456,6 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
       <section className="bg-[#f5f8fc] py-16 sm:py-24 px-5 sm:px-6 overflow-hidden">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-16">
-            <span className="text-[11px] sm:text-[12px] font-medium text-slate-500 mb-2 sm:mb-3 block">
-              &mdash; Tre enkla steg till en fri försäljning
-            </span>
             <h2 className="text-[34px] sm:text-[48px] font-semibold leading-[1.02] text-slate-900 tracking-[-0.02em]">
               {mode === 'direct' ? 'Så enkelt är det' : 'Fyra steg till såld bil'}
             </h2>
