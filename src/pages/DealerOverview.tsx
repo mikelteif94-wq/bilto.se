@@ -12,10 +12,10 @@ import {
   AlertCircle,
   Trophy,
   ArrowUpRight,
-  Circle,
   CheckCircle2,
   Flame,
   Inbox,
+  Zap,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { formatKr, formatTimeLeftSimple } from '../lib/dealer-utils';
@@ -254,22 +254,22 @@ export default function DealerOverview({
       headerAction={headerAction}
       pageTitle="Översikt"
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-10 space-y-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8 space-y-6">
 
-        {/* Page title + CTA */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        {/* Page header */}
+        <div className="flex items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Översikt</h1>
-            <p className="text-sm text-slate-500 mt-1">
-              {foretagsnamn ? `Välkommen, ${foretagsnamn}.` : 'Realtidsbild av dina pågående bud.'}
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Översikt</h1>
+            <p className="text-sm text-slate-400 mt-0.5">
+              {foretagsnamn ? foretagsnamn : 'Realtidsbild av dina pågående bud.'}
             </p>
           </div>
           <button
             onClick={onAddCar}
-            className="sm:hidden inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold transition shadow-sm shrink-0 text-sm"
+            className="sm:hidden inline-flex items-center gap-2 h-10 px-4 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold transition shadow-sm text-sm"
           >
             <Sparkles className="w-4 h-4" />
-            Få bud på en bil
+            Få bud på bil
           </button>
         </div>
 
@@ -283,14 +283,16 @@ export default function DealerOverview({
             {stats.outbidCount > 0 && (
               <button
                 onClick={onNavigateCars}
-                className="w-full flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-left hover:bg-red-100 transition"
+                className="w-full flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3.5 text-left hover:bg-red-100 transition"
               >
-                <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
+                <span className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
+                  <AlertCircle className="w-4 h-4 text-red-600" />
+                </span>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold text-red-900">
                     Du är överbjuden på {stats.outbidCount} {stats.outbidCount === 1 ? 'auktion' : 'auktioner'}
                   </div>
-                  <div className="text-xs text-red-700 mt-0.5">Höj ditt bud innan auktionen stänger</div>
+                  <div className="text-xs text-red-700/70 mt-0.5">Höj ditt bud innan auktionen stänger</div>
                 </div>
                 <ArrowUpRight className="w-4 h-4 text-red-500 shrink-0" />
               </button>
@@ -298,65 +300,65 @@ export default function DealerOverview({
 
             {/* KPI grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              <KpiCard
+              <DealerKpiCard
                 label="Aktiva auktioner"
                 value={stats.aktiva}
                 icon={<CarIcon className="w-4 h-4" />}
-                iconBg="bg-[#0e6efe]/10 text-[#0e6efe]"
+                topColor="bg-[#0e6efe]"
+                iconCls="bg-[#0e6efe]/10 text-[#0e6efe]"
                 onClick={onNavigateCars}
               />
-              <KpiCard
+              <DealerKpiCard
                 label="Slutar inom 24 h"
                 value={stats.endingSoon}
                 icon={<Clock className="w-4 h-4" />}
-                iconBg={stats.endingSoon > 0 ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-500'}
+                topColor={stats.endingSoon > 0 ? 'bg-amber-400' : 'bg-slate-200'}
+                iconCls={stats.endingSoon > 0 ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-500'}
                 highlight={stats.endingSoon > 0}
-                highlightColor="amber"
               />
-              <KpiCard
+              <DealerKpiCard
                 label="Mina aktiva bud"
                 value={stats.myBidsCount}
                 icon={<Gavel className="w-4 h-4" />}
-                iconBg="bg-slate-100 text-slate-600"
+                topColor="bg-slate-300"
+                iconCls="bg-slate-100 text-slate-600"
               />
-              <KpiCard
+              <DealerKpiCard
                 label="Vunna affärer"
                 value={stats.wonCount}
                 icon={<Trophy className="w-4 h-4" />}
-                iconBg="bg-emerald-50 text-emerald-600"
+                topColor="bg-emerald-500"
+                iconCls="bg-emerald-50 text-emerald-600"
               />
             </div>
 
-            {/* Extended KPI row */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              <StatusPill icon={<Circle className="w-2.5 h-2.5 fill-emerald-400 text-emerald-400" />} label="Leder" value={stats.leadingCount} valueColor={stats.leadingCount > 0 ? 'text-emerald-700' : 'text-slate-900'} />
-              <StatusPill icon={<Circle className="w-2.5 h-2.5 fill-red-400 text-red-400" />} label="Överbjuden" value={stats.outbidCount} valueColor={stats.outbidCount > 0 ? 'text-red-600' : 'text-slate-900'} />
-              <StatusPill icon={<Circle className="w-2.5 h-2.5 fill-sky-400 text-sky-400" />} label="Nya bilar" value={newCars.length} valueColor="text-slate-900" />
-              <StatusPill icon={<Circle className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />} label="Slutar snart" value={endingCars.length} valueColor="text-slate-900" />
-              <StatusPill icon={<Circle className="w-2.5 h-2.5 fill-blue-400 text-blue-400" />} label="Mottagna leads" value={stats.dispatchedLeads} valueColor="text-slate-900" />
-              <StatusPill
-                icon={<Circle className="w-2.5 h-2.5 fill-purple-400 text-purple-400" />}
-                label={stats.avgResponseMin > 0 ? `Svarstid ${stats.avgResponseMin}m` : 'Svarstid'}
-                value={stats.conversionRate ? Math.round(stats.conversionRate) : 0}
-                valueColor="text-slate-900"
-                suffix="%"
-              />
+            {/* Secondary stats */}
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-y sm:divide-y-0 divide-x-0 sm:divide-x divide-slate-100">
+                {[
+                  { label: 'Leder', value: stats.leadingCount, icon: <TrendingUp className="w-3.5 h-3.5" />, iconCls: 'text-emerald-500', valCls: stats.leadingCount > 0 ? 'text-emerald-700' : 'text-slate-900' },
+                  { label: 'Överbjuden', value: stats.outbidCount, icon: <AlertCircle className="w-3.5 h-3.5" />, iconCls: 'text-red-500', valCls: stats.outbidCount > 0 ? 'text-red-600' : 'text-slate-900' },
+                  { label: 'Nya bilar', value: newCars.length, icon: <Zap className="w-3.5 h-3.5" />, iconCls: 'text-sky-500', valCls: 'text-slate-900' },
+                  { label: 'Slutar snart', value: endingCars.length, icon: <Flame className="w-3.5 h-3.5" />, iconCls: 'text-amber-500', valCls: 'text-slate-900' },
+                  { label: 'Mottagna leads', value: stats.dispatchedLeads, icon: <Inbox className="w-3.5 h-3.5" />, iconCls: 'text-blue-500', valCls: 'text-slate-900' },
+                  { label: stats.avgResponseMin > 0 ? `Svarstid ${stats.avgResponseMin}m` : 'Konvertering', value: stats.conversionRate ? Math.round(stats.conversionRate) : 0, icon: <Trophy className="w-3.5 h-3.5" />, iconCls: 'text-slate-400', valCls: 'text-slate-900', suffix: '%' },
+                ].map((s) => (
+                  <div key={s.label} className="flex items-center gap-2.5 px-4 py-3.5">
+                    <span className={s.iconCls}>{s.icon}</span>
+                    <div>
+                      <div className="text-[10px] font-medium text-slate-400 uppercase tracking-wide leading-none">{s.label}</div>
+                      <div className={`text-lg font-bold mt-0.5 tabular-nums ${s.valCls}`}>{s.value}{'suffix' in s ? s.suffix : ''}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Dispatched leads panel */}
             {dispatchedLeads.length > 0 && (
               <div>
-                <SectionHeader
-                  title={
-                    <span className="flex items-center gap-2">
-                      <Inbox className="w-4 h-4 text-blue-500" />
-                      Mina leads
-                    </span>
-                  }
-                  action={undefined}
-                />
-                {/* Lead type tabs */}
-                <div className="flex gap-1 mb-3">
+                <SectionLabel text="Mina leads" icon={<Inbox className="w-3.5 h-3.5 text-blue-500" />} />
+                <div className="flex gap-1.5 mb-3">
                   {([
                     { key: 'all' as LeadTab, label: 'Alla', count: dispatchedLeads.length },
                     { key: 'sell' as LeadTab, label: 'Säljleads', count: dispatchedLeads.filter((d) => d.lead_type === 'sell').length },
@@ -371,11 +373,12 @@ export default function DealerOverview({
                           : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                       }`}
                     >
-                      {tab.label} <span className={leadTab === tab.key ? 'text-slate-300' : 'text-slate-400'}>{tab.count}</span>
+                      {tab.label}{' '}
+                      <span className={`tabular-nums ${leadTab === tab.key ? 'text-slate-300' : 'text-slate-400'}`}>{tab.count}</span>
                     </button>
                   ))}
                 </div>
-                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100">
+                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
                   {dispatchedLeads
                     .filter((d) => leadTab === 'all' || d.lead_type === leadTab)
                     .map((lead) => {
@@ -390,22 +393,22 @@ export default function DealerOverview({
                           onClick={() => lead.car_id && onOpenCar(lead.car_id)}
                         >
                           <div className="flex items-start justify-between gap-3 mb-1">
-                            <div className="flex items-center gap-2">
-                              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${lead.lead_type === 'buy' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className={`shrink-0 inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ${lead.lead_type === 'buy' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
                                 {lead.lead_type === 'buy' ? 'Köplead' : 'Säljlead'}
                               </span>
-                              <span className="font-semibold text-sm text-slate-900">{lead.car_label}</span>
+                              <span className="font-semibold text-sm text-slate-900 truncate">{lead.car_label}</span>
                             </div>
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${status.cls}`}>
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold shrink-0 ${status.cls}`}>
                               {status.label}
                             </span>
                           </div>
-                          <div className="flex items-center gap-3 text-xs text-slate-500">
+                          <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
                             {lead.budget && <span>Budget: {lead.budget}</span>}
                             {deadlineLabel && (
                               <span className={isOverdue ? 'text-red-600 font-medium' : ''}>{deadlineLabel}</span>
                             )}
-                            <span className="ml-auto">{new Date(lead.created_at).toLocaleDateString('sv-SE')}</span>
+                            <span className="ml-auto text-slate-400">{new Date(lead.created_at).toLocaleDateString('sv-SE')}</span>
                           </div>
                           {lead.message && (
                             <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">{lead.message}</p>
@@ -418,25 +421,22 @@ export default function DealerOverview({
             )}
 
             {/* Main two-col */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
               {/* Ending soon */}
               <div>
-                <SectionHeader
-                  title={
-                    <span className="flex items-center gap-2">
-                      <Flame className="w-4 h-4 text-amber-500" />
-                      Slutar snart
-                    </span>
-                  }
+                <SectionLabel
+                  text="Slutar snart"
+                  icon={<Flame className="w-3.5 h-3.5 text-amber-500" />}
                   action={endingCars.length > 0 ? <NavLink label="Visa alla" onClick={onNavigateCars} /> : undefined}
                 />
-                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100">
+                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
                   {endingCars.length === 0 ? (
                     <EmptyState icon={<CheckCircle2 className="w-5 h-5 text-emerald-400" />} text="Inga auktioner slutar inom 24 h" />
                   ) : (
                     endingCars.map((c) => {
                       const ms = c.auktion_slut ? new Date(c.auktion_slut).getTime() - now : Infinity;
+                      const critical = ms < 3600000;
                       const urgent = ms < 3 * 3600000;
                       return (
                         <button
@@ -444,19 +444,22 @@ export default function DealerOverview({
                           onClick={() => onOpenCar(c.id)}
                           className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
                         >
-                          <div className={`w-1.5 h-8 rounded-full shrink-0 ${urgent ? 'bg-red-400' : 'bg-amber-300'}`} />
+                          <div className="relative shrink-0">
+                            <div className={`w-2 h-8 rounded-full ${critical ? 'bg-red-400' : urgent ? 'bg-amber-400' : 'bg-slate-200'}`} />
+                            {critical && <div className="absolute inset-0 w-2 rounded-full bg-red-400 animate-pulse" />}
+                          </div>
                           <div className="flex-1 min-w-0">
                             <div className="text-sm font-semibold text-slate-900 truncate">
                               {[c.marke, c.modell].filter(Boolean).join(' ') || c.regnummer}
                             </div>
-                            <div className="text-xs text-slate-500 mt-0.5">
+                            <div className="text-xs font-mono text-slate-400 mt-0.5">
                               {c.regnummer} · {c.ar || '—'} · {c.miltal.toLocaleString('sv-SE')} mil
                             </div>
                           </div>
-                          <span className={`text-xs font-semibold shrink-0 ${urgent ? 'text-red-600' : 'text-amber-700'}`}>
+                          <span className={`text-xs font-bold shrink-0 tabular-nums ${critical ? 'text-red-600' : urgent ? 'text-amber-600' : 'text-slate-500'}`}>
                             {formatTimeLeft(c.auktion_slut, now)}
                           </span>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0 group-hover:text-slate-400 transition" />
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-200 group-hover:text-slate-400 transition shrink-0" />
                         </button>
                       );
                     })
@@ -466,11 +469,12 @@ export default function DealerOverview({
 
               {/* My bids */}
               <div>
-                <SectionHeader
-                  title="Mina aktiva bud"
+                <SectionLabel
+                  text="Mina aktiva bud"
+                  icon={<Gavel className="w-3.5 h-3.5 text-slate-400" />}
                   action={stats.myBidsCount > 0 ? <NavLink label="Visa alla" onClick={onNavigateCars} /> : undefined}
                 />
-                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100">
+                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
                   {myBids.length === 0 ? (
                     <EmptyState icon={<Gavel className="w-5 h-5 text-slate-300" />} text="Du har inga aktiva bud just nu" />
                   ) : (
@@ -490,21 +494,23 @@ export default function DealerOverview({
                           <div className="text-sm font-semibold text-slate-900 truncate">
                             {b.car ? [b.car.marke, b.car.modell].filter(Boolean).join(' ') || b.car.regnummer : '—'}
                           </div>
-                          <div className="text-xs text-slate-500 mt-0.5">
-                            {b.car?.regnummer} · Ditt bud: {formatKr(b.belopp)} kr
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-xs font-mono text-slate-400">{b.car?.regnummer}</span>
+                            <span className="text-slate-200">·</span>
+                            <span className="text-xs font-semibold text-slate-700">{formatKr(b.belopp)} kr</span>
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <div className={`text-xs font-bold ${b.isLeading ? 'text-emerald-700' : 'text-red-600'}`}>
+                          <span className={`inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full ${b.isLeading ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}`}>
                             {b.isLeading ? 'Leder' : 'Överbjuden'}
-                          </div>
+                          </span>
                           {!b.isLeading && (
-                            <div className="text-[10px] text-slate-400 mt-0.5">
+                            <div className="text-[10px] text-slate-400 mt-1">
                               Högsta: {formatKr(b.highest)} kr
                             </div>
                           )}
                         </div>
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0 group-hover:text-slate-400 transition" />
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-200 group-hover:text-slate-400 transition shrink-0" />
                       </button>
                     ))
                   )}
@@ -515,16 +521,13 @@ export default function DealerOverview({
             {/* New listings feed */}
             {newCars.length > 0 && (
               <div>
-                <SectionHeader
-                  title="Nyligen inlagda bilar"
-                  action={<NavLink label="Visa alla" onClick={onNavigateCars} />}
-                />
-                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100">
+                <SectionLabel text="Nyligen inlagda bilar" icon={<Zap className="w-3.5 h-3.5 text-sky-500" />} action={<NavLink label="Visa alla" onClick={onNavigateCars} />} />
+                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
                   {newCars.map((c) => (
                     <button
                       key={c.id}
                       onClick={() => onOpenCar(c.id)}
-                      className="w-full flex items-center gap-4 px-4 py-3 text-left hover:bg-slate-50 transition group"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
                     >
                       <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
                         <CarIcon className="w-4 h-4 text-slate-400" />
@@ -533,13 +536,13 @@ export default function DealerOverview({
                         <div className="text-sm font-semibold text-slate-900 truncate">
                           {[c.marke, c.modell].filter(Boolean).join(' ') || c.regnummer}
                         </div>
-                        <div className="text-xs text-slate-500 mt-0.5">
+                        <div className="text-xs font-mono text-slate-400 mt-0.5">
                           {c.regnummer} · {c.ar || '—'} · {c.miltal.toLocaleString('sv-SE')} mil
                         </div>
                       </div>
                       <div className="text-right shrink-0">
                         {c.auktion_slut && (
-                          <span className="text-xs text-slate-500">
+                          <span className="text-xs text-slate-500 font-semibold">
                             {formatTimeLeft(c.auktion_slut, now)} kvar
                           </span>
                         )}
@@ -547,7 +550,7 @@ export default function DealerOverview({
                           {c.car_images.length} foto{c.car_images.length !== 1 ? 'n' : ''}
                         </div>
                       </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0 group-hover:text-slate-400 transition" />
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-200 group-hover:text-slate-400 transition shrink-0" />
                     </button>
                   ))}
                 </div>
@@ -560,55 +563,45 @@ export default function DealerOverview({
   );
 }
 
-function KpiCard({
-  label, value, icon, iconBg, onClick, highlight, highlightColor,
+function DealerKpiCard({
+  label, value, icon, topColor, iconCls, onClick, highlight,
 }: {
   label: string;
   value: number;
   icon: React.ReactNode;
-  iconBg: string;
+  topColor: string;
+  iconCls: string;
   onClick?: () => void;
   highlight?: boolean;
-  highlightColor?: 'amber' | 'red';
 }) {
   const Tag = onClick ? 'button' : 'div';
-  const ringMap = { amber: 'border-amber-300 ring-1 ring-amber-200', red: 'border-red-300 ring-1 ring-red-200' };
-  const valMap = { amber: 'text-amber-700', red: 'text-red-600' };
   return (
     <Tag
       onClick={onClick}
-      className={`text-left bg-white border rounded-xl p-4 sm:p-5 transition ${
-        onClick ? 'hover:shadow-md hover:border-slate-300 cursor-pointer' : ''
-      } ${highlight && highlightColor ? ringMap[highlightColor] : 'border-slate-200'}`}
+      className={`relative text-left bg-white border rounded-xl overflow-hidden transition shadow-sm ${
+        onClick ? 'hover:shadow-md cursor-pointer' : ''
+      } ${highlight ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200'}`}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${iconBg}`}>{icon}</div>
-        {onClick && <ArrowUpRight className="w-3.5 h-3.5 text-slate-300" />}
+      <div className={`h-0.5 w-full ${topColor}`} />
+      <div className="p-4 sm:p-5">
+        <div className="flex items-start justify-between mb-3">
+          <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${iconCls}`}>{icon}</div>
+          {onClick && <ArrowUpRight className="w-3.5 h-3.5 text-slate-300" />}
+        </div>
+        <div className="text-2xl sm:text-3xl font-bold text-slate-900 leading-none tabular-nums">{value}</div>
+        <div className="text-xs text-slate-500 mt-1.5 leading-snug">{label}</div>
       </div>
-      <div className={`text-2xl sm:text-3xl font-bold leading-none tabular-nums ${highlight && highlightColor ? valMap[highlightColor] : 'text-slate-900'}`}>
-        {value}
-      </div>
-      <div className="text-xs text-slate-500 mt-1.5">{label}</div>
     </Tag>
   );
 }
 
-function StatusPill({ icon, label, value, valueColor, suffix }: { icon: React.ReactNode; label: string; value: number; valueColor: string; suffix?: string }) {
-  return (
-    <div className="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-3">
-      <span className="shrink-0 mt-0.5">{icon}</span>
-      <div>
-        <div className="text-[11px] text-slate-500 leading-none">{label}</div>
-        <div className={`text-lg font-semibold mt-0.5 ${valueColor}`}>{value}{suffix}</div>
-      </div>
-    </div>
-  );
-}
-
-function SectionHeader({ title, action }: { title: React.ReactNode; action?: React.ReactNode }) {
+function SectionLabel({ text, icon, action }: { text: string; icon?: React.ReactNode; action?: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between mb-2">
-      <h2 className="text-sm font-semibold text-slate-800">{title}</h2>
+      <div className="flex items-center gap-1.5">
+        {icon}
+        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">{text}</span>
+      </div>
       {action}
     </div>
   );
@@ -624,9 +617,11 @@ function NavLink({ label, onClick }: { label: string; onClick?: () => void }) {
 
 function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
-    <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
-      {icon}
-      <p className="text-sm text-slate-500">{text}</p>
+    <div className="flex flex-col items-center gap-2.5 px-4 py-10 text-center">
+      <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center">
+        {icon}
+      </div>
+      <p className="text-sm text-slate-400">{text}</p>
     </div>
   );
 }
