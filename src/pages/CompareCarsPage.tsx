@@ -657,6 +657,17 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('quiz') === 'start') {
+      window.history.replaceState({}, '', window.location.pathname);
+      setTimeout(() => {
+        quizSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setQuizStep('active');
+      }, 300);
+    }
+  }, []);
+
   const allCarsMap = useMemo(() => {
     const map = new Map<string, ComparisonCar>();
     allCarsRaw.forEach(c => map.set(c.id, c));

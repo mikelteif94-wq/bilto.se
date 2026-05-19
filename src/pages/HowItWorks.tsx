@@ -342,14 +342,13 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
               <button
                 type="button"
                 onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
+                  window.history.pushState({}, '', '/kop-bil?quiz=start');
                   window.dispatchEvent(new PopStateEvent('popstate'));
-                  setTimeout(() => document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
                 }}
-                className="w-full h-10 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5 shadow-[0_4px_14px_-4px_rgba(14,110,254,0.55)]"
+                className="w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
               >
-                Hitta din nästa bil
-                <ArrowRight className="w-3.5 h-3.5 opacity-80" />
+                Hitta din bilmatch
+                <ArrowRight className="w-3.5 h-3.5 opacity-60" />
               </button>
             </div>
           </div>
@@ -435,14 +434,13 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
               <button
                 type="button"
                 onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
+                  window.history.pushState({}, '', '/kop-bil?quiz=start');
                   window.dispatchEvent(new PopStateEvent('popstate'));
-                  setTimeout(() => document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
                 }}
-                className="w-full h-10 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5 shadow-[0_4px_14px_-4px_rgba(14,110,254,0.55)]"
+                className="w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
               >
-                Hitta din nästa bil
-                <ArrowRight className="w-3.5 h-3.5 opacity-80" />
+                Hitta din bilmatch
+                <ArrowRight className="w-3.5 h-3.5 opacity-60" />
               </button>
             </div>
           </div>
