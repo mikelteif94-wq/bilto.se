@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-  LogOut,
   Loader2,
   ChevronRight,
   Car as CarIcon,
@@ -11,12 +10,13 @@ import {
   EyeOff,
   LayoutDashboard,
   MessageSquareText,
+  TrendingUp,
   Upload,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
 import ErrorBanner from '../components/ErrorBanner';
-import AdminUserLabel from '../components/AdminUserLabel';
+import PortalLayout from '../components/PortalLayout';
 
 interface AdminCarsProps {
   onLoggedOut: () => void;
@@ -158,61 +158,31 @@ export default function AdminCars({
     onLoggedOut();
   };
 
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-[#0e6efe] h-14 sm:h-16 flex items-center px-3 sm:px-5 lg:px-8 sticky top-0 z-10 gap-2">
-        <a href="/" className="flex items-center shrink-0">
-          <img
-            src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
-            alt="Bilto"
-            className="h-20 sm:h-28 w-auto object-contain"
-          />
-        </a>
-        <nav className="flex items-center gap-1 ml-1 sm:ml-4">
-          {onNavigateOverview && (
-            <button
-              onClick={onNavigateOverview}
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition"
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              <span className="hidden xs:inline">Översikt</span>
-            </button>
-          )}
-          <button className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium text-white bg-white/15">
-            <CarIcon className="w-4 h-4" />
-            <span className="hidden xs:inline">Bilar</span>
-          </button>
-          {onNavigateQuotes && (
-            <button
-              onClick={onNavigateQuotes}
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition"
-            >
-              <MessageSquareText className="w-4 h-4" />
-              <span className="hidden xs:inline">Förfrågningar</span>
-            </button>
-          )}
-          <button
-            onClick={onNavigateDealers}
-            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition"
-          >
-            <Building2 className="w-4 h-4" />
-            <span className="hidden xs:inline">Handlare</span>
-          </button>
-        </nav>
-        <div className="ml-auto flex items-center gap-2 sm:gap-3">
-          <AdminUserLabel />
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white transition"
-            aria-label="Logga ut"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logga ut</span>
-          </button>
-        </div>
-      </header>
+  const navItems = [
+    ...(onNavigateOverview ? [{ icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', onClick: onNavigateOverview }] : []),
+    { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Bilar', active: true },
+    ...(onNavigateQuotes ? [{ icon: <MessageSquareText className="w-[18px] h-[18px]" />, label: 'Förfrågningar', onClick: onNavigateQuotes }] : []),
+    { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', onClick: onNavigateDealers },
+  ];
 
-      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-5 sm:py-8">
+  return (
+    <PortalLayout
+      navItems={navItems}
+      identity="Admin"
+      identityRole="Bilto"
+      onLogout={handleLogout}
+      pageTitle="Bilar"
+      headerAction={
+        <button
+          onClick={onAddCar}
+          className="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-semibold transition"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          Ny bil
+        </button>
+      }
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-7">
         {valuations.length > 0 && (
           <div className="mb-5 bg-amber-50 border border-amber-200 rounded-xl p-4 sm:p-5">
             <div className="flex items-center gap-2 mb-3">
@@ -479,7 +449,7 @@ export default function AdminCars({
             </div>
           </>
         )}
-      </main>
-    </div>
+      </div>
+    </PortalLayout>
   );
 }

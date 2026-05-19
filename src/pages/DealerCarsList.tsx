@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Loader2, LogOut, ChevronRight, Image as ImageIcon, Clock, Settings as SettingsIcon, Sparkles, LayoutDashboard, Car as CarIcon } from 'lucide-react';
+import { Loader2, ChevronRight, Image as ImageIcon, Clock, Settings as SettingsIcon, Sparkles, LayoutDashboard, Car as CarIcon } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
 import ErrorBanner from '../components/ErrorBanner';
 import { SKICK_LABELS, formatKr, formatTimeLeftSimple } from '../lib/dealer-utils';
+import PortalLayout from '../components/PortalLayout';
 
 interface DealerCarsListProps {
   dealerId: string;
@@ -94,65 +95,32 @@ export default function DealerCarsList({
 
   const sortedCars = cars;
 
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-[#0e6efe] h-14 sm:h-16 flex items-center px-3 sm:px-5 lg:px-8 sticky top-0 z-10 gap-2">
-        <a href="/" className="flex items-center shrink-0">
-          <img
-            src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
-            alt="Bilto"
-            className="h-20 sm:h-28 w-auto object-contain"
-          />
-        </a>
-        <nav className="flex items-center gap-1 ml-1 sm:ml-4">
-          {onNavigateOverview && (
-            <button
-              onClick={onNavigateOverview}
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition"
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              <span className="hidden xs:inline">Översikt</span>
-            </button>
-          )}
-          <button className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium text-white bg-white/15">
-            <CarIcon className="w-4 h-4" />
-            <span className="hidden xs:inline">Aktiva uppdrag</span>
-          </button>
-        </nav>
-        <div className="ml-auto flex items-center gap-2 sm:gap-3 shrink-0">
-          <span className="hidden lg:inline text-sm font-medium text-white/90 truncate max-w-[200px]">
-            {foretagsnamn}
-          </span>
-          <button
-            onClick={onAddCar}
-            className="hidden md:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-white text-[#0e6efe] hover:bg-white/90 text-sm font-semibold transition shadow-sm"
-          >
-            <Sparkles className="w-4 h-4" />
-            Få bud på en bil
-          </button>
-          {onNavigateSettings && (
-            <button
-              onClick={onNavigateSettings}
-              className="flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white transition"
-              aria-label="Inställningar"
-              title="Inställningar"
-            >
-              <SettingsIcon className="w-4 h-4" />
-              <span className="hidden sm:inline">Inställningar</span>
-            </button>
-          )}
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white transition"
-            aria-label="Logga ut"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logga ut</span>
-          </button>
-        </div>
-      </header>
+  const navItems = [
+    ...(onNavigateOverview ? [{ icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', onClick: onNavigateOverview }] : []),
+    { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Aktiva uppdrag', active: true },
+    ...(onNavigateSettings ? [{ icon: <SettingsIcon className="w-[18px] h-[18px]" />, label: 'Inställningar', onClick: onNavigateSettings }] : []),
+  ];
 
-      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-5 sm:py-8 space-y-6">
+  const headerAction = (
+    <button
+      onClick={onAddCar}
+      className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition shadow-sm"
+    >
+      <Sparkles className="w-4 h-4" />
+      <span className="hidden sm:inline">Få bud på en bil</span>
+    </button>
+  );
+
+  return (
+    <PortalLayout
+      navItems={navItems}
+      identity={foretagsnamn}
+      identityRole="Handlare"
+      onLogout={handleLogout}
+      headerAction={headerAction}
+      pageTitle="Aktiva uppdrag"
+    >
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-5 sm:py-8 space-y-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
             Aktiva uppdrag
@@ -331,8 +299,8 @@ export default function DealerCarsList({
           </div>
           </>
         )}
-      </main>
-    </div>
+      </div>
+    </PortalLayout>
   );
 }
 

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import {
   ChevronLeft,
   Loader2,
-  LogOut,
   Mail,
   Phone,
   User,
@@ -15,7 +14,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
-import AdminUserLabel from '../components/AdminUserLabel';
+import PortalLayout from '../components/PortalLayout';
 
 interface AdminDealerDetailProps {
   dealerId: string;
@@ -115,61 +114,51 @@ export default function AdminDealerDetail({
     setApproving(false);
   };
 
+  const breadcrumbEl = (
+    <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] text-slate-500 hover:text-slate-900 transition font-medium">
+      <ChevronLeft className="w-4 h-4" />
+      Tillbaka till handlare
+    </button>
+  );
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-      </div>
+      <PortalLayout navItems={[]} identity="Admin" identityRole="Bilto" onLogout={handleLogout} breadcrumb={breadcrumbEl}>
+        <div className="flex items-center justify-center py-32">
+          <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+        </div>
+      </PortalLayout>
     );
   }
 
   if (error || !dealer) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white rounded-xl border border-slate-200 p-8 text-center">
-          <p className="text-slate-700 mb-6">{error ?? 'Handlaren hittades inte.'}</p>
-          <button
-            onClick={onBack}
-            className="text-slate-600 hover:text-slate-900 font-medium"
-          >
-            Tillbaka
-          </button>
+      <PortalLayout navItems={[]} identity="Admin" identityRole="Bilto" onLogout={handleLogout} breadcrumb={breadcrumbEl}>
+        <div className="flex items-center justify-center px-4 py-20">
+          <div className="max-w-md w-full bg-white rounded-xl border border-slate-200 p-8 text-center">
+            <p className="text-slate-700 mb-6">{error ?? 'Handlaren hittades inte.'}</p>
+            <button
+              onClick={onBack}
+              className="text-slate-600 hover:text-slate-900 font-medium"
+            >
+              Tillbaka
+            </button>
+          </div>
         </div>
-      </div>
+      </PortalLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-[#0e6efe] h-14 sm:h-16 flex items-center px-3 sm:px-5 lg:px-8 sticky top-0 z-10 gap-2">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-1.5 text-white/90 hover:text-white transition"
-        >
-          <ChevronLeft className="w-5 h-5" />
-          <span className="text-sm font-medium hidden sm:inline">Till handlare</span>
-        </button>
-        <a href="/" className="flex items-center shrink-0 ml-1">
-          <img
-            src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
-            alt="Bilto"
-            className="h-20 sm:h-28 w-auto object-contain"
-          />
-        </a>
-        <div className="ml-auto flex items-center gap-2 sm:gap-3">
-          <AdminUserLabel />
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white transition"
-            aria-label="Logga ut"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logga ut</span>
-          </button>
-        </div>
-      </header>
-
-      <main className="max-w-3xl mx-auto px-3 sm:px-6 py-6 sm:py-10">
+    <PortalLayout
+      navItems={[]}
+      identity="Admin"
+      identityRole="Bilto"
+      onLogout={handleLogout}
+      breadcrumb={breadcrumbEl}
+    >
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-7">
+      <div className="max-w-3xl mx-auto px-3 sm:px-6 py-6 sm:py-10">
         <div className="flex items-start justify-between gap-3 mb-6 sm:mb-8">
           <div className="min-w-0">
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
@@ -332,8 +321,9 @@ export default function AdminDealerDetail({
             </div>
           )}
         </div>
-      </main>
-    </div>
+      </div>
+      </div>
+    </PortalLayout>
   );
 }
 

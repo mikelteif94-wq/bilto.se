@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   ChevronLeft,
   Loader2,
-  LogOut,
   Clock,
   Image as ImageIcon,
   Check,
@@ -18,6 +17,7 @@ import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
 import ErrorBanner from '../components/ErrorBanner';
 import { SKICK_LABELS, formatKr, formatTimeLeftDetailed } from '../lib/dealer-utils';
+import PortalLayout from '../components/PortalLayout';
 
 interface DealerCarDetailProps {
   dealerId: string;
@@ -157,27 +157,33 @@ export default function DealerCarDetail({
     await load();
   };
 
+  const breadcrumbEl = (
+    <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] text-slate-500 hover:text-slate-900 transition font-medium">
+      <ChevronLeft className="w-4 h-4" />
+      Tillbaka till uppdrag
+    </button>
+  );
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-      </div>
+      <PortalLayout navItems={[]} identity={foretagsnamn} identityRole="Handlare" onLogout={handleLogout} breadcrumb={breadcrumbEl}>
+        <div className="flex items-center justify-center py-32">
+          <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+        </div>
+      </PortalLayout>
     );
   }
 
   if (error || !car) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white rounded-xl border border-slate-200 p-8 text-center">
-          <p className="text-slate-700 mb-6">{error ?? 'Bilen hittades inte.'}</p>
-          <button
-            onClick={onBack}
-            className="text-slate-600 hover:text-slate-900 font-medium"
-          >
-            Tillbaka
-          </button>
+      <PortalLayout navItems={[]} identity={foretagsnamn} identityRole="Handlare" onLogout={handleLogout} breadcrumb={breadcrumbEl}>
+        <div className="flex items-center justify-center px-4 py-20">
+          <div className="max-w-md w-full bg-white rounded-xl border border-slate-200 p-8 text-center">
+            <p className="text-slate-700 mb-6">{error ?? 'Bilen hittades inte.'}</p>
+            <button onClick={onBack} className="text-slate-600 hover:text-slate-900 font-medium">Tillbaka</button>
+          </div>
         </div>
-      </div>
+      </PortalLayout>
     );
   }
 
@@ -186,40 +192,14 @@ export default function DealerCarDetail({
   const mm = [car.marke, car.modell].filter(Boolean).join(' ').trim();
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-[#0e6efe] h-14 sm:h-16 flex items-center px-3 sm:px-5 lg:px-8 sticky top-0 z-10 gap-2">
-        <button
-          onClick={onBack}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white shrink-0"
-          aria-label="Tillbaka"
-        >
-          <ChevronLeft className="w-5 h-5" />
-          <span className="hidden sm:inline">Tillbaka</span>
-        </button>
-        <a href="/" className="flex items-center shrink-0 ml-1">
-          <img
-            src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
-            alt="Bilto"
-            className="h-20 lg:h-32 w-auto object-contain"
-          />
-        </a>
-        <div className="ml-2 sm:ml-4 min-w-0 hidden sm:block">
-          <span className="text-[11px] font-semibold text-white/60 uppercase tracking-wider">
-            Handlare
-          </span>
-          <h2 className="text-sm font-semibold text-white leading-tight truncate">{foretagsnamn}</h2>
-        </div>
-        <button
-          onClick={handleLogout}
-          className="ml-auto flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white transition shrink-0"
-          aria-label="Logga ut"
-        >
-          <LogOut className="w-4 h-4" />
-          <span className="hidden sm:inline">Logga ut</span>
-        </button>
-      </header>
-
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10 grid lg:grid-cols-3 gap-6 lg:gap-8">
+    <PortalLayout
+      navItems={[]}
+      identity={foretagsnamn}
+      identityRole="Handlare"
+      onLogout={handleLogout}
+      breadcrumb={breadcrumbEl}
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10 grid lg:grid-cols-3 gap-6 lg:gap-8">
         <section className="lg:col-span-2 space-y-6">
           <div>
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
@@ -565,7 +545,7 @@ export default function DealerCarDetail({
             </button>
           </form>
         </aside>
-      </main>
+      </div>
 
       {lightboxIdx !== null && images[lightboxIdx] && (
         <div
@@ -586,7 +566,7 @@ export default function DealerCarDetail({
           />
         </div>
       )}
-    </div>
+    </PortalLayout>
   );
 }
 

@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import {
   ArrowLeft,
+  ChevronLeft,
   Check,
-  Copy,
-  ExternalLink,
   FileText,
   Link2,
   Loader2,
@@ -21,6 +20,7 @@ import {
   Image,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import PortalLayout from '../components/PortalLayout';
 import DealerDispatchPanel from '../components/DealerDispatchPanel';
 
 interface AdminQuoteDetailProps {
@@ -337,49 +337,54 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
     setForwarding(false);
   };
 
+  const breadcrumbEl = (
+    <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] text-slate-500 hover:text-slate-900 transition font-medium">
+      <ChevronLeft className="w-4 h-4" />
+      Tillbaka till förfrågningar
+    </button>
+  );
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-      </div>
+      <PortalLayout navItems={[]} identity="Admin" identityRole="Bilto" breadcrumb={breadcrumbEl}>
+        <div className="flex items-center justify-center py-32">
+          <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+        </div>
+      </PortalLayout>
     );
   }
 
   if (!quote) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <p className="text-slate-500">Forfragningen hittades inte.</p>
-      </div>
+      <PortalLayout navItems={[]} identity="Admin" identityRole="Bilto" breadcrumb={breadcrumbEl}>
+        <div className="flex items-center justify-center py-20">
+          <p className="text-slate-500">Förfrågan hittades inte.</p>
+        </div>
+      </PortalLayout>
     );
   }
 
   const Icon = OPTION_ICONS[quote.search_option] || Search;
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Tillbaka
-          </button>
-          <div className="ml-auto flex items-center gap-2">
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white text-sm font-medium transition"
-            >
-              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-              {saved ? 'Sparat' : 'Spara'}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <PortalLayout
+      navItems={[]}
+      identity="Admin"
+      identityRole="Bilto"
+      breadcrumb={breadcrumbEl}
+      headerAction={
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white text-sm font-medium transition"
+        >
+          {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+          {saved ? 'Sparat' : 'Spara'}
+        </button>
+      }
+    >
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-7">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main content */}
           <div className="lg:col-span-2 space-y-5">
@@ -784,8 +789,9 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+      </div>
+    </PortalLayout>
   );
 }
 

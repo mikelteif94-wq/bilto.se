@@ -1,13 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
-  Loader2, Search, Filter, ChevronDown, ChevronRight,
-  Car as CarIcon, Users, Gavel, TrendingUp, Bell, Clock,
-  CheckCircle2, XCircle, Flame, Star, AlertTriangle,
-  LayoutDashboard, LogOut, Tag, UserCheck, Send,
-  Eye, EyeOff, Download, RefreshCw, Calendar,
+  Loader2, Search, ChevronDown, ChevronRight,
+  Car as CarIcon, TrendingUp, Bell,
+  CheckCircle2, XCircle, Flame, Star,
+  LayoutDashboard, Building2, MessageSquareText, UserCheck,
+  Eye, EyeOff, Download, RefreshCw,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import AdminUserLabel from '../components/AdminUserLabel';
+import PortalLayout from '../components/PortalLayout';
 
 interface AdminLeadCommandCenterProps {
   adminUserId: string;
@@ -305,27 +305,20 @@ export default function AdminLeadCommandCenter({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
-        <div className="max-w-screen-xl mx-auto px-4 h-14 flex items-center gap-3">
-          <button onClick={onNavigateOverview} className="text-slate-400 hover:text-slate-700 transition">
-            <LayoutDashboard className="w-5 h-5" />
-          </button>
-          <span className="text-slate-300">/</span>
-          <span className="font-semibold text-slate-900 text-sm">Lead Command Center</span>
-          <div className="ml-auto flex items-center gap-3">
-            <AdminUserLabel />
-            <button
-              onClick={onLoggedOut}
-              className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 transition"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </header>
-
+    <PortalLayout
+      navItems={[
+        { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Översikt', onClick: onNavigateOverview },
+        { icon: <CarIcon className="w-4 h-4" />, label: 'Leads', active: true },
+        { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', onClick: onNavigateCars },
+        { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar' },
+        { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', onClick: onNavigateDealers },
+      ]}
+      identity="Admin"
+      identityRole="Bilto"
+      onLogout={onLoggedOut}
+      pageTitle="Lead Command Center"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-7">
       <div className="max-w-screen-xl mx-auto px-4 py-6">
         {/* Page title + actions */}
         <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
@@ -618,6 +611,7 @@ export default function AdminLeadCommandCenter({
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </PortalLayout>
   );
 }

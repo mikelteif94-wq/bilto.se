@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import {
   ChevronLeft,
   Loader2,
-  LogOut,
   Mail,
   Phone,
   User,
@@ -17,7 +16,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
-import AdminUserLabel from '../components/AdminUserLabel';
+import PortalLayout from '../components/PortalLayout';
 import CrmPanel from '../components/CrmPanel';
 import BidsPanel from '../components/BidsPanel';
 import DealerDispatchPanel from '../components/DealerDispatchPanel';
@@ -215,35 +214,19 @@ export default function AdminCarDetail({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-[#0e6efe] h-14 sm:h-16 flex items-center px-3 sm:px-5 lg:px-8 sticky top-0 z-10 gap-2">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-1.5 text-white/90 hover:text-white transition"
-        >
-          <ChevronLeft className="w-5 h-5" />
-          <span className="text-sm font-medium hidden sm:inline">Tillbaka</span>
+    <PortalLayout
+      navItems={[]}
+      identity="Admin"
+      identityRole="Bilto"
+      onLogout={handleLogout}
+      breadcrumb={
+        <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] text-slate-500 hover:text-slate-900 transition font-medium">
+          <ChevronLeft className="w-4 h-4" />
+          Tillbaka till bilar
         </button>
-        <a href="/" className="flex items-center shrink-0 ml-1">
-          <img
-            src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
-            alt="Bilto"
-            className="h-20 sm:h-28 w-auto object-contain"
-          />
-        </a>
-        <div className="ml-auto flex items-center gap-2 sm:gap-3">
-          <AdminUserLabel />
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white transition"
-            aria-label="Logga ut"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logga ut</span>
-          </button>
-        </div>
-      </header>
-
+      }
+    >
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-7">
       {loading ? (
         <div className="flex items-center justify-center py-32">
           <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
@@ -253,7 +236,7 @@ export default function AdminCarDetail({
           <p className="text-red-600">{error}</p>
         </div>
       ) : car ? (
-        <main className="max-w-6xl mx-auto px-3 sm:px-6 py-5 sm:py-8">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 py-5 sm:py-8">
           <div className="mb-5 sm:mb-8">
             <div className="flex items-baseline gap-2 sm:gap-3 mb-1 flex-wrap">
               <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
@@ -702,7 +685,7 @@ export default function AdminCarDetail({
               </div>
             </div>
           </div>
-        </main>
+        </div>
       ) : null}
 
       {lightboxUrl && (
@@ -724,6 +707,7 @@ export default function AdminCarDetail({
           />
         </div>
       )}
-    </div>
+      </div>
+    </PortalLayout>
   );
 }

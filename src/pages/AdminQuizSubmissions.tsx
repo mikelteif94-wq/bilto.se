@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  LogOut,
   Loader2,
-  ChevronRight,
   ChevronDown,
   Car as CarIcon,
   Building2,
@@ -15,7 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import AdminUserLabel from '../components/AdminUserLabel';
+import PortalLayout from '../components/PortalLayout';
 
 interface AdminQuizSubmissionsProps {
   onLoggedOut: () => void;
@@ -141,62 +139,20 @@ export default function AdminQuizSubmissions({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-[#0e6efe] h-14 sm:h-16 flex items-center px-3 sm:px-5 lg:px-8 sticky top-0 z-10 gap-2">
-        <a href="/" className="flex items-center shrink-0">
-          <img
-            src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
-            alt="Bilto"
-            className="h-20 sm:h-28 w-auto object-contain"
-          />
-        </a>
-        <nav className="flex items-center gap-1 ml-1 sm:ml-4">
-          <button
-            onClick={onNavigateOverview}
-            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition"
-          >
-            <LayoutDashboard className="w-4 h-4" />
-            <span className="hidden xs:inline">Översikt</span>
-          </button>
-          <button
-            onClick={onNavigateCars}
-            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition"
-          >
-            <CarIcon className="w-4 h-4" />
-            <span className="hidden xs:inline">Bilar</span>
-          </button>
-          <button
-            onClick={onNavigateQuotes}
-            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition"
-          >
-            <MessageSquareText className="w-4 h-4" />
-            <span className="hidden xs:inline">Förfrågningar</span>
-          </button>
-          <button className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium text-white bg-white/15">
-            <ClipboardList className="w-4 h-4" />
-            <span className="hidden xs:inline">Quiz</span>
-          </button>
-          <button
-            onClick={onNavigateDealers}
-            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition"
-          >
-            <Building2 className="w-4 h-4" />
-            <span className="hidden xs:inline">Handlare</span>
-          </button>
-        </nav>
-        <div className="ml-auto flex items-center gap-2 sm:gap-3">
-          <AdminUserLabel />
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white transition"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logga ut</span>
-          </button>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-5 sm:py-8">
+    <PortalLayout
+      navItems={[
+        { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Översikt', onClick: onNavigateOverview },
+        { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', onClick: onNavigateCars },
+        { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', onClick: onNavigateQuotes },
+        { icon: <ClipboardList className="w-4 h-4" />, label: 'Quiz', active: true },
+        { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', onClick: onNavigateDealers },
+      ]}
+      identity="Admin"
+      identityRole="Bilto"
+      onLogout={handleLogout}
+      pageTitle="Quiz-svar"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-7">
         <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
             Quiz-resultat
@@ -327,7 +283,7 @@ export default function AdminQuizSubmissions({
             ))}
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </PortalLayout>
   );
 }

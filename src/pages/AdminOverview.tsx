@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-  LogOut,
   Loader2,
   Car as CarIcon,
   Building2,
@@ -19,7 +18,7 @@ import {
   Circle,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import AdminUserLabel from '../components/AdminUserLabel';
+import PortalLayout from '../components/PortalLayout';
 
 interface AdminOverviewProps {
   onLoggedOut: () => void;
@@ -206,49 +205,24 @@ export default function AdminOverview({
     } : null,
   ].filter(Boolean) as AlertItem[];
 
-  return (
-    <div className="min-h-screen bg-[#f8f9fb]">
-      {/* Header */}
-      <header className="bg-[#0e6efe] h-14 sm:h-16 flex items-center px-3 sm:px-5 lg:px-8 sticky top-0 z-20 gap-2">
-        <a href="/" className="flex items-center shrink-0">
-          <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 sm:h-28 w-auto object-contain" />
-        </a>
-        <nav className="flex items-center gap-0.5 ml-1 sm:ml-4">
-          {[
-            { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Översikt', active: true, onClick: undefined },
-            { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', active: false, onClick: onNavigateCars },
-            onNavigateLeads ? { icon: <TrendingUp className="w-4 h-4" />, label: 'Leads', active: false, onClick: onNavigateLeads } : null,
-            onNavigateQuotes ? { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', active: false, onClick: onNavigateQuotes } : null,
-            { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', active: false, onClick: onNavigateDealers },
-            onNavigateQuiz ? { icon: <ClipboardList className="w-4 h-4" />, label: 'Quiz', active: false, onClick: onNavigateQuiz } : null,
-          ].filter(Boolean).map((item) => item && (
-            <button
-              key={item.label}
-              onClick={item.onClick}
-              className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-sm font-medium transition ${
-                item.active ? 'text-white bg-white/20' : 'text-white/75 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              {item.icon}
-              <span className="hidden sm:inline">{item.label}</span>
-              {item.label === 'Förfrågningar' && stats.newQuotes > 0 && (
-                <span className="hidden sm:inline-flex h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold items-center justify-center">
-                  {stats.newQuotes}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
-        <div className="ml-auto flex items-center gap-3">
-          <AdminUserLabel />
-          <button onClick={handleLogout} className="flex items-center gap-1.5 text-sm font-medium text-white/80 hover:text-white transition">
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logga ut</span>
-          </button>
-        </div>
-      </header>
+  const adminNavItems = [
+    { icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', active: true },
+    { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Bilar', onClick: onNavigateCars },
+    ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-[18px] h-[18px]" />, label: 'Leads', onClick: onNavigateLeads }] : []),
+    ...(onNavigateQuotes ? [{ icon: <MessageSquareText className="w-[18px] h-[18px]" />, label: 'Förfrågningar', onClick: onNavigateQuotes, badge: stats.newQuotes }] : []),
+    { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', onClick: onNavigateDealers },
+    ...(onNavigateQuiz ? [{ icon: <ClipboardList className="w-[18px] h-[18px]" />, label: 'Quiz', onClick: onNavigateQuiz }] : []),
+  ];
 
-      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-10 space-y-6">
+  return (
+    <PortalLayout
+      navItems={adminNavItems}
+      identity="Admin"
+      identityRole="Bilto"
+      onLogout={handleLogout}
+      pageTitle="Översikt"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
 
         {/* Page title */}
         <div className="flex items-start justify-between gap-4">
@@ -513,8 +487,8 @@ export default function AdminOverview({
             </div>
           </>
         )}
-      </main>
-    </div>
+      </div>
+    </PortalLayout>
   );
 }
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ArrowLeft, Loader2, CheckCircle2, XCircle, Send } from 'lucide-react';
+import { ChevronLeft, Loader2, CheckCircle2, XCircle, Send } from 'lucide-react';
+import PortalLayout from '../components/PortalLayout';
 import { supabase } from '../lib/supabase';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../lib/carBrands';
 import ConditionReportForm, {
@@ -172,22 +173,20 @@ export default function DealerAddCar({
     }
   };
 
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-[#0e6efe] h-14 sm:h-16 flex items-center px-3 sm:px-5 lg:px-8 sticky top-0 z-10 gap-2">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-1.5 text-white/90 hover:text-white text-sm font-medium"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">Tillbaka</span>
-        </button>
-        <h1 className="text-white font-semibold ml-2 sm:ml-4 text-base sm:text-lg">
-          Få bud på en bil
-        </h1>
-      </header>
+  const breadcrumbEl = (
+    <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] text-slate-500 hover:text-slate-900 transition font-medium">
+      <ChevronLeft className="w-4 h-4" />
+      Tillbaka
+    </button>
+  );
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+  return (
+    <PortalLayout
+      navItems={[]}
+      identityRole="Handlare"
+      breadcrumb={breadcrumbEl}
+    >
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         <p className="text-sm text-slate-500 mb-6">
           Lägg in en kunds bil så samlar vi in bud från hela vårt handlarnätverk.
           Bilto granskar och aktiverar uppdraget innan budgivningen startar.
@@ -442,8 +441,8 @@ export default function DealerAddCar({
             </button>
           </div>
         </form>
-      </main>
-    </div>
+      </div>
+    </PortalLayout>
   );
 }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  ArrowLeft,
+  ChevronLeft,
   Loader2,
   Save,
   CheckCircle2,
@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ErrorBanner from '../components/ErrorBanner';
+import PortalLayout from '../components/PortalLayout';
 
 interface DealerSettingsProps {
   dealerId: string;
@@ -239,20 +240,20 @@ export default function DealerSettings({ dealerId, isOwner, onBack }: DealerSett
     setMembers((prev) => prev.filter((m) => m.id !== memberId));
   };
 
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-[#0e6efe] h-14 sm:h-16 flex items-center px-3 sm:px-5 lg:px-8 sticky top-0 z-10 gap-2">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-1.5 text-white/90 hover:text-white text-sm font-medium"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Tillbaka</span>
-        </button>
-        <h1 className="ml-3 text-sm sm:text-base font-semibold text-white">Inställningar</h1>
-      </header>
+  const breadcrumbEl = (
+    <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] text-slate-500 hover:text-slate-900 transition font-medium">
+      <ChevronLeft className="w-4 h-4" />
+      Tillbaka
+    </button>
+  );
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
+  return (
+    <PortalLayout
+      navItems={[]}
+      identityRole="Handlare"
+      breadcrumb={breadcrumbEl}
+    >
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
         <ErrorBanner message={error} />
 
         {loading ? (
@@ -557,8 +558,8 @@ export default function DealerSettings({ dealerId, isOwner, onBack }: DealerSett
             </section>
           </>
         )}
-      </main>
-    </div>
+      </div>
+    </PortalLayout>
   );
 }
 
