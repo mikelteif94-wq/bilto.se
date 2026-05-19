@@ -100,8 +100,6 @@ const LOCAL_IMAGES: Record<string, string> = {
   bmw_2_series: '/getImage_(8).webp',
   skoda_superb: '/getImage_(9).webp',
   volvo_xc90: '/getImage_(11).webp',
-  volvo_c40: '/getImage_(14).webp',
-  volvo_c40_recharge: '/getImage_(14).webp',
   volvo_v60: '/getImage_(15).webp',
   volvo_v40: '/getImage_(17).webp',
   volvo_v40_cross_country: '/getImage_(17).webp',
@@ -118,7 +116,7 @@ const CURATED_IDS = [
   'volvo_v60', 'honda_crv', 'bmw_ix1', 'mercedes_eqc',
   'bmw_2_series', 'skoda_superb',
   // Volvo-utökning
-  'volvo_xc90', 'volvo_ex40', 'volvo_ex90', 'volvo_c40_recharge',
+  'volvo_xc90', 'volvo_ex40', 'volvo_ex90',
   'volvo_ec40', 'volvo_xc40_recharge', 'volvo_ex60', 'volvo_es90',
   'volvo_ex30_cross_country', 'volvo_v60_cross_country', 'volvo_v90_cross_country',
   'volvo_s60', 'volvo_s90', 'volvo_v90', 'volvo_v70',
