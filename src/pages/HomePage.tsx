@@ -290,8 +290,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 }}
                 className="mt-3 h-12 sm:h-14 w-full rounded-xl border border-white/30 bg-white/8 backdrop-blur-sm text-white font-bold text-[15px] sm:text-[16px] hover:bg-white/15 hover:border-white/50 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
               >
-                Hitta din bilmatch
-                <span className="text-white/60">→</span>
+                Eller låt oss hjälpa dig hitta en bil.
               </button>
             </div>
 
