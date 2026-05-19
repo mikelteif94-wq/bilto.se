@@ -121,6 +121,10 @@ const CURATED_IDS = [
   'volvo_ex30_cross_country', 'volvo_v60_cross_country', 'volvo_v90_cross_country',
   'volvo_s60', 'volvo_s90', 'volvo_v90', 'volvo_v70',
   'volvo_v40', 'volvo_v40_cross_country', 'volvo_xc70',
+  // Ford Focus-varianter
+  'ford_focus', 'ford_focus_kombi', 'ford_focus_st', 'ford_focus_st_kombi',
+  'ford_focus_rs', 'ford_focus_vignale', 'ford_focus_vignale_kombi', 'ford_focus_active',
+  'ford_puma', 'ford_kuga', 'ford_mustang_mach_e', 'ford_explorer', 'ford_mustang',
 ];
 
 type CategoryKey = 'alla' | 'popular' | 'el' | 'suv' | 'hybrid' | 'sedan';
