@@ -71,19 +71,25 @@ const BROKERAGE_STEPS: Step[] = [
 const DIRECT_STEPS: Step[] = [
   {
     icon: Phone,
-    title: 'Du får en personlig rådgivare',
-    text: 'Oavsett om du säljer, byter eller köper bil — en rådgivare hjälper dig genom hela processen.',
+    title: 'Få en omedelbar värdering',
+    text: 'Slipp gissningsleken. Få en gratis och rättvis värdering baserad på aktuella marknadstrender och återförsäljarnas efterfrågan.',
   },
   {
     icon: Gavel,
-    title: 'Vi hittar bästa budet',
-    text: 'Vi jämför erbjudanden från bilhandlare åt dig — oavsett om du ska sälja din bil, byta in den eller köpa en ny.',
+    title: 'Få den såld',
+    text: 'Slutför din annons och sätt ditt reservationspris. Vi visar din bil hos fler än 6 000 återförsäljare. Bästa erbjudandet vinner!',
   },
   {
     icon: Handshake,
-    title: 'Vi hämtar eller lämnar bilen',
-    text: 'När du tackar ja ordnar vi upphämtning av din sålda bil eller leverans av din nya — gäller vid försäljning, inbyte och köp.',
+    title: 'Få betalt snabbt',
+    text: 'Klart! Återförsäljaren hämtar din bil och kan betala dig direkt. Inga överraskande avgifter, bara en enkel och gratis försäljning.',
   },
+];
+
+const DIRECT_STEP_IMAGES = [
+  '/ChatGPT_Image_19_maj_2026_23_46_06.png',
+  '/e66827b0-71c5-48a7-8d91-5123f7db4a0d.png',
+  '/55e96830-06e0-436b-8559-63a5b9cf41af.png',
 ];
 
 const FAQ = [
@@ -447,36 +453,50 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         </div>
       </section>
 
-      <section className="bg-[#f5f8fc] py-16 sm:py-24 px-5 sm:px-6">
+      <section className="bg-[#f5f8fc] py-16 sm:py-24 px-5 sm:px-6 overflow-hidden">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-12 sm:mb-16 flex items-end justify-between flex-wrap gap-6">
-            <div className="max-w-xl">
-              <h2 className="text-[34px] sm:text-[48px] font-semibold leading-[1.02] text-slate-900 tracking-[-0.02em]">
-                {mode === 'direct'
-                  ? 'Så enkelt är det'
-                  : 'Fyra steg till såld bil'}
-              </h2>
-            </div>
+          <div className="mb-10 sm:mb-16">
+            <span className="text-[11px] sm:text-[12px] font-medium text-slate-500 mb-2 sm:mb-3 block">
+              &mdash; Tre enkla steg till en fri försäljning
+            </span>
+            <h2 className="text-[34px] sm:text-[48px] font-semibold leading-[1.02] text-slate-900 tracking-[-0.02em]">
+              {mode === 'direct' ? 'Så enkelt är det' : 'Fyra steg till såld bil'}
+            </h2>
           </div>
 
-          <ol className={`relative lg:grid lg:gap-10 ${steps.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}>
+          {/* MOBILE: image slider + step cards */}
+          {mode === 'direct' ? (
+            <DirectStepsMobile steps={steps} images={DIRECT_STEP_IMAGES} />
+          ) : null}
+
+          {/* DESKTOP (all modes) or MOBILE brokerage fallback */}
+          <ol className={`hidden sm:grid lg:gap-10 ${steps.length === 4 ? 'lg:grid-cols-4 sm:grid-cols-2' : 'sm:grid-cols-3'} gap-8`}>
             {steps.map((step, i) => {
               const Icon = step.icon;
-              const isLast = i === steps.length - 1;
+              const img = mode === 'direct' ? DIRECT_STEP_IMAGES[i] : null;
               return (
-                <li key={step.title} className="relative pl-12 sm:pl-14 pb-10 sm:pb-12 last:pb-0 lg:pl-0 lg:pb-0 lg:pt-[54px]">
-                  {!isLast && (
-                    <span aria-hidden className="absolute left-[17px] sm:left-[21px] top-9 sm:top-[46px] bottom-0 w-px bg-slate-200 lg:left-[44px] lg:right-0 lg:top-[21px] lg:bottom-auto lg:w-auto lg:h-px" />
+                <li key={step.title} className="group">
+                  {img && (
+                    <div className="rounded-2xl overflow-hidden aspect-[16/10] mb-5 shadow-md">
+                      <img
+                        src={img}
+                        alt={step.title}
+                        className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                      />
+                    </div>
                   )}
-                  <div className="absolute left-0 top-0 flex items-center justify-center w-9 h-9 sm:w-[42px] sm:h-[42px] rounded-full bg-[#0e6efe] shadow-[0_8px_18px_-6px_rgba(14,110,254,0.5)] ring-4 ring-[#0e6efe]/10">
-                    <Icon className="w-[16px] h-[16px] sm:w-[18px] sm:h-[18px] text-white" strokeWidth={2.4} />
-                  </div>
-                  <div className="flex items-baseline gap-3 mb-2">
-                    <h3 className="text-[20px] sm:text-[24px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
+                  {!img && (
+                    <div className="mb-5 flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#0e6efe] shadow-[0_8px_18px_-6px_rgba(14,110,254,0.5)] ring-4 ring-[#0e6efe]/10">
+                      <Icon className="w-[18px] h-[18px] text-white" strokeWidth={2.4} />
+                    </div>
+                  )}
+                  <div className="flex items-baseline gap-2.5 mb-2">
+                    <span className="text-[13px] font-bold text-[#0e6efe] tabular-nums">0{i + 1}</span>
+                    <h3 className="text-[20px] sm:text-[22px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
                       {step.title}
                     </h3>
                   </div>
-                  <p className="text-slate-600 text-[15px] sm:text-[16px] leading-[1.65] max-w-xl">
+                  <p className="text-slate-600 text-[15px] sm:text-[16px] leading-[1.65]">
                     {step.text}
                   </p>
                 </li>
@@ -1078,6 +1098,62 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
           }}
         />
       )}
+    </div>
+  );
+}
+
+function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] }) {
+  const [active, setActive] = useState(0);
+  return (
+    <div className="sm:hidden mb-10">
+      {/* Image slider */}
+      <div className="relative rounded-2xl overflow-hidden aspect-[16/10] mb-5 shadow-lg">
+        {images.map((src, i) => (
+          <img
+            key={i}
+            src={src}
+            alt={steps[i]?.title ?? ''}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${i === active ? 'opacity-100' : 'opacity-0'}`}
+          />
+        ))}
+      </div>
+
+      {/* Dot indicators */}
+      <div className="flex items-center justify-center gap-2 mb-5">
+        {steps.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            className={`transition-all duration-300 rounded-full ${i === active ? 'w-6 h-2 bg-[#0e6efe]' : 'w-2 h-2 bg-slate-300'}`}
+            aria-label={`Steg ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Step cards */}
+      <div className="space-y-3">
+        {steps.map((step, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            className={`w-full text-left rounded-2xl p-4 transition-all duration-200 border ${i === active ? 'bg-white border-[#0e6efe]/30 shadow-sm' : 'bg-white/60 border-transparent'}`}
+          >
+            <div className="flex items-start gap-3">
+              <span className={`text-[11px] font-bold tabular-nums shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-colors ${i === active ? 'bg-[#0e6efe] text-white' : 'bg-slate-200 text-slate-500'}`}>
+                0{i + 1}
+              </span>
+              <div>
+                <h3 className={`text-[16px] font-semibold leading-tight tracking-tight transition-colors ${i === active ? 'text-slate-900' : 'text-slate-600'}`}>
+                  {step.title}
+                </h3>
+                {i === active && (
+                  <p className="text-slate-600 text-[14px] leading-[1.65] mt-1.5">{step.text}</p>
+                )}
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
