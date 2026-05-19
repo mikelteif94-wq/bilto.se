@@ -99,6 +99,14 @@ const LOCAL_IMAGES: Record<string, string> = {
   mercedes_eqc: '/getImage_(7).webp',
   bmw_2_series: '/getImage_(8).webp',
   skoda_superb: '/getImage_(9).webp',
+  volvo_xc90: '/getImage_(11).webp',
+  volvo_ex40: '/getImage_(12).webp',
+  volvo_ex90: '/getImage_(13).webp',
+  volvo_c40: '/getImage_(14).webp',
+  volvo_c40_recharge: '/getImage_(14).webp',
+  volvo_ec40: '/getImage_(14).webp',
+  volvo_v60: '/getImage_(15).webp',
+  volvo_v60_cross_country: '/getImage_(15).webp',
 };
 
 const CURATED_IDS = [
