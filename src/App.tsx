@@ -612,6 +612,11 @@ function App() {
           setPath('/');
           setPublicRoute({ page: 'home' });
         }}
+        onSell={(reg) => {
+          window.history.pushState({}, '', '/');
+          setPath('/');
+          setPublicRoute({ page: 'sell', regnummer: reg });
+        }}
       />
     );
   }
@@ -640,6 +645,7 @@ function App() {
             setPath('/');
             setPublicRoute({ page: 'home' });
           }}
+          onSell={(reg) => setPublicRoute({ page: 'sell', regnummer: reg })}
         />
       )}
       {publicRoute.page === 'sell' && (

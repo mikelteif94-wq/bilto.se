@@ -36,6 +36,7 @@ import RegInput from '../components/RegInput';
 interface HowItWorksProps {
   onBackHome: () => void;
   onQuickLead?: (regnummer: string, telefon: string) => void;
+  onSell?: (regnummer: string) => void;
   showSeo?: boolean;
   pageTitle?: string;
 }
@@ -99,7 +100,7 @@ const FAQ = [
   },
 ];
 
-export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: HowItWorksProps) {
+export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTitle }: HowItWorksProps) {
   useEffect(() => {
     if (pageTitle) document.title = pageTitle;
   }, [pageTitle]);
@@ -234,7 +235,11 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
       return;
     }
     setFormError('');
-    openDrawer(reg);
+    if (onSell) {
+      onSell(reg);
+    } else {
+      openDrawer(reg);
+    }
   };
 
   const steps = DIRECT_STEPS;
