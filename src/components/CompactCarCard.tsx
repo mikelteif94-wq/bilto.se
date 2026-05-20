@@ -9,6 +9,8 @@ interface CompactCarCardProps {
   expertComment?: string;
   fuelLabel?: string;
   estimatedMonthly?: number;
+  monthlySaving?: number;
+  equityFreed?: number;
   isSelected?: boolean;
   isCompared?: boolean;
   onSelect?: () => void;
@@ -44,9 +46,14 @@ function RatingBar({ rating }: { rating: number }) {
   );
 }
 
+function formatSEK(n: number) {
+  return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
+}
+
 export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
-  fuelLabel, estimatedMonthly, isSelected, isCompared,
+  fuelLabel, estimatedMonthly, monthlySaving, equityFreed,
+  isSelected, isCompared,
   onSelect, onCompare, onNegotiate, onDetail, index = 0, disableMotion,
 }: CompactCarCardProps) {
 
@@ -105,6 +112,18 @@ export default function CompactCarCard({
             {isSelected && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
           </div>
         )}
+
+        {/* Equity/saving badges */}
+        {monthlySaving != null && monthlySaving > 0 && (
+          <div className="absolute top-2 right-2 bg-emerald-500 text-white px-2 py-0.5 rounded-md text-[10px] font-bold shadow-sm">
+            -{formatSEK(monthlySaving)} kr/mån
+          </div>
+        )}
+        {equityFreed != null && equityFreed > 0 && !(monthlySaving && monthlySaving > 0) && (
+          <div className="absolute top-2 right-2 bg-emerald-500 text-white px-2 py-0.5 rounded-md text-[10px] font-bold shadow-sm">
+            +{formatSEK(equityFreed)} kr tillbaka
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -120,6 +139,18 @@ export default function CompactCarCard({
             ca {estimatedMonthly.toLocaleString('sv-SE')} kr/mån
           </p>
         ) : null}
+
+        {monthlySaving != null && monthlySaving > 0 && (
+          <p className="mt-0.5 text-[11px] font-semibold text-emerald-600">
+            Du sparar {formatSEK(monthlySaving)} kr/mån
+          </p>
+        )}
+
+        {equityFreed != null && equityFreed > 0 && (
+          <p className="mt-0.5 text-[11px] font-semibold text-emerald-600">
+            +{formatSEK(equityFreed)} kr frigörs vid byte
+          </p>
+        )}
 
         {expertComment && (
           <p className="mt-1 text-[11px] text-slate-400 leading-snug line-clamp-2 min-h-[28px]">

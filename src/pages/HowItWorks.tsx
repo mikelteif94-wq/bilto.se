@@ -24,6 +24,7 @@ import ReviewsSection from '../components/ReviewsSection';
 import CompactCarCard from '../components/CompactCarCard';
 import CompareDrawer from '../components/CompareDrawer';
 import BuyDrawer from '../components/BuyDrawer';
+import { EquityFlow } from '../components/equity/EquityFlow';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import { getAllComparisonCars, type ComparisonCar } from '../lib/comparison';
 import { useCarImages } from '../hooks/useCarImages';
@@ -588,7 +589,7 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-2 flex-wrap mb-8">
+          <div className="flex items-center justify-center gap-2 flex-wrap mb-5">
             {BUDGET_PILLS.map((pill) => {
               const isActive = activeBudgetPill === pill.max;
               return (
@@ -606,6 +607,14 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 </button>
               );
             })}
+          </div>
+
+          {/* Equity flow — inline card below budget pills */}
+          <div className="mb-8 max-w-md mx-auto">
+            <EquityFlow
+              compact
+              onNegotiate={(carLabel) => openDrawer(carLabel)}
+            />
           </div>
 
           {(() => {

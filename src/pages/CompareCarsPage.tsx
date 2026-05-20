@@ -16,6 +16,7 @@ import MobileMenu from '../components/MobileMenu';
 import CompactCarCard from '../components/CompactCarCard';
 import CompareDrawer from '../components/CompareDrawer';
 import BuyDrawer from '../components/BuyDrawer';
+import { EquityFlow } from '../components/equity/EquityFlow';
 import { SiteFooter } from './BrokerageLanding';
 import RegInput from '../components/RegInput';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
@@ -1186,6 +1187,14 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
                     <p className="text-[14px] text-slate-400 mt-3 text-center lg:text-left">Tar 60 sekunder · Helt gratis</p>
+
+                    {/* Equity quiz CTA */}
+                    <div className="mt-4 max-w-sm mx-auto lg:mx-0">
+                      <EquityFlow
+                        compact
+                        onNegotiate={(carLabel) => openBuyDrawer(carLabel, undefined, false)}
+                      />
+                    </div>
                   </div>
                   <div className="hidden lg:grid lg:grid-cols-2 lg:gap-4 lg:w-[380px] lg:shrink-0">
                     {['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'hyundai_ioniq5'].map((cid, i) => {
