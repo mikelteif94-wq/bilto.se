@@ -87,7 +87,7 @@ const DIRECT_STEPS: Step[] = [
 ];
 
 const DIRECT_STEP_IMAGES = [
-  '/2359e7bc-c8c6-42c9-a59b-eca447ce4e6b.png',
+  '/ChatGPT_Image_20_maj_2026_02_01_19.png',
   '/e66827b0-71c5-48a7-8d91-5123f7db4a0d.png',
   '/55e96830-06e0-436b-8559-63a5b9cf41af.png',
 ];
