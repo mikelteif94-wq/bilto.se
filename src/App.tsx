@@ -150,10 +150,7 @@ function App() {
     }
     let cancelled = false;
     supabase
-      .from('admin_users')
-      .select('id')
-      .eq('id', session.user.id)
-      .maybeSingle()
+      .rpc('get_is_admin')
       .then(({ data }) => {
         if (!cancelled) setAdminVerified(!!data);
       });
