@@ -643,11 +643,9 @@ function MonthlyCalcSection() {
         </div>
 
         {/* Bilpris slider */}
-        <div className="mb-6">
-          <div className="flex justify-between items-baseline mb-2">
-            <label className="text-[13px] font-semibold text-slate-700">Bilpris</label>
-            <span className="text-[15px] font-bold text-slate-900 tabular-nums">{price.toLocaleString('sv-SE')} kr</span>
-          </div>
+        <div className="mb-6 text-center">
+          <label className="text-[13px] font-semibold text-slate-700 block mb-1">Bilpris</label>
+          <span className="text-[22px] font-extrabold text-slate-900 tabular-nums block mb-3">{price.toLocaleString('sv-SE')} kr</span>
           <input
             type="range"
             min={50000}
@@ -665,7 +663,7 @@ function MonthlyCalcSection() {
 
         {/* Residual value toggle */}
         <div className="mb-6">
-          <label className="text-[13px] font-semibold text-slate-700 block mb-2.5">Restvärde</label>
+          <label className="text-[13px] font-semibold text-slate-700 block mb-2.5 text-center">Restvärde</label>
           <div className="flex gap-3">
             {RESIDUAL_OPTIONS.map(opt => (
               <label
