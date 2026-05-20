@@ -464,9 +464,6 @@ function ExploreDetailsStep({ initialData, onNext }: { initialData: BuyDetailsDa
 }
 
 export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, onNext, onExplore, onQuiz }: BuyDetailsStepProps) {
-  if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} />;
-  if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} />;
-
   const [d, setD] = useState<BuyDetailsData>({
     ...initialData,
     carModel: initialData.carModel || initialBil || '',
@@ -478,6 +475,9 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     maxMiltal: initialData.maxMiltal || '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} />;
+  if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} />;
 
   const set = (key: keyof BuyDetailsData, value: string) => {
     setD(prev => {
