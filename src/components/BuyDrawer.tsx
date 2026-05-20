@@ -519,7 +519,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: Bu
                   <div className="max-w-sm mx-auto space-y-3 text-left mb-8">
                     {[
                       { label: 'Förfrågan mottagen', sub: 'Vi har all information vi behöver.', done: true },
-                      { label: 'Vi hör av oss', sub: contact.preferredTime ? `Klockan ${contact.preferredTime === 'morning' ? '08–12' : contact.preferredTime === 'lunch' ? '12–14' : contact.preferredTime === 'afternoon' ? '14–17' : '17–20'}` : 'Inom en arbetsdag', done: false },
+                      { label: 'Vi hör av oss', sub: contact.preferredTime === 'morning' ? 'Förmiddag' : contact.preferredTime === 'afternoon' ? 'Eftermiddag' : 'Inom en arbetsdag', done: false },
                       { label: 'Vi förhandlar och levererar', sub: 'Du lutar dig tillbaka — vi sköter resten.', done: false },
                     ].map((item, i) => (
                       <div key={i} className="flex items-start gap-3 px-4 py-3 bg-slate-50 rounded-xl">

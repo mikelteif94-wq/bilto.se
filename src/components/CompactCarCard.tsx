@@ -1,5 +1,4 @@
 import { Star, Car, Check, ChevronRight, GitCompareArrows } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface CompactCarCardProps {
   name: string;
@@ -20,6 +19,7 @@ interface CompactCarCardProps {
   index?: number;
   disableMotion?: boolean;
 }
+
 
 function RatingBar({ rating }: { rating: number }) {
   // rating is 5–10 scale
@@ -54,7 +54,7 @@ export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
   fuelLabel, estimatedMonthly, monthlySaving, equityFreed,
   isSelected, isCompared,
-  onSelect, onCompare, onNegotiate, onDetail, index = 0, disableMotion,
+  onSelect, onCompare, onNegotiate, onDetail,
 }: CompactCarCardProps) {
 
   const handleClick = () => {
@@ -63,11 +63,7 @@ export default function CompactCarCard({
   };
 
   return (
-    <motion.div
-      initial={disableMotion ? false : { opacity: 0, y: 16 }}
-      animate={disableMotion ? { opacity: 1, y: 0 } : undefined}
-      {...(!disableMotion && { whileInView: { opacity: 1, y: 0 }, viewport: { once: true } })}
-      transition={{ duration: disableMotion ? 0 : 0.35, delay: disableMotion ? 0 : index * 0.04 }}
+    <div
       className={`group relative bg-[#f0f7ff] rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
         isSelected
           ? 'ring-2 ring-[#0e6efe] shadow-[0_0_0_4px_rgba(14,110,254,0.12)]'
@@ -193,6 +189,6 @@ export default function CompactCarCard({
           )}
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

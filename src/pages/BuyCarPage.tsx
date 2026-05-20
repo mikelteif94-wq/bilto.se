@@ -359,9 +359,7 @@ export default function BuyCarPage({
                   <div>
                     <p className="text-[14px] font-semibold text-slate-900">Vi hör av oss</p>
                     <p className="text-[13px] text-slate-500">
-                      {contact.preferredTime
-                        ? `Klockan ${contact.preferredTime === 'morning' ? '08–12' : contact.preferredTime === 'lunch' ? '12–14' : contact.preferredTime === 'afternoon' ? '14–17' : '17–20'}`
-                        : 'Inom en arbetsdag'}
+                      {contact.preferredTime === 'morning' ? 'Förmiddag' : contact.preferredTime === 'afternoon' ? 'Eftermiddag' : 'Inom en arbetsdag'}
                     </p>
                   </div>
                 </div>

@@ -3,10 +3,9 @@ import FieldError from './FieldError';
 import { validateSwedishPhone } from '../../lib/utils';
 
 const TIMES = [
-  { value: 'morning', label: '08–12' },
-  { value: 'lunch', label: '12–14' },
-  { value: 'afternoon', label: '14–17' },
-  { value: 'evening', label: '17–20' },
+  { value: 'whenever', label: 'När som helst' },
+  { value: 'morning', label: 'Förmiddag' },
+  { value: 'afternoon', label: 'Eftermiddag' },
 ];
 
 export interface BuyContactData {
