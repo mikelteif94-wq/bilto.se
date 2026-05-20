@@ -234,11 +234,7 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
       return;
     }
     setFormError('');
-    if (onQuickLead) {
-      onQuickLead(reg, '');
-    } else {
-      openDrawer(reg);
-    }
+    openDrawer(reg);
   };
 
   const steps = DIRECT_STEPS;
