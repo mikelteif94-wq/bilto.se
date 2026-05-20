@@ -612,6 +612,11 @@ function App() {
           setPath('/');
           setPublicRoute({ page: 'home' });
         }}
+        onQuickLead={(regnummer) => {
+          window.history.pushState({}, '', '/salj');
+          setPath('/salj');
+          setPublicRoute({ page: 'sell', regnummer });
+        }}
       />
     );
   }
@@ -639,6 +644,11 @@ function App() {
             window.history.pushState({}, '', '/');
             setPath('/');
             setPublicRoute({ page: 'home' });
+          }}
+          onQuickLead={(regnummer) => {
+            window.history.pushState({}, '', '/salj');
+            setPath('/salj');
+            setPublicRoute({ page: 'sell', regnummer });
           }}
         />
       )}

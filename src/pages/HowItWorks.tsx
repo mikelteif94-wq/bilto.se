@@ -234,7 +234,11 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
       return;
     }
     setFormError('');
-    openDrawer(reg);
+    if (onQuickLead) {
+      onQuickLead(reg, '');
+    } else {
+      openDrawer(reg);
+    }
   };
 
   const steps = DIRECT_STEPS;
