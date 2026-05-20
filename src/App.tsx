@@ -603,14 +603,16 @@ function App() {
   }
 
   if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
-    if (publicRoute.page === 'sell') {
+    const sellParams = new URLSearchParams(window.location.search);
+    const sellReg = sellParams.get('reg') || '';
+    if (sellReg) {
       return (
         <SellCarPage
-          initialRegnummer={publicRoute.regnummer}
-          initialTelefon={publicRoute.telefon}
-          initialMiltal={publicRoute.miltal}
+          initialRegnummer={sellReg}
           onBack={() => {
-            setPublicRoute({ page: 'home' });
+            window.history.pushState({}, '', path);
+            window.history.replaceState({}, '', path.replace(/\?.*$/, ''));
+            setPath(path.replace(/\?.*$/, ''));
           }}
           onNavigateTrade={(reg, mil) => {
             const params = new URLSearchParams({ typ: 'trade' });
@@ -618,7 +620,6 @@ function App() {
             if (mil) params.set('mil', mil.toString());
             window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
             setPath('/kop-bil/bestall');
-            setPublicRoute({ page: 'home' });
           }}
         />
       );
@@ -633,7 +634,8 @@ function App() {
           setPublicRoute({ page: 'home' });
         }}
         onQuickLead={(regnummer) => {
-          setPublicRoute({ page: 'sell', regnummer });
+          window.history.pushState({}, '', `/salj-din-bil?reg=${encodeURIComponent(regnummer)}`);
+          setPath('/salj-din-bil');
         }}
       />
     );
@@ -664,27 +666,8 @@ function App() {
             setPublicRoute({ page: 'home' });
           }}
           onQuickLead={(regnummer) => {
-            setPublicRoute({ page: 'sell', regnummer });
-          }}
-        />
-      )}
-      {publicRoute.page === 'sell' && (
-        <SellCarPage
-          initialRegnummer={publicRoute.regnummer}
-          initialTelefon={publicRoute.telefon}
-          initialMiltal={publicRoute.miltal}
-          onBack={() => {
-            window.history.pushState({}, '', '/');
-            setPath('/');
-            setPublicRoute({ page: 'home' });
-          }}
-          onNavigateTrade={(reg, mil) => {
-            const params = new URLSearchParams({ typ: 'trade' });
-            if (reg) params.set('reg', reg);
-            if (mil) params.set('mil', mil.toString());
-            window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
-            setPath('/kop-bil/bestall');
-            setPublicRoute({ page: 'home' });
+            window.history.pushState({}, '', `/salj-din-bil?reg=${encodeURIComponent(regnummer)}`);
+            setPath('/salj-din-bil');
           }}
         />
       )}
