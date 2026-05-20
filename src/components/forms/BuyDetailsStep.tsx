@@ -695,37 +695,45 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       {track === 'searching' && !lockedCar && (
         <>
           {(onExplore || onQuiz) && (
-            <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-              <p className="text-[13px] font-semibold text-slate-700 mb-3">Inte redo att fylla i? Du kan också:</p>
-              <div className="flex flex-col gap-2">
+            <div className="mb-6">
+              <p className="text-[12.5px] font-semibold uppercase tracking-wider text-slate-400 mb-3">Inte redo att fylla i? Du kan också:</p>
+              <div className="flex flex-col gap-2.5">
                 {onExplore && (
                   <button
                     type="button"
                     onClick={onExplore}
-                    className="flex items-center gap-3 px-4 h-11 rounded-xl bg-white border border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/5 transition-all text-left group"
+                    className="group flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-white border border-slate-200 hover:border-[#0e6efe]/40 hover:shadow-md hover:shadow-[#0e6efe]/8 transition-all duration-200 text-left"
                   >
-                    <div className="w-7 h-7 rounded-full bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors">
-                      <Search className="w-3.5 h-3.5 text-[#0e6efe]" strokeWidth={2.2} />
+                    <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors duration-200">
+                      <Search className="w-4.5 h-4.5 text-[#0e6efe]" strokeWidth={2} />
                     </div>
-                    <span className="text-[13.5px] font-medium text-slate-800">Utforska och jämför bilar</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[14px] font-semibold text-slate-900 leading-tight">Utforska och jämför bilar</p>
+                      <p className="text-[12px] text-slate-400 mt-0.5">Se specifikationer och priser sida vid sida</p>
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] -rotate-90 shrink-0 transition-colors duration-200" />
                   </button>
                 )}
                 {onQuiz && (
                   <button
                     type="button"
                     onClick={onQuiz}
-                    className="flex items-center gap-3 px-4 h-11 rounded-xl bg-white border border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/5 transition-all text-left group"
+                    className="group flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-white border border-slate-200 hover:border-[#0e6efe]/40 hover:shadow-md hover:shadow-[#0e6efe]/8 transition-all duration-200 text-left"
                   >
-                    <div className="w-7 h-7 rounded-full bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors">
-                      <Sparkles className="w-3.5 h-3.5 text-[#0e6efe]" strokeWidth={2.2} />
+                    <div className="w-10 h-10 rounded-xl bg-amber-50 group-hover:bg-amber-100 flex items-center justify-center shrink-0 transition-colors duration-200">
+                      <Sparkles className="w-4.5 h-4.5 text-amber-500" strokeWidth={2} />
                     </div>
-                    <span className="text-[13.5px] font-medium text-slate-800">Testa bilmatch — hitta r&auml;tt modell</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[14px] font-semibold text-slate-900 leading-tight">Testa bilmatch</p>
+                      <p className="text-[12px] text-slate-400 mt-0.5">Hitta rätt modell på 2 minuter</p>
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] -rotate-90 shrink-0 transition-colors duration-200" />
                   </button>
                 )}
               </div>
-              <div className="mt-3 flex items-center gap-2">
+              <div className="mt-5 flex items-center gap-3">
                 <div className="flex-1 h-px bg-slate-200" />
-                <span className="text-[11px] text-slate-400 font-medium">eller fortsätt nedan</span>
+                <span className="text-[11.5px] text-slate-400 font-medium">eller fortsätt nedan</span>
                 <div className="flex-1 h-px bg-slate-200" />
               </div>
             </div>
