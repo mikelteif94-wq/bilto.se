@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { User, Menu, Search, Phone, XCircle, Car, Sparkles, Handshake, Mail, ChevronRight } from 'lucide-react';
+import { User, Menu, Phone, XCircle, Sparkles, Handshake, Mail, ChevronRight } from 'lucide-react';
 import { validateSwedishPhone } from '../lib/utils';
 
 import { supabase } from '../lib/supabase';
@@ -7,6 +7,7 @@ import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
 import SeoCarsSection from '../components/SeoCarsSection';
 import RegInput from '../components/RegInput';
+import HeroCarChat from '../components/HeroCarChat';
 
 interface HomePageProps {
   onNavigate: (regnummer: string, telefon: string) => void;
@@ -272,78 +273,15 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
                 <div className="px-4 py-4">
                   {heroTab === 'hitta' ? (
-                    <div ref={carSearchRef} className="relative">
-                      <div className="flex items-center h-12 sm:h-14 rounded-xl bg-white overflow-hidden shadow-sm ring-2 ring-transparent focus-within:ring-[#0e6efe]/40 transition-all">
-                        <span className="flex items-center justify-center w-12 shrink-0">
-                          <Search className="w-4 h-4 text-slate-400" />
-                        </span>
-                        <input
-                          type="text"
-                          value={carQuery}
-                          onChange={(e) => handleCarQueryChange(e.target.value)}
-                          onFocus={() => carQuery.trim() && setShowSuggestions(true)}
-                          onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
-                          placeholder="Sök märke eller modell..."
-                          className="flex-1 min-w-0 w-0 h-full pr-2 text-[15px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
-                          autoFocus={false}
-                        />
-                        <button
-                          type="button"
-                          onClick={handleCarSearch}
-                          className="h-10 sm:h-11 mx-1 px-4 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-95 transition rounded-lg shrink-0 text-white font-semibold text-[13px] gap-1.5"
-                        >
-                          {carSearchLoading
-                            ? <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                            : <>Sök</>
-                          }
-                        </button>
-                      </div>
-                      {showSuggestions && carSuggestions.length > 0 && (
-                        <div className="absolute left-0 right-0 top-full mt-1 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
-                          {carSuggestions.map((s, i) => (
-                            <button
-                              key={i}
-                              type="button"
-                              onClick={() => handleCarSelect(s.make, s.model)}
-                              className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition text-[14px] text-slate-800 border-b border-slate-100 last:border-0"
-                            >
-                              <Car className="w-4 h-4 text-slate-400 shrink-0" />
-                              <span className="font-semibold">{s.make}</span>
-                              <span className="text-slate-500">{s.model}</span>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                      <div className="mt-3">
-                        <p className="text-white/50 text-[11px] mb-2">Populara sokning</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {['Tesla Model 3', 'Volvo XC60', 'BMW 3-serie', 'Audi A4'].map((suggestion) => (
-                            <button
-                              key={suggestion}
-                              type="button"
-                              onClick={() => {
-                                const [make, ...rest] = suggestion.split(' ');
-                                handleCarSelect(make, rest.join(' '));
-                              }}
-                              className="text-[11px] sm:text-[12px] text-white/70 hover:text-white bg-white/10 hover:bg-white/20 border border-white/15 rounded-full px-3 py-1 transition"
-                            >
-                              {suggestion}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="mt-3 pt-3 border-t border-white/10">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            window.history.pushState({}, '', '/kop-bil/bestall');
-                            window.dispatchEvent(new PopStateEvent('popstate'));
-                          }}
-                          className="flex items-center gap-1.5 text-white/60 hover:text-white text-[12px] transition"
-                        >
-                          eller låt oss hjälpa dig hitta en bil <ChevronRight className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
+                    <div className="-mx-4 -mb-4 rounded-b-2xl overflow-hidden bg-white">
+                      <HeroCarChat
+                        onNegotiate={(carName) => {
+                          const params = new URLSearchParams({ bil: carName });
+                          window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
+                          window.dispatchEvent(new PopStateEvent('popstate'));
+                        }}
+                        variant="compact"
+                      />
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit}>
