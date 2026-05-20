@@ -344,87 +344,77 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
         </div>
       </section>
 
-      <section className="hidden lg:block relative bg-[#0e6efe] pt-28 pb-32 overflow-hidden">
-        <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60" />
-        <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50" />
-        <img
-          src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
-          alt=""
-          aria-hidden="true"
-          className="absolute left-1/2 -translate-x-1/2 top-0 w-[780px] h-[780px] object-contain pointer-events-none select-none opacity-40"
-        />
+      <section className="hidden lg:flex relative bg-[#0e6efe] pt-32 pb-36 overflow-hidden flex-col items-center text-center">
+        <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-40" />
+        <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-35" />
 
-        <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
-          <div>
-            <h1 className="text-white text-[56px] font-semibold leading-[1.05] tracking-tight">
-              Din bilaffär börjar här
-            </h1>
+        {/* Big heading */}
+        <h1 className="relative text-white font-black text-[72px] xl:text-[88px] leading-[1.0] tracking-tight uppercase mb-12 max-w-5xl px-6">
+          Sälj, köp &amp; värdera<br />din bil — gratis
+        </h1>
 
-            <ul className="mt-8 space-y-4 text-[19px] font-medium text-white">
-              <li className="flex items-center gap-3">
-                <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Sälj din bil och få bästa budet
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Köp bil och vi förhandlar priset åt dig
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
-                Byt bil och vi sköter allt från start till mål
-              </li>
-            </ul>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden max-w-[440px] w-full justify-self-end">
-            {/* Tab strip */}
-            <div className="flex border-b border-slate-100">
-              <div className="flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#0e6efe] relative">
-                Sälj din bil
-                <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-[#0e6efe] rounded-t-full" />
-              </div>
-              <div className="w-px bg-slate-100 my-2" />
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                Hitta bil
-              </button>
+        {/* Dark card */}
+        <div className="relative w-full max-w-[700px] mx-auto px-6">
+          <div className="bg-[#1a1a2e]/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.45)]">
+            {/* Tabs */}
+            <div className="flex border-b border-white/10">
+              {[
+                { key: 'salj', label: 'Sälj din bil' },
+                { key: 'hitta', label: 'Hitta bil' },
+                { key: 'vardera', label: 'Värdera bilen gratis' },
+              ].map((t, i) => (
+                <button
+                  key={t.key}
+                  type="button"
+                  onClick={() => {
+                    if (t.key === 'hitta') {
+                      window.history.pushState({}, '', '/kop-bil');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }
+                  }}
+                  className={`flex-1 py-4 text-[14px] font-bold tracking-wide transition-colors duration-150 ${
+                    i === 0
+                      ? 'text-white border-b-2 border-white -mb-px'
+                      : 'text-white/40 hover:text-white/70'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
             </div>
 
-            <div className="p-4">
-              <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2">
-                <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
+            {/* Form */}
+            <div className="px-7 py-6">
+              <form onSubmit={handleHeroSubmit}>
+                <div className="flex gap-3 items-stretch">
+                  <div className="flex-1">
+                    <RegInput size="lg" dark value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
+                  </div>
+                  <button
+                    type="submit"
+                    className="h-14 px-8 rounded-xl bg-white hover:bg-slate-100 text-[#0e6efe] font-bold text-[15px] transition shrink-0 whitespace-nowrap shadow-sm"
+                  >
+                    Värdera bilen gratis
+                  </button>
+                </div>
                 {formError && (
-                  <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
-                    <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
-                    <span className="leading-snug">{formError}</span>
+                  <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-400/30 text-white text-[13px] font-medium px-3.5 py-2.5">
+                    <XCircle className="w-4 h-4 text-red-300 shrink-0" strokeWidth={2.5} />
+                    <span>{formError}</span>
                   </div>
                 )}
-                <button
-                  type="submit"
-                  className="h-10 w-full rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5 shadow-[0_4px_14px_-4px_rgba(14,110,254,0.55)]"
-                >
-                  Värdera bilen gratis
-                  <ArrowRight className="w-3.5 h-3.5 opacity-80" />
-                </button>
               </form>
 
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil?quiz=start');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="mt-2.5 w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
-              >
-                Eller låt oss hjälpa dig hitta en bil.
-              </button>
-
+              <div className="mt-4 text-center text-[14px] text-white/45">
+                Eller låt oss hjälpa dig hitta en bil.{' '}
+                <button
+                  type="button"
+                  onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                  className="text-white font-semibold underline underline-offset-2 hover:text-white/80 transition"
+                >
+                  Hitta en bil
+                </button>
+              </div>
             </div>
           </div>
         </div>
