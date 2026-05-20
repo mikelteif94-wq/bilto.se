@@ -87,7 +87,7 @@ const DIRECT_STEPS: Step[] = [
 ];
 
 const DIRECT_STEP_IMAGES = [
-  '/ChatGPT_Image_19_maj_2026_23_46_06.png',
+  '/2359e7bc-c8c6-42c9-a59b-eca447ce4e6b.png',
   '/e66827b0-71c5-48a7-8d91-5123f7db4a0d.png',
   '/55e96830-06e0-436b-8559-63a5b9cf41af.png',
 ];
@@ -339,6 +339,17 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                 </button>
               </form>
 
+              <button
+                type="button"
+                onClick={() => {
+                  window.history.pushState({}, '', '/kop-bil?quiz=start');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }}
+                className="mt-2.5 w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
+              >
+                Eller låt oss hjälpa dig hitta en bil.
+              </button>
+
             </div>
           </div>
         </div>
@@ -413,6 +424,17 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
                   <ArrowRight className="w-3.5 h-3.5 opacity-80" />
                 </button>
               </form>
+
+              <button
+                type="button"
+                onClick={() => {
+                  window.history.pushState({}, '', '/kop-bil?quiz=start');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }}
+                className="mt-2.5 w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
+              >
+                Eller låt oss hjälpa dig hitta en bil.
+              </button>
 
             </div>
           </div>
