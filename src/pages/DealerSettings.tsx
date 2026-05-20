@@ -14,6 +14,9 @@ import {
   UserPlus,
   Trash2,
   Crown,
+  LayoutDashboard,
+  Car as CarIcon,
+  Settings as SettingsIcon,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ErrorBanner from '../components/ErrorBanner';
@@ -21,8 +24,12 @@ import PortalLayout from '../components/PortalLayout';
 
 interface DealerSettingsProps {
   dealerId: string;
+  foretagsnamn: string;
   isOwner: boolean;
   onBack: () => void;
+  onNavigateOverview?: () => void;
+  onNavigateCars?: () => void;
+  onLogout?: () => void;
 }
 
 interface DealerInfo {
@@ -44,7 +51,7 @@ interface Member {
   user_id: string | null;
 }
 
-export default function DealerSettings({ dealerId, isOwner, onBack }: DealerSettingsProps) {
+export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack, onNavigateOverview, onNavigateCars, onLogout }: DealerSettingsProps) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savedProfile, setSavedProfile] = useState(false);
@@ -240,18 +247,19 @@ export default function DealerSettings({ dealerId, isOwner, onBack }: DealerSett
     setMembers((prev) => prev.filter((m) => m.id !== memberId));
   };
 
-  const breadcrumbEl = (
-    <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] text-slate-500 hover:text-slate-900 transition font-medium">
-      <ChevronLeft className="w-4 h-4" />
-      Tillbaka
-    </button>
-  );
+  const navItems = [
+    ...(onNavigateOverview ? [{ icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', onClick: onNavigateOverview }] : []),
+    ...(onNavigateCars ? [{ icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Aktiva uppdrag', onClick: onNavigateCars }] : []),
+    { icon: <SettingsIcon className="w-[18px] h-[18px]" />, label: 'Inställningar', active: true },
+  ];
 
   return (
     <PortalLayout
-      navItems={[]}
+      navItems={navItems}
+      identity={foretagsnamn}
       identityRole="Handlare"
-      breadcrumb={breadcrumbEl}
+      onLogout={onLogout}
+      pageTitle="Inställningar"
     >
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
         <ErrorBanner message={error} />

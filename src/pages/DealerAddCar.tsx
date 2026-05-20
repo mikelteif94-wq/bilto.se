@@ -183,6 +183,7 @@ export default function DealerAddCar({
   return (
     <PortalLayout
       navItems={[]}
+      identity={foretagsnamn}
       identityRole="Handlare"
       breadcrumb={breadcrumbEl}
     >

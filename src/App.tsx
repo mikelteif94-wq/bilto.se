@@ -783,8 +783,15 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
     return (
       <DealerSettings
         dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
         isOwner={dealer.isOwner}
         onBack={() => navigate('/handlare/oversikt')}
+        onNavigateOverview={() => navigate('/handlare/oversikt')}
+        onNavigateCars={() => navigate('/handlare/bilar')}
+        onLogout={async () => {
+          await supabase.auth.signOut();
+          onLoggedOut();
+        }}
       />
     );
   }
