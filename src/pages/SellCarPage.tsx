@@ -53,7 +53,7 @@ export default function SellCarPage({
   onNavigateTrade,
 }: SellCarPageProps) {
   const [salesType, setSalesType] = useState<'auction'>('auction');
-  const [step, setStep] = useState<FormStep>('track');
+  const [step, setStep] = useState<FormStep>('condition');
   const [car, setCar] = useState<CarData>({
     regnummer: initialRegnummer,
     marke: '',
@@ -122,7 +122,7 @@ export default function SellCarPage({
     setGuidanceDone(true);
   };
 
-  const stepFlow: FormStep[] = ['track', 'condition', 'equipment', 'images', 'contact', 'confirm'];
+  const stepFlow: FormStep[] = ['condition', 'equipment', 'images', 'contact', 'confirm'];
 
   const currentIndex = stepFlow.indexOf(step);
   const totalSteps = stepFlow.length;
