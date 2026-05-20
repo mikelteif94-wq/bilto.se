@@ -23,6 +23,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     }
   }, [pageTitle]);
   const [tab, setTab] = useState<'direkt' | 'maxpris'>('direkt');
+  const [heroTab, setHeroTab] = useState<'salj' | 'hitta' | 'hjalp'>('salj');
   const [regnummer, setRegnummer] = useState('');
   const [telefon, setTelefon] = useState('');
   const [email, setEmail] = useState('');
@@ -203,167 +204,249 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       </header>
 
       {/* ── HERO ── */}
-      <section className="relative pt-16" style={{ backgroundColor: '#1a1a2e' }}>
-        <div className="relative w-full overflow-hidden" style={{ minHeight: '100svh' }}>
-          <img
-            src={HERO_IMAGE}
-            alt=""
-            fetchPriority="high"
-            decoding="async"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: 'center 75%' }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/55 to-black/80" />
+      <section className="relative bg-[#0e6efe] pt-16 overflow-hidden">
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
 
-          {/* ── MOBILE layout ── */}
-          <div className="lg:hidden relative z-10 flex flex-col items-center justify-center min-h-[100svh] px-5 py-24 text-center">
-            <h1 className="text-white font-bold leading-[1.05] text-[32px] sm:text-[52px] tracking-tight max-w-3xl drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
-              {heroTitleMobile}
-            </h1>
-            <p className="text-white/80 mt-4 text-[15px] sm:text-[20px] font-medium max-w-xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-              {heroSubtitleMobile}
-            </p>
-            <div className="mt-8 w-full max-w-sm sm:max-w-md">
-              <div className="flex border-b border-white/20 mb-5">
-                <span className="flex-1 pb-3 text-center text-white font-bold text-[13px] tracking-[0.08em] uppercase border-b-2 border-white">
-                  Sälj din bil
-                </span>
-                <button
-                  type="button"
-                  onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                  className="flex-1 pb-3 text-center text-white/45 hover:text-white/70 font-bold text-[13px] tracking-[0.08em] uppercase transition-colors duration-150"
-                >
-                  Hitta bil
-                </button>
-              </div>
-              <form onSubmit={handleSubmit}>
-                <div className="flex flex-col gap-2.5">
-                  <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-                  <div className="flex items-center h-12 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden focus-within:border-white/50 transition">
-                    <span className="flex items-center justify-center w-11 shrink-0">
-                      <Phone className="w-4 h-4 text-white/60" />
-                    </span>
-                    <input
-                      type="tel"
-                      value={telefon}
-                      onChange={(e) => { setTelefon(e.target.value); setError(''); }}
-                      placeholder="Telefonnummer"
-                      autoComplete="tel"
-                      disabled={submitting}
-                      className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/40"
-                    />
-                  </div>
-                  <button type="submit" disabled={submitting} className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]">
-                    {submitting ? '...' : 'Värdera bilen gratis'}
-                  </button>
-                </div>
-                {error && (
-                  <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-400/30 text-white text-[13px] font-medium px-3.5 py-2.5">
-                    <XCircle className="w-4 h-4 text-red-300 shrink-0" strokeWidth={2.5} />
-                    <span>{error}</span>
-                  </div>
-                )}
-              </form>
+        <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-10">
+          {/* ── DESKTOP ── */}
+          <div className="hidden lg:block">
+            {/* Big heading */}
+            <div className="pt-16 pb-10 text-center">
+              <h1 className="text-white font-black leading-[0.93] text-[72px] xl:text-[88px] tracking-[-2px] uppercase">
+                Sälj, köp &amp; värdera<br />din bil — helt gratis
+              </h1>
             </div>
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-40">
-              <div className="w-px h-8 bg-white animate-[pulse_2s_ease-in-out_infinite]" />
-            </div>
-          </div>
 
-          {/* ── DESKTOP layout (Carwow-style) ── */}
-          <div className="hidden lg:flex relative z-10 flex-col items-center justify-center min-h-[100svh] px-6 py-28 text-center">
-            {/* Big heading above the card */}
-            <h1 className="text-white font-black leading-[1.0] text-[64px] xl:text-[80px] tracking-tight max-w-4xl uppercase drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)] mb-10">
-              Sälj, köp &amp; värdera<br />din bil — gratis
-            </h1>
-
-            {/* Dark card */}
-            <div className="w-full max-w-[680px] bg-[#1c1c1c]/95 backdrop-blur-md rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)]">
-              {/* Tab bar */}
+            {/* Dark search card */}
+            <div className="mx-auto w-full max-w-[760px] bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.45)] mb-0">
+              {/* Tabs */}
               <div className="flex border-b border-white/10">
-                {[
-                  { key: 'salj', label: 'Sälj din bil' },
-                  { key: 'hitta', label: 'Hitta bil' },
-                  { key: 'vardera', label: 'Värdera bilen gratis' },
-                ].map((t) => (
-                  <button
-                    key={t.key}
-                    type="button"
-                    onClick={() => {
-                      if (t.key === 'hitta') {
-                        window.history.pushState({}, '', '/kop-bil');
-                        window.dispatchEvent(new PopStateEvent('popstate'));
-                      } else {
-                        setTab('direkt');
-                      }
-                    }}
-                    className={`flex-1 py-4 text-[14px] font-bold tracking-wide transition-colors duration-150 ${
-                      (t.key === 'salj' || t.key === 'vardera') && tab === 'direkt'
-                        ? 'text-white border-b-2 border-white -mb-px'
-                        : 'text-white/40 hover:text-white/70'
-                    }`}
-                  >
-                    {t.label}
-                  </button>
-                ))}
+                {([
+                  { key: 'salj',  label: 'Sälj din bil' },
+                  { key: 'hitta', label: 'Hitta en bil' },
+                  { key: 'hjalp', label: 'Låt oss hitta' },
+                ] as const).map((t) => {
+                  const active =
+                    t.key === 'salj' ? heroTab === 'salj' :
+                    t.key === 'hitta' ? heroTab === 'hitta' :
+                    heroTab === 'hjalp';
+                  return (
+                    <button
+                      key={t.key}
+                      type="button"
+                      onClick={() => setHeroTab(t.key)}
+                      className={`flex-1 py-[18px] text-[15px] font-bold tracking-wide transition-colors duration-150 border-b-2 ${
+                        active ? 'text-white border-white' : 'text-white/40 border-transparent hover:text-white/65'
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Form body */}
-              <div className="px-7 py-6">
-                <form onSubmit={handleSubmit}>
-                  <div className="flex gap-3 items-stretch justify-center">
-                    <div className="flex-1">
-                      <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} dark size="lg" />
+              <div className="px-8 py-7">
+                {heroTab === 'salj' && (
+                  <form onSubmit={handleSubmit}>
+                    <div className="flex gap-3 items-stretch">
+                      <div className="flex-[1.1]">
+                        <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} dark size="lg" />
+                      </div>
+                      <div className="flex-1 flex items-center rounded-xl border border-white/15 overflow-hidden focus-within:border-white/40 transition" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                        <span className="flex items-center justify-center w-11 shrink-0">
+                          <Phone className="w-4 h-4 text-white/50" />
+                        </span>
+                        <input
+                          type="tel"
+                          value={telefon}
+                          onChange={(e) => { setTelefon(e.target.value); setError(''); }}
+                          placeholder="Telefonnummer"
+                          autoComplete="tel"
+                          disabled={submitting}
+                          className="flex-1 min-w-0 w-0 h-14 pr-3 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/35"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="h-14 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-600 text-white font-bold text-[15px] transition shadow-[0_4px_24px_rgba(14,110,254,0.55)] whitespace-nowrap shrink-0"
+                      >
+                        {submitting ? '...' : 'Värdera gratis'}
+                      </button>
                     </div>
-                    <div className="flex-1 flex items-center rounded-xl border border-white/15 bg-white/8 overflow-hidden focus-within:border-white/40 transition" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                      <span className="flex items-center justify-center w-10 shrink-0">
-                        <Phone className="w-4 h-4 text-white/50" />
+                    {error && (
+                      <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-400/30 text-white text-[13px] font-medium px-3.5 py-2.5">
+                        <XCircle className="w-4 h-4 text-red-300 shrink-0" strokeWidth={2.5} />
+                        <span>{error}</span>
+                      </div>
+                    )}
+                  </form>
+                )}
+
+                {heroTab === 'hitta' && (
+                  <div className="flex gap-3 items-center">
+                    <div className="flex-1 flex items-center rounded-xl border border-white/15 overflow-hidden focus-within:border-white/40 transition h-14" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                      <span className="flex items-center justify-center w-11 shrink-0">
+                        <Search className="w-4 h-4 text-white/50" />
                       </span>
                       <input
-                        type="tel"
-                        value={telefon}
-                        onChange={(e) => { setTelefon(e.target.value); setError(''); }}
-                        placeholder="Telefonnummer"
-                        autoComplete="tel"
-                        disabled={submitting}
-                        className="flex-1 min-w-0 w-0 h-14 pr-3 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/35"
+                        type="text"
+                        placeholder="Sök märke, modell eller kroppstyp..."
+                        className="flex-1 min-w-0 w-0 h-full pr-3 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/35"
                       />
                     </div>
                     <button
-                      type="submit"
-                      disabled={submitting}
-                      className="h-14 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] transition shadow-[0_4px_20px_rgba(14,110,254,0.5)] whitespace-nowrap shrink-0"
+                      type="button"
+                      onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                      className="h-14 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition shadow-[0_4px_24px_rgba(14,110,254,0.55)] whitespace-nowrap shrink-0"
                     >
-                      {submitting ? '...' : 'Värdera gratis'}
+                      Sök bilar
                     </button>
                   </div>
-                  {error && (
-                    <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-400/30 text-white text-[13px] font-medium px-3.5 py-2.5">
-                      <XCircle className="w-4 h-4 text-red-300 shrink-0" strokeWidth={2.5} />
-                      <span>{error}</span>
-                    </div>
-                  )}
-                </form>
+                )}
 
-                {/* Helper link */}
-                <div className="mt-4 text-center text-[14px] text-white/45">
-                  Eller låt oss hjälpa dig hitta en bil.{' '}
-                  <button
-                    type="button"
-                    onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                    className="text-white font-semibold underline underline-offset-2 hover:text-white/80 transition"
-                  >
-                    Hitta en bil
-                  </button>
-                </div>
+                {heroTab === 'hjalp' && (
+                  <div className="text-center py-2">
+                    <p className="text-white/70 text-[15px] mb-5">Berätta vad du letar efter så hittar vi rätt bil åt dig.</p>
+                    <button
+                      type="button"
+                      onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                      className="inline-flex items-center gap-2.5 h-14 px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[16px] transition shadow-[0_4px_24px_rgba(14,110,254,0.55)]"
+                    >
+                      <Sparkles className="w-5 h-5" strokeWidth={2} />
+                      Låt oss hitta bilen
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-40">
-              <div className="w-px h-8 bg-white animate-[pulse_2s_ease-in-out_infinite]" />
+            {/* Cars flanking the card */}
+            <div className="relative -mt-8 flex justify-center items-end gap-0 pointer-events-none select-none" style={{ height: 260 }}>
+              <img
+                src="/getImage_(6).webp"
+                alt=""
+                className="absolute left-0 bottom-0 w-[34%] max-w-[480px] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+                style={{ transform: 'scaleX(-1)' }}
+              />
+              <img
+                src="/getImage_(7).webp"
+                alt=""
+                className="absolute right-0 bottom-0 w-[34%] max-w-[480px] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+              />
+            </div>
+          </div>
+
+          {/* ── MOBILE ── */}
+          <div className="lg:hidden pt-10 pb-12">
+            <h1 className="text-white font-black leading-[1.0] text-[40px] tracking-[-1px] uppercase text-center mb-8">
+              Sälj, köp &amp;<br />värdera din bil
+            </h1>
+
+            <div className="bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+              {/* Mobile tabs */}
+              <div className="flex border-b border-white/10">
+                {([
+                  { key: 'salj',  label: 'Sälj' },
+                  { key: 'hitta', label: 'Hitta' },
+                  { key: 'hjalp', label: 'Låt oss hitta' },
+                ] as const).map((t) => {
+                  const active = heroTab === t.key;
+                  return (
+                    <button
+                      key={t.key}
+                      type="button"
+                      onClick={() => setHeroTab(t.key)}
+                      className={`flex-1 py-4 text-[13px] font-bold tracking-wide transition-colors duration-150 border-b-2 ${
+                        active ? 'text-white border-white' : 'text-white/40 border-transparent'
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="px-5 py-6">
+                {heroTab === 'salj' && (
+                  <form onSubmit={handleSubmit}>
+                    <div className="flex flex-col gap-2.5">
+                      <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
+                      <div className="flex items-center h-12 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden focus-within:border-white/50 transition">
+                        <span className="flex items-center justify-center w-11 shrink-0">
+                          <Phone className="w-4 h-4 text-white/60" />
+                        </span>
+                        <input
+                          type="tel"
+                          value={telefon}
+                          onChange={(e) => { setTelefon(e.target.value); setError(''); }}
+                          placeholder="Telefonnummer"
+                          autoComplete="tel"
+                          disabled={submitting}
+                          className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/40"
+                        />
+                      </div>
+                      <button type="submit" disabled={submitting} className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]">
+                        {submitting ? '...' : 'Värdera bilen gratis'}
+                      </button>
+                    </div>
+                    {error && (
+                      <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-400/30 text-white text-[13px] font-medium px-3.5 py-2.5">
+                        <XCircle className="w-4 h-4 text-red-300 shrink-0" strokeWidth={2.5} />
+                        <span>{error}</span>
+                      </div>
+                    )}
+                  </form>
+                )}
+                {heroTab === 'hitta' && (
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center h-12 rounded-xl border border-white/20 bg-white/10 overflow-hidden focus-within:border-white/50 transition">
+                      <span className="flex items-center justify-center w-11 shrink-0">
+                        <Search className="w-4 h-4 text-white/60" />
+                      </span>
+                      <input
+                        type="text"
+                        placeholder="Märke, modell, kroppstyp..."
+                        className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/40"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                      className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition"
+                    >
+                      Sök bilar
+                    </button>
+                  </div>
+                )}
+                {heroTab === 'hjalp' && (
+                  <div className="flex flex-col items-center gap-3 py-2">
+                    <p className="text-white/65 text-[14px] text-center">Berätta vad du letar efter — vi hittar rätt bil.</p>
+                    <button
+                      type="button"
+                      onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                      className="inline-flex items-center gap-2 h-12 px-8 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition w-full justify-center"
+                    >
+                      <Sparkles className="w-4 h-4" strokeWidth={2} />
+                      Låt oss hitta bilen
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Small car image on mobile */}
+            <div className="flex justify-center mt-6 opacity-90">
+              <img src="/getImage_(7).webp" alt="" className="w-4/5 max-w-sm object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.3)]" />
             </div>
           </div>
         </div>
+
+        {/* Bottom wave into white */}
+        <div className="relative z-10 h-14 bg-[#0e6efe]" style={{ clipPath: 'ellipse(120% 100% at 50% 0%)' }} />
+        <div className="-mt-14 h-14 bg-white" />
       </section>
 
 
