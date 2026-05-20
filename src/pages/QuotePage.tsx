@@ -7,7 +7,7 @@ import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import ReviewsSection from '../components/ReviewsSection';
 import CompactCarCard from '../components/CompactCarCard';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
-import { SiteFooter } from './BrokerageLanding';
+import { SiteFooter } from '../components/SiteFooter';
 import { getAllComparisonCars, type ComparisonCar } from '../lib/comparison';
 import { useCarImages } from '../hooks/useCarImages';
 

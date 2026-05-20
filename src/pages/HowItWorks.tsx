@@ -17,7 +17,7 @@ import {
   X,
   XCircle,
 } from 'lucide-react';
-import { SiteFooter } from './BrokerageLanding';
+import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import SeoCarsSection from '../components/SeoCarsSection';
 import ReviewsSection from '../components/ReviewsSection';
@@ -32,43 +32,18 @@ import RegInput from '../components/RegInput';
 
 interface HowItWorksProps {
   onBackHome: () => void;
-  onStartBrokerage: (regnummer?: string, miltal?: number) => void;
-  onOpenCalculator?: () => void;
   onQuickLead?: (regnummer: string, telefon: string) => void;
   showSeo?: boolean;
   pageTitle?: string;
 }
 
-type Mode = 'brokerage' | 'direct';
+type Mode = 'direct';
 
 interface Step {
   icon: typeof Search;
   title: string;
   text: string;
 }
-
-const BROKERAGE_STEPS: Step[] = [
-  {
-    icon: Search,
-    title: 'Vi kollar marknaden tillsammans',
-    text: 'Vi går igenom bilen och marknaden ihop. Känns det bra kommer vi överens om upplägget — utan press.',
-  },
-  {
-    icon: Camera,
-    title: 'Vi fixar proffsiga bilder',
-    text: 'Vi tar och redigerar professionella annonsbilder åt dig och bygger en skarp annons som lyfter bilens bästa sidor.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Vi sköter samtalen åt dig',
-    text: 'Vi tar alla samtal, förhandlar med köparna och sållar bort oseriösa spekulanter — du slipper allt strul.',
-  },
-  {
-    icon: Phone,
-    title: 'Vi presenterar buden',
-    text: 'Vi ringer dig när det finns ett skarpt bud att ta ställning till. Ingen avgift om bilen inte säljs.',
-  },
-];
 
 const DIRECT_STEPS: Step[] = [
   {
@@ -121,11 +96,10 @@ const FAQ = [
   },
 ];
 
-export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = false, pageTitle }: HowItWorksProps) {
+export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: HowItWorksProps) {
   useEffect(() => {
     if (pageTitle) document.title = pageTitle;
   }, [pageTitle]);
-  const [mode] = useState<Mode>('direct');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [regnummer, setRegnummer] = useState('');
   const [formError, setFormError] = useState('');
@@ -207,10 +181,10 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
       return;
     }
     setFormError('');
-    onStartBrokerage(reg, 0);
+    openDrawer(reg);
   };
 
-  const steps = mode === 'brokerage' ? BROKERAGE_STEPS : DIRECT_STEPS;
+  const steps = DIRECT_STEPS;
   const navItems = ['Sälj bil', 'Köp bil'];
 
   return (
@@ -460,20 +434,18 @@ export default function HowItWorks({ onBackHome, onStartBrokerage, showSeo = fal
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-16">
             <h2 className="text-[34px] sm:text-[48px] font-semibold leading-[1.02] text-slate-900 tracking-[-0.02em]">
-              {mode === 'direct' ? 'Så enkelt är det' : 'Fyra steg till såld bil'}
+              Så enkelt är det
             </h2>
           </div>
 
           {/* MOBILE: image slider + step cards */}
-          {mode === 'direct' ? (
-            <DirectStepsMobile steps={steps} images={DIRECT_STEP_IMAGES} />
-          ) : null}
+          <DirectStepsMobile steps={steps} images={DIRECT_STEP_IMAGES} />
 
-          {/* DESKTOP (all modes) or MOBILE brokerage fallback */}
-          <ol className={`hidden sm:grid lg:gap-10 ${steps.length === 4 ? 'lg:grid-cols-4 sm:grid-cols-2' : 'sm:grid-cols-3'} gap-8`}>
+          {/* DESKTOP */}
+          <ol className="hidden sm:grid lg:gap-10 sm:grid-cols-3 gap-8">
             {steps.map((step, i) => {
               const Icon = step.icon;
-              const img = mode === 'direct' ? DIRECT_STEP_IMAGES[i] : null;
+              const img = DIRECT_STEP_IMAGES[i];
               return (
                 <li key={step.title} className="group">
                   {img && (

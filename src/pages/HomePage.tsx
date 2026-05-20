@@ -4,7 +4,7 @@ import { validateSwedishPhone } from '../lib/utils';
 
 import { supabase } from '../lib/supabase';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
-import { SiteFooter } from './BrokerageLanding';
+import { SiteFooter } from '../components/SiteFooter';
 import SeoCarsSection from '../components/SeoCarsSection';
 import RegInput from '../components/RegInput';
 

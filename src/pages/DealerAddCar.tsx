@@ -47,7 +47,7 @@ export default function DealerAddCar({
   onCreated,
 }: DealerAddCarProps) {
   const [namn, setNamn] = useState('');
-  const [salesType, setSalesType] = useState<'auction' | 'brokerage'>('auction');
+  const [salesType] = useState<'auction'>('auction');
   const [telefon, setTelefon] = useState('');
   const [mejl, setMejl] = useState('');
 
@@ -193,41 +193,6 @@ export default function DealerAddCar({
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
-            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4">
-              Typ av uppdrag
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setSalesType('auction')}
-                className={`text-left rounded-lg border p-4 transition ${
-                  salesType === 'auction'
-                    ? 'border-[#0e6efe] ring-2 ring-[#0e6efe]/20 bg-[#0e6efe]/5'
-                    : 'border-slate-200 hover:border-slate-300'
-                }`}
-              >
-                <div className="text-sm font-semibold text-slate-900">Direktbud (auktion)</div>
-                <div className="text-xs text-slate-500 mt-1">
-                  Hela handlarnätverket bjuder. Bästa bud vinner.
-                </div>
-              </button>
-              <button
-                type="button"
-                onClick={() => setSalesType('brokerage')}
-                className={`text-left rounded-lg border p-4 transition ${
-                  salesType === 'brokerage'
-                    ? 'border-[#0e6efe] ring-2 ring-[#0e6efe]/20 bg-[#0e6efe]/5'
-                    : 'border-slate-200 hover:border-slate-300'
-                }`}
-              >
-                <div className="text-sm font-semibold text-slate-900">Förmedling</div>
-                <div className="text-xs text-slate-500 mt-1">
-                  Bilen säljs via förmedling till privatperson.
-                </div>
-              </button>
-            </div>
-          </section>
 
           <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-1">

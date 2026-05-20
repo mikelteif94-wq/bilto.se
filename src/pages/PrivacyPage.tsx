@@ -1,5 +1,5 @@
 import { ArrowLeft } from 'lucide-react';
-import { SiteFooter } from './BrokerageLanding';
+import { SiteFooter } from '../components/SiteFooter';
 
 interface PrivacyPageProps {
   onBackHome: () => void;

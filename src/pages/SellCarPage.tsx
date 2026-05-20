@@ -15,7 +15,6 @@ interface SellCarPageProps {
   initialRegnummer?: string;
   initialTelefon?: string;
   initialMiltal?: number;
-  salesType?: 'auction' | 'brokerage';
   onBack: () => void;
   onNavigateTrade?: (regnummer: string, miltal: number) => void;
 }
@@ -50,13 +49,11 @@ export default function SellCarPage({
   initialRegnummer = '',
   initialTelefon = '',
   initialMiltal = 0,
-  salesType: initialSalesType = 'auction',
   onBack,
   onNavigateTrade,
 }: SellCarPageProps) {
-  const [salesType, setSalesType] = useState<'auction' | 'brokerage'>(initialSalesType);
-  const skipTrack = initialSalesType === 'brokerage' && !initialRegnummer;
-  const [step, setStep] = useState<FormStep>(skipTrack ? 'condition' : 'track');
+  const [salesType, setSalesType] = useState<'auction'>('auction');
+  const [step, setStep] = useState<FormStep>('track');
   const [car, setCar] = useState<CarData>({
     regnummer: initialRegnummer,
     marke: '',
@@ -125,11 +122,7 @@ export default function SellCarPage({
     setGuidanceDone(true);
   };
 
-  const stepFlow: FormStep[] = skipTrack
-    ? ['condition', 'equipment', 'images', 'contact', 'confirm']
-    : salesType === 'brokerage'
-      ? ['track', 'condition', 'equipment', 'inspection', 'images', 'contact', 'confirm']
-      : ['track', 'condition', 'equipment', 'images', 'contact', 'confirm'];
+  const stepFlow: FormStep[] = ['track', 'condition', 'equipment', 'images', 'contact', 'confirm'];
 
   const currentIndex = stepFlow.indexOf(step);
   const totalSteps = stepFlow.length;
@@ -297,7 +290,7 @@ export default function SellCarPage({
           {step === 'contact' && (
             <CustomerForm
               initialData={customer}
-              requirePassword={salesType !== 'brokerage'}
+              requirePassword={true}
               onNext={(data) => {
                 setCustomer(data);
                 goNext();

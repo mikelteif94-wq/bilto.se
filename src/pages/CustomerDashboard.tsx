@@ -255,8 +255,7 @@ export default function CustomerDashboard({
               const bids = bidsByCar[car.id] ?? [];
               const topBid = bids[0];
               const meta = STATUS_META[car.status] ?? { label: car.status, step: 1, color: 'text-slate-600', bg: 'bg-slate-100 border-slate-200' };
-              const isBrokerage = car.sales_type === 'brokerage';
-              const activeStep = isBrokerage && car.status === 'aktiv' ? 2 : meta.step;
+              const activeStep = meta.step;
 
               return (
                 <div key={car.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
@@ -268,7 +267,7 @@ export default function CustomerDashboard({
                           {car.regnummer}
                         </span>
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${meta.bg} ${meta.color}`}>
-                          {isBrokerage && car.status === 'aktiv' ? 'Förmedlas just nu' : meta.label}
+                          {meta.label}
                         </span>
                       </div>
                       <h3 className="text-xl font-bold text-slate-900 leading-tight">

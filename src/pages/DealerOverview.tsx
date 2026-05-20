@@ -133,11 +133,11 @@ export default function DealerOverview({
     const in24h = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
     const [activeRes, endingRes, myBidsRes, wonRes, recentRes, dealerRes, dispatchRes] = await Promise.all([
-      supabase.from('cars').select('id', { count: 'exact', head: true }).eq('status', 'aktiv').neq('sales_type', 'brokerage').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso),
-      supabase.from('cars').select('id, regnummer, marke, modell, ar, miltal, auktion_slut, status, car_images(id)').eq('status', 'aktiv').neq('sales_type', 'brokerage').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso).lte('auktion_slut', in24h).order('auktion_slut', { ascending: true }).limit(8),
+      supabase.from('cars').select('id', { count: 'exact', head: true }).eq('status', 'aktiv').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso),
+      supabase.from('cars').select('id, regnummer, marke, modell, ar, miltal, auktion_slut, status, car_images(id)').eq('status', 'aktiv').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso).lte('auktion_slut', in24h).order('auktion_slut', { ascending: true }).limit(8),
       supabase.from('bids').select('car_id, belopp, max_bid, cars:car_id(id, regnummer, marke, modell, ar, miltal, auktion_slut, status, car_images(id))').eq('dealer_id', dealerId).order('created_at', { ascending: false }),
       supabase.from('bids').select('id', { count: 'exact', head: true }).eq('dealer_id', dealerId).eq('status', 'vinnande'),
-      supabase.from('cars').select('id, regnummer, marke, modell, ar, miltal, auktion_slut, status, car_images(id)').eq('status', 'aktiv').neq('sales_type', 'brokerage').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso).order('created_at', { ascending: false }).limit(6),
+      supabase.from('cars').select('id, regnummer, marke, modell, ar, miltal, auktion_slut, status, car_images(id)').eq('status', 'aktiv').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso).order('created_at', { ascending: false }).limit(6),
       supabase.from('dealers').select('win_count, lost_count, avg_response_minutes, conversion_rate').eq('id', dealerId).maybeSingle(),
       supabase.from('dealer_dispatches').select(`
         id, car_id, quote_request_id, response_status, deadline_at, message, created_at,

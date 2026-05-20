@@ -3,7 +3,7 @@ import { Phone, ArrowRight, Repeat } from 'lucide-react';
 interface TrackChoiceStepProps {
   regnummer: string;
   miltal: number;
-  onChoose: (track: 'auction' | 'brokerage') => void;
+  onChoose: (track: 'auction') => void;
   onGuidance: () => void;
   onNavigateTrade?: () => void;
 }

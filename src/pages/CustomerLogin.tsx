@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft, ArrowRight, Loader2, Lock, User } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ErrorBanner from '../components/ErrorBanner';
-import { SiteFooter } from './BrokerageLanding';
+import { SiteFooter } from '../components/SiteFooter';
 
 interface CustomerLoginProps {
   onLoggedIn: () => void;

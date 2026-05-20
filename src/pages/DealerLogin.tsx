@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, Building2, Clock, Loader2, Lock, Menu, User } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
-import { SiteFooter } from './BrokerageLanding';
+import { SiteFooter } from '../components/SiteFooter';
 import ErrorBanner from '../components/ErrorBanner';
 
 interface DealerLoginProps {

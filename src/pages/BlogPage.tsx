@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, Calendar, User, Check, Loader2, Car, Mail } from 'lucide-react';
-import { SiteFooter } from './BrokerageLanding';
+import { SiteFooter } from '../components/SiteFooter';
 import { supabase } from '../lib/supabase';
 import ErrorBanner from '../components/ErrorBanner';
 import { validateSwedishPhone } from '../lib/utils';

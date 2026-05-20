@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import {
   Loader2, Search, ChevronDown, ChevronRight,
   Car as CarIcon, TrendingUp, Bell,
-  CheckCircle2, XCircle, Flame, Star,
+  CheckCircle2, XCircle, Flame,
   LayoutDashboard, Building2, MessageSquareText, UserCheck,
   Eye, EyeOff, Download, RefreshCw,
 } from 'lucide-react';
@@ -20,7 +20,7 @@ interface AdminLeadCommandCenterProps {
   onNavigateDealers: () => void;
 }
 
-type LeadType = 'all' | 'sell' | 'buy' | 'trade_in' | 'brokerage' | 'urgent' | 'uncontacted' | 'won' | 'lost';
+type LeadType = 'all' | 'sell' | 'buy' | 'trade_in' | 'urgent' | 'uncontacted' | 'won' | 'lost';
 
 interface UnifiedLead {
   id: string;
@@ -53,7 +53,6 @@ const FILTER_TABS: { key: LeadType; label: string; icon: React.ReactNode }[] = [
   { key: 'sell', label: 'Säljleads', icon: <CarIcon className="w-3.5 h-3.5" /> },
   { key: 'buy', label: 'Köpleads', icon: <TrendingUp className="w-3.5 h-3.5" /> },
   { key: 'trade_in', label: 'Inbyte', icon: <RefreshCw className="w-3.5 h-3.5" /> },
-  { key: 'brokerage', label: 'Förmedling', icon: <Star className="w-3.5 h-3.5" /> },
   { key: 'urgent', label: 'Akuta', icon: <Flame className="w-3.5 h-3.5" /> },
   { key: 'uncontacted', label: 'Ej kontaktade', icon: <Bell className="w-3.5 h-3.5" /> },
   { key: 'won', label: 'Vunna', icon: <CheckCircle2 className="w-3.5 h-3.5" /> },
@@ -214,7 +213,6 @@ export default function AdminLeadCommandCenter({
       if (l.lead_type === 'sell') c.sell = (c.sell ?? 0) + 1;
       if (l.lead_type === 'buy') c.buy = (c.buy ?? 0) + 1;
       if (l.lead_type === 'trade_in') c.trade_in = (c.trade_in ?? 0) + 1;
-      if (l.lead_type === 'brokerage') c.brokerage = (c.brokerage ?? 0) + 1;
       if (l.tags.includes('het lead') || l.crm_status === 'het') c.urgent = (c.urgent ?? 0) + 1;
       if (l.assigned_to_name === '' && l.status !== 'sold' && l.status !== 'lost') c.uncontacted = (c.uncontacted ?? 0) + 1;
       if (l.status === 'sold' || l.crm_status === 'sald') c.won = (c.won ?? 0) + 1;
@@ -231,7 +229,6 @@ export default function AdminLeadCommandCenter({
     if (filter === 'sell' && l.lead_type !== 'sell') return false;
     if (filter === 'buy' && l.lead_type !== 'buy') return false;
     if (filter === 'trade_in' && l.lead_type !== 'trade_in') return false;
-    if (filter === 'brokerage' && l.lead_type !== 'brokerage') return false;
     if (filter === 'urgent' && !l.tags.includes('het lead') && l.crm_status !== 'het') return false;
     if (filter === 'uncontacted' && (l.assigned_to_name !== '' || l.status === 'sold' || l.status === 'lost')) return false;
     if (filter === 'won' && l.status !== 'sold' && l.crm_status !== 'sald') return false;

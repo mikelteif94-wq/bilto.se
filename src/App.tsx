@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import BrokerageCalculator from './pages/BrokerageCalculator';
 import HowItWorks from './pages/HowItWorks';
 import SellCarPage from './pages/SellCarPage';
 import BuyCarPage from './pages/BuyCarPage';
@@ -40,8 +39,7 @@ import type { Session } from '@supabase/supabase-js';
 
 type PublicRoute =
   | { page: 'home' }
-  | { page: 'brokerage' }
-  | { page: 'sell'; regnummer: string; telefon?: string; miltal?: number; salesType?: 'auction' | 'brokerage' }
+  | { page: 'sell'; regnummer: string; telefon?: string; miltal?: number }
 ;
 
 function navigate(path: string) {
@@ -614,49 +612,12 @@ function App() {
           setPath('/');
           setPublicRoute({ page: 'home' });
         }}
-        onStartBrokerage={(regnummer, miltal) => {
-          if (regnummer) {
-            setPublicRoute({
-              page: 'sell',
-              regnummer,
-              miltal: miltal ?? 0,
-              salesType: 'brokerage',
-            });
-            window.history.pushState({}, '', '/salj');
-            setPath('/salj');
-          } else {
-            window.history.pushState({}, '', '/formedla');
-            setPath('/formedla');
-          }
-        }}
       />
     );
   }
 
-  if (path === '/formedlingskalkylator') {
-    return (
-      <BrokerageCalculator
-        onBackHome={() => {
-          window.history.pushState({}, '', '/');
-          setPath('/');
-          setPublicRoute({ page: 'home' });
-        }}
-        onStartBrokerage={(regnummer) => {
-          setPublicRoute({
-            page: 'sell',
-            regnummer: regnummer ?? '',
-            miltal: 0,
-            salesType: 'brokerage',
-          });
-          window.history.pushState({}, '', '/salj');
-          setPath('/salj');
-        }}
-      />
-    );
-  }
-
-  if (path === '/formedla') {
-    navigate('/kop-bil');
+  if (path === '/formedlingskalkylator' || path === '/formedla') {
+    navigate('/');
     return null;
   }
 
@@ -679,21 +640,6 @@ function App() {
             setPath('/');
             setPublicRoute({ page: 'home' });
           }}
-          onStartBrokerage={(regnummer, miltal) => {
-            if (regnummer) {
-              setPublicRoute({
-                page: 'sell',
-                regnummer,
-                miltal: miltal ?? 0,
-                salesType: 'brokerage',
-              });
-              window.history.pushState({}, '', '/salj');
-              setPath('/salj');
-            } else {
-              window.history.pushState({}, '', '/formedla');
-              setPath('/formedla');
-            }
-          }}
         />
       )}
       {publicRoute.page === 'sell' && (
@@ -701,7 +647,6 @@ function App() {
           initialRegnummer={publicRoute.regnummer}
           initialTelefon={publicRoute.telefon}
           initialMiltal={publicRoute.miltal}
-          salesType={publicRoute.salesType}
           onBack={() => {
             window.history.pushState({}, '', '/');
             setPath('/');

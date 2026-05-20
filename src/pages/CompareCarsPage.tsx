@@ -17,7 +17,7 @@ import CompactCarCard from '../components/CompactCarCard';
 import CompareDrawer from '../components/CompareDrawer';
 import BuyDrawer from '../components/BuyDrawer';
 import { EquityFlow } from '../components/equity/EquityFlow';
-import { SiteFooter } from './BrokerageLanding';
+import { SiteFooter } from '../components/SiteFooter';
 import RegInput from '../components/RegInput';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import QuizFlow from '../components/quiz/QuizFlow';

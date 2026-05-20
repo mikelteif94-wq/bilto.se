@@ -413,11 +413,6 @@ export default function AdminDealerProposalEditor({
                   Est. {formatKr(car.direct_bid_estimate)} kr
                 </span>
               )}
-              {car.brokerage_estimate_low && car.brokerage_estimate_high && (
-                <span className="text-sm text-slate-500">
-                  Förmedling: {formatKr(car.brokerage_estimate_low)}–{formatKr(car.brokerage_estimate_high)} kr
-                </span>
-              )}
               {car.customers && (
                 <span className="text-sm text-slate-400 ml-auto">{car.customers.namn}</span>
               )}

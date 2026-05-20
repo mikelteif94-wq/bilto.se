@@ -52,7 +52,6 @@ export default function DealerCarsList({
         .from('cars')
         .select('*, car_images(id)')
         .eq('status', 'aktiv')
-        .neq('sales_type', 'brokerage')
         .eq('hidden_from_dealers', false)
         .gt('auktion_slut', nowIso)
         .order('auktion_slut', { ascending: true });

@@ -64,7 +64,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
   const [conditionReport, setConditionReport] = useState<ConditionReport>(EMPTY_CONDITION_REPORT);
   const [images, setImages] = useState<PendingImage[]>([]);
 
-  const [salesType, setSalesType] = useState<'auction' | 'brokerage'>('auction');
+  const [salesType] = useState<'auction'>('auction');
   const [activateNow, setActivateNow] = useState<boolean>(true);
   const [startbud, setStartbud] = useState<string>('');
   const [accepteratPris, setAccepteratPris] = useState<string>('');
@@ -477,30 +477,6 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
               Försäljning
             </h2>
 
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              <button
-                type="button"
-                onClick={() => setSalesType('auction')}
-                className={`h-11 rounded-lg border text-sm font-semibold transition ${
-                  salesType === 'auction'
-                    ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
-                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
-                }`}
-              >
-                Sälj direkt (bud)
-              </button>
-              <button
-                type="button"
-                onClick={() => setSalesType('brokerage')}
-                className={`h-11 rounded-lg border text-sm font-semibold transition ${
-                  salesType === 'brokerage'
-                    ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
-                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
-                }`}
-              >
-                Maxpris (förmedling)
-              </button>
-            </div>
 
             {salesType === 'auction' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">

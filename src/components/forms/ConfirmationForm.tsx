@@ -7,7 +7,7 @@ interface ConfirmationFormProps {
   customer: CustomerData;
   car: CarData;
   images: ImageFile[];
-  salesType?: 'auction' | 'brokerage';
+  salesType?: 'auction';
   onSubmit: () => Promise<void>;
   loading: boolean;
   onError: (error: string) => void;

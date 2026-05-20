@@ -11,8 +11,6 @@ import {
   Sparkles,
   ThumbsDown,
   ThumbsUp,
-  Trophy,
-  Handshake,
   MessageSquare,
 } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
@@ -43,18 +41,6 @@ type AuctionStatus =
   | 'sald'
   | 'avslutad';
 
-interface BrokerageOffer {
-  id: string;
-  expected_sale_price: number;
-  commission_kr: number;
-  estimated_days: number;
-  kommentar: string;
-  status: string;
-  net_to_customer: number;
-  foretagsnamn: string;
-  created_at: string;
-}
-
 interface CarResponse {
   id: string;
   regnummer: string;
@@ -64,7 +50,7 @@ interface CarResponse {
   miltal: number;
   skick: string;
   status: AuctionStatus | string;
-  sales_type: 'auction' | 'brokerage';
+  sales_type: string;
   auktion_slut: string | null;
   kund_beslut: string;
   kund_beslut_at: string | null;
@@ -74,7 +60,6 @@ interface CarResponse {
   images: string[];
   customer: { namn: string } | null;
   winning_bid: { belopp: number; foretagsnamn: string } | null;
-  brokerage_offers: BrokerageOffer[];
 }
 
 const SKICK_LABELS: Record<string, string> = {
@@ -162,33 +147,6 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
             .eq('id', p.id);
         }
       }
-    }
-  };
-
-  const acceptBrokerageOffer = async (offerId: string) => {
-    if (submitting) return;
-    setSubmitting(true);
-    setError(null);
-    try {
-      const resp = await fetch(endpoint(), {
-        method: 'POST',
-        headers: authHeaders(),
-        body: JSON.stringify({
-          token,
-          action: 'accept_brokerage_offer',
-          offer_id: offerId,
-        }),
-      });
-      const json = await resp.json();
-      if (!resp.ok) {
-        setError(json.error ?? 'Kunde inte acceptera erbjudandet.');
-      } else {
-        await fetchCar();
-      }
-    } catch {
-      setError('Kunde inte kontakta servern.');
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -331,17 +289,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
           />
         )}
 
-        {car.sales_type === 'brokerage' && (
-          <BrokerageOffersCard
-            car={car}
-            submitting={submitting}
-            onAccept={acceptBrokerageOffer}
-            error={error}
-          />
-        )}
-
-        {car.sales_type !== 'brokerage' &&
-          car.status === 'auktion_avslutad' &&
+        {car.status === 'auktion_avslutad' &&
           car.winning_bid && (
             <DecisionCard
               car={car}
@@ -384,36 +332,17 @@ function Row({ label, value }: { label: string; value: string }) {
 }
 
 function StatusCard({ car }: { car: CarResponse }) {
-  const isBrokerage = car.sales_type === 'brokerage';
   if (car.status === 'ny') {
     return (
       <Banner
         icon={<Clock className="w-5 h-5" />}
         tone="slate"
-        title={
-          isBrokerage
-            ? 'Vi förbereder din förmedling'
-            : 'Vi förbereder din bil för budgivning'
-        }
+        title="Vi förbereder din bil för budgivning"
         text="En personlig bilmäklare ringer dig inom kort för att finjustera värderingen. Du behöver inte göra något just nu."
       />
     );
   }
   if (car.status === 'aktiv') {
-    if (isBrokerage) {
-      return (
-        <Banner
-          icon={<Handshake className="w-5 h-5" />}
-          tone="teal"
-          title="Vi förmedlar din bil"
-          text={
-            car.auktion_slut
-              ? `Bilto sköter försäljningen åt dig. Vi återkommer senast ${formatDateTime(car.auktion_slut)}.`
-              : 'Bilto sköter försäljningen åt dig — vi tar fram bästa pris och hör av oss så fort vi har ett erbjudande.'
-          }
-        />
-      );
-    }
     return (
       <Banner
         icon={<Gavel className="w-5 h-5" />}
@@ -494,182 +423,6 @@ function Banner({
         <h2 className={`text-lg font-semibold ${t.title} mb-1`}>{title}</h2>
         <p className="text-sm text-slate-700 leading-relaxed">{text}</p>
       </div>
-    </div>
-  );
-}
-
-function BrokerageOffersCard({
-  car,
-  submitting,
-  onAccept,
-  error,
-}: {
-  car: CarResponse;
-  submitting: boolean;
-  onAccept: (offerId: string) => void;
-  error: string | null;
-}) {
-  const offers = [...car.brokerage_offers].sort(
-    (a, b) => b.net_to_customer - a.net_to_customer,
-  );
-  const accepted = offers.find((o) => o.status === 'accepted');
-
-  if (accepted) {
-    return (
-      <div className="bg-white rounded-md border border-emerald-200 p-6">
-        <div className="flex items-start gap-3 mb-4">
-          <Check className="w-6 h-6 text-emerald-500 shrink-0 mt-0.5" />
-          <div>
-            <h2 className="text-lg font-semibold text-slate-900">
-              Du har accepterat ett förmedlingsuppdrag
-            </h2>
-            <p className="text-sm text-slate-600 mt-1">
-              {accepted.foretagsnamn} kontaktar dig inom 24 timmar för att starta försäljningen.
-            </p>
-          </div>
-        </div>
-        <dl className="grid sm:grid-cols-3 gap-4 bg-slate-50 rounded-xl p-4 text-sm">
-          <div>
-            <dt className="text-slate-500">Förväntat slutpris</dt>
-            <dd className="font-semibold text-slate-900 mt-0.5">
-              {formatKr(accepted.expected_sale_price)} kr
-            </dd>
-          </div>
-          <div>
-            <dt className="text-slate-500">Arvode</dt>
-            <dd className="font-semibold text-slate-900 mt-0.5">
-              {formatKr(accepted.commission_kr)} kr
-            </dd>
-          </div>
-          <div>
-            <dt className="text-slate-500">Till dig (netto)</dt>
-            <dd className="font-bold text-emerald-700 mt-0.5">
-              {formatKr(accepted.net_to_customer)} kr
-            </dd>
-          </div>
-        </dl>
-      </div>
-    );
-  }
-
-  if (offers.length === 0) {
-    return (
-      <Banner
-        icon={<Clock className="w-5 h-5" />}
-        tone="slate"
-        title="Inga erbjudanden ännu"
-        text="Så snart handlare lämnat sina erbjudanden visas de här. Du får ett sms när första erbjudandet är inne."
-      />
-    );
-  }
-
-  const bestNet = offers[0].net_to_customer;
-
-  return (
-    <div className="space-y-5">
-      <div className="bg-white rounded-md border border-slate-200 p-6">
-        <div className="flex items-center gap-3 mb-1">
-          <Trophy className="w-5 h-5 text-[#0e6efe]" />
-          <h2 className="text-lg font-semibold text-slate-900">
-            {offers.length} {offers.length === 1 ? 'erbjudande' : 'erbjudanden'} från handlare
-          </h2>
-        </div>
-        <p className="text-sm text-slate-600">
-          Jämför förväntat pris, arvode och tid. Välj det som ger dig mest i plånboken.
-        </p>
-      </div>
-
-      <ErrorBanner message={error} />
-
-      <div className="grid gap-4">
-        {offers.map((o, idx) => {
-          const isBest = o.net_to_customer === bestNet;
-          return (
-            <div
-              key={o.id}
-              className={`bg-white rounded-md p-6 border relative ${
-                isBest ? 'border-[#0e6efe] border-2' : 'border-slate-200'
-              }`}
-            >
-              {isBest && (
-                <div className="absolute -top-3 left-6 bg-[#0e6efe] text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                  Högst netto
-                </div>
-              )}
-              <div className="flex items-start justify-between gap-4 mb-5">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-                    Handlare {idx + 1}
-                  </p>
-                  <p className="text-[16px] font-semibold text-slate-900 mt-0.5">
-                    {o.foretagsnamn || 'Certifierad handlare'}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-                    Till dig
-                  </p>
-                  <p
-                    className={`text-[22px] font-semibold leading-tight ${
-                      isBest ? 'text-[#0e6efe]' : 'text-slate-900'
-                    }`}
-                  >
-                    {formatKr(o.net_to_customer)} kr
-                  </p>
-                </div>
-              </div>
-
-              <dl className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 rounded-xl p-4 text-sm mb-5">
-                <div>
-                  <dt className="text-slate-500 text-xs">Förväntat pris</dt>
-                  <dd className="font-semibold text-slate-900 mt-0.5">
-                    {formatKr(o.expected_sale_price)} kr
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-slate-500 text-xs">Arvode</dt>
-                  <dd className="font-semibold text-slate-900 mt-0.5">
-                    {formatKr(o.commission_kr)} kr
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-slate-500 text-xs">Tid till sälj</dt>
-                  <dd className="font-semibold text-slate-900 mt-0.5">
-                    ~{o.estimated_days} dagar
-                  </dd>
-                </div>
-              </dl>
-
-              {o.kommentar && (
-                <p className="text-sm text-slate-600 italic border-l-2 border-slate-200 pl-3 mb-5">
-                  "{o.kommentar}"
-                </p>
-              )}
-
-              <button
-                onClick={() => onAccept(o.id)}
-                disabled={submitting || car.status !== 'aktiv'}
-                className={`inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full font-semibold text-[14px] transition disabled:opacity-60 disabled:cursor-not-allowed ${
-                  isBest
-                    ? 'bg-[#0e6efe] hover:bg-[#0a57cc] text-white'
-                    : 'bg-slate-900 hover:bg-slate-800 text-white'
-                }`}
-              >
-                {submitting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <ThumbsUp className="w-4 h-4" />
-                )}
-                Acceptera detta erbjudande
-              </button>
-            </div>
-          );
-        })}
-      </div>
-
-      <p className="text-xs text-slate-500 text-center">
-        Inget arvode utgår om bilen inte säljs. Du kan alltid vänta och se om fler erbjudanden kommer in.
-      </p>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight, Menu, User, ShieldCheck, Handshake, Gauge } from 'lucide-react';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
-import { SiteFooter } from './BrokerageLanding';
+import { SiteFooter } from '../components/SiteFooter';
 
 interface AboutPageProps {
   onBackHome: () => void;
