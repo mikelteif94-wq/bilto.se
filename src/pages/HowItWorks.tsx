@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Menu,
   User,
@@ -16,6 +16,8 @@ import {
   MessageCircle,
   X,
   XCircle,
+  Car,
+  ChevronRight,
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
@@ -29,6 +31,7 @@ import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import { getAllComparisonCars, type ComparisonCar } from '../lib/comparison';
 import { useCarImages } from '../hooks/useCarImages';
 import RegInput from '../components/RegInput';
+import { supabase } from '../lib/supabase';
 
 interface HowItWorksProps {
   onBackHome: () => void;
@@ -108,6 +111,13 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
   const [carsModalOpen, setCarsModalOpen] = useState(false);
   const [detailCar, setDetailCar] = useState<ComparisonCar | null>(null);
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
+  const [heroTab, setHeroTab] = useState<'salj' | 'hitta'>('salj');
+  const [carQuery, setCarQuery] = useState('');
+  const [carSuggestions, setCarSuggestions] = useState<{ make: string; model: string }[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [carSearchLoading, setCarSearchLoading] = useState(false);
+  const carSearchRef = useRef<HTMLDivElement>(null);
+  const carSearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const openDrawer = (carLabel: string) => setBuyDrawerCar(carLabel);
 
@@ -147,6 +157,49 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (carSearchRef.current && !carSearchRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleCarQueryChange = (q: string) => {
+    setCarQuery(q);
+    if (carSearchTimer.current) clearTimeout(carSearchTimer.current);
+    if (!q.trim()) { setCarSuggestions([]); setShowSuggestions(false); return; }
+    setCarSearchLoading(true);
+    carSearchTimer.current = setTimeout(async () => {
+      const { data } = await supabase
+        .from('car_catalog')
+        .select('make, model')
+        .or(`make.ilike.%${q.trim()}%,model.ilike.%${q.trim()}%`)
+        .limit(8);
+      setCarSuggestions(data || []);
+      setShowSuggestions(true);
+      setCarSearchLoading(false);
+    }, 250);
+  };
+
+  const handleCarSelect = (make: string, model: string) => {
+    const bil = `${make} ${model}`.trim();
+    setCarQuery(bil);
+    setShowSuggestions(false);
+    const params = new URLSearchParams({ bil });
+    window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
+  const handleCarSearch = () => {
+    if (!carQuery.trim()) return;
+    const params = new URLSearchParams({ bil: carQuery.trim() });
+    window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
 
   const allCarsMap = new Map(allCars.map(c => [c.id, c]));
   const selectedCompareCars = Array.from(selectedCompareIds).map(id => allCarsMap.get(id)).filter((c): c is ComparisonCar => !!c);
@@ -290,55 +343,97 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
             </li>
           </ul>
 
-          <div className="mt-6 bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] overflow-hidden">
-            {/* Tab strip */}
-            <div className="flex border-b border-slate-100">
-              <div className="flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#0e6efe] relative">
-                Sälj din bil
-                <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-[#0e6efe] rounded-t-full" />
-              </div>
-              <div className="w-px bg-slate-100 my-2" />
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                Hitta bil
-              </button>
+          <div className="mt-6 bg-[#1e1e2e]/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.4)] border border-white/10">
+            {/* Tabs */}
+            <div className="flex">
+              {(['salj', 'hitta'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setHeroTab(t)}
+                  className={`flex-1 py-3.5 text-[12px] font-bold tracking-[0.06em] transition-colors duration-200 ${
+                    heroTab === t
+                      ? 'text-white border-b-2 border-[#0e6efe]'
+                      : 'text-white/40 hover:text-white/70 border-b-2 border-transparent'
+                  }`}
+                >
+                  {t === 'salj' ? 'Sälj min bil' : 'Hitta en bil'}
+                </button>
+              ))}
             </div>
 
             <div className="p-4">
-              <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2">
-                <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
-                {formError && (
-                  <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
-                    <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
-                    <span className="leading-snug">{formError}</span>
+              {heroTab === 'salj' ? (
+                <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2">
+                  <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
+                  {formError && (
+                    <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-500/20 border border-red-400/30 text-white text-[11px] font-medium px-2.5 py-1.5">
+                      <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
+                      <span className="leading-snug">{formError}</span>
+                    </div>
+                  )}
+                  <button
+                    type="submit"
+                    className="h-10 w-full rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5 shadow-[0_4px_14px_-4px_rgba(14,110,254,0.55)]"
+                  >
+                    Värdera bilen gratis
+                    <ArrowRight className="w-3.5 h-3.5 opacity-80" />
+                  </button>
+                </form>
+              ) : (
+                <div ref={carSearchRef} className="relative">
+                  <div className="flex items-center h-10 rounded-lg bg-white overflow-hidden shadow-sm">
+                    <input
+                      type="text"
+                      value={carQuery}
+                      onChange={(e) => handleCarQueryChange(e.target.value)}
+                      onFocus={() => carQuery.trim() && setShowSuggestions(true)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
+                      placeholder="Sök efter märke eller modell"
+                      className="flex-1 min-w-0 w-0 h-full pl-3 pr-1 text-[13px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCarSearch}
+                      className="w-10 h-full flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] transition shrink-0"
+                    >
+                      {carSearchLoading
+                        ? <div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        : <Search className="w-4 h-4 text-white" />
+                      }
+                    </button>
                   </div>
-                )}
-                <button
-                  type="submit"
-                  className="h-10 w-full rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5 shadow-[0_4px_14px_-4px_rgba(14,110,254,0.55)]"
-                >
-                  Värdera bilen gratis
-                  <ArrowRight className="w-3.5 h-3.5 opacity-80" />
-                </button>
-              </form>
-
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil?quiz=start');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="mt-2.5 w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
-              >
-                Eller låt oss hjälpa dig hitta en bil.
-              </button>
-
+                  {showSuggestions && carSuggestions.length > 0 && (
+                    <div className="absolute left-0 right-0 top-full mt-1 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
+                      {carSuggestions.map((s, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => handleCarSelect(s.make, s.model)}
+                          className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left hover:bg-slate-50 transition text-[13px] text-slate-800 border-b border-slate-100 last:border-0"
+                        >
+                          <Car className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span className="font-semibold">{s.make}</span>
+                          <span className="text-slate-500">{s.model}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <div className="mt-2.5 flex items-center justify-between">
+                    <p className="text-white/40 text-[11px]">eller låt oss hjälpa dig</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.history.pushState({}, '', '/kop-bil/bestall');
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }}
+                      className="flex items-center gap-1 text-white font-semibold text-[12px] bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg px-2.5 py-1.5 transition"
+                    >
+                      Hitta en bil <ChevronRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -376,55 +471,97 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
             </ul>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden max-w-[440px] w-full justify-self-end">
-            {/* Tab strip */}
-            <div className="flex border-b border-slate-100">
-              <div className="flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#0e6efe] relative">
-                Sälj din bil
-                <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-[#0e6efe] rounded-t-full" />
-              </div>
-              <div className="w-px bg-slate-100 my-2" />
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                Hitta bil
-              </button>
+          <div className="bg-[#1e1e2e] rounded-2xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.5)] overflow-hidden max-w-[440px] w-full justify-self-end border border-white/10">
+            {/* Tabs */}
+            <div className="flex">
+              {(['salj', 'hitta'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setHeroTab(t)}
+                  className={`flex-1 py-4 text-[13px] font-bold tracking-[0.06em] transition-colors duration-200 ${
+                    heroTab === t
+                      ? 'text-white border-b-2 border-[#0e6efe]'
+                      : 'text-white/40 hover:text-white/70 border-b-2 border-transparent'
+                  }`}
+                >
+                  {t === 'salj' ? 'Sälj min bil' : 'Hitta en bil'}
+                </button>
+              ))}
             </div>
 
-            <div className="p-4">
-              <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2">
-                <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
-                {formError && (
-                  <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
-                    <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
-                    <span className="leading-snug">{formError}</span>
+            <div className="p-5">
+              {heroTab === 'salj' ? (
+                <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
+                  <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
+                  {formError && (
+                    <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-500/20 border border-red-400/30 text-white text-[11px] font-medium px-2.5 py-1.5">
+                      <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
+                      <span className="leading-snug">{formError}</span>
+                    </div>
+                  )}
+                  <button
+                    type="submit"
+                    className="h-11 w-full rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[14px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5 shadow-[0_4px_14px_-4px_rgba(14,110,254,0.55)]"
+                  >
+                    Värdera bilen gratis
+                    <ArrowRight className="w-4 h-4 opacity-80" />
+                  </button>
+                </form>
+              ) : (
+                <div ref={carSearchRef} className="relative">
+                  <div className="flex items-center h-11 rounded-lg bg-white overflow-hidden shadow-sm">
+                    <input
+                      type="text"
+                      value={carQuery}
+                      onChange={(e) => handleCarQueryChange(e.target.value)}
+                      onFocus={() => carQuery.trim() && setShowSuggestions(true)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
+                      placeholder="Sök efter märke eller modell"
+                      className="flex-1 min-w-0 w-0 h-full pl-4 pr-2 text-[14px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCarSearch}
+                      className="w-11 h-full flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] transition shrink-0"
+                    >
+                      {carSearchLoading
+                        ? <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        : <Search className="w-4.5 h-4.5 text-white" />
+                      }
+                    </button>
                   </div>
-                )}
-                <button
-                  type="submit"
-                  className="h-10 w-full rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5 shadow-[0_4px_14px_-4px_rgba(14,110,254,0.55)]"
-                >
-                  Värdera bilen gratis
-                  <ArrowRight className="w-3.5 h-3.5 opacity-80" />
-                </button>
-              </form>
-
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil?quiz=start');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                }}
-                className="mt-2.5 w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
-              >
-                Eller låt oss hjälpa dig hitta en bil.
-              </button>
-
+                  {showSuggestions && carSuggestions.length > 0 && (
+                    <div className="absolute left-0 right-0 top-full mt-1 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
+                      {carSuggestions.map((s, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => handleCarSelect(s.make, s.model)}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition text-[13px] text-slate-800 border-b border-slate-100 last:border-0"
+                        >
+                          <Car className="w-4 h-4 text-slate-400 shrink-0" />
+                          <span className="font-semibold">{s.make}</span>
+                          <span className="text-slate-500">{s.model}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <div className="mt-3 flex items-center justify-between">
+                    <p className="text-white/40 text-[12px]">eller låt oss hjälpa dig</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.history.pushState({}, '', '/kop-bil/bestall');
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }}
+                      className="flex items-center gap-1.5 text-white font-semibold text-[13px] bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg px-3 py-1.5 transition"
+                    >
+                      Hitta en bil <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
