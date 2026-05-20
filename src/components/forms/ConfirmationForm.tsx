@@ -62,7 +62,7 @@ export default function ConfirmationForm({
         if (signInError || !signInData.user) {
           setStage('idle');
           onError(
-            'En användare med den här mejladressen finns redan. Använd ett annat lösenord eller logga in.'
+            'Den här mejladressen är redan registrerad med ett annat lösenord. Logga in via "Mina erbjudanden" för att fortsätta med ditt befintliga konto, eller använd en annan mejladress.'
           );
           return;
         }

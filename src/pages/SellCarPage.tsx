@@ -122,7 +122,7 @@ export default function SellCarPage({
     setGuidanceDone(true);
   };
 
-  const stepFlow: FormStep[] = ['track', 'condition', 'equipment', 'images', 'contact', 'confirm'];
+  const stepFlow: FormStep[] = ['track', 'condition', 'equipment', 'inspection', 'images', 'contact', 'confirm'];
 
   const currentIndex = stepFlow.indexOf(step);
   const totalSteps = stepFlow.length;
@@ -157,21 +157,25 @@ export default function SellCarPage({
     <div className="min-h-screen bg-white flex flex-col">
       <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
-          <a href="/" className="shrink-0 flex items-center">
+          <button onClick={onBack} className="shrink-0 flex items-center">
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
               className="h-20 lg:h-32 w-auto object-contain"
             />
-          </a>
+          </button>
           <div className="flex items-center ml-auto">
-            <a
-              href="/logga-in"
+            <button
+              type="button"
+              onClick={() => {
+                window.history.pushState({}, '', '/logga-in');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }}
               className="inline-flex items-center gap-2 bg-white text-[#0e6efe] text-[14px] font-semibold px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap"
             >
               <User className="w-[18px] h-[18px]" strokeWidth={2.2} />
               Mina erbjudanden
-            </a>
+            </button>
           </div>
         </div>
       </header>
