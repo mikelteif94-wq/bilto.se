@@ -683,9 +683,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
     return set;
   }, [allCarsRaw]);
 
-  // Catalog-only cars that don't exist in comparison data (for search enrichment)
+  // Catalog-only cars that don't exist in comparison data and are active
   const catalogOnlyCars = useMemo((): CatalogCar[] => {
     return catalogCars.filter(c => {
+      if (!c.is_active) return false;
       const key = `${c.make} ${c.model}`.toLowerCase().replace(/\s+/g, ' ');
       return !comparisonKeySet.has(key);
     });
@@ -1483,15 +1484,21 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                 );
               })}
 
-              {/* Catalog-only cars — shown only when searching, no comparison data */}
+              {/* Catalog-only cars — shown only when searching, uses enrichment data if available */}
               {catalogSearchResults.map((car) => {
                 const key = `catalog-${car.make}-${car.model}`;
                 const imgUrl = car.image_url || getCarImage(car.make, car.model);
+                const fuelLabel = car.fuel_types?.length
+                  ? car.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')
+                  : undefined;
                 return (
                   <CompactCarCard
                     key={key}
                     name={`${car.make} ${car.model}`}
                     imageUrl={imgUrl}
+                    rating={car.rating_overall ?? undefined}
+                    expertComment={car.expert_comment ?? undefined}
+                    fuelLabel={fuelLabel}
                     onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
                     disableMotion={isMobile}
                   />

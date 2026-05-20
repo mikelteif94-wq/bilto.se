@@ -11,6 +11,7 @@ import {
   MessageSquareText,
   Upload,
   Plus,
+  BookOpen,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
@@ -25,6 +26,7 @@ interface AdminCarsProps {
   onNavigateOverview?: () => void;
   onNavigateQuotes?: () => void;
   onNavigateBulkUpload?: () => void;
+  onNavigateCatalog?: () => void;
 }
 
 type Car = Database['public']['Tables']['cars']['Row'];
@@ -108,6 +110,7 @@ export default function AdminCars({
   onNavigateOverview,
   onNavigateQuotes,
   onNavigateBulkUpload,
+  onNavigateCatalog,
 }: AdminCarsProps) {
   const [cars, setCars] = useState<CarRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -268,15 +271,26 @@ export default function AdminCars({
               </span>
             )}
           </h1>
-          {onNavigateBulkUpload && (
-            <button
-              onClick={onNavigateBulkUpload}
-              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 font-medium text-sm transition"
-            >
-              <Upload className="w-4 h-4" />
-              <span className="hidden sm:inline">Bulk-bilder</span>
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {onNavigateCatalog && (
+              <button
+                onClick={onNavigateCatalog}
+                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 font-medium text-sm transition"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span className="hidden sm:inline">Bilkatalog</span>
+              </button>
+            )}
+            {onNavigateBulkUpload && (
+              <button
+                onClick={onNavigateBulkUpload}
+                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 font-medium text-sm transition"
+              >
+                <Upload className="w-4 h-4" />
+                <span className="hidden sm:inline">Bulk-bilder</span>
+              </button>
+            )}
+          </div>
         </div>
 
         <ErrorBanner message={error} className="mb-6" />

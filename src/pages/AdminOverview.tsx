@@ -18,6 +18,7 @@ import {
   RefreshCw,
   Flame,
   Zap,
+  BookOpen,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
@@ -30,6 +31,7 @@ interface AdminOverviewProps {
   onNavigateQuotes?: () => void;
   onNavigateQuiz?: () => void;
   onNavigateLeads?: () => void;
+  onNavigateCatalog?: () => void;
 }
 
 interface Stats {
@@ -105,6 +107,7 @@ export default function AdminOverview({
   onNavigateQuotes,
   onNavigateQuiz,
   onNavigateLeads,
+  onNavigateCatalog,
 }: AdminOverviewProps) {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Stats>({
@@ -214,6 +217,7 @@ export default function AdminOverview({
     ...(onNavigateQuotes ? [{ icon: <MessageSquareText className="w-[18px] h-[18px]" />, label: 'Förfrågningar', onClick: onNavigateQuotes, badge: stats.newQuotes }] : []),
     { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', onClick: onNavigateDealers },
     ...(onNavigateQuiz ? [{ icon: <ClipboardList className="w-[18px] h-[18px]" />, label: 'Quiz', onClick: onNavigateQuiz }] : []),
+    ...(onNavigateCatalog ? [{ icon: <BookOpen className="w-[18px] h-[18px]" />, label: 'Katalog', onClick: onNavigateCatalog }] : []),
   ];
 
   const today = new Date().toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' });

@@ -24,6 +24,7 @@ import AdminDealerProposalEditor from './pages/AdminDealerProposalEditor';
 import AdminBulkUpload from './pages/AdminBulkUpload';
 import AdminQuizSubmissions from './pages/AdminQuizSubmissions';
 import AdminLeadCommandCenter from './pages/AdminLeadCommandCenter';
+import AdminCarCatalog from './pages/AdminCarCatalog';
 import MyCarPage from './pages/MyCarPage';
 import MyQuotePage from './pages/MyQuotePage';
 import SetPasswordPage from './pages/SetPasswordPage';
@@ -346,6 +347,7 @@ function App() {
           onNavigateQuotes={() => navigate('/admin/forfragningar')}
           onNavigateQuiz={() => navigate('/admin/quiz')}
           onNavigateLeads={() => navigate('/admin/leads')}
+          onNavigateCatalog={() => navigate('/admin/katalog')}
         />
       );
     }
@@ -495,6 +497,10 @@ function App() {
       );
     }
 
+    if (path === '/admin/katalog') {
+      return <AdminCarCatalog onBack={() => navigate('/admin/bilar')} />;
+    }
+
     if (path !== '/admin/bilar') {
       navigate('/admin/bilar');
       return null;
@@ -509,6 +515,7 @@ function App() {
         onNavigateOverview={() => navigate('/admin/oversikt')}
         onNavigateQuotes={() => navigate('/admin/forfragningar')}
         onNavigateBulkUpload={() => navigate('/admin/uppladdning')}
+        onNavigateCatalog={() => navigate('/admin/katalog')}
       />
     );
   }
