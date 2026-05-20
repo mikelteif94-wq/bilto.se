@@ -1909,7 +1909,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-[22px] sm:text-[40px] font-semibold leading-[1.15] sm:leading-[1.08] text-white tracking-[-0.02em]">
-              Erfarna förhandlare -- på din sida
+              Vi hjälper dig köpa rätt bil — på dina villkor
             </h2>
             <p className="text-white/80 mt-3 sm:mt-4 text-[14px] sm:text-[17px] leading-[1.55] max-w-lg mx-auto">
               Vårt team har jobbat som toppsäljare hos Sveriges största bilhandlare. Nu jobbar vi för dig istället.
