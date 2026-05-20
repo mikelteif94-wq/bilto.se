@@ -29,7 +29,7 @@ import CompareDrawer from '../components/CompareDrawer';
 import BuyDrawer from '../components/BuyDrawer';
 import { EquityFlow } from '../components/equity/EquityFlow';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
-import { getAllComparisonCars, findComparisonCarByMakeModel, type ComparisonCar } from '../lib/comparison';
+import { getAllComparisonCars, type ComparisonCar } from '../lib/comparison';
 import { useCarImages } from '../hooks/useCarImages';
 import RegInput from '../components/RegInput';
 
@@ -117,7 +117,6 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
   const carSearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [carsModalOpen, setCarsModalOpen] = useState(false);
   const [detailCar, setDetailCar] = useState<ComparisonCar | null>(null);
-  const [heroDetailCar, setHeroDetailCar] = useState<{ make: string; model: string; image_url: string | null } | null>(null);
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
 
   const openDrawer = (carLabel: string) => setBuyDrawerCar(carLabel);
@@ -187,28 +186,19 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
   };
 
   const handleCarSelect = (make: string, model: string) => {
-    setCarQuery(`${make} ${model}`.trim());
+    const bil = `${make} ${model}`.trim();
+    setCarQuery(bil);
     setShowSuggestions(false);
-    const compData = findComparisonCarByMakeModel(make, model);
-    if (compData) {
-      setDetailCar(compData);
-    } else {
-      setHeroDetailCar({ make, model, image_url: getCarImage(make, model) || null });
-    }
+    const params = new URLSearchParams({ bil });
+    window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
   const handleCarSearch = () => {
-    const q = carQuery.trim();
-    if (!q) return;
-    const parts = q.split(' ');
-    const make = parts[0];
-    const model = parts.slice(1).join(' ');
-    const compData = model ? findComparisonCarByMakeModel(make, model) : null;
-    if (compData) {
-      setDetailCar(compData);
-    } else {
-      setHeroDetailCar({ make, model: model || q, image_url: getCarImage(make, model) || null });
-    }
+    if (!carQuery.trim()) return;
+    const params = new URLSearchParams({ bil: carQuery.trim() });
+    window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
   const allCarsMap = new Map(allCars.map(c => [c.id, c]));
@@ -1327,24 +1317,6 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
             const car = detailCar;
             setDetailCar(null);
             openDrawer(`${car.brand_display} ${car.model_display}`);
-          }}
-        />
-      )}
-
-      {heroDetailCar && (
-        <CarDetailSheet
-          car={{
-            make: heroDetailCar.make,
-            model: heroDetailCar.model,
-            image_url: heroDetailCar.image_url,
-            matchScore: 0,
-            matchReasons: [],
-          }}
-          onClose={() => setHeroDetailCar(null)}
-          onSelect={() => {
-            const car = heroDetailCar;
-            setHeroDetailCar(null);
-            openDrawer(`${car.make} ${car.model}`);
           }}
         />
       )}
