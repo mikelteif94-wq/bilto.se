@@ -395,14 +395,13 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
                 )}
               </form>
 
-              <div className="mt-4 text-center text-[14px] text-white/45">
-                Eller låt oss hjälpa dig hitta en bil.{' '}
+              <div className="mt-4 text-center">
                 <button
                   type="button"
                   onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                  className="text-white font-semibold underline underline-offset-2 hover:text-white/80 transition"
+                  className="text-white/50 text-[14px] font-semibold underline underline-offset-2 hover:text-white/80 transition"
                 >
-                  Hitta en bil
+                  Hitta bil
                 </button>
               </div>
             </div>
