@@ -311,7 +311,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               {/* Form body */}
               <div className="px-7 py-6">
                 <form onSubmit={handleSubmit}>
-                  <div className="flex gap-3 items-stretch">
+                  <div className="flex gap-3 items-stretch justify-center">
                     <div className="flex-1">
                       <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} dark size="lg" />
                     </div>
