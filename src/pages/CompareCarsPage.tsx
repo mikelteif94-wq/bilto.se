@@ -14,6 +14,7 @@ import type { ComparisonCar } from '../lib/comparison/types';
 import { useCarImages, type CatalogCar } from '../hooks/useCarImages';
 import MobileMenu from '../components/MobileMenu';
 import CompactCarCard from '../components/CompactCarCard';
+import ElCarCard from '../components/ElCarCard';
 import CompareDrawer from '../components/CompareDrawer';
 import BuyDrawer from '../components/BuyDrawer';
 import { EquityFlow } from '../components/equity/EquityFlow';
@@ -579,54 +580,77 @@ interface CompareCarsPageProps {
 
 /* ───────────── Monthly cost calculator ───────────── */
 
-const LOAN_TERMS = [36, 48, 60, 72] as const;
-type LoanTerm = typeof LOAN_TERMS[number];
+const CALC_RATE = 0.0649;
+const CALC_TERM = 36;
+const CALC_DOWN_PAYMENT_PCT = 0.20;
+const RESIDUAL_OPTIONS = [50, 55] as const;
+type ResidualPct = typeof RESIDUAL_OPTIONS[number];
 
 function MonthlyCalcSection() {
-  const [price, setPrice] = useState(350000);
-  const [term, setTerm] = useState<LoanTerm>(60);
-  const RATE = 0.049; // 4.9% annual
+  const [price, setPrice] = useState(470000);
+  const [residualPct, setResidualPct] = useState<ResidualPct>(55);
 
-  const monthly = useMemo(() => {
-    const r = RATE / 12;
-    const n = term;
-    if (r === 0) return Math.round(price / n);
-    return Math.round((price * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
-  }, [price, term]);
-
-  const priceFormatted = price.toLocaleString('sv-SE');
+  const { monthly, downPayment, loanAmount, residualAmount } = useMemo(() => {
+    const r = CALC_RATE / 12;
+    const n = CALC_TERM;
+    const down = Math.round(price * CALC_DOWN_PAYMENT_PCT);
+    const loan = price - down;
+    const residual = Math.round(price * (residualPct / 100));
+    // Annuity with balloon (residual value): PV of residual discounted back, then standard annuity
+    const pv = loan - residual / Math.pow(1 + r, n);
+    const m = Math.round((pv * r) / (1 - Math.pow(1 + r, -n)));
+    return { monthly: m, downPayment: down, loanAmount: loan, residualAmount: residual };
+  }, [price, residualPct]);
 
   return (
     <section className="py-12 sm:py-16 px-4 sm:px-6 bg-slate-50 border-t border-slate-100">
-      <div className="max-w-xl mx-auto text-center">
-        <span className="inline-flex items-center gap-2 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
-          <Sparkles className="w-3.5 h-3.5" />
-          Snabbkalkyl
-        </span>
-        <h2 className="text-[22px] sm:text-[28px] font-extrabold text-slate-900 tracking-tight mb-1.5">
-          Beräkna månadskostnad
-        </h2>
-        <p className="text-[13px] text-slate-400 mb-8">Ange bilpris och lånets löptid — vi räknar ut din månadskostnad</p>
-
-        {/* Monthly result */}
-        <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(14,110,254,0.1)] ring-1 ring-[#d6e8ff] px-6 pt-6 pb-7 mb-6">
-          <p className="text-[12px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Uppskattad månadskostnad</p>
-          <p className="text-[48px] sm:text-[56px] font-extrabold text-[#0e6efe] leading-none tabular-nums">
-            {monthly.toLocaleString('sv-SE')}
-            <span className="text-[20px] sm:text-[24px] font-bold text-slate-400 ml-2">kr/mån</span>
+      <div className="max-w-xl mx-auto">
+        <div className="text-center mb-8">
+          <h2 className="text-[22px] sm:text-[28px] font-extrabold text-slate-900 tracking-tight mb-2">
+            Beräkna månadskostnad
+          </h2>
+          <p className="text-[13px] text-slate-400 max-w-sm mx-auto leading-relaxed">
+            Ange bilpris – månadskostnaden beräknas automatiskt med finansiering, kontantinsats och restvärde.
           </p>
-          <p className="text-[11px] text-slate-400 mt-2">Räntesats 4,9% · {term} månader · Utan kontantinsats</p>
+        </div>
+
+        {/* Monthly result display */}
+        <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(14,110,254,0.1)] ring-1 ring-[#d6e8ff] px-6 pt-6 pb-6 mb-6 text-center">
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Uppskattad månadskostnad</p>
+          <div className="flex items-end justify-center gap-2 mb-2">
+            <span className="text-[52px] sm:text-[60px] font-extrabold text-[#0e6efe] leading-none tabular-nums">
+              {monthly.toLocaleString('sv-SE')}
+            </span>
+            <span className="text-[20px] font-bold text-slate-400 mb-1.5">kr/mån</span>
+          </div>
+          <p className="text-[12px] text-slate-400">
+            6,49% ränta · {CALC_TERM} månader · 20% kontantinsats · {residualPct}% restvärde
+          </p>
+
+          {/* Summary pills */}
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {[
+              { label: 'Kontantinsats', value: downPayment.toLocaleString('sv-SE') + ' kr' },
+              { label: 'Lånesumma', value: loanAmount.toLocaleString('sv-SE') + ' kr' },
+              { label: 'Restvärde', value: residualAmount.toLocaleString('sv-SE') + ' kr' },
+            ].map(p => (
+              <div key={p.label} className="px-3 py-1.5 rounded-lg bg-slate-50 ring-1 ring-slate-100 text-center">
+                <p className="text-[10px] text-slate-400 font-medium">{p.label}</p>
+                <p className="text-[12px] font-bold text-slate-700 tabular-nums">{p.value}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Bilpris slider */}
-        <div className="mb-6 text-left">
+        <div className="mb-6">
           <div className="flex justify-between items-baseline mb-2">
             <label className="text-[13px] font-semibold text-slate-700">Bilpris</label>
-            <span className="text-[15px] font-bold text-slate-900 tabular-nums">{priceFormatted} kr</span>
+            <span className="text-[15px] font-bold text-slate-900 tabular-nums">{price.toLocaleString('sv-SE')} kr</span>
           </div>
           <input
             type="range"
-            min={100000}
+            min={50000}
             max={1200000}
             step={5000}
             value={price}
@@ -634,34 +658,54 @@ function MonthlyCalcSection() {
             className="w-full h-2 accent-[#0e6efe] rounded-full cursor-pointer"
           />
           <div className="flex justify-between text-[11px] text-slate-400 mt-1.5">
-            <span>100 000 kr</span>
+            <span>50 000 kr</span>
             <span>1 200 000 kr</span>
           </div>
         </div>
 
-        {/* Loan term tabs */}
-        <div className="text-left mb-6">
-          <label className="text-[13px] font-semibold text-slate-700 block mb-2">Lånets löptid</label>
-          <div className="flex gap-2">
-            {LOAN_TERMS.map(t => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setTerm(t)}
-                className={`flex-1 h-10 rounded-xl text-[13px] font-bold transition-all duration-150 ${
-                  term === t
-                    ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/25'
-                    : 'bg-white ring-1 ring-slate-200 text-slate-600 hover:ring-[#0e6efe] hover:text-[#0e6efe]'
+        {/* Residual value toggle */}
+        <div className="mb-6">
+          <label className="text-[13px] font-semibold text-slate-700 block mb-2.5">Restvärde</label>
+          <div className="flex gap-3">
+            {RESIDUAL_OPTIONS.map(opt => (
+              <label
+                key={opt}
+                className={`flex items-center gap-2.5 flex-1 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all duration-150 ${
+                  residualPct === opt
+                    ? 'border-[#0e6efe] bg-[#f0f7ff]'
+                    : 'border-slate-200 bg-white hover:border-slate-300'
                 }`}
               >
-                {t} mån
-              </button>
+                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                  residualPct === opt ? 'border-[#0e6efe]' : 'border-slate-300'
+                }`}>
+                  {residualPct === opt && (
+                    <div className="w-2 h-2 rounded-full bg-[#0e6efe]" />
+                  )}
+                </div>
+                <input
+                  type="radio"
+                  className="sr-only"
+                  name="residual"
+                  value={opt}
+                  checked={residualPct === opt}
+                  onChange={() => setResidualPct(opt)}
+                />
+                <div>
+                  <span className={`text-[14px] font-bold block ${residualPct === opt ? 'text-[#0e6efe]' : 'text-slate-700'}`}>
+                    {opt}%
+                  </span>
+                  {opt === 55 && (
+                    <span className="text-[10px] text-slate-400 font-medium">Standard</span>
+                  )}
+                </div>
+              </label>
             ))}
           </div>
         </div>
 
-        <p className="text-[11px] text-slate-400">
-          Kalkylen är en uppskattning. Faktisk månadskostnad beror på ränta, kontantinsats och kreditgivare.
+        <p className="text-[11px] text-slate-400 text-center">
+          Kalkylen är en uppskattning. Faktisk månadskostnad beror på kreditgivare och individuella villkor.
         </p>
       </div>
     </section>
@@ -1531,21 +1575,38 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       </section>
 
       {/* Curated grid */}
-      <section id="cars-grid" className="py-10 sm:py-16 px-4 sm:px-6 bg-slate-50">
+      <section
+        id="cars-grid"
+        className={`py-10 sm:py-16 px-4 sm:px-6 transition-colors duration-500 ${
+          activeCategory === 'el'
+            ? 'bg-[#070e1a]'
+            : 'bg-slate-50'
+        }`}
+      >
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
             <div>
-              <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900">Experternas val</h2>
-              <p className="text-[13px] text-slate-400 mt-0.5">Markera bilar för att jämföra dem sida vid sida</p>
+              <h2 className={`text-[20px] sm:text-[28px] font-bold transition-colors duration-300 ${activeCategory === 'el' ? 'text-white' : 'text-slate-900'}`}>
+                {activeCategory === 'el' ? 'Elbilar' : 'Experternas val'}
+              </h2>
+              <p className={`text-[13px] mt-0.5 transition-colors duration-300 ${activeCategory === 'el' ? 'text-slate-400' : 'text-slate-400'}`}>
+                {activeCategory === 'el'
+                  ? 'Alla bilar kör enbart på el — välj ett kort för att jämföra'
+                  : 'Markera bilar för att jämföra dem sida vid sida'}
+              </p>
             </div>
             <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none transition-colors ${activeCategory === 'el' ? 'text-slate-500' : 'text-slate-400'}`} />
               <input
                 type="text"
                 value={carSearchQuery}
                 onChange={e => { setCarSearchQuery(e.target.value); setActiveCategory('alla'); setShowAllCars(false); }}
                 placeholder="Sök märke eller modell…"
-                className="w-full h-10 pl-9 pr-9 rounded-full bg-white ring-1 ring-slate-200 focus:ring-2 focus:ring-[#0e6efe] outline-none text-[13px] text-slate-800 placeholder:text-slate-400 transition-all"
+                className={`w-full h-10 pl-9 pr-9 rounded-full ring-1 focus:ring-2 focus:ring-[#0e6efe] outline-none text-[13px] placeholder:text-slate-500 transition-all ${
+                  activeCategory === 'el'
+                    ? 'bg-white/8 ring-white/15 text-white'
+                    : 'bg-white ring-slate-200 text-slate-800 placeholder:text-slate-400'
+                }`}
               />
               {carSearchQuery && (
                 <button
@@ -1563,14 +1624,19 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             {CATEGORIES.map(cat => {
               const Icon = cat.icon;
               const isActive = activeCategory === cat.key && !carSearchQuery;
+              const isElMode = activeCategory === 'el';
               return (
                 <button
                   key={cat.key}
                   onClick={() => { setActiveCategory(cat.key); setShowAllCars(false); setCarSearchQuery(''); setExpertShowCount(6); }}
                   className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                     isActive
-                      ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/20'
-                      : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:ring-slate-300 hover:shadow-sm'
+                      ? cat.key === 'el'
+                        ? 'bg-[#38bdf8] text-[#0c1a2e] shadow-md shadow-[#38bdf8]/30'
+                        : 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/20'
+                      : isElMode
+                        ? 'bg-white/8 text-slate-300 ring-1 ring-white/15 hover:ring-white/30 hover:text-white'
+                        : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:ring-slate-300 hover:shadow-sm'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -1587,14 +1653,39 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={isMobile ? undefined : { opacity: 0, y: -10 }}
               transition={{ duration: isMobile ? 0 : 0.2 }}
-              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
+              className={`grid gap-3 sm:gap-4 ${
+                activeCategory === 'el'
+                  ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-3'
+                  : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'
+              }`}
             >
               {visibleCars.map((car, i) => {
+                const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
+                if (activeCategory === 'el') {
+                  const monthly = car.pricing.new_from_sek
+                    ? Math.round(car.pricing.new_from_sek / 60)
+                    : undefined;
+                  return (
+                    <ElCarCard
+                      key={car.id}
+                      name={`${car.brand_display} ${car.model_display}`}
+                      imageUrl={imgUrl}
+                      rating={car.ratings.overall}
+                      topBadge={i < 3}
+                      expertComment={getExpertComment(car)}
+                      estimatedMonthly={monthly}
+                      isCompared={selectedIds.has(car.id)}
+                      onNegotiate={() => openContactForCar(car)}
+                      onDetail={() => setDetailCar(car)}
+                      onCompare={() => toggleSelect(car.id)}
+                    />
+                  );
+                }
                 return (
                   <CompactCarCard
                     key={car.id}
                     name={`${car.brand_display} ${car.model_display}`}
-                    imageUrl={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
+                    imageUrl={imgUrl}
                     rating={car.ratings.overall}
                     topBadge={i < 3 && activeCategory === 'popular'}
                     expertComment={getExpertComment(car)}
@@ -1634,13 +1725,17 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               <button
                 type="button"
                 onClick={() => openBuyDrawer(carSearchQuery.trim() || '', 'found')}
-                className="group flex flex-col items-center justify-center gap-3 p-5 rounded-2xl bg-white border-2 border-dashed border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/[0.03] transition-all duration-200 min-h-[180px] text-center"
+                className={`group flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-2 border-dashed transition-all duration-200 min-h-[180px] text-center ${
+                  activeCategory === 'el'
+                    ? 'bg-white/5 border-white/15 hover:border-[#38bdf8]/50 hover:bg-[#38bdf8]/5'
+                    : 'bg-white border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/[0.03]'
+                }`}
               >
-                <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center transition-colors">
-                  <Search className="w-5 h-5 text-slate-400 group-hover:text-[#0e6efe] transition-colors" />
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${activeCategory === 'el' ? 'bg-white/10 group-hover:bg-[#38bdf8]/15' : 'bg-slate-100 group-hover:bg-[#0e6efe]/10'}`}>
+                  <Search className={`w-5 h-5 transition-colors ${activeCategory === 'el' ? 'text-slate-500 group-hover:text-[#38bdf8]' : 'text-slate-400 group-hover:text-[#0e6efe]'}`} />
                 </div>
                 <div>
-                  <p className="text-[13px] font-bold text-slate-700 group-hover:text-[#0e6efe] transition-colors leading-snug">
+                  <p className={`text-[13px] font-bold transition-colors leading-snug ${activeCategory === 'el' ? 'text-slate-300 group-hover:text-[#7dd3fc]' : 'text-slate-700 group-hover:text-[#0e6efe]'}`}>
                     {carSearchQuery.trim() ? `Hitta en ${carSearchQuery.trim()}` : 'Hittar du inte bilen?'}
                   </p>
                   <p className="text-[11px] text-slate-400 mt-1 leading-snug">
@@ -1660,7 +1755,11 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                   if (next >= allCategoryCars.length) setShowAllCars(true);
                   else setExpertShowCount(next);
                 }}
-                className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white text-slate-700 text-[14px] font-semibold ring-1 ring-slate-200 hover:ring-slate-300 hover:shadow-sm transition-all duration-200"
+                className={`inline-flex items-center gap-2 px-7 py-3 rounded-full text-[14px] font-semibold ring-1 transition-all duration-200 ${
+                  activeCategory === 'el'
+                    ? 'bg-white/8 text-slate-200 ring-white/15 hover:ring-[#38bdf8]/40 hover:text-white'
+                    : 'bg-white text-slate-700 ring-slate-200 hover:ring-slate-300 hover:shadow-sm'
+                }`}
               >
                 Visa fler bilar
                 <span className="text-[12px] text-slate-400 font-normal">
