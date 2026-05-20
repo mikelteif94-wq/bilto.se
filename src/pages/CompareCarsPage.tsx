@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getAllComparisonCars } from '../lib/comparison';
 import { findComparisonCarByMakeModel } from '../lib/comparison';
 import type { ComparisonCar } from '../lib/comparison/types';
-import { useCarImages } from '../hooks/useCarImages';
+import { useCarImages, type CatalogCar } from '../hooks/useCarImages';
 import MobileMenu from '../components/MobileMenu';
 import CompactCarCard from '../components/CompactCarCard';
 import CompareDrawer from '../components/CompareDrawer';
@@ -581,7 +581,7 @@ interface CompareCarsPageProps {
 
 export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const allCarsRaw = useMemo(() => getAllComparisonCars(), []);
-  const { getCarImage } = useCarImages();
+  const { getCarImage, catalogCars } = useCarImages();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640);
@@ -676,6 +676,21 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
   const [carSearchQuery, setCarSearchQuery] = useState('');
 
+  // Normalized key set of comparison cars to filter duplicates from catalog search
+  const comparisonKeySet = useMemo(() => {
+    const set = new Set<string>();
+    allCarsRaw.forEach(c => set.add(`${c.brand_display} ${c.model_display}`.toLowerCase().replace(/\s+/g, ' ')));
+    return set;
+  }, [allCarsRaw]);
+
+  // Catalog-only cars that don't exist in comparison data (for search enrichment)
+  const catalogOnlyCars = useMemo((): CatalogCar[] => {
+    return catalogCars.filter(c => {
+      const key = `${c.make} ${c.model}`.toLowerCase().replace(/\s+/g, ' ');
+      return !comparisonKeySet.has(key);
+    });
+  }, [catalogCars, comparisonKeySet]);
+
   const allCategoryCars = useMemo(() => {
     const q = carSearchQuery.trim().toLowerCase();
     if (q) {
@@ -695,6 +710,15 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
     }
     return getCuratedList(ids);
   }, [activeCategory, getCuratedList, carSearchQuery, allCarsRaw]);
+
+  // Catalog-only results that match the search query
+  const catalogSearchResults = useMemo((): CatalogCar[] => {
+    const q = carSearchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return catalogOnlyCars.filter(c =>
+      `${c.make} ${c.model}`.toLowerCase().includes(q)
+    );
+  }, [carSearchQuery, catalogOnlyCars]);
 
   const visibleCars = useMemo(() => {
     if (carSearchQuery.trim()) return allCategoryCars;
@@ -1454,6 +1478,21 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     onCompare={() => toggleSelect(car.id)}
                     isCompared={selectedIds.has(car.id)}
                     index={i}
+                    disableMotion={isMobile}
+                  />
+                );
+              })}
+
+              {/* Catalog-only cars — shown only when searching, no comparison data */}
+              {catalogSearchResults.map((car) => {
+                const key = `catalog-${car.make}-${car.model}`;
+                const imgUrl = car.image_url || getCarImage(car.make, car.model);
+                return (
+                  <CompactCarCard
+                    key={key}
+                    name={`${car.make} ${car.model}`}
+                    imageUrl={imgUrl}
+                    onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
                     disableMotion={isMobile}
                   />
                 );

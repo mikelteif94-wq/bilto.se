@@ -18,8 +18,15 @@ function normalize(s: string): string {
     .trim();
 }
 
+export interface CatalogCar {
+  make: string;
+  model: string;
+  image_url: string | null;
+}
+
 export function useCarImages() {
   const [carImages, setCarImages] = useState<Map<string, string>>(new Map());
+  const [catalogCars, setCatalogCars] = useState<CatalogCar[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,8 +34,7 @@ export function useCarImages() {
       try {
         const { data, error } = await supabase
           .from('car_catalog')
-          .select('make, model, image_url, cleaned_image_url')
-          .not('image_url', 'is', null);
+          .select('make, model, image_url, cleaned_image_url');
 
         if (error) {
           console.error('Error fetching car images:', error);
@@ -37,6 +43,9 @@ export function useCarImages() {
 
         const imageMap = new Map<string, string>();
         const entries = (data || []) as unknown as CatalogEntry[];
+
+        // Expose all catalog entries (with or without image) for search
+        setCatalogCars(entries.map(e => ({ make: e.make, model: e.model, image_url: e.cleaned_image_url || e.image_url })));
 
         // Sort longest model names first so specific variants (e.g. "XC40 Recharge")
         // are inserted before their shorter aliases ("XC40") and won't be overwritten.
@@ -98,5 +107,5 @@ export function useCarImages() {
     return undefined;
   };
 
-  return { carImages, getCarImage, loading };
+  return { carImages, catalogCars, getCarImage, loading };
 }
