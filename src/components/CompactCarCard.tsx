@@ -1,4 +1,4 @@
-import { Star, Car, Check, ChevronRight } from 'lucide-react';
+import { Star, Car, Check, ChevronRight, GitCompareArrows } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface CompactCarCardProps {
@@ -10,20 +10,44 @@ interface CompactCarCardProps {
   fuelLabel?: string;
   estimatedMonthly?: number;
   isSelected?: boolean;
+  isCompared?: boolean;
   onSelect?: () => void;
+  onCompare?: () => void;
   onNegotiate: () => void;
-  onSearch?: () => void;
   onDetail?: () => void;
-  /** Label for the secondary CTA (default: "Sök en åt mig") */
-  searchLabel?: string;
   index?: number;
   disableMotion?: boolean;
 }
 
+function RatingBar({ rating }: { rating: number }) {
+  // rating is 5–10 scale
+  const clamped = Math.max(5, Math.min(10, rating));
+  const pct = ((clamped - 5) / 5) * 100;
+  const color = clamped >= 9 ? '#10b981' : clamped >= 7.5 ? '#0e6efe' : '#64748b';
+
+  return (
+    <div className="mt-1.5 flex items-center gap-2">
+      <div className="flex-1 h-1 rounded-full bg-slate-100 overflow-hidden">
+        <div
+          className="h-full rounded-full transition-all duration-500"
+          style={{ width: `${pct}%`, backgroundColor: color }}
+        />
+      </div>
+      <span
+        className="text-[11px] font-bold tabular-nums shrink-0"
+        style={{ color }}
+      >
+        {Number.isInteger(clamped) ? clamped : clamped.toFixed(1)}
+        <span className="font-normal text-slate-400">/10</span>
+      </span>
+    </div>
+  );
+}
+
 export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
-  fuelLabel, estimatedMonthly, isSelected, onSelect,
-  onNegotiate, onSearch: _onSearch, onDetail, searchLabel: _searchLabel, index = 0, disableMotion,
+  fuelLabel, estimatedMonthly, isSelected, isCompared,
+  onSelect, onCompare, onNegotiate, onDetail, index = 0, disableMotion,
 }: CompactCarCardProps) {
 
   const handleClick = () => {
@@ -40,6 +64,8 @@ export default function CompactCarCard({
       className={`group relative bg-[#f0f7ff] rounded-xl overflow-hidden transition-all duration-200 cursor-pointer ${
         isSelected
           ? 'ring-2 ring-[#0e6efe] shadow-[0_0_0_4px_rgba(14,110,254,0.12)]'
+          : isCompared
+          ? 'ring-2 ring-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]'
           : 'ring-1 ring-slate-100 hover:ring-slate-200 shadow-[0_1px_3px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)]'
       }`}
       style={{ touchAction: 'pan-y' }}
@@ -60,7 +86,7 @@ export default function CompactCarCard({
           </div>
         )}
 
-        {topBadge && !isSelected && (
+        {topBadge && !isSelected && !isCompared && (
           <div className="absolute top-2.5 left-2.5">
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/95 backdrop-blur-sm text-[10px] font-bold text-[#0e6efe] shadow-sm">
               <Star className="w-2.5 h-2.5 fill-[#0e6efe] text-[#0e6efe]" />
@@ -79,22 +105,18 @@ export default function CompactCarCard({
             {isSelected && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
           </div>
         )}
-
-        {rating != null && (
-          <div className={`absolute top-2 right-2 min-w-[2rem] h-8 px-1.5 rounded-full shadow-md flex items-center justify-center ${rating >= 9 ? 'bg-emerald-500' : 'bg-[#0e6efe]'}`}>
-            <span className="text-[11px] font-bold text-white tabular-nums">{Number.isInteger(rating) ? rating : rating.toFixed(1)}</span>
-          </div>
-        )}
       </div>
 
       {/* Content */}
-      <div className="px-3.5 pt-2.5 pb-3">
+      <div className="px-3.5 pt-2.5 pb-2">
         <h3 className="text-[13px] font-bold text-slate-900 leading-tight truncate group-hover:text-[#0e6efe] transition-colors duration-200">
           {name}
         </h3>
 
+        {rating != null && <RatingBar rating={rating} />}
+
         {estimatedMonthly ? (
-          <p className="mt-0.5 text-[12px] font-semibold text-[#0e6efe]">
+          <p className="mt-1 text-[12px] font-semibold text-[#0e6efe]">
             ca {estimatedMonthly.toLocaleString('sv-SE')} kr/mån
           </p>
         ) : null}
@@ -110,17 +132,34 @@ export default function CompactCarCard({
         )}
       </div>
 
-      {/* Action CTA */}
+      {/* Action buttons */}
       {!onSelect && (
-        <div className="px-3 pb-3">
+        <div className="px-3 pb-3 flex gap-2 mt-0.5">
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-            className="w-full h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1.5"
+            className="flex-1 h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1"
           >
             Få hjälp att köpa
-            <ChevronRight className="w-3.5 h-3.5 opacity-80" />
+            <ChevronRight className="w-3 h-3 opacity-80" />
           </button>
+          {onCompare && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onCompare(); }}
+              title={isCompared ? 'Ta bort från jämförelse' : 'Jämför'}
+              className={`h-9 w-9 rounded-lg border flex items-center justify-center shrink-0 transition-all duration-150 active:scale-[0.98] ${
+                isCompared
+                  ? 'bg-emerald-500 border-emerald-500 text-white'
+                  : 'bg-white border-slate-200 hover:border-[#0e6efe] text-slate-500 hover:text-[#0e6efe]'
+              }`}
+            >
+              {isCompared
+                ? <Check className="w-4 h-4" strokeWidth={2.5} />
+                : <GitCompareArrows className="w-4 h-4" />
+              }
+            </button>
+          )}
         </div>
       )}
     </motion.div>

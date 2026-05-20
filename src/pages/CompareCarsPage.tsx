@@ -1471,44 +1471,22 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
             >
               {visibleCars.map((car, i) => {
-                const isSelected = selectedIds.has(car.id);
                 return (
-                  <div key={car.id} className="relative">
-                    {/* Selection checkbox */}
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); toggleSelect(car.id); }}
-                      className={`absolute top-2.5 left-2.5 z-10 h-6 px-2.5 rounded-full flex items-center gap-1 transition-all duration-200 shadow-sm text-[11px] font-semibold ${
-                        isSelected
-                          ? 'bg-[#0e6efe] text-white'
-                          : 'bg-[#0e6efe] text-white hover:bg-[#0a57cc]'
-                      }`}
-                      aria-label={isSelected ? 'Ta bort från jämförelse' : 'Lägg till i jämförelse'}
-                    >
-                      {isSelected ? (
-                        <><Check className="w-3 h-3" strokeWidth={2.5} />Jämför</>
-                      ) : (
-                        <>Jämför</>
-                      )}
-                    </button>
-
-                    <div className={`rounded-xl transition-all duration-200 ${isSelected ? 'ring-2 ring-[#0e6efe] ring-offset-2' : ''}`}>
-                      <CompactCarCard
-                        name={`${car.brand_display} ${car.model_display}`}
-                        imageUrl={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
-                        rating={car.ratings.overall}
-                        topBadge={i < 3 && activeCategory === 'popular'}
-                        expertComment={getExpertComment(car)}
-                        fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                        searchLabel={`Byt min nuvarande mot denna`}
-                        onNegotiate={() => openContactForCar(car)}
-                        onSearch={() => openContactForCar(car)}
-                        onDetail={() => setDetailCar(car)}
-                        index={i}
-                        disableMotion={isMobile}
-                      />
-                    </div>
-                  </div>
+                  <CompactCarCard
+                    key={car.id}
+                    name={`${car.brand_display} ${car.model_display}`}
+                    imageUrl={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
+                    rating={car.ratings.overall}
+                    topBadge={i < 3 && activeCategory === 'popular'}
+                    expertComment={getExpertComment(car)}
+                    fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                    onNegotiate={() => openContactForCar(car)}
+                    onDetail={() => setDetailCar(car)}
+                    onCompare={() => toggleSelect(car.id)}
+                    isCompared={selectedIds.has(car.id)}
+                    index={i}
+                    disableMotion={isMobile}
+                  />
                 );
               })}
 
@@ -1837,38 +1815,22 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                         </div>
                         {msg.cars && msg.cars.length > 0 && (
                           <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            {msg.cars.map((car, ci) => {
-                              const isSelected = selectedIds.has(car.id);
-                              return (
-                                <div key={car.id} className="relative">
-                                  <button
-                                    type="button"
-                                    onClick={(e) => { e.stopPropagation(); toggleSelect(car.id); }}
-                                    className={`absolute top-2 left-2 z-10 w-6 h-6 rounded-md flex items-center justify-center transition-all ${
-                                      isSelected
-                                        ? 'bg-[#0e6efe] text-white'
-                                        : 'bg-white/90 text-slate-400 ring-1 ring-slate-200/50'
-                                    }`}
-                                  >
-                                    {isSelected ? <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> : <GitCompareArrows className="w-3 h-3" />}
-                                  </button>
-                                  <div className={`rounded-xl transition-all ${isSelected ? 'ring-2 ring-[#0e6efe]' : ''}`}>
-                                    <CompactCarCard
-                                      name={`${car.brand_display} ${car.model_display}`}
-                                      imageUrl={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
-                                      rating={car.ratings.overall}
-                                      expertComment={getExpertComment(car)}
-                                      fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                                      onNegotiate={() => openContactForCar(car)}
-                                      onSearch={() => openContactForCar(car)}
-                                      onDetail={() => setDetailCar(car)}
-                                      index={ci}
-                                      disableMotion={isMobile}
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            })}
+                            {msg.cars.map((car, ci) => (
+                              <CompactCarCard
+                                key={car.id}
+                                name={`${car.brand_display} ${car.model_display}`}
+                                imageUrl={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
+                                rating={car.ratings.overall}
+                                expertComment={getExpertComment(car)}
+                                fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                                onNegotiate={() => openContactForCar(car)}
+                                onDetail={() => setDetailCar(car)}
+                                onCompare={() => toggleSelect(car.id)}
+                                isCompared={selectedIds.has(car.id)}
+                                index={ci}
+                                disableMotion={isMobile}
+                              />
+                            ))}
                           </div>
                         )}
                         {msg.role === 'assistant' && msg.reformulations && msg.reformulations.length > 0 && (
