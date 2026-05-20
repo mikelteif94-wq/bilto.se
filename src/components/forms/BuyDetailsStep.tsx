@@ -276,6 +276,8 @@ function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData;
   const validate = () => {
     const e: Record<string, string> = {};
     if (!d.carBrand) e.carBrand = 'Välj ett märke';
+    if (!d.buyingStage) e.buyingStage = 'Välj var du är i processen';
+    if (!d.paymentType) e.paymentType = 'Välj hur du vill betala';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -286,8 +288,8 @@ function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData;
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-6">
-      <div>
+    <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
+      <div className="pb-6 sm:pb-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
           Märke och modell
         </label>
@@ -300,7 +302,7 @@ function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData;
         />
       </div>
 
-      <div>
+      <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Max budget (kr)
           <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
@@ -318,7 +320,7 @@ function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData;
         </div>
       </div>
 
-      <div>
+      <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
           Drivmedel
           <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
@@ -341,7 +343,55 @@ function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData;
         </div>
       </div>
 
-      <div className="pt-2 flex justify-end">
+      <div className="py-6 sm:py-7">
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Hur vill du betala?
+        </label>
+        <p className="text-sm text-slate-500 mb-4">Välj betalningssätt — det hjälper oss hitta rätt upplägg.</p>
+        <div className="flex flex-wrap gap-2">
+          {PAYMENT_TYPES.map(p => (
+            <button
+              key={p.value}
+              type="button"
+              onClick={() => set('paymentType', p.value)}
+              className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+                d.paymentType === p.value
+                  ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
+                  : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+        <FieldError message={errors.paymentType} />
+      </div>
+
+      <div className="py-6 sm:py-7">
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Var i processen är du?
+        </label>
+        <p className="text-sm text-slate-500 mb-4">Välj det alternativ som bäst beskriver dig.</p>
+        <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
+          {BUYING_STAGES.map(s => (
+            <button
+              key={s.value}
+              type="button"
+              onClick={() => set('buyingStage', s.value)}
+              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all text-left sm:text-center ${
+                d.buyingStage === s.value
+                  ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
+                  : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+        <FieldError message={errors.buyingStage} />
+      </div>
+
+      <div className="pt-6 sm:pt-7 flex justify-end">
         <button
           type="submit"
           className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-full transition shadow-sm"
@@ -356,19 +406,32 @@ function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData;
 function ExploreDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void }) {
   const [d, setD] = useState<BuyDetailsData>({ ...initialData });
   const [mustHaves, setMustHaves] = useState<string[]>([]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = (key: keyof BuyDetailsData, value: string) => {
     setD(prev => ({ ...prev, [key]: value }));
+    setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
   };
 
   const toggleMustHave = (val: string) => {
     setMustHaves(prev =>
       prev.includes(val) ? prev.filter(v => v !== val) : prev.length < 3 ? [...prev, val] : prev
     );
+    setErrors(prev => { const n = { ...prev }; delete n.mustHaves; return n; });
+  };
+
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!d.targetCar && mustHaves.length === 0) e.mustHaves = 'Välj minst en biltyp eller ett önskemål';
+    if (!d.buyingStage) e.buyingStage = 'Välj var du är i processen';
+    if (!d.paymentType) e.paymentType = 'Välj hur du vill betala';
+    setErrors(e);
+    return Object.keys(e).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     const mustHaveText = mustHaves.map(v => MUST_HAVES.find(m => m.value === v)?.label).filter(Boolean).join(', ');
     onNext({
       ...d,
@@ -377,8 +440,8 @@ function ExploreDetailsStep({ initialData, onNext }: { initialData: BuyDetailsDa
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-7">
-      <div>
+    <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
+      <div className="pb-6 sm:pb-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
           Vilken typ av bil söker du?
         </label>
@@ -387,7 +450,9 @@ function ExploreDetailsStep({ initialData, onNext }: { initialData: BuyDetailsDa
             <button
               key={t.value}
               type="button"
-              onClick={() => set('targetCar', d.targetCar === t.value ? '' : t.value)}
+              onClick={() => {
+                set('targetCar', d.targetCar === t.value ? '' : t.value);
+              }}
               className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all ${
                 d.targetCar === t.value
                   ? 'bg-[#0e6efe] text-white shadow-sm'
@@ -400,25 +465,7 @@ function ExploreDetailsStep({ initialData, onNext }: { initialData: BuyDetailsDa
         </div>
       </div>
 
-      <div>
-        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Max budget (kr)
-          <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
-        </label>
-        <p className="text-[13.5px] text-slate-500 mb-3">Totalpris för bilen.</p>
-        <div className="sm:max-w-xs">
-          <input
-            type="text"
-            inputMode="numeric"
-            value={d.carPrice}
-            onChange={e => set('carPrice', e.target.value)}
-            placeholder="T.ex. 350 000"
-            className="form-control"
-          />
-        </div>
-      </div>
-
-      <div>
+      <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Vad är viktigast för dig?
         </label>
@@ -449,9 +496,76 @@ function ExploreDetailsStep({ initialData, onNext }: { initialData: BuyDetailsDa
         {mustHaves.length >= 3 && (
           <p className="mt-2 text-[12.5px] text-slate-500">Max 3 valda. Avmarkera ett för att ändra.</p>
         )}
+        <FieldError message={errors.mustHaves} />
       </div>
 
-      <div className="pt-1 flex justify-end">
+      <div className="py-6 sm:py-7">
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Max budget (kr)
+          <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+        </label>
+        <p className="text-[13.5px] text-slate-500 mb-3">Totalpris för bilen.</p>
+        <div className="sm:max-w-xs">
+          <input
+            type="text"
+            inputMode="numeric"
+            value={d.carPrice}
+            onChange={e => set('carPrice', e.target.value)}
+            placeholder="T.ex. 350 000"
+            className="form-control"
+          />
+        </div>
+      </div>
+
+      <div className="py-6 sm:py-7">
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Hur vill du betala?
+        </label>
+        <p className="text-sm text-slate-500 mb-4">Välj betalningssätt — det hjälper oss hitta rätt upplägg.</p>
+        <div className="flex flex-wrap gap-2">
+          {PAYMENT_TYPES.map(p => (
+            <button
+              key={p.value}
+              type="button"
+              onClick={() => set('paymentType', p.value)}
+              className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+                d.paymentType === p.value
+                  ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
+                  : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+        <FieldError message={errors.paymentType} />
+      </div>
+
+      <div className="py-6 sm:py-7">
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Var i processen är du?
+        </label>
+        <p className="text-sm text-slate-500 mb-4">Välj det alternativ som bäst beskriver dig.</p>
+        <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
+          {BUYING_STAGES.map(s => (
+            <button
+              key={s.value}
+              type="button"
+              onClick={() => set('buyingStage', s.value)}
+              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all text-left sm:text-center ${
+                d.buyingStage === s.value
+                  ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
+                  : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+        <FieldError message={errors.buyingStage} />
+      </div>
+
+      <div className="pt-6 sm:pt-7 flex justify-end">
         <button
           type="submit"
           className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-full transition shadow-sm"
