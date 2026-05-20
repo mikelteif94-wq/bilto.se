@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { User, Menu, Search, Phone, XCircle, Car, Sparkles, Handshake, Mail } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { User, Menu, Search, Phone, XCircle, Car, Sparkles, Handshake, Mail, ChevronRight } from 'lucide-react';
 import { validateSwedishPhone } from '../lib/utils';
 
 import { supabase } from '../lib/supabase';
@@ -22,15 +22,22 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       document.title = pageTitle;
     }
   }, [pageTitle]);
-  const [tab, setTab] = useState<'direkt' | 'maxpris'>('direkt');
+  const [heroTab, setHeroTab] = useState<'hitta' | 'salj'>('salj');
   const [regnummer, setRegnummer] = useState('');
   const [telefon, setTelefon] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [variant, setVariant] = useState<'default' | 'elbil'>('default');
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // Car search state
+  const [carQuery, setCarQuery] = useState('');
+  const [carSuggestions, setCarSuggestions] = useState<{ make: string; model: string }[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [carSearchLoading, setCarSearchLoading] = useState(false);
+  const carSearchRef = useRef<HTMLDivElement>(null);
+  const carSearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -42,9 +49,52 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (carSearchRef.current && !carSearchRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleCarQueryChange = (q: string) => {
+    setCarQuery(q);
+    if (carSearchTimer.current) clearTimeout(carSearchTimer.current);
+    if (!q.trim()) { setCarSuggestions([]); setShowSuggestions(false); return; }
+    setCarSearchLoading(true);
+    carSearchTimer.current = setTimeout(async () => {
+      const { data } = await supabase
+        .from('car_catalog')
+        .select('make, model')
+        .or(`make.ilike.%${q.trim()}%,model.ilike.%${q.trim()}%`)
+        .limit(8);
+      setCarSuggestions(data || []);
+      setShowSuggestions(true);
+      setCarSearchLoading(false);
+    }, 250);
+  };
+
+  const handleCarSelect = (make: string, model: string) => {
+    const bil = `${make} ${model}`.trim();
+    setCarQuery(bil);
+    setShowSuggestions(false);
+    const params = new URLSearchParams({ bil });
+    window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
+  const handleCarSearch = () => {
+    if (!carQuery.trim()) return;
+    const params = new URLSearchParams({ bil: carQuery.trim() });
+    window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
   const handleMenuSelect = (item: MobileMenuItem) => {
     if (item === 'Sälj bil') {
-      setTab('direkt');
+      setHeroTab('salj');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -65,38 +115,13 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     }
   };
 
-  const heroTitle =
-    tab === 'maxpris'
-      ? variant === 'elbil'
-        ? 'Maxpris på din elbil.'
-        : 'Få maxpris för din bil.'
-      : 'Värdera och sälj din bil till bästa pris.';
-  const heroTitleMobile =
-    tab === 'maxpris' ? (
-      variant === 'elbil' ? (
-        <>Maxpris på<br />din elbil.</>
-      ) : (
-        <>Få maxpris<br />för din bil.</>
-      )
-    ) : (
-      <>Värdera och sälj din bil till bästa pris.</>
-    );
-  const heroSubtitle =
-    tab === 'maxpris' ? (
-      <>Låt handlare <span className="font-bold">tävla om att förmedla</span> din bil till högst pris — lägst arvode vinner.</>
-    ) : variant === 'elbil' ? (
-      <>Jämför <span className="font-bold">bud från elbilshandlare</span> och sälj din elbil tryggt inom 48 timmar.</>
-    ) : (
-      <>Jämför <span className="font-bold">bud från hundratals handlare</span> och sälj din bil tryggt inom 48 timmar.</>
-    );
-  const heroSubtitleMobile =
-    tab === 'maxpris' ? (
-      <>Låt handlare <span className="font-bold">tävla om högst pris</span>.</>
-    ) : variant === 'elbil' ? (
-      <>Jämför <span className="font-bold">bud från elbilshandlare</span>.</>
-    ) : (
-      <>Jämför <span className="font-bold">bud från hundratals handlare</span>.</>
-    );
+  const heroTitleMobile = heroTab === 'hitta'
+    ? <>Hitta din<br />drömvagn.</>
+    : <>Bläddra, köp,<br />sälj — ett ställe.</>;
+
+  const heroSubtitle = heroTab === 'hitta'
+    ? <>Sök bland tusentals bilar och låt våra experter <span className="font-bold">hitta exakt rätt bil</span> för dig.</>
+    : <>Jämför <span className="font-bold">bud från hundratals handlare</span> och sälj din bil tryggt inom 48 timmar.</>;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,7 +195,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 onClick={(e) => {
                   e.preventDefault();
                   if (item === 'Sälj bil') {
-                    setTab('direkt');
+                    setHeroTab('salj');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                   }
@@ -217,66 +242,124 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
           <div className="relative z-10 flex flex-col items-center justify-center min-h-[100svh] px-5 py-24 text-center">
             {/* Rubrik */}
-            <h1 className="text-white font-bold leading-[1.05] text-[32px] sm:text-[52px] lg:text-[68px] tracking-tight max-w-4xl drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
+            <h1 className="text-white font-black leading-[1.0] text-[38px] sm:text-[56px] lg:text-[68px] tracking-tight max-w-4xl drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] uppercase">
               {heroTitleMobile}
             </h1>
             <p className="text-white/80 mt-4 text-[15px] sm:text-[20px] lg:text-[22px] font-medium max-w-2xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
               {heroSubtitle}
             </p>
 
-            {/* Tab-toggle + formulär */}
+            {/* Search box */}
             <div className="mt-8 w-full max-w-sm sm:max-w-md">
-              {/* Tabs */}
-              <div className="flex border-b border-white/20 mb-5">
-                <span className="flex-1 pb-3 text-center text-white font-bold text-[13px] sm:text-[14px] tracking-[0.08em] uppercase border-b-2 border-white">
-                  Sälj din bil
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    window.history.pushState({}, '', '/kop-bil');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }}
-                  className="flex-1 pb-3 text-center text-white/45 hover:text-white/70 font-bold text-[13px] sm:text-[14px] tracking-[0.08em] uppercase transition-colors duration-150"
-                >
-                  Hitta bil
-                </button>
-              </div>
-
-              {/* Formulär */}
-              <form onSubmit={handleSubmit}>
-                <div className="flex flex-col gap-2.5">
-                  <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-                  <div className="flex items-center h-12 sm:h-14 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden focus-within:border-white/50 transition">
-                    <span className="flex items-center justify-center w-11 shrink-0">
-                      <Phone className="w-4.5 h-4.5 text-white/60" />
-                    </span>
-                    <input
-                      type="tel"
-                      value={telefon}
-                      onChange={(e) => { setTelefon(e.target.value); setError(''); }}
-                      placeholder="Telefonnummer"
-                      autoComplete="tel"
-                      disabled={submitting}
-                      className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/40"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="h-12 sm:h-14 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] sm:text-[16px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]"
-                  >
-                    {submitting ? '...' : 'Värdera bilen gratis'}
-                  </button>
+              <div className="bg-[#1e1e2e]/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-white/10">
+                {/* Tabs */}
+                <div className="flex">
+                  {(['hitta', 'salj'] as const).map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => setHeroTab(t)}
+                      className={`flex-1 py-4 text-[13px] sm:text-[14px] font-bold tracking-[0.05em] transition-colors duration-200 ${
+                        heroTab === t
+                          ? 'text-white border-b-2 border-[#0e6efe]'
+                          : 'text-white/40 hover:text-white/70 border-b-2 border-transparent'
+                      }`}
+                    >
+                      {t === 'hitta' ? 'Hitta en bil' : 'Sälj min bil'}
+                    </button>
+                  ))}
                 </div>
-                {error && (
-                  <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-400/30 text-white text-[13px] font-medium px-3.5 py-2.5">
-                    <XCircle className="w-4 h-4 text-red-300 shrink-0" strokeWidth={2.5} />
-                    <span>{error}</span>
-                  </div>
-                )}
-              </form>
 
+                <div className="px-4 py-4">
+                  {heroTab === 'hitta' ? (
+                    <div ref={carSearchRef} className="relative">
+                      <div className="flex items-center h-12 sm:h-14 rounded-xl bg-white overflow-hidden shadow-sm">
+                        <input
+                          type="text"
+                          value={carQuery}
+                          onChange={(e) => handleCarQueryChange(e.target.value)}
+                          onFocus={() => carQuery.trim() && setShowSuggestions(true)}
+                          onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
+                          placeholder="Sök efter märke eller modell"
+                          className="flex-1 min-w-0 w-0 h-full pl-4 pr-2 text-[15px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleCarSearch}
+                          className="w-12 h-full flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] transition shrink-0"
+                        >
+                          {carSearchLoading
+                            ? <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                            : <Search className="w-5 h-5 text-white" />
+                          }
+                        </button>
+                      </div>
+                      {showSuggestions && carSuggestions.length > 0 && (
+                        <div className="absolute left-0 right-0 top-full mt-1 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
+                          {carSuggestions.map((s, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => handleCarSelect(s.make, s.model)}
+                              className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition text-[14px] text-slate-800 border-b border-slate-100 last:border-0"
+                            >
+                              <Car className="w-4 h-4 text-slate-400 shrink-0" />
+                              <span className="font-semibold">{s.make}</span>
+                              <span className="text-slate-500">{s.model}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      <div className="mt-3 flex items-center justify-between">
+                        <p className="text-white/50 text-[12px]">eller låt oss hjälpa dig</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            window.history.pushState({}, '', '/kop-bil/bestall');
+                            window.dispatchEvent(new PopStateEvent('popstate'));
+                          }}
+                          className="flex items-center gap-1.5 text-white font-semibold text-[13px] bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg px-3 py-1.5 transition"
+                        >
+                          Hitta en bil <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit}>
+                      <div className="flex flex-col gap-2.5">
+                        <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
+                        <div className="flex items-center h-12 rounded-xl border border-white/20 bg-white/10 overflow-hidden focus-within:border-white/50 transition">
+                          <span className="flex items-center justify-center w-11 shrink-0">
+                            <Phone className="w-4 h-4 text-white/60" />
+                          </span>
+                          <input
+                            type="tel"
+                            value={telefon}
+                            onChange={(e) => { setTelefon(e.target.value); setError(''); }}
+                            placeholder="Telefonnummer"
+                            autoComplete="tel"
+                            disabled={submitting}
+                            className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/40"
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          disabled={submitting}
+                          className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]"
+                        >
+                          {submitting ? '...' : 'Värdera bilen gratis'}
+                        </button>
+                      </div>
+                      {error && (
+                        <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-400/30 text-white text-[13px] font-medium px-3.5 py-2.5">
+                          <XCircle className="w-4 h-4 text-red-300 shrink-0" strokeWidth={2.5} />
+                          <span>{error}</span>
+                        </div>
+                      )}
+                    </form>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Scroll-indikator */}
