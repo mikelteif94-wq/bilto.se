@@ -12,12 +12,14 @@ interface BuyDrawerProps {
   car: string | null;
   initialTrack?: BuyTrack;
   skipIntent?: boolean;
+  initialAdditionalRequests?: string;
+  initialDesiredMonthlyCost?: string;
   onClose: () => void;
 }
 
 type FormStep = 'track' | 'carIntent' | 'details' | 'tradeIn' | 'contact' | 'done';
 
-export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: BuyDrawerProps) {
+export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditionalRequests, initialDesiredMonthlyCost, onClose }: BuyDrawerProps) {
   const open = car !== null;
   // When initialTrack is 'searching', car is a pre-filled target (possibly multiple), not a specific single car
   const isSearchingWithPrefill = (initialTrack === 'searching' || skipIntent) && !!car;
@@ -42,8 +44,8 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: Bu
     regnummer: '',
     miltal: '',
     targetCar: '',
-    desiredMonthlyCost: '',
-    additionalRequests: '',
+    desiredMonthlyCost: initialDesiredMonthlyCost ?? '',
+    additionalRequests: initialAdditionalRequests ?? '',
     carPrice: '',
     yearFrom: '',
     yearTo: '',
@@ -91,8 +93,11 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: Bu
         regnummer: '',
         miltal: '',
         targetCar: car,
-        desiredMonthlyCost: '',
-        additionalRequests: searchingPrefill ? `Intresserad av: ${car}` : '',
+        desiredMonthlyCost: initialDesiredMonthlyCost ?? '',
+        additionalRequests: [
+          searchingPrefill ? `Intresserad av: ${car}` : '',
+          initialAdditionalRequests ?? '',
+        ].filter(Boolean).join(' | '),
         carPrice: '',
         yearFrom: '',
         yearTo: '',
@@ -121,7 +126,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: Bu
       if (track === 'trade') return ['carIntent', 'details', 'contact'];
       return ['carIntent', 'details', 'tradeIn', 'contact'];
     }
-    if (track === 'trade') return skipTrack ? ['details', 'contact'] : ['track', 'details', 'contact'];
+    if (track === 'trade') return skipTrack ? ['details', 'tradeIn', 'contact'] : ['track', 'details', 'tradeIn', 'contact'];
     return skipTrack ? ['details', 'tradeIn', 'contact'] : ['track', 'details', 'tradeIn', 'contact'];
   };
 
@@ -188,8 +193,8 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, onClose }: Bu
         monthly_payment: details.paymentType === 'cash' ? '' : details.desiredMonthlyCost,
         has_trade_in: track === 'trade' ? true : (tradeIn.hasTradeIn ?? false),
         trade_in_reg: track === 'trade' ? details.regnummer : (tradeIn.hasTradeIn ? tradeIn.tradeInReg : ''),
-        current_loan: tradeIn.hasTradeIn && tradeIn.hasLoan ? tradeIn.loanAmount : '',
-        current_interest_rate: tradeIn.hasTradeIn && tradeIn.hasLoan ? tradeIn.interestRate : '',
+        current_loan: tradeIn.hasLoan ? tradeIn.loanAmount : '',
+        current_interest_rate: tradeIn.hasLoan ? tradeIn.interestRate : '',
         firstname: contactData.namn.split(' ')[0] || '',
         lastname: contactData.namn.split(' ').slice(1).join(' ') || '',
         email: contactData.mejl,

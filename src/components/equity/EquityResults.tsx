@@ -17,7 +17,7 @@ import { useCarImages } from '@/hooks/useCarImages';
 interface EquityResultsProps {
   equity: EquityData;
   onReset: () => void;
-  onNegotiate: (carLabel: string) => void;
+  onNegotiate: (carLabel: string, equitySummary: string) => void;
 }
 
 interface MatchedCar {
@@ -376,7 +376,17 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
                 <div className="mt-3 flex gap-2">
                   <button
                     type="button"
-                    onClick={() => onNegotiate(`${car.make} ${car.model}`)}
+                    onClick={() => {
+                      const parts = [
+                        `[Insatskalkyl] Insats: ${formatSEK(equity.equity)} kr`,
+                        equity.currentMonthly > 0 ? `Nuv. månadskostnad: ${formatSEK(equity.currentMonthly)} kr/mån` : null,
+                        `Önskad månadskostnad: ${formatSEK(equity.desiredMonthly)} kr/mån`,
+                        equity.hasCurrentCar ? `Bilens värde: ${formatSEK(equity.carValue)} kr` : null,
+                        equity.carDebt > 0 ? `Billån: ${formatSEK(equity.carDebt)} kr` : null,
+                        equity.cashSavings > 0 ? `Sparpengar: ${formatSEK(equity.cashSavings)} kr` : null,
+                      ].filter(Boolean).join(' | ');
+                      onNegotiate(`${car.make} ${car.model}`, parts);
+                    }}
                     className="flex-1 h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all flex items-center justify-center gap-1"
                   >
                     Få hjälp att köpa

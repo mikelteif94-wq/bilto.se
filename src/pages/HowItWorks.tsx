@@ -119,8 +119,12 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   const [carsModalOpen, setCarsModalOpen] = useState(false);
   const [detailCar, setDetailCar] = useState<ComparisonCar | null>(null);
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
+  const [buyDrawerEquity, setBuyDrawerEquity] = useState<string>('');
 
-  const openDrawer = (carLabel: string) => setBuyDrawerCar(carLabel);
+  const openDrawer = (carLabel: string, equitySummary?: string) => {
+    setBuyDrawerEquity(equitySummary ?? '');
+    setBuyDrawerCar(carLabel);
+  };
 
   const { getCarImage } = useCarImages();
   const allCars = getAllComparisonCars();
@@ -781,7 +785,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           <div className="mb-8 max-w-md mx-auto">
             <EquityFlow
               compact
-              onNegotiate={(carLabel) => openDrawer(carLabel)}
+              onNegotiate={(carLabel, equitySummary) => openDrawer(carLabel, equitySummary)}
             />
           </div>
 
@@ -1251,7 +1255,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
       <BuyDrawer
         car={buyDrawerCar}
-        onClose={() => setBuyDrawerCar(null)}
+        initialAdditionalRequests={buyDrawerEquity || undefined}
+        onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); }}
       />
 
       <CompareDrawer

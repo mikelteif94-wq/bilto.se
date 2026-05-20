@@ -617,11 +617,13 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
   const [buyDrawerTrack, setBuyDrawerTrack] = useState<'found' | 'searching' | 'trade' | undefined>(undefined);
   const [buyDrawerSkipIntent, setBuyDrawerSkipIntent] = useState(false);
+  const [buyDrawerEquity, setBuyDrawerEquity] = useState<string>('');
   const [quizPreselectedCar, setQuizPreselectedCar] = useState<string | undefined>(undefined);
 
-  const openBuyDrawer = (car: string, track?: 'found' | 'searching' | 'trade', skipIntent?: boolean) => {
+  const openBuyDrawer = (car: string, track?: 'found' | 'searching' | 'trade', skipIntent?: boolean, equitySummary?: string) => {
     setBuyDrawerTrack(track);
     setBuyDrawerSkipIntent(!!skipIntent);
+    setBuyDrawerEquity(equitySummary ?? '');
     setBuyDrawerCar(car);
   };
 
@@ -1150,7 +1152,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     <div className="mt-4 max-w-sm mx-auto">
                       <EquityFlow
                         compact
-                        onNegotiate={(carLabel) => openBuyDrawer(carLabel, undefined, false)}
+                        onNegotiate={(carLabel, equitySummary) => openBuyDrawer(carLabel, undefined, false, equitySummary)}
                       />
                     </div>
                   </div>
@@ -2094,7 +2096,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       <SiteFooter />
 
       {/* Buy drawer */}
-      <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} skipIntent={buyDrawerSkipIntent} onClose={() => setBuyDrawerCar(null)} />
+      <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} skipIntent={buyDrawerSkipIntent} initialAdditionalRequests={buyDrawerEquity || undefined} onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); }} />
 
       {/* Compare drawer */}
       <CompareDrawer

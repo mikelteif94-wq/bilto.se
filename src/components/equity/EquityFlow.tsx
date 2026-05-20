@@ -7,7 +7,7 @@ import { EquityResults } from './EquityResults';
 type FlowState = 'teaser' | 'quiz' | 'results';
 
 interface EquityFlowProps {
-  onNegotiate: (carLabel: string) => void;
+  onNegotiate: (carLabel: string, equitySummary: string) => void;
   /** If provided, shows as a trigger card inline rather than teaser */
   compact?: boolean;
 }
