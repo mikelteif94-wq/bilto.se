@@ -1074,7 +1074,7 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
       <section className="bg-white relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
           <div className="grid md:grid-cols-12 gap-10 items-center">
-            <div className="md:col-span-5 order-2 md:order-1">
+            <div className="md:col-span-5 order-1">
               <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-4 block">
                 Kundcase
               </span>
@@ -1101,7 +1101,7 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
                 Josefin L. — Volvo XC40, 2022
               </p>
             </div>
-            <div className="md:col-span-7 order-1 md:order-2">
+            <div className="md:col-span-7 order-2">
               <div className="relative rounded-2xl overflow-hidden">
                 <img
                   src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(1200_x_1400_px)_(2000_x_2000_px)_(1).png"
