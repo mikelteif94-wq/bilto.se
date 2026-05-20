@@ -250,7 +250,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             </p>
 
             {/* Search box */}
-            <div className="mt-8 w-full max-w-sm sm:max-w-md">
+            <div className="mt-8 w-full max-w-sm sm:max-w-lg">
               <div className="bg-[#1e1e2e]/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-white/10">
                 {/* Tabs */}
                 <div className="flex">
@@ -273,24 +273,28 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 <div className="px-4 py-4">
                   {heroTab === 'hitta' ? (
                     <div ref={carSearchRef} className="relative">
-                      <div className="flex items-center h-12 sm:h-14 rounded-xl bg-white overflow-hidden shadow-sm">
+                      <div className="flex items-center h-12 sm:h-14 rounded-xl bg-white overflow-hidden shadow-sm ring-2 ring-transparent focus-within:ring-[#0e6efe]/40 transition-all">
+                        <span className="flex items-center justify-center w-12 shrink-0">
+                          <Search className="w-4 h-4 text-slate-400" />
+                        </span>
                         <input
                           type="text"
                           value={carQuery}
                           onChange={(e) => handleCarQueryChange(e.target.value)}
                           onFocus={() => carQuery.trim() && setShowSuggestions(true)}
                           onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
-                          placeholder="Sök efter märke eller modell"
-                          className="flex-1 min-w-0 w-0 h-full pl-4 pr-2 text-[15px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
+                          placeholder="Sök märke eller modell..."
+                          className="flex-1 min-w-0 w-0 h-full pr-2 text-[15px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
+                          autoFocus={false}
                         />
                         <button
                           type="button"
                           onClick={handleCarSearch}
-                          className="w-12 h-full flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] transition shrink-0"
+                          className="h-10 sm:h-11 mx-1 px-4 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-95 transition rounded-lg shrink-0 text-white font-semibold text-[13px] gap-1.5"
                         >
                           {carSearchLoading
                             ? <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                            : <Search className="w-5 h-5 text-white" />
+                            : <>Sök</>
                           }
                         </button>
                       </div>
@@ -310,8 +314,26 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                           ))}
                         </div>
                       )}
-                      <div className="mt-3 flex items-center justify-between">
-                        <p className="text-white/50 text-[12px]">eller låt oss hjälpa dig</p>
+                      <div className="mt-3">
+                        <p className="text-white/50 text-[11px] mb-2">Populara sokning</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {['Tesla Model 3', 'Volvo XC60', 'BMW 3-serie', 'Audi A4'].map((suggestion) => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              onClick={() => {
+                                const [make, ...rest] = suggestion.split(' ');
+                                handleCarSelect(make, rest.join(' '));
+                              }}
+                              className="text-[11px] sm:text-[12px] text-white/70 hover:text-white bg-white/10 hover:bg-white/20 border border-white/15 rounded-full px-3 py-1 transition"
+                            >
+                              {suggestion}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between">
+                        <p className="text-white/50 text-[12px]">Vet inte vad du vill ha?</p>
                         <button
                           type="button"
                           onClick={() => {
@@ -320,7 +342,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                           }}
                           className="flex items-center gap-1.5 text-white font-semibold text-[13px] bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg px-3 py-1.5 transition"
                         >
-                          Hitta en bil <ChevronRight className="w-3.5 h-3.5" />
+                          Lat oss hitta den <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
