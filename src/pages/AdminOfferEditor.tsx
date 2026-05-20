@@ -14,6 +14,8 @@ import {
   CreditCard,
   Star,
   ArrowLeftRight,
+  Calculator,
+  Info,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -184,14 +186,6 @@ export default function AdminOfferEditor({
     }
   };
 
-  const updateAndCalc = (partial: Partial<OfferData>) => {
-    setData((d) => {
-      const next = { ...d, ...partial };
-      next.total_savings = calcTotalSavingsFromData(next);
-      return next;
-    });
-  };
-
   const calcTotalSavingsFromData = (d: OfferData): number => {
     let savings = 0;
     if (d.original_price > 0 && d.negotiated_price > 0) {
@@ -201,8 +195,24 @@ export default function AdminOfferEditor({
     if (d.warranty_included) savings += d.warranty_value;
     if (d.home_delivery_included) savings += d.home_delivery_value;
     savings += d.other_savings_value;
-    if (d.trade_in_included) savings += d.trade_in_value;
+    // Trade-in is NOT a saving — it's a separate value transfer shown in the net price
     return savings;
+  };
+
+  const updateAndCalc = (partial: Partial<OfferData>) => {
+    setData((d) => {
+      const next = { ...d, ...partial };
+      next.total_savings = calcTotalSavingsFromData(next);
+      // Auto-fill total_deal_price from negotiated_price minus trade-in
+      // only when it hasn't been manually overridden (still zero or unchanged from auto value)
+      if (next.negotiated_price > 0) {
+        const autoPrice = Math.max(0, next.negotiated_price - (next.trade_in_included ? next.trade_in_value : 0));
+        if (next.total_deal_price === 0 || next.total_deal_price === Math.max(0, d.negotiated_price - (d.trade_in_included ? d.trade_in_value : 0))) {
+          next.total_deal_price = autoPrice;
+        }
+      }
+      return next;
+    });
   };
 
   const handleSave = async () => {
@@ -400,7 +410,7 @@ export default function AdminOfferEditor({
                     placeholder="399 000"
                   />
                 </FormField>
-                <FormField label="Forhandlat pris (kr)">
+                <FormField label="Förhandlat pris (kr)">
                   <input
                     type="number"
                     value={data.negotiated_price || ''}
@@ -456,9 +466,9 @@ export default function AdminOfferEditor({
             </Section>
 
             {/* Monthly cost */}
-            <Section title="Manadskostnad" icon={CreditCard}>
+            <Section title="Månadskostnad" icon={CreditCard}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormField label="Manadskostnad fore (kr)">
+                <FormField label="Månadskostnad före (kr)">
                   <input
                     type="number"
                     value={data.original_monthly_cost ?? ''}
@@ -473,7 +483,7 @@ export default function AdminOfferEditor({
                     placeholder="5 400"
                   />
                 </FormField>
-                <FormField label="Manadskostnad efter (kr)">
+                <FormField label="Månadskostnad efter (kr)">
                   <input
                     type="number"
                     value={data.negotiated_monthly_cost ?? ''}
@@ -492,12 +502,12 @@ export default function AdminOfferEditor({
             </Section>
 
             {/* Extras */}
-            <Section title="Forhandlade tillval">
+            <Section title="Förhandlade tillval">
               <div className="space-y-4">
                 {/* Winter tires */}
                 <ToggleRow
                   icon={Snowflake}
-                  label="Vinterdack"
+                  label="Vinterdäck"
                   checked={data.winter_tires_included}
                   onToggle={(v) => updateAndCalc({ winter_tires_included: v })}
                 >
@@ -570,7 +580,7 @@ export default function AdminOfferEditor({
                 {/* Other */}
                 <ToggleRow
                   icon={Plus}
-                  label="Ovrigt"
+                  label="Övrigt"
                   checked={data.other_savings_value > 0 || !!data.other_savings_description}
                   onToggle={() => {}}
                   alwaysOpen
@@ -637,7 +647,7 @@ export default function AdminOfferEditor({
             </Section>
 
             {/* Deal summary */}
-            <Section title="Totalt & bedomning" icon={Star}>
+            <Section title="Totalt & bedömning" icon={Star}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField label="Totalt dealpris (kr)">
                   <input
@@ -650,7 +660,7 @@ export default function AdminOfferEditor({
                     placeholder="385 000"
                   />
                 </FormField>
-                <FormField label="Var bedomning">
+                <FormField label="Vår bedömning">
                   <select
                     value={data.deal_rating}
                     onChange={(e) =>
@@ -680,123 +690,167 @@ export default function AdminOfferEditor({
             </Section>
           </div>
 
-          {/* Sidebar - live preview */}
-          <div className="space-y-5">
-            <div className="bg-white rounded-xl border border-slate-200 p-5 sticky top-20">
-              <h3 className="text-sm font-bold text-slate-900 mb-4">Forhandsgranskning</h3>
-
-              {data.car_description && (
-                <p className="text-base font-semibold text-slate-900 mb-3">
-                  {data.car_description}
-                </p>
-              )}
-
-              <dl className="divide-y divide-slate-100 text-sm">
-                {priceDiff > 0 && (
-                  <div className="flex justify-between py-2.5">
-                    <dt className="text-slate-500">Prisrabatt</dt>
-                    <dd className="font-semibold text-slate-900">
-                      {priceDiff.toLocaleString('sv-SE')} kr
-                    </dd>
-                  </div>
+          {/* Sidebar — live deal calculator */}
+          <div className="space-y-4">
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden sticky top-20">
+              {/* Header */}
+              <div className="bg-slate-900 px-5 py-4 flex items-center gap-2">
+                <Calculator className="w-4 h-4 text-white/70 shrink-0" />
+                <h3 className="text-sm font-bold text-white">Dealsammanfattning</h3>
+                {data.car_description && (
+                  <span className="ml-auto text-xs text-slate-400 truncate max-w-[120px]">{data.car_description}</span>
                 )}
-                {data.original_interest_rate != null &&
-                  data.negotiated_interest_rate != null && (
-                    <div className="flex justify-between py-2.5">
-                      <dt className="text-slate-500">Ränta</dt>
-                      <dd className="font-semibold text-emerald-600">
-                        {data.original_interest_rate}% → {data.negotiated_interest_rate}%
-                      </dd>
+              </div>
+
+              <div className="p-5 space-y-4">
+
+                {/* Price block */}
+                {data.negotiated_price > 0 && (
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pris</p>
+                    {data.original_price > 0 && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-400 line-through">{data.original_price.toLocaleString('sv-SE')} kr</span>
+                        {priceDiff > 0 && (
+                          <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+                            -{priceDiff.toLocaleString('sv-SE')} kr
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-sm font-bold text-slate-900">Förhandlat pris</span>
+                      <span className="text-sm font-bold text-slate-900">{data.negotiated_price.toLocaleString('sv-SE')} kr</span>
                     </div>
-                  )}
-                {data.original_monthly_cost != null &&
-                  data.negotiated_monthly_cost != null && (
-                    <div className="flex justify-between py-2.5">
-                      <dt className="text-slate-500">Manadskostnad</dt>
-                      <dd className="font-semibold text-emerald-600">
-                        {data.original_monthly_cost.toLocaleString('sv-SE')} →{' '}
-                        {data.negotiated_monthly_cost.toLocaleString('sv-SE')} kr
-                      </dd>
+                  </div>
+                )}
+
+                {/* Trade-in block */}
+                {data.trade_in_included && data.trade_in_value > 0 && (
+                  <div className="space-y-1.5 border-t border-dashed border-slate-200 pt-3">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Inbyte</p>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-600">{data.trade_in_reg ? `Inbyte ${data.trade_in_reg}` : 'Inbytesbil'}</span>
+                      <span className="font-semibold text-emerald-600">−{data.trade_in_value.toLocaleString('sv-SE')} kr</span>
                     </div>
-                  )}
-                {data.winter_tires_included && (
-                  <div className="flex justify-between py-2.5">
-                    <dt className="text-slate-500">Vinterdack</dt>
-                    <dd className="font-semibold text-emerald-600">
-                      Ingar ({data.winter_tires_value.toLocaleString('sv-SE')} kr)
-                    </dd>
+                    {data.negotiated_price > 0 && (
+                      <div className="flex justify-between mt-1 pt-1.5 border-t border-slate-100">
+                        <span className="text-sm font-bold text-slate-900">Kunden betalar netto</span>
+                        <span className="text-sm font-bold text-[#0e6efe]">
+                          {Math.max(0, data.negotiated_price - data.trade_in_value).toLocaleString('sv-SE')} kr
+                        </span>
+                      </div>
+                    )}
                   </div>
                 )}
-                {data.warranty_included && (
-                  <div className="flex justify-between py-2.5">
-                    <dt className="text-slate-500">
-                      Garanti {data.warranty_years ? `${data.warranty_years} ar` : ''}
-                    </dt>
-                    <dd className="font-semibold text-emerald-600">
-                      Ingar ({data.warranty_value.toLocaleString('sv-SE')} kr)
-                    </dd>
-                  </div>
-                )}
-                {data.home_delivery_included && (
-                  <div className="flex justify-between py-2.5">
-                    <dt className="text-slate-500">Hemleverans</dt>
-                    <dd className="font-semibold text-emerald-600">
-                      Gratis ({data.home_delivery_value.toLocaleString('sv-SE')} kr)
-                    </dd>
-                  </div>
-                )}
-                {data.other_savings_value > 0 && (
-                  <div className="flex justify-between py-2.5">
-                    <dt className="text-slate-500">
-                      {data.other_savings_description || 'Ovrigt'}
-                    </dt>
-                    <dd className="font-semibold text-emerald-600">
-                      {data.other_savings_value.toLocaleString('sv-SE')} kr
-                    </dd>
-                  </div>
-                )}
-                {data.trade_in_included && (
-                  <div className="flex justify-between py-2.5">
-                    <dt className="text-slate-500">Inbyte {data.trade_in_reg}</dt>
-                    <dd className="font-semibold text-emerald-600">
-                      {data.trade_in_value.toLocaleString('sv-SE')} kr
-                    </dd>
-                  </div>
-                )}
-              </dl>
 
-              {totalSavings > 0 && (
-                <div className="mt-4 px-4 py-3 rounded-lg bg-[#0e6efe]/5 border border-[#0e6efe]/20">
-                  <div className="flex justify-between items-baseline">
-                    <span className="text-sm font-semibold text-[#0e6efe]">Total besparing</span>
-                    <span className="text-xl font-bold text-[#0e6efe]">
-                      {totalSavings.toLocaleString('sv-SE')} kr
-                    </span>
+                {/* Negotiated extras */}
+                {(data.winter_tires_included || data.warranty_included || data.home_delivery_included || data.other_savings_value > 0) && (
+                  <div className="space-y-1.5 border-t border-dashed border-slate-200 pt-3">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Förhandlade tillval</p>
+                    {data.winter_tires_included && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-600">Vinterdäck</span>
+                        <span className="font-semibold text-emerald-600">+{data.winter_tires_value.toLocaleString('sv-SE')} kr</span>
+                      </div>
+                    )}
+                    {data.warranty_included && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-600">Garanti{data.warranty_years > 0 ? ` ${data.warranty_years} år` : ''}</span>
+                        <span className="font-semibold text-emerald-600">+{data.warranty_value.toLocaleString('sv-SE')} kr</span>
+                      </div>
+                    )}
+                    {data.home_delivery_included && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-600">Hemleverans</span>
+                        <span className="font-semibold text-emerald-600">+{data.home_delivery_value.toLocaleString('sv-SE')} kr</span>
+                      </div>
+                    )}
+                    {data.other_savings_value > 0 && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-600">{data.other_savings_description || 'Övrigt'}</span>
+                        <span className="font-semibold text-emerald-600">+{data.other_savings_value.toLocaleString('sv-SE')} kr</span>
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
+                )}
 
-              {data.deal_rating && (
-                <div className="mt-3">
-                  <span
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                {/* Interest + monthly */}
+                {(data.original_interest_rate != null || data.original_monthly_cost != null) && (
+                  <div className="space-y-1.5 border-t border-dashed border-slate-200 pt-3">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Finansiering</p>
+                    {data.original_interest_rate != null && data.negotiated_interest_rate != null && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-600">Ränta</span>
+                        <span className="font-semibold text-emerald-600">
+                          {data.original_interest_rate}% → {data.negotiated_interest_rate}%
+                        </span>
+                      </div>
+                    )}
+                    {data.original_monthly_cost != null && data.negotiated_monthly_cost != null && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-600">Månadskostnad</span>
+                        <span className="font-semibold text-emerald-600">
+                          {data.original_monthly_cost.toLocaleString('sv-SE')} → {data.negotiated_monthly_cost.toLocaleString('sv-SE')} kr/mån
+                        </span>
+                      </div>
+                    )}
+                    {data.original_monthly_cost != null && data.negotiated_monthly_cost != null &&
+                      data.original_monthly_cost > data.negotiated_monthly_cost && (
+                        <div className="flex justify-between text-sm bg-emerald-50 rounded-lg px-2.5 py-1.5">
+                          <span className="text-emerald-700 font-semibold">Besparing/mån</span>
+                          <span className="font-bold text-emerald-700">
+                            {(data.original_monthly_cost - data.negotiated_monthly_cost).toLocaleString('sv-SE')} kr
+                          </span>
+                        </div>
+                      )}
+                  </div>
+                )}
+
+                {/* Total savings box */}
+                {totalSavings > 0 && (
+                  <div className="border-t border-slate-200 pt-3">
+                    <div className="rounded-xl bg-[#0e6efe]/5 border border-[#0e6efe]/15 px-4 py-3">
+                      <div className="flex items-baseline justify-between">
+                        <span className="text-xs font-bold text-[#0e6efe] uppercase tracking-wide">Total förhandlingsvinst</span>
+                        <span className="text-xl font-bold text-[#0e6efe]">
+                          {totalSavings.toLocaleString('sv-SE')} kr
+                        </span>
+                      </div>
+                      {data.trade_in_included && data.trade_in_value > 0 && (
+                        <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+                          <Info className="w-3 h-3 shrink-0" />
+                          Exkl. inbytesvärdet ({data.trade_in_value.toLocaleString('sv-SE')} kr)
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Rating + deal price */}
+                <div className="border-t border-slate-100 pt-3 flex items-center justify-between flex-wrap gap-2">
+                  {data.deal_rating && (
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
                       RATING_OPTIONS.find((r) => r.value === data.deal_rating)?.color
-                    }`}
-                  >
-                    <Star className="w-3 h-3" />
-                    {RATING_OPTIONS.find((r) => r.value === data.deal_rating)?.label}
-                  </span>
+                    }`}>
+                      <Star className="w-3 h-3" />
+                      {RATING_OPTIONS.find((r) => r.value === data.deal_rating)?.label}
+                    </span>
+                  )}
+                  {data.total_deal_price > 0 && (
+                    <div className="text-right">
+                      <p className="text-[10px] text-slate-400">Kundens totalpris</p>
+                      <p className="text-base font-bold text-slate-900">{data.total_deal_price.toLocaleString('sv-SE')} kr</p>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+            </div>
 
-              {data.total_deal_price > 0 && (
-                <div className="mt-3 text-sm text-slate-600">
-                  Totalt dealpris:{' '}
-                  <span className="font-bold text-slate-900">
-                    {data.total_deal_price.toLocaleString('sv-SE')} kr
-                  </span>
-                </div>
-              )}
+            {/* Hint box */}
+            <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-700 leading-relaxed">
+              <p className="font-semibold mb-0.5">Totalt dealpris</p>
+              <p>Fylls i automatiskt som <em>förhandlat pris minus inbyte</em>. Justera manuellt vid behov.</p>
             </div>
           </div>
         </div>
