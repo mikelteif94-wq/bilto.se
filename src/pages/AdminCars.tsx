@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   MessageSquareText,
   Upload,
+  Plus,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
