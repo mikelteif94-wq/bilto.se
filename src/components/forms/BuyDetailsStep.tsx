@@ -36,7 +36,6 @@ export interface BuyDetailsData {
   carBrand: string;
   paymentType: string;
   buyingStage: string;
-  budget: string;
   fuelType: string;
   regnummer: string;
   miltal: string;
