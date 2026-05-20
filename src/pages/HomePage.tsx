@@ -340,17 +340,19 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
           </div>
 
           {/* ── MOBILE ── */}
-          <div className="lg:hidden pt-10 pb-12">
-            <h1 className="text-white font-black leading-[1.0] text-[40px] tracking-[-1px] uppercase text-center mb-8">
-              Sälj, köp &amp;<br />värdera din bil
+          <div className="lg:hidden pb-0">
+            {/* Big title */}
+            <h1 className="text-[#0e0f12] font-black leading-[1.0] text-[32px] tracking-[-1px] uppercase pt-5 pb-5 px-0">
+              Bläddra, köp, sälj<br />allt på ett ställe
             </h1>
 
-            <div className="bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
-              {/* Mobile tabs */}
-              <div className="flex border-b border-white/10">
+            {/* Dark search box */}
+            <div className="bg-[#2b2b30] rounded-2xl overflow-hidden shadow-[0_16px_48px_rgba(0,0,0,0.35)]">
+              {/* Tabs */}
+              <div className="flex gap-0 border-b border-white/13 px-4">
                 {([
-                  { key: 'salj',  label: 'Sälj' },
-                  { key: 'hitta', label: 'Hitta' },
+                  { key: 'salj',  label: 'Sälj min bil' },
+                  { key: 'hitta', label: 'Hitta en bil' },
                   { key: 'hjalp', label: 'Låt oss hitta' },
                 ] as const).map((t) => {
                   const active = heroTab === t.key;
@@ -359,8 +361,8 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       key={t.key}
                       type="button"
                       onClick={() => setHeroTab(t.key)}
-                      className={`flex-1 py-4 text-[13px] font-bold tracking-wide transition-colors duration-150 border-b-2 ${
-                        active ? 'text-white border-white' : 'text-white/40 border-transparent'
+                      className={`py-4 mr-5 text-[15px] font-extrabold tracking-wide transition-colors duration-150 border-b-[3px] -mb-px whitespace-nowrap ${
+                        active ? 'text-white border-white' : 'text-[#b9b9c0] border-transparent'
                       }`}
                     >
                       {t.label}
@@ -369,14 +371,14 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 })}
               </div>
 
-              <div className="px-5 py-6">
+              <div className="px-4 pt-4 pb-5">
                 {heroTab === 'salj' && (
                   <form onSubmit={handleSubmit}>
                     <div className="flex flex-col gap-2.5">
                       <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-                      <div className="flex items-center h-12 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden focus-within:border-white/50 transition">
-                        <span className="flex items-center justify-center w-11 shrink-0">
-                          <Phone className="w-4 h-4 text-white/60" />
+                      <div className="flex items-center h-13 rounded-full border border-white/15 overflow-hidden focus-within:border-white/40 transition" style={{ background: 'rgba(255,255,255,0.08)', height: '52px' }}>
+                        <span className="flex items-center justify-center w-12 shrink-0">
+                          <Phone className="w-4 h-4 text-white/50" />
                         </span>
                         <input
                           type="tel"
@@ -385,10 +387,10 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                           placeholder="Telefonnummer"
                           autoComplete="tel"
                           disabled={submitting}
-                          className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/40"
+                          className="flex-1 min-w-0 w-0 h-full pr-4 text-[16px] text-white bg-transparent focus:outline-none placeholder:text-[#8a8a92]"
                         />
                       </div>
-                      <button type="submit" disabled={submitting} className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]">
+                      <button type="submit" disabled={submitting} className="h-13 w-full rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-extrabold text-[16px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]" style={{ height: '52px' }}>
                         {submitting ? '...' : 'Värdera bilen gratis'}
                       </button>
                     </div>
@@ -398,36 +400,53 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                         <span>{error}</span>
                       </div>
                     )}
+                    <div className="mt-3 flex items-center justify-center gap-2 text-[#b9b9c0] text-[13px]">
+                      eller låt oss hjälpa dig
+                      <button
+                        type="button"
+                        onClick={() => setHeroTab('hjalp')}
+                        className="border border-white/40 text-white font-bold px-3 py-1.5 rounded-lg text-[13px] hover:bg-white/10 transition"
+                      >
+                        Hitta en bil
+                      </button>
+                    </div>
                   </form>
                 )}
                 {heroTab === 'hitta' && (
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center h-12 rounded-xl border border-white/20 bg-white/10 overflow-hidden focus-within:border-white/50 transition">
-                      <span className="flex items-center justify-center w-11 shrink-0">
-                        <Search className="w-4 h-4 text-white/60" />
-                      </span>
+                  <div className="flex flex-col gap-2.5">
+                    <div className="flex items-center rounded-full border border-white/15 overflow-hidden focus-within:border-white/40 transition" style={{ background: '#fff', height: '52px' }}>
                       <input
                         type="text"
-                        placeholder="Märke, modell, kroppstyp..."
-                        className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/40"
+                        placeholder="Sök efter kroppstyp"
+                        className="flex-1 min-w-0 w-0 h-full pl-5 pr-2 text-[16px] text-[#0e0f12] bg-transparent focus:outline-none placeholder:text-[#8a8a92]"
                       />
+                      <button
+                        type="button"
+                        onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                        className="w-10 h-10 mr-1 rounded-full bg-[#0e6efe] flex items-center justify-center shrink-0"
+                      >
+                        <Search className="w-5 h-5 text-white" strokeWidth={2.5} />
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                      className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition"
-                    >
-                      Sök bilar
-                    </button>
+                    <div className="flex items-center justify-center gap-2 text-[#b9b9c0] text-[13px] pt-1">
+                      eller låt oss hjälpa dig
+                      <button
+                        type="button"
+                        onClick={() => setHeroTab('hjalp')}
+                        className="border border-white/40 text-white font-bold px-3 py-1.5 rounded-lg text-[13px] hover:bg-white/10 transition"
+                      >
+                        Hitta en bil
+                      </button>
+                    </div>
                   </div>
                 )}
                 {heroTab === 'hjalp' && (
-                  <div className="flex flex-col items-center gap-3 py-2">
-                    <p className="text-white/65 text-[14px] text-center">Berätta vad du letar efter — vi hittar rätt bil.</p>
+                  <div className="flex flex-col items-center gap-3 py-1">
+                    <p className="text-[#b9b9c0] text-[14px] text-center">Berätta vad du letar efter — vi hittar rätt bil.</p>
                     <button
                       type="button"
                       onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                      className="inline-flex items-center gap-2 h-12 px-8 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition w-full justify-center"
+                      className="inline-flex items-center gap-2 h-[52px] px-8 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-extrabold text-[16px] transition w-full justify-center shadow-[0_4px_20px_rgba(14,110,254,0.45)]"
                     >
                       <Sparkles className="w-4 h-4" strokeWidth={2} />
                       Låt oss hitta bilen
@@ -437,16 +456,33 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               </div>
             </div>
 
-            {/* Small car image on mobile */}
-            <div className="flex justify-center mt-6 opacity-90">
-              <img src="/getImage_(7).webp" alt="" className="w-4/5 max-w-sm object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.3)]" />
+            {/* Horizontal pill scroll — sits on white strip */}
+            <div className="flex gap-2.5 overflow-x-auto py-4 -mx-6 px-6 scrollbar-hide bg-white mt-2 -mb-0">
+              {[
+                { label: 'Elbilar', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg> },
+                { label: 'Ny bil', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5"><path d="M12 3l2 5 5 .5-4 3.5 1 5-4-3-4 3 1-5-4-3.5 5-.5z"/></svg> },
+                { label: 'Begagnad', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5"><path d="M5 12l2-5h10l2 5M3 12h18v5H3zM6 17v2M18 17v2"/></svg> },
+                { label: 'SUV', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5"><path d="M5 12l2-5h10l2 5M3 13h18v4H3z"/></svg> },
+                { label: 'Hybrider', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg> },
+                { label: 'Skåpbilar', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5"><path d="M3 7h12v9H3zM15 10h4l2 3v3h-6M6 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM18 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></svg> },
+              ].map((p) => (
+                <button
+                  key={p.label}
+                  type="button"
+                  onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                  className="flex-none flex items-center gap-2 bg-[#f1f1f5] border border-[#e7e7ef] rounded-full px-4 py-3 font-bold text-[15px] text-[#0e0f12] whitespace-nowrap hover:bg-white hover:shadow-md transition"
+                >
+                  {p.icon}
+                  {p.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Bottom wave into white */}
-        <div className="relative z-10 h-14 bg-[#0e6efe]" style={{ clipPath: 'ellipse(120% 100% at 50% 0%)' }} />
-        <div className="-mt-14 h-14 bg-white" />
+        {/* Bottom fade into white — desktop only */}
+        <div className="hidden lg:block relative z-10 h-14 bg-[#0e6efe]" style={{ clipPath: 'ellipse(120% 100% at 50% 0%)' }} />
+        <div className="hidden lg:block -mt-14 h-14 bg-white" />
       </section>
 
 
