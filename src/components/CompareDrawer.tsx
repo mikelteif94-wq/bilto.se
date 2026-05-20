@@ -361,7 +361,7 @@ export default function CompareDrawer({ cars, open, onClose, onRemove, onNegotia
                       onClick={() => onNegotiate(car)}
                       className="w-full max-w-[160px] h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[12px] sm:text-[13px] font-semibold inline-flex items-center justify-center gap-1 transition"
                     >
-                      Förhandla
+                      Hjälp mig köpa
                       <ArrowRight className="w-3 h-3" />
                     </button>
                   </div>

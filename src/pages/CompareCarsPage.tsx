@@ -1126,7 +1126,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       {[
                         'Personlig rekommendation på under 60 sekunder',
                         'Jämför matchade bilar sida vid sida',
-                        'Låt oss förhandla fram bästa priset åt dig',
+                        'Låt oss hjälpa dig köpa till bästa pris',
                       ].map(item => (
                         <li key={item} className="flex items-center gap-3 text-[15px] text-slate-600">
                           <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
@@ -1471,7 +1471,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     {carSearchQuery.trim() ? `Hitta en ${carSearchQuery.trim()}` : 'Hittar du inte bilen?'}
                   </p>
                   <p className="text-[11px] text-slate-400 mt-1 leading-snug">
-                    Vi hjälper dig hitta och förhandla
+                    Vi hjälper dig hitta och köpa
                   </p>
                 </div>
               </button>
