@@ -202,7 +202,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
         </div>
       </header>
 
-      {/* ── HERO (alla skärmar) ── */}
+      {/* ── HERO ── */}
       <section className="relative pt-16" style={{ backgroundColor: '#1a1a2e' }}>
         <div className="relative w-full overflow-hidden" style={{ minHeight: '100svh' }}>
           <img
@@ -215,41 +215,33 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/55 to-black/80" />
 
-          <div className="relative z-10 flex flex-col items-center justify-center min-h-[100svh] px-5 py-24 text-center">
-            {/* Rubrik */}
-            <h1 className="text-white font-bold leading-[1.05] text-[32px] sm:text-[52px] lg:text-[68px] tracking-tight max-w-4xl drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
+          {/* ── MOBILE layout ── */}
+          <div className="lg:hidden relative z-10 flex flex-col items-center justify-center min-h-[100svh] px-5 py-24 text-center">
+            <h1 className="text-white font-bold leading-[1.05] text-[32px] sm:text-[52px] tracking-tight max-w-3xl drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
               {heroTitleMobile}
             </h1>
-            <p className="text-white/80 mt-4 text-[15px] sm:text-[20px] lg:text-[22px] font-medium max-w-2xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-              {heroSubtitle}
+            <p className="text-white/80 mt-4 text-[15px] sm:text-[20px] font-medium max-w-xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+              {heroSubtitleMobile}
             </p>
-
-            {/* Tab-toggle + formulär */}
             <div className="mt-8 w-full max-w-sm sm:max-w-md">
-              {/* Tabs */}
               <div className="flex border-b border-white/20 mb-5">
-                <span className="flex-1 pb-3 text-center text-white font-bold text-[13px] sm:text-[14px] tracking-[0.08em] uppercase border-b-2 border-white">
+                <span className="flex-1 pb-3 text-center text-white font-bold text-[13px] tracking-[0.08em] uppercase border-b-2 border-white">
                   Sälj din bil
                 </span>
                 <button
                   type="button"
-                  onClick={() => {
-                    window.history.pushState({}, '', '/kop-bil');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                  }}
-                  className="flex-1 pb-3 text-center text-white/45 hover:text-white/70 font-bold text-[13px] sm:text-[14px] tracking-[0.08em] uppercase transition-colors duration-150"
+                  onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                  className="flex-1 pb-3 text-center text-white/45 hover:text-white/70 font-bold text-[13px] tracking-[0.08em] uppercase transition-colors duration-150"
                 >
                   Hitta bil
                 </button>
               </div>
-
-              {/* Formulär */}
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-2.5">
                   <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-                  <div className="flex items-center h-12 sm:h-14 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden focus-within:border-white/50 transition">
+                  <div className="flex items-center h-12 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden focus-within:border-white/50 transition">
                     <span className="flex items-center justify-center w-11 shrink-0">
-                      <Phone className="w-4.5 h-4.5 text-white/60" />
+                      <Phone className="w-4 h-4 text-white/60" />
                     </span>
                     <input
                       type="tel"
@@ -261,11 +253,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       className="flex-1 min-w-0 w-0 h-full pr-4 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/40"
                     />
                   </div>
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="h-12 sm:h-14 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] sm:text-[16px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]"
-                  >
+                  <button type="submit" disabled={submitting} className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]">
                     {submitting ? '...' : 'Värdera bilen gratis'}
                   </button>
                 </div>
@@ -276,11 +264,102 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                   </div>
                 )}
               </form>
+            </div>
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-40">
+              <div className="w-px h-8 bg-white animate-[pulse_2s_ease-in-out_infinite]" />
+            </div>
+          </div>
 
+          {/* ── DESKTOP layout (Carwow-style) ── */}
+          <div className="hidden lg:flex relative z-10 flex-col items-center justify-center min-h-[100svh] px-6 py-28 text-center">
+            {/* Big heading above the card */}
+            <h1 className="text-white font-black leading-[1.0] text-[64px] xl:text-[80px] tracking-tight max-w-4xl uppercase drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)] mb-10">
+              Sälj, köp &amp; värdera<br />din bil — gratis
+            </h1>
+
+            {/* Dark card */}
+            <div className="w-full max-w-[680px] bg-[#1c1c1c]/95 backdrop-blur-md rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)]">
+              {/* Tab bar */}
+              <div className="flex border-b border-white/10">
+                {[
+                  { key: 'salj', label: 'Sälj din bil' },
+                  { key: 'hitta', label: 'Hitta bil' },
+                  { key: 'vardera', label: 'Värdera bilen gratis' },
+                ].map((t) => (
+                  <button
+                    key={t.key}
+                    type="button"
+                    onClick={() => {
+                      if (t.key === 'hitta') {
+                        window.history.pushState({}, '', '/kop-bil');
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      } else {
+                        setTab('direkt');
+                      }
+                    }}
+                    className={`flex-1 py-4 text-[14px] font-bold tracking-wide transition-colors duration-150 ${
+                      (t.key === 'salj' || t.key === 'vardera') && tab === 'direkt'
+                        ? 'text-white border-b-2 border-white -mb-px'
+                        : 'text-white/40 hover:text-white/70'
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Form body */}
+              <div className="px-7 py-6">
+                <form onSubmit={handleSubmit}>
+                  <div className="flex gap-3 items-stretch">
+                    <div className="flex-1">
+                      <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} dark size="lg" />
+                    </div>
+                    <div className="flex-1 flex items-center rounded-xl border border-white/15 bg-white/8 overflow-hidden focus-within:border-white/40 transition" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                      <span className="flex items-center justify-center w-10 shrink-0">
+                        <Phone className="w-4 h-4 text-white/50" />
+                      </span>
+                      <input
+                        type="tel"
+                        value={telefon}
+                        onChange={(e) => { setTelefon(e.target.value); setError(''); }}
+                        placeholder="Telefonnummer"
+                        autoComplete="tel"
+                        disabled={submitting}
+                        className="flex-1 min-w-0 w-0 h-14 pr-3 text-[15px] text-white bg-transparent focus:outline-none placeholder:text-white/35"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="h-14 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] transition shadow-[0_4px_20px_rgba(14,110,254,0.5)] whitespace-nowrap shrink-0"
+                    >
+                      {submitting ? '...' : 'Värdera gratis'}
+                    </button>
+                  </div>
+                  {error && (
+                    <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-400/30 text-white text-[13px] font-medium px-3.5 py-2.5">
+                      <XCircle className="w-4 h-4 text-red-300 shrink-0" strokeWidth={2.5} />
+                      <span>{error}</span>
+                    </div>
+                  )}
+                </form>
+
+                {/* Helper link */}
+                <div className="mt-4 text-center text-[14px] text-white/45">
+                  Eller låt oss hjälpa dig hitta en bil.{' '}
+                  <button
+                    type="button"
+                    onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                    className="text-white font-semibold underline underline-offset-2 hover:text-white/80 transition"
+                  >
+                    Hitta en bil
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* Scroll-indikator */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-40">
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-40">
               <div className="w-px h-8 bg-white animate-[pulse_2s_ease-in-out_infinite]" />
             </div>
           </div>
