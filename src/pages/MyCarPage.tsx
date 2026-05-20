@@ -245,6 +245,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
               src={car.images[0]}
               alt="Din bil"
               className="w-full h-52 sm:h-80 object-cover"
+              onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
             />
             {car.images.length > 1 && (
               <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 p-2">
@@ -254,6 +255,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
                     src={url}
                     alt=""
                     className="w-full h-16 sm:h-20 object-cover rounded-lg"
+                    onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                   />
                 ))}
               </div>

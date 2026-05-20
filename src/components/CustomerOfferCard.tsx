@@ -96,12 +96,12 @@ export default function CustomerOfferCard({ offer }: { offer: Offer }) {
           {offer.original_monthly_cost != null && offer.negotiated_monthly_cost != null && (
             <OfferRow
               icon={CreditCard}
-              label="Manadskostnad"
-              originalValue={`${offer.original_monthly_cost.toLocaleString('sv-SE')} kr/man`}
-              newValue={`${offer.negotiated_monthly_cost.toLocaleString('sv-SE')} kr/man`}
+              label="Månadskostnad"
+              originalValue={`${offer.original_monthly_cost.toLocaleString('sv-SE')} kr/mån`}
+              newValue={`${offer.negotiated_monthly_cost.toLocaleString('sv-SE')} kr/mån`}
               savings={
                 offer.original_monthly_cost - offer.negotiated_monthly_cost > 0
-                  ? `-${(offer.original_monthly_cost - offer.negotiated_monthly_cost).toLocaleString('sv-SE')} kr/man`
+                  ? `-${(offer.original_monthly_cost - offer.negotiated_monthly_cost).toLocaleString('sv-SE')} kr/mån`
                   : undefined
               }
             />
@@ -111,9 +111,9 @@ export default function CustomerOfferCard({ offer }: { offer: Offer }) {
           {offer.winter_tires_included && (
             <ExtraRow
               icon={Snowflake}
-              label="Vinterdack"
+              label="Vinterdäck"
               value={offer.winter_tires_value}
-              badge="Forhandlat in"
+              badge="Förhandlat in"
             />
           )}
 
@@ -121,9 +121,9 @@ export default function CustomerOfferCard({ offer }: { offer: Offer }) {
           {offer.warranty_included && (
             <ExtraRow
               icon={Shield}
-              label={`Garanti${offer.warranty_years ? ` ${offer.warranty_years} ar` : ''}`}
+              label={`Garanti${offer.warranty_years ? ` ${offer.warranty_years} år` : ''}`}
               value={offer.warranty_value}
-              badge="Forhandlat in"
+              badge="Förhandlat in"
             />
           )}
 
@@ -141,9 +141,9 @@ export default function CustomerOfferCard({ offer }: { offer: Offer }) {
           {offer.other_savings_value > 0 && (
             <ExtraRow
               icon={Gift}
-              label={offer.other_savings_description || 'Ovrigt'}
+              label={offer.other_savings_description || 'Övrigt'}
               value={offer.other_savings_value}
-              badge="Ingar"
+              badge="Ingår"
             />
           )}
 
@@ -183,9 +183,9 @@ export default function CustomerOfferCard({ offer }: { offer: Offer }) {
         {/* Monthly after */}
         {offer.negotiated_monthly_cost != null && offer.negotiated_monthly_cost > 0 && (
           <div className="mt-1 flex items-baseline justify-between text-sm">
-            <span className="text-slate-500">Manadskostnad</span>
+            <span className="text-slate-500">Månadskostnad</span>
             <span className="text-base font-semibold text-slate-900">
-              {offer.negotiated_monthly_cost.toLocaleString('sv-SE')} kr/man
+              {offer.negotiated_monthly_cost.toLocaleString('sv-SE')} kr/mån
             </span>
           </div>
         )}
@@ -194,7 +194,7 @@ export default function CustomerOfferCard({ offer }: { offer: Offer }) {
         {offer.admin_comment && (
           <div className="mt-5 px-4 py-3 rounded-lg bg-slate-50 border border-slate-200">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-              Biltos bedomning
+              Biltos bedömning
             </p>
             <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
               {offer.admin_comment}
@@ -266,7 +266,7 @@ function ExtraRow({
         <Icon className="w-4 h-4 text-slate-400" />
         <span className="text-sm font-semibold text-slate-700">{label}</span>
         {value > 0 && (
-          <span className="text-xs text-slate-400">(varde {value.toLocaleString('sv-SE')} kr)</span>
+          <span className="text-xs text-slate-400">(värde {value.toLocaleString('sv-SE')} kr)</span>
         )}
       </div>
       <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">

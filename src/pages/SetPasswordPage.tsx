@@ -64,7 +64,6 @@ export default function SetPasswordPage({ onDone }: SetPasswordPageProps) {
     }
     setDone(true);
     setTimeout(() => {
-      window.history.replaceState({}, '', '/handlare/oversikt');
       onDone();
     }, 1200);
   };
@@ -88,7 +87,7 @@ export default function SetPasswordPage({ onDone }: SetPasswordPageProps) {
             Be om en ny länk genom att klicka på "Glömt lösenord" på inloggningssidan.
           </p>
           <a
-            href="/handlare/logga-in"
+            href={sessionStorage.getItem('bilto_portal') === 'customer' ? '/logga-in' : '/handlare/logga-in'}
             className="inline-flex items-center justify-center h-11 px-5 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold rounded-full transition text-sm"
           >
             Till inloggning

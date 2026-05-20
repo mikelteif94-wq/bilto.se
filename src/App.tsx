@@ -107,6 +107,7 @@ function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [recoveryMode, setRecoveryMode] = useState<boolean>(detectRecovery());
+  const [recoveryTarget, setRecoveryTarget] = useState<string>('/handlare/oversikt');
   const [adminVerified, setAdminVerified] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -129,6 +130,8 @@ function App() {
       setSession(newSession);
       setAuthLoading(false);
       if (event === 'PASSWORD_RECOVERY') {
+        const isCustomer = sessionStorage.getItem('bilto_portal') === 'customer';
+        setRecoveryTarget(isCustomer ? '/mina-bilar' : '/handlare/oversikt');
         setRecoveryMode(true);
         if (window.location.pathname !== '/handlare/valj-losenord') {
           window.history.replaceState({}, '', '/handlare/valj-losenord');
@@ -160,7 +163,7 @@ function App() {
       <SetPasswordPage
         onDone={() => {
           setRecoveryMode(false);
-          navigate('/handlare/oversikt');
+          navigate(recoveryTarget);
         }}
       />
     );
