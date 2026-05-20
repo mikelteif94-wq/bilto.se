@@ -603,6 +603,26 @@ function App() {
   }
 
   if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
+    if (publicRoute.page === 'sell') {
+      return (
+        <SellCarPage
+          initialRegnummer={publicRoute.regnummer}
+          initialTelefon={publicRoute.telefon}
+          initialMiltal={publicRoute.miltal}
+          onBack={() => {
+            setPublicRoute({ page: 'home' });
+          }}
+          onNavigateTrade={(reg, mil) => {
+            const params = new URLSearchParams({ typ: 'trade' });
+            if (reg) params.set('reg', reg);
+            if (mil) params.set('mil', mil.toString());
+            window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
+            setPath('/kop-bil/bestall');
+            setPublicRoute({ page: 'home' });
+          }}
+        />
+      );
+    }
     return (
       <HowItWorks
         showSeo={path === '/salj-din-bil'}
