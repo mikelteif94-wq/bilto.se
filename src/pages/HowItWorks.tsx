@@ -358,29 +358,19 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
           <div className="bg-[#1a1a2e]/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.45)]">
             {/* Tabs */}
             <div className="flex border-b border-white/10">
-              {[
-                { key: 'salj', label: 'Sälj din bil' },
-                { key: 'hitta', label: 'Hitta bil' },
-                { key: 'vardera', label: 'Värdera bilen gratis' },
-              ].map((t, i) => (
-                <button
-                  key={t.key}
-                  type="button"
-                  onClick={() => {
-                    if (t.key === 'hitta') {
-                      window.history.pushState({}, '', '/kop-bil');
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }
-                  }}
-                  className={`flex-1 py-4 text-[14px] font-bold tracking-wide transition-colors duration-150 ${
-                    i === 0
-                      ? 'text-white border-b-2 border-white -mb-px'
-                      : 'text-white/40 hover:text-white/70'
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
+              <button
+                type="button"
+                className="flex-1 py-4 text-[14px] font-bold tracking-wide text-white border-b-2 border-white -mb-px"
+              >
+                Sälj din bil
+              </button>
+              <button
+                type="button"
+                onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                className="flex-1 py-4 text-[14px] font-bold tracking-wide text-white/40 hover:text-white/70 transition-colors duration-150"
+              >
+                Hitta bil
+              </button>
             </div>
 
             {/* Form */}
