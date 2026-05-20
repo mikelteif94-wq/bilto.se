@@ -4,7 +4,7 @@ import { X, User } from 'lucide-react';
 export type MobileMenuItem =
   | 'Sälj bil'
   | 'Förmedling'
-  | 'Köp bil'
+  | 'Hitta bil'
   | 'Om oss'
   | 'Så funkar det';
 
@@ -16,8 +16,8 @@ interface MobileMenuProps {
 }
 
 const ITEMS: MobileMenuItem[] = [
+  'Hitta bil',
   'Sälj bil',
-  'Köp bil',
   'Om oss',
 ];
 
@@ -86,7 +86,7 @@ export default function MobileMenu({ open, onClose, active, onSelect }: MobileMe
                     onClose();
                     return;
                   }
-                  if (item === 'Köp bil') {
+                  if (item === 'Hitta bil') {
                     window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                     onClose();

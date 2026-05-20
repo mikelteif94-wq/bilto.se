@@ -98,7 +98,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    if (item === 'Köp bil') {
+    if (item === 'Hitta bil') {
       window.history.pushState({}, '', '/kop-bil');
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
@@ -160,7 +160,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     onNavigate(regTrim, telTrim);
   };
 
-  const navItems = ['Sälj bil', 'Köp bil'];
+  const navItems = ['Hitta bil', 'Sälj bil'];
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
@@ -199,7 +199,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                   }
-                  if (item === 'Köp bil') {
+                  if (item === 'Hitta bil') {
                     window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                     return;
