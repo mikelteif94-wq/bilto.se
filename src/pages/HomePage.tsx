@@ -332,17 +332,16 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                           ))}
                         </div>
                       </div>
-                      <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between">
-                        <p className="text-white/50 text-[12px]">Vet inte vad du vill ha?</p>
+                      <div className="mt-3 pt-3 border-t border-white/10">
                         <button
                           type="button"
                           onClick={() => {
                             window.history.pushState({}, '', '/kop-bil/bestall');
                             window.dispatchEvent(new PopStateEvent('popstate'));
                           }}
-                          className="flex items-center gap-1.5 text-white font-semibold text-[13px] bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg px-3 py-1.5 transition"
+                          className="flex items-center gap-1.5 text-white/60 hover:text-white text-[12px] transition"
                         >
-                          Lat oss hitta den <ChevronRight className="w-3.5 h-3.5" />
+                          eller låt oss hjälpa dig hitta en bil <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
