@@ -1110,8 +1110,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           <AnimatePresence mode="wait">
             {quizStep === 'idle' && (
               <motion.div key="quiz-idle" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }}>
-                <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
-                  <div className="text-center lg:text-left lg:flex-1">
+                <div className="flex flex-col lg:items-center">
+                  <div className="text-center lg:flex-1 w-full">
                     <span className="inline-flex items-center gap-2 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-4">
                       <Sparkles className="w-3.5 h-3.5" />
                       Bilmatch
@@ -1119,10 +1119,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     <h2 className="text-[36px] sm:text-[38px] lg:text-[52px] font-bold text-slate-900 tracking-tight leading-[1.05] mb-4">
                       Hitta din<br />bilmatch
                     </h2>
-                    <p className="text-slate-500 text-[16px] sm:text-[16px] lg:text-[18px] leading-relaxed mb-6 max-w-md mx-auto lg:mx-0">
+                    <p className="text-slate-500 text-[16px] sm:text-[16px] lg:text-[18px] leading-relaxed mb-6 max-w-md mx-auto">
                       Svara på 5 korta frågor om hur du kör, vad du prioriterar och din budget — vi matchar dig med de bilar som passar dig bäst.
                     </p>
-                    <ul className="hidden lg:flex flex-col gap-3 mb-8">
+                    <ul className="hidden lg:flex flex-col gap-3 mb-8 max-w-sm mx-auto items-start">
                       {[
                         'Personlig rekommendation på under 60 sekunder',
                         'Jämför matchade bilar sida vid sida',
@@ -1139,22 +1139,22 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     <button
                       type="button"
                       onClick={() => setQuizStep('active')}
-                      className="w-full max-w-sm mx-auto lg:mx-0 h-16 lg:h-16 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[18px] lg:text-[18px] flex items-center justify-center gap-3 group transition-all duration-200 shadow-xl shadow-[#0e6efe]/25 active:scale-[0.98]"
+                      className="w-full max-w-sm mx-auto h-16 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[18px] flex items-center justify-center gap-3 group transition-all duration-200 shadow-xl shadow-[#0e6efe]/25 active:scale-[0.98]"
                     >
                       Hitta din bilmatch
                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
-                    <p className="text-[14px] text-slate-400 mt-3 text-center lg:text-left">Tar 60 sekunder · Helt gratis</p>
+                    <p className="text-[14px] text-slate-400 mt-3 text-center">Tar 60 sekunder · Helt gratis</p>
 
                     {/* Equity quiz CTA */}
-                    <div className="mt-4 max-w-sm mx-auto lg:mx-0">
+                    <div className="mt-4 max-w-sm mx-auto">
                       <EquityFlow
                         compact
                         onNegotiate={(carLabel) => openBuyDrawer(carLabel, undefined, false)}
                       />
                     </div>
                   </div>
-                  <div className="hidden lg:grid lg:grid-cols-2 lg:gap-4 lg:w-[380px] lg:shrink-0">
+                  <div className="hidden lg:grid-cols-2 lg:gap-4 lg:w-[380px] lg:shrink-0">
                     {['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'hyundai_ioniq5'].map((cid, i) => {
                       const car = allCarsRaw.find(c => c.id === cid);
                       if (!car) return null;
