@@ -113,18 +113,18 @@ export function EquityFlow({ onNegotiate, compact }: EquityFlowProps) {
       <button
         type="button"
         onClick={() => setState('quiz')}
-        className="w-full flex items-center gap-3 bg-white rounded-xl ring-1 ring-slate-200 hover:ring-[#0e6efe] px-4 py-3 transition-all duration-200 group text-left"
+        className="w-full flex items-center gap-3 bg-emerald-500 hover:bg-emerald-600 rounded-xl px-4 py-3 transition-all duration-200 group text-left"
       >
-        <div className="w-9 h-9 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
-          <Wallet className="w-4 h-4 text-[#0e6efe]" />
+        <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+          <Wallet className="w-4 h-4 text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-bold text-slate-800 group-hover:text-[#0e6efe] transition-colors">
+          <p className="text-[13px] font-bold text-white">
             Beräkna vad din insats ger dig
           </p>
-          <p className="text-[11px] text-slate-400">Sänk månadskostnaden · Frigör kapital</p>
+          <p className="text-[11px] text-white/75">Sänk månadskostnaden · Frigör kapital</p>
         </div>
-        <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#0e6efe] transition-colors" />
+        <ChevronRight className="w-4 h-4 text-white/75 group-hover:text-white transition-colors" />
       </button>
     );
   }
