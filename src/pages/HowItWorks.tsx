@@ -225,12 +225,8 @@ export default function HowItWorks({ onBackHome, showSeo = false, pageTitle }: H
   const handleHeroSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const reg = regnummer.trim().toUpperCase().replace(/\s/g, '');
-    if (!reg) {
+    if (reg.length < 2) {
       setFormError('Ange registreringsnummer');
-      return;
-    }
-    if (!/^[A-Z]{3}[0-9]{2}[A-Z0-9]$/.test(reg)) {
-      setFormError('Registreringsnummer måste vara 3 bokstäver följt av 3 tecken (t.ex. ABC123)');
       return;
     }
     setFormError('');
