@@ -577,6 +577,97 @@ interface CompareCarsPageProps {
   onBackHome: () => void;
 }
 
+/* ───────────── Monthly cost calculator ───────────── */
+
+const LOAN_TERMS = [36, 48, 60, 72] as const;
+type LoanTerm = typeof LOAN_TERMS[number];
+
+function MonthlyCalcSection() {
+  const [price, setPrice] = useState(350000);
+  const [term, setTerm] = useState<LoanTerm>(60);
+  const RATE = 0.049; // 4.9% annual
+
+  const monthly = useMemo(() => {
+    const r = RATE / 12;
+    const n = term;
+    if (r === 0) return Math.round(price / n);
+    return Math.round((price * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
+  }, [price, term]);
+
+  const priceFormatted = price.toLocaleString('sv-SE');
+
+  return (
+    <section className="py-12 sm:py-16 px-4 sm:px-6 bg-slate-50 border-t border-slate-100">
+      <div className="max-w-xl mx-auto text-center">
+        <span className="inline-flex items-center gap-2 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
+          <Sparkles className="w-3.5 h-3.5" />
+          Snabbkalkyl
+        </span>
+        <h2 className="text-[22px] sm:text-[28px] font-extrabold text-slate-900 tracking-tight mb-1.5">
+          Beräkna månadskostnad
+        </h2>
+        <p className="text-[13px] text-slate-400 mb-8">Ange bilpris och lånets löptid — vi räknar ut din månadskostnad</p>
+
+        {/* Monthly result */}
+        <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(14,110,254,0.1)] ring-1 ring-[#d6e8ff] px-6 pt-6 pb-7 mb-6">
+          <p className="text-[12px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Uppskattad månadskostnad</p>
+          <p className="text-[48px] sm:text-[56px] font-extrabold text-[#0e6efe] leading-none tabular-nums">
+            {monthly.toLocaleString('sv-SE')}
+            <span className="text-[20px] sm:text-[24px] font-bold text-slate-400 ml-2">kr/mån</span>
+          </p>
+          <p className="text-[11px] text-slate-400 mt-2">Räntesats 4,9% · {term} månader · Utan kontantinsats</p>
+        </div>
+
+        {/* Bilpris slider */}
+        <div className="mb-6 text-left">
+          <div className="flex justify-between items-baseline mb-2">
+            <label className="text-[13px] font-semibold text-slate-700">Bilpris</label>
+            <span className="text-[15px] font-bold text-slate-900 tabular-nums">{priceFormatted} kr</span>
+          </div>
+          <input
+            type="range"
+            min={100000}
+            max={1200000}
+            step={5000}
+            value={price}
+            onChange={e => setPrice(Number(e.target.value))}
+            className="w-full h-2 accent-[#0e6efe] rounded-full cursor-pointer"
+          />
+          <div className="flex justify-between text-[11px] text-slate-400 mt-1.5">
+            <span>100 000 kr</span>
+            <span>1 200 000 kr</span>
+          </div>
+        </div>
+
+        {/* Loan term tabs */}
+        <div className="text-left mb-6">
+          <label className="text-[13px] font-semibold text-slate-700 block mb-2">Lånets löptid</label>
+          <div className="flex gap-2">
+            {LOAN_TERMS.map(t => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTerm(t)}
+                className={`flex-1 h-10 rounded-xl text-[13px] font-bold transition-all duration-150 ${
+                  term === t
+                    ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/25'
+                    : 'bg-white ring-1 ring-slate-200 text-slate-600 hover:ring-[#0e6efe] hover:text-[#0e6efe]'
+                }`}
+              >
+                {t} mån
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <p className="text-[11px] text-slate-400">
+          Kalkylen är en uppskattning. Faktisk månadskostnad beror på ränta, kontantinsats och kreditgivare.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 /* ═════════════ MAIN COMPONENT ═════════════ */
 
 export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
@@ -636,8 +727,9 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
   // Budget filter state
   const [activeBudget, setActiveBudget] = useState<number | null>(null);
-  const [budgetShowCount, setBudgetShowCount] = useState(15);
+  const [budgetShowCount, setBudgetShowCount] = useState(6);
   const budgetGridRef = useRef<HTMLDivElement>(null);
+  const [expertShowCount, setExpertShowCount] = useState(6);
 
 
   const navigateToSell = useCallback(() => {
@@ -723,8 +815,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
   const visibleCars = useMemo(() => {
     if (carSearchQuery.trim()) return allCategoryCars;
-    return showAllCars ? allCategoryCars : allCategoryCars.slice(0, 8);
-  }, [allCategoryCars, showAllCars, carSearchQuery]);
+    return showAllCars ? allCategoryCars : allCategoryCars.slice(0, expertShowCount);
+  }, [allCategoryCars, showAllCars, carSearchQuery, expertShowCount]);
 
   // Selection helpers
   const toggleSelect = useCallback((id: string) => {
@@ -1011,12 +1103,21 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       </section>
 
       {/* Browse by budget */}
-      <section className="py-10 sm:py-16 px-4 sm:px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-[22px] sm:text-[32px] font-extrabold text-slate-900 text-center tracking-tight mb-8 sm:mb-10 uppercase">
-            Bläddra efter budget
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+      <section className="py-10 sm:py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-7 sm:mb-10">
+            <span className="inline-flex items-center gap-2 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
+              <Zap className="w-3.5 h-3.5" />
+              Hitta rätt nivå
+            </span>
+            <h2 className="text-[26px] sm:text-[32px] font-extrabold text-slate-900 tracking-tight">
+              Sök efter budget
+            </h2>
+            <p className="text-[13px] sm:text-[14px] text-slate-400 mt-1.5">Baserat på finansiering över 60 månader</p>
+          </div>
+
+          {/* Mobile: horizontal carousel / Desktop: 6-col grid */}
+          <div className="flex sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide snap-x snap-mandatory -mx-4 sm:mx-0 px-4 sm:px-0">
             {BUDGET_BRACKETS.map((bracket, i) => {
               const car = allCarsRaw.find(c => c.id === bracket.carId);
               const img = car ? resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage) : undefined;
@@ -1026,7 +1127,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                   key={bracket.label}
                   type="button"
                   initial={isMobile ? false : { opacity: 0, y: 20 }}
-                  animate={isMobile ? { opacity: 1, y: 0 } : undefined}
                   {...(!isMobile && { whileInView: { opacity: 1, y: 0 }, viewport: { once: true } })}
                   transition={{ duration: isMobile ? 0 : 0.35, delay: isMobile ? 0 : i * 0.06 }}
                   onClick={() => {
@@ -1034,102 +1134,127 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       setActiveBudget(null);
                     } else {
                       setActiveBudget(bracket.maxMonthly);
-                      setBudgetShowCount(15);
-                      setTimeout(() => budgetGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                      setBudgetShowCount(6);
+                      setTimeout(() => budgetGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
                     }
                   }}
-                  className={`flex flex-col rounded-2xl overflow-hidden group transition-all duration-300 ${isActive ? 'ring-2 ring-[#0e6efe] shadow-lg' : 'hover:shadow-lg'}`}
+                  className={`flex flex-col rounded-2xl overflow-hidden group transition-all duration-300 shrink-0 snap-start w-[140px] sm:w-auto ${
+                    isActive
+                      ? 'ring-2 ring-[#0e6efe] shadow-[0_4px_20px_rgba(14,110,254,0.2)] bg-[#f0f7ff]'
+                      : 'ring-1 ring-slate-100 hover:ring-slate-200 hover:shadow-lg bg-white'
+                  }`}
                 >
-                  <div className="w-full aspect-[4/3] bg-white flex items-end justify-center overflow-hidden relative">
+                  <div className="w-full aspect-[4/3] flex items-end justify-center overflow-hidden relative">
+                    {isActive && (
+                      <div className="absolute inset-0 bg-[#0e6efe]/5 pointer-events-none" />
+                    )}
                     {img ? (
                       <img src={img} alt="" loading="lazy" className="w-full h-auto object-contain group-hover:scale-[1.05] transition-transform duration-500" />
                     ) : (
                       <Car className="w-12 h-12 text-slate-300 mb-4" />
                     )}
                   </div>
-                  <div className="px-2 py-3 bg-white">
-                    <p className={`text-[12px] sm:text-[13px] font-bold text-center leading-tight transition-colors ${isActive ? 'text-[#0e6efe]' : 'text-slate-900 group-hover:text-[#0e6efe]'}`}>
+                  <div className="px-2 pt-2.5 pb-3">
+                    <p className={`text-[11px] sm:text-[12px] font-extrabold text-center leading-tight transition-colors ${isActive ? 'text-[#0e6efe]' : 'text-slate-700 group-hover:text-[#0e6efe]'}`}>
                       {bracket.label}
                     </p>
+                    {isActive && (
+                      <div className="flex justify-center mt-1.5">
+                        <span className="inline-block w-4 h-0.5 rounded-full bg-[#0e6efe]" />
+                      </div>
+                    )}
                   </div>
                 </motion.button>
               );
             })}
           </div>
+        </div>
 
-          {/* Budget filtered results */}
-          <AnimatePresence>
-            {activeBudget !== null && (
-              <motion.div
-                ref={budgetGridRef}
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden"
-              >
-                <div className="pt-8 sm:pt-10">
-                  <div className="flex items-center justify-between mb-5">
-                    <p className="text-[14px] sm:text-[16px] font-bold text-slate-900">
-                      {activeBudget === 0
-                        ? 'Alla bilar'
-                        : `Bilar under ${activeBudget.toLocaleString('sv-SE')} kr/mån`}
-                      <span className="text-slate-400 font-normal ml-2">({budgetFilteredCars.length} st)</span>
-                    </p>
+        {/* Budget filtered results — full-width stripe */}
+        <AnimatePresence>
+          {activeBudget !== null && (
+            <motion.div
+              ref={budgetGridRef}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.35 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-8 bg-[#f4f8ff] border-y border-[#d6e8ff]">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+                  {/* Contextual header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="text-[17px] sm:text-[20px] font-extrabold text-slate-900">
+                          {activeBudget === 0 ? 'Alla bilar' : `Bilar under ${activeBudget.toLocaleString('sv-SE')} kr/mån`}
+                        </h3>
+                        <span className="px-2 py-0.5 rounded-full bg-[#0e6efe] text-white text-[11px] font-bold">
+                          {budgetFilteredCars.length} st
+                        </span>
+                      </div>
+                      {activeBudget > 0 && (
+                        <p className="text-[12px] text-slate-500 mt-1">
+                          Månadskostnad beräknad på finansiering 60 månader · Alla bilar passar din budget
+                        </p>
+                      )}
+                    </div>
                     <button
                       type="button"
                       onClick={() => setActiveBudget(null)}
-                      className="text-[13px] text-slate-400 hover:text-slate-600 font-medium transition-colors"
+                      className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-slate-400 hover:text-slate-700 transition-colors self-start sm:self-auto"
                     >
-                      Stäng
+                      <X className="w-3.5 h-3.5" />
+                      Rensa filter
                     </button>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-                    {budgetFilteredCars.slice(0, budgetShowCount).map((car, i) => (
-                      <motion.div
-                        key={car.id}
-                        initial={isMobile ? false : { opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: isMobile ? 0 : i * 0.03, duration: isMobile ? 0 : 0.3 }}
-                        onClick={() => setDetailCar(car)}
-                        className="flex flex-col rounded-2xl overflow-hidden cursor-pointer group hover:shadow-lg transition-all duration-300 ring-1 ring-white hover:ring-slate-200"
-                      >
-                        <div className="w-full aspect-[4/3] bg-white flex items-end justify-center overflow-hidden">
-                          <img
-                            src={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
-                            alt={`${car.brand_display} ${car.model_display}`}
-                            loading="lazy"
-                            className="w-full h-auto object-contain group-hover:scale-[1.04] transition-transform duration-500"
-                          />
-                        </div>
-                        <div className="px-3 py-3 bg-white">
-                          <h3 className="text-[13px] sm:text-[14px] font-bold text-slate-900 group-hover:text-[#0e6efe] transition-colors truncate">
-                            {car.brand_display} {car.model_display}
-                          </h3>
-                          <p className="text-[11px] text-slate-400 mt-0.5">
-                            Ny från {formatSEK(car.pricing.new_from_sek!)}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))}
+
+                  {/* Cards grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                    {budgetFilteredCars.slice(0, budgetShowCount).map((car, i) => {
+                      const monthly = Math.round(car.pricing.new_from_sek! / 60);
+                      return (
+                        <CompactCarCard
+                          key={car.id}
+                          name={`${car.brand_display} ${car.model_display}`}
+                          imageUrl={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
+                          rating={car.ratings.overall}
+                          fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                          estimatedMonthly={monthly}
+                          onNegotiate={() => openContactForCar(car)}
+                          onDetail={() => setDetailCar(car)}
+                          onCompare={() => toggleSelect(car.id)}
+                          isCompared={selectedIds.has(car.id)}
+                          index={i}
+                          disableMotion={isMobile}
+                        />
+                      );
+                    })}
                   </div>
+
+                  {/* Visa fler */}
                   {budgetFilteredCars.length > budgetShowCount && (
                     <div className="text-center mt-6">
                       <button
                         type="button"
-                        onClick={() => setBudgetShowCount(prev => prev + 15)}
-                        className="h-11 px-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-[14px] font-semibold transition-colors"
+                        onClick={() => setBudgetShowCount(prev => prev + 6)}
+                        className="inline-flex items-center gap-2 h-11 px-8 rounded-full bg-white ring-1 ring-slate-200 hover:ring-[#0e6efe] text-slate-700 hover:text-[#0e6efe] text-[13px] font-semibold transition-all duration-200 shadow-sm"
                       >
                         Visa fler bilar
+                        <ChevronDown className="w-4 h-4" />
                       </button>
                     </div>
                   )}
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </section>
+
+      {/* Monthly cost calculator */}
+      <MonthlyCalcSection />
 
       {/* Bilmatch Section */}
       <section id="quiz-section" ref={quizSectionRef} className="py-14 sm:py-20 lg:py-28 px-4 sm:px-6 bg-gradient-to-b from-slate-50 to-white border-t border-slate-100">
@@ -1441,7 +1566,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               return (
                 <button
                   key={cat.key}
-                  onClick={() => { setActiveCategory(cat.key); setShowAllCars(false); setCarSearchQuery(''); }}
+                  onClick={() => { setActiveCategory(cat.key); setShowAllCars(false); setCarSearchQuery(''); setExpertShowCount(6); }}
                   className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                     isActive
                       ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/20'
@@ -1526,14 +1651,21 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             </motion.div>
           </AnimatePresence>
 
-          {!carSearchQuery && !showAllCars && allCategoryCars.length > 8 && (
+          {!carSearchQuery && !showAllCars && allCategoryCars.length > expertShowCount && (
             <div className="flex justify-center mt-6">
               <button
                 type="button"
-                onClick={() => setShowAllCars(true)}
+                onClick={() => {
+                  const next = expertShowCount + 6;
+                  if (next >= allCategoryCars.length) setShowAllCars(true);
+                  else setExpertShowCount(next);
+                }}
                 className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white text-slate-700 text-[14px] font-semibold ring-1 ring-slate-200 hover:ring-slate-300 hover:shadow-sm transition-all duration-200"
               >
                 Visa fler bilar
+                <span className="text-[12px] text-slate-400 font-normal">
+                  ({allCategoryCars.length - expertShowCount} kvar)
+                </span>
                 <ChevronDown className="w-4 h-4" />
               </button>
             </div>

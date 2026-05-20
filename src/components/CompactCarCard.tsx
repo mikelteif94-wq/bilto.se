@@ -20,9 +20,7 @@ interface CompactCarCardProps {
   disableMotion?: boolean;
 }
 
-
 function RatingBar({ rating }: { rating: number }) {
-  // rating is 5–10 scale
   const clamped = Math.max(5, Math.min(10, rating));
   const pct = ((clamped - 5) / 5) * 100;
   const color = clamped >= 9 ? '#10b981' : clamped >= 7.5 ? '#0e6efe' : '#64748b';
@@ -74,8 +72,8 @@ export default function CompactCarCard({
       style={{ touchAction: 'pan-y' }}
       onClick={handleClick}
     >
-      {/* Image */}
-      <div className="relative aspect-[16/9] bg-gradient-to-b from-slate-50 to-slate-100 overflow-hidden">
+      {/* Image — 4:3 on mobile, 16:9 on sm+ for better density */}
+      <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-gradient-to-b from-slate-50 to-slate-100 overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -98,7 +96,6 @@ export default function CompactCarCard({
           </div>
         )}
 
-        {/* Selection indicator */}
         {onSelect && (
           <div className={`absolute top-2 left-2 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
             isSelected
@@ -109,7 +106,6 @@ export default function CompactCarCard({
           </div>
         )}
 
-        {/* Equity/saving badges */}
         {monthlySaving != null && monthlySaving > 0 && (
           <div className="absolute top-2 right-2 bg-emerald-500 text-white px-2 py-0.5 rounded-md text-[10px] font-bold shadow-sm">
             -{formatSEK(monthlySaving)} kr/mån
@@ -123,17 +119,21 @@ export default function CompactCarCard({
       </div>
 
       {/* Content */}
-      <div className="px-3.5 pt-2.5 pb-2">
-        <h3 className="text-[13px] font-bold text-slate-900 leading-tight truncate group-hover:text-[#0e6efe] transition-colors duration-200">
+      <div className="px-3 pt-2.5 pb-2">
+        <h3 className="text-[12px] sm:text-[13px] font-bold text-slate-900 leading-tight truncate group-hover:text-[#0e6efe] transition-colors duration-200">
           {name}
         </h3>
 
         {rating != null && <RatingBar rating={rating} />}
 
+        {/* Monthly cost — prominently shown when provided */}
         {estimatedMonthly ? (
-          <p className="mt-1 text-[12px] font-semibold text-[#0e6efe]">
-            ca {estimatedMonthly.toLocaleString('sv-SE')} kr/mån
-          </p>
+          <div className="mt-1.5 flex items-baseline gap-1">
+            <span className="text-[13px] sm:text-[14px] font-extrabold text-[#0e6efe] tabular-nums leading-none">
+              {estimatedMonthly.toLocaleString('sv-SE')}
+            </span>
+            <span className="text-[10px] font-semibold text-[#0e6efe]/70">kr/mån</span>
+          </div>
         ) : null}
 
         {monthlySaving != null && monthlySaving > 0 && (
@@ -148,8 +148,9 @@ export default function CompactCarCard({
           </p>
         )}
 
+        {/* Expert comment — hidden on mobile to save space */}
         {expertComment && (
-          <p className="mt-1 text-[11px] text-slate-400 leading-snug line-clamp-2 min-h-[28px]">
+          <p className="hidden sm:block mt-1 text-[11px] text-slate-400 leading-snug line-clamp-2 min-h-[28px]">
             {expertComment}
           </p>
         )}
@@ -165,17 +166,18 @@ export default function CompactCarCard({
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-            className="flex-1 h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1"
+            className="flex-1 h-8 sm:h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1"
           >
             Få hjälp att köpa
             <ChevronRight className="w-3 h-3 opacity-80" />
           </button>
+          {/* Compare button — hidden on mobile */}
           {onCompare && (
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onCompare(); }}
               title={isCompared ? 'Ta bort från jämförelse' : 'Jämför'}
-              className={`h-9 w-9 rounded-lg border flex items-center justify-center shrink-0 transition-all duration-150 active:scale-[0.98] ${
+              className={`hidden sm:flex h-9 w-9 rounded-lg border items-center justify-center shrink-0 transition-all duration-150 active:scale-[0.98] ${
                 isCompared
                   ? 'bg-emerald-500 border-emerald-500 text-white'
                   : 'bg-white border-slate-200 hover:border-[#0e6efe] text-slate-500 hover:text-[#0e6efe]'
