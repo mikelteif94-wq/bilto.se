@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import {
   Search, ArrowRight, Car, Menu, User, Check,
   Sparkles, Zap, Truck, Leaf, CarFront,
-  Send, Loader2, RotateCcw, Info, Calculator,
+  Send, Loader2, RotateCcw, Info,
   GitCompareArrows, X, ArrowDown, Phone, Handshake,
   ShieldCheck, Megaphone, CheckCircle, ArrowLeftRight, ChevronDown,
 } from 'lucide-react';
@@ -632,13 +632,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const [bilbyteReg, setBilbyteReg] = useState('');
   const [bilbyteRegError, setBilbyteRegError] = useState(false);
 
-  // Trade-in calculator
-  const [tradeCarValue, setTradeCarValue] = useState('');
-  const [tradeLoanAmount, setTradeLoanAmount] = useState('');
-  const [tradeInterestRate, setTradeInterestRate] = useState('');
-  const [tradeMonthlyPayment, setTradeMonthlyPayment] = useState('');
-  const [tradeCalculated, setTradeCalculated] = useState(false);
-
   // Budget filter state
   const [activeBudget, setActiveBudget] = useState<number | null>(null);
   const [budgetShowCount, setBudgetShowCount] = useState(15);
@@ -737,41 +730,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       })
       .sort((a, b) => (a.pricing.new_from_sek || 0) - (b.pricing.new_from_sek || 0));
   }, [activeBudget, allCarsRaw, getCarImage]);
-
-  // Trade-in results
-  const tradeEquity = useMemo(() => {
-    const cv = parseFloat(tradeCarValue.replace(/\s/g, '')) || 0;
-    const la = parseFloat(tradeLoanAmount.replace(/\s/g, '')) || 0;
-    return cv - la;
-  }, [tradeCarValue, tradeLoanAmount]);
-
-  const tradeResults = useMemo(() => {
-    if (!tradeCalculated || tradeEquity <= 0) return [];
-    const currentMonthly = parseFloat(tradeMonthlyPayment.replace(/\s/g, '')) || 0;
-    const rate = (parseFloat(tradeInterestRate.replace(',', '.')) || 0) / 100;
-    const months = 72;
-
-    return allCarsRaw
-      .filter(car => {
-        if (!car.pricing.new_from_sek) return false;
-        if (!resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)) return false;
-        return true;
-      })
-      .map(car => {
-        const principal = Math.max(0, car.pricing.new_from_sek! - tradeEquity);
-        let monthly: number;
-        if (rate > 0) {
-          const mr = rate / 12;
-          monthly = principal * (mr / (1 - Math.pow(1 + mr, -months)));
-        } else {
-          monthly = principal / months;
-        }
-        return { car, monthly: Math.round(monthly) };
-      })
-      .filter(r => r.monthly < currentMonthly && r.monthly > 0)
-      .sort((a, b) => a.monthly - b.monthly)
-      .slice(0, 12);
-  }, [tradeCalculated, tradeEquity, tradeMonthlyPayment, tradeInterestRate, allCarsRaw, getCarImage]);
 
   // Chat
   const handleChatSubmit = (overrideInput?: string) => {
@@ -1898,173 +1856,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               </form>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Trade-in Calculator + Vi hjälper dig */}
-      <section className="py-10 sm:py-16 px-4 sm:px-6 bg-slate-50 border-t border-slate-100">
-        <div className="max-w-5xl mx-auto space-y-10 sm:space-y-16">
-
-          {/* Inbyteskalkylator */}
-          <div className="max-w-xl">
-            <div className="mb-5">
-              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-2">
-                <Calculator className="w-3 h-3" />
-                Inbyteskalkylator
-              </span>
-              <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 leading-tight tracking-tight">
-                Få ner din månadskostnad
-              </h2>
-              <p className="text-slate-500 text-[13px] sm:text-[14px] mt-1.5 leading-relaxed">
-                Fyll i din bilsituation — vi visar bilar med lägre månadskostnad.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[12px] font-semibold text-slate-600 mb-1">Bilvärde</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      value={tradeCarValue}
-                      onChange={(e) => { setTradeCarValue(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
-                      placeholder="200 000"
-                      className="w-full h-10 px-3 pr-10 rounded-lg border border-slate-200 bg-slate-50 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-300"
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-400">kr</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-[12px] font-semibold text-slate-600 mb-1">Kvarvarande lån</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      value={tradeLoanAmount}
-                      onChange={(e) => { setTradeLoanAmount(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
-                      placeholder="155 000"
-                      className="w-full h-10 px-3 pr-10 rounded-lg border border-slate-200 bg-slate-50 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-300"
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-400">kr</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-[12px] font-semibold text-slate-600 mb-1">Ränta på nytt lån</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      value={tradeInterestRate}
-                      onChange={(e) => { setTradeInterestRate(e.target.value.replace(/[^\d,.\s]/g, '')); setTradeCalculated(false); }}
-                      placeholder="6,5"
-                      className="w-full h-10 px-3 pr-8 rounded-lg border border-slate-200 bg-slate-50 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-300"
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-400">%</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-[12px] font-semibold text-slate-600 mb-1">Nuv. månadskostnad</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      value={tradeMonthlyPayment}
-                      onChange={(e) => { setTradeMonthlyPayment(e.target.value.replace(/[^\d\s]/g, '')); setTradeCalculated(false); }}
-                      placeholder="4 500"
-                      className="w-full h-10 px-3 pr-14 rounded-lg border border-slate-200 bg-slate-50 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] focus:bg-white transition placeholder:text-slate-300"
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-400">kr/mån</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const cv = parseFloat(tradeCarValue.replace(/\s/g, '')) || 0;
-                    const mp = parseFloat(tradeMonthlyPayment.replace(/\s/g, '')) || 0;
-                    if (cv > 0 && mp > 0) setTradeCalculated(true);
-                  }}
-                  disabled={!tradeCarValue || !tradeMonthlyPayment}
-                  className="h-11 px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold text-[14px] transition-all inline-flex items-center justify-center gap-2 shadow-md shadow-[#0e6efe]/20 active:scale-[0.98]"
-                >
-                  <ArrowRight className="w-4 h-4" />
-                  Börja
-                </button>
-                {tradeCalculated && tradeEquity > 0 && (
-                  <div className="flex items-center gap-2 px-4 h-11 rounded-xl bg-emerald-50 border border-emerald-200">
-                    <span className="text-[12px] text-emerald-700">Ditt kapital:</span>
-                    <span className="text-[13px] font-bold text-emerald-700">{formatSEK(tradeEquity)}</span>
-                  </div>
-                )}
-                {tradeCalculated && tradeEquity <= 0 && (
-                  <p className="text-[12px] text-amber-600 font-medium">
-                    Ditt lån överstiger bilvärdet. Ring oss för att hitta en lösning.
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {tradeCalculated && tradeResults.length > 0 && (
-              <div className="mt-8">
-                <p className="text-[15px] font-semibold text-slate-900 mb-4">
-                  {tradeResults.length} {tradeResults.length === 1 ? 'bil' : 'bilar'} med lägre månadskostnad
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                  {tradeResults.map((r, i) => {
-                    return (
-                      <div key={r.car.id} className="relative">
-                        <div className="absolute top-3 left-3 z-10">
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-emerald-500 text-[12px] font-bold text-white shadow">
-                            {formatSEK(r.monthly)}/mån
-                          </span>
-                        </div>
-                        <CompactCarCard
-                          name={`${r.car.brand_display} ${r.car.model_display}`}
-                          imageUrl={resolveCarImage(r.car.id, r.car.brand_display, r.car.model_display, getCarImage)}
-                          rating={r.car.ratings.overall}
-                          expertComment={getExpertComment(r.car)}
-                          fuelLabel={r.car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                          onNegotiate={() => openContactForCar(r.car)}
-                          onSearch={() => openContactForCar(r.car)}
-                          onDetail={() => setDetailCar(r.car)}
-                          index={i}
-                          disableMotion={isMobile}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className="mt-6 text-center">
-                  <button
-                    onClick={() => setBuyDrawerCar('')}
-                    className="h-11 px-6 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[14px] font-semibold inline-flex items-center gap-2 transition"
-                  >
-                    <Phone className="w-4 h-4" />
-                    Kontakta oss för en exakt värdering
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {tradeCalculated && tradeEquity > 0 && tradeResults.length === 0 && (
-              <div className="mt-6 bg-white rounded-2xl border border-slate-200 p-6 text-center">
-                <p className="text-[15px] text-slate-600 mb-1">Vi hittade inga bilar med lägre månadskostnad just nu.</p>
-                <p className="text-[13px] text-slate-400 mb-4">Prata med oss så hjälper vi dig hitta en bättre lösning.</p>
-                <button
-                  onClick={() => setBuyDrawerCar('')}
-                  className="h-11 px-6 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[14px] font-semibold inline-flex items-center gap-2 transition"
-                >
-                  <Phone className="w-4 h-4" />
-                  Kontakta oss
-                </button>
-              </div>
-            )}
-          </div>
-
         </div>
       </section>
 
