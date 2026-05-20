@@ -129,6 +129,7 @@ function App() {
 
     const { data: listener } = supabase.auth.onAuthStateChange((event, newSession) => {
       setSession(newSession);
+      setAuthLoading(false);
       if (event === 'PASSWORD_RECOVERY') {
         setRecoveryMode(true);
         if (window.location.pathname !== '/handlare/valj-losenord') {
@@ -141,8 +142,9 @@ function App() {
     return () => listener.subscription.unsubscribe();
   }, []);
 
+  const onAdminRouteBool = path.startsWith('/admin');
   useEffect(() => {
-    if (!session || !path.startsWith('/admin')) {
+    if (!session || !onAdminRouteBool) {
       setAdminVerified(null);
       return;
     }
@@ -156,7 +158,7 @@ function App() {
         if (!cancelled) setAdminVerified(!!data);
       });
     return () => { cancelled = true; };
-  }, [session?.user?.id, path.startsWith('/admin')]);
+  }, [session?.user?.id, onAdminRouteBool]);
 
   if (recoveryMode) {
     return (

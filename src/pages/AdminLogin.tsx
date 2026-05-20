@@ -29,13 +29,13 @@ export default function AdminLogin({ onLoggedIn }: AdminLoginProps) {
       return;
     }
 
-    const { data: adminRow } = await supabase
+    const { data: adminRow, error: adminError } = await supabase
       .from('admin_users')
       .select('id')
       .eq('id', authData.user.id)
       .maybeSingle();
 
-    if (!adminRow) {
+    if (adminError || !adminRow) {
       await supabase.auth.signOut();
       setError('Ditt konto har inte administratörsrättigheter.');
       setLoading(false);
