@@ -253,19 +253,20 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             <div className="mt-8 w-full max-w-sm sm:max-w-lg">
               <div className="bg-[#1e1e2e]/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-white/10">
                 {/* Tabs */}
-                <div className="flex gap-1 p-1.5">
+                <div className="flex border-b border-white/10">
                   {(['hitta', 'salj'] as const).map((t) => (
                     <button
                       key={t}
                       type="button"
                       onClick={() => setHeroTab(t)}
-                      className={`flex-1 py-3 sm:py-3.5 rounded-xl text-[14px] sm:text-[15px] font-bold tracking-[0.03em] transition-all duration-200 ${
+                      className={`flex-1 py-4 text-[14px] font-bold tracking-[0.04em] relative transition-colors duration-200 ${
                         heroTab === t
-                          ? 'bg-[#0e6efe] text-white shadow-lg shadow-[#0e6efe]/30'
-                          : 'text-white/55 hover:text-white/90 hover:bg-white/8'
+                          ? 'text-white'
+                          : 'text-white/45 hover:text-white/75'
                       }`}
                     >
                       {t === 'hitta' ? 'Hitta bil' : 'Sälj bil'}
+                      {heroTab === t && <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-[#0e6efe] rounded-t-full" />}
                     </button>
                   ))}
                 </div>
