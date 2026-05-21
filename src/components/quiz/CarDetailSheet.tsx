@@ -1,15 +1,16 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Star, Gauge, Armchair, Briefcase, TrendingDown, Shield,
   Fuel, Battery, Car, Check, X as XIcon, Info, Users, ArrowRight,
-  BarChart2, AlertTriangle,
+  BarChart2, AlertTriangle, HelpCircle, X,
 } from 'lucide-react';
 import { Sheet } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { findComparisonCarByMakeModel, type ComparisonCar } from '@/lib/comparison';
 import type { QuizAnswers } from './QuizTypes';
 import { inferPersona, type Persona } from './persona';
+import { calcCarMonthly } from '@/lib/utils';
 
 export interface DetailCarData {
   make: string;
@@ -40,15 +41,9 @@ function formatPriceSEK(price: number): string {
   return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(price) + ' kr';
 }
 
-function estimateMonthlyCost(name: string): string {
-  const n = name.toLowerCase();
-  if (n.includes('tesla') || n.includes('polestar') || n.includes('bmw') || n.includes('audi') || n.includes('mercedes') || n.includes('porsche') || n.includes('genesis') || n.includes('lexus')) return '5 500\u20138 500';
-  if (n.includes('volvo xc90') || n.includes('volvo xc60') || n.includes('bmw x') || n.includes('audi q')) return '5 000\u20137 500';
-  if (n.includes('volvo') || n.includes('vw') || n.includes('volkswagen') || n.includes('skoda') || n.includes('toyota rav') || n.includes('kia sportage')) return '3 500\u20135 500';
-  if (n.includes('kia') || n.includes('hyundai') || n.includes('dacia') || n.includes('mg') || n.includes('renault') || n.includes('seat') || n.includes('cupra')) return '2 800\u20134 500';
-  return '3 500\u20136 000';
+function formatSEK(n: number): string {
+  return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
 }
-
 
 function getWhoItSuitsFor(data: ComparisonCar): string[] {
   const suits: string[] = [];
@@ -99,6 +94,79 @@ function getBodyLabel(bodyType: string): string {
     hatchback: 'Halvkombi', cab: 'Cabriolet', mpv: 'MPV',
   };
   return labels[bodyType] || bodyType;
+}
+
+function MonthlyTooltip({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      className="absolute bottom-full left-0 mb-2 w-64 z-30 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-3.5"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute top-2 right-2 text-slate-500 hover:text-white transition-colors"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
+      <p className="text-[11px] font-bold text-white mb-1.5">Hur räknar vi?</p>
+      <p className="text-[10px] text-slate-400 leading-relaxed">
+        Månads&shy;kostnaden är ungefärlig och baseras på:<br />
+        <span className="text-slate-200">20% kontantinsats · 1% uppläggning · 6,49% ränta · 36 månader</span>
+      </p>
+      <p className="text-[10px] text-slate-400 leading-relaxed mt-1.5">
+        <span className="text-slate-200">Restvärde</span> är bilens beräknade värde vid leasingperiodens slut. Välj 50% eller 55% – högre restvärde ger lägre månadskostnad.
+      </p>
+      <div className="mt-2 pt-2 border-t border-slate-700">
+        <p className="text-[9px] text-slate-500">Uppskattning. Slutlig ränta och villkor sätts av finansiär.</p>
+      </div>
+    </div>
+  );
+}
+
+function MonthlyCostBlock({ carPrice }: { carPrice: number }) {
+  const [residual, setResidual] = useState<0.50 | 0.55>(0.55);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const monthly = calcCarMonthly(carPrice, residual);
+
+  return (
+    <div>
+      <div className="flex items-center gap-1.5 mb-1">
+        <p className="text-[12px] text-slate-500">Uppskattad månadskostnad</p>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setShowTooltip(v => !v)}
+            className="text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <HelpCircle className="w-3.5 h-3.5" />
+          </button>
+          {showTooltip && <MonthlyTooltip onClose={() => setShowTooltip(false)} />}
+        </div>
+      </div>
+      <div className="flex items-center gap-3 flex-wrap">
+        <p className="text-[18px] font-bold text-slate-900 tabular-nums">{formatSEK(monthly)} kr/mån</p>
+        <div className="flex items-center gap-1.5">
+          {([0.50, 0.55] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setResidual(v)}
+              className={`h-6 px-2 rounded-md text-[10px] font-bold border transition-all duration-150 ${
+                residual === v
+                  ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
+                  : 'bg-white border-slate-200 text-slate-500 hover:border-[#0e6efe]/40 hover:text-[#0e6efe]'
+              }`}
+            >
+              {v === 0.50 ? '50%' : '55%'}
+            </button>
+          ))}
+          <span className="text-[10px] text-slate-400">restvärde</span>
+        </div>
+      </div>
+      <p className="text-[10px] text-slate-400 mt-0.5">20% kontantinsats · 6,49% ränta · 36 mån</p>
+    </div>
+  );
 }
 
 export function CarDetailSheet({ car, open, onClose, onSelect, quizAnswers }: CarDetailSheetProps) {
@@ -177,7 +245,7 @@ function getPersonaCTA(persona: Persona | null, brandDisplay: string, modelDispl
       };
     case 'family':
       return {
-        headline: 'Vi hittar rätt ${brandDisplay} ${modelDisplay} för familjen',
+        headline: `Vi hittar rätt ${brandDisplay} ${modelDisplay} för familjen`,
         sub: 'Förhandlar pris, checkar historik och ser till att bilen håller vad den lovar',
       };
     case 'researcher':
@@ -192,7 +260,7 @@ function getPersonaCTA(persona: Persona | null, brandDisplay: string, modelDispl
       };
     case 'pragmatist':
       return {
-        headline: 'Bästa priset på ${brandDisplay} ${modelDisplay} — utan krångel',
+        headline: `Bästa priset på ${brandDisplay} ${modelDisplay} — utan krångel`,
         sub: 'Fast avgift 1 995 kr. Genomsnittlig besparing 15 000–40 000 kr.',
       };
     default:
@@ -286,10 +354,9 @@ function getDrivetrainLabel(drivetrain: string[]): string {
 
 function ComparisonContent({ data, persona, onSelect }: { data: ComparisonCar; persona: Persona | null; onSelect?: () => void }) {
   const FuelIcon = getFuelIcon(data.specs.fuel_types);
-  const carName = `${data.brand_display} ${data.model_display}`;
-  const monthlyCost = estimateMonthlyCost(carName);
   const whoSuits = getWhoItSuitsFor(data);
   const cta = getPersonaCTA(persona, data.brand_display, data.model_display);
+  const carPrice = data.pricing.new_from_sek ?? data.pricing.used_from_sek ?? null;
 
   // Persona-driven section order
   const showSafetyFirst = persona === 'first_time_buyer';
@@ -400,10 +467,14 @@ function ComparisonContent({ data, persona, onSelect }: { data: ComparisonCar; p
       {/* Expert summary */}
       <section className="p-4 bg-[#0e6efe]/5 rounded-xl border border-[#0e6efe]/10">
         <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-wide mb-3">Experternas bedömning</p>
-        <div>
-          <p className="text-[12px] text-slate-500">Uppskattad månadskostnad</p>
-          <p className="text-[16px] font-bold text-slate-900">{monthlyCost} kr/mån</p>
-        </div>
+        {carPrice ? (
+          <MonthlyCostBlock carPrice={carPrice} />
+        ) : (
+          <div>
+            <p className="text-[12px] text-slate-500">Uppskattad månadskostnad</p>
+            <p className="text-[14px] text-slate-400 italic">Pris ej tillgängligt</p>
+          </div>
+        )}
         {data.meta_description && (
           <p className="text-[13px] text-slate-600 leading-relaxed mt-3">{data.meta_description}</p>
         )}
