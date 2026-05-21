@@ -99,6 +99,7 @@ export default function ElCarCard({
             alt={name}
             loading="lazy"
             className="absolute inset-0 w-full h-full object-contain group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+            style={{ mixBlendMode: 'darken' }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center"><Car className="w-12 h-12 text-slate-600" /></div>
