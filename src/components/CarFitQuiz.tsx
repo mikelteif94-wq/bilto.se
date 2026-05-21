@@ -456,7 +456,7 @@ interface CarFitQuizProps {
 }
 
 export function CarFitQuiz({ car, open, onClose, dark = false, onNegotiate }: CarFitQuizProps) {
-  const isEv = car.specs.fuel_types.includes('el') && !car.specs.fuel_types.includes('bensin') && !car.specs.fuel_types.includes('diesel');
+  const isEv = !!car?.specs?.fuel_types?.includes('el') && !car?.specs?.fuel_types?.includes('bensin') && !car?.specs?.fuel_types?.includes('diesel');
 
   // Build step list based on car type
   const steps = useMemo<Step[]>(() => {
@@ -534,6 +534,8 @@ export function CarFitQuiz({ car, open, onClose, dark = false, onNegotiate }: Ca
     setDirection(-1);
     setStep(s => s - 1);
   }
+
+  if (!car) return null;
 
   const accent = dark ? '#38bdf8' : '#0e6efe';
   const bg = dark ? 'linear-gradient(165deg, #0f172a 0%, #0c1a2e 60%, #051020 100%)' : '#ffffff';
