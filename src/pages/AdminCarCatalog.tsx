@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   ArrowLeft,
   Search,
@@ -106,6 +106,7 @@ interface EditState {
   rating_overall: string;
   expert_comment: string;
   seats: string;
+  image_url: string;
 }
 
 function emptyEdit(entry: CatalogEntry): EditState {
@@ -116,6 +117,7 @@ function emptyEdit(entry: CatalogEntry): EditState {
     rating_overall: entry.rating_overall != null ? String(entry.rating_overall) : '',
     expert_comment: entry.expert_comment ?? '',
     seats: entry.seats != null ? String(entry.seats) : '',
+    image_url: entry.cleaned_image_url ?? entry.image_url ?? '',
   };
 }
 
@@ -221,6 +223,7 @@ export default function AdminCarCatalog({ onBack }: AdminCarCatalogProps) {
       rating_overall: editState.rating_overall ? parseFloat(editState.rating_overall) : null,
       expert_comment: editState.expert_comment || null,
       seats: editState.seats ? parseInt(editState.seats) : null,
+      cleaned_image_url: editState.image_url.trim() || null,
       updated_at: new Date().toISOString(),
     };
     await supabase.from('car_catalog').update(payload).eq('id', editId);
@@ -344,8 +347,8 @@ export default function AdminCarCatalog({ onBack }: AdminCarCatalogProps) {
                   const img = entry.cleaned_image_url || entry.image_url;
 
                   return (
+                    <React.Fragment key={entry.id}>
                     <tr
-                      key={entry.id}
                       className={`transition-colors ${!entry.is_active ? 'opacity-50' : ''} ${isEditing ? 'bg-blue-50/40' : 'hover:bg-slate-50/60'}`}
                     >
                       {/* Image thumb */}
@@ -525,6 +528,39 @@ export default function AdminCarCatalog({ onBack }: AdminCarCatalogProps) {
                         )}
                       </td>
                     </tr>
+                    {isEditing && editState && (
+                      <tr className="bg-blue-50/40 border-b border-blue-100">
+                        <td colSpan={8} className="px-4 pb-3 pt-0">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-7 rounded overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
+                              {editState.image_url ? (
+                                <img src={editState.image_url} alt="preview" className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                              ) : (
+                                <Car className="w-4 h-4 text-slate-300" />
+                              )}
+                            </div>
+                            <input
+                              type="url"
+                              value={editState.image_url}
+                              onChange={e => setEditState({ ...editState, image_url: e.target.value })}
+                              placeholder="Bild-URL (https://…)"
+                              className="flex-1 h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition placeholder:text-slate-400"
+                            />
+                            {editState.image_url && (
+                              <button
+                                type="button"
+                                onClick={() => setEditState({ ...editState, image_url: '' })}
+                                className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 hover:bg-red-50 hover:border-red-200 hover:text-red-500 transition text-slate-400"
+                                title="Rensa bild"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    </React.Fragment>
                   );
                 })}
               </tbody>
