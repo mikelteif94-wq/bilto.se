@@ -1466,7 +1466,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                             {isElbil ? (
                               <ElCarCard
                                 name={`${car.make} ${car.model}`}
-                                imageUrl={car.cleaned_image_url || car.image_url}
+                                imageUrl={car.image_url || car.cleaned_image_url}
                                 rating={car.rating}
                                 topBadge={i === 0}
                                 expertComment={car.matchReasons.join(' · ') || undefined}
@@ -1478,7 +1478,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                             ) : (
                               <CompactCarCard
                                 name={`${car.make} ${car.model}`}
-                                imageUrl={car.cleaned_image_url || car.image_url}
+                                imageUrl={car.image_url || car.cleaned_image_url}
                                 rating={car.rating}
                                 topBadge={i === 0}
                                 expertComment={car.matchReasons.join(' · ') || undefined}

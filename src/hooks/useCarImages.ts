@@ -59,7 +59,7 @@ export function useCarImages() {
         setCatalogCars(entries.map(e => ({
           make: e.make,
           model: e.model,
-          image_url: e.cleaned_image_url || e.image_url,
+          image_url: e.image_url || e.cleaned_image_url,
           fuel_types: e.fuel_types,
           body_type: e.body_type,
           rating_overall: e.rating_overall,
@@ -72,7 +72,7 @@ export function useCarImages() {
         const sorted = [...entries].sort((a, b) => b.model.length - a.model.length);
 
         sorted.forEach((car) => {
-          const imageUrl = car.cleaned_image_url || car.image_url;
+          const imageUrl = car.image_url || car.cleaned_image_url;
           if (imageUrl) {
             const brand = normalize(car.make);
             const model = normalize(car.model);
