@@ -177,7 +177,7 @@ export default function CompactCarCard({
               type="button"
               onClick={(e) => { e.stopPropagation(); onCompare(); }}
               title={isCompared ? 'Ta bort från jämförelse' : 'Jämför'}
-              className={`flex h-9 w-9 rounded-lg border items-center justify-center shrink-0 transition-all duration-150 active:scale-[0.98] ${
+              className={`hidden sm:flex h-9 w-9 rounded-lg border items-center justify-center shrink-0 transition-all duration-150 active:scale-[0.98] ${
                 isCompared
                   ? 'bg-emerald-500 border-emerald-500 text-white'
                   : 'bg-white border-slate-200 hover:border-[#0e6efe] text-slate-500 hover:text-[#0e6efe]'
