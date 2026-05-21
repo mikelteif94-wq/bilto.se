@@ -357,18 +357,19 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
           <div className="mt-6 bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] overflow-hidden">
             {/* Tab strip */}
-            <div className="flex border-b border-slate-100">
+            <div className="flex gap-1.5 p-2">
               {(['salj', 'hitta'] as const).map((t) => (
                 <button
                   key={t}
                   type="button"
                   onClick={() => setHeroTab(t)}
-                  className={`flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] relative transition-colors ${
-                    heroTab === t ? 'text-[#0e6efe]' : 'text-slate-400 hover:text-slate-600'
+                  className={`flex-1 py-3 text-center text-[13px] font-bold tracking-[0.02em] rounded-xl transition-all duration-200 ${
+                    heroTab === t
+                      ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/25'
+                      : 'text-slate-400 hover:text-slate-700 hover:bg-slate-50'
                   }`}
                 >
-                  {t === 'salj' ? 'Sälj din bil' : 'Hitta bil'}
-                  {heroTab === t && <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-[#0e6efe] rounded-t-full" />}
+                  {t === 'salj' ? 'Sälj bil' : 'Hitta bil'}
                 </button>
               ))}
             </div>
@@ -512,18 +513,19 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
           <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden max-w-[440px] w-full justify-self-end">
             {/* Tab strip */}
-            <div className="flex border-b border-slate-100">
+            <div className="flex gap-1.5 p-2">
               {(['salj', 'hitta'] as const).map((t) => (
                 <button
                   key={t}
                   type="button"
                   onClick={() => setHeroTab(t)}
-                  className={`flex-1 py-2.5 text-center text-[11px] font-bold uppercase tracking-[0.14em] relative transition-colors ${
-                    heroTab === t ? 'text-[#0e6efe]' : 'text-slate-400 hover:text-slate-600'
+                  className={`flex-1 py-3 text-center text-[13px] font-bold tracking-[0.02em] rounded-xl transition-all duration-200 ${
+                    heroTab === t
+                      ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/25'
+                      : 'text-slate-400 hover:text-slate-700 hover:bg-slate-50'
                   }`}
                 >
-                  {t === 'salj' ? 'Sälj din bil' : 'Hitta bil'}
-                  {heroTab === t && <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-[#0e6efe] rounded-t-full" />}
+                  {t === 'salj' ? 'Sälj bil' : 'Hitta bil'}
                 </button>
               ))}
             </div>
