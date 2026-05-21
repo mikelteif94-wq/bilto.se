@@ -16,6 +16,13 @@ export function calcCarMonthly(carPrice: number, residualPct: 0.50 | 0.55 = 0.55
   return ((loan - residualAmount / Math.pow(1 + r, n)) * r) / (1 - Math.pow(1 + r, -n));
 }
 
+export function calcCarMonthlyRange(carPrice: number): { low: number; high: number } {
+  return {
+    low: calcCarMonthly(carPrice, 0.55),
+    high: calcCarMonthly(carPrice, 0.50),
+  };
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

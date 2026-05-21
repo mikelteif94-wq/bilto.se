@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Star, Car, ArrowRight, Check, Scale, HelpCircle, X } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { calcCarMonthly } from '../lib/utils';
+import { calcCarMonthlyRange } from '../lib/utils';
 
 interface DarkCarCardProps {
   name: string;
@@ -32,14 +32,11 @@ function RatingCircle({ value }: { value: number }) {
   const circumference = 2 * Math.PI * radius;
   const progress = (value / 10) * circumference;
   const color = value >= 8.5 ? '#059669' : value >= 7 ? '#0e6efe' : '#d97706';
-
   return (
     <div className="relative w-[52px] h-[52px] flex items-center justify-center">
       <svg className="absolute inset-0 -rotate-90" viewBox="0 0 48 48">
         <circle cx="24" cy="24" r={radius} fill="none" stroke="#e2e8f0" strokeWidth="2.5" />
-        <motion.circle
-          cx="24" cy="24" r={radius}
-          fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round"
+        <motion.circle cx="24" cy="24" r={radius} fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round"
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: circumference }}
           whileInView={{ strokeDashoffset: circumference - progress }}
@@ -58,20 +55,16 @@ function InfoTooltip({ onClose }: { onClose: () => void }) {
       className="absolute bottom-full right-0 mb-2 w-60 z-30 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-3"
       onClick={(e) => e.stopPropagation()}
     >
-      <button
-        type="button"
-        onClick={onClose}
-        className="absolute top-2 right-2 text-slate-500 hover:text-white transition-colors"
-      >
+      <button type="button" onClick={onClose} className="absolute top-2 right-2 text-slate-500 hover:text-white transition-colors">
         <X className="w-3.5 h-3.5" />
       </button>
       <p className="text-[11px] font-bold text-white mb-1.5">Hur räknar vi?</p>
       <p className="text-[10px] text-slate-400 leading-relaxed">
-        Månads&shy;kostnaden är ungefärlig och baseras på:<br />
+        Spannet visar månads&shy;kostnaden vid 55% respektive 50% restvärde:<br />
         <span className="text-slate-200">20% kontantinsats · 1% uppläggning · 6,49% ränta · 36 månader</span>
       </p>
       <p className="text-[10px] text-slate-400 leading-relaxed mt-1.5">
-        <span className="text-slate-200">Restvärde</span> är bilens beräknade värde vid leasingperiodens slut. Välj 50% eller 55% – högre restvärde ger lägre månadskostnad.
+        Lägre siffra = 55% restvärde &nbsp;·&nbsp; Högre siffra = 50% restvärde
       </p>
       <div className="mt-2 pt-2 border-t border-slate-700">
         <p className="text-[9px] text-slate-500">Uppskattning. Slutlig ränta och villkor sätts av finansiär.</p>
@@ -85,10 +78,8 @@ export default function DarkCarCard({
   carPrice,
   onNegotiate, onDetail, onCompare, isComparing, index = 0,
 }: DarkCarCardProps) {
-  const [residual, setResidual] = useState<0.50 | 0.55>(0.55);
   const [showInfo, setShowInfo] = useState(false);
-
-  const monthly = carPrice ? calcCarMonthly(carPrice, residual) : null;
+  const range = carPrice ? calcCarMonthlyRange(carPrice) : null;
 
   return (
     <motion.div
@@ -103,28 +94,18 @@ export default function DarkCarCard({
       {/* Image */}
       <div className="relative aspect-[16/10] bg-gradient-to-b from-slate-50 to-slate-100 overflow-hidden">
         {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={name}
-            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
-          />
+          <img src={imageUrl} alt={name} className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Car className="w-16 h-16 text-slate-200" />
-          </div>
+          <div className="w-full h-full flex items-center justify-center"><Car className="w-16 h-16 text-slate-200" /></div>
         )}
-
         <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/25 to-transparent pointer-events-none" />
-
         {topBadge && (
           <div className="absolute top-3.5 left-3.5">
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-sm text-[11px] font-bold text-[#0e6efe] shadow-sm">
-              <Star className="w-3 h-3 fill-[#0e6efe] text-[#0e6efe]" />
-              Toppval
+              <Star className="w-3 h-3 fill-[#0e6efe] text-[#0e6efe]" />Toppval
             </span>
           </div>
         )}
-
         {rating != null && (
           <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-full shadow-sm">
             <RatingCircle value={rating} />
@@ -134,50 +115,26 @@ export default function DarkCarCard({
 
       {/* Content */}
       <div className="px-5 pt-4 pb-5">
-        <h3 className="text-[17px] font-bold text-slate-900 leading-snug group-hover:text-[#0e6efe] transition-colors duration-200">
-          {name}
-        </h3>
-
+        <h3 className="text-[17px] font-bold text-slate-900 leading-snug group-hover:text-[#0e6efe] transition-colors duration-200">{name}</h3>
         {expertComment && (
-          <p className="mt-1.5 text-[12px] text-slate-400 leading-relaxed line-clamp-2">
-            {expertComment}
-          </p>
+          <p className="mt-1.5 text-[12px] text-slate-400 leading-relaxed line-clamp-2">{expertComment}</p>
         )}
 
-        {/* Monthly cost with residual toggle */}
-        {monthly != null && (
-          <div
-            className="mt-3 flex items-center justify-between gap-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div>
-              <p className="text-[11px] text-slate-400 mb-0.5">Ca månadskostnad</p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-[16px] font-bold text-slate-800 tabular-nums">{formatSEK(monthly)}</span>
-                <span className="text-[11px] text-slate-500">kr/mån</span>
+        {/* Monthly range */}
+        {range && (
+          <div className="mt-3" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <p className="text-[11px] text-slate-400 mb-0.5">Ca månadskostnad</p>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-[15px] font-bold text-slate-800 tabular-nums whitespace-nowrap">
+                    {formatSEK(range.low)}–{formatSEK(range.high)}
+                  </span>
+                  <span className="text-[11px] text-slate-500">kr/mån</span>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-1">
-              {([0.50, 0.55] as const).map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  onClick={() => setResidual(v)}
-                  className={`h-6 px-2 rounded-md text-[9px] font-bold border transition-all duration-150 ${
-                    residual === v
-                      ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
-                      : 'bg-white border-slate-200 text-slate-400 hover:border-[#0e6efe]/40 hover:text-[#0e6efe]'
-                  }`}
-                >
-                  {v === 0.50 ? '50%' : '55%'}
-                </button>
-              ))}
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setShowInfo(s => !s)}
-                  className="text-slate-400 hover:text-slate-600 transition-colors"
-                >
+              <div className="relative self-end pb-0.5">
+                <button type="button" onClick={() => setShowInfo(s => !s)} className="text-slate-400 hover:text-slate-600 transition-colors">
                   <HelpCircle className="w-3.5 h-3.5" />
                 </button>
                 {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
@@ -193,8 +150,7 @@ export default function DarkCarCard({
           onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[14px] font-semibold transition-all duration-200"
         >
-          Förhandla
-          <ArrowRight className="w-3.5 h-3.5 opacity-70 group-hover:translate-x-0.5 transition-transform" />
+          Förhandla<ArrowRight className="w-3.5 h-3.5 opacity-70 group-hover:translate-x-0.5 transition-transform" />
         </button>
 
         {onCompare && (
@@ -202,9 +158,7 @@ export default function DarkCarCard({
             type="button"
             onClick={(e) => { e.stopPropagation(); onCompare(); }}
             className={`w-full flex items-center justify-center gap-1.5 py-2 mt-2 rounded-xl text-[12px] font-medium transition-all duration-200 ${
-              isComparing
-                ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-                : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+              isComparing ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
             }`}
           >
             {isComparing ? <Check className="w-3 h-3" /> : <Scale className="w-3 h-3" />}
