@@ -12,6 +12,7 @@ interface DarkCarCardProps {
   pros?: string[];
   cons?: string[];
   carPrice?: number;
+  usedPrice?: number;
   bodyLabel?: string;
   fuelLabel?: string;
   trunkLiters?: number;
@@ -60,7 +61,7 @@ function InfoTooltip({ onClose }: { onClose: () => void }) {
       </button>
       <p className="text-[11px] font-bold text-white mb-1.5">Hur räknar vi?</p>
       <p className="text-[10px] text-slate-400 leading-relaxed">
-        Spannet visar månads&shy;kostnaden vid 55% respektive 50% restvärde:<br />
+        Spannet baseras på snittpriset mellan begagnad och ny, vid 55% resp. 50% restvärde:<br />
         <span className="text-slate-200">20% kontantinsats · 1% uppläggning · 6,49% ränta · 36 månader</span>
       </p>
       <p className="text-[10px] text-slate-400 leading-relaxed mt-1.5">
@@ -75,11 +76,11 @@ function InfoTooltip({ onClose }: { onClose: () => void }) {
 
 export default function DarkCarCard({
   name, imageUrl, rating, topBadge, expertComment,
-  carPrice,
+  carPrice, usedPrice,
   onNegotiate, onDetail, onCompare, isComparing, index = 0,
 }: DarkCarCardProps) {
   const [showInfo, setShowInfo] = useState(false);
-  const range = carPrice ? calcCarMonthlyRange(carPrice) : null;
+  const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
 
   return (
     <motion.div

@@ -16,10 +16,16 @@ export function calcCarMonthly(carPrice: number, residualPct: 0.50 | 0.55 = 0.55
   return ((loan - residualAmount / Math.pow(1 + r, n)) * r) / (1 - Math.pow(1 + r, -n));
 }
 
-export function calcCarMonthlyRange(carPrice: number): { low: number; high: number } {
+// Uses midpoint between used and new price so the estimate reflects typical buyer reality.
+export function calcCarMonthlyRange(
+  carPrice: number,
+  usedPrice?: number,
+): { low: number; high: number; basePrice: number } {
+  const basePrice = usedPrice ? Math.round((carPrice + usedPrice) / 2) : carPrice;
   return {
-    low: calcCarMonthly(carPrice, 0.55),
-    high: calcCarMonthly(carPrice, 0.50),
+    low: Math.round(calcCarMonthly(basePrice, 0.55)),
+    high: Math.round(calcCarMonthly(basePrice, 0.50)),
+    basePrice,
   };
 }
 

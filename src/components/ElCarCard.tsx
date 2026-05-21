@@ -9,6 +9,7 @@ interface ElCarCardProps {
   expertComment?: string;
   rangeKm?: number;
   carPrice?: number;
+  usedPrice?: number;
   fuelLabel?: string;
   isCompared?: boolean;
   topBadge?: boolean;
@@ -53,7 +54,7 @@ function InfoTooltip({ onClose }: { onClose: () => void }) {
       </button>
       <p className="text-[11px] font-bold text-white mb-1.5">Hur räknar vi?</p>
       <p className="text-[10px] text-slate-400 leading-relaxed">
-        Spannet visar månads&shy;kostnaden vid 55% respektive 50% restvärde:<br />
+        Spannet baseras på snittpriset mellan begagnad och ny, vid 55% resp. 50% restvärde:<br />
         <span className="text-slate-300">20% kontantinsats · 1% uppläggning · 6,49% ränta · 36 månader</span>
       </p>
       <p className="text-[10px] text-slate-400 leading-relaxed mt-1.5">
@@ -68,11 +69,11 @@ function InfoTooltip({ onClose }: { onClose: () => void }) {
 
 export default function ElCarCard({
   name, imageUrl, rating, expertComment, rangeKm,
-  carPrice, isCompared, topBadge,
+  carPrice, usedPrice, isCompared, topBadge,
   onNegotiate, onDetail, onCompare,
 }: ElCarCardProps) {
   const [showInfo, setShowInfo] = useState(false);
-  const range = carPrice ? calcCarMonthlyRange(carPrice) : null;
+  const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
 
   return (
     <div

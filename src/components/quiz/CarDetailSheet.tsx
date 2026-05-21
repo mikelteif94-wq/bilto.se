@@ -107,7 +107,7 @@ function MonthlyTooltip({ onClose }: { onClose: () => void }) {
       </button>
       <p className="text-[11px] font-bold text-white mb-1.5">Hur räknar vi?</p>
       <p className="text-[10px] text-slate-400 leading-relaxed">
-        Spannet visar månads&shy;kostnaden vid 55% respektive 50% restvärde:<br />
+        Spannet baseras på snittpriset mellan begagnad och ny, vid 55% respektive 50% restvärde:<br />
         <span className="text-slate-200">20% kontantinsats · 1% uppläggning · 6,49% ränta · 36 månader</span>
       </p>
       <p className="text-[10px] text-slate-400 leading-relaxed mt-1.5">
@@ -120,9 +120,10 @@ function MonthlyTooltip({ onClose }: { onClose: () => void }) {
   );
 }
 
-function MonthlyCostBlock({ carPrice }: { carPrice: number }) {
+function MonthlyCostBlock({ carPrice, usedPrice }: { carPrice: number; usedPrice?: number }) {
   const [showTooltip, setShowTooltip] = useState(false);
-  const range = calcCarMonthlyRange(carPrice);
+  const range = calcCarMonthlyRange(carPrice, usedPrice);
+  const basedOnUsed = !!usedPrice;
 
   return (
     <div>
@@ -138,7 +139,11 @@ function MonthlyCostBlock({ carPrice }: { carPrice: number }) {
       <p className="text-[18px] font-bold text-slate-900 tabular-nums">
         {formatSEK(range.low)}–{formatSEK(range.high)} <span className="text-[14px] font-semibold text-slate-500">kr/mån</span>
       </p>
-      <p className="text-[10px] text-slate-400 mt-0.5">20% kontantinsats · 6,49% ränta · 36 mån · 55–50% restvärde</p>
+      <p className="text-[10px] text-slate-400 mt-0.5">
+        {basedOnUsed
+          ? `Beräknat på snittpris ny/beg · 20% kontantinsats · 6,49% ränta · 36 mån`
+          : `20% kontantinsats · 6,49% ränta · 36 mån · 55–50% restvärde`}
+      </p>
     </div>
   );
 }
@@ -330,7 +335,8 @@ function ComparisonContent({ data, persona, onSelect }: { data: ComparisonCar; p
   const FuelIcon = getFuelIcon(data.specs.fuel_types);
   const whoSuits = getWhoItSuitsFor(data);
   const cta = getPersonaCTA(persona, data.brand_display, data.model_display);
-  const carPrice = data.pricing.new_from_sek ?? data.pricing.used_from_sek ?? null;
+  const carPrice = data.pricing.new_from_sek ?? null;
+  const usedPrice = data.pricing.used_from_sek ?? undefined;
 
   // Persona-driven section order
   const showSafetyFirst = persona === 'first_time_buyer';
@@ -361,21 +367,27 @@ function ComparisonContent({ data, persona, onSelect }: { data: ComparisonCar; p
   const pricingSection = (
     <section key="pricing">
       <SectionTitle>Pris</SectionTitle>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        {data.pricing.new_from_sek && (
-          <div className="p-3 sm:p-3.5 bg-slate-50 rounded-xl">
-            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Ny från</p>
-            <p className="text-[16px] sm:text-lg font-bold text-slate-900 mt-0.5">{formatPriceSEK(data.pricing.new_from_sek)}</p>
-            {data.pricing.new_to_sek && (
-              <p className="text-[11px] sm:text-[12px] text-slate-400">till {formatPriceSEK(data.pricing.new_to_sek)}</p>
-            )}
+      <div className="space-y-2.5">
+        {data.pricing.used_from_sek && (
+          <div className="p-3.5 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl">
+            <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-wide mb-0.5">Begagnad — rekommenderat val</p>
+            <p className="text-[18px] font-bold text-slate-900">{formatPriceSEK(data.pricing.used_from_sek)}</p>
+            <p className="text-[12px] text-slate-500 mt-1 leading-relaxed">
+              Priset avser välskött exemplar med normalt miltal (1–3 år, ca 1 000–2 500 mil).
+              Äldre årsmodeller, högt miltal eller utökad utrustning påverkar priset markant — kontrollera alltid servicelog och besiktning.
+            </p>
           </div>
         )}
-        {data.pricing.used_from_sek && (
-          <div className="p-3 sm:p-3.5 bg-slate-50 rounded-xl">
-            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Begagnad från</p>
-            <p className="text-[16px] sm:text-lg font-bold text-slate-900 mt-0.5">{formatPriceSEK(data.pricing.used_from_sek)}</p>
-            <p className="text-[11px] text-slate-400">Äldre årsmodeller, pris varierar</p>
+        {data.pricing.new_from_sek && (
+          <div className="p-3 bg-slate-50 rounded-xl flex items-start justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Ny från</p>
+              <p className="text-[15px] font-bold text-slate-700 mt-0.5">{formatPriceSEK(data.pricing.new_from_sek)}</p>
+              {data.pricing.new_to_sek && (
+                <p className="text-[11px] text-slate-400">till {formatPriceSEK(data.pricing.new_to_sek)}</p>
+              )}
+            </div>
+            <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-1 rounded-md whitespace-nowrap mt-0.5">Referenspris</span>
           </div>
         )}
       </div>
@@ -442,7 +454,7 @@ function ComparisonContent({ data, persona, onSelect }: { data: ComparisonCar; p
       <section className="p-4 bg-[#0e6efe]/5 rounded-xl border border-[#0e6efe]/10">
         <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-wide mb-3">Experternas bedömning</p>
         {carPrice ? (
-          <MonthlyCostBlock carPrice={carPrice} />
+          <MonthlyCostBlock carPrice={carPrice} usedPrice={usedPrice} />
         ) : (
           <div>
             <p className="text-[12px] text-slate-500">Uppskattad månadskostnad</p>

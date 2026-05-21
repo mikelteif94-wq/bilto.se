@@ -1018,7 +1018,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           const fuelLabel = compData?.specs.fuel_types
             ? compData.specs.fuel_types.map(f => fuelLabelMap[f] || f).join(' / ')
             : fuelType === 'electric' ? 'El' : fuelType === 'hybrid' ? 'Hybrid' : fuelType === 'diesel' ? 'Diesel' : 'Bensin';
-          const basePrice = compData?.pricing.used_from_sek || compData?.pricing.new_from_sek;
+          const basePrice = compData?.pricing.new_from_sek || compData?.pricing.used_from_sek;
           return {
             make: car.make, model: car.model,
             image_url: car.image_url, cleaned_image_url: car.cleaned_image_url,
@@ -1027,6 +1027,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             rating: compData?.ratings.overall ?? undefined,
             trunkLiters: compData?.specs.trunk_liters ?? undefined,
             carPrice: basePrice ?? undefined,
+            usedPrice: compData?.pricing.used_from_sek ?? undefined,
           };
         })
         .filter(car => car.matchScore >= 40)
@@ -1257,6 +1258,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                         rating={car.ratings.overall}
                         fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
                         carPrice={car.pricing.new_from_sek ?? undefined}
+                        usedPrice={car.pricing.used_from_sek ?? undefined}
                         onNegotiate={() => openContactForCar(car)}
                         onDetail={() => setDetailCar(car)}
                         onCompare={() => toggleSelect(car.id)}
@@ -1443,6 +1445,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                               expertComment={car.matchReasons.join(' · ') || undefined}
                               fuelLabel={car.fuelLabel}
                               carPrice={car.carPrice}
+                              usedPrice={car.usedPrice}
                               isSelected={isSelected}
                               onSelect={() => toggleQuizCarSelection(key)}
                               onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
@@ -1657,6 +1660,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       topBadge={i < 3}
                       expertComment={getExpertComment(car)}
                       carPrice={car.pricing.new_from_sek ?? undefined}
+                      usedPrice={car.pricing.used_from_sek ?? undefined}
                       isCompared={selectedIds.has(car.id)}
                       onNegotiate={() => openContactForCar(car)}
                       onDetail={() => setDetailCar(car)}
@@ -1674,6 +1678,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     expertComment={getExpertComment(car)}
                     fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
                     carPrice={car.pricing.new_from_sek ?? undefined}
+                    usedPrice={car.pricing.used_from_sek ?? undefined}
                     onNegotiate={() => openContactForCar(car)}
                     onDetail={() => setDetailCar(car)}
                     onCompare={() => toggleSelect(car.id)}
