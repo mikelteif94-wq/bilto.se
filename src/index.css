@@ -45,6 +45,27 @@
   }
 }
 
+.financing-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0e6efe;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(14, 110, 254, 0.4);
+  cursor: pointer;
+}
+.financing-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0e6efe;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(14, 110, 254, 0.4);
+  cursor: pointer;
+}
+
 @layer components {
   .btn-primary {
     @apply px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition;

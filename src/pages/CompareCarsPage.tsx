@@ -1646,11 +1646,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={isMobile ? undefined : { opacity: 0, y: -10 }}
               transition={{ duration: isMobile ? 0 : 0.2 }}
-              className={`grid gap-3 sm:gap-4 ${
-                activeCategory === 'el'
-                  ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-3'
-                  : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'
-              }`}
+              className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
             >
               {visibleCars.map((car, i) => {
                 const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
