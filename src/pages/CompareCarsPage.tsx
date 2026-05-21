@@ -1696,6 +1696,18 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                 const fuelLabel = car.fuel_types?.length
                   ? car.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')
                   : undefined;
+                if (activeCategory === 'el') {
+                  return (
+                    <ElCarCard
+                      key={key}
+                      name={`${car.make} ${car.model}`}
+                      imageUrl={imgUrl}
+                      rating={car.rating_overall ?? undefined}
+                      expertComment={car.expert_comment ?? undefined}
+                      onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
+                    />
+                  );
+                }
                 return (
                   <CompactCarCard
                     key={key}
