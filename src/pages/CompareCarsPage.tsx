@@ -22,6 +22,7 @@ import { EquityFlow } from '../components/equity/EquityFlow';
 import { SiteFooter } from '../components/SiteFooter';
 import RegInput from '../components/RegInput';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
+import { CarFitQuiz } from '../components/CarFitQuiz';
 import QuizFlow from '../components/quiz/QuizFlow';
 import { QuizComplete } from '../components/quiz/QuizComplete';
 import type { QuizAnswers } from '../components/quiz/QuizTypes';
@@ -726,6 +727,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
     return () => window.removeEventListener('resize', check);
   }, []);
   const [detailCar, setDetailCar] = useState<ComparisonCar | null>(null);
+  const [fitQuizCar, setFitQuizCar] = useState<ComparisonCar | null>(null);
   const [activeCategory, setActiveCategory] = useState<CategoryKey>('alla');
   const [showAllCars, setShowAllCars] = useState(false);
 
@@ -1262,6 +1264,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                         onNegotiate={() => openContactForCar(car)}
                         onDetail={() => setDetailCar(car)}
                         onCompare={() => toggleSelect(car.id)}
+                        onFitQuiz={() => setFitQuizCar(car)}
                         isCompared={selectedIds.has(car.id)}
                         index={i}
                         disableMotion={isMobile}
@@ -1665,6 +1668,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       onNegotiate={() => openContactForCar(car)}
                       onDetail={() => setDetailCar(car)}
                       onCompare={() => toggleSelect(car.id)}
+                      onFitQuiz={() => setFitQuizCar(car)}
                     />
                   );
                 }
@@ -1682,6 +1686,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     onNegotiate={() => openContactForCar(car)}
                     onDetail={() => setDetailCar(car)}
                     onCompare={() => toggleSelect(car.id)}
+                    onFitQuiz={() => setFitQuizCar(car)}
                     isCompared={selectedIds.has(car.id)}
                     index={i}
                     disableMotion={isMobile}
@@ -2416,6 +2421,15 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           onSelect={() => { const car = detailCar; setDetailCar(null); openContactForCar(car); }}
         />
       )}
+
+      {/* Car fit quiz */}
+      <CarFitQuiz
+        car={fitQuizCar!}
+        open={!!fitQuizCar}
+        onClose={() => setFitQuizCar(null)}
+        dark={activeCategory === 'el'}
+        onNegotiate={() => { if (fitQuizCar) { openContactForCar(fitQuizCar); setFitQuizCar(null); } }}
+      />
     </div>
   );
 }

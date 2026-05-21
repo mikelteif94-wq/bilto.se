@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Star, Car, Check, ChevronRight, SlidersHorizontal, HelpCircle, X } from 'lucide-react';
+import { Star, Car, Check, ChevronRight, SlidersHorizontal, HelpCircle, X, Sparkles } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
 
 interface CompactCarCardProps {
@@ -19,6 +19,7 @@ interface CompactCarCardProps {
   onCompare?: () => void;
   onNegotiate: () => void;
   onDetail?: () => void;
+  onFitQuiz?: () => void;
   index?: number;
   disableMotion?: boolean;
 }
@@ -73,7 +74,7 @@ export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
   fuelLabel, carPrice, usedPrice, monthlySaving, equityFreed,
   isSelected, isCompared,
-  onSelect, onCompare, onNegotiate, onDetail,
+  onSelect, onCompare, onNegotiate, onDetail, onFitQuiz,
 }: CompactCarCardProps) {
   const [showInfo, setShowInfo] = useState(false);
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
@@ -169,24 +170,36 @@ export default function CompactCarCard({
 
       {/* Action buttons */}
       {!onSelect && (
-        <div className="px-3 pb-3 flex gap-2 mt-0.5">
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-            className="flex-1 h-8 sm:h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1"
-          >
-            Få hjälp att köpa<ChevronRight className="w-3 h-3 opacity-80" />
-          </button>
-          {onCompare && (
+        <div className="px-3 pb-3 flex flex-col gap-1.5 mt-0.5">
+          <div className="flex gap-2">
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); onCompare(); }}
-              title={isCompared ? 'Ta bort från jämförelse' : 'Jämför'}
-              className={`hidden sm:flex h-9 w-9 rounded-lg border items-center justify-center shrink-0 transition-all duration-150 active:scale-[0.98] ${
-                isCompared ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white border-slate-200 hover:border-[#0e6efe] text-slate-500 hover:text-[#0e6efe]'
-              }`}
+              onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
+              className="flex-1 h-8 sm:h-9 rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1"
             >
-              {isCompared ? <Check className="w-4 h-4" strokeWidth={2.5} /> : <SlidersHorizontal className="w-4 h-4" />}
+              Få hjälp att köpa<ChevronRight className="w-3 h-3 opacity-80" />
+            </button>
+            {onCompare && (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onCompare(); }}
+                title={isCompared ? 'Ta bort från jämförelse' : 'Jämför'}
+                className={`hidden sm:flex h-9 w-9 rounded-lg border items-center justify-center shrink-0 transition-all duration-150 active:scale-[0.98] ${
+                  isCompared ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white border-slate-200 hover:border-[#0e6efe] text-slate-500 hover:text-[#0e6efe]'
+                }`}
+              >
+                {isCompared ? <Check className="w-4 h-4" strokeWidth={2.5} /> : <SlidersHorizontal className="w-4 h-4" />}
+              </button>
+            )}
+          </div>
+          {onFitQuiz && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
+              className="w-full h-7 rounded-lg border border-[#0e6efe]/30 bg-[#0e6efe]/5 hover:bg-[#0e6efe]/10 hover:border-[#0e6efe]/50 text-[#0e6efe] text-[10px] font-semibold transition-all duration-150 flex items-center justify-center gap-1 active:scale-[0.98]"
+            >
+              <Sparkles className="w-2.5 h-2.5" />
+              Är bilen rätt för mig?
             </button>
           )}
         </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Zap, Check, ChevronRight, SlidersHorizontal, Car, HelpCircle, X } from 'lucide-react';
+import { Zap, Check, ChevronRight, SlidersHorizontal, Car, HelpCircle, X, Sparkles } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
 
 interface ElCarCardProps {
@@ -16,6 +16,7 @@ interface ElCarCardProps {
   onNegotiate: () => void;
   onDetail?: () => void;
   onCompare?: () => void;
+  onFitQuiz?: () => void;
 }
 
 function formatSEK(n: number) {
@@ -70,7 +71,7 @@ function InfoTooltip({ onClose }: { onClose: () => void }) {
 export default function ElCarCard({
   name, imageUrl, rating, expertComment, rangeKm,
   carPrice, usedPrice, isCompared, topBadge,
-  onNegotiate, onDetail, onCompare,
+  onNegotiate, onDetail, onCompare, onFitQuiz,
 }: ElCarCardProps) {
   const [showInfo, setShowInfo] = useState(false);
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
@@ -165,24 +166,36 @@ export default function ElCarCard({
       </div>
 
       {/* Action row */}
-      <div className="px-3.5 pb-3.5 pt-1 flex gap-2">
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-          className="flex-1 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1 shadow-lg shadow-[#0e6efe]/30"
-        >
-          Få hjälp att köpa<ChevronRight className="w-3 h-3 opacity-80" />
-        </button>
-        {onCompare && (
+      <div className="px-3.5 pb-3.5 pt-1 flex flex-col gap-1.5">
+        <div className="flex gap-2">
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); onCompare(); }}
-            title={isCompared ? 'Ta bort från jämförelse' : 'Jämför'}
-            className={`hidden sm:flex h-9 w-9 rounded-xl border items-center justify-center shrink-0 transition-all duration-150 active:scale-[0.98] ${
-              isCompared ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white/5 border-white/10 text-slate-400 hover:border-[#38bdf8] hover:text-[#38bdf8]'
-            }`}
+            onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
+            className="flex-1 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1 shadow-lg shadow-[#0e6efe]/30"
           >
-            {isCompared ? <Check className="w-4 h-4" strokeWidth={2.5} /> : <SlidersHorizontal className="w-4 h-4" />}
+            Få hjälp att köpa<ChevronRight className="w-3 h-3 opacity-80" />
+          </button>
+          {onCompare && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onCompare(); }}
+              title={isCompared ? 'Ta bort från jämförelse' : 'Jämför'}
+              className={`hidden sm:flex h-9 w-9 rounded-xl border items-center justify-center shrink-0 transition-all duration-150 active:scale-[0.98] ${
+                isCompared ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white/5 border-white/10 text-slate-400 hover:border-[#38bdf8] hover:text-[#38bdf8]'
+              }`}
+            >
+              {isCompared ? <Check className="w-4 h-4" strokeWidth={2.5} /> : <SlidersHorizontal className="w-4 h-4" />}
+            </button>
+          )}
+        </div>
+        {onFitQuiz && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
+            className="w-full h-7 rounded-xl border border-[#38bdf8]/25 bg-[#38bdf8]/8 hover:bg-[#38bdf8]/15 hover:border-[#38bdf8]/40 text-[#7dd3fc] text-[10px] font-semibold transition-all duration-150 flex items-center justify-center gap-1 active:scale-[0.98]"
+          >
+            <Sparkles className="w-2.5 h-2.5" />
+            Är bilen rätt för mig?
           </button>
         )}
       </div>

@@ -30,6 +30,7 @@ import CompareDrawer from '../components/CompareDrawer';
 import BuyDrawer from '../components/BuyDrawer';
 import { EquityFlow } from '../components/equity/EquityFlow';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
+import { CarFitQuiz } from '../components/CarFitQuiz';
 import { getAllComparisonCars, type ComparisonCar } from '../lib/comparison';
 import { useCarImages } from '../hooks/useCarImages';
 import RegInput from '../components/RegInput';
@@ -119,6 +120,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   const carSearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [carsModalOpen, setCarsModalOpen] = useState(false);
   const [detailCar, setDetailCar] = useState<ComparisonCar | null>(null);
+  const [fitQuizCar, setFitQuizCar] = useState<ComparisonCar | null>(null);
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
   const [buyDrawerEquity, setBuyDrawerEquity] = useState<string>('');
 
@@ -825,6 +827,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         onNegotiate={() => openDrawer(`${car.brand_display} ${car.model_display}`)}
                         onDetail={() => setDetailCar(car)}
                         onCompare={() => toggleCompare(car.id)}
+                        onFitQuiz={() => setFitQuizCar(car)}
                         isCompared={selectedCompareIds.has(car.id)}
                         index={i}
                       />
@@ -1333,6 +1336,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           }}
         />
       )}
+
+      <CarFitQuiz
+        car={fitQuizCar!}
+        open={!!fitQuizCar}
+        onClose={() => setFitQuizCar(null)}
+        onNegotiate={() => { if (fitQuizCar) { openDrawer(`${fitQuizCar.brand_display} ${fitQuizCar.model_display}`); setFitQuizCar(null); } }}
+      />
     </div>
   );
 }
