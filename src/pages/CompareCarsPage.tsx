@@ -1252,24 +1252,45 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
                   {/* Cards grid */}
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                    {budgetFilteredCars.slice(0, budgetShowCount).map((car, i) => (
-                      <CompactCarCard
-                        key={car.id}
-                        name={`${car.brand_display} ${car.model_display}`}
-                        imageUrl={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
-                        rating={car.ratings.overall}
-                        fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                        carPrice={car.pricing.new_from_sek ?? undefined}
-                        usedPrice={car.pricing.used_from_sek ?? undefined}
-                        onNegotiate={() => openContactForCar(car)}
-                        onDetail={() => setDetailCar(car)}
-                        onCompare={() => toggleSelect(car.id)}
-                        onFitQuiz={() => setFitQuizCar(car)}
-                        isCompared={selectedIds.has(car.id)}
-                        index={i}
-                        disableMotion={isMobile}
-                      />
-                    ))}
+                    {budgetFilteredCars.slice(0, budgetShowCount).map((car, i) => {
+                      const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
+                      if (car.specs.fuel_types.includes('el')) {
+                        return (
+                          <ElCarCard
+                            key={car.id}
+                            name={`${car.brand_display} ${car.model_display}`}
+                            imageUrl={imgUrl}
+                            rating={car.ratings.overall}
+                            expertComment={getExpertComment(car)}
+                            carPrice={car.pricing.new_from_sek ?? undefined}
+                            usedPrice={car.pricing.used_from_sek ?? undefined}
+                            isCompared={selectedIds.has(car.id)}
+                            onNegotiate={() => openContactForCar(car)}
+                            onDetail={() => setDetailCar(car)}
+                            onCompare={() => toggleSelect(car.id)}
+                            onFitQuiz={() => setFitQuizCar(car)}
+                          />
+                        );
+                      }
+                      return (
+                        <CompactCarCard
+                          key={car.id}
+                          name={`${car.brand_display} ${car.model_display}`}
+                          imageUrl={imgUrl}
+                          rating={car.ratings.overall}
+                          fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                          carPrice={car.pricing.new_from_sek ?? undefined}
+                          usedPrice={car.pricing.used_from_sek ?? undefined}
+                          onNegotiate={() => openContactForCar(car)}
+                          onDetail={() => setDetailCar(car)}
+                          onCompare={() => toggleSelect(car.id)}
+                          onFitQuiz={() => setFitQuizCar(car)}
+                          isCompared={selectedIds.has(car.id)}
+                          index={i}
+                          disableMotion={isMobile}
+                        />
+                      );
+                    })}
                   </div>
 
                   {/* Visa fler */}
@@ -1438,28 +1459,40 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                         const key = `${car.make}-${car.model}`;
                         const isSelected = selectedQuizCars.has(key);
                         const atMax = selectedQuizCars.size >= 3 && !isSelected;
+                        const compData = findComparisonCarByMakeModel(car.make, car.model);
+                        const isElbil = compData?.specs.fuel_types.includes('el') ?? false;
                         return (
                           <div key={key} className={atMax ? 'opacity-50 pointer-events-none' : ''}>
-                            <CompactCarCard
-                              name={`${car.make} ${car.model}`}
-                              imageUrl={car.cleaned_image_url || car.image_url}
-                              rating={car.rating}
-                              topBadge={i === 0}
-                              expertComment={car.matchReasons.join(' · ') || undefined}
-                              fuelLabel={car.fuelLabel}
-                              carPrice={car.carPrice}
-                              usedPrice={car.usedPrice}
-                              isSelected={isSelected}
-                              onSelect={() => toggleQuizCarSelection(key)}
-                              onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
-
-                              onDetail={() => {
-                                const compData = findComparisonCarByMakeModel(car.make, car.model);
-                                if (compData) setDetailCar(compData);
-                              }}
-                              index={i}
-                              disableMotion={isMobile}
-                            />
+                            {isElbil ? (
+                              <ElCarCard
+                                name={`${car.make} ${car.model}`}
+                                imageUrl={car.cleaned_image_url || car.image_url}
+                                rating={car.rating}
+                                topBadge={i === 0}
+                                expertComment={car.matchReasons.join(' · ') || undefined}
+                                carPrice={car.carPrice}
+                                usedPrice={car.usedPrice}
+                                onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
+                                onDetail={() => { if (compData) setDetailCar(compData); }}
+                              />
+                            ) : (
+                              <CompactCarCard
+                                name={`${car.make} ${car.model}`}
+                                imageUrl={car.cleaned_image_url || car.image_url}
+                                rating={car.rating}
+                                topBadge={i === 0}
+                                expertComment={car.matchReasons.join(' · ') || undefined}
+                                fuelLabel={car.fuelLabel}
+                                carPrice={car.carPrice}
+                                usedPrice={car.usedPrice}
+                                isSelected={isSelected}
+                                onSelect={() => toggleQuizCarSelection(key)}
+                                onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
+                                onDetail={() => { if (compData) setDetailCar(compData); }}
+                                index={i}
+                                disableMotion={isMobile}
+                              />
+                            )}
                           </div>
                         );
                       })}
@@ -2064,22 +2097,42 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                         </div>
                         {msg.cars && msg.cars.length > 0 && (
                           <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            {msg.cars.map((car, ci) => (
-                              <CompactCarCard
-                                key={car.id}
-                                name={`${car.brand_display} ${car.model_display}`}
-                                imageUrl={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
-                                rating={car.ratings.overall}
-                                expertComment={getExpertComment(car)}
-                                fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                                onNegotiate={() => openContactForCar(car)}
-                                onDetail={() => setDetailCar(car)}
-                                onCompare={() => toggleSelect(car.id)}
-                                isCompared={selectedIds.has(car.id)}
-                                index={ci}
-                                disableMotion={isMobile}
-                              />
-                            ))}
+                            {msg.cars.map((car, ci) => {
+                              const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
+                              if (car.specs.fuel_types.includes('el')) {
+                                return (
+                                  <ElCarCard
+                                    key={car.id}
+                                    name={`${car.brand_display} ${car.model_display}`}
+                                    imageUrl={imgUrl}
+                                    rating={car.ratings.overall}
+                                    expertComment={getExpertComment(car)}
+                                    carPrice={car.pricing.new_from_sek ?? undefined}
+                                    usedPrice={car.pricing.used_from_sek ?? undefined}
+                                    isCompared={selectedIds.has(car.id)}
+                                    onNegotiate={() => openContactForCar(car)}
+                                    onDetail={() => setDetailCar(car)}
+                                    onCompare={() => toggleSelect(car.id)}
+                                  />
+                                );
+                              }
+                              return (
+                                <CompactCarCard
+                                  key={car.id}
+                                  name={`${car.brand_display} ${car.model_display}`}
+                                  imageUrl={imgUrl}
+                                  rating={car.ratings.overall}
+                                  expertComment={getExpertComment(car)}
+                                  fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                                  onNegotiate={() => openContactForCar(car)}
+                                  onDetail={() => setDetailCar(car)}
+                                  onCompare={() => toggleSelect(car.id)}
+                                  isCompared={selectedIds.has(car.id)}
+                                  index={ci}
+                                  disableMotion={isMobile}
+                                />
+                              );
+                            })}
                           </div>
                         )}
                         {msg.role === 'assistant' && msg.reformulations && msg.reformulations.length > 0 && (
