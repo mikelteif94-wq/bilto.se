@@ -1,4 +1,4 @@
-import { Star, Car, Check, ChevronRight, GitCompareArrows } from 'lucide-react';
+import { Star, Car, Check, ChevronRight, SlidersHorizontal } from 'lucide-react';
 
 interface CompactCarCardProps {
   name: string;
@@ -185,7 +185,7 @@ export default function CompactCarCard({
             >
               {isCompared
                 ? <Check className="w-4 h-4" strokeWidth={2.5} />
-                : <GitCompareArrows className="w-4 h-4" />
+                : <SlidersHorizontal className="w-4 h-4" />
               }
             </button>
           )}

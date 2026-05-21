@@ -857,8 +857,9 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
   const visibleCars = useMemo(() => {
     if (carSearchQuery.trim()) return allCategoryCars;
+    if (activeCategory === 'el') return allCategoryCars;
     return showAllCars ? allCategoryCars : allCategoryCars.slice(0, expertShowCount);
-  }, [allCategoryCars, showAllCars, carSearchQuery, expertShowCount]);
+  }, [allCategoryCars, showAllCars, carSearchQuery, expertShowCount, activeCategory]);
 
   // Selection helpers
   const toggleSelect = useCallback((id: string) => {
@@ -1182,29 +1183,23 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                   }}
                   className={`flex flex-col rounded-2xl overflow-hidden group transition-all duration-300 shrink-0 snap-start w-[140px] sm:w-auto ${
                     isActive
-                      ? 'ring-2 ring-[#0e6efe] shadow-[0_4px_20px_rgba(14,110,254,0.2)] bg-[#f0f7ff]'
+                      ? 'shadow-[0_8px_28px_rgba(14,110,254,0.22)] bg-white'
                       : 'ring-1 ring-slate-100 hover:ring-slate-200 hover:shadow-lg bg-white'
                   }`}
                 >
+                  {/* Top accent bar */}
+                  <div className={`h-1 w-full transition-all duration-300 ${isActive ? 'bg-[#0e6efe]' : 'bg-transparent'}`} />
                   <div className="w-full aspect-[4/3] flex items-end justify-center overflow-hidden relative">
-                    {isActive && (
-                      <div className="absolute inset-0 bg-[#0e6efe]/5 pointer-events-none" />
-                    )}
                     {img ? (
-                      <img src={img} alt="" loading="lazy" className="w-full h-auto object-contain group-hover:scale-[1.05] transition-transform duration-500" />
+                      <img src={img} alt="" loading="lazy" className={`w-full h-auto object-contain transition-transform duration-500 ${isActive ? 'scale-[1.06]' : 'group-hover:scale-[1.05]'}`} />
                     ) : (
                       <Car className="w-12 h-12 text-slate-300 mb-4" />
                     )}
                   </div>
-                  <div className="px-2 pt-2.5 pb-3">
+                  <div className="px-2 pt-2 pb-3">
                     <p className={`text-[11px] sm:text-[12px] font-extrabold text-center leading-tight transition-colors ${isActive ? 'text-[#0e6efe]' : 'text-slate-700 group-hover:text-[#0e6efe]'}`}>
                       {bracket.label}
                     </p>
-                    {isActive && (
-                      <div className="flex justify-center mt-1.5">
-                        <span className="inline-block w-4 h-0.5 rounded-full bg-[#0e6efe]" />
-                      </div>
-                    )}
                   </div>
                 </motion.button>
               );
@@ -1760,9 +1755,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                 }`}
               >
                 Visa fler bilar
-                <span className="text-[12px] text-slate-400 font-normal">
-                  ({allCategoryCars.length - expertShowCount} kvar)
-                </span>
                 <ChevronDown className="w-4 h-4" />
               </button>
             </div>

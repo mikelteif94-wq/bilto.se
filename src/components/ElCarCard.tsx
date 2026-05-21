@@ -1,4 +1,4 @@
-import { Zap, Check, ChevronRight, GitCompareArrows, Car } from 'lucide-react';
+import { Zap, Check, ChevronRight, SlidersHorizontal, Car } from 'lucide-react';
 
 interface ElCarCardProps {
   name: string;
@@ -190,7 +190,7 @@ export default function ElCarCard({
           >
             {isCompared
               ? <Check className="w-4 h-4" strokeWidth={2.5} />
-              : <GitCompareArrows className="w-4 h-4" />
+              : <SlidersHorizontal className="w-4 h-4" />
             }
           </button>
         )}
