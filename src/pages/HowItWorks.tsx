@@ -20,6 +20,7 @@ import {
   Car as CarIcon,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { calcCarMonthly } from '../lib/utils';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import SeoCarsSection from '../components/SeoCarsSection';
@@ -796,7 +797,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 .filter(car => {
                   if (!car.pricing.new_from_sek) return false;
                   if (!getCarImage(car.brand_display, car.model_display)) return false;
-                  const monthly = Math.round(car.pricing.new_from_sek / 60);
+                  const monthly = calcCarMonthly(car.pricing.new_from_sek, 0.55);
                   return activeBudgetPill === 0 ? true : monthly <= activeBudgetPill;
                 })
                 .sort((a, b) => (a.pricing.new_from_sek || 0) - (b.pricing.new_from_sek || 0))
@@ -819,6 +820,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         topBadge={i === 0 && activeBudgetPill === null}
                         expertComment={car.pros[0]}
                         fuelLabel={fuelLabelStr}
+                        carPrice={car.pricing.new_from_sek ?? undefined}
                         onNegotiate={() => openDrawer(`${car.brand_display} ${car.model_display}`)}
                         onDetail={() => setDetailCar(car)}
                         onCompare={() => toggleCompare(car.id)}

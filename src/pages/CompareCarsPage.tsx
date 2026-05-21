@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { calcCarMonthly } from '../lib/utils';
 import {
   Search, ArrowRight, Car, Menu, User, Check,
   Sparkles, Zap, Truck, Leaf, CarFront,
@@ -422,7 +423,7 @@ interface QuizRecommendation {
   rating?: number;
   fuelLabel?: string;
   trunkLiters?: number;
-  estimatedMonthly?: number;
+  carPrice?: number;
 }
 
 function detectBodyType(model: string): string | null {
@@ -887,7 +888,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       .filter(car => {
         if (!car.pricing.new_from_sek) return false;
         if (!resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)) return false;
-        const monthly = Math.round(car.pricing.new_from_sek / 60);
+        const monthly = calcCarMonthly(car.pricing.new_from_sek, 0.55);
         return activeBudget === 0 ? true : monthly <= activeBudget;
       })
       .sort((a, b) => (a.pricing.new_from_sek || 0) - (b.pricing.new_from_sek || 0));
@@ -1018,7 +1019,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             ? compData.specs.fuel_types.map(f => fuelLabelMap[f] || f).join(' / ')
             : fuelType === 'electric' ? 'El' : fuelType === 'hybrid' ? 'Hybrid' : fuelType === 'diesel' ? 'Diesel' : 'Bensin';
           const basePrice = compData?.pricing.used_from_sek || compData?.pricing.new_from_sek;
-          const estimatedMonthly = basePrice ? Math.round((basePrice * 0.009) / 100) * 100 : undefined;
           return {
             make: car.make, model: car.model,
             image_url: car.image_url, cleaned_image_url: car.cleaned_image_url,
@@ -1026,7 +1026,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             bodyType, fuelType, fuelLabel,
             rating: compData?.ratings.overall ?? undefined,
             trunkLiters: compData?.specs.trunk_liters ?? undefined,
-            estimatedMonthly,
+            carPrice: basePrice ?? undefined,
           };
         })
         .filter(car => car.matchScore >= 40)
@@ -1249,25 +1249,22 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
                   {/* Cards grid */}
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                    {budgetFilteredCars.slice(0, budgetShowCount).map((car, i) => {
-                      const monthly = Math.round(car.pricing.new_from_sek! / 60);
-                      return (
-                        <CompactCarCard
-                          key={car.id}
-                          name={`${car.brand_display} ${car.model_display}`}
-                          imageUrl={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
-                          rating={car.ratings.overall}
-                          fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                          estimatedMonthly={monthly}
-                          onNegotiate={() => openContactForCar(car)}
-                          onDetail={() => setDetailCar(car)}
-                          onCompare={() => toggleSelect(car.id)}
-                          isCompared={selectedIds.has(car.id)}
-                          index={i}
-                          disableMotion={isMobile}
-                        />
-                      );
-                    })}
+                    {budgetFilteredCars.slice(0, budgetShowCount).map((car, i) => (
+                      <CompactCarCard
+                        key={car.id}
+                        name={`${car.brand_display} ${car.model_display}`}
+                        imageUrl={resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)}
+                        rating={car.ratings.overall}
+                        fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                        carPrice={car.pricing.new_from_sek ?? undefined}
+                        onNegotiate={() => openContactForCar(car)}
+                        onDetail={() => setDetailCar(car)}
+                        onCompare={() => toggleSelect(car.id)}
+                        isCompared={selectedIds.has(car.id)}
+                        index={i}
+                        disableMotion={isMobile}
+                      />
+                    ))}
                   </div>
 
                   {/* Visa fler */}
@@ -1445,11 +1442,11 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                               topBadge={i === 0}
                               expertComment={car.matchReasons.join(' · ') || undefined}
                               fuelLabel={car.fuelLabel}
-                              estimatedMonthly={car.estimatedMonthly}
+                              carPrice={car.carPrice}
                               isSelected={isSelected}
                               onSelect={() => toggleQuizCarSelection(key)}
                               onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
-                              onSearch={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
+
                               onDetail={() => {
                                 const compData = findComparisonCarByMakeModel(car.make, car.model);
                                 if (compData) setDetailCar(compData);
@@ -1651,9 +1648,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               {visibleCars.map((car, i) => {
                 const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
                 if (activeCategory === 'el') {
-                  const monthly = car.pricing.new_from_sek
-                    ? Math.round(car.pricing.new_from_sek / 60)
-                    : undefined;
                   return (
                     <ElCarCard
                       key={car.id}
@@ -1662,7 +1656,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       rating={car.ratings.overall}
                       topBadge={i < 3}
                       expertComment={getExpertComment(car)}
-                      estimatedMonthly={monthly}
+                      carPrice={car.pricing.new_from_sek ?? undefined}
                       isCompared={selectedIds.has(car.id)}
                       onNegotiate={() => openContactForCar(car)}
                       onDetail={() => setDetailCar(car)}
@@ -1679,6 +1673,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     topBadge={i < 3 && activeCategory === 'popular'}
                     expertComment={getExpertComment(car)}
                     fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                    carPrice={car.pricing.new_from_sek ?? undefined}
                     onNegotiate={() => openContactForCar(car)}
                     onDetail={() => setDetailCar(car)}
                     onCompare={() => toggleSelect(car.id)}

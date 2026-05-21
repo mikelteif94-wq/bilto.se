@@ -1,4 +1,6 @@
-import { Star, Car, Check, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { Star, Car, Check, ChevronRight, SlidersHorizontal, HelpCircle, X } from 'lucide-react';
+import { calcCarMonthly } from '../lib/utils';
 
 interface CompactCarCardProps {
   name: string;
@@ -7,7 +9,7 @@ interface CompactCarCardProps {
   topBadge?: boolean;
   expertComment?: string;
   fuelLabel?: string;
-  estimatedMonthly?: number;
+  carPrice?: number;
   monthlySaving?: number;
   equityFreed?: number;
   isSelected?: boolean;
@@ -48,12 +50,44 @@ function formatSEK(n: number) {
   return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
 }
 
+function InfoTooltip({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      className="absolute bottom-full right-0 mb-2 w-60 z-30 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-3"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute top-2 right-2 text-slate-500 hover:text-white transition-colors"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
+      <p className="text-[11px] font-bold text-white mb-1.5">Hur räknar vi?</p>
+      <p className="text-[10px] text-slate-400 leading-relaxed">
+        Månads&shy;kostnaden är ungefärlig och baseras på:<br />
+        <span className="text-slate-200">20% kontantinsats · 1% uppläggning · 6,49% ränta · 36 månader</span>
+      </p>
+      <p className="text-[10px] text-slate-400 leading-relaxed mt-1.5">
+        <span className="text-slate-200">Restvärde</span> är bilens beräknade värde vid leasingperiodens slut. Välj 50% eller 55% – högre restvärde ger lägre månadskostnad.
+      </p>
+      <div className="mt-2 pt-2 border-t border-slate-700">
+        <p className="text-[9px] text-slate-500">Uppskattning. Slutlig ränta och villkor sätts av finansiär.</p>
+      </div>
+    </div>
+  );
+}
+
 export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
-  fuelLabel, estimatedMonthly, monthlySaving, equityFreed,
+  fuelLabel, carPrice, monthlySaving, equityFreed,
   isSelected, isCompared,
   onSelect, onCompare, onNegotiate, onDetail,
 }: CompactCarCardProps) {
+  const [residual, setResidual] = useState<0.50 | 0.55>(0.55);
+  const [showInfo, setShowInfo] = useState(false);
+
+  const monthly = carPrice ? calcCarMonthly(carPrice, residual) : null;
 
   const handleClick = () => {
     if (onSelect) onSelect();
@@ -72,7 +106,7 @@ export default function CompactCarCard({
       style={{ touchAction: 'pan-y' }}
       onClick={handleClick}
     >
-      {/* Image — 4:3 on mobile, 16:9 on sm+ for better density */}
+      {/* Image */}
       <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-gradient-to-b from-slate-50 to-slate-100 overflow-hidden">
         {imageUrl ? (
           <img
@@ -126,15 +160,48 @@ export default function CompactCarCard({
 
         {rating != null && <RatingBar rating={rating} />}
 
-        {/* Monthly cost — prominently shown when provided */}
-        {estimatedMonthly ? (
-          <div className="mt-1.5 flex items-baseline gap-1">
-            <span className="text-[13px] sm:text-[14px] font-extrabold text-[#0e6efe] tabular-nums leading-none">
-              {estimatedMonthly.toLocaleString('sv-SE')}
-            </span>
-            <span className="text-[10px] font-semibold text-[#0e6efe]/70">kr/mån</span>
+        {/* Monthly cost with residual toggle */}
+        {monthly != null && (
+          <div
+            className="mt-1.5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-1">
+              <div className="flex items-baseline gap-1">
+                <span className="text-[13px] sm:text-[14px] font-extrabold text-[#0e6efe] tabular-nums leading-none">
+                  {formatSEK(monthly)}
+                </span>
+                <span className="text-[10px] font-semibold text-[#0e6efe]/70">kr/mån</span>
+              </div>
+              <div className="flex items-center gap-1">
+                {([0.50, 0.55] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => setResidual(v)}
+                    className={`h-4.5 px-1.5 py-0.5 rounded text-[8px] font-bold border transition-all duration-150 ${
+                      residual === v
+                        ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
+                        : 'bg-white border-slate-200 text-slate-400 hover:border-[#0e6efe]/40 hover:text-[#0e6efe]'
+                    }`}
+                  >
+                    {v === 0.50 ? '50%' : '55%'}
+                  </button>
+                ))}
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setShowInfo(v => !v)}
+                    className="text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    <HelpCircle className="w-3 h-3" />
+                  </button>
+                  {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
+                </div>
+              </div>
+            </div>
           </div>
-        ) : null}
+        )}
 
         {monthlySaving != null && monthlySaving > 0 && (
           <p className="mt-0.5 text-[11px] font-semibold text-emerald-600">
@@ -148,7 +215,6 @@ export default function CompactCarCard({
           </p>
         )}
 
-        {/* Expert comment — hidden on mobile to save space */}
         {expertComment && (
           <p className="hidden sm:block mt-1 text-[11px] text-slate-400 leading-snug line-clamp-2 min-h-[28px]">
             {expertComment}
@@ -171,7 +237,6 @@ export default function CompactCarCard({
             Få hjälp att köpa
             <ChevronRight className="w-3 h-3 opacity-80" />
           </button>
-          {/* Compare button — hidden on mobile */}
           {onCompare && (
             <button
               type="button"

@@ -1,4 +1,6 @@
-import { Zap, Check, ChevronRight, SlidersHorizontal, Car } from 'lucide-react';
+import { useState } from 'react';
+import { Zap, Check, ChevronRight, SlidersHorizontal, Car, HelpCircle, X } from 'lucide-react';
+import { calcCarMonthly } from '../lib/utils';
 
 interface ElCarCardProps {
   name: string;
@@ -6,7 +8,7 @@ interface ElCarCardProps {
   rating?: number;
   expertComment?: string;
   rangeKm?: number;
-  estimatedMonthly?: number;
+  carPrice?: number;
   fuelLabel?: string;
   isCompared?: boolean;
   topBadge?: boolean;
@@ -48,19 +50,47 @@ function RatingRing({ rating }: { rating: number }) {
   );
 }
 
+function InfoTooltip({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      className="absolute bottom-full right-0 mb-2 w-64 z-30 rounded-xl bg-[#0c1a2e] border border-white/15 shadow-2xl p-3.5"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute top-2 right-2 text-slate-500 hover:text-white transition-colors"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
+      <p className="text-[11px] font-bold text-white mb-1.5">Hur räknar vi?</p>
+      <p className="text-[10px] text-slate-400 leading-relaxed">
+        Månads&shy;kostnaden är ungefärlig och baseras på:<br />
+        <span className="text-slate-300">20% kontantinsats · 1% uppläggning · 6,49% ränta · 36 månader</span>
+      </p>
+      <p className="text-[10px] text-slate-400 leading-relaxed mt-1.5">
+        <span className="text-slate-300">Restvärde</span> är bilens beräknade värde vid leasingperiodens slut. Välj 50% eller 55% – högre restvärde ger lägre månadskostnad.
+      </p>
+      <div className="mt-2 pt-2 border-t border-white/10">
+        <p className="text-[9px] text-slate-500">Uppskattning. Slutlig ränta och villkor sätts av finansiär.</p>
+      </div>
+    </div>
+  );
+}
+
 export default function ElCarCard({
   name, imageUrl, rating, expertComment, rangeKm,
-  estimatedMonthly, isCompared, topBadge,
+  carPrice, isCompared, topBadge,
   onNegotiate, onDetail, onCompare,
 }: ElCarCardProps) {
+  const [residual, setResidual] = useState<0.50 | 0.55>(0.55);
+  const [showInfo, setShowInfo] = useState(false);
 
-  const handleCardClick = () => {
-    if (onDetail) onDetail();
-  };
+  const monthly = carPrice ? calcCarMonthly(carPrice, residual) : null;
 
   return (
     <div
-      onClick={handleCardClick}
+      onClick={() => { if (onDetail) onDetail(); }}
       className={`group relative flex flex-col overflow-hidden rounded-2xl cursor-pointer transition-all duration-300 ${
         isCompared
           ? 'ring-2 ring-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,0.15)]'
@@ -74,7 +104,7 @@ export default function ElCarCard({
       {/* Top accent line */}
       <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#38bdf8] to-transparent opacity-70" />
 
-      {/* Ambient glow behind image */}
+      {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-3/4 h-1/2 rounded-full bg-[#0e6efe]/10 blur-3xl" />
       </div>
@@ -95,7 +125,6 @@ export default function ElCarCard({
           </div>
         )}
 
-        {/* El badge */}
         <div className="absolute top-2.5 left-2.5">
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#38bdf8]/20 backdrop-blur-sm border border-[#38bdf8]/40 text-[10px] font-extrabold text-[#7dd3fc] shadow-sm uppercase tracking-wide">
             <Zap className="w-2.5 h-2.5 fill-[#7dd3fc]" />
@@ -103,7 +132,6 @@ export default function ElCarCard({
           </span>
         </div>
 
-        {/* Top pick badge */}
         {topBadge && !isCompared && (
           <div className="absolute top-2.5 right-2.5">
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-[10px] font-extrabold text-amber-300 backdrop-blur-sm">
@@ -112,7 +140,6 @@ export default function ElCarCard({
           </div>
         )}
 
-        {/* Compared indicator */}
         {isCompared && (
           <div className="absolute top-2.5 right-2.5">
             <div className="w-6 h-6 rounded-full bg-emerald-400 flex items-center justify-center shadow-md">
@@ -121,14 +148,12 @@ export default function ElCarCard({
           </div>
         )}
 
-        {/* Bottom gradient overlay */}
         <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#0f172a] to-transparent" />
       </div>
 
       {/* Content */}
       <div className="px-3.5 pt-3 pb-1 flex-1 flex flex-col">
         <div className="flex items-start gap-2 mb-2">
-          {/* Rating ring */}
           {rating != null && <RatingRing rating={rating} />}
           <div className="flex-1 min-w-0">
             <h3 className="text-[13px] sm:text-[14px] font-extrabold text-white leading-tight truncate group-hover:text-[#7dd3fc] transition-colors duration-200">
@@ -142,18 +167,52 @@ export default function ElCarCard({
           </div>
         </div>
 
-        {/* Monthly cost */}
-        {estimatedMonthly != null && (
-          <div className="mt-1 mb-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
-            <span className="text-[11px] text-slate-400 font-medium">Ca månadskostnad</span>
-            <div className="flex items-baseline gap-1">
-              <span className="text-[14px] font-extrabold text-[#38bdf8] tabular-nums">{formatSEK(estimatedMonthly)}</span>
-              <span className="text-[10px] text-[#38bdf8]/60 font-semibold">kr/mån</span>
+        {/* Monthly cost box with residual toggle */}
+        {monthly != null && (
+          <div
+            className="mt-1 mb-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] text-slate-400 font-medium">Ca månadskostnad</span>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowInfo(v => !v)}
+                  className="text-slate-600 hover:text-slate-300 transition-colors"
+                >
+                  <HelpCircle className="w-3.5 h-3.5" />
+                </button>
+                {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-baseline gap-1 shrink-0">
+                <span className="text-[15px] font-extrabold text-[#38bdf8] tabular-nums">{formatSEK(monthly)}</span>
+                <span className="text-[10px] text-[#38bdf8]/60 font-semibold">kr/mån</span>
+              </div>
+              <div className="flex items-center gap-1">
+                {([0.50, 0.55] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => setResidual(v)}
+                    className={`h-5 px-1.5 rounded text-[9px] font-bold border transition-all duration-150 ${
+                      residual === v
+                        ? 'bg-[#38bdf8] border-[#38bdf8] text-[#0f172a]'
+                        : 'bg-white/5 border-white/15 text-slate-500 hover:border-[#38bdf8]/50 hover:text-[#38bdf8]'
+                    }`}
+                  >
+                    {v === 0.50 ? '50%' : '55%'}
+                  </button>
+                ))}
+                <span className="text-[9px] text-slate-600">rest</span>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Range pill — placeholder, shown when rangeKm is provided */}
+        {/* Range bar */}
         {rangeKm != null && (
           <div className="mb-2 flex items-center gap-1.5">
             <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">

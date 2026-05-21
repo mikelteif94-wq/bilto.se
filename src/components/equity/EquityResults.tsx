@@ -5,6 +5,7 @@ import {
   ChevronRight, RotateCcw, GitCompareArrows, Check,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { calcCarMonthly } from '@/lib/utils';
 import {
   BRAND_CATEGORIES, BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS, PRIORITY_TRAITS,
 } from '@/components/quiz/QuizTypes';
@@ -27,7 +28,7 @@ interface MatchedCar {
   cleaned_image_url: string | null;
   matchScore: number;
   matchReasons: string[];
-  estimatedMonthly?: number;
+  carPrice?: number;
   rating?: number;
   fuelLabel?: string;
   compData?: ComparisonCar;
@@ -106,14 +107,13 @@ function scoreMatch(car: { make: string; model: string }, desiredMonthly: number
 // DEPOSIT = roughly 20% of car price
 const DEPOSIT_RATE = 0.20;
 
-function calcEquityMetrics(estimatedMonthly: number, equity: EquityData) {
+function calcEquityMetrics(carPrice: number, equity: EquityData) {
+  const estimatedMonthly = calcCarMonthly(carPrice, 0.55);
   const monthlySaving = equity.currentMonthly > 0
     ? Math.max(0, equity.currentMonthly - estimatedMonthly)
     : Math.max(0, equity.desiredMonthly - estimatedMonthly);
 
-  // Rough car price from monthly: monthly / 0.009 => car price
-  const approxCarPrice = estimatedMonthly / 0.009;
-  const depositNeeded = Math.round(approxCarPrice * DEPOSIT_RATE);
+  const depositNeeded = Math.round(carPrice * DEPOSIT_RATE);
   const equityFreed = Math.max(0, equity.equity - depositNeeded);
 
   return { monthlySaving, depositNeeded, equityFreed };
@@ -147,26 +147,26 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
             const { score, reasons } = scoreMatch(car, equity.desiredMonthly);
             const compData = findComparisonCarByMakeModel(car.make, car.model) || undefined;
             const basePrice = compData?.pricing.used_from_sek || compData?.pricing.new_from_sek;
-            const estimatedMonthly = basePrice ? Math.round((basePrice * 0.009) / 100) * 100 : undefined;
             const fuelLabel = compData?.specs.fuel_types
               ? compData.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')
               : undefined;
 
             // only include cars where monthly cost is within ±50% of desired
-            if (estimatedMonthly) {
-              const ratio = estimatedMonthly / equity.desiredMonthly;
+            if (basePrice) {
+              const monthly = calcCarMonthly(basePrice, 0.55);
+              const ratio = monthly / equity.desiredMonthly;
               if (ratio > 1.6 || ratio < 0.3) return null;
             }
 
-            const metrics = estimatedMonthly
-              ? calcEquityMetrics(estimatedMonthly, equity)
+            const metrics = basePrice
+              ? calcEquityMetrics(basePrice, equity)
               : { monthlySaving: 0, depositNeeded: 0, equityFreed: 0 };
 
             return {
               ...car,
               matchScore: score,
               matchReasons: reasons,
-              estimatedMonthly,
+              carPrice: basePrice ?? undefined,
               rating: compData?.ratings.overall,
               fuelLabel,
               compData,
@@ -335,11 +335,11 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
 
                 {/* Monthly + equity freed */}
                 <div className="mt-2 space-y-1">
-                  {car.estimatedMonthly && (
+                  {car.carPrice && (
                     <div className="flex items-center justify-between">
                       <span className="text-[12px] text-slate-500">Uppskattad kostnad</span>
                       <span className="text-[13px] font-bold text-[#0e6efe]">
-                        {formatSEK(car.estimatedMonthly)} kr/mån
+                        {formatSEK(calcCarMonthly(car.carPrice, 0.55))} kr/mån
                       </span>
                     </div>
                   )}

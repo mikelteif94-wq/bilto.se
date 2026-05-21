@@ -1,5 +1,7 @@
-import { Star, Car, ArrowRight, Check, Scale } from 'lucide-react';
+import { useState } from 'react';
+import { Star, Car, ArrowRight, Check, Scale, HelpCircle, X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { calcCarMonthly } from '../lib/utils';
 
 interface DarkCarCardProps {
   name: string;
@@ -9,7 +11,7 @@ interface DarkCarCardProps {
   matchScore?: number;
   pros?: string[];
   cons?: string[];
-  monthlyCostRange?: string;
+  carPrice?: number;
   bodyLabel?: string;
   fuelLabel?: string;
   trunkLiters?: number;
@@ -21,13 +23,8 @@ interface DarkCarCardProps {
   index?: number;
 }
 
-function estimateMonthlyCost(name: string): string {
-  const n = name.toLowerCase();
-  if (n.includes('tesla') || n.includes('polestar') || n.includes('bmw') || n.includes('audi') || n.includes('mercedes') || n.includes('porsche') || n.includes('genesis') || n.includes('lexus')) return '5 500\u20138 500';
-  if (n.includes('volvo xc90') || n.includes('volvo xc60') || n.includes('bmw x') || n.includes('audi q')) return '5 000\u20137 500';
-  if (n.includes('volvo') || n.includes('vw') || n.includes('volkswagen') || n.includes('skoda') || n.includes('toyota rav') || n.includes('kia sportage')) return '3 500\u20135 500';
-  if (n.includes('kia') || n.includes('hyundai') || n.includes('dacia') || n.includes('mg') || n.includes('renault') || n.includes('seat') || n.includes('cupra')) return '2 800\u20134 500';
-  return '3 500\u20136 000';
+function formatSEK(n: number) {
+  return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
 }
 
 function RatingCircle({ value }: { value: number }) {
@@ -55,12 +52,43 @@ function RatingCircle({ value }: { value: number }) {
   );
 }
 
+function InfoTooltip({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      className="absolute bottom-full right-0 mb-2 w-60 z-30 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-3"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute top-2 right-2 text-slate-500 hover:text-white transition-colors"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
+      <p className="text-[11px] font-bold text-white mb-1.5">Hur räknar vi?</p>
+      <p className="text-[10px] text-slate-400 leading-relaxed">
+        Månads&shy;kostnaden är ungefärlig och baseras på:<br />
+        <span className="text-slate-200">20% kontantinsats · 1% uppläggning · 6,49% ränta · 36 månader</span>
+      </p>
+      <p className="text-[10px] text-slate-400 leading-relaxed mt-1.5">
+        <span className="text-slate-200">Restvärde</span> är bilens beräknade värde vid leasingperiodens slut. Välj 50% eller 55% – högre restvärde ger lägre månadskostnad.
+      </p>
+      <div className="mt-2 pt-2 border-t border-slate-700">
+        <p className="text-[9px] text-slate-500">Uppskattning. Slutlig ränta och villkor sätts av finansiär.</p>
+      </div>
+    </div>
+  );
+}
+
 export default function DarkCarCard({
   name, imageUrl, rating, topBadge, expertComment,
-  monthlyCostRange,
+  carPrice,
   onNegotiate, onDetail, onCompare, isComparing, index = 0,
 }: DarkCarCardProps) {
-  const costRange = monthlyCostRange || estimateMonthlyCost(name);
+  const [residual, setResidual] = useState<0.50 | 0.55>(0.55);
+  const [showInfo, setShowInfo] = useState(false);
+
+  const monthly = carPrice ? calcCarMonthly(carPrice, residual) : null;
 
   return (
     <motion.div
@@ -106,24 +134,58 @@ export default function DarkCarCard({
 
       {/* Content */}
       <div className="px-5 pt-4 pb-5">
-        {/* Name */}
         <h3 className="text-[17px] font-bold text-slate-900 leading-snug group-hover:text-[#0e6efe] transition-colors duration-200">
           {name}
         </h3>
 
-        {/* Expert comment */}
         {expertComment && (
           <p className="mt-1.5 text-[12px] text-slate-400 leading-relaxed line-clamp-2">
             {expertComment}
           </p>
         )}
 
-        {/* Monthly cost */}
-        <p className="text-[13px] text-slate-500 mt-4">
-          fr. <span className="font-semibold text-slate-800">{costRange}</span> <span className="text-[11px]">kr/mån</span>
-        </p>
+        {/* Monthly cost with residual toggle */}
+        {monthly != null && (
+          <div
+            className="mt-3 flex items-center justify-between gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div>
+              <p className="text-[11px] text-slate-400 mb-0.5">Ca månadskostnad</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-[16px] font-bold text-slate-800 tabular-nums">{formatSEK(monthly)}</span>
+                <span className="text-[11px] text-slate-500">kr/mån</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-1">
+              {([0.50, 0.55] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setResidual(v)}
+                  className={`h-6 px-2 rounded-md text-[9px] font-bold border transition-all duration-150 ${
+                    residual === v
+                      ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
+                      : 'bg-white border-slate-200 text-slate-400 hover:border-[#0e6efe]/40 hover:text-[#0e6efe]'
+                  }`}
+                >
+                  {v === 0.50 ? '50%' : '55%'}
+                </button>
+              ))}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowInfo(s => !s)}
+                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <HelpCircle className="w-3.5 h-3.5" />
+                </button>
+                {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
+              </div>
+            </div>
+          </div>
+        )}
 
-        {/* Divider + CTA */}
         <div className="h-px bg-slate-100 mt-4 mb-3.5" />
 
         <button

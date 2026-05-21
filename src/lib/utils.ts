@@ -1,6 +1,21 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+const LOAN_RATE = 0.0649 / 12;
+const LOAN_MONTHS = 36;
+const LOAN_DOWN_PCT = 0.20;
+const LOAN_FEE_PCT = 0.01;
+
+export function calcCarMonthly(carPrice: number, residualPct: 0.50 | 0.55 = 0.55): number {
+  const kontantinsats = carPrice * LOAN_DOWN_PCT;
+  const avgift = carPrice * LOAN_FEE_PCT;
+  const loan = carPrice - kontantinsats + avgift;
+  const residualAmount = carPrice * residualPct;
+  const r = LOAN_RATE;
+  const n = LOAN_MONTHS;
+  return ((loan - residualAmount / Math.pow(1 + r, n)) * r) / (1 - Math.pow(1 + r, -n));
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
