@@ -92,14 +92,13 @@ export default function ElCarCard({
       </div>
 
       {/* Image */}
-      <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] overflow-hidden" style={{ background: 'radial-gradient(ellipse at 60% 50%, #1a3a5c 0%, #0c1a2e 100%)' }}>
+      <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] overflow-hidden bg-[#0f172a]">
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={name}
             loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
-            style={{ mixBlendMode: 'multiply', filter: 'contrast(1.12) saturate(1.3) brightness(1.05)' }}
+            className="w-full h-full object-contain group-hover:scale-[1.04] transition-transform duration-700 ease-out"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center"><Car className="w-12 h-12 text-slate-600" /></div>
