@@ -688,28 +688,6 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
         )}
       </div>
 
-      {/* Snabbåtgärder */}
-      <div className="bg-white rounded-md border border-slate-200 p-6">
-        <h2 className="text-lg font-bold text-slate-900 mb-4">Snabbåtgärder</h2>
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={openDealerPicker}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0e6efe] hover:bg-blue-700 text-white text-sm font-semibold transition"
-          >
-            <Send className="w-4 h-4" />
-            Skicka till handlare
-          </button>
-          <button
-            onClick={() => setValuationOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold transition"
-          >
-            <Sparkles className="w-4 h-4" />
-            Be kollega värdera
-          </button>
-        </div>
-        {sendResult && <p className="mt-3 text-sm text-slate-700">{sendResult}</p>}
-      </div>
-
       {/* Öppna värderingsförfrågningar */}
       {openValuations.length > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-md p-6">
