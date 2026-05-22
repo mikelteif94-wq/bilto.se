@@ -62,15 +62,15 @@ const CATEGORY_TABS: { key: LeadCategory; label: string; icon: React.ReactNode; 
 ];
 
 const CATEGORY_PILL: Record<LeadCategory, { label: string; cls: string }> = {
-  'all':        { label: 'Alla',       cls: 'bg-slate-100 text-slate-600' },
-  'hittat-bil': { label: 'Hittat bil', cls: 'bg-blue-50 text-blue-700' },
-  'letar-bil':  { label: 'Letar bil',  cls: 'bg-sky-50 text-sky-700' },
-  'inbyte':     { label: 'Inbyte',     cls: 'bg-emerald-50 text-emerald-700' },
-  'salj':       { label: 'Sälj',       cls: 'bg-orange-50 text-orange-700' },
-  'urgent':     { label: 'Akut',       cls: 'bg-red-50 text-red-700' },
-  'uncontacted':{ label: 'Ej kontaktad', cls: 'bg-amber-50 text-amber-700' },
-  'won':        { label: 'Vunnen',     cls: 'bg-green-50 text-green-700' },
-  'lost':       { label: 'Förlorad',   cls: 'bg-slate-100 text-slate-500' },
+  'all':        { label: 'Alla',          cls: 'bg-slate-200 text-slate-700' },
+  'hittat-bil': { label: 'Hittat bil',    cls: 'bg-blue-500 text-white' },
+  'letar-bil':  { label: 'Letar bil',     cls: 'bg-emerald-500 text-white' },
+  'inbyte':     { label: 'Inbyte',        cls: 'bg-teal-500 text-white' },
+  'salj':       { label: 'Sälj',          cls: 'bg-orange-500 text-white' },
+  'urgent':     { label: 'Akut',          cls: 'bg-red-500 text-white' },
+  'uncontacted':{ label: 'Ej kontaktad',  cls: 'bg-amber-500 text-white' },
+  'won':        { label: 'Vunnen',        cls: 'bg-green-500 text-white' },
+  'lost':       { label: 'Förlorad',      cls: 'bg-slate-400 text-white' },
 };
 
 const TAG_COLORS: Record<string, string> = {
