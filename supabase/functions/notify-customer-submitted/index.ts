@@ -147,19 +147,19 @@ function renderEmail(d: {
     site,
     preheader: `Tack ${esc(d.fornamn)}! Vi har tagit emot din bil och hör av oss snart.`,
     heroContent: `
-      <p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);">Nu kör vi!</p>
-      <h1 style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;">Tack ${esc(d.fornamn)}!</h1>
-      ${d.regnummer ? `<p style="margin:10px 0 0;font-size:14px;font-family:monospace;letter-spacing:0.08em;color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.12);display:inline-block;padding:4px 12px;border-radius:6px;">${esc(d.regnummer)}</p>` : ""}
+      <p style="margin:0 0 6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:rgba(255,255,255,0.75);">Nu kör vi!</p>
+      <h1 style="margin:0;font-size:30px;font-weight:800;color:#ffffff;line-height:1.2;">Tack ${esc(d.fornamn)}!</h1>
+      ${d.regnummer ? `<p style="margin:12px 0 0;font-size:13px;font-family:monospace;letter-spacing:0.12em;color:#ffffff;background:rgba(255,255,255,0.18);display:inline-block;padding:5px 14px;border-radius:6px;font-weight:700;">${esc(d.regnummer)}</p>` : ""}
     `,
     bodyContent: `
-      <p style="margin:0 0 16px;font-size:16px;color:#1e293b;line-height:1.7;font-weight:500;">Vi har tagit emot din bil och är redo att sätta igång!</p>
-      <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.7;">En av våra experter ringer dig inom kort för att gå igenom nästa steg och svara på alla frågor du har.</p>
-      <div style="background:#f0f9ff;border-left:4px solid #0e6efe;border-radius:0 8px 8px 0;padding:14px 18px;margin:20px 0;">
-        <p style="margin:0;font-size:14px;color:#0369a1;line-height:1.6;">Under tiden kan du luta dig tillbaka — vi sköter allt och hör av oss snart!</p>
+      <p style="margin:0 0 14px;font-size:17px;color:#ffffff;line-height:1.65;font-weight:600;">Vi har tagit emot din bil och är redo att sätta igång!</p>
+      <p style="margin:0 0 20px;font-size:15px;color:rgba(255,255,255,0.8);line-height:1.7;">En av våra experter ringer dig inom kort för att gå igenom nästa steg och svara på alla frågor du har.</p>
+      <div style="border-left:3px solid #0e6efe;padding:12px 16px;margin:0 0 28px;background:rgba(255,255,255,0.06);border-radius:0 8px 8px 0;">
+        <p style="margin:0;font-size:14px;color:rgba(255,255,255,0.75);line-height:1.6;">Under tiden kan du luta dig tillbaka — vi sköter allt och hör av oss snart!</p>
       </div>
       ${d.trackingUrl ? `
-      <div style="margin-top:28px;">
-        <a href="${escAttr(d.trackingUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:15px 32px;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.02em;">Skapa konto &amp; följ din bil &rarr;</a>
+      <div style="margin-top:8px;">
+        <a href="${escAttr(d.trackingUrl)}" style="display:block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:16px 32px;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.02em;text-align:center;">Skapa konto &amp; följ din bil &rarr;</a>
       </div>` : ""}
     `,
   });
@@ -193,34 +193,34 @@ function emailShell(opts: {
         </td></tr>
 
         <!-- Card -->
-        <tr><td style="background:#ffffff;border-radius:0 0 16px 16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+        <tr><td style="background:#111827;border-radius:0 0 16px 16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.3);">
 
           <!-- Hero -->
           <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="background:linear-gradient(135deg,#0a4fd4 0%,#0e6efe 60%,#3b87ff 100%);padding:36px 40px 32px;text-align:center;">
+            <tr><td style="background:#0e6efe;padding:36px 40px 32px;text-align:center;">
               ${opts.heroContent}
             </td></tr>
           </table>
 
           <!-- Body -->
           <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:36px 40px 32px;">
+            <tr><td style="background:#111827;padding:36px 40px 32px;">
               ${opts.bodyContent}
             </td></tr>
           </table>
 
           <!-- Divider -->
           <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:0 40px;">
-              <div style="border-top:1px solid #e2e8f0;"></div>
+            <tr><td style="background:#111827;padding:0 40px;">
+              <div style="border-top:1px solid rgba(255,255,255,0.08);"></div>
             </td></tr>
           </table>
 
           <!-- Signature -->
           <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:24px 40px 36px;">
-              <p style="margin:0 0 2px;font-size:14px;color:#64748b;line-height:1.6;">Med vänliga hälsningar,</p>
-              <p style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Teamet på Bilto</p>
+            <tr><td style="background:#111827;padding:24px 40px 36px;border-radius:0 0 16px 16px;">
+              <p style="margin:0 0 2px;font-size:14px;color:rgba(255,255,255,0.5);line-height:1.6;">Med vänliga hälsningar,</p>
+              <p style="margin:0;font-size:15px;font-weight:700;color:#ffffff;">Teamet på Bilto</p>
             </td></tr>
           </table>
 
