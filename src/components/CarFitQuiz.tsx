@@ -427,7 +427,7 @@ function ScoreCircle({ score, color }: { score: number; color: string }) {
   return (
     <div className="relative w-36 h-36 mx-auto">
       <svg viewBox="0 0 128 128" className="w-full h-full -rotate-90">
-        <circle cx="64" cy="64" r={radius} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="8" />
+        <circle cx="64" cy="64" r={radius} fill="none" stroke="rgba(0,0,0,0.07)" strokeWidth="8" />
         <motion.circle
           cx="64" cy="64" r={radius} fill="none"
           stroke={color} strokeWidth="8" strokeLinecap="round"
@@ -438,8 +438,8 @@ function ScoreCircle({ score, color }: { score: number; color: string }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-4xl font-black text-white tabular-nums leading-none">{displayed}</span>
-        <span className="text-[12px] font-bold text-slate-400 mt-0.5">av 100</span>
+        <span className="text-4xl font-black tabular-nums leading-none" style={{ color: color }}>{displayed}</span>
+        <span className="text-[12px] font-bold text-slate-500 mt-0.5">av 100</span>
       </div>
     </div>
   );
