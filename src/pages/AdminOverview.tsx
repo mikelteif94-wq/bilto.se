@@ -160,7 +160,7 @@ export default function AdminOverview({
       supabase.from('cars').select('id, regnummer, marke, modell, status, created_at, hidden_from_dealers').order('created_at', { ascending: false }).limit(8),
       supabase.from('car_reminders').select('id, title, remind_at, cars(id, regnummer)').eq('done', false).lte('remind_at', in24h).order('remind_at', { ascending: true }).limit(5),
       supabase.from('quote_requests').select('id', { count: 'exact', head: true }).eq('status', 'new'),
-      supabase.from('leads').select('id', { count: 'exact', head: true }).eq('status', 'new'),
+      supabase.from('leads').select('id', { count: 'exact', head: true }).eq('kontaktad', false),
     ]);
 
     setStats({

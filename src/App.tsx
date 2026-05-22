@@ -444,6 +444,7 @@ function App() {
           onNavigateCars={() => navigate('/admin/bilar')}
           onNavigateDealers={() => navigate('/admin/handlare')}
           onNavigateOverview={() => navigate('/admin/oversikt')}
+          onNavigateLeads={() => navigate('/admin/leads')}
         />
       );
     }
@@ -471,6 +472,7 @@ function App() {
           onNavigateDealers={() => navigate('/admin/handlare')}
           onNavigateOverview={() => navigate('/admin/oversikt')}
           onNavigateQuotes={() => navigate('/admin/forfragningar')}
+          onNavigateLeads={() => navigate('/admin/leads')}
         />
       );
     }
@@ -493,6 +495,7 @@ function App() {
           onOpenDealer={(id) => navigate(`/admin/handlare/${id}`)}
           onNavigateCars={() => navigate('/admin/bilar')}
           onNavigateOverview={() => navigate('/admin/oversikt')}
+          onNavigateLeads={() => navigate('/admin/leads')}
         />
       );
     }
@@ -514,6 +517,7 @@ function App() {
         onAddCar={() => navigate('/admin/bilar/ny')}
         onNavigateOverview={() => navigate('/admin/oversikt')}
         onNavigateQuotes={() => navigate('/admin/forfragningar')}
+        onNavigateLeads={() => navigate('/admin/leads')}
         onNavigateBulkUpload={() => navigate('/admin/uppladdning')}
         onNavigateCatalog={() => navigate('/admin/katalog')}
       />

@@ -10,6 +10,7 @@ import {
   Mail,
   Calendar,
   ClipboardList,
+  TrendingUp,
   X,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -22,6 +23,7 @@ interface AdminQuizSubmissionsProps {
   onNavigateDealers: () => void;
   onNavigateOverview: () => void;
   onNavigateQuotes: () => void;
+  onNavigateLeads?: () => void;
 }
 
 interface QuizSubmission {
@@ -110,6 +112,7 @@ export default function AdminQuizSubmissions({
   onNavigateDealers,
   onNavigateOverview,
   onNavigateQuotes,
+  onNavigateLeads,
 }: AdminQuizSubmissionsProps) {
   const badges = useAdminBadges();
   const [submissions, setSubmissions] = useState<QuizSubmission[]>([]);
@@ -145,6 +148,7 @@ export default function AdminQuizSubmissions({
       navItems={[
         { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Översikt', onClick: onNavigateOverview },
         { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', onClick: onNavigateCars, badge: badges.newCars },
+        ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-4 h-4" />, label: 'Leads', onClick: onNavigateLeads, badge: badges.newLeads }] : []),
         { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', onClick: onNavigateQuotes, badge: badges.newQuotes },
         { icon: <ClipboardList className="w-4 h-4" />, label: 'Quiz', active: true },
         { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', onClick: onNavigateDealers, badge: badges.pendingDealers },

@@ -9,6 +9,7 @@ import {
   EyeOff,
   LayoutDashboard,
   MessageSquareText,
+  TrendingUp,
   Upload,
   Plus,
   BookOpen,
@@ -26,6 +27,7 @@ interface AdminCarsProps {
   onAddCar: () => void;
   onNavigateOverview?: () => void;
   onNavigateQuotes?: () => void;
+  onNavigateLeads?: () => void;
   onNavigateBulkUpload?: () => void;
   onNavigateCatalog?: () => void;
 }
@@ -110,6 +112,7 @@ export default function AdminCars({
   onAddCar,
   onNavigateOverview,
   onNavigateQuotes,
+  onNavigateLeads,
   onNavigateBulkUpload,
   onNavigateCatalog,
 }: AdminCarsProps) {
@@ -168,6 +171,7 @@ export default function AdminCars({
   const navItems = [
     ...(onNavigateOverview ? [{ icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', onClick: onNavigateOverview }] : []),
     { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Bilar', active: true },
+    ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-[18px] h-[18px]" />, label: 'Leads', onClick: onNavigateLeads, badge: badges.newLeads }] : []),
     ...(onNavigateQuotes ? [{ icon: <MessageSquareText className="w-[18px] h-[18px]" />, label: 'Förfrågningar', onClick: onNavigateQuotes, badge: badges.newQuotes }] : []),
     { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', onClick: onNavigateDealers, badge: badges.pendingDealers },
   ];

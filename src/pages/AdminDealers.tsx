@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Loader2, ChevronRight, Car, Building2, LayoutDashboard } from 'lucide-react';
+import { Loader2, ChevronRight, Car, Building2, LayoutDashboard, TrendingUp } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
 import ErrorBanner from '../components/ErrorBanner';
@@ -11,6 +11,7 @@ interface AdminDealersProps {
   onOpenDealer: (id: string) => void;
   onNavigateCars: () => void;
   onNavigateOverview?: () => void;
+  onNavigateLeads?: () => void;
 }
 
 type Dealer = Database['public']['Tables']['dealers']['Row'];
@@ -28,6 +29,7 @@ export default function AdminDealers({
   onOpenDealer,
   onNavigateCars,
   onNavigateOverview,
+  onNavigateLeads,
 }: AdminDealersProps) {
   const badges = useAdminBadges();
   const [dealers, setDealers] = useState<Dealer[]>([]);
@@ -59,6 +61,7 @@ export default function AdminDealers({
   const navItems = [
     ...(onNavigateOverview ? [{ icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', onClick: onNavigateOverview }] : []),
     { icon: <Car className="w-[18px] h-[18px]" />, label: 'Bilar', onClick: onNavigateCars, badge: badges.newCars },
+    ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-[18px] h-[18px]" />, label: 'Leads', onClick: onNavigateLeads, badge: badges.newLeads }] : []),
     { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', active: true },
   ];
 

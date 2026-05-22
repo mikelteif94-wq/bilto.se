@@ -6,6 +6,7 @@ import {
   Building2,
   MessageSquareText,
   LayoutDashboard,
+  TrendingUp,
   Search,
   Repeat,
   Phone,
@@ -20,6 +21,7 @@ interface AdminQuoteRequestsProps {
   onNavigateCars: () => void;
   onNavigateDealers: () => void;
   onNavigateOverview: () => void;
+  onNavigateLeads?: () => void;
 }
 
 interface QuoteRequest {
@@ -86,6 +88,7 @@ export default function AdminQuoteRequests({
   onNavigateCars,
   onNavigateDealers,
   onNavigateOverview,
+  onNavigateLeads,
 }: AdminQuoteRequestsProps) {
   const badges = useAdminBadges();
   const [quotes, setQuotes] = useState<QuoteRequest[]>([]);
@@ -121,6 +124,7 @@ export default function AdminQuoteRequests({
       navItems={[
         { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Översikt', onClick: onNavigateOverview },
         { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', onClick: onNavigateCars, badge: badges.newCars },
+        ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-4 h-4" />, label: 'Leads', onClick: onNavigateLeads, badge: badges.newLeads }] : []),
         { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', active: true },
         { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', onClick: onNavigateDealers, badge: badges.pendingDealers },
       ]}
