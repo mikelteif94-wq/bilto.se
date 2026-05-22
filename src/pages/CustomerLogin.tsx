@@ -80,12 +80,17 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
       setError('Kunde inte skapa konto. Försök igen.');
       return;
     }
-    // Link existing customers row (created before auth account existed) to this user
-    await supabase
-      .from('customers')
-      .update({ user_id: data.user.id })
-      .ilike('mejl', email.trim())
-      .is('user_id', null);
+    // Link existing customers row via edge function (service role bypasses RLS)
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) {
+      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/link-customer-account`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    }
     sessionStorage.setItem('bilto_portal', 'customer');
     setLoading(false);
     onLoggedIn();
@@ -105,11 +110,15 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
       return;
     }
     // Link existing customers row if not already linked (e.g. first login after signup)
-    await supabase
-      .from('customers')
-      .update({ user_id: data.user.id })
-      .ilike('mejl', email.trim())
-      .is('user_id', null);
+    if (data.session?.access_token) {
+      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/link-customer-account`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${data.session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    }
     sessionStorage.setItem('bilto_portal', 'customer');
     setLoading(false);
     onLoggedIn();
