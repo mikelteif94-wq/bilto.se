@@ -3,25 +3,19 @@ import {
   Loader2,
   ChevronRight,
   Car as CarIcon,
-  Building2,
-  MessageSquareText,
-  LayoutDashboard,
-  TrendingUp,
   Search,
   Repeat,
   Phone,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
-import { useAdminBadges } from '../hooks/useAdminBadges';
+import { useAdminNav, type AdminPage } from '../hooks/useAdminNav';
 
 interface AdminQuoteRequestsProps {
   onLoggedOut: () => void;
   onOpenQuote: (id: string) => void;
-  onNavigateCars: () => void;
-  onNavigateDealers: () => void;
-  onNavigateOverview: () => void;
-  onNavigateLeads?: () => void;
+  onNavigate: (page: AdminPage) => void;
+  initialFilter?: 'found' | 'searching' | 'trade';
 }
 
 interface QuoteRequest {
@@ -85,15 +79,14 @@ function formatTime(iso: string) {
 export default function AdminQuoteRequests({
   onLoggedOut,
   onOpenQuote,
-  onNavigateCars,
-  onNavigateDealers,
-  onNavigateOverview,
-  onNavigateLeads,
+  onNavigate,
+  initialFilter,
 }: AdminQuoteRequestsProps) {
-  const badges = useAdminBadges();
+  const activePage: AdminPage = initialFilter === 'found' ? 'hittat-bil' : initialFilter === 'searching' ? 'letar-bil' : initialFilter === 'trade' ? 'inbyte' : 'hittat-bil';
+  const navItems = useAdminNav({ activePage, onNavigate });
   const [quotes, setQuotes] = useState<QuoteRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<string>('all');
+  const [searchFilter, setSearchFilter] = useState<string>(initialFilter ?? 'all');
 
   useEffect(() => {
     fetchQuotes();
@@ -113,30 +106,27 @@ export default function AdminQuoteRequests({
     onLoggedOut();
   };
 
-  const filtered = filter === 'all' ? quotes : quotes.filter((q) => q.status === filter);
-  const counts = quotes.reduce<Record<string, number>>((acc, q) => {
+  const optionFiltered = initialFilter ? quotes.filter((q) => q.search_option === initialFilter) : quotes;
+  const filtered = searchFilter === 'all' ? optionFiltered : optionFiltered.filter((q) => q.status === searchFilter);
+  const counts = optionFiltered.reduce<Record<string, number>>((acc, q) => {
     acc[q.status] = (acc[q.status] || 0) + 1;
     return acc;
   }, {});
 
+  const pageTitle = initialFilter === 'found' ? 'Hittat bil' : initialFilter === 'searching' ? 'Letar bil' : initialFilter === 'trade' ? 'Inbyte' : 'Förfrågningar';
+
   return (
     <PortalLayout
-      navItems={[
-        { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Översikt', onClick: onNavigateOverview },
-        { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', onClick: onNavigateCars, badge: badges.newCars },
-        ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-4 h-4" />, label: 'Leads', onClick: onNavigateLeads, badge: badges.newLeads }] : []),
-        { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', active: true },
-        { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', onClick: onNavigateDealers, badge: badges.pendingDealers },
-      ]}
+      navItems={navItems}
       identity="Admin"
       identityRole="Bilto"
       onLogout={handleLogout}
-      pageTitle="Förfrågningar"
+      pageTitle={pageTitle}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-7">
         <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
-            Förfrågningar
+            {pageTitle}
             {!loading && (
               <span className="ml-2 text-sm sm:text-base font-medium text-slate-400">
                 ({filtered.length})
@@ -156,15 +146,15 @@ export default function AdminQuoteRequests({
           ].map((f) => (
             <button
               key={f.key}
-              onClick={() => setFilter(f.key)}
+              onClick={() => setSearchFilter(f.key)}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition whitespace-nowrap ${
-                filter === f.key
+                searchFilter === f.key
                   ? 'bg-slate-900 text-white'
                   : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
               }`}
             >
               {f.label}
-              <span className={`text-xs ${filter === f.key ? 'text-white/70' : 'text-slate-400'}`}>
+              <span className={`text-xs ${searchFilter === f.key ? 'text-white/70' : 'text-slate-400'}`}>
                 {f.count}
               </span>
             </button>

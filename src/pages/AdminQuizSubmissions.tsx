@@ -2,28 +2,18 @@ import { useEffect, useState } from 'react';
 import {
   Loader2,
   ChevronDown,
-  Car as CarIcon,
-  Building2,
-  MessageSquareText,
-  LayoutDashboard,
   Phone,
   Mail,
   Calendar,
-  ClipboardList,
-  TrendingUp,
   X,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
-import { useAdminBadges } from '../hooks/useAdminBadges';
+import { useAdminNav, type AdminPage } from '../hooks/useAdminNav';
 
 interface AdminQuizSubmissionsProps {
   onLoggedOut: () => void;
-  onNavigateCars: () => void;
-  onNavigateDealers: () => void;
-  onNavigateOverview: () => void;
-  onNavigateQuotes: () => void;
-  onNavigateLeads?: () => void;
+  onNavigate: (page: AdminPage) => void;
 }
 
 interface QuizSubmission {
@@ -108,13 +98,9 @@ function formatValue(value: unknown): string {
 
 export default function AdminQuizSubmissions({
   onLoggedOut,
-  onNavigateCars,
-  onNavigateDealers,
-  onNavigateOverview,
-  onNavigateQuotes,
-  onNavigateLeads,
+  onNavigate,
 }: AdminQuizSubmissionsProps) {
-  const badges = useAdminBadges();
+  const navItems = useAdminNav({ activePage: 'bilar', onNavigate });
   const [submissions, setSubmissions] = useState<QuizSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -145,14 +131,7 @@ export default function AdminQuizSubmissions({
 
   return (
     <PortalLayout
-      navItems={[
-        { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Översikt', onClick: onNavigateOverview },
-        { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', onClick: onNavigateCars, badge: badges.newCars },
-        ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-4 h-4" />, label: 'Leads', onClick: onNavigateLeads, badge: badges.newLeads }] : []),
-        { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', onClick: onNavigateQuotes, badge: badges.newQuotes },
-        { icon: <ClipboardList className="w-4 h-4" />, label: 'Quiz', active: true },
-        { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', onClick: onNavigateDealers, badge: badges.pendingDealers },
-      ]}
+      navItems={navItems}
       identity="Admin"
       identityRole="Bilto"
       onLogout={handleLogout}

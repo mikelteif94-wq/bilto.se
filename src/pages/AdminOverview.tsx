@@ -3,14 +3,12 @@ import {
   Loader2,
   Car as CarIcon,
   Building2,
-  LayoutDashboard,
   ChevronRight,
   Clock,
   Gavel,
   Bell,
   TrendingUp,
   MessageSquareText,
-  ClipboardList,
   AlertTriangle,
   CheckCircle2,
   Users,
@@ -18,20 +16,15 @@ import {
   RefreshCw,
   Flame,
   Zap,
-  BookOpen,
 } from 'lucide-react';
+import { useAdminNav, type AdminPage } from '../hooks/useAdminNav';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
 
 interface AdminOverviewProps {
   onLoggedOut: () => void;
   onOpenCar: (id: string) => void;
-  onNavigateCars: () => void;
-  onNavigateDealers: () => void;
-  onNavigateQuotes?: () => void;
-  onNavigateQuiz?: () => void;
-  onNavigateLeads?: () => void;
-  onNavigateCatalog?: () => void;
+  onNavigate: (page: AdminPage) => void;
 }
 
 interface Stats {
@@ -103,13 +96,13 @@ const STATUS_META: Record<string, { label: string; bg: string; text: string }> =
 export default function AdminOverview({
   onLoggedOut,
   onOpenCar,
-  onNavigateCars,
-  onNavigateDealers,
-  onNavigateQuotes,
-  onNavigateQuiz,
-  onNavigateLeads,
-  onNavigateCatalog,
+  onNavigate,
 }: AdminOverviewProps) {
+  const onNavigateCars = () => onNavigate('bilar');
+  const onNavigateDealers = () => onNavigate('handlare');
+  const onNavigateQuotes = () => onNavigate('hittat-bil');
+  const onNavigateLeads = () => onNavigate('salj');
+
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Stats>({
     newLeads: 0,
@@ -188,7 +181,7 @@ export default function AdminOverview({
 
   type AlertItem = { key: string; icon: React.ReactNode; color: 'blue' | 'amber' | 'red'; title: string; sub: string; action: (() => void) | undefined };
   const alerts: AlertItem[] = [
-    stats.newQuotes > 0 && onNavigateQuotes ? {
+    stats.newQuotes > 0 ? {
       key: 'quotes',
       icon: <MessageSquareText className="w-4 h-4" />,
       color: 'amber' as const,
@@ -214,15 +207,7 @@ export default function AdminOverview({
     } : null,
   ].filter(Boolean) as AlertItem[];
 
-  const adminNavItems = [
-    { icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', active: true },
-    { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Bilar', onClick: onNavigateCars, badge: stats.carsNew },
-    ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-[18px] h-[18px]" />, label: 'Leads', onClick: onNavigateLeads, badge: stats.newLeads }] : []),
-    ...(onNavigateQuotes ? [{ icon: <MessageSquareText className="w-[18px] h-[18px]" />, label: 'Förfrågningar', onClick: onNavigateQuotes, badge: stats.newQuotes }] : []),
-    { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', onClick: onNavigateDealers, badge: stats.pendingDealers },
-    ...(onNavigateQuiz ? [{ icon: <ClipboardList className="w-[18px] h-[18px]" />, label: 'Quiz', onClick: onNavigateQuiz }] : []),
-    ...(onNavigateCatalog ? [{ icon: <BookOpen className="w-[18px] h-[18px]" />, label: 'Katalog', onClick: onNavigateCatalog }] : []),
-  ];
+  const adminNavItems = useAdminNav({ activePage: 'overview', onNavigate });
 
   const today = new Date().toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' });
 
@@ -469,11 +454,10 @@ export default function AdminOverview({
                 <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
                   {[
                     { icon: <CarIcon className="w-4 h-4" />, label: 'Alla bilar', sub: `${stats.carsTotal} totalt`, onClick: onNavigateCars, iconBg: 'bg-[#0e6efe]/10 text-[#0e6efe]', badge: 0 },
-                    onNavigateLeads ? { icon: <TrendingUp className="w-4 h-4" />, label: 'Lead Command Center', sub: 'Pipeline-översikt', onClick: onNavigateLeads, iconBg: 'bg-emerald-50 text-emerald-600', badge: 0 } : null,
-                    onNavigateQuotes ? { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', sub: stats.newQuotes > 0 ? `${stats.newQuotes} ej hanterade` : 'Inga nya', onClick: onNavigateQuotes, iconBg: 'bg-sky-50 text-sky-600', badge: stats.newQuotes } : null,
+                    { icon: <TrendingUp className="w-4 h-4" />, label: 'Sälj leads', sub: 'Pipeline-översikt', onClick: onNavigateLeads, iconBg: 'bg-emerald-50 text-emerald-600', badge: 0 },
+                    { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', sub: stats.newQuotes > 0 ? `${stats.newQuotes} ej hanterade` : 'Inga nya', onClick: onNavigateQuotes, iconBg: 'bg-sky-50 text-sky-600', badge: stats.newQuotes },
                     { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', sub: `${stats.totalDealers} aktiva${stats.pendingDealers > 0 ? ` · ${stats.pendingDealers} väntar` : ''}`, onClick: onNavigateDealers, iconBg: 'bg-slate-100 text-slate-600', badge: stats.pendingDealers },
                     { icon: <Gavel className="w-4 h-4" />, label: 'Aktiva auktioner', sub: `${stats.carsActive} pågår`, onClick: onNavigateCars, iconBg: 'bg-emerald-50 text-emerald-600', badge: 0 },
-                    onNavigateQuiz ? { icon: <ClipboardList className="w-4 h-4" />, label: 'Quiz-svar', sub: 'Kundinsikter', onClick: onNavigateQuiz, iconBg: 'bg-slate-100 text-slate-600', badge: 0 } : null,
                     { icon: <Users className="w-4 h-4" />, label: 'Nya bilar att aktivera', sub: `${stats.carsNew} ny${stats.carsNew === 1 ? '' : 'a'}`, onClick: onNavigateCars, iconBg: 'bg-sky-50 text-sky-600', badge: stats.carsNew },
                   ].filter(Boolean).map((item) => item && (
                     <button

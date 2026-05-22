@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
-import { useAdminBadges } from '../hooks/useAdminBadges';
+import { useAdminNav, type AdminPage } from '../hooks/useAdminNav';
 
 interface AdminLeadCommandCenterProps {
   adminUserId: string;
@@ -16,9 +16,7 @@ interface AdminLeadCommandCenterProps {
   onLoggedOut: () => void;
   onOpenCar: (id: string) => void;
   onOpenQuote: (id: string) => void;
-  onNavigateOverview: () => void;
-  onNavigateCars: () => void;
-  onNavigateDealers: () => void;
+  onNavigate: (page: AdminPage) => void;
 }
 
 type LeadType = 'all' | 'sell' | 'buy' | 'trade_in' | 'urgent' | 'uncontacted' | 'won' | 'lost';
@@ -109,11 +107,9 @@ export default function AdminLeadCommandCenter({
   onLoggedOut,
   onOpenCar,
   onOpenQuote,
-  onNavigateOverview,
-  onNavigateCars,
-  onNavigateDealers,
+  onNavigate,
 }: AdminLeadCommandCenterProps) {
-  const badges = useAdminBadges();
+  const navItems = useAdminNav({ activePage: 'salj', onNavigate });
   const [loading, setLoading] = useState(true);
   const [leads, setLeads] = useState<UnifiedLead[]>([]);
   const [filter, setFilter] = useState<LeadType>('all');
@@ -305,13 +301,7 @@ export default function AdminLeadCommandCenter({
 
   return (
     <PortalLayout
-      navItems={[
-        { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Översikt', onClick: onNavigateOverview },
-        { icon: <TrendingUp className="w-4 h-4" />, label: 'Leads', active: true },
-        { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', onClick: onNavigateCars, badge: badges.newCars },
-        { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', badge: badges.newQuotes },
-        { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', onClick: onNavigateDealers, badge: badges.pendingDealers },
-      ]}
+      navItems={navItems}
       identity="Admin"
       identityRole="Bilto"
       onLogout={onLoggedOut}
@@ -343,7 +333,7 @@ export default function AdminLeadCommandCenter({
               Exportera
             </button>
             <button
-              onClick={onNavigateCars}
+              onClick={() => onNavigate('bilar')}
               className="flex items-center gap-1.5 h-9 px-4 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-700 transition"
             >
               <CarIcon className="w-3.5 h-3.5" />

@@ -3,13 +3,9 @@ import {
   Loader2,
   ChevronRight,
   Car as CarIcon,
-  Building2,
   Sparkles,
   Bell,
   EyeOff,
-  LayoutDashboard,
-  MessageSquareText,
-  TrendingUp,
   Upload,
   Plus,
   BookOpen,
@@ -18,16 +14,13 @@ import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
 import ErrorBanner from '../components/ErrorBanner';
 import PortalLayout from '../components/PortalLayout';
-import { useAdminBadges } from '../hooks/useAdminBadges';
+import { useAdminNav, type AdminPage } from '../hooks/useAdminNav';
 
 interface AdminCarsProps {
   onLoggedOut: () => void;
   onOpenCar: (id: string) => void;
-  onNavigateDealers: () => void;
   onAddCar: () => void;
-  onNavigateOverview?: () => void;
-  onNavigateQuotes?: () => void;
-  onNavigateLeads?: () => void;
+  onNavigate: (page: AdminPage) => void;
   onNavigateBulkUpload?: () => void;
   onNavigateCatalog?: () => void;
 }
@@ -108,15 +101,12 @@ function formatDateTime(iso: string) {
 export default function AdminCars({
   onLoggedOut,
   onOpenCar,
-  onNavigateDealers,
   onAddCar,
-  onNavigateOverview,
-  onNavigateQuotes,
-  onNavigateLeads,
+  onNavigate,
   onNavigateBulkUpload,
   onNavigateCatalog,
 }: AdminCarsProps) {
-  const badges = useAdminBadges();
+  const navItems = useAdminNav({ activePage: 'bilar', onNavigate });
   const [cars, setCars] = useState<CarRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -168,13 +158,6 @@ export default function AdminCars({
     onLoggedOut();
   };
 
-  const navItems = [
-    ...(onNavigateOverview ? [{ icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', onClick: onNavigateOverview }] : []),
-    { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Bilar', active: true },
-    ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-[18px] h-[18px]" />, label: 'Leads', onClick: onNavigateLeads, badge: badges.newLeads }] : []),
-    ...(onNavigateQuotes ? [{ icon: <MessageSquareText className="w-[18px] h-[18px]" />, label: 'Förfrågningar', onClick: onNavigateQuotes, badge: badges.newQuotes }] : []),
-    { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', onClick: onNavigateDealers, badge: badges.pendingDealers },
-  ];
 
   return (
     <PortalLayout

@@ -337,17 +337,22 @@ function App() {
       );
     }
 
+    const adminNavigate = (page: import('./hooks/useAdminNav').AdminPage) => {
+      if (page === 'overview') navigate('/admin/oversikt');
+      else if (page === 'hittat-bil') navigate('/admin/forfragningar/hittat-bil');
+      else if (page === 'letar-bil') navigate('/admin/forfragningar/letar-bil');
+      else if (page === 'inbyte') navigate('/admin/forfragningar/inbyte');
+      else if (page === 'salj') navigate('/admin/leads');
+      else if (page === 'bilar') navigate('/admin/bilar');
+      else if (page === 'handlare') navigate('/admin/handlare');
+    };
+
     if (path === '/admin' || path === '/admin/oversikt') {
       return (
         <AdminOverview
           onLoggedOut={() => navigate('/admin')}
           onOpenCar={(id) => navigate(`/admin/bilar/${id}`)}
-          onNavigateCars={() => navigate('/admin/bilar')}
-          onNavigateDealers={() => navigate('/admin/handlare')}
-          onNavigateQuotes={() => navigate('/admin/forfragningar')}
-          onNavigateQuiz={() => navigate('/admin/quiz')}
-          onNavigateLeads={() => navigate('/admin/leads')}
-          onNavigateCatalog={() => navigate('/admin/katalog')}
+          onNavigate={adminNavigate}
         />
       );
     }
@@ -436,15 +441,18 @@ function App() {
       );
     }
 
-    if (path === '/admin/forfragningar') {
+    if (path === '/admin/forfragningar' || path === '/admin/forfragningar/hittat-bil' || path === '/admin/forfragningar/letar-bil' || path === '/admin/forfragningar/inbyte') {
+      const filterMap: Record<string, 'found' | 'searching' | 'trade'> = {
+        '/admin/forfragningar/hittat-bil': 'found',
+        '/admin/forfragningar/letar-bil': 'searching',
+        '/admin/forfragningar/inbyte': 'trade',
+      };
       return (
         <AdminQuoteRequests
           onLoggedOut={() => navigate('/admin')}
           onOpenQuote={(id) => navigate(`/admin/forfragningar/${id}`)}
-          onNavigateCars={() => navigate('/admin/bilar')}
-          onNavigateDealers={() => navigate('/admin/handlare')}
-          onNavigateOverview={() => navigate('/admin/oversikt')}
-          onNavigateLeads={() => navigate('/admin/leads')}
+          onNavigate={adminNavigate}
+          initialFilter={filterMap[path]}
         />
       );
     }
@@ -457,9 +465,7 @@ function App() {
           onLoggedOut={() => navigate('/admin')}
           onOpenCar={(id) => navigate(`/admin/bilar/${id}`)}
           onOpenQuote={(id) => navigate(`/admin/forfragningar/${id}`)}
-          onNavigateOverview={() => navigate('/admin/oversikt')}
-          onNavigateCars={() => navigate('/admin/bilar')}
-          onNavigateDealers={() => navigate('/admin/handlare')}
+          onNavigate={adminNavigate}
         />
       );
     }
@@ -468,11 +474,7 @@ function App() {
       return (
         <AdminQuizSubmissions
           onLoggedOut={() => navigate('/admin')}
-          onNavigateCars={() => navigate('/admin/bilar')}
-          onNavigateDealers={() => navigate('/admin/handlare')}
-          onNavigateOverview={() => navigate('/admin/oversikt')}
-          onNavigateQuotes={() => navigate('/admin/forfragningar')}
-          onNavigateLeads={() => navigate('/admin/leads')}
+          onNavigate={adminNavigate}
         />
       );
     }
@@ -493,9 +495,7 @@ function App() {
         <AdminDealers
           onLoggedOut={() => navigate('/admin')}
           onOpenDealer={(id) => navigate(`/admin/handlare/${id}`)}
-          onNavigateCars={() => navigate('/admin/bilar')}
-          onNavigateOverview={() => navigate('/admin/oversikt')}
-          onNavigateLeads={() => navigate('/admin/leads')}
+          onNavigate={adminNavigate}
         />
       );
     }
@@ -513,11 +513,8 @@ function App() {
       <AdminCars
         onLoggedOut={() => navigate('/admin')}
         onOpenCar={(id) => navigate(`/admin/bilar/${id}`)}
-        onNavigateDealers={() => navigate('/admin/handlare')}
         onAddCar={() => navigate('/admin/bilar/ny')}
-        onNavigateOverview={() => navigate('/admin/oversikt')}
-        onNavigateQuotes={() => navigate('/admin/forfragningar')}
-        onNavigateLeads={() => navigate('/admin/leads')}
+        onNavigate={adminNavigate}
         onNavigateBulkUpload={() => navigate('/admin/uppladdning')}
         onNavigateCatalog={() => navigate('/admin/katalog')}
       />
