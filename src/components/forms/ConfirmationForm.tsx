@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail } from 'lucide-react';
+import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home } from 'lucide-react';
 import { CustomerData, CarData, ImageFile } from '../../pages/SellCarPage';
 import { supabase } from '../../lib/supabase';
 
@@ -11,6 +11,7 @@ interface ConfirmationFormProps {
   onSubmit: () => Promise<void>;
   loading: boolean;
   onError: (error: string) => void;
+  onGoHome?: () => void;
 }
 
 const SKICK_LABELS: Record<string, string> = {
@@ -29,6 +30,7 @@ export default function ConfirmationForm({
   images,
   salesType = 'auction',
   onError,
+  onGoHome,
 }: ConfirmationFormProps) {
   const [stage, setStage] = useState<UploadStage>('idle');
   const [progress, setProgress] = useState({ current: 0, total: 0 });
@@ -328,6 +330,18 @@ export default function ConfirmationForm({
           <Clock className="w-3.5 h-3.5" strokeWidth={2.2} />
           Helt kostnadsfritt och utan förpliktelser
         </p>
+
+        {onGoHome && (
+          <div className="mt-6 text-center">
+            <button
+              onClick={onGoHome}
+              className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition"
+            >
+              <Home className="w-4 h-4" strokeWidth={2} />
+              Gå till startsidan
+            </button>
+          </div>
+        )}
       </div>
     );
   }
