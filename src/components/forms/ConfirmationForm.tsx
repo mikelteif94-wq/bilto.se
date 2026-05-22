@@ -43,8 +43,11 @@ export default function ConfirmationForm({
     e.preventDefault();
     if (submitting) return;
 
-    // Create customer (no auth account — triggered via email when first bid arrives)
+    // Create customer — link to auth account if already logged in
     setStage('customer');
+    const { data: { session: existingSession } } = await supabase.auth.getSession();
+    const loggedInUserId = existingSession?.user?.id ?? null;
+
     const customerId = crypto.randomUUID();
     const { error: customerError } = await supabase
       .from('customers')
@@ -53,7 +56,7 @@ export default function ConfirmationForm({
         namn: customer.namn,
         telefon: customer.telefon,
         mejl: customer.mejl,
-        user_id: null,
+        user_id: loggedInUserId,
       }]);
 
     if (customerError) {

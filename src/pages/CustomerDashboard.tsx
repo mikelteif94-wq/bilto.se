@@ -109,6 +109,18 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
     (async () => {
       setLoading(true);
 
+      // Always attempt to link customer rows on load (idempotent — only affects unlinked rows)
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/link-customer-account`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      }
+
       const { data: offerRows } = await supabase
         .from('car_offers' as never)
         .select('*')

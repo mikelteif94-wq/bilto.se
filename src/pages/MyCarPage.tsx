@@ -117,8 +117,17 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
       const loggedIn = !!session?.user;
       setIsLoggedIn(loggedIn);
       setAuthChecked(true);
-      if (loggedIn) void fetchCar();
-      else setLoading(false);
+      if (loggedIn) {
+        // Link customer row first, then fetch car so the car is visible
+        (async () => {
+          if (session?.access_token) {
+            await linkCustomerAccount(session.access_token);
+          }
+          void fetchCar();
+        })();
+      } else {
+        setLoading(false);
+      }
     });
     return () => subscription.unsubscribe();
   }, [token]);
@@ -843,13 +852,13 @@ function LoginOrCreateCard({ token }: { token: string }) {
     e.preventDefault();
     setErr(null);
     setSaving(true);
-    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-    if (error || !data.session) {
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (error) {
       setSaving(false);
       setErr('Fel mejl eller lösenord.');
       return;
     }
-    await linkCustomerAccount(data.session.access_token);
+    // onAuthStateChange handles linking + fetchCar
     sessionStorage.setItem('bilto_portal', 'customer');
     setSaving(false);
   };
@@ -870,7 +879,7 @@ function LoginOrCreateCard({ token }: { token: string }) {
       }
       return;
     }
-    await linkCustomerAccount(data.session.access_token);
+    // onAuthStateChange handles linking + fetchCar
     sessionStorage.setItem('bilto_portal', 'customer');
     setSaving(false);
   };
