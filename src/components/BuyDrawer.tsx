@@ -138,7 +138,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
 
   const titles: Record<FormStep, string> = {
     track: 'Hur vill du gå vidare?',
-    carIntent: car ? `Har du hittat en ${car}?` : 'Hur vill du gå vidare?',
+    carIntent: car || 'Hur vill du gå vidare?',
     details: skipIntent
       ? (track === 'searching' ? `Hitta en ${car}` : `Förhandla – ${car}`)
       : isSearchingWithPrefill
@@ -370,6 +370,10 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
 
               {step === 'carIntent' && car && (
                 <div className="py-2 space-y-3">
+                  <p className="text-[14.5px] text-slate-500 leading-[1.55]">
+                    Välj det som passar dig bäst.
+                  </p>
+
                   <button
                     type="button"
                     onClick={() => {
@@ -383,7 +387,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       <CheckCircle className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-[15px] font-bold text-slate-900">Jag har hittat en bil</p>
+                      <p className="text-[15px] font-bold text-slate-900">Jag har hittat en {car}</p>
                       <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
                         Vi förhandlar med säljaren åt dig och pressar priset.
                       </p>
@@ -403,7 +407,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       <Search className="w-5 h-5 text-slate-600" />
                     </div>
                     <div>
-                      <p className="text-[15px] font-bold text-slate-900">Jag söker en {car}</p>
+                      <p className="text-[15px] font-bold text-slate-900">Jag letar efter en {car}</p>
                       <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
                         Vi hittar, kollar och förhandlar åt dig.
                       </p>
@@ -425,7 +429,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     <div>
                       <p className="text-[15px] font-bold text-slate-900">Jag vill byta in</p>
                       <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
-                        Vi sköter inbytet och hjälper dig hitta en {car}.
+                        Vi sköter inbytet och hjälper dig hitta ny bil.
                       </p>
                     </div>
                   </button>
