@@ -187,7 +187,7 @@ export default function AdminOverview({
     stats.newQuotes > 0 && onNavigateQuotes ? {
       key: 'quotes',
       icon: <MessageSquareText className="w-4 h-4" />,
-      color: 'blue' as const,
+      color: 'amber' as const,
       title: `${stats.newQuotes} ny${stats.newQuotes === 1 ? '' : 'a'} förfrågning${stats.newQuotes === 1 ? '' : 'ar'} att hantera`,
       sub: 'Öppna förfrågningar och matcha mot handlare',
       action: onNavigateQuotes,
