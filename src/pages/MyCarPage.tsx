@@ -822,7 +822,7 @@ function CompleteListingCard({
 }
 
 function LoginOrCreateCard({ token }: { token: string }) {
-  const [mode, setMode] = useState<'login' | 'create'>('login');
+  const [mode, setMode] = useState<'login' | 'create'>('create');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [saving, setSaving] = useState(false);
@@ -866,39 +866,65 @@ function LoginOrCreateCard({ token }: { token: string }) {
           <div>
             <p className="text-[13px] font-bold text-slate-900">Skapa konto</p>
             <p className="text-[12.5px] text-slate-500 mt-0.5 leading-relaxed">
-              Vi skickar en länk till din mejl — klicka på den för att välja lösenord.
+              Ange din e-postadress så skickar vi en verifieringslänk.
             </p>
           </div>
         </div>
+
         {resetSent ? (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-sm text-emerald-800">
-            Kolla din mejl! Vi har skickat en länk till <strong>{email.trim()}</strong>.
+          <div className="space-y-3">
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-[13px] text-emerald-900 leading-relaxed">
+              <p className="font-semibold mb-1">Kolla din inkorg!</p>
+              <p className="mb-2">Vi har skickat en verifieringslänk till <strong>{email.trim()}</strong>.</p>
+              <p className="mb-2">Klicka på länken i mailet för att bekräfta din e-post. Sedan väljer du ett lösenord — klart!</p>
+              <p className="text-[12px] text-emerald-700 border-t border-emerald-200 pt-2 mt-1">
+                Hittar du inte mailet? Kolla <strong>skräpposten</strong> eller mappen &quot;Kampanjer&quot;.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => { setResetSent(false); setErr(null); }}
+              className="text-[12px] text-slate-500 hover:text-slate-700 underline"
+            >
+              Ange en annan e-postadress
+            </button>
           </div>
         ) : (
-          <form onSubmit={handleSendSetupLink} className="space-y-3">
-            <div>
-              <label className="block text-[12px] font-semibold text-slate-700 mb-1">Din mejladress</label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="namn@exempel.se"
-                autoComplete="email"
-                autoFocus
-                className="w-full h-10 rounded-xl border border-slate-200 px-3 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
-              />
+          <>
+            <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-4">
+              <ol className="text-[12px] text-blue-800 space-y-1 list-decimal list-inside leading-relaxed">
+                <li>Ange din e-postadress nedan</li>
+                <li>Vi skickar en verifieringslänk till din mail</li>
+                <li>Klicka på länken för att bekräfta</li>
+                <li>Välj ett lösenord — klart!</li>
+              </ol>
             </div>
-            {err && <p className="text-[12px] text-red-600">{err}</p>}
-            <button
-              type="submit"
-              disabled={saving}
-              className="w-full h-11 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:opacity-60 text-white font-semibold text-[14px] rounded-full transition flex items-center justify-center gap-2"
-            >
-              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-              Skicka länk
-            </button>
-          </form>
+            <form onSubmit={handleSendSetupLink} className="space-y-3">
+              <div>
+                <label className="block text-[12px] font-semibold text-slate-700 mb-1">Din e-postadress</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="namn@exempel.se"
+                  autoComplete="email"
+                  autoFocus
+                  className="w-full h-10 rounded-xl border border-slate-200 px-3 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
+                />
+              </div>
+              {err && <p className="text-[12px] text-red-600">{err}</p>}
+              <button
+                type="submit"
+                disabled={saving}
+                className="w-full h-11 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:opacity-60 text-white font-semibold text-[14px] rounded-full transition flex items-center justify-center gap-2"
+              >
+                {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+                Skicka verifieringslänk
+              </button>
+            </form>
+          </>
         )}
+
         <button
           type="button"
           onClick={() => { setMode('login'); setErr(null); setResetSent(false); }}
@@ -963,7 +989,7 @@ function LoginOrCreateCard({ token }: { token: string }) {
           onClick={() => { setMode('create'); setErr(null); }}
           className="text-[12.5px] font-semibold text-[#0e6efe] hover:underline"
         >
-          Inget konto? Skapa ett nu
+          Har du inget konto än? Skapa konto
         </button>
       </div>
     </div>
