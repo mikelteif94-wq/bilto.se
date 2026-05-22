@@ -26,6 +26,7 @@ export default function CarEquipmentStep({
 }: CarEquipmentStepProps) {
   const [selected, setSelected] = useState<string[]>(initialUtrustning);
   const [unsure, setUnsure] = useState(false);
+  const [freeText, setFreeText] = useState('');
 
   const toggle = (item: string) => {
     if (unsure) return;
@@ -36,7 +37,11 @@ export default function CarEquipmentStep({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onNext(unsure ? [] : selected);
+    const base = unsure ? [] : selected;
+    const extras = freeText.trim()
+      ? freeText.split(',').map(s => s.trim()).filter(Boolean)
+      : [];
+    onNext([...base, ...extras]);
   };
 
   return (
@@ -68,6 +73,22 @@ export default function CarEquipmentStep({
             );
           })}
         </div>
+      </div>
+
+      <div className="py-6 sm:py-7 space-y-2">
+        <label className="block text-[13px] font-semibold text-slate-700">
+          Hittar du inte din utrustning? Fyll i här
+        </label>
+        <textarea
+          value={freeText}
+          onChange={(e) => setFreeText(e.target.value)}
+          disabled={unsure}
+          placeholder="T.ex. elstolar, taklucka, dragkrok extra klass... (separera med komma)"
+          rows={3}
+          className={`w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[13px] text-slate-800 placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition ${
+            unsure ? 'opacity-40 cursor-not-allowed' : ''
+          }`}
+        />
       </div>
 
       <div className="py-6 sm:py-7">
