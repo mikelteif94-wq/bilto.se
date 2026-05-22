@@ -102,9 +102,17 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [proposals, setProposals] = useState<DealerProposal[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     void fetchCar();
+    supabase.auth.getSession().then(({ data }) => {
+      setIsLoggedIn(!!data.session?.user);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session?.user);
+    });
+    return () => subscription.unsubscribe();
   }, [token]);
 
   const fetchCar = async () => {
@@ -241,7 +249,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
 
         <StatusCard car={car} />
 
-        {(car.status === 'aktiv' || car.status === 'auktion_avslutad') && car.customer?.mejl && (
+        {!isLoggedIn && (car.status === 'ny' || car.status === 'aktiv' || car.status === 'auktion_avslutad') && car.customer?.mejl && (
           <CreateAccountCard mejl={car.customer.mejl} />
         )}
 

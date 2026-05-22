@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, Loader2, Gavel, Phone, Clock, Mail } from 'lucide-react';
+import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail } from 'lucide-react';
 import { CustomerData, CarData, ImageFile } from '../../pages/SellCarPage';
 import { supabase } from '../../lib/supabase';
 
@@ -32,6 +32,7 @@ export default function ConfirmationForm({
 }: ConfirmationFormProps) {
   const [stage, setStage] = useState<UploadStage>('idle');
   const [progress, setProgress] = useState({ current: 0, total: 0 });
+  const [savedToken, setSavedToken] = useState<string>('');
 
   const submitting = stage !== 'idle' && stage !== 'done';
   const submitted = stage === 'done';
@@ -68,7 +69,7 @@ export default function ConfirmationForm({
       .from('cars')
       .insert([{
         id: carId,
-        regnummer: car.regnummer,
+        regnummer: car.regnummer.toUpperCase(),
         marke: car.marke || '',
         modell: car.modell || '',
         ar: car.ar ?? new Date().getFullYear(),
@@ -166,7 +167,7 @@ export default function ConfirmationForm({
         schema: 'public',
         record: {
           id: carRow.id,
-          regnummer: car.regnummer,
+          regnummer: car.regnummer.toUpperCase(),
           marke: car.marke || '',
           modell: car.modell || '',
           ar: car.ar ?? new Date().getFullYear(),
@@ -179,6 +180,7 @@ export default function ConfirmationForm({
       }),
     }).catch(() => {});
 
+    setSavedToken(accessToken);
     setStage('done');
   };
 
@@ -191,7 +193,11 @@ export default function ConfirmationForm({
 
   if (submitted) {
     const firstName = customer.namn.trim().split(/\s+/)[0] || '';
+    const firstName_cap = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
     const maskedPhone = maskPhone(customer.telefon);
+    const reg = car.regnummer.toUpperCase();
+    const trackUrl = savedToken ? `/min-bil/${savedToken}` : '';
+
     return (
       <div className="py-2 sm:py-4">
         <div className="text-center mb-7">
@@ -199,11 +205,20 @@ export default function ConfirmationForm({
             <Check className="w-9 h-9 text-[#0e6efe]" strokeWidth={2} />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">
-            {firstName ? `Tack ${firstName}!` : 'Tack!'}
+            {firstName_cap ? `Tack ${firstName_cap}!` : 'Tack!'}
           </h2>
-          <p className="text-slate-600 px-2">
+          <p className="text-slate-600 px-2 mb-5">
             Vi har tagit emot din bil och hör av oss när budgivningen är klar — du behöver inte göra något mer.
           </p>
+          {trackUrl && (
+            <a
+              href={trackUrl}
+              className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[14px] rounded-full transition shadow-sm"
+            >
+              Följ din bil
+              <ArrowRight className="w-4 h-4" strokeWidth={2.2} />
+            </a>
+          )}
         </div>
 
         <div className="bg-gradient-to-br from-[#0e6efe] to-[#0b5cd8] text-white rounded-2xl p-5 sm:p-6 mb-6 shadow-sm">
@@ -276,12 +291,10 @@ export default function ConfirmationForm({
           </ol>
         </div>
 
-        <div className="bg-[#0e6efe]/5 border border-[#0e6efe]/20 rounded-xl p-4 sm:p-5 text-sm space-y-2 mb-6">
+        <div className="bg-[#0e6efe]/5 border border-[#0e6efe]/20 rounded-xl p-4 sm:p-5 text-sm space-y-2 mb-4">
           <div className="flex justify-between gap-3">
             <span className="text-slate-500">Bil</span>
-            <span className="font-semibold text-slate-900 tracking-widest">
-              {car.regnummer}
-            </span>
+            <span className="font-semibold text-slate-900 tracking-widest">{reg}</span>
           </div>
           <div className="flex justify-between gap-3">
             <span className="text-slate-500 shrink-0">Bud skickas till</span>
@@ -289,14 +302,29 @@ export default function ConfirmationForm({
           </div>
         </div>
 
-        <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 flex items-start gap-2.5">
-          <Mail className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2} />
-          <p className="text-[13px] text-slate-700 leading-relaxed">
-            Vi har skickat en bekräftelse till <span className="font-semibold">{customer.mejl}</span>. När det första budet kommit in skickar vi ett nytt mejl med en länk att skapa ditt konto.
+        <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-2.5 mb-4">
+          <Mail className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" strokeWidth={2} />
+          <p className="text-[13px] text-amber-800 leading-relaxed">
+            Vi har skickat en bekräftelse till <span className="font-semibold">{customer.mejl}</span>. Hamnar den inte i inkorgen? Kolla skräpposten eller spam-mappen.
           </p>
         </div>
 
-        <p className="flex items-center justify-center gap-1.5 mt-5 text-[12px] text-slate-500">
+        {trackUrl && (
+          <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 flex items-center justify-between gap-3 mb-4">
+            <p className="text-[13px] text-slate-600 leading-relaxed">
+              Vill du följa budgivningen? Vi skickar också länken via mejl när det första budet kommer.
+            </p>
+            <a
+              href={trackUrl}
+              className="shrink-0 inline-flex items-center gap-1.5 h-9 px-4 bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[12.5px] rounded-full transition whitespace-nowrap"
+            >
+              Följ bilen
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.2} />
+            </a>
+          </div>
+        )}
+
+        <p className="flex items-center justify-center gap-1.5 mt-4 text-[12px] text-slate-500">
           <Clock className="w-3.5 h-3.5" strokeWidth={2.2} />
           Helt kostnadsfritt och utan förpliktelser
         </p>
@@ -331,7 +359,7 @@ export default function ConfirmationForm({
           <div className="flex justify-between text-sm gap-3">
             <span className="text-slate-500">Regnummer</span>
             <span className="font-semibold text-slate-900 tracking-widest">
-              {car.regnummer}
+              {car.regnummer.toUpperCase()}
             </span>
           </div>
           <div className="flex justify-between text-sm gap-3">
