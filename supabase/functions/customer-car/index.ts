@@ -323,7 +323,7 @@ Deno.serve(async (req: Request) => {
         condition_report: car.condition_report ?? null,
         image_count: images.length,
         images: images.map((i: { storage_url: string }) => i.storage_url),
-        customer: car.customers ? { namn: car.customers.namn } : null,
+        customer: car.customers ? { namn: car.customers.namn, mejl: car.customers.mejl } : null,
         winning_bid: winningBid,
         brokerage_offers: brokerageOffers,
       },

@@ -214,7 +214,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
 
   if (!car) return null;
 
-  if (authChecked && !isLoggedIn && car.customer?.mejl) {
+  if (authChecked && !isLoggedIn) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col">
         <header className="bg-[#0e6efe] h-16 flex items-center px-5 lg:px-8">
