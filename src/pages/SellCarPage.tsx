@@ -8,7 +8,6 @@ import CustomerForm from '../components/forms/CustomerForm';
 import ImageUploadForm from '../components/forms/ImageUploadForm';
 import ConfirmationForm from '../components/forms/ConfirmationForm';
 import TrackChoiceStep from '../components/forms/TrackChoiceStep';
-import InspectionGuideStep from '../components/forms/InspectionGuideStep';
 import { supabase } from '../lib/supabase';
 
 interface SellCarPageProps {
@@ -19,7 +18,7 @@ interface SellCarPageProps {
   onNavigateTrade?: (regnummer: string, miltal: number) => void;
 }
 
-export type FormStep = 'track' | 'condition' | 'equipment' | 'inspection' | 'images' | 'contact' | 'confirm';
+export type FormStep = 'track' | 'condition' | 'equipment' | 'images' | 'contact' | 'confirm';
 
 export interface CustomerData {
   namn: string;
@@ -122,7 +121,7 @@ export default function SellCarPage({
     setGuidanceDone(true);
   };
 
-  const stepFlow: FormStep[] = ['track', 'condition', 'equipment', 'inspection', 'images', 'contact', 'confirm'];
+  const stepFlow: FormStep[] = ['track', 'condition', 'equipment', 'images', 'contact', 'confirm'];
 
   const currentIndex = stepFlow.indexOf(step);
   const totalSteps = stepFlow.length;
@@ -132,7 +131,6 @@ export default function SellCarPage({
     track: 'Hur vill du sälja din bil?',
     condition: 'Om din bil',
     equipment: 'Utrustning och tillval',
-    inspection: 'Vi annonserar och certifierar din bil',
     images: 'Bilder av bilen',
     contact: 'Dina uppgifter',
     confirm: 'Bekräfta',
@@ -265,15 +263,6 @@ export default function SellCarPage({
               initialUtrustning={car.utrustning}
               onNext={(utrustning) => {
                 setCar((c) => ({ ...c, utrustning }));
-                goNext();
-                setError(null);
-              }}
-            />
-          )}
-
-          {step === 'inspection' && (
-            <InspectionGuideStep
-              onNext={() => {
                 goNext();
                 setError(null);
               }}
