@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const LOGO_URL = "https://bilto.se/bilto_logo_transparent_(1).svg";
+const LOGO_URL = "https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png";
 const SITE = "https://bilto.se";
 
 Deno.serve(async (req: Request) => {
@@ -224,7 +224,7 @@ function buildEmail(d: {
             </td></tr>
 
             <!-- Title band -->
-            <tr><td style="background:#0a3fa8;padding:22px 28px 20px;">
+            <tr><td style="background:#0f172a;padding:22px 28px 20px;">
               <p style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.7);">${esc(d.dealTypLabel)}</p>
               <h1 style="margin:0 0 4px;font-size:22px;font-weight:800;color:#ffffff;line-height:1.2;">Hej ${esc(d.firstName)}!</h1>
               <p style="margin:0;font-size:14px;color:rgba(255,255,255,0.82);line-height:1.5;">${esc(d.dealerName)} har skickat ett erbjudande p&aring; din ${esc(d.carLabel)}</p>
