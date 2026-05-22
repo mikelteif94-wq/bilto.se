@@ -173,13 +173,20 @@ function renderEmail(d: {
         </tr>
       </table>
 
-      <p style="margin:0 0 24px;font-size:15px;color:#334155;line-height:1.7;">Logga in p&aring; din portal f&ouml;r att se hela budet, f&ouml;lja auktionen och fatta beslut n&auml;r den st&auml;nger.</p>
+      <p style="margin:0 0 24px;font-size:15px;color:#334155;line-height:1.7;">Klicka p&aring; r&auml;tt knapp nedan f&ouml;r att se hela budet p&aring; din personliga portal.</p>
 
-      <a href="${escAttr(d.loginUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff !important;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;letter-spacing:0.01em;-webkit-text-fill-color:#ffffff !important;"><span style="color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;">Visa mitt bud &rarr;</span></a>
-
-      <p style="margin:14px 0 0;font-size:13px;color:#94a3b8;">
-        Har du inget konto? <a href="${escAttr(d.registerUrl)}" style="color:#0e6efe;text-decoration:none;font-weight:600;">Skapa konto f&ouml;r att se budet</a>
-      </p>
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
+        <tr>
+          <td style="padding-bottom:12px;">
+            <a href="${escAttr(d.loginUrl)}" style="display:block;background:#0e6efe;color:#ffffff !important;text-decoration:none;border-radius:8px;padding:14px 28px;font-weight:700;font-size:15px;text-align:center;-webkit-text-fill-color:#ffffff !important;"><span style="color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;">Jag har ett konto &mdash; Logga in &rarr;</span></a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="${escAttr(d.registerUrl)}" style="display:block;background:#ffffff;color:#0e6efe !important;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;text-align:center;border:2px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;"><span style="color:#0e6efe !important;-webkit-text-fill-color:#0e6efe !important;">Jag har inget konto &mdash; Skapa konto &rarr;</span></a>
+          </td>
+        </tr>
+      </table>
     `,
   });
 }
