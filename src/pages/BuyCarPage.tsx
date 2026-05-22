@@ -47,6 +47,7 @@ export default function BuyCarPage({
     yearFrom: '',
     yearTo: '',
     maxMiltal: '',
+    hasQuote: null,
   });
 
   const [tradeIn, setTradeIn] = useState<BuyTradeInData>({
@@ -171,7 +172,11 @@ export default function BuyCarPage({
         fuel_type: details.fuelType === 'no_pref' ? '' : details.fuelType,
         link_or_seller: details.linkOrSeller,
         target_car: details.targetCar,
-        additional_requests: details.additionalRequests + (source ? ` [Källa: ${source}]` : ''),
+        additional_requests: [
+          details.additionalRequests,
+          details.hasQuote === true ? '[Har fått offert]' : details.hasQuote === false ? '[Har inte fått offert]' : '',
+          source ? `[Källa: ${source}]` : '',
+        ].filter(Boolean).join('\n'),
         desired_monthly_cost: details.paymentType === 'cash' ? '' : details.desiredMonthlyCost,
         monthly_payment: details.paymentType === 'cash' ? '' : details.desiredMonthlyCost,
         has_trade_in: track === 'trade' ? true : (tradeIn.hasTradeIn ?? false),

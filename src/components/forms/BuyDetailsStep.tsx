@@ -45,6 +45,7 @@ export interface BuyDetailsData {
   yearFrom: string;
   yearTo: string;
   maxMiltal: string;
+  hasQuote: boolean | null;
 }
 
 interface BuyDetailsStepProps {
@@ -621,6 +622,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     yearTo: initialData.yearTo || '',
     maxMiltal: initialData.maxMiltal || '',
     fuelType: autoFuel || initialData.fuelType || '',
+    hasQuote: initialData.hasQuote ?? null,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -720,6 +722,34 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               onChange={v => set('linkOrSeller', v)}
               error={errors.linkOrSeller}
             />
+          </div>
+
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+              Har du fått en offert på bilen?
+            </label>
+            <p className="text-sm text-slate-500 mb-4">
+              Det hjälper oss att veta om vi ska förhandla ett bättre pris.
+            </p>
+            <div className="flex gap-3">
+              {([{ value: true, label: 'Ja' }, { value: false, label: 'Nej' }] as const).map(opt => (
+                <button
+                  key={String(opt.value)}
+                  type="button"
+                  onClick={() => {
+                    setD(prev => ({ ...prev, hasQuote: opt.value }));
+                    setErrors(prev => { const n = { ...prev }; delete n.hasQuote; return n; });
+                  }}
+                  className={`flex-1 h-12 rounded-xl text-[15px] font-semibold border-2 transition-all ${
+                    d.hasQuote === opt.value
+                      ? 'bg-[#0e6efe] border-[#0e6efe] text-white shadow-sm'
+                      : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {!lockedCar && (
