@@ -190,7 +190,7 @@ function emailShell(opts: {
                 <tr>
                   <td valign="middle">
                     <a href="${escAttr(opts.site)}" style="text-decoration:none;display:inline-block;">
-                      <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="90" style="width:90px;height:auto;display:block;" />
+                      <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="130" style="width:130px;height:auto;display:block;" />
                     </a>
                   </td>
                   <td align="right" valign="middle">
@@ -201,7 +201,7 @@ function emailShell(opts: {
             </td></tr>
 
             <!-- Title band -->
-            <tr><td style="background:#0f172a;padding:22px 28px 20px;">
+            <tr><td style="background:#0e6efe;padding:18px 28px 22px;border-top:1px solid rgba(255,255,255,0.15);">
               <h1 style="margin:0 0 4px;font-size:22px;font-weight:800;color:#ffffff;line-height:1.2;">${opts.title}</h1>
               <p style="margin:0;font-size:14px;color:rgba(255,255,255,0.82);line-height:1.5;">${opts.subtitle}</p>
             </td></tr>
