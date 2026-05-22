@@ -153,7 +153,7 @@ export default function ConfirmationForm({
     void fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-customer-submitted`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ car_id: carRow.id, tracking_url: url }),
+      body: JSON.stringify({ car_id: carRow.id, tracking_url: trackingUrl }),
     }).catch(() => {});
 
     // Notis till admin om ny bil
