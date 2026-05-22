@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const LOGO_URL = "https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png";
+const LOGO_SVG_URL = "https://bilto.se/bilto_logo_transparent_(1).svg";
 const SITE = "https://bilto.se";
 
 Deno.serve(async (req: Request) => {
@@ -197,94 +197,63 @@ function buildEmail(d: {
 <meta name="x-apple-disable-message-reformatting"/>
 <title>Bilto</title>
 </head>
-<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+<body style="margin:0;padding:0;background:#f4f6f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
   <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Hej ${esc(d.firstName)}! Du har f&aring;tt ett erbjudande p&aring; din ${esc(d.carLabel)}.&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;</div>
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:32px 12px 40px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8;padding:24px 12px 36px;">
     <tr><td align="center">
-      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:500px;">
 
-        <tr><td style="background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.07);">
-          <table width="100%" cellpadding="0" cellspacing="0">
-
-            <!-- Blue header with logo -->
-            <tr><td style="background:#0e6efe;padding:20px 28px 18px;">
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td valign="middle">
-                    <a href="${SITE}" style="text-decoration:none;display:inline-block;">
-                      <img src="${LOGO_URL}" alt="Bilto" width="130" style="width:130px;height:auto;display:block;" />
-                    </a>
-                  </td>
-                  <td align="right" valign="middle">
-                    <span style="font-size:12px;color:rgba(255,255,255,0.7);font-weight:500;">bilto.se</span>
-                  </td>
-                </tr>
-              </table>
-            </td></tr>
-
-            <!-- Title band -->
-            <tr><td style="background:#0e6efe;padding:18px 28px 22px;border-top:1px solid rgba(255,255,255,0.15);">
-              <p style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.7);">${esc(d.dealTypLabel)}</p>
-              <h1 style="margin:0 0 4px;font-size:22px;font-weight:800;color:#ffffff;line-height:1.2;">Hej ${esc(d.firstName)}!</h1>
-              <p style="margin:0;font-size:14px;color:rgba(255,255,255,0.82);line-height:1.5;">${esc(d.dealerName)} har skickat ett erbjudande p&aring; din ${esc(d.carLabel)}</p>
-            </td></tr>
-
-            <!-- Body -->
-            <tr><td style="padding:28px 28px 8px;">
-              ${d.offeredCar ? `
-              <p style="margin:0 0 3px;font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Erbjuden bil</p>
-              <p style="margin:0 0 20px;font-size:18px;font-weight:700;color:#0f172a;">${esc(d.offeredCar)}</p>` : ""}
-
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:4px;">
-                <tr>
-                  <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-size:13px;">Ny m&aring;nadskostnad</td>
-                  <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:700;color:#0f172a;">${fmt(d.manadskostnad)} kr/m&aring;n</td>
-                </tr>
-                ${d.kundNuvarandeMaand > 0 ? `<tr>
-                  <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-size:13px;">Din nuvarande</td>
-                  <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:13px;color:#64748b;">${fmt(d.kundNuvarandeMaand)} kr/m&aring;n</td>
-                </tr>` : ""}
-                ${savingRow}
-              </table>
-
-              ${moneyShot}
-            </td></tr>
-
-            <!-- CTA -->
-            <tr><td style="padding:8px 28px 28px;text-align:center;">
-              <a href="${d.portalUrl}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:13px 28px;border-radius:8px;letter-spacing:0.01em;">
-                Se hela erbjudandet &rarr;
-              </a>
-            </td></tr>
-
-            <!-- Footer inside card -->
-            <tr><td style="padding:0 28px 24px;border-top:1px solid #f1f5f9;">
-              <table width="100%" cellpadding="0" cellspacing="0" style="padding-top:20px;">
-                <tr>
-                  <td valign="middle">
-                    <p style="margin:0 0 1px;font-size:13px;color:#64748b;">Med v&auml;nliga h&auml;lsningar,</p>
-                    <p style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">Teamet p&aring; Bilto</p>
-                  </td>
-                  <td align="right" valign="middle">
-                    <a href="${SITE}" style="text-decoration:none;">
-                      <img src="${LOGO_URL}" alt="Bilto" width="54" style="width:54px;height:auto;display:block;opacity:0.55;" />
-                    </a>
-                  </td>
-                </tr>
-              </table>
-            </td></tr>
-
-          </table>
+        <!-- Blue logo strip -->
+        <tr><td align="center" style="background:#0e6efe;border-radius:12px 12px 0 0;padding:18px 28px;">
+          <a href="${SITE}" style="text-decoration:none;display:inline-block;">
+            <img src="${LOGO_SVG_URL}" alt="Bilto" width="110" style="width:110px;height:auto;display:block;" />
+          </a>
         </td></tr>
 
-        <tr><td align="center" style="padding-top:18px;">
-          <p style="margin:0 0 4px;font-size:12px;color:#94a3b8;">
+        <!-- White card -->
+        <tr><td style="background:#ffffff;border-radius:0 0 12px 12px;padding:32px 28px 28px;">
+          <p style="margin:0 0 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;">${esc(d.dealTypLabel)}</p>
+          <h1 style="margin:0 0 4px;font-size:22px;font-weight:800;color:#0f172a;line-height:1.25;">Hej ${esc(d.firstName)}!</h1>
+          <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.6;">${esc(d.dealerName)} har skickat ett erbjudande p&aring; din ${esc(d.carLabel)}</p>
+
+          ${d.offeredCar ? `
+          <p style="margin:0 0 3px;font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Erbjuden bil</p>
+          <p style="margin:0 0 20px;font-size:18px;font-weight:700;color:#0f172a;">${esc(d.offeredCar)}</p>` : ""}
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:4px;">
+            <tr>
+              <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-size:13px;">Ny m&aring;nadskostnad</td>
+              <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:700;color:#0f172a;">${fmt(d.manadskostnad)} kr/m&aring;n</td>
+            </tr>
+            ${d.kundNuvarandeMaand > 0 ? `<tr>
+              <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-size:13px;">Din nuvarande</td>
+              <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:13px;color:#64748b;">${fmt(d.kundNuvarandeMaand)} kr/m&aring;n</td>
+            </tr>` : ""}
+            ${savingRow}
+          </table>
+
+          ${moneyShot}
+
+          <div style="margin-top:${moneyShot ? "4px" : "20px"};text-align:center;">
+            <a href="${d.portalUrl}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:13px 28px;border-radius:8px;letter-spacing:0.01em;">
+              Se hela erbjudandet &rarr;
+            </a>
+          </div>
+
+          <div style="border-top:1px solid #e2e8f0;margin:28px 0 20px;"></div>
+          <p style="margin:0 0 2px;font-size:13px;color:#94a3b8;">Med v&auml;nliga h&auml;lsningar,</p>
+          <p style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">Teamet p&aring; Bilto</p>
+        </td></tr>
+
+        <!-- Below card -->
+        <tr><td align="center" style="padding-top:16px;">
+          <p style="margin:0 0 3px;font-size:12px;color:#94a3b8;">
             <a href="mailto:hej@bilto.se" style="color:#94a3b8;text-decoration:none;">hej@bilto.se</a>
             &nbsp;&middot;&nbsp;
             <a href="${SITE}" style="color:#94a3b8;text-decoration:none;">bilto.se</a>
           </p>
-          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${year} Bilto. Alla r&auml;ttigheter f&ouml;rbeh&aring;llna.</p>
+          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${year} Bilto</p>
         </td></tr>
 
       </table>
