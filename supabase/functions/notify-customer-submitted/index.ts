@@ -80,7 +80,7 @@ Deno.serve(async (req: Request) => {
       ? rawFirst.charAt(0).toUpperCase() + rawFirst.slice(1).toLowerCase()
       : (customer.namn ?? "");
 
-    const accountUrl = `${appUrl.replace(/\/$/, "")}/logga-in?mejl=${encodeURIComponent(customer.mejl)}`;
+    const accountUrl = `${appUrl.replace(/\/$/, "")}/logga-in?skapa=1&mejl=${encodeURIComponent(customer.mejl)}`;
     const html = renderEmail({ fornamn, regnummer: car.regnummer, trackingUrl, accountUrl, appUrl });
 
     const text = [
