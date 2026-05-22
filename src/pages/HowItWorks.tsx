@@ -78,7 +78,7 @@ const DIRECT_STEP_IMAGES = [
 const FAQ = [
   {
     q: 'Vad kostar det att använda Bilto?',
-    a: 'Det kostar 1 995 kr i administrativ avgift — det är allt. Avgiften täcker vår förhandling, granskning och all administration kring affären.',
+    a: 'Det kostar 1 995 kr i fast administrativ avgift — det är allt du betalar, inga dolda avgifter och inget provision. Avgiften gäller dig som privatperson och täcker vår förhandling, granskning och all administration kring affären. Handlare och företag omfattas inte av denna tjänst.',
   },
   {
     q: 'Hur hjälper Bilto mig att köpa bil?',
