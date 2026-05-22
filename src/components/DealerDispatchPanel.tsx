@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import {
   Send, CheckCircle2, Eye, MessageSquare, XCircle,
   Clock, ChevronDown, Loader2, Users, Bell, Search,
-  Mail,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -66,6 +65,7 @@ export default function DealerDispatchPanel({
   const [dispatches, setDispatches] = useState<Dispatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
   const [selectedDealers, setSelectedDealers] = useState<Set<string>>(new Set());
   const [message, setMessage] = useState('');
   const [deadlineHours, setDeadlineHours] = useState(24);
@@ -106,11 +106,16 @@ export default function DealerDispatchPanel({
   async function dispatch() {
     if (selectedDealers.size === 0) return;
     setSending(true);
+    setSendError(null);
     const deadline = new Date(Date.now() + deadlineHours * 3600000).toISOString();
 
     const alreadySentIds = new Set(dispatches.map((d) => d.dealer_id));
     const newDealers = [...selectedDealers].filter((id) => !alreadySentIds.has(id));
-    if (newDealers.length === 0) { setSending(false); return; }
+    if (newDealers.length === 0) {
+      setSendError('Valda handlare har redan fått detta lead.');
+      setSending(false);
+      return;
+    }
 
     const rows = newDealers.map((dealerId) => ({
       car_id: carId ?? null,
@@ -119,7 +124,7 @@ export default function DealerDispatchPanel({
       response_status: 'sent',
       response_deadline_hours: deadlineHours,
       deadline_at: deadline,
-      dispatched_by: adminUserId,
+      dispatched_by: adminUserId || null,
       dispatched_by_name: adminName,
       message,
     }));
@@ -127,6 +132,7 @@ export default function DealerDispatchPanel({
     const { data: inserted, error: insertErr } = await supabase.from('dealer_dispatches').insert(rows).select('id');
     if (insertErr) {
       console.error('Dispatch insert error:', insertErr);
+      setSendError(`Fel: ${insertErr.message}`);
       setSending(false);
       return;
     }
@@ -146,16 +152,16 @@ export default function DealerDispatchPanel({
       } catch { /* best effort */ }
     }
 
-    // Log activity
-    if (carId) {
+    // Log activity (best effort — don't block on failure)
+    if (carId && adminUserId) {
       await supabase.from('car_activities').insert({
         car_id: carId,
         type: 'dispatch',
-        title: `Skickat till ${selectedDealers.size} handlare`,
-        body: `Lead skickat till: ${dealers.filter((d) => selectedDealers.has(d.id)).map((d) => d.foretagsnamn).join(', ')}`,
+        title: `Skickat till ${newDealers.length} handlare`,
+        body: `Lead skickat till: ${dealers.filter((d) => newDealers.includes(d.id)).map((d) => d.foretagsnamn).join(', ')}`,
         created_by: adminUserId,
         created_by_name: adminName,
-      });
+      }).then(({ error }) => { if (error) console.warn('Activity log error:', error); });
     }
 
     setSelectedDealers(new Set());
@@ -370,6 +376,10 @@ export default function DealerDispatchPanel({
               <option value={72}>72 timmar</option>
             </select>
           </div>
+
+          {sendError && (
+            <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{sendError}</p>
+          )}
 
           <button
             onClick={dispatch}
