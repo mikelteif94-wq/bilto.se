@@ -30,7 +30,7 @@ export default function CustomerLogin({ onLoggedIn, onBack }: CustomerLoginProps
     setResetting(true);
     sessionStorage.setItem('bilto_portal', 'customer');
     const { error: rErr } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/handlare/valj-losenord`,
+      redirectTo: `${window.location.origin}/valj-losenord`,
     });
     setResetting(false);
     if (rErr) {
@@ -38,7 +38,6 @@ export default function CustomerLogin({ onLoggedIn, onBack }: CustomerLoginProps
       return;
     }
     setResetSent(true);
-    if (isNew) setNewAccount(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

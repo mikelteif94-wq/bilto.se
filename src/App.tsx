@@ -98,6 +98,7 @@ function detectRecovery(): boolean {
   const search = window.location.search || '';
   if (hash.includes('type=recovery') || search.includes('type=recovery')) return true;
   if (window.location.pathname === '/handlare/valj-losenord') return true;
+  if (window.location.pathname === '/valj-losenord') return true;
   return false;
 }
 
@@ -131,11 +132,12 @@ function App() {
       setAuthLoading(false);
       if (event === 'PASSWORD_RECOVERY') {
         const isCustomer = sessionStorage.getItem('bilto_portal') === 'customer';
+        const recoveryPath = isCustomer ? '/valj-losenord' : '/handlare/valj-losenord';
         setRecoveryTarget(isCustomer ? '/mina-bilar' : '/handlare/oversikt');
         setRecoveryMode(true);
-        if (window.location.pathname !== '/handlare/valj-losenord') {
-          window.history.replaceState({}, '', '/handlare/valj-losenord');
-          setPath('/handlare/valj-losenord');
+        if (window.location.pathname !== recoveryPath) {
+          window.history.replaceState({}, '', recoveryPath);
+          setPath(recoveryPath);
         }
       }
     });
