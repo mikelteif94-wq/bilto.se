@@ -183,7 +183,7 @@ function emailShell(opts: {
         <!-- Blue logo strip -->
         <tr><td align="center" style="background:#0e6efe;border-radius:12px 12px 0 0;padding:18px 28px;">
           <a href="${escAttr(opts.site)}" style="text-decoration:none;display:inline-block;">
-            <img src="${escAttr(LOGO_SVG_URL)}" alt="Bilto" width="110" style="width:110px;height:auto;display:block;" />
+            <img src="${escAttr(LOGO_SVG_URL)}" alt="Bilto" width="220" style="width:220px;height:auto;display:block;" />
           </a>
         </td></tr>
 
