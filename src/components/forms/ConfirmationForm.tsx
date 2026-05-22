@@ -198,7 +198,9 @@ export default function ConfirmationForm({
     const firstName_cap = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
     const maskedPhone = maskPhone(customer.telefon);
     const reg = car.regnummer.toUpperCase();
-    const trackUrl = savedToken ? `/min-bil/${savedToken}` : '';
+    const trackUrl = savedToken
+      ? `/logga-in?mejl=${encodeURIComponent(customer.mejl)}&skapa=1`
+      : '';
 
     return (
       <div className="py-2 sm:py-4">

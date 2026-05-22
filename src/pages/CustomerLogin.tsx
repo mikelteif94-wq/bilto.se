@@ -10,14 +10,16 @@ interface CustomerLoginProps {
 }
 
 export default function CustomerLogin({ onLoggedIn, onBack }: CustomerLoginProps) {
-  const prefillEmail = new URLSearchParams(window.location.search).get('mejl') ?? '';
+  const params = new URLSearchParams(window.location.search);
+  const prefillEmail = params.get('mejl') ?? '';
+  const startCreate = params.get('skapa') === '1';
   const [email, setEmail] = useState(prefillEmail);
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resetSent, setResetSent] = useState(false);
   const [resetting, setResetting] = useState(false);
-  const [newAccount, setNewAccount] = useState(!!prefillEmail);
+  const [newAccount, setNewAccount] = useState(startCreate || !!prefillEmail);
 
   const handleReset = async (isNew = false) => {
     setError(null);

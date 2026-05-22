@@ -64,8 +64,8 @@ Deno.serve(async (req: Request) => {
       return jsonResp({ skipped: true, reason: "Kunden har redan ett konto" }, 200);
     }
 
-    const trackingUrl = appUrl && car.access_token
-      ? `${appUrl.replace(/\/$/, "")}/min-bil/${car.access_token}`
+    const trackingUrl = appUrl
+      ? `${appUrl.replace(/\/$/, "")}/logga-in?mejl=${encodeURIComponent(customer.mejl)}&skapa=1`
       : "";
 
     if (!resendKey) {
