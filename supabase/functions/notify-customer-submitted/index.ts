@@ -80,8 +80,9 @@ Deno.serve(async (req: Request) => {
       ? rawFirst.charAt(0).toUpperCase() + rawFirst.slice(1).toLowerCase()
       : (customer.namn ?? "");
 
-    const accountUrl = `${appUrl.replace(/\/$/, "")}/logga-in?skapa=1&mejl=${encodeURIComponent(customer.mejl)}`;
-    const html = renderEmail({ fornamn, regnummer: car.regnummer, trackingUrl, accountUrl, appUrl });
+    const registerUrl = `${appUrl.replace(/\/$/, "")}/logga-in?skapa=1&mejl=${encodeURIComponent(customer.mejl)}`;
+    const loginUrl = `${appUrl.replace(/\/$/, "")}/logga-in?mejl=${encodeURIComponent(customer.mejl)}`;
+    const html = renderEmail({ fornamn, regnummer: car.regnummer, trackingUrl, registerUrl, loginUrl, appUrl });
 
     const text = [
       `Hej ${fornamn}!`,
@@ -90,11 +91,13 @@ Deno.serve(async (req: Request) => {
       "En av våra experter ringer dig inom kort för att gå igenom nästa steg.",
       "",
       "Under tiden kan du luta dig tillbaka.",
-      trackingUrl ? `Skapa ditt konto och följ ärendet här: ${trackingUrl}` : undefined,
+      "",
+      `Inget konto? Skapa ett: ${registerUrl}`,
+      `Har du redan ett konto? Logga in: ${loginUrl}`,
       "",
       "Vi hörs snart!",
       "Hälsningar, Teamet på Bilto",
-    ].filter((v): v is string => v !== undefined).join("\n");
+    ].join("\n");
 
     let status: "sent" | "failed" = "sent";
     let detaljer = "";
@@ -140,7 +143,8 @@ function renderEmail(d: {
   fornamn: string;
   regnummer: string;
   trackingUrl: string;
-  accountUrl: string;
+  registerUrl: string;
+  loginUrl: string;
   appUrl: string;
 }): string {
   const site = d.appUrl ? d.appUrl.replace(/\/$/, "") : SITE;
@@ -154,7 +158,19 @@ function renderEmail(d: {
       <p style="margin:0 0 16px;font-size:15px;color:#334155;line-height:1.7;">En av v&aring;ra experter ringer dig inom kort f&ouml;r att g&aring; igenom n&auml;sta steg och svara p&aring; alla fr&aring;gor du har.</p>
       ${d.regnummer ? `<p style="margin:0 0 16px;font-size:14px;color:#64748b;">Registreringsnummer: <strong style="color:#0f172a;font-family:monospace;">${esc(d.regnummer)}</strong></p>` : ""}
       <p style="margin:0 0 24px;font-size:15px;color:#334155;line-height:1.7;">Under tiden kan du luta dig tillbaka &mdash; vi sk&ouml;ter allt och h&ouml;r av oss snart!</p>
-      <a href="${escAttr(d.accountUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff !important;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;letter-spacing:0.01em;-webkit-text-fill-color:#ffffff !important;"><span style="color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;">Skapa konto &amp; f&ouml;lj din bil &rarr;</span></a>
+
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
+        <tr>
+          <td style="padding-bottom:12px;">
+            <a href="${escAttr(d.registerUrl)}" style="display:block;background:#0e6efe;color:#ffffff !important;text-decoration:none;border-radius:8px;padding:14px 28px;font-weight:700;font-size:15px;text-align:center;-webkit-text-fill-color:#ffffff !important;"><span style="color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;">Jag har inget konto &mdash; Skapa konto &rarr;</span></a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="${escAttr(d.loginUrl)}" style="display:block;background:#ffffff;color:#0e6efe !important;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;text-align:center;border:2px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;"><span style="color:#0e6efe !important;-webkit-text-fill-color:#0e6efe !important;">Jag har ett konto &mdash; Logga in &rarr;</span></a>
+          </td>
+        </tr>
+      </table>
     `,
   });
 }
