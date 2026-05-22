@@ -232,18 +232,17 @@ export default function ConfirmationForm({
             </div>
             <div>
               <p className="text-[13px] font-semibold uppercase tracking-wide text-white/80 mb-1">
-                Vi ringer dig
+                Vi ringer dig direkt
               </p>
               <p className="text-[17px] font-semibold leading-snug">
-                Inom 1-3 arbetsdagar med ditt högsta bud
+                {maskedPhone ? <>Vi ringer dig på <span className="text-white">{maskedPhone}</span></> : 'Vi ringer dig så snart som möjligt'}
               </p>
             </div>
           </div>
-          {maskedPhone && (
-            <p className="text-sm text-white/85 pl-[52px]">
-              Vi ringer dig på <span className="font-semibold text-white">{maskedPhone}</span>
-            </p>
-          )}
+          <p className="text-sm text-white/85 pl-[52px]">
+            Kan inte vänta? Ring oss på{' '}
+            <a href="tel:+46855550200" className="font-semibold text-white underline underline-offset-2">08-5555 0200</a>
+          </p>
         </div>
 
         <div className="border border-slate-200 rounded-2xl p-5 sm:p-6 mb-6">
@@ -275,7 +274,7 @@ export default function ConfirmationForm({
               <div className="pb-1">
                 <p className="text-sm font-semibold text-slate-900">Bilhandlare lägger bud</p>
                 <p className="text-[13px] text-slate-500 leading-relaxed mt-0.5">
-                  Budgivningen pågår i 1-3 dagar. När det första budet kommer skickar vi ett mejl — då kan du skapa ditt konto för att följa buden live.
+                  Handlare lägger bud direkt. När det första budet kommer skickar vi ett mejl — då kan du skapa ditt konto för att följa buden live.
                 </p>
               </div>
             </li>
