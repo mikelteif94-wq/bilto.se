@@ -70,7 +70,7 @@ Deno.serve(async (req: Request) => {
       : `${appUrl.replace(/\/$/, "")}/logga-in?mejl=${encodeURIComponent(customer.mejl)}`;
 
     const loginUrl = `${appUrl.replace(/\/$/, "")}/logga-in?mejl=${encodeURIComponent(customer.mejl)}`;
-    const registerUrl = `${appUrl.replace(/\/$/, "")}/logga-in`;
+    const registerUrl = `${appUrl.replace(/\/$/, "")}/logga-in?skapa=1&mejl=${encodeURIComponent(customer.mejl)}`;
 
     if (!resendKey) {
       await supabase.from("notifications_log").insert({
