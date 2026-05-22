@@ -154,7 +154,7 @@ function renderEmail(d: {
       <p style="margin:0 0 16px;font-size:15px;color:#334155;line-height:1.7;">En av v&aring;ra experter ringer dig inom kort f&ouml;r att g&aring; igenom n&auml;sta steg och svara p&aring; alla fr&aring;gor du har.</p>
       ${d.regnummer ? `<p style="margin:0 0 16px;font-size:14px;color:#64748b;">Registreringsnummer: <strong style="color:#0f172a;font-family:monospace;">${esc(d.regnummer)}</strong></p>` : ""}
       <p style="margin:0 0 24px;font-size:15px;color:#334155;line-height:1.7;">Under tiden kan du luta dig tillbaka &mdash; vi sk&ouml;ter allt och h&ouml;r av oss snart!</p>
-      <a href="${escAttr(d.accountUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;letter-spacing:0.01em;">Skapa konto &amp; f&ouml;lj din bil &rarr;</a>
+      <a href="${escAttr(d.accountUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff !important;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;letter-spacing:0.01em;-webkit-text-fill-color:#ffffff !important;"><span style="color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;">Skapa konto &amp; f&ouml;lj din bil &rarr;</span></a>
     `,
   });
 }
