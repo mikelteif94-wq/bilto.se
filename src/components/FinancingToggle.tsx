@@ -44,10 +44,10 @@ export default function FinancingToggle({ carPrice, usedPrice, dark = false }: F
         onClick={() => setOpen(v => !v)}
         className={`flex items-center gap-1.5 text-[11px] font-semibold transition-colors duration-150 ${
           open
-            ? 'text-[#0e6efe]'
+            ? 'text-emerald-600'
             : dark
-            ? 'text-slate-400 hover:text-[#0e6efe]'
-            : 'text-slate-400 hover:text-[#0e6efe]'
+            ? 'text-emerald-400 hover:text-emerald-300'
+            : 'text-emerald-600 hover:text-emerald-700'
         }`}
       >
         <Calculator className="w-3.5 h-3.5 shrink-0" />
