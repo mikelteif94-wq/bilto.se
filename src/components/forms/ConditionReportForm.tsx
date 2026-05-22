@@ -68,6 +68,8 @@ interface ConditionReportFormProps {
   onChange: (next: ConditionReport) => void;
   collapsible?: boolean;
   readOnly?: boolean;
+  /** When true each sub-section (Mekaniskt, Kosmetiskt, Inredning) is individually collapsible */
+  collapsibleSections?: boolean;
 }
 
 export default function ConditionReportForm({
@@ -75,6 +77,7 @@ export default function ConditionReportForm({
   onChange,
   collapsible = false,
   readOnly = false,
+  collapsibleSections = false,
 }: ConditionReportFormProps) {
   const [open, setOpen] = useState(!collapsible);
 
@@ -94,16 +97,15 @@ export default function ConditionReportForm({
       )}
 
       {open && (
-        <div className={`space-y-5 ${readOnly ? 'pointer-events-none select-none opacity-90' : ''}`}>
+        <div className={`space-y-3 ${readOnly ? 'pointer-events-none select-none opacity-90' : ''}`}>
           <Section
             title="Mekaniskt"
             items={MEKANISKT_ITEMS}
             statuses={value.mekaniskt}
             onSet={(k, s) => update({ mekaniskt: { ...value.mekaniskt, [k]: s } })}
             kommentar={value.kommentarer.mekaniskt ?? ''}
-            onKommentar={(t) =>
-              update({ kommentarer: { ...value.kommentarer, mekaniskt: t } })
-            }
+            onKommentar={(t) => update({ kommentarer: { ...value.kommentarer, mekaniskt: t } })}
+            collapsible={collapsibleSections}
           />
           <Section
             title="Kosmetiskt"
@@ -111,9 +113,8 @@ export default function ConditionReportForm({
             statuses={value.kosmetiskt}
             onSet={(k, s) => update({ kosmetiskt: { ...value.kosmetiskt, [k]: s } })}
             kommentar={value.kommentarer.kosmetiskt ?? ''}
-            onKommentar={(t) =>
-              update({ kommentarer: { ...value.kommentarer, kosmetiskt: t } })
-            }
+            onKommentar={(t) => update({ kommentarer: { ...value.kommentarer, kosmetiskt: t } })}
+            collapsible={collapsibleSections}
           />
           <Section
             title="Inredning"
@@ -121,57 +122,50 @@ export default function ConditionReportForm({
             statuses={value.inredning}
             onSet={(k, s) => update({ inredning: { ...value.inredning, [k]: s } })}
             kommentar={value.kommentarer.inredning ?? ''}
-            onKommentar={(t) =>
-              update({ kommentarer: { ...value.kommentarer, inredning: t } })
-            }
+            onKommentar={(t) => update({ kommentarer: { ...value.kommentarer, inredning: t } })}
+            collapsible={collapsibleSections}
           />
 
-          <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5">
-            <h3 className="text-sm font-bold text-slate-900 mb-3">Historik</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-              <YesNo
-                label="Servicehistorik finns"
-                value={value.historik.servicehistorik}
-                onChange={(v) =>
-                  update({ historik: { ...value.historik, servicehistorik: v } })
-                }
-              />
-              <YesNo
-                label="Tidigare skador"
-                value={value.historik.tidigare_skador}
-                onChange={(v) =>
-                  update({ historik: { ...value.historik, tidigare_skador: v } })
-                }
-              />
-              <YesNo
-                label="Momsbil"
-                value={value.historik.momsbil}
-                onChange={(v) => update({ historik: { ...value.historik, momsbil: v } })}
-              />
-              <NumberField
-                label="Antal nycklar"
-                value={value.historik.antal_nycklar}
-                onChange={(n) =>
-                  update({ historik: { ...value.historik, antal_nycklar: n } })
-                }
-              />
-              <NumberField
-                label="Antal tidigare ägare"
-                value={value.historik.antal_agare}
-                onChange={(n) =>
-                  update({ historik: { ...value.historik, antal_agare: n } })
-                }
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="px-4 sm:px-5 py-3.5 flex items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-900 flex-1">Historik</h3>
+            </div>
+            <div className="px-4 sm:px-5 pb-4 border-t border-slate-100">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm pt-3">
+                <YesNo
+                  label="Servicehistorik finns"
+                  value={value.historik.servicehistorik}
+                  onChange={(v) => update({ historik: { ...value.historik, servicehistorik: v } })}
+                />
+                <YesNo
+                  label="Tidigare skador"
+                  value={value.historik.tidigare_skador}
+                  onChange={(v) => update({ historik: { ...value.historik, tidigare_skador: v } })}
+                />
+                <YesNo
+                  label="Momsbil"
+                  value={value.historik.momsbil}
+                  onChange={(v) => update({ historik: { ...value.historik, momsbil: v } })}
+                />
+                <NumberField
+                  label="Antal nycklar"
+                  value={value.historik.antal_nycklar}
+                  onChange={(n) => update({ historik: { ...value.historik, antal_nycklar: n } })}
+                />
+                <NumberField
+                  label="Antal tidigare ägare"
+                  value={value.historik.antal_agare}
+                  onChange={(n) => update({ historik: { ...value.historik, antal_agare: n } })}
+                />
+              </div>
+              <textarea
+                value={value.kommentarer.historik ?? ''}
+                onChange={(e) => update({ kommentarer: { ...value.kommentarer, historik: e.target.value } })}
+                placeholder="Övrig historik – servicebok, ev. olyckor, tidigare användning"
+                rows={2}
+                className="mt-3 w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none text-sm"
               />
             </div>
-            <textarea
-              value={value.kommentarer.historik ?? ''}
-              onChange={(e) =>
-                update({ kommentarer: { ...value.kommentarer, historik: e.target.value } })
-              }
-              placeholder="Övrig historik – servicebok, ev. olyckor, tidigare användning"
-              rows={2}
-              className="mt-3 w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none text-sm"
-            />
           </div>
         </div>
       )}
@@ -186,6 +180,7 @@ function Section({
   onSet,
   kommentar,
   onKommentar,
+  collapsible = false,
 }: {
   title: string;
   items: { key: string; label: string }[];
@@ -193,28 +188,69 @@ function Section({
   onSet: (key: string, s: ItemStatus) => void;
   kommentar: string;
   onKommentar: (s: string) => void;
+  collapsible?: boolean;
 }) {
+  const [expanded, setExpanded] = useState(true);
+
+  const flags = items.map((it) => statuses[it.key] ?? '');
+  const issues = flags.filter((f) => f === 'anmark' || f === 'allvarligt').length;
+  const serious = flags.filter((f) => f === 'allvarligt').length;
+
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5">
-      <h3 className="text-sm font-bold text-slate-900 mb-3">{title}</h3>
-      <ul className="divide-y divide-slate-100">
-        {items.map((it) => (
-          <li key={it.key} className="py-2.5 flex items-center justify-between gap-3">
-            <span className="text-sm text-slate-800">{it.label}</span>
-            <StatusButtons
-              value={statuses[it.key] ?? ''}
-              onChange={(s) => onSet(it.key, s)}
-            />
-          </li>
-        ))}
-      </ul>
-      <textarea
-        value={kommentar}
-        onChange={(e) => onKommentar(e.target.value)}
-        placeholder={`Kommentar om ${title.toLowerCase()} (frivillig)`}
-        rows={2}
-        className="mt-3 w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none text-sm"
-      />
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <button
+        type="button"
+        onClick={() => collapsible && setExpanded((v) => !v)}
+        className={`w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 text-left ${collapsible ? 'hover:bg-slate-50 transition' : 'cursor-default'}`}
+      >
+        <h3 className="text-sm font-bold text-slate-900 flex-1">{title}</h3>
+        {/* Summary badges when collapsed */}
+        {collapsible && !expanded && (
+          <div className="flex items-center gap-1.5">
+            {serious > 0 && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-[11px] font-semibold">
+                <AlertOctagon className="w-3 h-3" />{serious}
+              </span>
+            )}
+            {issues - serious > 0 && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[11px] font-semibold">
+                <AlertTriangle className="w-3 h-3" />{issues - serious}
+              </span>
+            )}
+            {issues === 0 && flags.some((f) => f === 'ok') && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-semibold">
+                <Check className="w-3 h-3" />OK
+              </span>
+            )}
+          </div>
+        )}
+        {collapsible && (
+          <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform shrink-0 ${expanded ? 'rotate-180' : ''}`} />
+        )}
+      </button>
+
+      {expanded && (
+        <div className="border-t border-slate-100 px-4 sm:px-5 pb-4">
+          <ul className="divide-y divide-slate-100">
+            {items.map((it) => (
+              <li key={it.key} className="py-2.5 flex items-center justify-between gap-3">
+                <span className="text-sm text-slate-800">{it.label}</span>
+                <StatusButtons
+                  value={statuses[it.key] ?? ''}
+                  onChange={(s) => onSet(it.key, s)}
+                />
+              </li>
+            ))}
+          </ul>
+          <textarea
+            value={kommentar}
+            onChange={(e) => onKommentar(e.target.value)}
+            placeholder={`Kommentar om ${title.toLowerCase()} (frivillig)`}
+            rows={2}
+            className="mt-3 w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none text-sm"
+          />
+        </div>
+      )}
     </div>
   );
 }

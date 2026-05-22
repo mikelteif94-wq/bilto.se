@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   ChevronLeft,
+  ChevronDown,
   Loader2,
   Mail,
   Phone,
@@ -71,6 +72,8 @@ export default function AdminCarDetail({
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const [reportOpen, setReportOpen] = useState(false);
 
   const [editingStartbud, setEditingStartbud] = useState(false);
   const [startbudInput, setStartbudInput] = useState('');
@@ -385,9 +388,20 @@ export default function AdminCarDetail({
                   kommentarer: { ...EMPTY_CONDITION_REPORT.kommentarer, ...(raw.kommentarer as object ?? {}) },
                 };
                 return (
-                  <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
-                    <h2 className="text-lg font-bold text-slate-900 mb-4">Skickrapport</h2>
-                    <ConditionReportForm value={report} onChange={() => {}} readOnly />
+                  <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => setReportOpen((v) => !v)}
+                      className="w-full flex items-center justify-between px-5 sm:px-6 py-4 hover:bg-slate-50 transition text-left"
+                    >
+                      <h2 className="text-base font-bold text-slate-900">Skickrapport</h2>
+                      <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${reportOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {reportOpen && (
+                      <div className="border-t border-slate-100 px-5 sm:px-6 py-5">
+                        <ConditionReportForm value={report} onChange={() => {}} readOnly collapsibleSections />
+                      </div>
+                    )}
                   </div>
                 );
               })()}
