@@ -103,14 +103,17 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
   const [submitting, setSubmitting] = useState(false);
   const [proposals, setProposals] = useState<DealerProposal[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     void fetchCar();
     supabase.auth.getSession().then(({ data }) => {
       setIsLoggedIn(!!data.session?.user);
+      setAuthChecked(true);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(!!session?.user);
+      setAuthChecked(true);
     });
     return () => subscription.unsubscribe();
   }, [token]);
@@ -211,6 +214,36 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
 
   if (!car) return null;
 
+  if (authChecked && !isLoggedIn && car.customer?.mejl) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col">
+        <header className="bg-[#0e6efe] h-16 flex items-center px-5 lg:px-8">
+          <a href="/" className="flex items-center">
+            <img
+              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
+              alt="Bilto"
+              className="h-20 lg:h-32 w-auto object-contain"
+            />
+          </a>
+        </header>
+        <div className="flex-1 flex items-start justify-center pt-12 px-4">
+          <div className="w-full max-w-sm">
+            <div className="text-center mb-6">
+              <div className="w-14 h-14 bg-[#0e6efe]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="w-7 h-7 text-[#0e6efe]" strokeWidth={2} />
+              </div>
+              <h1 className="text-xl font-bold text-slate-900 mb-1">Följ din bil</h1>
+              <p className="text-sm text-slate-500">
+                Skapa ett konto för att se budgivningen live.
+              </p>
+            </div>
+            <CreateAccountCard mejl={car.customer.mejl} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const title =
     [car.marke, car.modell, car.ar].filter(Boolean).join(' ') || 'Din bil';
   const fornamn = car.customer?.namn?.trim().split(' ')[0] ?? '';
@@ -248,10 +281,6 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
         </div>
 
         <StatusCard car={car} />
-
-        {!isLoggedIn && (car.status === 'ny' || car.status === 'aktiv' || car.status === 'auktion_avslutad') && car.customer?.mejl && (
-          <CreateAccountCard mejl={car.customer.mejl} />
-        )}
 
         {car.images.length > 0 && (
           <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
