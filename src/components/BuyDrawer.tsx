@@ -14,12 +14,13 @@ interface BuyDrawerProps {
   skipIntent?: boolean;
   initialAdditionalRequests?: string;
   initialDesiredMonthlyCost?: string;
+  fuelTypes?: string[];
   onClose: () => void;
 }
 
 type FormStep = 'track' | 'carIntent' | 'details' | 'tradeIn' | 'contact' | 'done';
 
-export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditionalRequests, initialDesiredMonthlyCost, onClose }: BuyDrawerProps) {
+export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditionalRequests, initialDesiredMonthlyCost, fuelTypes, onClose }: BuyDrawerProps) {
   const open = car !== null;
   // When initialTrack is 'searching', car is a pre-filled target (possibly multiple), not a specific single car
   const isSearchingWithPrefill = (initialTrack === 'searching' || skipIntent) && !!car;
@@ -137,7 +138,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
 
   const titles: Record<FormStep, string> = {
     track: 'Hur vill du gå vidare?',
-    carIntent: 'Hur vill du gå vidare?',
+    carIntent: car ? `Har du hittat en ${car}?` : 'Hur vill du gå vidare?',
     details: skipIntent
       ? (track === 'searching' ? `Hitta en ${car}` : `Förhandla – ${car}`)
       : isSearchingWithPrefill
@@ -369,10 +370,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
 
               {step === 'carIntent' && car && (
                 <div className="py-2 space-y-3">
-                  <p className="text-[14.5px] text-slate-500 mb-6">
-                    Låt oss hitta det bästa priset åt dig. Välj hur du vill gå vidare med <span className="font-semibold text-slate-800">{car}</span>.
-                  </p>
-
                   <button
                     type="button"
                     onClick={() => {
@@ -386,9 +383,9 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       <CheckCircle className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-[15px] font-bold text-slate-900">Ja, jag har hittat en {car}</p>
+                      <p className="text-[15px] font-bold text-slate-900">Jag har hittat en bil</p>
                       <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
-                        Vi granskar annonsen, förhandlar priset och hjälper dig hela vägen.
+                        Vi förhandlar med säljaren åt dig och pressar priset.
                       </p>
                     </div>
                   </button>
@@ -406,9 +403,9 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       <Search className="w-5 h-5 text-slate-600" />
                     </div>
                     <div>
-                      <p className="text-[15px] font-bold text-slate-900">Nej, hitta en {car} till mig</p>
+                      <p className="text-[15px] font-bold text-slate-900">Jag söker en {car}</p>
                       <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
-                        Vi söker, granskar och förhandlar fram rätt bil åt dig.
+                        Vi hittar, kollar och förhandlar åt dig.
                       </p>
                     </div>
                   </button>
@@ -426,7 +423,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       <ArrowLeftRight className="w-5 h-5 text-slate-600" />
                     </div>
                     <div>
-                      <p className="text-[15px] font-bold text-slate-900">Jag vill byta in min bil</p>
+                      <p className="text-[15px] font-bold text-slate-900">Jag vill byta in</p>
                       <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
                         Vi sköter inbytet och hjälper dig hitta en {car}.
                       </p>
@@ -441,6 +438,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                   initialData={details}
                   initialBil={car ?? ''}
                   lockedCar={hasSpecificCar ? car! : isSearchingWithPrefill ? car! : undefined}
+                  knownFuelTypes={fuelTypes}
                   onNext={(data) => {
                     setDetails(data);
                     goNext();

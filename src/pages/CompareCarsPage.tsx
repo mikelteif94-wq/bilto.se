@@ -756,10 +756,13 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const [buyDrawerEquity, setBuyDrawerEquity] = useState<string>('');
   const [quizPreselectedCar, setQuizPreselectedCar] = useState<string | undefined>(undefined);
 
-  const openBuyDrawer = (car: string, track?: 'found' | 'searching' | 'trade', skipIntent?: boolean, equitySummary?: string) => {
+  const [buyDrawerFuelTypes, setBuyDrawerFuelTypes] = useState<string[] | undefined>(undefined);
+
+  const openBuyDrawer = (car: string, track?: 'found' | 'searching' | 'trade', skipIntent?: boolean, equitySummary?: string, fuelTypes?: string[]) => {
     setBuyDrawerTrack(track);
     setBuyDrawerSkipIntent(!!skipIntent);
     setBuyDrawerEquity(equitySummary ?? '');
+    setBuyDrawerFuelTypes(fuelTypes);
     setBuyDrawerCar(car);
   };
 
@@ -958,7 +961,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
   const openContactForCar = (car: ComparisonCar | null) => {
     const name = car ? `${car.brand_display} ${car.model_display}` : '';
-    openBuyDrawer(name || '', undefined, false);
+    openBuyDrawer(name || '', undefined, false, undefined, car?.specs.fuel_types);
   };
 
   const handleNavSelect = (item: string) => {
@@ -1468,11 +1471,11 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                                 name={`${car.make} ${car.model}`}
                                 imageUrl={car.image_url || car.cleaned_image_url}
                                 rating={car.rating}
-                                topBadge={i === 0}
+                                topBadge={i === 0 && !isMobile}
                                 expertComment={car.matchReasons.join(' · ') || undefined}
                                 carPrice={car.carPrice}
                                 usedPrice={car.usedPrice}
-                                onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
+                                onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, compData?.specs.fuel_types)}
                                 onDetail={() => { if (compData) setDetailCar(compData); }}
                               />
                             ) : (
@@ -1480,14 +1483,14 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                                 name={`${car.make} ${car.model}`}
                                 imageUrl={car.image_url || car.cleaned_image_url}
                                 rating={car.rating}
-                                topBadge={i === 0}
+                                topBadge={i === 0 && !isMobile}
                                 expertComment={car.matchReasons.join(' · ') || undefined}
                                 fuelLabel={car.fuelLabel}
                                 carPrice={car.carPrice}
                                 usedPrice={car.usedPrice}
                                 isSelected={isSelected}
                                 onSelect={() => toggleQuizCarSelection(key)}
-                                onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
+                                onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, compData?.specs.fuel_types)}
                                 onDetail={() => { if (compData) setDetailCar(compData); }}
                                 index={i}
                                 disableMotion={isMobile}
@@ -1742,7 +1745,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       imageUrl={imgUrl}
                       rating={car.rating_overall ?? undefined}
                       expertComment={car.expert_comment ?? undefined}
-                      onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
+                      onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
                     />
                   );
                 }
@@ -1754,7 +1757,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     rating={car.rating_overall ?? undefined}
                     expertComment={car.expert_comment ?? undefined}
                     fuelLabel={fuelLabel}
-                    onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false)}
+                    onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
                     disableMotion={isMobile}
                   />
                 );
@@ -2429,7 +2432,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       <SiteFooter />
 
       {/* Buy drawer */}
-      <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} skipIntent={buyDrawerSkipIntent} initialAdditionalRequests={buyDrawerEquity || undefined} onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); }} />
+      <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} skipIntent={buyDrawerSkipIntent} initialAdditionalRequests={buyDrawerEquity || undefined} fuelTypes={buyDrawerFuelTypes} onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); setBuyDrawerFuelTypes(undefined); }} />
 
       {/* Compare drawer */}
       <CompareDrawer

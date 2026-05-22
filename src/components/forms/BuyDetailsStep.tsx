@@ -53,6 +53,7 @@ interface BuyDetailsStepProps {
   initialData: BuyDetailsData;
   initialBil?: string;
   lockedCar?: string;
+  knownFuelTypes?: string[];
   onNext: (data: BuyDetailsData) => void;
   onExplore?: () => void;
   onQuiz?: () => void;
@@ -576,7 +577,26 @@ function ExploreDetailsStep({ initialData, onNext }: { initialData: BuyDetailsDa
   );
 }
 
-export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, onNext, onExplore, onQuiz }: BuyDetailsStepProps) {
+const FUEL_TYPE_MAP: Record<string, string> = {
+  el: 'electric',
+  bensin: 'petrol',
+  diesel: 'diesel',
+  hybrid: 'hybrid',
+  laddhybrid: 'hybrid',
+};
+
+function inferFuelType(fuelTypes: string[]): string {
+  if (!fuelTypes || fuelTypes.length === 0) return '';
+  const mapped = [...new Set(fuelTypes.map(f => FUEL_TYPE_MAP[f.toLowerCase()] ?? '').filter(Boolean))];
+  if (mapped.length === 1) return mapped[0];
+  if (mapped.length === 2 && mapped.includes('hybrid') && !mapped.includes('petrol') && !mapped.includes('diesel')) return 'hybrid';
+  return '';
+}
+
+export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, knownFuelTypes, onNext, onExplore, onQuiz }: BuyDetailsStepProps) {
+  const autoFuel = knownFuelTypes ? inferFuelType(knownFuelTypes) : '';
+  const hideFuel = !!autoFuel && autoFuel !== '';
+
   const [d, setD] = useState<BuyDetailsData>({
     ...initialData,
     carModel: initialData.carModel || initialBil || '',
@@ -586,6 +606,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     yearFrom: initialData.yearFrom || '',
     yearTo: initialData.yearTo || '',
     maxMiltal: initialData.maxMiltal || '',
+    fuelType: autoFuel || initialData.fuelType || '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -625,7 +646,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     if (validate()) onNext(d);
   };
 
-  const fuelTypeSelector = (
+  const fuelTypeSelector = hideFuel ? null : (
     <div className="py-6 sm:py-7">
       <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Drivmedel</label>
       <div className="flex flex-wrap gap-2">
