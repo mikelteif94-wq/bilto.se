@@ -159,7 +159,7 @@ export default function PortalLayout({
       </aside>
 
       {/* ── Main area ── */}
-      <div className={`flex-1 flex flex-col min-w-0 md:${compactSidebar ? 'ml-[56px]' : 'ml-[220px]'}`}>
+      <div className={`flex-1 flex flex-col min-w-0 ${compactSidebar ? 'md:ml-[56px]' : 'md:ml-[220px]'}`}>
         {/* Top bar */}
         <header className="sticky top-0 z-20 bg-white border-b border-slate-200 h-14 flex items-center px-4 sm:px-6 gap-3 shrink-0">
           {/* Hamburger — mobile only */}
