@@ -8,7 +8,7 @@ const corsHeaders = {
     "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const LOGO_SVG_URL = "https://bilto.se/bilto_logo_transparent_(1).svg";
+const LOGO_SVG_URL = "https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png";
 const SITE = "https://bilto.se";
 
 Deno.serve(async (req: Request) => {
