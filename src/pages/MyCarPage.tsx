@@ -106,14 +106,19 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
   const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    void fetchCar();
     supabase.auth.getSession().then(({ data }) => {
-      setIsLoggedIn(!!data.session?.user);
+      const loggedIn = !!data.session?.user;
+      setIsLoggedIn(loggedIn);
       setAuthChecked(true);
+      if (loggedIn) void fetchCar();
+      else setLoading(false);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(!!session?.user);
+      const loggedIn = !!session?.user;
+      setIsLoggedIn(loggedIn);
       setAuthChecked(true);
+      if (loggedIn) void fetchCar();
+      else setLoading(false);
     });
     return () => subscription.unsubscribe();
   }, [token]);
@@ -186,6 +191,44 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
     }
   };
 
+  if (!authChecked || (authChecked && !isLoggedIn && loading)) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+      </div>
+    );
+  }
+
+  if (authChecked && !isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col">
+        <header className="bg-[#0e6efe] h-16 flex items-center px-5 lg:px-8">
+          <a href="/" className="flex items-center">
+            <img
+              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
+              alt="Bilto"
+              className="h-20 lg:h-32 w-auto object-contain"
+            />
+          </a>
+        </header>
+        <div className="flex-1 flex items-start justify-center pt-12 px-4">
+          <div className="w-full max-w-sm">
+            <div className="text-center mb-6">
+              <div className="w-14 h-14 bg-[#0e6efe]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="w-7 h-7 text-[#0e6efe]" strokeWidth={2} />
+              </div>
+              <h1 className="text-xl font-bold text-slate-900 mb-1">Följ din bil</h1>
+              <p className="text-sm text-slate-500">
+                Logga in eller skapa konto för att se budgivningen.
+              </p>
+            </div>
+            <LoginOrCreateCard token={token} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -213,36 +256,6 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
   }
 
   if (!car) return null;
-
-  if (authChecked && !isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
-        <header className="bg-[#0e6efe] h-16 flex items-center px-5 lg:px-8">
-          <a href="/" className="flex items-center">
-            <img
-              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
-              alt="Bilto"
-              className="h-20 lg:h-32 w-auto object-contain"
-            />
-          </a>
-        </header>
-        <div className="flex-1 flex items-start justify-center pt-12 px-4">
-          <div className="w-full max-w-sm">
-            <div className="text-center mb-6">
-              <div className="w-14 h-14 bg-[#0e6efe]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lock className="w-7 h-7 text-[#0e6efe]" strokeWidth={2} />
-              </div>
-              <h1 className="text-xl font-bold text-slate-900 mb-1">Följ din bil</h1>
-              <p className="text-sm text-slate-500">
-                Skapa ett konto för att se budgivningen live.
-              </p>
-            </div>
-            <CreateAccountCard mejl={car.customer.mejl} />
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const title =
     [car.marke, car.modell, car.ar].filter(Boolean).join(' ') || 'Din bil';
@@ -808,116 +821,129 @@ function CompleteListingCard({
   );
 }
 
-function CreateAccountCard({ mejl }: { mejl: string }) {
+function LoginOrCreateCard({ token }: { token: string }) {
+  const [mode, setMode] = useState<'login' | 'create'>('login');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
   const [saving, setSaving] = useState(false);
-  const [done, setDone] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  const submit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
-    if (password.length < 6) {
-      setErr('Lösenordet måste vara minst 6 tecken.');
-      return;
-    }
-    if (password !== confirm) {
-      setErr('Lösenorden matchar inte.');
-      return;
-    }
     setSaving(true);
-    const { error } = await supabase.auth.signUp({
-      email: mejl,
-      password,
-      options: { data: {} },
-    });
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setSaving(false);
-    if (error && error.message?.toLowerCase().includes('already registered')) {
-      const { error: signInErr } = await supabase.auth.signInWithPassword({ email: mejl, password });
-      if (signInErr) {
-        setErr('Det finns redan ett konto med det lösenordet. Prova att logga in på /logga-in.');
-        return;
-      }
-      setDone(true);
-      return;
-    }
     if (error) {
-      setErr(error.message);
-      return;
+      setErr('Fel mejl eller lösenord.');
+    } else {
+      sessionStorage.setItem('bilto_portal', 'customer');
     }
-    setDone(true);
   };
 
-  if (done) {
+  const handleSendSetupLink = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErr(null);
+    if (!email.trim()) { setErr('Fyll i din mejladress.'); return; }
+    setSaving(true);
+    sessionStorage.setItem('bilto_portal', 'customer');
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/handlare/valj-losenord`,
+    });
+    setSaving(false);
+    if (error) { setErr('Kunde inte skicka länk. Försök igen.'); return; }
+    setResetSent(true);
+  };
+
+  if (mode === 'create') {
     return (
-      <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 flex items-start gap-3">
-        <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-          <Check className="w-5 h-5 text-emerald-600" strokeWidth={2.2} />
+      <div className="bg-white border border-[#0e6efe]/20 rounded-2xl p-5 sm:p-6">
+        <div className="flex items-start gap-3 mb-5">
+          <div className="w-10 h-10 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+            <Gavel className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
+          </div>
+          <div>
+            <p className="text-[13px] font-bold text-slate-900">Skapa konto</p>
+            <p className="text-[12.5px] text-slate-500 mt-0.5 leading-relaxed">
+              Vi skickar en länk till din mejl — klicka på den för att välja lösenord.
+            </p>
+          </div>
         </div>
-        <div>
-          <p className="text-sm font-semibold text-emerald-900">Kontot är skapat</p>
-          <p className="text-[13px] text-emerald-700 mt-0.5 leading-relaxed">
-            Du kan nu följa budgivningen live. Logga in på <a href="/logga-in" className="underline font-medium">Mina sidor</a> nästa gång.
-          </p>
-        </div>
+        {resetSent ? (
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-sm text-emerald-800">
+            Kolla din mejl! Vi har skickat en länk till <strong>{email.trim()}</strong>.
+          </div>
+        ) : (
+          <form onSubmit={handleSendSetupLink} className="space-y-3">
+            <div>
+              <label className="block text-[12px] font-semibold text-slate-700 mb-1">Din mejladress</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="namn@exempel.se"
+                autoComplete="email"
+                autoFocus
+                className="w-full h-10 rounded-xl border border-slate-200 px-3 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
+              />
+            </div>
+            {err && <p className="text-[12px] text-red-600">{err}</p>}
+            <button
+              type="submit"
+              disabled={saving}
+              className="w-full h-11 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:opacity-60 text-white font-semibold text-[14px] rounded-full transition flex items-center justify-center gap-2"
+            >
+              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+              Skicka länk
+            </button>
+          </form>
+        )}
+        <button
+          type="button"
+          onClick={() => { setMode('login'); setErr(null); setResetSent(false); }}
+          className="mt-4 w-full text-center text-[12.5px] font-semibold text-[#0e6efe] hover:underline"
+        >
+          Har du redan ett konto? Logga in
+        </button>
       </div>
     );
   }
 
   return (
     <div className="bg-white border border-[#0e6efe]/20 rounded-2xl p-5 sm:p-6">
-      <div className="flex items-start gap-3 mb-4">
+      <div className="flex items-start gap-3 mb-5">
         <div className="w-10 h-10 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
-          <Gavel className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
+          <Lock className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
         </div>
         <div>
-          <p className="text-[13px] font-bold text-slate-900">Skapa ditt konto för att följa buden</p>
+          <p className="text-[13px] font-bold text-slate-900">Logga in för att fortsätta</p>
           <p className="text-[12.5px] text-slate-500 mt-0.5 leading-relaxed">
-            Välj ett lösenord och logga in för att se buden i realtid.
+            Använd mejlen du angav när du lämnade in bilen.
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-3 mb-4">
-        {[
-          { icon: Eye, text: 'Se alla bud live' },
-          { icon: Lock, text: 'Dina uppgifter skyddas' },
-        ].map(({ icon: Icon, text }) => (
-          <div key={text} className="flex items-center gap-1.5 text-[11.5px] text-slate-500">
-            <Icon className="w-3.5 h-3.5 text-[#0e6efe] shrink-0" strokeWidth={2} />
-            {text}
-          </div>
-        ))}
-      </div>
-      <form onSubmit={submit} className="space-y-3">
+      <form onSubmit={handleLogin} className="space-y-3">
         <div>
-          <label className="block text-[12px] font-semibold text-slate-700 mb-1">Konto</label>
+          <label className="block text-[12px] font-semibold text-slate-700 mb-1">Mejl</label>
           <input
-            type="text"
-            value={mejl}
-            disabled
-            className="w-full h-10 rounded-xl border border-slate-200 bg-slate-50 px-3 text-[13px] text-slate-500 cursor-not-allowed"
-          />
-        </div>
-        <div>
-          <label className="block text-[12px] font-semibold text-slate-700 mb-1">Välj lösenord</label>
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder="Minst 6 tecken"
-            autoComplete="new-password"
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="namn@exempel.se"
+            autoComplete="email"
+            autoFocus
             className="w-full h-10 rounded-xl border border-slate-200 px-3 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
           />
         </div>
         <div>
-          <label className="block text-[12px] font-semibold text-slate-700 mb-1">Bekräfta lösenord</label>
+          <label className="block text-[12px] font-semibold text-slate-700 mb-1">Lösenord</label>
           <input
             type="password"
-            value={confirm}
-            onChange={e => setConfirm(e.target.value)}
-            placeholder="Upprepa lösenordet"
-            autoComplete="new-password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="Ditt lösenord"
+            autoComplete="current-password"
             className="w-full h-10 rounded-xl border border-slate-200 px-3 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
           />
         </div>
@@ -927,10 +953,19 @@ function CreateAccountCard({ mejl }: { mejl: string }) {
           disabled={saving}
           className="w-full h-11 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:opacity-60 text-white font-semibold text-[14px] rounded-full transition flex items-center justify-center gap-2"
         >
-          {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-          Skapa konto och se buden
+          {saving && <Loader2 className="w-4 h-4 animate-spin" /> }
+          Logga in
         </button>
       </form>
+      <div className="mt-4 flex flex-col gap-2 text-center">
+        <button
+          type="button"
+          onClick={() => { setMode('create'); setErr(null); }}
+          className="text-[12.5px] font-semibold text-[#0e6efe] hover:underline"
+        >
+          Inget konto? Skapa ett nu
+        </button>
+      </div>
     </div>
   );
 }
