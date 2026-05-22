@@ -145,6 +145,15 @@ function App() {
           setPath(recoveryPath);
         }
       }
+      // When a customer confirms their email or signs in via a magic link,
+      // no portal flag is set yet — default them to the customer portal.
+      if (event === 'SIGNED_IN' && newSession && !sessionStorage.getItem('bilto_portal')) {
+        const p = window.location.pathname;
+        const isDealerPath = p.startsWith('/handlare') || p.startsWith('/admin');
+        if (!isDealerPath) {
+          sessionStorage.setItem('bilto_portal', 'customer');
+        }
+      }
     });
 
     return () => listener.subscription.unsubscribe();

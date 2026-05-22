@@ -21,6 +21,9 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
   const [resetting, setResetting] = useState(false);
   const [newAccount, setNewAccount] = useState(initialCreate);
 
+  // Email is locked/prefilled when coming from "Följ din bil" link
+  const emailFromUrl = !!initialEmail;
+
   const switchMode = (create: boolean) => {
     setNewAccount(create);
     setError(null);
@@ -138,13 +141,36 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
             </div>
 
             <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
-              <div className="bg-slate-50 border-b border-slate-200 px-7 py-5">
-                <h2 className="text-[17px] font-semibold text-slate-900">
-                  {newAccount ? 'Skapa konto' : 'Logga in'}
-                </h2>
+              {/* Tab switcher — always visible */}
+              <div className="grid grid-cols-2 border-b border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => switchMode(true)}
+                  className={`py-4 text-[14px] font-semibold transition-colors ${
+                    newAccount
+                      ? 'text-[#0e6efe] border-b-2 border-[#0e6efe] bg-white'
+                      : 'text-slate-500 hover:text-slate-700 bg-slate-50'
+                  }`}
+                >
+                  Skapa konto
+                </button>
+                <button
+                  type="button"
+                  onClick={() => switchMode(false)}
+                  className={`py-4 text-[14px] font-semibold transition-colors ${
+                    !newAccount
+                      ? 'text-[#0e6efe] border-b-2 border-[#0e6efe] bg-white'
+                      : 'text-slate-500 hover:text-slate-700 bg-slate-50'
+                  }`}
+                >
+                  Logga in
+                </button>
+              </div>
+
+              <div className="px-7 py-2 bg-slate-50 border-b border-slate-100">
                 <p className="text-[12.5px] text-slate-500">
                   {newAccount
-                    ? 'Ange din mejl och välj ett lösenord — du är klar direkt.'
+                    ? 'Välj ett lösenord — du är inloggad direkt.'
                     : 'Använd mejlen du angav när du lämnade in bilen.'}
                 </p>
               </div>
@@ -159,13 +185,19 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
                       <input
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => !emailFromUrl && setEmail(e.target.value)}
+                        readOnly={emailFromUrl}
                         required
                         autoComplete="email"
-                        autoFocus
+                        autoFocus={!emailFromUrl}
                         placeholder="namn@exempel.se"
-                        className="form-control"
+                        className={`form-control ${emailFromUrl ? 'bg-slate-100 text-slate-600 cursor-default select-none' : ''}`}
                       />
+                      {emailFromUrl && (
+                        <p className="mt-1 text-[11.5px] text-slate-400">
+                          Mejladressen hämtad från din bilinlämning.
+                        </p>
+                      )}
                     </label>
 
                     <label className="block">
@@ -178,6 +210,7 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         autoComplete="new-password"
+                        autoFocus={emailFromUrl}
                         placeholder="Minst 8 tecken"
                         className="form-control"
                       />
@@ -212,19 +245,10 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
                       )}
                     </button>
 
-                    <div className="flex items-center justify-between pt-1">
-                      <p className="inline-flex items-center gap-2 text-[12.5px] text-slate-500">
-                        <Lock className="w-3.5 h-3.5" />
-                        Dina uppgifter skickas krypterat.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => switchMode(false)}
-                        className="text-[12.5px] font-semibold text-[#0e6efe] hover:underline"
-                      >
-                        Har du redan ett konto?
-                      </button>
-                    </div>
+                    <p className="inline-flex items-center gap-2 text-[12.5px] text-slate-400 pt-1">
+                      <Lock className="w-3.5 h-3.5 shrink-0" />
+                      Dina uppgifter skickas krypterat.
+                    </p>
                   </form>
                 ) : (
                   <form onSubmit={handleLogin} noValidate className="space-y-5">
@@ -278,8 +302,8 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
                     </button>
 
                     <div className="flex items-center justify-between pt-1">
-                      <p className="inline-flex items-center gap-2 text-[12.5px] text-slate-500">
-                        <Lock className="w-3.5 h-3.5" />
+                      <p className="inline-flex items-center gap-2 text-[12.5px] text-slate-400">
+                        <Lock className="w-3.5 h-3.5 shrink-0" />
                         Dina uppgifter skickas krypterat.
                       </p>
                       <button
@@ -292,26 +316,6 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
                       </button>
                     </div>
                   </form>
-                )}
-              </div>
-
-              <div className="border-t border-slate-100 bg-slate-50 px-7 py-4 text-center">
-                {newAccount ? (
-                  <button
-                    type="button"
-                    onClick={() => switchMode(false)}
-                    className="text-[13px] font-semibold text-[#0e6efe] hover:underline"
-                  >
-                    Har du redan ett konto? Logga in
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => switchMode(true)}
-                    className="text-[13px] font-semibold text-[#0e6efe] hover:underline"
-                  >
-                    Har du inget konto? Skapa konto
-                  </button>
                 )}
               </div>
             </div>
