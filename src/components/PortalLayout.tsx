@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { LogOut, Menu, X } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 
 export interface NavItem {
   icon: React.ReactNode;
@@ -10,22 +9,14 @@ export interface NavItem {
 }
 
 interface PortalLayoutProps {
-  /** Sidebar nav items */
   navItems: NavItem[];
-  /** Top-right info — company name / user name */
   identity?: string;
-  /** Small subtitle under identity */
   identityRole?: string;
-  /** Callback for logout button */
   onLogout?: () => void;
-  /** Optional extra action button in header (e.g. "Få bud") */
   headerAction?: React.ReactNode;
-  /** Page title shown in the main content header bar */
   pageTitle?: string;
-  /** Breadcrumb path e.g. "Bilar / ABC123" */
   breadcrumb?: React.ReactNode;
   children: React.ReactNode;
-  /** Whether to show a narrow icon-only sidebar (default false = full) */
   compactSidebar?: boolean;
 }
 
@@ -40,22 +31,18 @@ export default function PortalLayout({
   children,
   compactSidebar = false,
 }: PortalLayoutProps) {
-  const [mobileOpen, setMobileOpen] = useState(false);
-
   const initials = identity
     ? identity.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
     : '?';
 
   return (
     <div className="min-h-screen flex bg-[#f4f5f7] font-sans">
-      {/* ── Sidebar ── */}
+      {/* ── Sidebar ── always visible */}
       <aside
         className={`
           fixed inset-y-0 left-0 z-40 flex flex-col
           bg-[#111827] text-white
-          transition-transform duration-200
           ${compactSidebar ? 'w-[56px]' : 'w-[220px]'}
-          ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
         {/* Logo / brand */}
@@ -70,13 +57,6 @@ export default function PortalLayout({
           {!compactSidebar && (
             <span className="text-[15px] font-bold tracking-tight text-white">Bilto</span>
           )}
-          {/* Mobile close */}
-          <button
-            onClick={() => setMobileOpen(false)}
-            className="ml-auto lg:hidden text-white/60 hover:text-white"
-          >
-            <X className="w-4 h-4" />
-          </button>
         </div>
 
         {/* Nav links */}
@@ -84,10 +64,7 @@ export default function PortalLayout({
           {navItems.map((item, i) => (
             <button
               key={i}
-              onClick={() => {
-                item.onClick?.();
-                setMobileOpen(false);
-              }}
+              onClick={item.onClick}
               className={`
                 w-full flex items-center gap-3 rounded-lg text-[13px] font-medium transition-all
                 ${compactSidebar ? 'justify-center px-0 py-2.5' : 'px-3 py-2.5'}
@@ -148,26 +125,10 @@ export default function PortalLayout({
         </div>
       </aside>
 
-      {/* Mobile overlay */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-black/40 lg:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-
       {/* ── Main area ── */}
-      <div className={`flex-1 flex flex-col min-w-0 ${compactSidebar ? 'lg:ml-[56px]' : 'lg:ml-[220px]'}`}>
+      <div className={`flex-1 flex flex-col min-w-0 ${compactSidebar ? 'ml-[56px]' : 'ml-[220px]'}`}>
         {/* Top bar */}
         <header className="sticky top-0 z-20 bg-white border-b border-slate-200 h-14 flex items-center px-4 sm:px-6 gap-3 shrink-0">
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="lg:hidden text-slate-500 hover:text-slate-900 mr-1"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-
           {/* Breadcrumb / title */}
           <div className="flex-1 min-w-0">
             {breadcrumb ? (
@@ -184,7 +145,7 @@ export default function PortalLayout({
 
           {/* Identity (desktop) */}
           {identity && (
-            <div className="hidden sm:flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 text-xs font-bold">
                 {initials}
               </div>
