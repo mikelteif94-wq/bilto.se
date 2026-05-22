@@ -122,7 +122,7 @@ export default function SetPasswordPage({ onDone }: SetPasswordPageProps) {
             Välj ditt lösenord
           </h1>
           <p className="text-slate-600 text-sm">
-            Sätt ett lösenord för att aktivera ditt handlarkonto.
+            Sätt ett lösenord för att aktivera ditt konto.
           </p>
         </div>
 

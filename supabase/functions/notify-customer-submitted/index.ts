@@ -80,7 +80,8 @@ Deno.serve(async (req: Request) => {
       ? rawFirst.charAt(0).toUpperCase() + rawFirst.slice(1).toLowerCase()
       : (customer.namn ?? "");
 
-    const html = renderEmail({ fornamn, regnummer: car.regnummer, trackingUrl, appUrl });
+    const accountUrl = `${appUrl.replace(/\/$/, "")}/logga-in?mejl=${encodeURIComponent(customer.mejl)}`;
+    const html = renderEmail({ fornamn, regnummer: car.regnummer, trackingUrl, accountUrl, appUrl });
 
     const text = [
       `Hej ${fornamn}!`,
@@ -139,6 +140,7 @@ function renderEmail(d: {
   fornamn: string;
   regnummer: string;
   trackingUrl: string;
+  accountUrl: string;
   appUrl: string;
 }): string {
   const site = d.appUrl ? d.appUrl.replace(/\/$/, "") : SITE;
@@ -152,7 +154,7 @@ function renderEmail(d: {
       <p style="margin:0 0 16px;font-size:15px;color:#334155;line-height:1.7;">En av v&aring;ra experter ringer dig inom kort f&ouml;r att g&aring; igenom n&auml;sta steg och svara p&aring; alla fr&aring;gor du har.</p>
       ${d.regnummer ? `<p style="margin:0 0 16px;font-size:14px;color:#64748b;">Registreringsnummer: <strong style="color:#0f172a;font-family:monospace;">${esc(d.regnummer)}</strong></p>` : ""}
       <p style="margin:0 0 24px;font-size:15px;color:#334155;line-height:1.7;">Under tiden kan du luta dig tillbaka &mdash; vi sk&ouml;ter allt och h&ouml;r av oss snart!</p>
-      ${d.trackingUrl ? `<a href="${escAttr(d.trackingUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;letter-spacing:0.01em;">Skapa konto &amp; f&ouml;lj din bil &rarr;</a>` : ""}
+      <a href="${escAttr(d.accountUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;letter-spacing:0.01em;">Skapa konto &amp; f&ouml;lj din bil &rarr;</a>
     `,
   });
 }
