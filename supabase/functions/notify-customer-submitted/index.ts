@@ -8,7 +8,6 @@ const corsHeaders = {
     "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const LOGO_URL = "https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png";
 const SITE = "https://bilto.se";
 
 Deno.serve(async (req: Request) => {
@@ -56,7 +55,8 @@ Deno.serve(async (req: Request) => {
       return jsonResp({ skipped: true, reason: "Ingen kundmejl" }, 200);
     }
 
-    const safeProvidedUrl = providedUrl && isPublicUrl(providedUrl) ? providedUrl : null;
+    const safeProvidedUrl =
+      providedUrl && isPublicUrl(providedUrl) ? providedUrl : null;
 
     const trackingUrl =
       safeProvidedUrl ||
@@ -80,7 +80,12 @@ Deno.serve(async (req: Request) => {
       ? rawFirst.charAt(0).toUpperCase() + rawFirst.slice(1).toLowerCase()
       : (customer.namn ?? "");
 
-    const html = renderEmail({ fornamn, regnummer: car.regnummer, trackingUrl, appUrl });
+    const html = renderEmail({
+      fornamn,
+      regnummer: car.regnummer,
+      trackingUrl,
+      appUrl,
+    });
 
     const text = [
       `Hej ${fornamn}!`,
@@ -89,11 +94,15 @@ Deno.serve(async (req: Request) => {
       "En av våra experter ringer dig inom kort för att gå igenom nästa steg.",
       "",
       "Under tiden kan du luta dig tillbaka.",
-      trackingUrl ? `Skapa ditt konto och följ ärendet här: ${trackingUrl}` : undefined,
+      trackingUrl
+        ? `Skapa ditt konto och följ ärendet här: ${trackingUrl}`
+        : undefined,
       "",
       "Vi hörs snart!",
       "Hälsningar, Teamet på Bilto",
-    ].filter((v): v is string => v !== undefined).join("\n");
+    ]
+      .filter((v): v is string => v !== undefined)
+      .join("\n");
 
     let status: "sent" | "failed" = "sent";
     let detaljer = "";
@@ -151,138 +160,115 @@ function renderEmail(d: {
 <meta name="x-apple-disable-message-reformatting"/>
 <title>Bilto</title>
 </head>
-<body style="margin:0;padding:0;background:#f0f4f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
-  <!-- Preheader -->
-  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Tack ${esc(d.fornamn)}! Vi har tagit emot din bil och hör av oss snart.&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;</div>
+<body style="margin:0;padding:0;background:#f4f6f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Tack ${esc(d.fornamn)}! Vi har tagit emot din bil och h&ouml;r av oss snart.&#847;&#847;&#847;&#847;&#847;</div>
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;padding:32px 16px 48px;">
-    <tr><td align="center">
-      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f4f6f9;padding:24px 12px 40px;">
+  <tr><td align="center">
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="max-width:500px;">
 
-        <!-- Card -->
-        <tr><td style="border-radius:20px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,0.08);">
-          <table width="100%" cellpadding="0" cellspacing="0">
+      <!-- CARD -->
+      <tr><td style="background:#ffffff;border-radius:16px;overflow:hidden;">
 
-            <!-- HERO: full blue with logo + check + title + reg -->
-            <tr><td style="background:#0e6efe;padding:36px 32px 40px;text-align:center;">
+        <!-- HERO: blue -->
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+          <tr><td align="center" style="background:#1a6eff;padding:32px 28px 36px;">
 
-              <!-- Logo -->
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr><td align="center" style="padding-bottom:32px;">
-                  <a href="${escAttr(site)}" style="text-decoration:none;display:inline-block;">
-                    <img src="${escAttr(LOGO_URL)}" alt="bilto" width="110" style="width:110px;height:auto;display:block;" />
-                  </a>
-                </td></tr>
-              </table>
+            <!-- Logo text -->
+            <p style="margin:0 0 28px;font-size:26px;font-weight:900;color:#ffffff;font-style:italic;letter-spacing:-1px;">bilto<span style="font-size:14px;font-weight:700;vertical-align:super;letter-spacing:0;">.se</span></p>
 
-              <!-- Check circle -->
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr><td align="center" style="padding-bottom:20px;">
-                  <div style="width:72px;height:72px;border-radius:50%;border:2.5px solid rgba(255,255,255,0.6);display:inline-flex;align-items:center;justify-content:center;margin:0 auto;">
-                    <!--[if !mso]><!-->
-                    <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
-                      <tr><td align="center" valign="middle" style="width:72px;height:72px;">
-                        <span style="font-size:32px;color:#ffffff;line-height:1;">&#10003;</span>
-                      </td></tr>
-                    </table>
-                    <!--<![endif]-->
-                  </div>
-                </td></tr>
-              </table>
+            <!-- Check circle -->
+            <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 20px;">
+              <tr><td align="center" valign="middle" style="width:68px;height:68px;border-radius:50%;border:2px solid rgba(255,255,255,0.55);">
+                <span style="font-size:28px;color:#ffffff;line-height:1;display:block;">&#10003;</span>
+              </td></tr>
+            </table>
 
-              <!-- Label -->
-              <p style="margin:0 0 8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:rgba(255,255,255,0.8);">Nu k&ouml;r vi!</p>
+            <!-- Label -->
+            <p style="margin:0 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:rgba(255,255,255,0.75);">Nu k&ouml;r vi!</p>
 
-              <!-- Heading -->
-              <h1 style="margin:0 0 20px;font-size:34px;font-weight:800;color:#ffffff;line-height:1.15;letter-spacing:-0.5px;">Tack ${esc(d.fornamn)}!</h1>
+            <!-- Heading -->
+            <h1 style="margin:0 0 22px;font-size:32px;font-weight:800;color:#ffffff;line-height:1.15;">Tack ${esc(d.fornamn)}!</h1>
 
-              <!-- Reg plate pill -->
-              ${d.regnummer ? `
-              <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
-                <tr><td align="center" style="background:rgba(255,255,255,0.2);border-radius:50px;padding:9px 22px;">
-                  <span style="font-size:13px;font-family:monospace;font-weight:700;letter-spacing:0.16em;color:#ffffff;">
-                    &#128663;&nbsp; ${esc(d.regnummer)}
-                  </span>
-                </td></tr>
-              </table>` : ""}
+            <!-- Reg pill -->
+            ${d.regnummer ? `
+            <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
+              <tr><td style="background:rgba(255,255,255,0.18);border-radius:100px;padding:8px 20px;">
+                <span style="font-size:13px;font-weight:700;letter-spacing:0.18em;color:#ffffff;font-family:monospace;">&#128663;  ${esc(d.regnummer)}</span>
+              </td></tr>
+            </table>` : ""}
 
-            </td></tr>
+          </td></tr>
+        </table>
 
-            <!-- BODY: white -->
-            <tr><td style="background:#ffffff;padding:36px 32px 0;">
+        <!-- BODY: white -->
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+          <tr><td style="padding:32px 28px 8px;">
 
-              <h2 style="margin:0 0 12px;font-size:20px;font-weight:800;color:#0f172a;line-height:1.3;">Vi har tagit emot din bil och &auml;r redo att s&auml;tta ig&aring;ng!</h2>
-              <p style="margin:0 0 28px;font-size:15px;color:#475569;line-height:1.7;">En av v&aring;ra experter ringer dig inom kort f&ouml;r att g&aring; igenom n&auml;sta steg och svara p&aring; alla fr&aring;gor du har.</p>
+            <h2 style="margin:0 0 12px;font-size:18px;font-weight:800;color:#111827;line-height:1.35;">Vi har tagit emot din bil och &auml;r redo att s&auml;tta ig&aring;ng!</h2>
+            <p style="margin:0 0 24px;font-size:14px;color:#6b7280;line-height:1.7;">En av v&aring;ra experter ringer dig inom kort f&ouml;r att g&aring; igenom n&auml;sta steg och svara p&aring; alla fr&aring;gor du har.</p>
 
-              <!-- Info card -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
-                <tr>
-                  <td valign="top" style="background:#f0f6ff;border-radius:14px;padding:18px 20px;">
-                    <table width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <!-- Icon col -->
-                        <td valign="middle" style="width:48px;padding-right:14px;">
-                          <table cellpadding="0" cellspacing="0">
-                            <tr><td align="center" valign="middle" style="width:44px;height:44px;background:#dbeafe;border-radius:12px;">
-                              <span style="font-size:20px;line-height:1;color:#0e6efe;">&#128172;</span>
-                            </td></tr>
-                          </table>
-                        </td>
-                        <!-- Text col -->
-                        <td valign="middle">
-                          <p style="margin:0 0 3px;font-size:14px;font-weight:700;color:#0e6efe;line-height:1.4;">Under tiden kan du luta dig tillbaka</p>
-                          <p style="margin:0;font-size:13px;color:#3b82f6;line-height:1.5;">&mdash; vi sk&ouml;ter allt och h&ouml;r av oss snart!</p>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
+            <!-- Info card -->
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:20px;">
+              <tr>
+                <td valign="top" style="background:#f0f5ff;border-radius:12px;padding:16px 18px;">
+                  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                    <tr>
+                      <td valign="middle" style="width:44px;padding-right:14px;">
+                        <table cellpadding="0" cellspacing="0" role="presentation">
+                          <tr><td align="center" valign="middle" style="width:40px;height:40px;background:#dce8ff;border-radius:10px;">
+                            <span style="font-size:18px;line-height:1;color:#1a6eff;">&#128172;</span>
+                          </td></tr>
+                        </table>
+                      </td>
+                      <td valign="middle">
+                        <p style="margin:0 0 2px;font-size:13px;font-weight:700;color:#1a6eff;">Under tiden kan du luta dig tillbaka</p>
+                        <p style="margin:0;font-size:13px;color:#4b7cf3;">&mdash; vi sk&ouml;ter allt och h&ouml;r av oss snart!</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
 
-              <!-- CTA button -->
-              ${d.trackingUrl ? `
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
-                <tr><td>
-                  <a href="${escAttr(d.trackingUrl)}" style="display:block;background:#0e6efe;color:#ffffff;text-decoration:none;border-radius:14px;padding:18px 24px;font-weight:700;font-size:16px;text-align:center;letter-spacing:0.01em;">
-                    <table width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td align="center" valign="middle">
-                          <span style="font-size:18px;vertical-align:middle;margin-right:10px;">&#128100;</span>
-                          <span style="vertical-align:middle;">Skapa konto &amp; f&ouml;lj din bil</span>
-                          <span style="vertical-align:middle;margin-left:10px;font-size:18px;">&rarr;</span>
-                        </td>
-                      </tr>
-                    </table>
-                  </a>
-                </td></tr>
-              </table>` : ""}
+            <!-- CTA button -->
+            ${d.trackingUrl ? `
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:8px;">
+              <tr><td>
+                <a href="${escAttr(d.trackingUrl)}" style="display:block;background:#1a6eff;color:#ffffff;text-decoration:none;border-radius:12px;padding:16px 20px;font-weight:700;font-size:15px;text-align:center;">
+                  <span style="font-size:16px;vertical-align:middle;margin-right:8px;">&#128100;</span>
+                  <span style="vertical-align:middle;">Skapa konto &amp; f&ouml;lj din bil</span>
+                  <span style="vertical-align:middle;margin-left:8px;">&rarr;</span>
+                </a>
+              </td></tr>
+            </table>` : ""}
 
-            </td></tr>
+          </td></tr>
+        </table>
 
-            <!-- FOOTER inside card: logo icon + team name -->
-            <tr><td style="background:#ffffff;padding:0 32px 32px;text-align:center;border-radius:0 0 20px 20px;">
-              <div style="border-top:1px solid #f1f5f9;padding-top:24px;">
-                <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="52" style="width:52px;height:auto;display:block;margin:0 auto 8px;opacity:0.7;" />
-                <p style="margin:0;font-size:13px;font-weight:600;color:#94a3b8;">Teamet p&aring; Bilto</p>
-              </div>
-            </td></tr>
+        <!-- FOOTER inside card -->
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+          <tr><td align="center" style="padding:20px 28px 28px;border-top:1px solid #f3f4f6;margin-top:8px;">
+            <p style="margin:0 0 2px;font-size:13px;font-weight:800;font-style:italic;color:#1a6eff;letter-spacing:-0.5px;">bilto<span style="font-size:10px;vertical-align:super;font-style:normal;">.se</span></p>
+            <p style="margin:0;font-size:12px;color:#9ca3af;">Teamet p&aring; Bilto</p>
+          </td></tr>
+        </table>
 
-          </table>
-        </td></tr>
+      </td></tr>
 
-        <!-- Below-card footer -->
-        <tr><td align="center" style="padding-top:24px;">
-          <p style="margin:0 0 6px;font-size:12px;color:#94a3b8;">
-            <a href="mailto:hej@bilto.se" style="color:#94a3b8;text-decoration:none;">hej@bilto.se</a>
-            &nbsp;&middot;&nbsp;
-            <a href="${escAttr(site)}" style="color:#94a3b8;text-decoration:none;">bilto.se</a>
-          </p>
-          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${new Date().getFullYear()} Bilto. Alla r&auml;ttigheter f&ouml;rbeh&aring;llna.</p>
-        </td></tr>
+      <!-- Below card -->
+      <tr><td align="center" style="padding-top:20px;">
+        <p style="margin:0;font-size:11px;color:#9ca3af;">
+          <a href="mailto:hej@bilto.se" style="color:#9ca3af;text-decoration:none;">hej@bilto.se</a>
+          &nbsp;&middot;&nbsp;
+          <a href="${escAttr(site)}" style="color:#9ca3af;text-decoration:none;">bilto.se</a>
+          &nbsp;&middot;&nbsp;&copy; ${new Date().getFullYear()} Bilto
+        </p>
+      </td></tr>
 
-      </table>
-    </td></tr>
-  </table>
+    </table>
+  </td></tr>
+</table>
 </body></html>`;
 }
 
