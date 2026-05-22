@@ -316,7 +316,7 @@ interface EmailData {
   auktionSlut: string | null;
 }
 
-const LOGO_URL = "https://bilto.se/Untitled_design_(15).png";
+const LOGO_URL = "https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png";
 
 function renderEmail(d: EmailData): string {
   return `<!doctype html>
