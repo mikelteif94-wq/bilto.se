@@ -19,7 +19,7 @@ export default function CustomerLogin({ onLoggedIn, onBack }: CustomerLoginProps
   const [error, setError] = useState<string | null>(null);
   const [resetSent, setResetSent] = useState(false);
   const [resetting, setResetting] = useState(false);
-  const [newAccount, setNewAccount] = useState(startCreate || !!prefillEmail);
+  const [newAccount, setNewAccount] = useState(startCreate);
 
   const handleReset = async (isNew = false) => {
     setError(null);
