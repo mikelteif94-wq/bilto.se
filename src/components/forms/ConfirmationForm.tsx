@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, Loader2, Gavel, Phone, Clock, ExternalLink } from 'lucide-react';
+import { Check, Loader2, Gavel, Phone, Clock, Mail } from 'lucide-react';
 import { CustomerData, CarData, ImageFile } from '../../pages/SellCarPage';
 import { supabase } from '../../lib/supabase';
 
@@ -21,7 +21,7 @@ const SKICK_LABELS: Record<string, string> = {
   skadat: 'Skadat',
 };
 
-type UploadStage = 'idle' | 'account' | 'customer' | 'car' | 'images' | 'done';
+type UploadStage = 'idle' | 'customer' | 'car' | 'images' | 'done';
 
 export default function ConfirmationForm({
   customer,
@@ -32,7 +32,6 @@ export default function ConfirmationForm({
 }: ConfirmationFormProps) {
   const [stage, setStage] = useState<UploadStage>('idle');
   const [progress, setProgress] = useState({ current: 0, total: 0 });
-  const [trackingUrl, setTrackingUrl] = useState<string>('');
 
   const submitting = stage !== 'idle' && stage !== 'done';
   const submitted = stage === 'done';
@@ -41,38 +40,7 @@ export default function ConfirmationForm({
     e.preventDefault();
     if (submitting) return;
 
-    // 1. Create auth account (so user can log in and track bids)
-    setStage('account');
-    let userId: string | null = null;
-    if (customer.losenord) {
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: customer.mejl.trim(),
-        password: customer.losenord,
-        options: {
-          data: { namn: customer.namn },
-        },
-      });
-      if (signUpError) {
-        // If user already exists, try logging in with the provided password
-        const { data: signInData, error: signInError } =
-          await supabase.auth.signInWithPassword({
-            email: customer.mejl.trim(),
-            password: customer.losenord,
-          });
-        if (signInError || !signInData.user) {
-          setStage('idle');
-          onError(
-            'Den här mejladressen är redan registrerad med ett annat lösenord. Logga in via "Mina erbjudanden" för att fortsätta med ditt befintliga konto, eller använd en annan mejladress.'
-          );
-          return;
-        }
-        userId = signInData.user.id;
-      } else {
-        userId = signUpData.user?.id ?? null;
-      }
-    }
-
-    // 2. Create customer
+    // Create customer (no auth account — triggered via email when first bid arrives)
     setStage('customer');
     const customerId = crypto.randomUUID();
     const { error: customerError } = await supabase
@@ -82,7 +50,7 @@ export default function ConfirmationForm({
         namn: customer.namn,
         telefon: customer.telefon,
         mejl: customer.mejl,
-        user_id: userId,
+        user_id: null,
       }]);
 
     if (customerError) {
@@ -173,8 +141,7 @@ export default function ConfirmationForm({
     }
 
     const origin = import.meta.env.VITE_APP_URL ?? 'https://bilto.se';
-    const url = `${origin.replace(/\/$/, '')}/min-bil/${accessToken}`;
-    setTrackingUrl(url);
+    const trackingUrl = `${origin.replace(/\/$/, '')}/min-bil/${accessToken}`;
 
     const headers = {
       Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
@@ -289,7 +256,7 @@ export default function ConfirmationForm({
               <div className="pb-1">
                 <p className="text-sm font-semibold text-slate-900">Bilhandlare lägger bud</p>
                 <p className="text-[13px] text-slate-500 leading-relaxed mt-0.5">
-                  Budgivningen pågår i 1-3 dagar. Du kan följa buden live i din personliga länk.
+                  Budgivningen pågår i 1-3 dagar. När det första budet kommer skickar vi ett mejl — då kan du skapa ditt konto för att följa buden live.
                 </p>
               </div>
             </li>
@@ -322,30 +289,12 @@ export default function ConfirmationForm({
           </div>
         </div>
 
-        <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-2.5">
-          <span className="text-amber-500 text-[16px] shrink-0 mt-px">✉</span>
-          <p className="text-[13px] text-amber-800 leading-relaxed">
-            Vi har skickat en bekräftelse till din mejl. Hamnar den inte i inkorgen? Kolla skräpposten — den kan ha hamnat där.
+        <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 flex items-start gap-2.5">
+          <Mail className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2} />
+          <p className="text-[13px] text-slate-700 leading-relaxed">
+            Vi har skickat en bekräftelse till <span className="font-semibold">{customer.mejl}</span>. När det första budet kommit in skickar vi ett nytt mejl med en länk att skapa ditt konto.
           </p>
         </div>
-
-        {trackingUrl && (
-          <div className="border border-slate-200 rounded-2xl p-5 sm:p-6">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-wide mb-2">
-              Din personliga länk
-            </p>
-            <p className="text-sm text-slate-600 mb-4">
-              Följ budgivningen live. Vi skickar länken även via mejl och SMS.
-            </p>
-            <a
-              href={trackingUrl}
-              className="inline-flex items-center justify-center gap-2 w-full h-11 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold rounded-full transition text-sm"
-            >
-              Gå till min bil
-              <ExternalLink className="w-4 h-4" strokeWidth={2.2} />
-            </a>
-          </div>
-        )}
 
         <p className="flex items-center justify-center gap-1.5 mt-5 text-[12px] text-slate-500">
           <Clock className="w-3.5 h-3.5" strokeWidth={2.2} />
@@ -365,7 +314,6 @@ export default function ConfirmationForm({
   }
 
   const statusText = () => {
-    if (stage === 'account') return 'Skapar ditt konto...';
     if (stage === 'customer') return 'Sparar kontaktuppgifter...';
     if (stage === 'car') return 'Sparar bilens uppgifter...';
     if (stage === 'images')

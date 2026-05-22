@@ -24,7 +24,7 @@ export interface CustomerData {
   namn: string;
   telefon: string;
   mejl: string;
-  losenord: string;
+  losenord?: string;
 }
 
 export interface CarData {
@@ -67,7 +67,6 @@ export default function SellCarPage({
     namn: '',
     telefon: initialTelefon,
     mejl: '',
-    losenord: '',
   });
   const [images, setImages] = useState<ImageFile[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -283,7 +282,7 @@ export default function SellCarPage({
           {step === 'contact' && (
             <CustomerForm
               initialData={customer}
-              requirePassword={true}
+              requirePassword={false}
               onNext={(data) => {
                 setCustomer(data);
                 goNext();

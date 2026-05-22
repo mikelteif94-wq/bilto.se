@@ -4,9 +4,11 @@ import {
   Check,
   ClipboardCheck,
   Clock,
+  Eye,
   Gavel,
   ImagePlus,
   Loader2,
+  Lock,
   PhoneCall,
   Sparkles,
   ThumbsDown,
@@ -58,7 +60,7 @@ interface CarResponse {
   condition_report: ConditionReport | null;
   image_count: number;
   images: string[];
-  customer: { namn: string } | null;
+  customer: { namn: string; mejl: string } | null;
   winning_bid: { belopp: number; foretagsnamn: string } | null;
 }
 
@@ -238,6 +240,10 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
         </div>
 
         <StatusCard car={car} />
+
+        {(car.status === 'aktiv' || car.status === 'auktion_avslutad') && car.customer?.mejl && (
+          <CreateAccountCard mejl={car.customer.mejl} />
+        )}
 
         {car.images.length > 0 && (
           <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
@@ -761,6 +767,133 @@ function CompleteListingCard({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function CreateAccountCard({ mejl }: { mejl: string }) {
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [done, setDone] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErr(null);
+    if (password.length < 6) {
+      setErr('Lösenordet måste vara minst 6 tecken.');
+      return;
+    }
+    if (password !== confirm) {
+      setErr('Lösenorden matchar inte.');
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase.auth.signUp({
+      email: mejl,
+      password,
+      options: { data: {} },
+    });
+    setSaving(false);
+    if (error && error.message?.toLowerCase().includes('already registered')) {
+      const { error: signInErr } = await supabase.auth.signInWithPassword({ email: mejl, password });
+      if (signInErr) {
+        setErr('Det finns redan ett konto med det lösenordet. Prova att logga in på /logga-in.');
+        return;
+      }
+      setDone(true);
+      return;
+    }
+    if (error) {
+      setErr(error.message);
+      return;
+    }
+    setDone(true);
+  };
+
+  if (done) {
+    return (
+      <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 flex items-start gap-3">
+        <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+          <Check className="w-5 h-5 text-emerald-600" strokeWidth={2.2} />
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-emerald-900">Kontot är skapat</p>
+          <p className="text-[13px] text-emerald-700 mt-0.5 leading-relaxed">
+            Du kan nu följa budgivningen live. Logga in på <a href="/logga-in" className="underline font-medium">Mina sidor</a> nästa gång.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white border border-[#0e6efe]/20 rounded-2xl p-5 sm:p-6">
+      <div className="flex items-start gap-3 mb-4">
+        <div className="w-10 h-10 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+          <Gavel className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
+        </div>
+        <div>
+          <p className="text-[13px] font-bold text-slate-900">Skapa ditt konto för att följa buden</p>
+          <p className="text-[12.5px] text-slate-500 mt-0.5 leading-relaxed">
+            Välj ett lösenord och logga in för att se buden i realtid.
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center gap-3 mb-4">
+        {[
+          { icon: Eye, text: 'Se alla bud live' },
+          { icon: Lock, text: 'Dina uppgifter skyddas' },
+        ].map(({ icon: Icon, text }) => (
+          <div key={text} className="flex items-center gap-1.5 text-[11.5px] text-slate-500">
+            <Icon className="w-3.5 h-3.5 text-[#0e6efe] shrink-0" strokeWidth={2} />
+            {text}
+          </div>
+        ))}
+      </div>
+      <form onSubmit={submit} className="space-y-3">
+        <div>
+          <label className="block text-[12px] font-semibold text-slate-700 mb-1">Konto</label>
+          <input
+            type="text"
+            value={mejl}
+            disabled
+            className="w-full h-10 rounded-xl border border-slate-200 bg-slate-50 px-3 text-[13px] text-slate-500 cursor-not-allowed"
+          />
+        </div>
+        <div>
+          <label className="block text-[12px] font-semibold text-slate-700 mb-1">Välj lösenord</label>
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="Minst 6 tecken"
+            autoComplete="new-password"
+            className="w-full h-10 rounded-xl border border-slate-200 px-3 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
+          />
+        </div>
+        <div>
+          <label className="block text-[12px] font-semibold text-slate-700 mb-1">Bekräfta lösenord</label>
+          <input
+            type="password"
+            value={confirm}
+            onChange={e => setConfirm(e.target.value)}
+            placeholder="Upprepa lösenordet"
+            autoComplete="new-password"
+            className="w-full h-10 rounded-xl border border-slate-200 px-3 text-[13px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
+          />
+        </div>
+        {err && <p className="text-[12px] text-red-600">{err}</p>}
+        <button
+          type="submit"
+          disabled={saving}
+          className="w-full h-11 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:opacity-60 text-white font-semibold text-[14px] rounded-full transition flex items-center justify-center gap-2"
+        >
+          {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+          Skapa konto och se buden
+        </button>
+      </form>
     </div>
   );
 }
