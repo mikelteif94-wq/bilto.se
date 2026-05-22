@@ -8,7 +8,7 @@ const corsHeaders = {
     "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const LOGO_URL = "https://bilto.se/bilto_logo_transparent_(1).svg";
+const LOGO_URL = "https://bilto.se/Untitled_design_(15).png";
 const SITE = "https://bilto.se";
 
 Deno.serve(async (req: Request) => {
@@ -186,18 +186,18 @@ function emailShell(opts: {
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;">
 
         <!-- Logo bar -->
-        <tr><td align="center" style="padding-bottom:24px;">
-          <a href="${escAttr(opts.site)}" style="text-decoration:none;display:inline-block;background:#0e6efe;border-radius:12px;padding:12px 28px;">
-            <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="110" style="width:110px;height:auto;display:block;" />
+        <tr><td style="padding:0;line-height:0;">
+          <a href="${escAttr(opts.site)}" style="text-decoration:none;display:block;">
+            <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="580" style="width:100%;max-width:580px;height:auto;display:block;border-radius:16px 16px 0 0;" />
           </a>
         </td></tr>
 
         <!-- Card -->
-        <tr><td style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+        <tr><td style="background:#ffffff;border-radius:0 0 16px 16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
 
           <!-- Hero -->
           <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="background:linear-gradient(135deg,#0a4fd4 0%,#0e6efe 60%,#3b87ff 100%);padding:40px 40px 36px;text-align:center;">
+            <tr><td style="background:linear-gradient(135deg,#0a4fd4 0%,#0e6efe 60%,#3b87ff 100%);padding:36px 40px 32px;text-align:center;">
               ${opts.heroContent}
             </td></tr>
           </table>
