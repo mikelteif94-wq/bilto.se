@@ -107,61 +107,31 @@ export default function DealerDispatchPanel({
     if (selectedDealers.size === 0) return;
     setSending(true);
     setSendError(null);
-    const deadline = new Date(Date.now() + deadlineHours * 3600000).toISOString();
 
-    const alreadySentIds = new Set(dispatches.map((d) => d.dealer_id));
-    const newDealers = [...selectedDealers].filter((id) => !alreadySentIds.has(id));
-    if (newDealers.length === 0) {
-      setSendError('Valda handlare har redan fått detta lead.');
+    const { data: { session } } = await supabase.auth.getSession();
+
+    const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/dispatch-dealers`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${session?.access_token ?? import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        car_id: carId ?? undefined,
+        quote_request_id: quoteRequestId ?? undefined,
+        dealer_ids: [...selectedDealers],
+        message,
+        deadline_hours: deadlineHours,
+        dispatched_by: adminUserId || undefined,
+        dispatched_by_name: adminName,
+      }),
+    });
+
+    const json = await resp.json().catch(() => ({}));
+    if (!resp.ok) {
+      setSendError(json.error ?? `Fel ${resp.status}`);
       setSending(false);
       return;
-    }
-
-    const rows = newDealers.map((dealerId) => ({
-      car_id: carId ?? null,
-      quote_request_id: quoteRequestId ?? null,
-      dealer_id: dealerId,
-      response_status: 'sent',
-      response_deadline_hours: deadlineHours,
-      deadline_at: deadline,
-      dispatched_by: adminUserId || null,
-      dispatched_by_name: adminName,
-      message,
-    }));
-
-    const { data: inserted, error: insertErr } = await supabase.from('dealer_dispatches').insert(rows).select('id');
-    if (insertErr) {
-      console.error('Dispatch insert error:', insertErr);
-      setSendError(`Fel: ${insertErr.message}`);
-      setSending(false);
-      return;
-    }
-
-    // Send emails to dispatched dealers
-    if (inserted && inserted.length > 0) {
-      try {
-        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-dealer-dispatch`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ dispatch_ids: inserted.map((r: { id: string }) => r.id), is_nudge: false }),
-        });
-      } catch { /* best effort */ }
-    }
-
-    // Log activity (best effort — don't block on failure)
-    if (carId && adminUserId) {
-      await supabase.from('car_activities').insert({
-        car_id: carId,
-        type: 'dispatch',
-        title: `Skickat till ${newDealers.length} handlare`,
-        body: `Lead skickat till: ${dealers.filter((d) => newDealers.includes(d.id)).map((d) => d.foretagsnamn).join(', ')}`,
-        created_by: adminUserId,
-        created_by_name: adminName,
-      }).then(({ error }) => { if (error) console.warn('Activity log error:', error); });
     }
 
     setSelectedDealers(new Set());
