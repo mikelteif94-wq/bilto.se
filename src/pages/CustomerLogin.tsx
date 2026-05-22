@@ -80,6 +80,12 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
       setError('Kunde inte skapa konto. Försök igen.');
       return;
     }
+    // Link existing customers row (created before auth account existed) to this user
+    await supabase
+      .from('customers')
+      .update({ user_id: data.user.id })
+      .ilike('mejl', email.trim())
+      .is('user_id', null);
     sessionStorage.setItem('bilto_portal', 'customer');
     setLoading(false);
     onLoggedIn();
@@ -98,6 +104,12 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
       setLoading(false);
       return;
     }
+    // Link existing customers row if not already linked (e.g. first login after signup)
+    await supabase
+      .from('customers')
+      .update({ user_id: data.user.id })
+      .ilike('mejl', email.trim())
+      .is('user_id', null);
     sessionStorage.setItem('bilto_portal', 'customer');
     setLoading(false);
     onLoggedIn();
