@@ -338,11 +338,7 @@ function App() {
 
     const adminNavigate = (page: import('./hooks/useAdminNav').AdminPage) => {
       if (page === 'overview') navigate('/admin/oversikt');
-      else if (page === 'hittat-bil') navigate('/admin/leads?filter=hittat-bil');
-      else if (page === 'letar-bil') navigate('/admin/leads?filter=letar-bil');
-      else if (page === 'inbyte') navigate('/admin/leads?filter=inbyte');
-      else if (page === 'salj') navigate('/admin/leads?filter=salj');
-      else if (page === 'bilar') navigate('/admin/bilar');
+      else if (page === 'leads') navigate('/admin/leads');
       else if (page === 'handlare') navigate('/admin/handlare');
     };
 
@@ -455,7 +451,6 @@ function App() {
           onOpenCar={(id) => navigate(`/admin/bilar/${id}`)}
           onOpenQuote={(id) => navigate(`/admin/forfragningar/${id}`)}
           onNavigate={adminNavigate}
-          initialCategory={(new URLSearchParams(window.location.search).get('filter') as import('./hooks/useAdminNav').AdminPage | null) ?? undefined}
         />
       );
     }

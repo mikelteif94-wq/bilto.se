@@ -17,7 +17,6 @@ interface AdminLeadCommandCenterProps {
   onOpenCar: (id: string) => void;
   onOpenQuote: (id: string) => void;
   onNavigate: (page: AdminPage) => void;
-  initialCategory?: AdminPage;
 }
 
 type LeadCategory = 'all' | 'hittat-bil' | 'letar-bil' | 'inbyte' | 'salj' | 'urgent' | 'uncontacted' | 'won' | 'lost';
@@ -130,20 +129,11 @@ export default function AdminLeadCommandCenter({
   onOpenCar,
   onOpenQuote,
   onNavigate,
-  initialCategory,
 }: AdminLeadCommandCenterProps) {
-  const activeNavPage: AdminPage =
-    (initialCategory === 'hittat-bil' || initialCategory === 'letar-bil' || initialCategory === 'inbyte')
-      ? initialCategory
-      : 'salj';
-  const navItems = useAdminNav({ activePage: activeNavPage, onNavigate });
+  const navItems = useAdminNav({ activePage: 'leads', onNavigate });
   const [loading, setLoading] = useState(true);
   const [leads, setLeads] = useState<UnifiedLead[]>([]);
-  const [category, setCategory] = useState<LeadCategory>(
-    initialCategory && CATEGORY_TABS.some((t) => t.key === initialCategory)
-      ? (initialCategory as LeadCategory)
-      : 'all'
-  );
+  const [category, setCategory] = useState<LeadCategory>('all');
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);

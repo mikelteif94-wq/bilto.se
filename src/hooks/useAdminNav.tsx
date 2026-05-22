@@ -1,22 +1,7 @@
-import {
-  LayoutDashboard,
-  Car as CarIcon,
-  Building2,
-  Search,
-  ArrowLeftRight,
-  TrendingDown,
-  CarFront,
-} from 'lucide-react';
+import { LayoutDashboard, Building2, Users } from 'lucide-react';
 import { useAdminBadges } from './useAdminBadges';
 
-export type AdminPage =
-  | 'overview'
-  | 'hittat-bil'
-  | 'letar-bil'
-  | 'inbyte'
-  | 'salj'
-  | 'bilar'
-  | 'handlare';
+export type AdminPage = 'overview' | 'leads' | 'handlare';
 
 interface AdminNavOptions {
   activePage: AdminPage;
@@ -34,39 +19,11 @@ export function useAdminNav({ activePage, onNavigate }: AdminNavOptions) {
       onClick: activePage !== 'overview' ? () => onNavigate('overview') : undefined,
     },
     {
-      icon: <CarFront className="w-[18px] h-[18px]" />,
-      label: 'Hittat bil',
-      active: activePage === 'hittat-bil',
-      badge: badges.hittatBil,
-      onClick: activePage !== 'hittat-bil' ? () => onNavigate('hittat-bil') : undefined,
-    },
-    {
-      icon: <Search className="w-[18px] h-[18px]" />,
-      label: 'Letar bil',
-      active: activePage === 'letar-bil',
-      badge: badges.letarBil,
-      onClick: activePage !== 'letar-bil' ? () => onNavigate('letar-bil') : undefined,
-    },
-    {
-      icon: <ArrowLeftRight className="w-[18px] h-[18px]" />,
-      label: 'Inbyte',
-      active: activePage === 'inbyte',
-      badge: badges.inbyte,
-      onClick: activePage !== 'inbyte' ? () => onNavigate('inbyte') : undefined,
-    },
-    {
-      icon: <TrendingDown className="w-[18px] h-[18px]" />,
-      label: 'Sälj',
-      active: activePage === 'salj',
-      badge: badges.salj,
-      onClick: activePage !== 'salj' ? () => onNavigate('salj') : undefined,
-    },
-    {
-      icon: <CarIcon className="w-[18px] h-[18px]" />,
-      label: 'Bilar',
-      active: activePage === 'bilar',
-      badge: badges.newCars,
-      onClick: activePage !== 'bilar' ? () => onNavigate('bilar') : undefined,
+      icon: <Users className="w-[18px] h-[18px]" />,
+      label: 'Leads',
+      active: activePage === 'leads',
+      badge: badges.totalLeads,
+      onClick: activePage !== 'leads' ? () => onNavigate('leads') : undefined,
     },
     {
       icon: <Building2 className="w-[18px] h-[18px]" />,

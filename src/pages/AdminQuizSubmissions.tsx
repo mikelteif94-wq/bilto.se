@@ -100,7 +100,7 @@ export default function AdminQuizSubmissions({
   onLoggedOut,
   onNavigate,
 }: AdminQuizSubmissionsProps) {
-  const navItems = useAdminNav({ activePage: 'bilar', onNavigate });
+  const navItems = useAdminNav({ activePage: 'leads', onNavigate });
   const [submissions, setSubmissions] = useState<QuizSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);

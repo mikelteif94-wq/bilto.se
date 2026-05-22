@@ -106,7 +106,7 @@ export default function AdminCars({
   onNavigateBulkUpload,
   onNavigateCatalog,
 }: AdminCarsProps) {
-  const navItems = useAdminNav({ activePage: 'bilar', onNavigate });
+  const navItems = useAdminNav({ activePage: 'leads', onNavigate });
   const [cars, setCars] = useState<CarRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
