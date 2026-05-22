@@ -8,7 +8,7 @@ const corsHeaders = {
     "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const LOGO_URL = "https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png";
+const LOGO_URL = "https://bilto.se/bilto_logo_transparent_(1).svg";
 const SITE = "https://bilto.se";
 
 Deno.serve(async (req: Request) => {
@@ -143,6 +143,28 @@ function renderEmail(d: {
 }): string {
   const site = d.appUrl ? d.appUrl.replace(/\/$/, "") : SITE;
 
+  return emailShell({
+    site,
+    preheader: `Hej ${esc(d.fornamn)}! Vi har tagit emot din bil och hör av oss snart.`,
+    title: `Hej ${esc(d.fornamn)}!`,
+    subtitle: "Vi har tagit emot din bil och &auml;r redo att s&auml;tta ig&aring;ng!",
+    bodyContent: `
+      <p style="margin:0 0 20px;font-size:15px;color:#475569;line-height:1.7;">En av v&aring;ra experter ringer dig inom kort f&ouml;r att g&aring; igenom n&auml;sta steg och svara p&aring; alla fr&aring;gor du har.</p>
+      ${d.regnummer ? `<p style="margin:0 0 20px;font-size:14px;color:#64748b;">Registreringsnummer: <strong style="color:#0f172a;font-family:monospace;">${esc(d.regnummer)}</strong></p>` : ""}
+      <p style="margin:0 0 24px;font-size:15px;color:#475569;line-height:1.7;">Under tiden kan du luta dig tillbaka &mdash; vi sk&ouml;ter allt och h&ouml;r av oss snart!</p>
+      ${d.trackingUrl ? `<a href="${escAttr(d.trackingUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;letter-spacing:0.01em;">Skapa konto &amp; f&ouml;lj din bil &rarr;</a>` : ""}
+    `,
+  });
+}
+
+function emailShell(opts: {
+  site: string;
+  preheader: string;
+  title: string;
+  subtitle: string;
+  bodyContent: string;
+}): string {
+  const year = new Date().getFullYear();
   return `<!doctype html>
 <html lang="sv">
 <head>
@@ -151,133 +173,72 @@ function renderEmail(d: {
 <meta name="x-apple-disable-message-reformatting"/>
 <title>Bilto</title>
 </head>
-<body style="margin:0;padding:0;background:#f0f4f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
-  <!-- Preheader -->
-  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Tack ${esc(d.fornamn)}! Vi har tagit emot din bil och hör av oss snart.&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;</div>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${opts.preheader}&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;</div>
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;padding:32px 16px 48px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:32px 12px 40px;">
     <tr><td align="center">
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
 
         <!-- Card -->
-        <tr><td style="border-radius:20px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,0.08);">
+        <tr><td style="background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.07);">
           <table width="100%" cellpadding="0" cellspacing="0">
 
-            <!-- HERO: full blue with logo + check + title + reg -->
-            <tr><td style="background:#0e6efe;padding:36px 32px 40px;text-align:center;">
-
-              <!-- Logo -->
+            <!-- Blue header strip with logo -->
+            <tr><td style="background:#0e6efe;padding:20px 28px 18px;">
               <table width="100%" cellpadding="0" cellspacing="0">
-                <tr><td align="center" style="padding-bottom:32px;">
-                  <a href="${escAttr(site)}" style="text-decoration:none;display:inline-block;">
-                    <img src="${escAttr(LOGO_URL)}" alt="bilto" width="110" style="width:110px;height:auto;display:block;" />
-                  </a>
-                </td></tr>
-              </table>
-
-              <!-- Check circle -->
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr><td align="center" style="padding-bottom:20px;">
-                  <div style="width:72px;height:72px;border-radius:50%;border:2.5px solid rgba(255,255,255,0.6);display:inline-flex;align-items:center;justify-content:center;margin:0 auto;">
-                    <!--[if !mso]><!-->
-                    <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
-                      <tr><td align="center" valign="middle" style="width:72px;height:72px;">
-                        <span style="font-size:32px;color:#ffffff;line-height:1;">&#10003;</span>
-                      </td></tr>
-                    </table>
-                    <!--<![endif]-->
-                  </div>
-                </td></tr>
-              </table>
-
-              <!-- Label -->
-              <p style="margin:0 0 8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:rgba(255,255,255,0.8);">Nu k&ouml;r vi!</p>
-
-              <!-- Heading -->
-              <h1 style="margin:0 0 20px;font-size:34px;font-weight:800;color:#ffffff;line-height:1.15;letter-spacing:-0.5px;">Tack ${esc(d.fornamn)}!</h1>
-
-              <!-- Reg plate pill -->
-              ${d.regnummer ? `
-              <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
-                <tr><td align="center" style="background:rgba(255,255,255,0.2);border-radius:50px;padding:9px 22px;">
-                  <span style="font-size:13px;font-family:monospace;font-weight:700;letter-spacing:0.16em;color:#ffffff;">
-                    &#128663;&nbsp; ${esc(d.regnummer)}
-                  </span>
-                </td></tr>
-              </table>` : ""}
-
-            </td></tr>
-
-            <!-- BODY: white -->
-            <tr><td style="background:#ffffff;padding:36px 32px 0;">
-
-              <h2 style="margin:0 0 12px;font-size:20px;font-weight:800;color:#0f172a;line-height:1.3;">Vi har tagit emot din bil och &auml;r redo att s&auml;tta ig&aring;ng!</h2>
-              <p style="margin:0 0 28px;font-size:15px;color:#475569;line-height:1.7;">En av v&aring;ra experter ringer dig inom kort f&ouml;r att g&aring; igenom n&auml;sta steg och svara p&aring; alla fr&aring;gor du har.</p>
-
-              <!-- Info card -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
                 <tr>
-                  <td valign="top" style="background:#f0f6ff;border-radius:14px;padding:18px 20px;">
-                    <table width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <!-- Icon col -->
-                        <td valign="middle" style="width:48px;padding-right:14px;">
-                          <table cellpadding="0" cellspacing="0">
-                            <tr><td align="center" valign="middle" style="width:44px;height:44px;background:#dbeafe;border-radius:12px;">
-                              <span style="font-size:20px;line-height:1;color:#0e6efe;">&#128172;</span>
-                            </td></tr>
-                          </table>
-                        </td>
-                        <!-- Text col -->
-                        <td valign="middle">
-                          <p style="margin:0 0 3px;font-size:14px;font-weight:700;color:#0e6efe;line-height:1.4;">Under tiden kan du luta dig tillbaka</p>
-                          <p style="margin:0;font-size:13px;color:#3b82f6;line-height:1.5;">&mdash; vi sk&ouml;ter allt och h&ouml;r av oss snart!</p>
-                        </td>
-                      </tr>
-                    </table>
+                  <td valign="middle">
+                    <a href="${escAttr(opts.site)}" style="text-decoration:none;display:inline-block;">
+                      <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="90" style="width:90px;height:auto;display:block;" />
+                    </a>
+                  </td>
+                  <td align="right" valign="middle">
+                    <span style="font-size:12px;color:rgba(255,255,255,0.75);font-weight:500;">bilto.se</span>
                   </td>
                 </tr>
               </table>
-
-              <!-- CTA button -->
-              ${d.trackingUrl ? `
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
-                <tr><td>
-                  <a href="${escAttr(d.trackingUrl)}" style="display:block;background:#0e6efe;color:#ffffff;text-decoration:none;border-radius:14px;padding:18px 24px;font-weight:700;font-size:16px;text-align:center;letter-spacing:0.01em;">
-                    <table width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td align="center" valign="middle">
-                          <span style="font-size:18px;vertical-align:middle;margin-right:10px;">&#128100;</span>
-                          <span style="vertical-align:middle;">Skapa konto &amp; f&ouml;lj din bil</span>
-                          <span style="vertical-align:middle;margin-left:10px;font-size:18px;">&rarr;</span>
-                        </td>
-                      </tr>
-                    </table>
-                  </a>
-                </td></tr>
-              </table>` : ""}
-
             </td></tr>
 
-            <!-- FOOTER inside card: logo icon + team name -->
-            <tr><td style="background:#ffffff;padding:0 32px 32px;text-align:center;border-radius:0 0 20px 20px;">
-              <div style="border-top:1px solid #f1f5f9;padding-top:24px;">
-                <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="52" style="width:52px;height:auto;display:block;margin:0 auto 8px;opacity:0.7;" />
-                <p style="margin:0;font-size:13px;font-weight:600;color:#94a3b8;">Teamet p&aring; Bilto</p>
-              </div>
+            <!-- Title band -->
+            <tr><td style="background:#0a3fa8;padding:22px 28px 20px;">
+              <h1 style="margin:0 0 4px;font-size:22px;font-weight:800;color:#ffffff;line-height:1.2;">${opts.title}</h1>
+              <p style="margin:0;font-size:14px;color:rgba(255,255,255,0.82);line-height:1.5;">${opts.subtitle}</p>
+            </td></tr>
+
+            <!-- Body -->
+            <tr><td style="padding:28px 28px 24px;">
+              ${opts.bodyContent}
+            </td></tr>
+
+            <!-- Footer inside card -->
+            <tr><td style="padding:0 28px 24px;border-top:1px solid #f1f5f9;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="padding-top:20px;">
+                <tr>
+                  <td valign="middle">
+                    <p style="margin:0 0 1px;font-size:13px;color:#64748b;">Med v&auml;nliga h&auml;lsningar,</p>
+                    <p style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">Teamet p&aring; Bilto</p>
+                  </td>
+                  <td align="right" valign="middle">
+                    <a href="${escAttr(opts.site)}" style="text-decoration:none;">
+                      <img src="${escAttr(LOGO_URL)}" alt="Bilto" width="54" style="width:54px;height:auto;display:block;opacity:0.55;" />
+                    </a>
+                  </td>
+                </tr>
+              </table>
             </td></tr>
 
           </table>
         </td></tr>
 
-        <!-- Below-card footer -->
-        <tr><td align="center" style="padding-top:24px;">
-          <p style="margin:0 0 6px;font-size:12px;color:#94a3b8;">
+        <!-- Below card -->
+        <tr><td align="center" style="padding-top:18px;">
+          <p style="margin:0 0 4px;font-size:12px;color:#94a3b8;">
             <a href="mailto:hej@bilto.se" style="color:#94a3b8;text-decoration:none;">hej@bilto.se</a>
             &nbsp;&middot;&nbsp;
-            <a href="${escAttr(site)}" style="color:#94a3b8;text-decoration:none;">bilto.se</a>
+            <a href="${escAttr(opts.site)}" style="color:#94a3b8;text-decoration:none;">bilto.se</a>
           </p>
-          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${new Date().getFullYear()} Bilto. Alla r&auml;ttigheter f&ouml;rbeh&aring;llna.</p>
+          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${year} Bilto. Alla r&auml;ttigheter f&ouml;rbeh&aring;llna.</p>
         </td></tr>
 
       </table>

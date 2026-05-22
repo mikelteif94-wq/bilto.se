@@ -8,7 +8,7 @@ const corsHeaders = {
     "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const LOGO_URL = "https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png";
+const LOGO_URL = "https://bilto.se/bilto_logo_transparent_(1).svg";
 const SITE = "https://bilto.se";
 
 const RATING_LABELS: Record<string, string> = {
@@ -206,16 +206,13 @@ Deno.serve(async (req: Request) => {
 
 function renderSuggestionHtml(firstName: string, portalUrl: string): string {
   return emailShell({
-    preheader: `Hej ${escapeHtml(firstName)}! Vi har hittat en bil som matchar din förfrågan.`,
-    heroContent: `
-      <p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);">Nytt bilförslag</p>
-      <h1 style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;">Hej ${escapeHtml(firstName)}!</h1>
-      <p style="margin:10px 0 0;font-size:15px;color:rgba(255,255,255,0.85);">Vi har hittat en bil som matchar din förfrågan.</p>
-    `,
+    preheader: `Hej ${esc(firstName)}! Vi har hittat en bil som matchar din förfrågan.`,
+    title: `Hej ${esc(firstName)}!`,
+    subtitle: "Vi har hittat en bil som matchar din f&ouml;rfr&aring;gan.",
     bodyContent: `
-      <p style="margin:0 0 16px;font-size:16px;color:#1e293b;line-height:1.7;font-weight:500;">Vi har lagt till ett nytt bilförslag i din portal.</p>
-      <p style="margin:0 0 24px;font-size:15px;color:#475569;line-height:1.7;">Klicka nedan för att se alla detaljer, pris och mer information om bilen vi hittade åt dig.</p>
-      ${portalUrl ? `<a href="${escapeHtml(portalUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:15px 32px;border-radius:10px;letter-spacing:0.02em;">Se mitt bilförslag &rarr;</a>` : ""}
+      <p style="margin:0 0 16px;font-size:15px;color:#334155;line-height:1.7;">Vi har lagt till ett nytt bilf&ouml;rslag i din portal.</p>
+      <p style="margin:0 0 24px;font-size:15px;color:#475569;line-height:1.7;">Klicka nedan f&ouml;r att se alla detaljer, pris och mer information om bilen vi hittade &aring;t dig.</p>
+      ${portalUrl ? `<a href="${esc(portalUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:13px 28px;border-radius:8px;letter-spacing:0.01em;">Se mitt bilf&ouml;rslag &rarr;</a>` : ""}
     `,
   });
 }
@@ -244,51 +241,48 @@ function renderOfferHtml(row: OfferRow, portalUrl: string): string {
   if (row.other_savings_value > 0) savingsRows.push(savingRow(row.other_savings_description || "Övrigt", `${fmt(row.other_savings_value)} kr`, false));
 
   const bodyContent = `
-    <p style="margin:0 0 6px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;">Din bil</p>
-    <p style="margin:0 0 24px;font-size:20px;font-weight:800;color:#0f172a;line-height:1.3;">${escapeHtml(row.car_description)}</p>
+    <p style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;">Din bil</p>
+    <p style="margin:0 0 20px;font-size:18px;font-weight:800;color:#0f172a;line-height:1.3;">${esc(row.car_description)}</p>
 
     ${savingsRows.length > 0 ? `
-    <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:16px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:16px;">
       ${savingsRows.join("")}
     </table>` : ""}
 
     ${row.total_savings > 0 ? `
-    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px 20px;margin-bottom:16px;">
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 18px;margin-bottom:16px;">
       <table width="100%"><tr>
-        <td style="color:#1e40af;font-size:14px;font-weight:700;">Total besparing</td>
-        <td align="right" style="color:#1d4ed8;font-size:24px;font-weight:800;">~${fmt(row.total_savings)} kr</td>
+        <td style="color:#1e40af;font-size:13px;font-weight:700;">Total besparing</td>
+        <td align="right" style="color:#1d4ed8;font-size:22px;font-weight:800;">~${fmt(row.total_savings)} kr</td>
       </tr></table>
     </div>` : ""}
 
-    ${row.total_deal_price > 0 ? `<p style="margin:0 0 4px;font-size:15px;color:#334155;">Totalt dealpris: <strong style="color:#0f172a;">${fmt(row.total_deal_price)} kr</strong></p>` : ""}
-    ${row.negotiated_monthly_cost != null && row.negotiated_monthly_cost > 0 ? `<p style="margin:0 0 16px;font-size:15px;color:#334155;">Månadskostnad: <strong style="color:#0f172a;">${fmt(row.negotiated_monthly_cost)} kr/mån</strong></p>` : ""}
+    ${row.total_deal_price > 0 ? `<p style="margin:0 0 4px;font-size:14px;color:#334155;">Totalt dealpris: <strong style="color:#0f172a;">${fmt(row.total_deal_price)} kr</strong></p>` : ""}
+    ${row.negotiated_monthly_cost != null && row.negotiated_monthly_cost > 0 ? `<p style="margin:0 0 16px;font-size:14px;color:#334155;">M&aring;nadskostnad: <strong style="color:#0f172a;">${fmt(row.negotiated_monthly_cost)} kr/m&aring;n</strong></p>` : ""}
 
-    <span style="display:inline-block;padding:5px 14px;background:${ratingBg};color:${ratingColor};border-radius:99px;font-size:12px;font-weight:700;margin-bottom:${row.admin_comment ? "16px" : "24px"};">${escapeHtml(ratingLabel)}</span>
+    <span style="display:inline-block;padding:4px 12px;background:${ratingBg};color:${ratingColor};border-radius:99px;font-size:12px;font-weight:700;margin-bottom:${row.admin_comment ? "16px" : "20px"};">${esc(ratingLabel)}</span>
 
     ${row.admin_comment ? `
-    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px 18px;margin-bottom:24px;">
-      <p style="margin:0 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;">Vår bedömning</p>
-      <p style="margin:0;font-size:14px;color:#334155;line-height:1.7;">${escapeHtml(row.admin_comment)}</p>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px 16px;margin-bottom:20px;">
+      <p style="margin:0 0 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;">V&aring;r bed&ouml;mning</p>
+      <p style="margin:0;font-size:14px;color:#334155;line-height:1.7;">${esc(row.admin_comment)}</p>
     </div>` : ""}
 
-    <a href="${escapeHtml(portalLink)}" style="display:inline-block;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:15px 32px;border-radius:10px;letter-spacing:0.02em;">Se mitt erbjudande &rarr;</a>
+    <a href="${esc(portalLink)}" style="display:inline-block;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:13px 28px;border-radius:8px;letter-spacing:0.01em;">Se mitt erbjudande &rarr;</a>
   `;
 
   return emailShell({
-    preheader: `Hej ${escapeHtml(firstName)}! Här är vad vi förhandlat fram åt dig.`,
-    heroContent: `
-      <p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);">Ditt erbjudande är klart</p>
-      <h1 style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;">Hej ${escapeHtml(firstName)}!</h1>
-      <p style="margin:10px 0 0;font-size:15px;color:rgba(255,255,255,0.85);">Här är vad vi förhandlat fram åt dig.</p>
-    `,
+    preheader: `Hej ${esc(firstName)}! Här är vad vi förhandlat fram åt dig.`,
+    title: `Hej ${esc(firstName)}!`,
+    subtitle: "H&auml;r &auml;r vad vi f&ouml;rhandlat fram &aring;t dig.",
     bodyContent,
   });
 }
 
 function savingRow(label: string, value: string, highlight: boolean): string {
   return `<tr style="background:${highlight ? "#f0f9ff" : "#ffffff"};">
-    <td style="padding:12px 16px;font-size:14px;color:#475569;border-bottom:1px solid #f1f5f9;">${label}</td>
-    <td align="right" style="padding:12px 16px;font-size:14px;font-weight:700;color:${highlight ? "#0e6efe" : "#0f172a"};border-bottom:1px solid #f1f5f9;">${value}</td>
+    <td style="padding:10px 14px;font-size:13px;color:#475569;border-bottom:1px solid #f1f5f9;">${label}</td>
+    <td align="right" style="padding:10px 14px;font-size:13px;font-weight:700;color:${highlight ? "#0e6efe" : "#0f172a"};border-bottom:1px solid #f1f5f9;">${value}</td>
   </tr>`;
 }
 
@@ -316,9 +310,11 @@ function renderOfferText(row: OfferRow, portalUrl: string): string {
 
 function emailShell(opts: {
   preheader: string;
-  heroContent: string;
+  title: string;
+  subtitle: string;
   bodyContent: string;
 }): string {
+  const year = new Date().getFullYear();
   return `<!doctype html>
 <html lang="sv">
 <head>
@@ -329,45 +325,68 @@ function emailShell(opts: {
 </head>
 <body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
   <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${opts.preheader}&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;</div>
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:40px 16px;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:32px 12px 40px;">
     <tr><td align="center">
-      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
 
-        <tr><td style="padding:0;line-height:0;">
-          <a href="${SITE}" style="text-decoration:none;display:block;">
-            <img src="${LOGO_URL}" alt="Bilto" width="580" style="width:100%;max-width:580px;height:auto;display:block;border-radius:16px 16px 0 0;" />
-          </a>
-        </td></tr>
-
-        <tr><td style="background:#ffffff;border-radius:0 0 16px 16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+        <tr><td style="background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.07);">
           <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="background:linear-gradient(135deg,#0a4fd4 0%,#0e6efe 60%,#3b87ff 100%);padding:40px 40px 36px;text-align:center;">
-              ${opts.heroContent}
+
+            <!-- Blue header with logo -->
+            <tr><td style="background:#0e6efe;padding:20px 28px 18px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td valign="middle">
+                    <a href="${SITE}" style="text-decoration:none;display:inline-block;">
+                      <img src="${LOGO_URL}" alt="Bilto" width="90" style="width:90px;height:auto;display:block;" />
+                    </a>
+                  </td>
+                  <td align="right" valign="middle">
+                    <span style="font-size:12px;color:rgba(255,255,255,0.7);font-weight:500;">bilto.se</span>
+                  </td>
+                </tr>
+              </table>
             </td></tr>
-          </table>
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:36px 40px 32px;">
+
+            <!-- Title band -->
+            <tr><td style="background:#0a3fa8;padding:22px 28px 20px;">
+              <h1 style="margin:0 0 4px;font-size:22px;font-weight:800;color:#ffffff;line-height:1.2;">${opts.title}</h1>
+              <p style="margin:0;font-size:14px;color:rgba(255,255,255,0.82);line-height:1.5;">${opts.subtitle}</p>
+            </td></tr>
+
+            <!-- Body -->
+            <tr><td style="padding:28px 28px 24px;">
               ${opts.bodyContent}
             </td></tr>
-          </table>
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:0 40px;"><div style="border-top:1px solid #e2e8f0;"></div></td></tr>
-          </table>
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:24px 40px 36px;">
-              <p style="margin:0 0 2px;font-size:14px;color:#64748b;line-height:1.6;">Med vänliga hälsningar,</p>
-              <p style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Teamet på Bilto</p>
+
+            <!-- Footer inside card -->
+            <tr><td style="padding:0 28px 24px;border-top:1px solid #f1f5f9;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="padding-top:20px;">
+                <tr>
+                  <td valign="middle">
+                    <p style="margin:0 0 1px;font-size:13px;color:#64748b;">Med v&auml;nliga h&auml;lsningar,</p>
+                    <p style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">Teamet p&aring; Bilto</p>
+                  </td>
+                  <td align="right" valign="middle">
+                    <a href="${SITE}" style="text-decoration:none;">
+                      <img src="${LOGO_URL}" alt="Bilto" width="54" style="width:54px;height:auto;display:block;opacity:0.55;" />
+                    </a>
+                  </td>
+                </tr>
+              </table>
             </td></tr>
+
           </table>
         </td></tr>
 
-        <tr><td align="center" style="padding-top:28px;">
-          <p style="margin:0 0 8px;font-size:13px;color:#94a3b8;">
-            <a href="mailto:hej@bilto.se" style="color:#64748b;text-decoration:none;font-weight:500;">hej@bilto.se</a>
+        <tr><td align="center" style="padding-top:18px;">
+          <p style="margin:0 0 4px;font-size:12px;color:#94a3b8;">
+            <a href="mailto:hej@bilto.se" style="color:#94a3b8;text-decoration:none;">hej@bilto.se</a>
             &nbsp;&middot;&nbsp;
-            <a href="${SITE}" style="color:#64748b;text-decoration:none;font-weight:500;">bilto.se</a>
+            <a href="${SITE}" style="color:#94a3b8;text-decoration:none;">bilto.se</a>
           </p>
-          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${new Date().getFullYear()} Bilto. Alla rättigheter förbehållna.</p>
+          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${year} Bilto. Alla r&auml;ttigheter f&ouml;rbeh&aring;llna.</p>
         </td></tr>
 
       </table>
@@ -376,7 +395,7 @@ function emailShell(opts: {
 </body></html>`;
 }
 
-function escapeHtml(s: string): string {
+function esc(s: string): string {
   return String(s ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")

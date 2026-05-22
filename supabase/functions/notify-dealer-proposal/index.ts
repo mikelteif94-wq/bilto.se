@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const LOGO_URL = "https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png";
+const LOGO_URL = "https://bilto.se/bilto_logo_transparent_(1).svg";
 const SITE = "https://bilto.se";
 
 Deno.serve(async (req: Request) => {
@@ -35,7 +35,6 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
 
-    // Fetch proposal + car + customer
     const { data: proposal } = await supabase
       .from("dealer_proposals")
       .select("*")
@@ -172,93 +171,120 @@ function buildEmail(d: {
   loptid: number;
   portalUrl: string;
 }): string {
+  const year = new Date().getFullYear();
+
   const savingRow = d.kundNuvarandeMaand > 0 ? `
     <tr>
-      <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-size:14px;">Skillnad</td>
-      <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:15px;font-weight:700;color:${d.maandDiff <= 0 ? '#059669' : '#dc2626'};">
-        ${d.maandDiff <= 0 ? '' : '+'}${fmt(d.maandDiff)} kr/mån
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-size:13px;">Skillnad</td>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:700;color:${d.maandDiff <= 0 ? "#059669" : "#dc2626"};">
+        ${d.maandDiff <= 0 ? "" : "+"}${fmt(d.maandDiff)} kr/m&aring;n
       </td>
-    </tr>` : '';
+    </tr>` : "";
 
   const moneyShot = d.totalFordel !== null ? `
-    <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:24px 0;text-align:center;">
-      <p style="margin:0 0 4px;font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;">Total fördel över ${d.loptid} månader</p>
-      <p style="margin:0;font-size:28px;font-weight:800;color:${d.totalFordel > 0 ? '#34d399' : '#f87171'};">
-        ${d.totalFordel > 0 ? '−' : '+'}${fmt(Math.abs(d.totalFordel))} kr
+    <div style="background:#0a3fa8;border-radius:10px;padding:18px 20px;margin:20px 0;text-align:center;">
+      <p style="margin:0 0 3px;font-size:11px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.08em;">Total f&ouml;rdel &ouml;ver ${d.loptid} m&aring;nader</p>
+      <p style="margin:0;font-size:26px;font-weight:800;color:${d.totalFordel > 0 ? "#34d399" : "#f87171"};">
+        ${d.totalFordel > 0 ? "&minus;" : "+"}${fmt(Math.abs(d.totalFordel))} kr
       </p>
-    </div>` : '';
+    </div>` : "";
 
   return `<!doctype html>
 <html lang="sv">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="x-apple-disable-message-reformatting"/>
 <title>Bilto</title>
 </head>
 <body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:40px 16px;">
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Hej ${esc(d.firstName)}! Du har f&aring;tt ett erbjudande p&aring; din ${esc(d.carLabel)}.&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;</div>
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:32px 12px 40px;">
     <tr><td align="center">
-      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
 
-        <tr><td style="padding:0;line-height:0;">
-          <a href="${SITE}" style="text-decoration:none;display:block;">
-            <img src="${LOGO_URL}" alt="Bilto" width="580" style="width:100%;max-width:580px;height:auto;display:block;border-radius:16px 16px 0 0;" />
-          </a>
-        </td></tr>
-
-        <tr><td style="background:#ffffff;border-radius:0 0 16px 16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+        <tr><td style="background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.07);">
           <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="background:linear-gradient(135deg,#0a4fd4 0%,#0e6efe 60%,#3b87ff 100%);padding:40px 40px 36px;text-align:center;">
-              <p style="margin:0 0 6px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.75);">${esc(d.dealTypLabel)}</p>
-              <h1 style="margin:0 0 8px;font-size:26px;font-weight:800;color:#ffffff;line-height:1.2;">Hej ${esc(d.firstName)}!</h1>
-              <p style="margin:0;font-size:16px;color:rgba(255,255,255,0.9);">${esc(d.dealerName)} har skickat ett erbjudande på din ${esc(d.carLabel)}</p>
-            </td></tr>
-          </table>
 
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:32px 40px;">
-              ${d.offeredCar ? `<p style="margin:0 0 4px;font-size:13px;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Erbjuden bil</p>
-              <p style="margin:0 0 24px;font-size:20px;font-weight:700;color:#0f172a;">${esc(d.offeredCar)}</p>` : ''}
-
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
+            <!-- Blue header with logo -->
+            <tr><td style="background:#0e6efe;padding:20px 28px 18px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-size:14px;">Ny månadskostnad</td>
-                  <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:15px;font-weight:700;color:#0f172a;">${fmt(d.manadskostnad)} kr/mån</td>
+                  <td valign="middle">
+                    <a href="${SITE}" style="text-decoration:none;display:inline-block;">
+                      <img src="${LOGO_URL}" alt="Bilto" width="90" style="width:90px;height:auto;display:block;" />
+                    </a>
+                  </td>
+                  <td align="right" valign="middle">
+                    <span style="font-size:12px;color:rgba(255,255,255,0.7);font-weight:500;">bilto.se</span>
+                  </td>
+                </tr>
+              </table>
+            </td></tr>
+
+            <!-- Title band -->
+            <tr><td style="background:#0a3fa8;padding:22px 28px 20px;">
+              <p style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.7);">${esc(d.dealTypLabel)}</p>
+              <h1 style="margin:0 0 4px;font-size:22px;font-weight:800;color:#ffffff;line-height:1.2;">Hej ${esc(d.firstName)}!</h1>
+              <p style="margin:0;font-size:14px;color:rgba(255,255,255,0.82);line-height:1.5;">${esc(d.dealerName)} har skickat ett erbjudande p&aring; din ${esc(d.carLabel)}</p>
+            </td></tr>
+
+            <!-- Body -->
+            <tr><td style="padding:28px 28px 8px;">
+              ${d.offeredCar ? `
+              <p style="margin:0 0 3px;font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Erbjuden bil</p>
+              <p style="margin:0 0 20px;font-size:18px;font-weight:700;color:#0f172a;">${esc(d.offeredCar)}</p>` : ""}
+
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:4px;">
+                <tr>
+                  <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-size:13px;">Ny m&aring;nadskostnad</td>
+                  <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:700;color:#0f172a;">${fmt(d.manadskostnad)} kr/m&aring;n</td>
                 </tr>
                 ${d.kundNuvarandeMaand > 0 ? `<tr>
-                  <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-size:14px;">Din nuvarande</td>
-                  <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#64748b;">${fmt(d.kundNuvarandeMaand)} kr/mån</td>
-                </tr>` : ''}
+                  <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:#64748b;font-size:13px;">Din nuvarande</td>
+                  <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:13px;color:#64748b;">${fmt(d.kundNuvarandeMaand)} kr/m&aring;n</td>
+                </tr>` : ""}
                 ${savingRow}
               </table>
 
               ${moneyShot}
-
-              <div style="text-align:center;padding:8px 0 4px;">
-                <a href="${d.portalUrl}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:14px 32px;border-radius:100px;letter-spacing:0.01em;">
-                  Se hela erbjudandet &rarr;
-                </a>
-              </div>
             </td></tr>
-          </table>
 
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:0 40px;"><div style="border-top:1px solid #e2e8f0;"></div></td></tr>
-          </table>
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:20px 40px 32px;">
-              <p style="margin:0 0 2px;font-size:13px;color:#94a3b8;">Med vänliga hälsningar,</p>
-              <p style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">Teamet på Bilto</p>
+            <!-- CTA -->
+            <tr><td style="padding:8px 28px 28px;text-align:center;">
+              <a href="${d.portalUrl}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:13px 28px;border-radius:8px;letter-spacing:0.01em;">
+                Se hela erbjudandet &rarr;
+              </a>
             </td></tr>
+
+            <!-- Footer inside card -->
+            <tr><td style="padding:0 28px 24px;border-top:1px solid #f1f5f9;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="padding-top:20px;">
+                <tr>
+                  <td valign="middle">
+                    <p style="margin:0 0 1px;font-size:13px;color:#64748b;">Med v&auml;nliga h&auml;lsningar,</p>
+                    <p style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">Teamet p&aring; Bilto</p>
+                  </td>
+                  <td align="right" valign="middle">
+                    <a href="${SITE}" style="text-decoration:none;">
+                      <img src="${LOGO_URL}" alt="Bilto" width="54" style="width:54px;height:auto;display:block;opacity:0.55;" />
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td></tr>
+
           </table>
         </td></tr>
 
-        <tr><td align="center" style="padding-top:28px;">
-          <p style="margin:0;font-size:12px;color:#94a3b8;">
-            <a href="mailto:hej@bilto.se" style="color:#64748b;text-decoration:none;">hej@bilto.se</a>
+        <tr><td align="center" style="padding-top:18px;">
+          <p style="margin:0 0 4px;font-size:12px;color:#94a3b8;">
+            <a href="mailto:hej@bilto.se" style="color:#94a3b8;text-decoration:none;">hej@bilto.se</a>
             &nbsp;&middot;&nbsp;
-            <a href="${SITE}" style="color:#64748b;text-decoration:none;">bilto.se</a>
+            <a href="${SITE}" style="color:#94a3b8;text-decoration:none;">bilto.se</a>
           </p>
+          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${year} Bilto. Alla r&auml;ttigheter f&ouml;rbeh&aring;llna.</p>
         </td></tr>
 
       </table>

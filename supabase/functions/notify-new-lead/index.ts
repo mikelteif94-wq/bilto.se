@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const LOGO_URL = "https://bilto.se/ChatGPT_Image_9_maj_2026_15_33_44.png";
+const LOGO_URL = "https://bilto.se/bilto_logo_transparent_(1).svg";
 const SITE = "https://bilto.se";
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -44,19 +44,19 @@ Deno.serve(async (req: Request) => {
     const sourceLabel = SOURCE_LABELS[source] || source || "Okänd källa";
     const isGuidance = guidanceRequested;
 
-    // --- Internal notification email to hej@bilto.se ---
+    // --- Internal notification email ---
     const internalSubject = isGuidance
       ? `Ny rådgivningsförfrågan${namn ? " från " + namn : ""} — Bilto`
       : `Nytt lead${regnummer ? ": " + regnummer : ""} via ${sourceLabel} — Bilto`;
 
     const internalHtml = `<!doctype html>
-<html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:32px;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
-    <tr><td style="padding:28px 32px;background:#0e6efe;">
-      <h1 style="margin:0;color:#ffffff;font-size:20px;line-height:1.3;">${isGuidance ? "Ny rådgivningsförfrågan" : "Nytt lead"}</h1>
-      <p style="margin:6px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">Källa: ${escHtml(sourceLabel)}</p>
+<html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:24px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">
+    <tr><td style="padding:20px 24px 16px;background:#0e6efe;">
+      <h1 style="margin:0;color:#ffffff;font-size:18px;line-height:1.3;">${isGuidance ? "Ny rådgivningsförfrågan" : "Nytt lead"}</h1>
+      <p style="margin:4px 0 0;color:rgba(255,255,255,0.8);font-size:13px;">Källa: ${escHtml(sourceLabel)}</p>
     </td></tr>
-    <tr><td style="padding:24px 32px;">
+    <tr><td style="padding:20px 24px;">
       <table width="100%" cellpadding="0" cellspacing="0">
         ${namn ? detailRow("Namn", namn) : ""}
         ${telefon ? detailRow("Telefon", telefon) : ""}
@@ -66,7 +66,7 @@ Deno.serve(async (req: Request) => {
         ${detailRow("Källa", sourceLabel)}
       </table>
     </td></tr>
-    <tr><td style="padding:0 32px 24px;color:#94a3b8;font-size:12px;">
+    <tr><td style="padding:0 24px 16px;color:#94a3b8;font-size:12px;">
       Bilto AB &middot; hej@bilto.se
     </td></tr>
   </table>
@@ -106,7 +106,7 @@ Deno.serve(async (req: Request) => {
       detaljer: internalDetails.slice(0, 500),
     });
 
-    // --- Customer confirmation email (only if email provided) ---
+    // --- Customer confirmation email ---
     let customerOk = false;
     let customerDetails = "";
 
@@ -168,21 +168,19 @@ function renderCustomerEmail(d: {
   bodyText: string;
   telefon: string;
 }): string {
-  const heroLabel = d.isGuidance ? "Rådgivning bokad" : "Intresseanmälan mottagen";
-  const heroSub = d.isGuidance
-    ? "Vi ringer upp dig inom kort."
-    : "En expert kontaktar dig snart.";
+  const title = d.isGuidance ? "Vi ringer upp dig snart!" : "Tack f&ouml;r ditt intresse!";
+  const subtitle = d.isGuidance
+    ? "R&aring;dgivning bokad &mdash; vi h&ouml;rs snart."
+    : "En expert kontaktar dig inom kort.";
 
   return emailShell({
-    preheader: `Hej ${escHtml(d.firstName)}! ${heroSub}`,
-    heroContent: `
-      <p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);">${escHtml(heroLabel)}</p>
-      <h1 style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;">Hej ${escHtml(d.firstName)}!</h1>
-    `,
+    preheader: `Hej ${escHtml(d.firstName)}! ${d.isGuidance ? "Vi ringer upp dig inom kort." : "En expert kontaktar dig snart."}`,
+    title: `Hej ${escHtml(d.firstName)}!`,
+    subtitle,
     bodyContent: `
-      <p style="margin:0 0 16px;font-size:16px;color:#1e293b;line-height:1.7;font-weight:500;">${escHtml(d.bodyText)}</p>
-      <div style="background:#f0f9ff;border-left:4px solid #0e6efe;border-radius:0 8px 8px 0;padding:14px 18px;margin:20px 0;">
-        <p style="margin:0;font-size:14px;color:#0369a1;line-height:1.6;">Har du frågor i mellanåt? Svara på det här mailet eller kontakta oss på <a href="mailto:hej@bilto.se" style="color:#0e6efe;font-weight:600;text-decoration:none;">hej@bilto.se</a>.</p>
+      <p style="margin:0 0 20px;font-size:15px;color:#334155;line-height:1.7;">${escHtml(d.bodyText)}</p>
+      <div style="background:#eff6ff;border-left:3px solid #0e6efe;border-radius:0 8px 8px 0;padding:12px 16px;margin:0 0 8px;">
+        <p style="margin:0;font-size:13px;color:#1e40af;line-height:1.6;">Har du fr&aring;gor? Svara p&aring; det h&auml;r mailet eller kontakta oss p&aring; <a href="mailto:hej@bilto.se" style="color:#0e6efe;font-weight:600;text-decoration:none;">hej@bilto.se</a>.</p>
       </div>
     `,
   });
@@ -190,9 +188,11 @@ function renderCustomerEmail(d: {
 
 function emailShell(opts: {
   preheader: string;
-  heroContent: string;
+  title: string;
+  subtitle: string;
   bodyContent: string;
 }): string {
+  const year = new Date().getFullYear();
   return `<!doctype html>
 <html lang="sv">
 <head>
@@ -203,47 +203,68 @@ function emailShell(opts: {
 </head>
 <body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
   <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${opts.preheader}&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;</div>
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:40px 16px;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:32px 12px 40px;">
     <tr><td align="center">
-      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
 
-        <tr><td style="padding:0;line-height:0;">
-          <a href="${SITE}" style="text-decoration:none;display:block;">
-            <img src="${LOGO_URL}" alt="Bilto" width="580" style="width:100%;max-width:580px;height:auto;display:block;border-radius:16px 16px 0 0;" />
-          </a>
-        </td></tr>
-
-        <tr><td style="background:#ffffff;border-radius:0 0 16px 16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+        <tr><td style="background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.07);">
           <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="background:linear-gradient(135deg,#0a4fd4 0%,#0e6efe 60%,#3b87ff 100%);padding:40px 40px 36px;text-align:center;">
-              ${opts.heroContent}
+
+            <!-- Blue header with logo -->
+            <tr><td style="background:#0e6efe;padding:20px 28px 18px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td valign="middle">
+                    <a href="${SITE}" style="text-decoration:none;display:inline-block;">
+                      <img src="${LOGO_URL}" alt="Bilto" width="90" style="width:90px;height:auto;display:block;" />
+                    </a>
+                  </td>
+                  <td align="right" valign="middle">
+                    <span style="font-size:12px;color:rgba(255,255,255,0.7);font-weight:500;">bilto.se</span>
+                  </td>
+                </tr>
+              </table>
             </td></tr>
-          </table>
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:36px 40px 32px;">
+
+            <!-- Title band -->
+            <tr><td style="background:#0a3fa8;padding:22px 28px 20px;">
+              <h1 style="margin:0 0 4px;font-size:22px;font-weight:800;color:#ffffff;line-height:1.2;">${opts.title}</h1>
+              <p style="margin:0;font-size:14px;color:rgba(255,255,255,0.82);line-height:1.5;">${opts.subtitle}</p>
+            </td></tr>
+
+            <!-- Body -->
+            <tr><td style="padding:28px 28px 24px;">
               ${opts.bodyContent}
             </td></tr>
-          </table>
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:0 40px;">
-              <div style="border-top:1px solid #e2e8f0;"></div>
+
+            <!-- Footer inside card -->
+            <tr><td style="padding:0 28px 24px;border-top:1px solid #f1f5f9;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="padding-top:20px;">
+                <tr>
+                  <td valign="middle">
+                    <p style="margin:0 0 1px;font-size:13px;color:#64748b;">Med v&auml;nliga h&auml;lsningar,</p>
+                    <p style="margin:0;font-size:14px;font-weight:700;color:#0f172a;">Teamet p&aring; Bilto</p>
+                  </td>
+                  <td align="right" valign="middle">
+                    <a href="${SITE}" style="text-decoration:none;">
+                      <img src="${LOGO_URL}" alt="Bilto" width="54" style="width:54px;height:auto;display:block;opacity:0.55;" />
+                    </a>
+                  </td>
+                </tr>
+              </table>
             </td></tr>
-          </table>
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:24px 40px 36px;">
-              <p style="margin:0 0 2px;font-size:14px;color:#64748b;line-height:1.6;">Med vänliga hälsningar,</p>
-              <p style="margin:0;font-size:15px;font-weight:700;color:#0f172a;">Teamet på Bilto</p>
-            </td></tr>
+
           </table>
         </td></tr>
 
-        <tr><td align="center" style="padding-top:28px;">
-          <p style="margin:0 0 8px;font-size:13px;color:#94a3b8;">
-            <a href="mailto:hej@bilto.se" style="color:#64748b;text-decoration:none;font-weight:500;">hej@bilto.se</a>
+        <tr><td align="center" style="padding-top:18px;">
+          <p style="margin:0 0 4px;font-size:12px;color:#94a3b8;">
+            <a href="mailto:hej@bilto.se" style="color:#94a3b8;text-decoration:none;">hej@bilto.se</a>
             &nbsp;&middot;&nbsp;
-            <a href="${SITE}" style="color:#64748b;text-decoration:none;font-weight:500;">bilto.se</a>
+            <a href="${SITE}" style="color:#94a3b8;text-decoration:none;">bilto.se</a>
           </p>
-          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${new Date().getFullYear()} Bilto. Alla rättigheter förbehållna.</p>
+          <p style="margin:0;font-size:11px;color:#cbd5e1;">&copy; ${year} Bilto. Alla r&auml;ttigheter f&ouml;rbeh&aring;llna.</p>
         </td></tr>
 
       </table>
@@ -254,8 +275,8 @@ function emailShell(opts: {
 
 function detailRow(label: string, value: string): string {
   return `<tr>
-    <td style="padding:8px 0;color:#64748b;font-size:13px;border-bottom:1px solid #f1f5f9;width:40%;">${escHtml(label)}</td>
-    <td style="padding:8px 0;color:#0f172a;font-size:14px;font-weight:600;border-bottom:1px solid #f1f5f9;">${escHtml(value)}</td>
+    <td style="padding:7px 0;color:#64748b;font-size:13px;border-bottom:1px solid #f1f5f9;width:40%;">${escHtml(label)}</td>
+    <td style="padding:7px 0;color:#0f172a;font-size:13px;font-weight:600;border-bottom:1px solid #f1f5f9;">${escHtml(value)}</td>
   </tr>`;
 }
 
