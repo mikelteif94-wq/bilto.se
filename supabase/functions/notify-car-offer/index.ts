@@ -113,7 +113,7 @@ Deno.serve(async (req: Request) => {
 
     // --- Formal offer type ---
     const offerId: string | undefined = body?.offer_id;
-    const portalUrl: string = body?.portal_url ?? "";
+    let portalUrl: string = body?.portal_url ?? "";
 
     if (!offerId) {
       return new Response(
@@ -147,6 +147,18 @@ Deno.serve(async (req: Request) => {
         JSON.stringify({ error: "Ingen e-postadress" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
+    }
+
+    // Auto-resolve portal URL from quote_request access_token if not provided
+    if (!portalUrl && row.quote_request_id) {
+      const { data: qr } = await supabase
+        .from("quote_requests")
+        .select("access_token")
+        .eq("id", row.quote_request_id)
+        .maybeSingle();
+      if (qr?.access_token) {
+        portalUrl = `${SITE}/min-forfragan/${qr.access_token}`;
+      }
     }
 
     const subject = `Du har fått ett nytt erbjudande från Bilto${row.car_description ? " — " + row.car_description : ""}`;
@@ -225,7 +237,7 @@ function renderOfferHtml(row: OfferRow, portalUrl: string): string {
   const ratingLabel = RATING_LABELS[row.deal_rating] ?? "Bra deal";
   const ratingColor = row.deal_rating === "excellent" ? "#065f46" : row.deal_rating === "great" ? "#1e40af" : "#374151";
   const ratingBg = row.deal_rating === "excellent" ? "#ecfdf5" : row.deal_rating === "great" ? "#eff6ff" : "#f9fafb";
-  const portalLink = portalUrl || `${SITE}/logga-in`;
+  const portalLink = portalUrl;
 
   const savingsRows: string[] = [];
   if (priceDiff > 0) savingsRows.push(savingRow("Prisrabatt", `-${fmt(priceDiff)} kr`, true));
@@ -268,7 +280,7 @@ function renderOfferHtml(row: OfferRow, portalUrl: string): string {
       <p style="margin:0;font-size:14px;color:#334155;line-height:1.7;">${esc(row.admin_comment)}</p>
     </div>` : ""}
 
-    <a href="${esc(portalLink)}" style="display:inline-block;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:13px 28px;border-radius:8px;letter-spacing:0.01em;">Se mitt erbjudande &rarr;</a>
+    ${portalLink ? `<a href="${esc(portalLink)}" style="display:inline-block;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:13px 28px;border-radius:8px;letter-spacing:0.01em;">Se mitt erbjudande &rarr;</a>` : ""}
   `;
 
   return emailShell({
@@ -291,7 +303,7 @@ function renderOfferText(row: OfferRow, portalUrl: string): string {
   const priceDiff = row.original_price > 0 && row.negotiated_price > 0
     ? row.original_price - row.negotiated_price
     : 0;
-  const portalLink = portalUrl || `${SITE}/logga-in`;
+  const portalLink = portalUrl;
 
   const lines = [`Hej ${firstName}!`, "", `Här är vad vi förhandlat fram för: ${row.car_description}`, ""];
   if (priceDiff > 0) lines.push(`Prisrabatt: -${fmt(priceDiff)} kr`);
@@ -304,7 +316,8 @@ function renderOfferText(row: OfferRow, portalUrl: string): string {
   if (row.total_savings > 0) { lines.push(""); lines.push(`Total besparing: ~${fmt(row.total_savings)} kr`); }
   if (row.total_deal_price > 0) lines.push(`Totalt dealpris: ${fmt(row.total_deal_price)} kr`);
   if (row.admin_comment) { lines.push(""); lines.push(`Vår bedömning: ${row.admin_comment}`); }
-  lines.push("", `Se ditt erbjudande: ${portalLink}`, "", "Med vänliga hälsningar,", "Teamet på Bilto");
+  if (portalLink) lines.push("", `Se ditt erbjudande: ${portalLink}`);
+  lines.push("", "Med vänliga hälsningar,", "Teamet på Bilto");
   return lines.join("\n");
 }
 
