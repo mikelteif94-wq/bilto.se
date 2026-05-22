@@ -7,19 +7,18 @@ import { SiteFooter } from '../components/SiteFooter';
 interface CustomerLoginProps {
   onLoggedIn: () => void;
   onBack: () => void;
+  initialEmail?: string;
+  initialCreate?: boolean;
 }
 
-export default function CustomerLogin({ onLoggedIn, onBack }: CustomerLoginProps) {
-  const params = new URLSearchParams(window.location.search);
-  const prefillEmail = params.get('mejl') ?? '';
-  const startCreate = params.get('skapa') === '1';
-  const [email, setEmail] = useState(prefillEmail);
+export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', initialCreate = false }: CustomerLoginProps) {
+  const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resetSent, setResetSent] = useState(false);
   const [resetting, setResetting] = useState(false);
-  const [newAccount, setNewAccount] = useState(startCreate);
+  const [newAccount, setNewAccount] = useState(initialCreate);
 
   const handleReset = async (isNew = false) => {
     setError(null);

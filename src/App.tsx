@@ -42,6 +42,11 @@ type PublicRoute =
   | { page: 'sell'; regnummer: string; telefon?: string; miltal?: number }
 ;
 
+// Read once at module load before Supabase auth can mutate the URL
+const _initParams = new URLSearchParams(window.location.search);
+const _initEmail = _initParams.get('mejl') ?? '';
+const _initCreate = _initParams.get('skapa') === '1';
+
 function navigate(path: string) {
   window.history.pushState({}, '', path);
   window.dispatchEvent(new PopStateEvent('popstate'));
@@ -210,6 +215,8 @@ function App() {
       <CustomerLogin
         onLoggedIn={() => navigate('/mina-bilar')}
         onBack={() => navigate('/')}
+        initialEmail={_initEmail}
+        initialCreate={_initCreate}
       />
     );
   }
