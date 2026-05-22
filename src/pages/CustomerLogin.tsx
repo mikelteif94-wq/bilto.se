@@ -14,20 +14,28 @@ interface CustomerLoginProps {
 export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', initialCreate = false }: CustomerLoginProps) {
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resetSent, setResetSent] = useState(false);
   const [resetting, setResetting] = useState(false);
   const [newAccount, setNewAccount] = useState(initialCreate);
 
-  const handleReset = async (isNew = false) => {
+  const switchMode = (create: boolean) => {
+    setNewAccount(create);
+    setError(null);
+    setResetSent(false);
+    setPassword('');
+    setConfirm('');
+  };
+
+  const handleReset = async () => {
     setError(null);
     if (!email.trim()) {
       setError('Fyll i din mejl först.');
       return;
     }
     setResetting(true);
-    sessionStorage.setItem('bilto_portal', 'customer');
     const { error: rErr } = await supabase.auth.resetPasswordForEmail(email.trim(), {
       redirectTo: `${window.location.origin}/valj-losenord`,
     });
@@ -39,7 +47,42 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
     setResetSent(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (password.length < 8) {
+      setError('Lösenordet måste vara minst 8 tecken.');
+      return;
+    }
+    if (password !== confirm) {
+      setError('Lösenorden matchar inte.');
+      return;
+    }
+    setLoading(true);
+    const { data, error: signUpErr } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+    });
+    if (signUpErr) {
+      setLoading(false);
+      if (signUpErr.message?.toLowerCase().includes('already registered') || signUpErr.message?.toLowerCase().includes('user already')) {
+        setError('Det finns redan ett konto med den mejladressen. Logga in istället.');
+      } else {
+        setError('Kunde inte skapa konto. Försök igen.');
+      }
+      return;
+    }
+    if (!data.user) {
+      setLoading(false);
+      setError('Kunde inte skapa konto. Försök igen.');
+      return;
+    }
+    sessionStorage.setItem('bilto_portal', 'customer');
+    setLoading(false);
+    onLoggedIn();
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
@@ -52,8 +95,8 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
       setLoading(false);
       return;
     }
-    setLoading(false);
     sessionStorage.setItem('bilto_portal', 'customer');
+    setLoading(false);
     onLoggedIn();
   };
 
@@ -101,91 +144,90 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
                 </h2>
                 <p className="text-[12.5px] text-slate-500">
                   {newAccount
-                    ? 'Ange din e-postadress så skickar vi en verifieringslänk.'
+                    ? 'Ange din mejl och välj ett lösenord — du är klar direkt.'
                     : 'Använd mejlen du angav när du lämnade in bilen.'}
                 </p>
               </div>
+
               <div className="p-7 sm:p-9">
                 {newAccount ? (
-                  <div className="space-y-5">
-                    {!resetSent && (
-                      <>
-                        <div className="rounded-lg bg-blue-50 border border-blue-100 px-4 py-3.5 text-[13px] text-blue-800 leading-relaxed">
-                          <p className="font-semibold mb-1">Så här fungerar det:</p>
-                          <ol className="list-decimal list-inside space-y-1 text-[12.5px]">
-                            <li>Ange din e-postadress nedan</li>
-                            <li>Vi skickar en verifieringslänk till din mail</li>
-                            <li>Klicka på länken för att bekräfta din e-post</li>
-                            <li>Välj ditt lösenord — klart!</li>
-                          </ol>
-                        </div>
+                  <form onSubmit={handleSignUp} noValidate className="space-y-5">
+                    <label className="block">
+                      <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
+                        Din e-postadress
+                      </span>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        autoComplete="email"
+                        autoFocus
+                        placeholder="namn@exempel.se"
+                        className="form-control"
+                      />
+                    </label>
 
-                        <label className="block">
-                          <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
-                            Din e-postadress
-                          </span>
-                          <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            autoComplete="email"
-                            autoFocus
-                            placeholder="namn@exempel.se"
-                            className="form-control"
-                          />
-                        </label>
+                    <label className="block">
+                      <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
+                        Välj lösenord
+                      </span>
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        autoComplete="new-password"
+                        placeholder="Minst 8 tecken"
+                        className="form-control"
+                      />
+                    </label>
 
-                        <ErrorBanner message={error} />
+                    <label className="block">
+                      <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
+                        Bekräfta lösenord
+                      </span>
+                      <input
+                        type="password"
+                        value={confirm}
+                        onChange={(e) => setConfirm(e.target.value)}
+                        required
+                        autoComplete="new-password"
+                        placeholder="Skriv lösenordet igen"
+                        className="form-control"
+                      />
+                    </label>
 
-                        <button
-                          type="button"
-                          disabled={resetting}
-                          onClick={() => handleReset(true)}
-                          className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14.5px] rounded-full transition"
-                        >
-                          {resetting ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Skicka verifieringslänk <ArrowRight className="w-4 h-4" /></>}
-                        </button>
-                      </>
-                    )}
+                    <ErrorBanner message={error} />
 
-                    {resetSent && (
-                      <div className="space-y-4">
-                        <div className="rounded-xl bg-green-50 border border-green-200 px-5 py-5 text-[13.5px] text-green-900 leading-relaxed">
-                          <p className="font-semibold text-[15px] mb-2">Kolla din inkorg!</p>
-                          <p className="mb-3">Vi har skickat en verifieringslänk till <strong>{email.trim()}</strong>.</p>
-                          <p className="mb-3">Klicka på länken i mailet för att bekräfta din e-post. Därefter väljer du ett lösenord genom att ange det två gånger — sedan är ditt konto klart.</p>
-                          <p className="text-[12px] text-green-700 border-t border-green-200 pt-3 mt-1">
-                            Hittar du inte mailet? Kolla din <strong>skräppost</strong> eller mappen "Kampanjer" — det kan ibland hamna där.
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => { setResetSent(false); setError(null); }}
-                          className="text-[13px] text-slate-500 hover:text-slate-700 underline"
-                        >
-                          Ange en annan e-postadress
-                        </button>
-                      </div>
-                    )}
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14.5px] rounded-full transition"
+                    >
+                      {loading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <>Skapa konto <ArrowRight className="w-4 h-4" /></>
+                      )}
+                    </button>
 
-                    {!resetSent && (
-                      <div className="flex items-center justify-between pt-1">
-                        <p className="inline-flex items-center gap-2 text-[12.5px] text-slate-500">
-                          <Lock className="w-3.5 h-3.5" />
-                          Dina uppgifter skickas krypterat.
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => { setNewAccount(false); setError(null); setResetSent(false); }}
-                          className="text-[12.5px] font-semibold text-[#0e6efe] hover:underline"
-                        >
-                          Har du redan ett konto?
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                    <div className="flex items-center justify-between pt-1">
+                      <p className="inline-flex items-center gap-2 text-[12.5px] text-slate-500">
+                        <Lock className="w-3.5 h-3.5" />
+                        Dina uppgifter skickas krypterat.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => switchMode(false)}
+                        className="text-[12.5px] font-semibold text-[#0e6efe] hover:underline"
+                      >
+                        Har du redan ett konto?
+                      </button>
+                    </div>
+                  </form>
                 ) : (
-                  <form onSubmit={handleSubmit} noValidate className="space-y-5">
+                  <form onSubmit={handleLogin} noValidate className="space-y-5">
                     <label className="block">
                       <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
                         Mejl
@@ -219,7 +261,7 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
 
                     {resetSent && (
                       <div className="rounded-lg bg-green-50 border border-green-200 px-3 py-2 text-[12.5px] text-green-800">
-                        Vi har skickat en länk för att återställa lösenordet till {email.trim()}.
+                        Vi har skickat en återställningslänk till {email.trim()}.
                       </div>
                     )}
 
@@ -231,10 +273,7 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
                       {loading ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
-                        <>
-                          Logga in
-                          <ArrowRight className="w-4 h-4" />
-                        </>
+                        <>Logga in <ArrowRight className="w-4 h-4" /></>
                       )}
                     </button>
 
@@ -245,7 +284,7 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
                       </p>
                       <button
                         type="button"
-                        onClick={() => handleReset()}
+                        onClick={handleReset}
                         disabled={resetting}
                         className="text-[12.5px] font-semibold text-[#0e6efe] hover:underline disabled:opacity-50"
                       >
@@ -255,11 +294,12 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
                   </form>
                 )}
               </div>
+
               <div className="border-t border-slate-100 bg-slate-50 px-7 py-4 text-center">
                 {newAccount ? (
                   <button
                     type="button"
-                    onClick={() => { setNewAccount(false); setError(null); setResetSent(false); }}
+                    onClick={() => switchMode(false)}
                     className="text-[13px] font-semibold text-[#0e6efe] hover:underline"
                   >
                     Har du redan ett konto? Logga in
@@ -267,10 +307,10 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
                 ) : (
                   <button
                     type="button"
-                    onClick={() => { setNewAccount(true); setError(null); setResetSent(false); }}
+                    onClick={() => switchMode(true)}
                     className="text-[13px] font-semibold text-[#0e6efe] hover:underline"
                   >
-                    Har du inget konto än? Skapa konto
+                    Har du inget konto? Skapa konto
                   </button>
                 )}
               </div>
