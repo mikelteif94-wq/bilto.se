@@ -309,7 +309,7 @@ function App() {
     }
 
     if (!session) {
-      return <AdminLogin onLoggedIn={() => navigate('/admin/oversikt')} />;
+      return <AdminLogin onLoggedIn={() => navigate('/admin/oversikt')} onBack={() => navigate('/')} />;
     }
 
     if (adminVerified === null) {
