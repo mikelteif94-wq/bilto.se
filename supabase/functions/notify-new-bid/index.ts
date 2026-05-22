@@ -86,19 +86,19 @@ Deno.serve(async (req: Request) => {
     const fornamn = (customer.namn ?? "").trim().split(" ")[0] || customer.namn;
     const title = [(car as any).marke, (car as any).modell].filter(Boolean).join(" ") || "din bil";
     const budCount = totalBids ?? 1;
-    const formattedBid = highestBid.toLocaleString("sv-SE");
+    const maskedBid = maskBid(highestBid);
 
-    const html = renderEmail({ fornamn, regnummer: (car as any).regnummer, title, highestBid, budCount, portalUrl, loginUrl, registerUrl, appUrl });
+    const html = renderEmail({ fornamn, regnummer: (car as any).regnummer, title, maskedBid, budCount, loginUrl, registerUrl, appUrl });
 
     const text = [
       `Hej ${fornamn}!`,
       "",
-      `Det har kommit ett nytt bud på ${title} (${(car as any).regnummer}).`,
+      `Det har kommit ett bud på ${title} (${(car as any).regnummer}).`,
       "",
-      `Högsta bud just nu: ${formattedBid} kr`,
-      `Antal bud totalt: ${budCount}`,
+      `Det finns ${budCount === 1 ? "1 bud" : `${budCount} bud`} — logga in för att se det fullständiga beloppet.`,
       "",
-      `Logga in för att se budet: ${loginUrl}`,
+      `Logga in: ${loginUrl}`,
+      `Inget konto? Skapa ett: ${registerUrl}`,
       "",
       "Hälsningar, Bilto",
     ].join("\n");
@@ -115,7 +115,7 @@ Deno.serve(async (req: Request) => {
         body: JSON.stringify({
           from: fromEmail,
           to: [customer.mejl],
-          subject: `${fornamn}, nytt bud på ${title} — ${formattedBid} kr`,
+          subject: `${fornamn}, du har fått ett bud på ${title}!`,
           html,
           text,
         }),
@@ -147,40 +147,38 @@ function renderEmail(d: {
   fornamn: string;
   regnummer: string;
   title: string;
-  highestBid: number;
+  maskedBid: string;
   budCount: number;
-  portalUrl: string;
   loginUrl: string;
   registerUrl: string;
   appUrl: string;
 }): string {
   const site = d.appUrl ? d.appUrl.replace(/\/$/, "") : SITE;
-  const formattedBid = d.highestBid.toLocaleString("sv-SE");
 
   return emailShell({
     site,
-    preheader: `${esc(d.fornamn)}, nytt bud på ${esc(d.title)}: ${formattedBid} kr. Logga in för att se budet.`,
+    preheader: `${esc(d.fornamn)}, du har fått ett bud på ${esc(d.title)}! Logga in för att se beloppet.`,
     title: `Hej ${esc(d.fornamn)}!`,
-    subtitle: `Nytt bud inkommet p&aring; ${esc(d.title)}`,
+    subtitle: `Du har f&aring;tt ett bud p&aring; ${esc(d.title)}`,
     bodyContent: `
       ${d.regnummer ? `<p style="margin:0 0 16px;font-size:14px;color:#64748b;">Registreringsnummer: <strong style="color:#0f172a;font-family:monospace;">${esc(d.regnummer)}</strong></p>` : ""}
 
       <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
         <tr>
           <td style="background:#f0f9ff;border:2px solid #bfdbfe;border-radius:10px;padding:18px 20px;text-align:center;">
-            <p style="margin:0 0 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#64748b;">H&ouml;gsta bud just nu</p>
-            <p style="margin:0;font-size:32px;font-weight:800;color:#0e6efe;letter-spacing:-0.02em;">${esc(formattedBid)} <span style="font-size:18px;font-weight:600;">kr</span></p>
-            <p style="margin:6px 0 0;font-size:13px;color:#64748b;">${d.budCount === 1 ? "1 bud totalt" : `${d.budCount} bud totalt`}</p>
+            <p style="margin:0 0 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#64748b;">Inkommet bud</p>
+            <p style="margin:0;font-size:34px;font-weight:800;color:#0e6efe;letter-spacing:0.05em;filter:blur(6px);user-select:none;">${esc(d.maskedBid)} <span style="font-size:18px;font-weight:600;">kr</span></p>
+            <p style="margin:10px 0 0;font-size:12px;color:#94a3b8;font-style:italic;">Logga in f&ouml;r att se det fullst&auml;ndiga beloppet</p>
           </td>
         </tr>
       </table>
 
-      <p style="margin:0 0 24px;font-size:15px;color:#334155;line-height:1.7;">Logga in p&aring; din personliga portal f&ouml;r att se alla bud, f&ouml;lja auktionen och fatta beslut n&auml;r den &auml;r klar.</p>
+      <p style="margin:0 0 24px;font-size:15px;color:#334155;line-height:1.7;">Logga in p&aring; din portal f&ouml;r att se hela budet, f&ouml;lja auktionen och fatta beslut n&auml;r den st&auml;nger.</p>
 
-      <a href="${escAttr(d.loginUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff !important;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;letter-spacing:0.01em;-webkit-text-fill-color:#ffffff !important;"><span style="color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;">Logga in f&ouml;r att se budet &rarr;</span></a>
+      <a href="${escAttr(d.loginUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff !important;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;letter-spacing:0.01em;-webkit-text-fill-color:#ffffff !important;"><span style="color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;">Visa mitt bud &rarr;</span></a>
 
       <p style="margin:14px 0 0;font-size:13px;color:#94a3b8;">
-        Har du inget konto? <a href="${escAttr(d.registerUrl)}" style="color:#0e6efe;text-decoration:none;font-weight:600;">Skapa ett konto f&ouml;r att se budet</a>
+        Har du inget konto? <a href="${escAttr(d.registerUrl)}" style="color:#0e6efe;text-decoration:none;font-weight:600;">Skapa konto f&ouml;r att se budet</a>
       </p>
     `,
   });
@@ -266,6 +264,12 @@ function esc(s: string | null | undefined): string {
 
 function escAttr(s: string | null | undefined): string { return esc(s); }
 function truncate(s: string, n: number): string { return s.length > n ? s.slice(0, n) : s; }
+
+function maskBid(amount: number): string {
+  const s = Math.round(amount).toLocaleString("sv-SE");
+  // Keep first digit, mask the rest with •
+  return s.slice(0, 1) + s.slice(1).replace(/\d/g, "•");
+}
 
 function isPublicUrl(u: string): boolean {
   if (!u) return false;
