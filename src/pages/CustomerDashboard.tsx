@@ -128,22 +128,23 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
         }
       }
 
-      const { data: customer } = await supabase
+      const { data: customerRows } = await supabase
         .from('customers')
         .select('id')
-        .eq('user_id', userId)
-        .maybeSingle() as unknown as { data: { id: string } | null };
+        .eq('user_id', userId) as unknown as { data: { id: string }[] | null };
 
-      if (!customer) {
+      if (!customerRows || customerRows.length === 0) {
         setCars([]);
         setLoading(false);
         return;
       }
 
+      const customerIds = customerRows.map((c) => c.id);
+
       const { data: carRows } = await supabase
         .from('cars')
         .select('id, regnummer, marke, modell, miltal, status, created_at, access_token, sales_type')
-        .eq('customer_id', customer.id)
+        .in('customer_id', customerIds)
         .order('created_at', { ascending: false });
 
       const list = (carRows ?? []) as CarRow[];
