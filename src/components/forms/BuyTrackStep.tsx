@@ -87,19 +87,6 @@ export default function BuyTrackStep({ initialBil, onChoose, onGuidance }: BuyTr
 
   return (
     <div className="space-y-6">
-      {initialBil && (
-        <div className="flex items-start gap-5">
-          <div className="flex-1 min-w-0">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
-              Din bil
-            </label>
-            <div className="inline-flex items-center h-10 px-4 bg-[#0e6efe]/10 text-[#0e6efe] font-semibold text-[14px] rounded-md">
-              {initialBil}
-            </div>
-          </div>
-        </div>
-      )}
-
       <div>
         <p className="text-[15px] text-slate-600 leading-[1.55]">
           Välj det som passar dig bäst.
@@ -118,7 +105,7 @@ export default function BuyTrackStep({ initialBil, onChoose, onGuidance }: BuyTr
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-[17px] sm:text-[18px] font-semibold text-slate-900 tracking-tight">
-                Jag har hittat en bil
+                {initialBil ? `Jag har hittat en ${initialBil}` : 'Jag har hittat en bil'}
               </h3>
               <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-[#0e6efe] shrink-0 group-hover:translate-x-0.5 transition-all" />
             </div>
@@ -141,7 +128,7 @@ export default function BuyTrackStep({ initialBil, onChoose, onGuidance }: BuyTr
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-[17px] sm:text-[18px] font-semibold text-slate-900 tracking-tight">
-                Jag söker en bil
+                {initialBil ? `Jag letar efter en ${initialBil}` : 'Jag söker en bil'}
               </h3>
               <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-[#0e6efe] shrink-0 group-hover:translate-x-0.5 transition-all" />
             </div>
