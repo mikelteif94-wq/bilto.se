@@ -207,7 +207,7 @@ function App() {
         </div>
       );
     }
-    if (session) {
+    if (session && sessionStorage.getItem('bilto_portal') === 'customer') {
       navigate('/mina-bilar');
       return null;
     }
@@ -231,10 +231,6 @@ function App() {
     }
     if (!session) {
       navigate('/logga-in');
-      return null;
-    }
-    if (sessionStorage.getItem('bilto_portal') === 'dealer') {
-      navigate('/handlare/oversikt');
       return null;
     }
     return (
