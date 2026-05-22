@@ -438,6 +438,15 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
                     {quote.budget && <DetailRow label="Budget" value={quote.budget.includes('kr') ? quote.budget : `${quote.budget} kr`} />}
                     {quote.monthly_payment && <DetailRow label="Manadskostnad" value={quote.monthly_payment.includes('kr') ? quote.monthly_payment : `${quote.monthly_payment} kr/man`} />}
                     {quote.fuel_type && <DetailRow label="Drivmedel" value={FUEL_LABELS[quote.fuel_type] || quote.fuel_type} />}
+                    {quote.has_trade_in && (
+                      <DetailRow label="Inbytesbil" value={quote.trade_in_reg ? quote.trade_in_reg.toUpperCase() : 'Ja'} />
+                    )}
+                    {quote.has_trade_in && quote.current_loan && (
+                      <DetailRow label="Befintligt lan" value={quote.current_loan.includes('kr') ? quote.current_loan : `${quote.current_loan} kr`} />
+                    )}
+                    {quote.has_trade_in && quote.current_interest_rate && (
+                      <DetailRow label="Nuvarande ranta" value={quote.current_interest_rate.includes('%') ? quote.current_interest_rate : `${quote.current_interest_rate}%`} />
+                    )}
                   </>
                 )}
                 {quote.search_option === 'found' && (

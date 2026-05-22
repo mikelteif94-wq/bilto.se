@@ -111,7 +111,7 @@ export default function BuyCarPage({
         : ['track', 'details', 'tradeIn', 'contact'];
     }
     if (track === 'know' || track === 'explore') {
-      return ['track', 'details', 'contact'];
+      return ['track', 'details', 'tradeIn', 'contact'];
     }
     return skipTrack
       ? ['details', 'tradeIn', 'contact']

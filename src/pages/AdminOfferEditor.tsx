@@ -170,11 +170,13 @@ export default function AdminOfferEditor({
   const loadQuoteInfo = async (qId: string) => {
     const { data: q } = await supabase
       .from('quote_requests' as never)
-      .select('id, firstname, lastname, email, car_model, access_token')
+      .select('id, firstname, lastname, email, car_model, access_token, has_trade_in, trade_in_reg')
       .eq('id', qId)
       .maybeSingle();
     const row = q as Record<string, unknown> | null;
     if (row) {
+      const hasTradeIn = !!(row.has_trade_in as boolean);
+      const tradeInReg = (row.trade_in_reg as string) || '';
       setData((d) => ({
         ...d,
         quote_request_id: row.id as string,
@@ -182,6 +184,11 @@ export default function AdminOfferEditor({
         customer_name: `${row.firstname} ${row.lastname}`.trim(),
         car_description: (row.car_model as string) || '',
         _access_token: (row.access_token as string) || '',
+        // Pre-fill trade-in from quote if not already set on the offer
+        ...(hasTradeIn && !d.trade_in_included ? {
+          trade_in_included: true,
+          trade_in_reg: tradeInReg,
+        } : {}),
       }));
     }
   };
