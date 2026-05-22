@@ -593,14 +593,29 @@ function inferFuelType(fuelTypes: string[]): string {
   return '';
 }
 
+function parseInitialBil(bil: string | undefined): { brand: string; model: string } {
+  if (!bil) return { brand: '', model: '' };
+  for (const brand of Object.keys(CAR_BRANDS)) {
+    if (bil.toLowerCase().startsWith(brand.toLowerCase())) {
+      const rest = bil.slice(brand.length).trim();
+      const models = CAR_BRANDS[brand] ?? [];
+      const matchedModel = models.find(m => m.toLowerCase() === rest.toLowerCase()) ?? (rest || '');
+      return { brand, model: matchedModel };
+    }
+  }
+  return { brand: '', model: bil };
+}
+
 export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, knownFuelTypes, onNext, onExplore, onQuiz }: BuyDetailsStepProps) {
   const autoFuel = knownFuelTypes ? inferFuelType(knownFuelTypes) : '';
   const hideFuel = !!autoFuel && autoFuel !== '';
 
+  const parsed = parseInitialBil(initialBil);
+
   const [d, setD] = useState<BuyDetailsData>({
     ...initialData,
-    carModel: initialData.carModel || initialBil || '',
-    carBrand: initialData.carBrand || '',
+    carModel: initialData.carModel || (track === 'trade' ? parsed.model : initialBil) || '',
+    carBrand: initialData.carBrand || (track === 'trade' ? parsed.brand : '') || '',
     paymentType: initialData.paymentType || '',
     carPrice: initialData.carPrice || '',
     yearFrom: initialData.yearFrom || '',
@@ -1032,6 +1047,25 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 />
               </>
             )}
+          </div>
+
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+              Max miltal
+              <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+            </label>
+            <p className="text-sm text-slate-500 mb-3">Hur många mil får nästa bil max ha gått?</p>
+            <div className="w-full sm:max-w-xs relative">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.maxMiltal}
+                onChange={e => set('maxMiltal', e.target.value)}
+                placeholder="T.ex. 5 000"
+                className="form-control pr-14"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none">mil</span>
+            </div>
           </div>
 
           {fuelTypeSelector}
