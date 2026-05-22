@@ -44,6 +44,7 @@ interface Stats {
   pendingDealers: number;
   totalDealers: number;
   newQuotes: number;
+  newLeads: number;
 }
 
 interface RecentCar {
@@ -111,6 +112,7 @@ export default function AdminOverview({
 }: AdminOverviewProps) {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Stats>({
+    newLeads: 0,
     carsTotal: 0,
     carsActive: 0,
     carsNew: 0,
@@ -144,7 +146,7 @@ export default function AdminOverview({
 
     const [
       total, active, ny, hidden, endingCount, endingList,
-      bidsToday, pending, dealersTotal, recentCars, reminderRows, newQuotes,
+      bidsToday, pending, dealersTotal, recentCars, reminderRows, newQuotes, newLeads,
     ] = await Promise.all([
       supabase.from('cars').select('id', { count: 'exact', head: true }),
       supabase.from('cars').select('id', { count: 'exact', head: true }).eq('status', 'aktiv'),
@@ -158,6 +160,7 @@ export default function AdminOverview({
       supabase.from('cars').select('id, regnummer, marke, modell, status, created_at, hidden_from_dealers').order('created_at', { ascending: false }).limit(8),
       supabase.from('car_reminders').select('id, title, remind_at, cars(id, regnummer)').eq('done', false).lte('remind_at', in24h).order('remind_at', { ascending: true }).limit(5),
       supabase.from('quote_requests').select('id', { count: 'exact', head: true }).eq('status', 'new'),
+      supabase.from('leads').select('id', { count: 'exact', head: true }).eq('status', 'new'),
     ]);
 
     setStats({
@@ -170,6 +173,7 @@ export default function AdminOverview({
       pendingDealers: pending.count ?? 0,
       totalDealers: dealersTotal.count ?? 0,
       newQuotes: newQuotes.count ?? 0,
+      newLeads: newLeads.count ?? 0,
     });
     setEnding((endingList.data ?? []) as EndingCar[]);
     setRecent((recentCars.data ?? []) as RecentCar[]);
@@ -213,7 +217,7 @@ export default function AdminOverview({
   const adminNavItems = [
     { icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', active: true },
     { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Bilar', onClick: onNavigateCars, badge: stats.carsNew },
-    ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-[18px] h-[18px]" />, label: 'Leads', onClick: onNavigateLeads, badge: stats.carsNew }] : []),
+    ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-[18px] h-[18px]" />, label: 'Leads', onClick: onNavigateLeads, badge: stats.newLeads }] : []),
     ...(onNavigateQuotes ? [{ icon: <MessageSquareText className="w-[18px] h-[18px]" />, label: 'Förfrågningar', onClick: onNavigateQuotes, badge: stats.newQuotes }] : []),
     { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', onClick: onNavigateDealers, badge: stats.pendingDealers },
     ...(onNavigateQuiz ? [{ icon: <ClipboardList className="w-[18px] h-[18px]" />, label: 'Quiz', onClick: onNavigateQuiz }] : []),
