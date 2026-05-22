@@ -17,6 +17,7 @@ import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
 import ErrorBanner from '../components/ErrorBanner';
 import PortalLayout from '../components/PortalLayout';
+import { useAdminBadges } from '../hooks/useAdminBadges';
 
 interface AdminCarsProps {
   onLoggedOut: () => void;
@@ -112,6 +113,7 @@ export default function AdminCars({
   onNavigateBulkUpload,
   onNavigateCatalog,
 }: AdminCarsProps) {
+  const badges = useAdminBadges();
   const [cars, setCars] = useState<CarRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -166,8 +168,8 @@ export default function AdminCars({
   const navItems = [
     ...(onNavigateOverview ? [{ icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', onClick: onNavigateOverview }] : []),
     { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Bilar', active: true },
-    ...(onNavigateQuotes ? [{ icon: <MessageSquareText className="w-[18px] h-[18px]" />, label: 'Förfrågningar', onClick: onNavigateQuotes }] : []),
-    { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', onClick: onNavigateDealers },
+    ...(onNavigateQuotes ? [{ icon: <MessageSquareText className="w-[18px] h-[18px]" />, label: 'Förfrågningar', onClick: onNavigateQuotes, badge: badges.newQuotes }] : []),
+    { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', onClick: onNavigateDealers, badge: badges.pendingDealers },
   ];
 
   return (

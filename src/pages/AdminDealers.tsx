@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
 import ErrorBanner from '../components/ErrorBanner';
 import PortalLayout from '../components/PortalLayout';
+import { useAdminBadges } from '../hooks/useAdminBadges';
 
 interface AdminDealersProps {
   onLoggedOut: () => void;
@@ -28,6 +29,7 @@ export default function AdminDealers({
   onNavigateCars,
   onNavigateOverview,
 }: AdminDealersProps) {
+  const badges = useAdminBadges();
   const [dealers, setDealers] = useState<Dealer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +58,7 @@ export default function AdminDealers({
 
   const navItems = [
     ...(onNavigateOverview ? [{ icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', onClick: onNavigateOverview }] : []),
-    { icon: <Car className="w-[18px] h-[18px]" />, label: 'Bilar', onClick: onNavigateCars },
+    { icon: <Car className="w-[18px] h-[18px]" />, label: 'Bilar', onClick: onNavigateCars, badge: badges.newCars },
     { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', active: true },
   ];
 

@@ -212,10 +212,10 @@ export default function AdminOverview({
 
   const adminNavItems = [
     { icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', active: true },
-    { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Bilar', onClick: onNavigateCars },
-    ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-[18px] h-[18px]" />, label: 'Leads', onClick: onNavigateLeads }] : []),
+    { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Bilar', onClick: onNavigateCars, badge: stats.carsNew },
+    ...(onNavigateLeads ? [{ icon: <TrendingUp className="w-[18px] h-[18px]" />, label: 'Leads', onClick: onNavigateLeads, badge: stats.carsNew }] : []),
     ...(onNavigateQuotes ? [{ icon: <MessageSquareText className="w-[18px] h-[18px]" />, label: 'Förfrågningar', onClick: onNavigateQuotes, badge: stats.newQuotes }] : []),
-    { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', onClick: onNavigateDealers },
+    { icon: <Building2 className="w-[18px] h-[18px]" />, label: 'Handlare', onClick: onNavigateDealers, badge: stats.pendingDealers },
     ...(onNavigateQuiz ? [{ icon: <ClipboardList className="w-[18px] h-[18px]" />, label: 'Quiz', onClick: onNavigateQuiz }] : []),
     ...(onNavigateCatalog ? [{ icon: <BookOpen className="w-[18px] h-[18px]" />, label: 'Katalog', onClick: onNavigateCatalog }] : []),
   ];

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
+import { useAdminBadges } from '../hooks/useAdminBadges';
 
 interface AdminLeadCommandCenterProps {
   adminUserId: string;
@@ -112,6 +113,7 @@ export default function AdminLeadCommandCenter({
   onNavigateCars,
   onNavigateDealers,
 }: AdminLeadCommandCenterProps) {
+  const badges = useAdminBadges();
   const [loading, setLoading] = useState(true);
   const [leads, setLeads] = useState<UnifiedLead[]>([]);
   const [filter, setFilter] = useState<LeadType>('all');
@@ -305,10 +307,10 @@ export default function AdminLeadCommandCenter({
     <PortalLayout
       navItems={[
         { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Översikt', onClick: onNavigateOverview },
-        { icon: <CarIcon className="w-4 h-4" />, label: 'Leads', active: true },
-        { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', onClick: onNavigateCars },
-        { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar' },
-        { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', onClick: onNavigateDealers },
+        { icon: <TrendingUp className="w-4 h-4" />, label: 'Leads', active: true },
+        { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', onClick: onNavigateCars, badge: badges.newCars },
+        { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', badge: badges.newQuotes },
+        { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', onClick: onNavigateDealers, badge: badges.pendingDealers },
       ]}
       identity="Admin"
       identityRole="Bilto"

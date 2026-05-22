@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
+import { useAdminBadges } from '../hooks/useAdminBadges';
 
 interface AdminQuoteRequestsProps {
   onLoggedOut: () => void;
@@ -86,6 +87,7 @@ export default function AdminQuoteRequests({
   onNavigateDealers,
   onNavigateOverview,
 }: AdminQuoteRequestsProps) {
+  const badges = useAdminBadges();
   const [quotes, setQuotes] = useState<QuoteRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('all');
@@ -118,9 +120,9 @@ export default function AdminQuoteRequests({
     <PortalLayout
       navItems={[
         { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Översikt', onClick: onNavigateOverview },
-        { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', onClick: onNavigateCars },
+        { icon: <CarIcon className="w-4 h-4" />, label: 'Bilar', onClick: onNavigateCars, badge: badges.newCars },
         { icon: <MessageSquareText className="w-4 h-4" />, label: 'Förfrågningar', active: true },
-        { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', onClick: onNavigateDealers },
+        { icon: <Building2 className="w-4 h-4" />, label: 'Handlare', onClick: onNavigateDealers, badge: badges.pendingDealers },
       ]}
       identity="Admin"
       identityRole="Bilto"

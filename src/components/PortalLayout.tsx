@@ -105,12 +105,12 @@ export default function PortalLayout({
                 <span className="truncate">{item.label}</span>
               )}
               {!compactSidebar && item.badge != null && item.badge > 0 && (
-                <span className="ml-auto inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#0e6efe] text-white text-[10px] font-bold">
+                <span className="ml-auto inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold">
                   {item.badge > 99 ? '99+' : item.badge}
                 </span>
               )}
               {compactSidebar && item.badge != null && item.badge > 0 && (
-                <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[#0e6efe]" />
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500" />
               )}
             </button>
           ))}
