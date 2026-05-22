@@ -173,7 +173,7 @@ function renderEmail(d: {
 
       ${customerRows}
 
-      <a href="${escAttr(d.detailUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff !important;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;letter-spacing:0.01em;-webkit-text-fill-color:#ffffff !important;"><span style="color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;">&Ouml;ppna i handlarportalen &rarr;</span></a>
+      <a href="${escAttr(d.detailUrl)}" style="display:inline-block;background:#ffffff;color:#0e6efe !important;text-decoration:none;border-radius:8px;padding:8px 18px;font-weight:700;font-size:13px;letter-spacing:0.01em;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;"><span style="color:#0e6efe !important;-webkit-text-fill-color:#0e6efe !important;">&Ouml;ppna i handlarportalen &rarr;</span></a>
     `,
   });
 }

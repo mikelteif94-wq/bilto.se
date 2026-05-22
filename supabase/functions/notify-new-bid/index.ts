@@ -178,12 +178,12 @@ function renderEmail(d: {
       <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
         <tr>
           <td style="padding-bottom:12px;">
-            <a href="${escAttr(d.loginUrl)}" style="display:block;background:#0e6efe;color:#ffffff !important;text-decoration:none;border-radius:8px;padding:14px 28px;font-weight:700;font-size:15px;text-align:center;-webkit-text-fill-color:#ffffff !important;"><span style="color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;">Jag har ett konto &mdash; Logga in &rarr;</span></a>
+            <a href="${escAttr(d.loginUrl)}" style="display:block;background:#ffffff;color:#0e6efe !important;text-decoration:none;border-radius:8px;padding:8px 18px;font-weight:700;font-size:13px;text-align:center;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;"><span style="color:#0e6efe !important;-webkit-text-fill-color:#0e6efe !important;">Jag har ett konto &mdash; Logga in &rarr;</span></a>
           </td>
         </tr>
         <tr>
           <td>
-            <a href="${escAttr(d.registerUrl)}" style="display:block;background:#ffffff;color:#0e6efe !important;text-decoration:none;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;text-align:center;border:2px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;"><span style="color:#0e6efe !important;-webkit-text-fill-color:#0e6efe !important;">Jag har inget konto &mdash; Skapa konto &rarr;</span></a>
+            <a href="${escAttr(d.registerUrl)}" style="display:block;background:#ffffff;color:#0e6efe !important;text-decoration:none;border-radius:8px;padding:8px 18px;font-weight:700;font-size:13px;text-align:center;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;"><span style="color:#0e6efe !important;-webkit-text-fill-color:#0e6efe !important;">Jag har inget konto &mdash; Skapa konto &rarr;</span></a>
           </td>
         </tr>
       </table>

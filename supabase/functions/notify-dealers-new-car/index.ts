@@ -370,7 +370,7 @@ function renderEmail(d: EmailData): string {
       </tr>` : ""}
       <tr>
         <td style="padding:0 32px 32px;">
-          <a href="${escapeAttr(d.detailUrl)}" style="display:inline-block;background:#0f172a;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600;font-size:14px;">Öppna bilen</a>
+          <a href="${escapeAttr(d.detailUrl)}" style="display:inline-block;background:#ffffff;color:#0e6efe !important;text-decoration:none;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;">Öppna bilen</a>
           <p style="margin:16px 0 0;color:#94a3b8;font-size:12px;word-break:break-all;">${escapeHtml(d.detailUrl)}</p>
         </td>
       </tr>
@@ -401,7 +401,7 @@ function renderCustomerStartEmail(d: {
     </td></tr>
     ${d.trackingUrl ? `
     <tr><td style="padding:0 32px 32px;">
-      <a href="${escapeAttr(d.trackingUrl)}" style="display:inline-block;background:#0f172a;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600;font-size:14px;">Följ din bil</a>
+      <a href="${escapeAttr(d.trackingUrl)}" style="display:inline-block;background:#ffffff;color:#0e6efe !important;text-decoration:none;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;">Följ din bil</a>
       <p style="margin:16px 0 0;color:#94a3b8;font-size:12px;word-break:break-all;">${escapeHtml(d.trackingUrl)}</p>
     </td></tr>` : ""}
   </table>

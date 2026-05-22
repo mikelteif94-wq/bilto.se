@@ -136,7 +136,7 @@ Deno.serve(async (req: Request) => {
     const pwBlock = setPasswordUrl
       ? `<p style="margin:0 0 14px;">Sätt ditt lösenord direkt med en säker länk — den är klar för dig:</p>
          <p style="margin:0 0 14px;">
-           <a href="${escapeAttr(setPasswordUrl)}" style="display:inline-block;background:#0f172a;color:#ffffff;text-decoration:none;padding:11px 20px;border-radius:10px;font-weight:600;font-size:14px;">Välj ditt lösenord</a>
+           <a href="${escapeAttr(setPasswordUrl)}" style="display:inline-block;background:#ffffff;color:#0e6efe !important;text-decoration:none;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;">Välj ditt lösenord</a>
          </p>
          <p style="margin:0 0 14px;color:#64748b;font-size:13px;">Länken är personlig och giltig en kort stund. När du satt lösenordet kan du logga in nedan.</p>`
       : tempPassword
@@ -164,7 +164,7 @@ Deno.serve(async (req: Request) => {
       </tr>
       <tr>
         <td style="padding:8px 32px 28px;">
-          <a href="${escapeAttr(loginUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600;font-size:14px;">Logga in</a>
+          <a href="${escapeAttr(loginUrl)}" style="display:inline-block;background:#ffffff;color:#0e6efe !important;text-decoration:none;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;">Logga in</a>
           <p style="margin:16px 0 0;color:#94a3b8;font-size:12px;word-break:break-all;">${escapeHtml(loginUrl)}</p>
         </td>
       </tr>

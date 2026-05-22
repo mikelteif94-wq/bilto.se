@@ -158,7 +158,7 @@ Deno.serve(async (req: Request) => {
     </td></tr>` : ""}
     ${detailUrl ? `
     <tr><td style="padding:0 32px 32px;">
-      <a href="${escAttr(detailUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600;font-size:14px;">Öppna i Handlarportalen</a>
+      <a href="${escAttr(detailUrl)}" style="display:inline-block;background:#ffffff;color:#0e6efe !important;text-decoration:none;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;">Öppna i Handlarportalen</a>
     </td></tr>` : `
     <tr><td style="padding:0 32px 32px;">
       <p style="margin:0;font-size:13px;color:#94a3b8;">Logga in på er handlarportal för att se detaljer och svara på leadet.</p>

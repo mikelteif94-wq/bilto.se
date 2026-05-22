@@ -437,7 +437,7 @@ function renderWinnerEmail(
           <tr><td style="padding:5px 0;color:#64748b;">Mejl</td><td><a href="mailto:${escAttr(customer.mejl)}" style="color:#0e6efe;text-decoration:none;font-weight:600;">${esc(customer.mejl)}</a></td></tr>
         </table>
       </div>` : ""}
-      <a href="${escAttr(detailUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:15px 32px;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.02em;">Öppna bilen &rarr;</a>
+      <a href="${escAttr(detailUrl)}" style="display:inline-block;background:#ffffff;color:#0e6efe !important;text-decoration:none;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;letter-spacing:0.02em;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;">Öppna bilen &rarr;</a>
     `,
   });
 }
@@ -488,7 +488,7 @@ function renderCustomerEmail(
         <p style="margin:4px 0 0;font-size:14px;color:#475569;">från <strong>${esc(dealer.foretagsnamn)}</strong></p>
       </div>
       <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.7;">Handlaren kontaktar dig inom 24 timmar. Du kan också svara på budet redan nu via din personliga länk.</p>
-      ${trackingUrl ? `<a href="${escAttr(trackingUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:15px 32px;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.02em;">Se budet och svara &rarr;</a>` : ""}
+      ${trackingUrl ? `<a href="${escAttr(trackingUrl)}" style="display:inline-block;background:#ffffff;color:#0e6efe !important;text-decoration:none;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;letter-spacing:0.02em;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;">Se budet och svara &rarr;</a>` : ""}
     `,
   });
 }
@@ -553,7 +553,7 @@ function renderNoBidsCustomerEmail(
       <div style="background:#fefce8;border-left:4px solid #eab308;border-radius:0 8px 8px 0;padding:14px 18px;margin:20px 0;">
         <p style="margin:0;font-size:14px;color:#713f12;line-height:1.6;">Vårt team hör av sig inom kort för att diskutera nästa steg och hitta den bästa vägen framåt för dig.</p>
       </div>
-      ${trackingUrl ? `<a href="${escAttr(trackingUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;text-decoration:none;padding:15px 32px;border-radius:10px;font-weight:700;font-size:15px;letter-spacing:0.02em;">Se din bil &rarr;</a>` : ""}
+      ${trackingUrl ? `<a href="${escAttr(trackingUrl)}" style="display:inline-block;background:#ffffff;color:#0e6efe !important;text-decoration:none;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;letter-spacing:0.02em;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;">Se din bil &rarr;</a>` : ""}
     `,
   });
 }
