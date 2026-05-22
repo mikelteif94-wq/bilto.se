@@ -3,7 +3,6 @@ import { ChevronDown, Sparkles, Search, CheckCircle, XCircle } from 'lucide-reac
 import type { BuyTrack } from './BuyTrackStep';
 import FieldError from './FieldError';
 import RegInput from '../RegInput';
-import FinancingCalc from './FinancingCalc';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 import { findComparisonCarByMakeModel } from '../../lib/comparison/lookup';
 import { useCarImages } from '../../hooks/useCarImages';
@@ -759,7 +758,6 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
-            {d.paymentType !== 'cash' && carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
       )}
@@ -835,7 +833,6 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
-            {d.paymentType !== 'cash' && carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
       )}
@@ -988,7 +985,6 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
-            {d.paymentType !== 'cash' && carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
       )}
@@ -1088,7 +1084,6 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className="form-control"
               />
             </div>
-            {d.paymentType !== 'cash' && carPriceNum >= 50000 && <FinancingCalc carPrice={carPriceNum} />}
           </div>
         </>
       )}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Star, Car, Check, ChevronRight, SlidersHorizontal, HelpCircle, X, Sparkles } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
+import FinancingToggle from './FinancingToggle';
 
 interface CompactCarCardProps {
   name: string;
@@ -139,7 +140,7 @@ export default function CompactCarCard({
         {/* Monthly range */}
         {range && (
           <div className="mt-1.5" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between gap-1">
+            <div className="flex items-center justify-between gap-1 mb-1.5">
               <div className="flex items-baseline gap-1 min-w-0">
                 <span className="text-[12px] sm:text-[13px] font-extrabold text-[#0e6efe] tabular-nums leading-none whitespace-nowrap">
                   {formatSEK(range.low)}–{formatSEK(range.high)}
@@ -153,6 +154,7 @@ export default function CompactCarCard({
                 {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
               </div>
             </div>
+            <FinancingToggle carPrice={carPrice!} usedPrice={usedPrice} />
           </div>
         )}
 

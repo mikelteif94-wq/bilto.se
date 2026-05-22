@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Zap, Check, ChevronRight, SlidersHorizontal, Car, HelpCircle, X, Sparkles } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
+import FinancingToggle from './FinancingToggle';
 
 interface ElCarCardProps {
   name: string;
@@ -150,12 +151,13 @@ export default function ElCarCard({
                 {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
               </div>
             </div>
-            <div className="flex items-baseline gap-1">
+            <div className="flex items-baseline gap-1 mb-2">
               <span className="text-[14px] font-extrabold text-[#38bdf8] tabular-nums whitespace-nowrap">
                 {formatSEK(range.low)}–{formatSEK(range.high)}
               </span>
               <span className="text-[10px] text-[#38bdf8]/60 font-semibold">kr/mån</span>
             </div>
+            <FinancingToggle carPrice={carPrice!} usedPrice={usedPrice} dark />
           </div>
         )}
 

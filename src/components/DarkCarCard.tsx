@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Star, Car, ArrowRight, Check, Scale, HelpCircle, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { calcCarMonthlyRange } from '../lib/utils';
+import FinancingToggle from './FinancingToggle';
 
 interface DarkCarCardProps {
   name: string;
@@ -124,7 +125,7 @@ export default function DarkCarCard({
         {/* Monthly range */}
         {range && (
           <div className="mt-3" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-2 mb-2">
               <div>
                 <p className="text-[11px] text-slate-400 mb-0.5">Ca månadskostnad</p>
                 <div className="flex items-baseline gap-1">
@@ -141,6 +142,7 @@ export default function DarkCarCard({
                 {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
               </div>
             </div>
+            <FinancingToggle carPrice={carPrice!} usedPrice={usedPrice} />
           </div>
         )}
 
