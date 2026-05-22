@@ -232,7 +232,7 @@ export default function ConfirmationForm({
             </div>
             <div>
               <p className="text-[13px] font-semibold uppercase tracking-wide text-white/80 mb-1">
-                Vi ringer dig direkt
+                Vår expert ringer dig
               </p>
               <p className="text-[17px] font-semibold leading-snug">
                 {maskedPhone ? <>Vi ringer dig på <span className="text-white">{maskedPhone}</span></> : 'Vi ringer dig så snart som möjligt'}
@@ -240,8 +240,7 @@ export default function ConfirmationForm({
             </div>
           </div>
           <p className="text-sm text-white/85 pl-[52px]">
-            Kan inte vänta? Ring oss på{' '}
-            <a href="tel:+46855550200" className="font-semibold text-white underline underline-offset-2">08-5555 0200</a>
+            Vi går igenom marknaden med dig så att vi kan maximera ditt pris innan vi skickar till handlare.
           </p>
         </div>
 
@@ -267,27 +266,27 @@ export default function ConfirmationForm({
             <li className="flex gap-4">
               <div className="relative shrink-0">
                 <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center ring-2 ring-[#0e6efe]/30">
-                  <Gavel className="w-4.5 h-4.5" strokeWidth={2.2} />
+                  <Phone className="w-4.5 h-4.5" strokeWidth={2.2} />
                 </div>
                 <span className="absolute left-1/2 top-9 -translate-x-1/2 w-px h-[calc(100%+1.25rem)] bg-slate-200" aria-hidden="true" />
               </div>
               <div className="pb-1">
-                <p className="text-sm font-semibold text-slate-900">Bilhandlare lägger bud</p>
+                <p className="text-sm font-semibold text-slate-900">Expertrådgivning per telefon</p>
                 <p className="text-[13px] text-slate-500 leading-relaxed mt-0.5">
-                  Handlare lägger bud direkt. När det första budet kommer skickar vi ett mejl — då kan du skapa ditt konto för att följa buden live.
+                  En av våra experter ringer dig för att gå igenom marknaden, bilens värde och hur vi bäst positionerar den — så att vi kan pressa upp priset maximalt.
                 </p>
               </div>
             </li>
             <li className="flex gap-4">
               <div className="shrink-0">
                 <div className="w-9 h-9 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
-                  <Phone className="w-4.5 h-4.5" strokeWidth={2.2} />
+                  <Gavel className="w-4.5 h-4.5" strokeWidth={2.2} />
                 </div>
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-900">Vi ringer med maxbudet</p>
+                <p className="text-sm font-semibold text-slate-900">Auktion bland hundratals handlare</p>
                 <p className="text-[13px] text-slate-500 leading-relaxed mt-0.5">
-                  När budgivningen är klar ringer vi och går igenom det högsta budet med dig. Du väljer själv om du vill acceptera - utan förpliktelser.
+                  Vi skickar din bil till handlare och låter dem buda mot varandra. Du väljer själv om du vill acceptera det högsta budet — utan förpliktelser.
                 </p>
               </div>
             </li>
