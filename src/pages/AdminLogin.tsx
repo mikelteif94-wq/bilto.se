@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Lock, Loader2 } from 'lucide-react';
+import { ArrowRight, Loader2, Lock, Shield } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ErrorBanner from '../components/ErrorBanner';
 
@@ -29,8 +29,7 @@ export default function AdminLogin({ onLoggedIn }: AdminLoginProps) {
       return;
     }
 
-    const { data: isAdmin, error: adminError } = await supabase
-      .rpc('get_is_admin');
+    const { data: isAdmin, error: adminError } = await supabase.rpc('get_is_admin');
 
     if (adminError || !isAdmin) {
       await supabase.auth.signOut();
@@ -43,63 +42,98 @@ export default function AdminLogin({ onLoggedIn }: AdminLoginProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-md shadow-sm border border-slate-200 p-8">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center">
-              <Lock className="w-5 h-5 text-white" />
-            </div>
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
+        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
+          <img
+            src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
+            alt="Bilto"
+            className="h-20 lg:h-32 w-auto object-contain"
+          />
+        </div>
+      </header>
+
+      <main className="flex-1">
+        <section className="relative bg-[#0e6efe] overflow-hidden pt-24">
+          <div className="relative max-w-[1280px] mx-auto px-6 pt-10 pb-20 lg:pt-20 lg:pb-28 grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center">
             <div>
-              <h1 className="text-xl font-bold text-slate-900">Admin</h1>
-              <p className="text-sm text-slate-500">Endast behörig personal</p>
+              <span className="inline-flex items-center gap-2 text-[11px] font-semibold text-white/80 uppercase tracking-[0.18em] mb-4">
+                <Shield className="w-3.5 h-3.5" />
+                Adminportalen
+              </span>
+              <h1 className="text-white text-[32px] sm:text-[48px] lg:text-[64px] font-semibold leading-[1.05] tracking-tight">
+                Logga in som<br />administratör.
+              </h1>
+              <p className="mt-6 text-white/90 text-[17px] leading-[1.6] max-w-lg">
+                Hantera bilar, handlare, leads och erbjudanden från ett ställe.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
+              <div className="bg-slate-50 border-b border-slate-200 px-7 py-5">
+                <h2 className="text-[17px] font-semibold text-slate-900">Logga in</h2>
+                <p className="text-[12.5px] text-slate-500">Endast behörig personal har tillgång.</p>
+              </div>
+
+              <div className="p-7 sm:p-9">
+                <form onSubmit={handleSubmit} noValidate className="space-y-5">
+                  <label className="block">
+                    <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
+                      E-post
+                    </span>
+                    <input
+                      type="text"
+                      inputMode="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      autoComplete="email"
+                      autoFocus
+                      className="form-control"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
+                      Lösenord
+                    </span>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      autoComplete="current-password"
+                      className="form-control"
+                    />
+                  </label>
+
+                  <ErrorBanner message={error} />
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14.5px] rounded-full transition"
+                  >
+                    {loading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        Logga in
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+
+                  <p className="inline-flex items-center gap-2 text-[12.5px] text-slate-500 pt-1">
+                    <Lock className="w-3.5 h-3.5" />
+                    Dina uppgifter skickas krypterat.
+                  </p>
+                </form>
+              </div>
             </div>
           </div>
-
-          <form onSubmit={handleSubmit} noValidate className="space-y-5">
-            <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">
-                E-post
-              </label>
-              <input
-                type="text"
-                inputMode="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-                autoFocus
-                className="form-control"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">
-                Lösenord
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-                className="form-control"
-              />
-            </div>
-
-            <ErrorBanner message={error} />
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-11 bg-black hover:bg-slate-800 disabled:bg-slate-400 text-white font-semibold text-[14px] rounded-full transition flex items-center justify-center gap-2"
-            >
-              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {loading ? 'Loggar in...' : 'Logga in'}
-            </button>
-          </form>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 }
