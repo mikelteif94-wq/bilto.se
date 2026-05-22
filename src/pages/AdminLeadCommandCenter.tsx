@@ -137,7 +137,7 @@ export default function AdminLeadCommandCenter({
         assigned_to_name, tags, notes, hidden_from_dealers,
         next_activity_at, deadline_at, created_at,
         customers!inner(namn, telefon),
-        bids(belopp)
+        bids!car_id(belopp)
       `)
       .order('created_at', { ascending: false })
       .limit(500);
