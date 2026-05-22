@@ -17,7 +17,6 @@ import AdminCarDetail from './pages/AdminCarDetail';
 import AdminAddCar from './pages/AdminAddCar';
 import AdminDealers from './pages/AdminDealers';
 import AdminDealerDetail from './pages/AdminDealerDetail';
-import AdminQuoteRequests from './pages/AdminQuoteRequests';
 import AdminQuoteDetail from './pages/AdminQuoteDetail';
 import AdminOfferEditor from './pages/AdminOfferEditor';
 import AdminDealerProposalEditor from './pages/AdminDealerProposalEditor';
@@ -339,10 +338,10 @@ function App() {
 
     const adminNavigate = (page: import('./hooks/useAdminNav').AdminPage) => {
       if (page === 'overview') navigate('/admin/oversikt');
-      else if (page === 'hittat-bil') navigate('/admin/forfragningar/hittat-bil');
-      else if (page === 'letar-bil') navigate('/admin/forfragningar/letar-bil');
-      else if (page === 'inbyte') navigate('/admin/forfragningar/inbyte');
-      else if (page === 'salj') navigate('/admin/leads');
+      else if (page === 'hittat-bil') navigate('/admin/leads?filter=hittat-bil');
+      else if (page === 'letar-bil') navigate('/admin/leads?filter=letar-bil');
+      else if (page === 'inbyte') navigate('/admin/leads?filter=inbyte');
+      else if (page === 'salj') navigate('/admin/leads?filter=salj');
       else if (page === 'bilar') navigate('/admin/bilar');
       else if (page === 'handlare') navigate('/admin/handlare');
     };
@@ -441,20 +440,10 @@ function App() {
       );
     }
 
-    if (path === '/admin/forfragningar' || path === '/admin/forfragningar/hittat-bil' || path === '/admin/forfragningar/letar-bil' || path === '/admin/forfragningar/inbyte') {
-      const filterMap: Record<string, 'found' | 'searching' | 'trade'> = {
-        '/admin/forfragningar/hittat-bil': 'found',
-        '/admin/forfragningar/letar-bil': 'searching',
-        '/admin/forfragningar/inbyte': 'trade',
-      };
-      return (
-        <AdminQuoteRequests
-          onLoggedOut={() => navigate('/admin')}
-          onOpenQuote={(id) => navigate(`/admin/forfragningar/${id}`)}
-          onNavigate={adminNavigate}
-          initialFilter={filterMap[path]}
-        />
-      );
+    if (path === '/admin/forfragningar') {
+      // Redirect to unified leads page
+      navigate('/admin/leads');
+      return null;
     }
 
     if (path === '/admin/leads') {
@@ -466,6 +455,7 @@ function App() {
           onOpenCar={(id) => navigate(`/admin/bilar/${id}`)}
           onOpenQuote={(id) => navigate(`/admin/forfragningar/${id}`)}
           onNavigate={adminNavigate}
+          initialCategory={(new URLSearchParams(window.location.search).get('filter') as import('./hooks/useAdminNav').AdminPage | null) ?? undefined}
         />
       );
     }
