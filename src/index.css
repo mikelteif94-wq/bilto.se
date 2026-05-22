@@ -8,12 +8,12 @@
   }
 
   html {
-    background-color: #f5f8fc;
+    background-color: #faf8f5;
   }
 
   body {
     @apply font-sans text-slate-700;
-    background-color: #f5f8fc;
+    background-color: #faf8f5;
   }
 
   h1, h2, h3, h4, h5, h6 {

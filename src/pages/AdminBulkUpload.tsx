@@ -328,14 +328,14 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
 
   if (loadingCatalog) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#faf8f5]">
       <header className="bg-[#0e6efe] h-14 sm:h-16 flex items-center px-3 sm:px-5 lg:px-8 sticky top-0 z-10">
         <button
           onClick={onBack}

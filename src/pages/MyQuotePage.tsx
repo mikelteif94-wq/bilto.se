@@ -148,7 +148,7 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
       </div>
     );
@@ -156,7 +156,7 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
 
   if (error && !quote) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-white rounded-2xl border border-slate-200 p-10 text-center shadow-sm">
           <h1 className="text-xl font-bold text-slate-900 mb-2">Länken är ogiltig</h1>
           <p className="text-slate-500 mb-6">{error}</p>

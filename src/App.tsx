@@ -211,7 +211,7 @@ function App() {
   if (onCustomerLogin) {
     if (authLoading) {
       return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
         </div>
       );
@@ -233,7 +233,7 @@ function App() {
   if (onCustomerDashboard) {
     if (authLoading) {
       return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
         </div>
       );
@@ -273,7 +273,7 @@ function App() {
   if (onDealerLogin) {
     if (authLoading) {
       return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
         </div>
       );
@@ -290,7 +290,7 @@ function App() {
   if (onDealerApp) {
     if (authLoading) {
       return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
         </div>
       );
@@ -315,7 +315,7 @@ function App() {
   if (onAdminRoute) {
     if (authLoading) {
       return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
         </div>
       );
@@ -327,7 +327,7 @@ function App() {
 
     if (adminVerified === null) {
       return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
         </div>
       );
@@ -335,7 +335,7 @@ function App() {
 
     if (adminVerified === false) {
       return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
           <div className="bg-white rounded-md shadow-sm border border-slate-200 p-8 max-w-md text-center">
             <h1 className="text-xl font-bold text-slate-900 mb-2">Ingen behörighet</h1>
             <p className="text-sm text-slate-500 mb-6">Ditt konto har inte administratörsrättigheter.</p>
@@ -738,7 +738,7 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
       </div>
     );
@@ -746,7 +746,7 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
 
   if (error || !dealer) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-white rounded-xl border border-slate-200 p-8 text-center">
           <p className="text-slate-700 mb-6">
             {error ?? 'Ingen handlarprofil hittades för detta konto.'}
@@ -767,7 +767,7 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
 
   if (!dealer.godkand) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-white rounded-md border border-slate-200 p-10 text-center shadow-sm">
           <h1 className="text-xl font-bold text-slate-900 mb-2">
             Ditt konto väntar på godkännande

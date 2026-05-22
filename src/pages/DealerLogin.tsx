@@ -116,7 +116,7 @@ export default function DealerLogin({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900 flex flex-col">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}

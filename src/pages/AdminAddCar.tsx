@@ -284,7 +284,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#faf8f5]">
       <header className="bg-[#0e6efe] h-14 sm:h-16 flex items-center px-3 sm:px-5 lg:px-8 sticky top-0 z-10 gap-2">
         <button
           onClick={onBack}

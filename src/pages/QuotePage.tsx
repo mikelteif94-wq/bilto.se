@@ -67,7 +67,7 @@ export default function QuotePage({
   const navItems = ['Sälj bil', 'Köp bil'];
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}

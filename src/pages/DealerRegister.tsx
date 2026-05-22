@@ -150,7 +150,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
 
   if (success) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-10">
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4 py-10">
         <div className="max-w-lg w-full bg-white rounded-2xl border border-slate-200 p-8 sm:p-10 text-center shadow-sm">
           <div className="w-16 h-16 rounded-full bg-[#0e6efe]/10 flex items-center justify-center mx-auto mb-6">
             <Check className="w-8 h-8 text-[#0e6efe]" strokeWidth={2.5} />
@@ -194,7 +194,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}

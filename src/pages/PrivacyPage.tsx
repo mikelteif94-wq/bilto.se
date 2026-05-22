@@ -7,7 +7,7 @@ interface PrivacyPageProps {
 
 export default function PrivacyPage({ onBackHome }: PrivacyPageProps) {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#faf8f5]">
       <header className="border-b border-slate-200 bg-white sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 h-16 flex items-center">
           <button

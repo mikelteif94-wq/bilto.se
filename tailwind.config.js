@@ -9,6 +9,11 @@ export default {
           100: '#eaf3ff',
           200: '#d6e6fb',
         },
+        sand: {
+          50: '#faf8f5',
+          100: '#f5f1eb',
+          200: '#ede7dc',
+        },
         ink: {
           900: '#0b2545',
           800: '#13315c',
