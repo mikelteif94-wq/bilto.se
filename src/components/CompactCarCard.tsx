@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Star, Car, Check, ChevronRight, SlidersHorizontal, HelpCircle, X, Sparkles, Calculator, ChevronDown } from 'lucide-react';
+import { Star, Car, Check, ChevronRight, SlidersHorizontal, HelpCircle, X, Sparkles, Calculator, ChevronDown, ChevronUp } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { calcCarMonthlyRange, calcCarMonthly } from '../lib/utils';
 
@@ -87,7 +87,7 @@ function CalcPanel({ carPrice, usedPrice }: { carPrice: number; usedPrice?: numb
   const sliderPct = ((price - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100;
 
   return (
-    <div className="mt-2.5 rounded-xl border border-slate-100 bg-slate-50 p-3.5 space-y-3" onClick={(e) => e.stopPropagation()}>
+    <div className="rounded-xl border border-slate-100 bg-slate-50 p-3.5 space-y-3" onClick={(e) => e.stopPropagation()}>
       <div className="flex items-end justify-between gap-2">
         <div>
           <p className="text-[9.5px] font-semibold uppercase tracking-wide text-slate-400 mb-0.5">Uppskattad månadskostnad</p>
@@ -163,16 +163,18 @@ export default function CompactCarCard({
   onSelect, onCompare, onNegotiate, onDetail, onFitQuiz,
 }: CompactCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
-  const [expanded, setExpanded] = useState<null | 'calc' | 'fit'>(null);
+  const [cardExpanded, setCardExpanded] = useState(false);
+  const [panel, setPanel] = useState<null | 'calc' | 'fit'>(null);
 
-  const handleClick = () => {
-    if (onSelect) onSelect();
-    else if (onDetail) onDetail();
+  const handleCardClick = () => {
+    if (onSelect) { onSelect(); return; }
+    setCardExpanded(v => !v);
+    if (cardExpanded) setPanel(null);
   };
 
-  const togglePanel = (panel: 'calc' | 'fit', e: React.MouseEvent) => {
+  const openPanel = (p: 'calc' | 'fit', e: React.MouseEvent) => {
     e.stopPropagation();
-    setExpanded(prev => prev === panel ? null : panel);
+    setPanel(prev => prev === p ? null : p);
   };
 
   return (
@@ -182,10 +184,12 @@ export default function CompactCarCard({
           ? 'ring-2 ring-[#0e6efe] shadow-[0_0_0_4px_rgba(14,110,254,0.10)]'
           : isCompared
           ? 'ring-2 ring-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.10)]'
+          : cardExpanded
+          ? 'ring-2 ring-slate-200 shadow-[0_8px_32px_rgba(0,0,0,0.12)]'
           : 'ring-1 ring-slate-100 hover:ring-slate-200 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.11)]'
       }`}
       style={{ touchAction: 'pan-y' }}
-      onClick={handleClick}
+      onClick={handleCardClick}
     >
       {/* Image */}
       <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-white overflow-hidden rounded-t-2xl">
@@ -228,8 +232,8 @@ export default function CompactCarCard({
         )}
       </div>
 
-      {/* Content */}
-      <div className="px-3.5 pt-3 pb-2">
+      {/* Static content — always visible */}
+      <div className="px-3.5 pt-3 pb-3">
         <h3 className="text-[13.5px] sm:text-[14px] font-bold text-slate-900 leading-snug truncate group-hover:text-[#0e6efe] transition-colors duration-200">
           {name}
         </h3>
@@ -238,7 +242,6 @@ export default function CompactCarCard({
           <p className="hidden sm:block mt-0.5 text-[11px] text-slate-400 leading-snug line-clamp-1">{expertComment}</p>
         )}
 
-        {/* Price summary */}
         {range && (
           <div className="mt-2 flex items-baseline gap-1 min-w-0">
             <span className="text-[15px] font-extrabold text-[#0e6efe] tabular-nums leading-none whitespace-nowrap">
@@ -255,52 +258,116 @@ export default function CompactCarCard({
           <p className="mt-1 text-[10.5px] font-semibold text-emerald-600">+{formatSEK(equityFreed)} kr frigörs vid byte</p>
         )}
 
-        {/* Expandable panels */}
+        {/* Expanded section — shown on card click */}
         <AnimatePresence initial={false}>
-          {expanded === 'calc' && carPrice && (
+          {cardExpanded && !onSelect && (
             <motion.div
-              key="calc"
+              key="expanded"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: 'easeInOut' }}
-              style={{ overflow: 'hidden' }}
-            >
-              <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
-            </motion.div>
-          )}
-          {expanded === 'fit' && onFitQuiz && (
-            <motion.div
-              key="fit"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: 'easeInOut' }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
               style={{ overflow: 'hidden' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="mt-2.5 rounded-xl border border-slate-100 bg-slate-50 p-3.5">
-                <p className="text-[12.5px] font-semibold text-slate-800 mb-1">Passar {name} dig?</p>
-                <p className="text-[11.5px] text-slate-500 leading-relaxed mb-3">
-                  Svara på några korta frågor så jämför vi bilen mot dina behov — familj, pendling, budget och körstil.
-                </p>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
-                  className="w-full flex items-center justify-center gap-2 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[12.5px] font-bold transition-all duration-150 shadow-sm shadow-[#0e6efe]/20"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Starta matchning
-                </button>
+              <div className="pt-3 space-y-2">
+                {/* Two secondary CTAs */}
+                <div className="flex gap-2">
+                  {carPrice && (
+                    <button
+                      type="button"
+                      onClick={(e) => openPanel('calc', e)}
+                      className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl border text-[11.5px] font-semibold transition-all duration-150 active:scale-[0.98] ${
+                        panel === 'calc'
+                          ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe]'
+                      }`}
+                    >
+                      <Calculator className="w-3.5 h-3.5" />
+                      Räkna månadskostnad
+                    </button>
+                  )}
+                  {onFitQuiz && (
+                    <button
+                      type="button"
+                      onClick={(e) => openPanel('fit', e)}
+                      className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl border text-[11.5px] font-semibold transition-all duration-150 active:scale-[0.98] ${
+                        panel === 'fit'
+                          ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe]'
+                      }`}
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Passar bilen mig?
+                    </button>
+                  )}
+                </div>
+
+                {/* Panel content */}
+                <AnimatePresence initial={false}>
+                  {panel === 'calc' && carPrice && (
+                    <motion.div
+                      key="calc"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.18, ease: 'easeInOut' }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
+                    </motion.div>
+                  )}
+                  {panel === 'fit' && onFitQuiz && (
+                    <motion.div
+                      key="fit"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.18, ease: 'easeInOut' }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <div className="rounded-xl border border-slate-100 bg-slate-50 p-3.5">
+                        <p className="text-[12px] font-semibold text-slate-800 mb-1">Passar {name} dig?</p>
+                        <p className="text-[11px] text-slate-500 leading-relaxed mb-3">
+                          Svara på några korta frågor — vi jämför bilen mot dina behov, familj, pendling och budget.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
+                          className="w-full flex items-center justify-center gap-2 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[12px] font-bold transition-all duration-150 shadow-sm shadow-[#0e6efe]/20"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          Starta matchning
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Compare */}
+                {onCompare && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); onCompare(); }}
+                    className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${
+                      isCompared
+                        ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+                        : 'border-slate-200 bg-white text-slate-400 hover:border-slate-300 hover:text-slate-600'
+                    }`}
+                  >
+                    {isCompared ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
+                    {isCompared ? 'Tillagd i jämförelse' : 'Lägg till i jämförelse'}
+                  </button>
+                )}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Action buttons */}
+      {/* Primary CTA — always visible unless onSelect mode */}
       {!onSelect && (
-        <div className="px-3.5 pb-3.5 pt-1 flex flex-col gap-1.5">
+        <div className="px-3.5 pb-3.5">
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
@@ -308,54 +375,17 @@ export default function CompactCarCard({
           >
             Få hjälp att köpa <ChevronRight className="w-3.5 h-3.5 opacity-80" />
           </button>
-
-          <div className="flex gap-1.5">
-            {carPrice && (
-              <button
-                type="button"
-                onClick={(e) => togglePanel('calc', e)}
-                className={`flex-1 flex items-center justify-center gap-1 h-7 rounded-lg border text-[10.5px] font-medium transition-all duration-150 active:scale-[0.98] ${
-                  expanded === 'calc'
-                    ? 'bg-[#0e6efe]/8 border-[#0e6efe]/30 text-[#0e6efe]'
-                    : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-[#0e6efe]/30 hover:text-[#0e6efe]'
-                }`}
-              >
-                <Calculator className="w-2.5 h-2.5" />
-                Kalkyl
-                <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${expanded === 'calc' ? 'rotate-180' : ''}`} />
-              </button>
-            )}
-            {onFitQuiz && (
-              <button
-                type="button"
-                onClick={(e) => togglePanel('fit', e)}
-                className={`flex-1 flex items-center justify-center gap-1 h-7 rounded-lg border text-[10.5px] font-medium transition-all duration-150 active:scale-[0.98] ${
-                  expanded === 'fit'
-                    ? 'bg-[#0e6efe]/8 border-[#0e6efe]/30 text-[#0e6efe]'
-                    : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-[#0e6efe]/30 hover:text-[#0e6efe]'
-                }`}
-              >
-                <Sparkles className="w-2.5 h-2.5" />
-                Passar mig?
-                <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${expanded === 'fit' ? 'rotate-180' : ''}`} />
-              </button>
-            )}
-            {onCompare && (
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); onCompare(); }}
-                title={isCompared ? 'Ta bort från jämförelse' : 'Jämför'}
-                className={`flex items-center justify-center gap-1 h-7 px-2.5 rounded-lg border text-[10.5px] font-medium transition-all duration-150 active:scale-[0.98] ${
-                  isCompared
-                    ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                    : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300 hover:text-slate-700'
-                }`}
-              >
-                {isCompared ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
-                {isCompared ? 'Vald' : 'Jämför'}
-              </button>
-            )}
-          </div>
+          {/* Subtle expand indicator */}
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setCardExpanded(v => !v); if (cardExpanded) setPanel(null); }}
+            className="w-full flex items-center justify-center gap-1 mt-1.5 h-6 text-[10px] text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            {cardExpanded
+              ? <><ChevronUp className="w-3 h-3" />Stäng</>
+              : <><ChevronDown className="w-3 h-3" />Kalkyl & matchning</>
+            }
+          </button>
         </div>
       )}
     </div>

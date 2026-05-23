@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Zap, Check, ChevronRight, SlidersHorizontal, Car, HelpCircle, X, Sparkles, Calculator, ChevronDown } from 'lucide-react';
+import { Zap, Check, ChevronRight, SlidersHorizontal, Car, HelpCircle, X, Sparkles, Calculator, ChevronDown, ChevronUp } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { calcCarMonthlyRange, calcCarMonthly } from '../lib/utils';
 
@@ -56,12 +56,10 @@ function RatingRing({ rating }: { rating: number }) {
   );
 }
 
-function InfoTooltip({ onClose, dark }: { onClose: () => void; dark?: boolean }) {
+function InfoTooltip({ onClose }: { onClose: () => void }) {
   return (
     <div
-      className={`absolute bottom-full right-0 mb-2 w-64 z-30 rounded-xl shadow-2xl p-3.5 ${
-        dark ? 'bg-[#0c1a2e] border border-white/15' : 'bg-slate-900 border border-slate-700'
-      }`}
+      className="absolute bottom-full right-0 mb-2 w-64 z-30 rounded-xl shadow-2xl p-3.5 bg-[#0c1a2e] border border-white/15"
       onClick={(e) => e.stopPropagation()}
     >
       <button type="button" onClick={onClose} className="absolute top-2 right-2 text-slate-500 hover:text-white transition-colors">
@@ -69,11 +67,7 @@ function InfoTooltip({ onClose, dark }: { onClose: () => void; dark?: boolean })
       </button>
       <p className="text-[11px] font-bold text-white mb-1.5">Hur räknar vi?</p>
       <p className="text-[10px] text-slate-400 leading-relaxed">
-        Spannet baseras på snittpriset mellan begagnad och ny, vid 55% resp. 50% restvärde:<br />
         <span className="text-slate-300">20% kontantinsats · 1% uppläggning · 6,49% ränta · 36 månader</span>
-      </p>
-      <p className="text-[10px] text-slate-400 leading-relaxed mt-1.5">
-        Lägre siffra = 55% restvärde &nbsp;·&nbsp; Högre siffra = 50% restvärde
       </p>
       <div className="mt-2 pt-2 border-t border-white/10">
         <p className="text-[9px] text-slate-500">Uppskattning. Slutlig ränta och villkor sätts av finansiär.</p>
@@ -91,7 +85,7 @@ function CalcPanel({ carPrice, usedPrice }: { carPrice: number; usedPrice?: numb
   const sliderPct = ((price - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100;
 
   return (
-    <div className="mt-2.5 rounded-xl border border-white/10 bg-white/5 p-3.5 space-y-3" onClick={(e) => e.stopPropagation()}>
+    <div className="rounded-xl border border-white/10 bg-white/5 p-3.5 space-y-3" onClick={(e) => e.stopPropagation()}>
       <div className="flex items-end justify-between gap-2">
         <div>
           <p className="text-[9.5px] font-semibold uppercase tracking-wide text-slate-400 mb-0.5">Uppskattad månadskostnad</p>
@@ -107,7 +101,7 @@ function CalcPanel({ carPrice, usedPrice }: { carPrice: number; usedPrice?: numb
           <button type="button" onClick={() => setShowInfo(v => !v)} className="text-slate-600 hover:text-slate-300 transition-colors">
             <HelpCircle className="w-3.5 h-3.5" />
           </button>
-          {showInfo && <InfoTooltip dark onClose={() => setShowInfo(false)} />}
+          {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
         </div>
       </div>
 
@@ -166,25 +160,33 @@ export default function ElCarCard({
   onNegotiate, onDetail, onCompare, onFitQuiz,
 }: ElCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
-  const [expanded, setExpanded] = useState<null | 'calc' | 'fit'>(null);
+  const [cardExpanded, setCardExpanded] = useState(false);
+  const [panel, setPanel] = useState<null | 'calc' | 'fit'>(null);
 
-  const togglePanel = (panel: 'calc' | 'fit', e: React.MouseEvent) => {
+  const handleCardClick = () => {
+    setCardExpanded(v => !v);
+    if (cardExpanded) setPanel(null);
+  };
+
+  const openPanel = (p: 'calc' | 'fit', e: React.MouseEvent) => {
     e.stopPropagation();
-    setExpanded(prev => prev === panel ? null : panel);
+    setPanel(prev => prev === p ? null : p);
   };
 
   return (
     <div
-      onClick={() => { if (onDetail) onDetail(); }}
+      onClick={handleCardClick}
       className={`group relative flex flex-col rounded-2xl cursor-pointer transition-all duration-300 ${
         isCompared
           ? 'ring-2 ring-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,0.15)]'
+          : cardExpanded
+          ? 'ring-1 ring-white/20 shadow-[0_12px_40px_rgba(0,0,0,0.5)]'
           : 'ring-1 ring-white/10 hover:ring-white/20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]'
       }`}
       style={{ background: 'linear-gradient(155deg, #0f172a 0%, #0c1a2e 55%, #051020 100%)', touchAction: 'pan-y' }}
     >
       <div className="absolute top-0 inset-x-0 h-[2px] rounded-t-2xl bg-gradient-to-r from-transparent via-[#38bdf8] to-transparent opacity-70" />
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-3/4 h-1/2 rounded-full bg-[#0e6efe]/10 blur-3xl" />
       </div>
 
@@ -218,7 +220,7 @@ export default function ElCarCard({
         <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#0f172a] to-transparent" />
       </div>
 
-      {/* Content */}
+      {/* Static content */}
       <div className="px-3.5 pt-3 pb-1 flex-1 flex flex-col">
         <div className="flex items-start gap-2 mb-2">
           {rating != null && <RatingRing rating={rating} />}
@@ -230,7 +232,6 @@ export default function ElCarCard({
           </div>
         </div>
 
-        {/* Price summary */}
         {range && (
           <div className="mb-2 flex items-baseline gap-1">
             <span className="text-[14px] font-extrabold text-[#38bdf8] tabular-nums whitespace-nowrap">
@@ -240,7 +241,6 @@ export default function ElCarCard({
           </div>
         )}
 
-        {/* Range bar */}
         {rangeKm != null && (
           <div className="mb-2 flex items-center gap-1.5">
             <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
@@ -250,106 +250,132 @@ export default function ElCarCard({
           </div>
         )}
 
-        {/* Expandable panels */}
+        {/* Expanded section */}
         <AnimatePresence initial={false}>
-          {expanded === 'calc' && carPrice && (
+          {cardExpanded && (
             <motion.div
-              key="calc"
+              key="expanded"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: 'easeInOut' }}
-              style={{ overflow: 'hidden' }}
-            >
-              <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
-            </motion.div>
-          )}
-          {expanded === 'fit' && onFitQuiz && (
-            <motion.div
-              key="fit"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: 'easeInOut' }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
               style={{ overflow: 'hidden' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="mt-2.5 rounded-xl border border-white/10 bg-white/5 p-3.5">
-                <p className="text-[12.5px] font-semibold text-white mb-1">Passar {name} dig?</p>
-                <p className="text-[11.5px] text-slate-400 leading-relaxed mb-3">
-                  Svara på några korta frågor så jämför vi bilen mot dina behov — familj, pendling, budget och körstil.
-                </p>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
-                  className="w-full flex items-center justify-center gap-2 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[12.5px] font-bold transition-all duration-150 shadow-lg shadow-[#0e6efe]/30"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Starta matchning
-                </button>
+              <div className="pt-2 pb-1 space-y-2">
+                {/* Two secondary CTAs */}
+                <div className="flex gap-2">
+                  {carPrice && (
+                    <button
+                      type="button"
+                      onClick={(e) => openPanel('calc', e)}
+                      className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl border text-[11px] font-semibold transition-all duration-150 active:scale-[0.98] ${
+                        panel === 'calc'
+                          ? 'bg-[#38bdf8] border-[#38bdf8] text-[#0f172a]'
+                          : 'border-white/15 bg-white/5 text-slate-300 hover:border-[#38bdf8]/50 hover:text-[#7dd3fc]'
+                      }`}
+                    >
+                      <Calculator className="w-3.5 h-3.5" />
+                      Räkna månadskostnad
+                    </button>
+                  )}
+                  {onFitQuiz && (
+                    <button
+                      type="button"
+                      onClick={(e) => openPanel('fit', e)}
+                      className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl border text-[11px] font-semibold transition-all duration-150 active:scale-[0.98] ${
+                        panel === 'fit'
+                          ? 'bg-[#38bdf8] border-[#38bdf8] text-[#0f172a]'
+                          : 'border-white/15 bg-white/5 text-slate-300 hover:border-[#38bdf8]/50 hover:text-[#7dd3fc]'
+                      }`}
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Passar bilen mig?
+                    </button>
+                  )}
+                </div>
+
+                {/* Panel content */}
+                <AnimatePresence initial={false}>
+                  {panel === 'calc' && carPrice && (
+                    <motion.div
+                      key="calc"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.18, ease: 'easeInOut' }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
+                    </motion.div>
+                  )}
+                  {panel === 'fit' && onFitQuiz && (
+                    <motion.div
+                      key="fit"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.18, ease: 'easeInOut' }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <div className="rounded-xl border border-white/10 bg-white/5 p-3.5">
+                        <p className="text-[12.5px] font-semibold text-white mb-1">Passar {name} dig?</p>
+                        <p className="text-[11.5px] text-slate-400 leading-relaxed mb-3">
+                          Svara på några korta frågor — vi jämför bilen mot dina behov, familj, pendling och budget.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
+                          className="w-full flex items-center justify-center gap-2 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[12.5px] font-bold transition-all duration-150 shadow-lg shadow-[#0e6efe]/30"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          Starta matchning
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Compare */}
+                {onCompare && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); onCompare(); }}
+                    className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${
+                      isCompared
+                        ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-400'
+                        : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-300'
+                    }`}
+                  >
+                    {isCompared ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
+                    {isCompared ? 'Tillagd i jämförelse' : 'Lägg till i jämförelse'}
+                  </button>
+                )}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Action row */}
-      <div className="px-3.5 pb-3.5 pt-1 flex flex-col gap-1.5">
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-            className="flex-1 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1 shadow-lg shadow-[#0e6efe]/30"
-          >
-            Få hjälp att köpa<ChevronRight className="w-3 h-3 opacity-80" />
-          </button>
-          {onCompare && (
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onCompare(); }}
-              title={isCompared ? 'Ta bort från jämförelse' : 'Jämför'}
-              className={`hidden sm:flex h-9 w-9 rounded-xl border items-center justify-center shrink-0 transition-all duration-150 active:scale-[0.98] ${
-                isCompared ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white/5 border-white/10 text-slate-400 hover:border-[#38bdf8] hover:text-[#38bdf8]'
-              }`}
-            >
-              {isCompared ? <Check className="w-4 h-4" strokeWidth={2.5} /> : <SlidersHorizontal className="w-4 h-4" />}
-            </button>
-          )}
-        </div>
-
-        {/* Secondary expand row */}
-        <div className="flex gap-1.5">
-          {carPrice && (
-            <button
-              type="button"
-              onClick={(e) => togglePanel('calc', e)}
-              className={`flex-1 h-7 rounded-xl border flex items-center justify-center gap-1 text-[10px] font-semibold transition-all duration-150 active:scale-[0.98] ${
-                expanded === 'calc'
-                  ? 'bg-[#38bdf8]/15 border-[#38bdf8]/40 text-[#7dd3fc]'
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:border-[#38bdf8]/40 hover:text-[#7dd3fc]'
-              }`}
-            >
-              <Calculator className="w-2.5 h-2.5" />
-              Kalkyl
-              <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${expanded === 'calc' ? 'rotate-180' : ''}`} />
-            </button>
-          )}
-          {onFitQuiz && (
-            <button
-              type="button"
-              onClick={(e) => togglePanel('fit', e)}
-              className={`flex-1 h-7 rounded-xl border flex items-center justify-center gap-1 text-[10px] font-semibold transition-all duration-150 active:scale-[0.98] ${
-                expanded === 'fit'
-                  ? 'bg-[#38bdf8]/15 border-[#38bdf8]/40 text-[#7dd3fc]'
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:border-[#38bdf8]/40 hover:text-[#7dd3fc]'
-              }`}
-            >
-              <Sparkles className="w-2.5 h-2.5" />
-              Passar mig?
-              <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${expanded === 'fit' ? 'rotate-180' : ''}`} />
-            </button>
-          )}
-        </div>
+      {/* Primary CTA */}
+      <div className="px-3.5 pb-3.5 pt-1">
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
+          className="w-full h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1 shadow-lg shadow-[#0e6efe]/30"
+        >
+          Få hjälp att köpa<ChevronRight className="w-3 h-3 opacity-80" />
+        </button>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); setCardExpanded(v => !v); if (cardExpanded) setPanel(null); }}
+          className="w-full flex items-center justify-center gap-1 mt-1.5 h-6 text-[10px] text-slate-500 hover:text-slate-300 transition-colors"
+        >
+          {cardExpanded
+            ? <><ChevronUp className="w-3 h-3" />Stäng</>
+            : <><ChevronDown className="w-3 h-3" />Kalkyl & matchning</>
+          }
+        </button>
       </div>
     </div>
   );
