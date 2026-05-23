@@ -94,20 +94,20 @@ export default function CompactCarCard({
       onClick={handleClick}
     >
       {/* Image */}
-      <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-gradient-to-b from-slate-50 to-slate-100 overflow-hidden">
+      <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-gradient-to-b from-slate-50 to-[#eef3f8] overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={name}
             loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+            className="w-full h-full object-contain p-2.5 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <Car className="w-10 h-10 text-slate-200" />
           </div>
         )}
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/15 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#eef3f8]/70 to-transparent pointer-events-none" />
 
         {topBadge && !isSelected && !isCompared && (
           <div className="absolute top-2.5 left-2.5">
@@ -142,24 +142,23 @@ export default function CompactCarCard({
       </div>
 
       {/* Content */}
-      <div className="px-4 pt-3.5 pb-2">
-        <h3 className="text-[14px] sm:text-[15px] font-bold text-slate-900 leading-snug truncate group-hover:text-[#0e6efe] transition-colors duration-200">
+      <div className="px-3.5 pt-3 pb-2">
+        <h3 className="text-[13.5px] sm:text-[14px] font-bold text-slate-900 leading-snug truncate group-hover:text-[#0e6efe] transition-colors duration-200">
           {name}
         </h3>
+        {fuelLabel && <p className="mt-0.5 text-[10px] text-slate-400 truncate">{fuelLabel}</p>}
         {expertComment && (
-          <p className="hidden sm:block mt-1 text-[11.5px] text-slate-400 leading-relaxed line-clamp-2">{expertComment}</p>
+          <p className="hidden sm:block mt-0.5 text-[11px] text-slate-400 leading-snug line-clamp-1">{expertComment}</p>
         )}
-        {fuelLabel && <p className="mt-0.5 text-[10.5px] text-slate-400 truncate">{fuelLabel}</p>}
 
         {range && (
-          <div className="mt-3" onClick={(e) => e.stopPropagation()}>
-            <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wide mb-1">Ca månadskostnad</p>
-            <div className="flex items-center justify-between gap-1 mb-2">
-              <div className="flex items-baseline gap-1.5 min-w-0">
-                <span className="text-[16px] font-extrabold text-[#0e6efe] tabular-nums leading-none whitespace-nowrap">
+          <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between gap-1 mb-1.5">
+              <div className="flex items-baseline gap-1 min-w-0">
+                <span className="text-[15px] font-extrabold text-[#0e6efe] tabular-nums leading-none whitespace-nowrap">
                   {formatSEK(range.low)}–{formatSEK(range.high)}
                 </span>
-                <span className="text-[11px] font-semibold text-[#0e6efe]/60 shrink-0">kr/mån</span>
+                <span className="text-[10px] font-semibold text-[#0e6efe]/60 shrink-0">kr/mån</span>
               </div>
               <div className="relative shrink-0">
                 <button
@@ -167,7 +166,7 @@ export default function CompactCarCard({
                   onClick={() => setShowInfo(v => !v)}
                   className="text-slate-300 hover:text-slate-500 transition-colors"
                 >
-                  <HelpCircle className="w-3.5 h-3.5" />
+                  <HelpCircle className="w-3 h-3" />
                 </button>
                 {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
               </div>
@@ -177,32 +176,32 @@ export default function CompactCarCard({
         )}
 
         {monthlySaving != null && monthlySaving > 0 && (
-          <p className="mt-1.5 text-[11px] font-semibold text-emerald-600">Du sparar {formatSEK(monthlySaving)} kr/mån</p>
+          <p className="mt-1 text-[10.5px] font-semibold text-emerald-600">Du sparar {formatSEK(monthlySaving)} kr/mån</p>
         )}
         {equityFreed != null && equityFreed > 0 && (
-          <p className="mt-1.5 text-[11px] font-semibold text-emerald-600">+{formatSEK(equityFreed)} kr frigörs vid byte</p>
+          <p className="mt-1 text-[10.5px] font-semibold text-emerald-600">+{formatSEK(equityFreed)} kr frigörs vid byte</p>
         )}
       </div>
 
       {/* Action buttons */}
       {!onSelect && (
-        <div className="px-4 pb-4 pt-1 flex flex-col gap-2">
+        <div className="px-3.5 pb-3.5 pt-1 flex flex-col gap-1.5">
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-            className="w-full flex items-center justify-center gap-1.5 h-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[13px] font-bold transition-all duration-150 shadow-sm shadow-[#0e6efe]/20"
+            className="w-full flex items-center justify-center gap-1.5 h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[12.5px] font-bold transition-all duration-150 shadow-sm shadow-[#0e6efe]/20"
           >
             Få hjälp att köpa <ChevronRight className="w-3.5 h-3.5 opacity-80" />
           </button>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             {onFitQuiz && (
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
-                className="flex-1 flex items-center justify-center gap-1.5 h-8 rounded-xl border border-slate-200 hover:border-[#0e6efe]/40 bg-slate-50 hover:bg-[#0e6efe]/5 text-slate-500 hover:text-[#0e6efe] text-[11px] font-medium transition-all duration-150 active:scale-[0.98]"
+                className="flex-1 flex items-center justify-center gap-1 h-7 rounded-lg border border-slate-200 hover:border-[#0e6efe]/40 bg-slate-50 hover:bg-[#0e6efe]/5 text-slate-500 hover:text-[#0e6efe] text-[10.5px] font-medium transition-all duration-150 active:scale-[0.98]"
               >
-                <Sparkles className="w-3 h-3" />
+                <Sparkles className="w-2.5 h-2.5" />
                 Passar mig?
               </button>
             )}
@@ -211,15 +210,15 @@ export default function CompactCarCard({
                 type="button"
                 onClick={(e) => { e.stopPropagation(); onCompare(); }}
                 title={isCompared ? 'Ta bort från jämförelse' : 'Jämför'}
-                className={`flex items-center justify-center gap-1.5 h-8 px-3 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${
+                className={`flex items-center justify-center gap-1 h-7 px-2.5 rounded-lg border text-[10.5px] font-medium transition-all duration-150 active:scale-[0.98] ${
                   isCompared
                     ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
                     : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300 hover:text-slate-700'
                 }`}
               >
                 {isCompared
-                  ? <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
-                  : <SlidersHorizontal className="w-3.5 h-3.5" />
+                  ? <Check className="w-3 h-3" strokeWidth={2.5} />
+                  : <SlidersHorizontal className="w-3 h-3" />
                 }
                 {isCompared ? 'Vald' : 'Jämför'}
               </button>

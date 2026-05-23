@@ -85,20 +85,20 @@ export default function DarkCarCard({
       onClick={onDetail}
     >
       {/* Image */}
-      <div className="relative aspect-[16/10] bg-gradient-to-b from-slate-50 to-slate-100 overflow-hidden">
+      <div className="relative aspect-[16/10] bg-gradient-to-b from-slate-50 to-[#eef3f8] overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={name}
             loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+            className="w-full h-full object-contain p-3 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <Car className="w-16 h-16 text-slate-200" />
           </div>
         )}
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#eef3f8]/80 to-transparent pointer-events-none" />
 
         {topBadge && (
           <div className="absolute top-3.5 left-3.5">
@@ -111,24 +111,24 @@ export default function DarkCarCard({
       </div>
 
       {/* Content */}
-      <div className="px-5 pt-4 pb-5">
-        <h3 className="text-[17px] font-bold text-slate-900 leading-snug mb-1 group-hover:text-[#0e6efe] transition-colors duration-200">
+      <div className="px-4 pt-3 pb-4">
+        <h3 className="text-[16px] font-bold text-slate-900 leading-snug group-hover:text-[#0e6efe] transition-colors duration-200">
           {name}
         </h3>
         {expertComment && (
-          <p className="text-[12.5px] text-slate-400 leading-relaxed line-clamp-2 mb-3">{expertComment}</p>
+          <p className="mt-0.5 text-[12px] text-slate-400 leading-relaxed line-clamp-1">{expertComment}</p>
         )}
 
         {range && (
-          <div className="mt-3 mb-4" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between gap-2 mb-2">
+          <div className="mt-2.5 mb-3" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between gap-2 mb-1.5">
               <div>
-                <p className="text-[11px] font-medium text-slate-400 mb-0.5 uppercase tracking-wide">Ca månadskostnad</p>
+                <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wide mb-0.5">Ca månadskostnad</p>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-[20px] font-extrabold text-slate-900 tabular-nums leading-none">
+                  <span className="text-[18px] font-extrabold text-slate-900 tabular-nums leading-none">
                     {formatSEK(range.low)}–{formatSEK(range.high)}
                   </span>
-                  <span className="text-[12px] font-semibold text-slate-400">kr/mån</span>
+                  <span className="text-[11px] font-semibold text-slate-400">kr/mån</span>
                 </div>
               </div>
               <div className="relative self-end pb-0.5">
@@ -137,7 +137,7 @@ export default function DarkCarCard({
                   onClick={() => setShowInfo(s => !s)}
                   className="text-slate-300 hover:text-slate-500 transition-colors"
                 >
-                  <HelpCircle className="w-4 h-4" />
+                  <HelpCircle className="w-3.5 h-3.5" />
                 </button>
                 {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
               </div>
@@ -146,22 +146,20 @@ export default function DarkCarCard({
           </div>
         )}
 
-        {/* Primary CTA */}
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-          className="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[14px] font-bold transition-all duration-200 shadow-md shadow-[#0e6efe]/20 mt-1"
+          className="w-full flex items-center justify-center gap-2 h-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[13.5px] font-bold transition-all duration-200 shadow-sm shadow-[#0e6efe]/20"
         >
           Få hjälp att köpa <ChevronRight className="w-4 h-4 opacity-80" />
         </button>
 
-        {/* Secondary actions */}
-        <div className="flex gap-2 mt-2">
+        <div className="flex gap-2 mt-1.5">
           {onFitQuiz && (
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
-              className="flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl border border-slate-200 hover:border-[#0e6efe]/40 bg-slate-50 hover:bg-[#0e6efe]/5 text-slate-500 hover:text-[#0e6efe] text-[11.5px] font-medium transition-all duration-150 active:scale-[0.98]"
+              className="flex-1 flex items-center justify-center gap-1.5 h-8 rounded-xl border border-slate-200 hover:border-[#0e6efe]/40 bg-slate-50 hover:bg-[#0e6efe]/5 text-slate-500 hover:text-[#0e6efe] text-[11px] font-medium transition-all duration-150 active:scale-[0.98]"
             >
               <Sparkles className="w-3 h-3" />
               Passar mig?
@@ -172,7 +170,7 @@ export default function DarkCarCard({
               type="button"
               onClick={(e) => { e.stopPropagation(); onCompare(); }}
               title={isComparing ? 'Ta bort från jämförelse' : 'Jämför'}
-              className={`flex items-center justify-center gap-1.5 h-9 px-3 rounded-xl border text-[11.5px] font-medium transition-all duration-150 active:scale-[0.98] ${
+              className={`flex items-center justify-center gap-1.5 h-8 px-3 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${
                 isComparing
                   ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
                   : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300 hover:text-slate-700'
