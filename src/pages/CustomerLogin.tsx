@@ -1,127 +1,56 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, Loader2, Lock, User } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { ArrowLeft, ArrowRight, Loader2, Mail, ShieldCheck } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
 import { SiteFooter } from '../components/SiteFooter';
 
 interface CustomerLoginProps {
-  onLoggedIn: () => void;
   onBack: () => void;
   initialEmail?: string;
-  initialCreate?: boolean;
 }
 
-export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', initialCreate = false }: CustomerLoginProps) {
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+export default function CustomerLogin({ onBack, initialEmail = '' }: CustomerLoginProps) {
   const [email, setEmail] = useState(initialEmail);
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [resetSent, setResetSent] = useState(false);
-  const [resetting, setResetting] = useState(false);
-  const [newAccount, setNewAccount] = useState(initialCreate);
+  const [sent, setSent] = useState(false);
 
-  // Email is locked/prefilled when coming from "Följ din bil" link
-  const emailFromUrl = !!initialEmail;
-
-  const switchMode = (create: boolean) => {
-    setNewAccount(create);
-    setError(null);
-    setResetSent(false);
-    setPassword('');
-    setConfirm('');
-  };
-
-  const handleReset = async () => {
-    setError(null);
-    if (!email.trim()) {
-      setError('Fyll i din mejl först.');
-      return;
-    }
-    setResetting(true);
-    const { error: rErr } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/valj-losenord`,
-    });
-    setResetting(false);
-    if (rErr) {
-      setError('Kunde inte skicka länk just nu. Försök igen.');
-      return;
-    }
-    setResetSent(true);
-  };
-
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (password.length < 8) {
-      setError('Lösenordet måste vara minst 8 tecken.');
+    const trimmed = email.trim().toLowerCase();
+    if (!trimmed) {
+      setError('Fyll i din e-postadress.');
       return;
     }
-    if (password !== confirm) {
-      setError('Lösenorden matchar inte.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setError('Ogiltig e-postadress.');
       return;
     }
     setLoading(true);
-    const { data, error: signUpErr } = await supabase.auth.signUp({
-      email: email.trim(),
-      password,
-    });
-    if (signUpErr) {
-      setLoading(false);
-      if (signUpErr.message?.toLowerCase().includes('already registered') || signUpErr.message?.toLowerCase().includes('user already')) {
-        setError('Det finns redan ett konto med den mejladressen. Logga in istället.');
-      } else {
-        setError('Kunde inte skapa konto. Försök igen.');
+    try {
+      const resp = await fetch(`${SUPABASE_URL}/functions/v1/send-magic-link`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${ANON_KEY}`,
+          Apikey: ANON_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: trimmed }),
+      });
+      const json = await resp.json();
+      if (!resp.ok) {
+        setError(json.error ?? 'Något gick fel. Försök igen.');
+        return;
       }
-      return;
-    }
-    if (!data.user) {
+      setSent(true);
+    } catch {
+      setError('Kunde inte kontakta servern. Kontrollera din internetanslutning.');
+    } finally {
       setLoading(false);
-      setError('Kunde inte skapa konto. Försök igen.');
-      return;
     }
-    // Link existing customers row via edge function (service role bypasses RLS)
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.access_token) {
-      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/link-customer-account`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-    }
-    sessionStorage.setItem('bilto_portal', 'customer');
-    setLoading(false);
-    onLoggedIn();
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-    const { data, error: authError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
-    if (authError || !data.user) {
-      setError('Fel mejl eller lösenord.');
-      setLoading(false);
-      return;
-    }
-    // Link existing customers row if not already linked (e.g. first login after signup)
-    if (data.session?.access_token) {
-      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/link-customer-account`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${data.session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-    }
-    sessionStorage.setItem('bilto_portal', 'customer');
-    setLoading(false);
-    onLoggedIn();
   };
 
   return (
@@ -141,6 +70,8 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
       <main className="flex-1">
         <section className="relative bg-[#0e6efe] overflow-hidden pt-24">
           <div className="relative max-w-[1280px] mx-auto px-6 pt-10 pb-20 lg:pt-20 lg:pb-28 grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center">
+
+            {/* Left column */}
             <div>
               <button
                 onClick={onBack}
@@ -150,201 +81,125 @@ export default function CustomerLogin({ onLoggedIn, onBack, initialEmail = '', i
                 Tillbaka
               </button>
               <span className="inline-flex items-center gap-2 text-[11px] font-semibold text-white/80 uppercase tracking-[0.18em] mb-4">
-                <User className="w-3.5 h-3.5" />
-                Mina bud
+                <Mail className="w-3.5 h-3.5" />
+                Kundportal
               </span>
-              <h1 className="text-white text-[32px] sm:text-[48px] lg:text-[64px] font-semibold leading-[1.05] tracking-tight">
-                {newAccount ? <>Skapa ditt<br />konto.</> : <>Logga in på<br />ditt konto.</>}
+              <h1 className="text-white text-[32px] sm:text-[48px] lg:text-[56px] font-semibold leading-[1.05] tracking-tight">
+                Följ ditt<br />ärende.
               </h1>
               <p className="mt-6 text-white/90 text-[17px] leading-[1.6] max-w-lg">
-                Se bud från handlare, följ din bil och hantera dina erbjudanden.
+                Se bud från handlare, följ din bil och hantera dina erbjudanden — allt utan lösenord.
               </p>
+
+              <div className="mt-8 space-y-3">
+                {[
+                  'Ingen registrering krävs',
+                  'Säker engångslänk direkt i din mejl',
+                  'Fungerar på alla enheter',
+                ].map((item) => (
+                  <div key={item} className="flex items-center gap-2.5 text-white/85 text-[14px]">
+                    <ShieldCheck className="w-4 h-4 text-white/60 shrink-0" />
+                    {item}
+                  </div>
+                ))}
+              </div>
             </div>
 
+            {/* Right column — card */}
             <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
-              {/* Tab switcher — always visible */}
-              <div className="grid grid-cols-2 border-b border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => switchMode(true)}
-                  className={`py-4 text-[14px] font-semibold transition-colors ${
-                    newAccount
-                      ? 'text-[#0e6efe] border-b-2 border-[#0e6efe] bg-white'
-                      : 'text-slate-500 hover:text-slate-700 bg-slate-50'
-                  }`}
-                >
-                  Skapa konto
-                </button>
-                <button
-                  type="button"
-                  onClick={() => switchMode(false)}
-                  className={`py-4 text-[14px] font-semibold transition-colors ${
-                    !newAccount
-                      ? 'text-[#0e6efe] border-b-2 border-[#0e6efe] bg-white'
-                      : 'text-slate-500 hover:text-slate-700 bg-slate-50'
-                  }`}
-                >
-                  Logga in
-                </button>
-              </div>
-
-              <div className="px-7 py-2 bg-slate-50 border-b border-slate-100">
-                <p className="text-[12.5px] text-slate-500">
-                  {newAccount
-                    ? 'Välj ett lösenord — du är inloggad direkt.'
-                    : 'Använd mejlen du angav när du lämnade in bilen.'}
-                </p>
-              </div>
-
-              <div className="p-7 sm:p-9">
-                {newAccount ? (
-                  <form onSubmit={handleSignUp} noValidate className="space-y-5">
-                    <label className="block">
-                      <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
-                        Din e-postadress
-                      </span>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => !emailFromUrl && setEmail(e.target.value)}
-                        readOnly={emailFromUrl}
-                        required
-                        autoComplete="email"
-                        autoFocus={!emailFromUrl}
-                        placeholder="namn@exempel.se"
-                        className={`form-control ${emailFromUrl ? 'bg-slate-100 text-slate-600 cursor-default select-none' : ''}`}
-                      />
-                      {emailFromUrl && (
-                        <p className="mt-1 text-[11.5px] text-slate-400">
-                          Mejladressen hämtad från din bilinlämning.
-                        </p>
-                      )}
-                    </label>
-
-                    <label className="block">
-                      <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
-                        Välj lösenord
-                      </span>
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        autoComplete="new-password"
-                        autoFocus={emailFromUrl}
-                        placeholder="Minst 8 tecken"
-                        className="form-control"
-                      />
-                    </label>
-
-                    <label className="block">
-                      <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
-                        Bekräfta lösenord
-                      </span>
-                      <input
-                        type="password"
-                        value={confirm}
-                        onChange={(e) => setConfirm(e.target.value)}
-                        required
-                        autoComplete="new-password"
-                        placeholder="Skriv lösenordet igen"
-                        className="form-control"
-                      />
-                    </label>
-
-                    <ErrorBanner message={error} />
-
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14.5px] rounded-full transition"
-                    >
-                      {loading ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <>Skapa konto <ArrowRight className="w-4 h-4" /></>
-                      )}
-                    </button>
-
-                    <p className="inline-flex items-center gap-2 text-[12.5px] text-slate-400 pt-1">
-                      <Lock className="w-3.5 h-3.5 shrink-0" />
-                      Dina uppgifter skickas krypterat.
+              {sent ? (
+                <SentConfirmation email={email.trim()} onResend={() => setSent(false)} />
+              ) : (
+                <>
+                  <div className="px-7 pt-8 pb-2">
+                    <div className="w-12 h-12 rounded-2xl bg-[#0e6efe]/10 flex items-center justify-center mb-5">
+                      <Mail className="w-6 h-6 text-[#0e6efe]" />
+                    </div>
+                    <h2 className="text-[20px] font-bold text-slate-900 mb-1">
+                      Följ ditt ärende
+                    </h2>
+                    <p className="text-[14px] text-slate-500 leading-relaxed">
+                      Ange din e-postadress så skickar vi en säker engångslänk till din portal.
                     </p>
-                  </form>
-                ) : (
-                  <form onSubmit={handleLogin} noValidate className="space-y-5">
+                  </div>
+
+                  <form onSubmit={handleSubmit} noValidate className="px-7 pt-5 pb-8 space-y-4">
                     <label className="block">
-                      <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
-                        Mejl
+                      <span className="block text-[13px] font-semibold text-slate-700 mb-1.5">
+                        E-postadress
                       </span>
                       <input
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => { setEmail(e.target.value); setError(null); }}
                         required
                         autoComplete="email"
                         autoFocus
-                        className="form-control"
-                      />
-                    </label>
-
-                    <label className="block">
-                      <span className="block text-[13px] font-medium text-slate-700 mb-1.5">
-                        Lösenord
-                      </span>
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        autoComplete="current-password"
+                        placeholder="din@mejl.se"
                         className="form-control"
                       />
                     </label>
 
                     <ErrorBanner message={error} />
 
-                    {resetSent && (
-                      <div className="rounded-lg bg-green-50 border border-green-200 px-3 py-2 text-[12.5px] text-green-800">
-                        Vi har skickat en återställningslänk till {email.trim()}.
-                      </div>
-                    )}
-
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14.5px] rounded-full transition"
+                      className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white font-semibold text-[15px] rounded-full transition shadow-sm"
                     >
                       {loading ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
-                        <>Logga in <ArrowRight className="w-4 h-4" /></>
+                        <>
+                          Skicka länk
+                          <ArrowRight className="w-4 h-4" />
+                        </>
                       )}
                     </button>
-
-                    <div className="flex items-center justify-between pt-1">
-                      <p className="inline-flex items-center gap-2 text-[12.5px] text-slate-400">
-                        <Lock className="w-3.5 h-3.5 shrink-0" />
-                        Dina uppgifter skickas krypterat.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={handleReset}
-                        disabled={resetting}
-                        className="text-[12.5px] font-semibold text-[#0e6efe] hover:underline disabled:opacity-50"
-                      >
-                        {resetting ? 'Skickar…' : 'Glömt lösenord?'}
-                      </button>
-                    </div>
                   </form>
-                )}
-              </div>
+                </>
+              )}
             </div>
           </div>
         </section>
       </main>
 
       <SiteFooter />
+    </div>
+  );
+}
+
+function SentConfirmation({ email, onResend }: { email: string; onResend: () => void }) {
+  return (
+    <div className="px-7 py-10 text-center space-y-5">
+      <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mx-auto">
+        <Mail className="w-8 h-8 text-emerald-600" />
+      </div>
+
+      <div className="space-y-2">
+        <h2 className="text-[19px] font-bold text-slate-900">Kolla din mejl</h2>
+        <p className="text-[14px] text-slate-600 leading-relaxed">
+          Vi har skickat en säker inloggningslänk till
+        </p>
+        <p className="text-[15px] font-semibold text-slate-900 break-all">{email}</p>
+      </div>
+
+      <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-left">
+        <p className="text-[13px] text-amber-800 leading-relaxed">
+          Hamnar mejlet inte i inkorgen? Kolla skräpposten eller spam-mappen.
+        </p>
+      </div>
+
+      <div className="pt-2 space-y-2">
+        <p className="text-[12.5px] text-slate-400">Fick du inget mejl?</p>
+        <button
+          type="button"
+          onClick={onResend}
+          className="text-[13px] font-semibold text-[#0e6efe] hover:underline"
+        >
+          Skicka ny länk
+        </button>
+      </div>
     </div>
   );
 }

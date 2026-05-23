@@ -30,6 +30,7 @@ import MyQuotePage from './pages/MyQuotePage';
 import SetPasswordPage from './pages/SetPasswordPage';
 import CustomerLogin from './pages/CustomerLogin';
 import CustomerDashboard from './pages/CustomerDashboard';
+import PortalCallbackPage from './pages/PortalCallbackPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import BlogPage from './pages/BlogPage';
@@ -46,7 +47,6 @@ type PublicRoute =
 // Read once at module load before Supabase auth can mutate the URL
 const _initParams = new URLSearchParams(window.location.search);
 const _initEmail = _initParams.get('mejl') ?? '';
-const _initCreate = _initParams.get('skapa') === '1';
 
 function navigate(path: string) {
   window.history.pushState({}, '', path);
@@ -210,6 +210,15 @@ function App() {
     return <MyQuotePage token={myQuoteToken} onBack={() => navigate('/')} />;
   }
 
+  if (path === '/portal') {
+    return (
+      <PortalCallbackPage
+        onSuccess={() => navigate('/mina-bilar')}
+        onBack={() => navigate('/logga-in')}
+      />
+    );
+  }
+
   if (onCustomerLogin) {
     if (authLoading) {
       return (
@@ -224,10 +233,8 @@ function App() {
     }
     return (
       <CustomerLogin
-        onLoggedIn={() => navigate('/mina-bilar')}
         onBack={() => navigate('/')}
         initialEmail={_initEmail}
-        initialCreate={_initCreate}
       />
     );
   }
