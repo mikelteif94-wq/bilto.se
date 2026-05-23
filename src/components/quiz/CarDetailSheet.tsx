@@ -171,11 +171,11 @@ export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAn
         {/* Hero */}
         <div className="relative mb-5">
           {(car.cleaned_image_url || car.image_url) && (
-            <div className="w-full h-40 sm:h-48 flex items-center justify-center bg-slate-50 rounded-xl overflow-hidden">
+            <div className="w-full bg-slate-50 rounded-xl overflow-hidden" style={{ aspectRatio: '16/8' }}>
               <img
                 src={car.cleaned_image_url || car.image_url || ''}
                 alt={`${car.make} ${car.model}`}
-                className="max-h-full max-w-full object-contain"
+                className="w-full h-full object-contain p-4"
               />
             </div>
           )}
