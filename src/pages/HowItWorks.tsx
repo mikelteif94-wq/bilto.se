@@ -340,20 +340,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             Din bilaffär börjar här
           </h1>
 
-          <ul className="mt-6 space-y-3.5 text-[17px] font-medium text-white w-fit mx-auto text-left">
-            <li className="flex items-center gap-3">
-              <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Sälj din bil och få bästa budet
-            </li>
-            <li className="flex items-center gap-3">
-              <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Köp bil och vi förhandlar priset åt dig
-            </li>
-            <li className="flex items-center gap-3">
-              <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-              Byt bil och vi sköter allt från start till mål
-            </li>
-          </ul>
+          <p className="mt-4 text-center text-white/85 text-[15px] leading-[1.6] px-2">
+            Vi hjälper dig sälja, köpa eller byta bil — enkelt, tryggt och helt gratis.
+          </p>
 
           <div className="mt-6 bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] overflow-hidden">
             {/* Tab strip */}
