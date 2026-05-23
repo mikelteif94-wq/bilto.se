@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Zap, Check, ChevronRight, SlidersHorizontal, Car, HelpCircle, X, Sparkles } from 'lucide-react';
-import { calcCarMonthlyRange } from '../lib/utils';
-import FinancingToggle from './FinancingToggle';
+import { Zap, Check, ChevronRight, SlidersHorizontal, Car, HelpCircle, X, Sparkles, Calculator, ChevronDown } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { calcCarMonthlyRange, calcCarMonthly } from '../lib/utils';
 
 interface ElCarCardProps {
   name: string;
@@ -18,6 +18,17 @@ interface ElCarCardProps {
   onDetail?: () => void;
   onCompare?: () => void;
   onFitQuiz?: () => void;
+}
+
+const RATE = 0.0649;
+const MONTHS = 36;
+const DOWN_PCT = 0.20;
+const FEE_PCT = 0.01;
+const MIN_PRICE = 50_000;
+const MAX_PRICE = 1_200_000;
+
+function fmt(n: number) {
+  return Math.round(n).toLocaleString('sv-SE');
 }
 
 function formatSEK(n: number) {
@@ -45,10 +56,12 @@ function RatingRing({ rating }: { rating: number }) {
   );
 }
 
-function InfoTooltip({ onClose }: { onClose: () => void }) {
+function InfoTooltip({ onClose, dark }: { onClose: () => void; dark?: boolean }) {
   return (
     <div
-      className="absolute bottom-full right-0 mb-2 w-64 z-30 rounded-xl bg-[#0c1a2e] border border-white/15 shadow-2xl p-3.5"
+      className={`absolute bottom-full right-0 mb-2 w-64 z-30 rounded-xl shadow-2xl p-3.5 ${
+        dark ? 'bg-[#0c1a2e] border border-white/15' : 'bg-slate-900 border border-slate-700'
+      }`}
       onClick={(e) => e.stopPropagation()}
     >
       <button type="button" onClick={onClose} className="absolute top-2 right-2 text-slate-500 hover:text-white transition-colors">
@@ -69,13 +82,96 @@ function InfoTooltip({ onClose }: { onClose: () => void }) {
   );
 }
 
+function CalcPanel({ carPrice, usedPrice }: { carPrice: number; usedPrice?: number }) {
+  const baseDefault = usedPrice ? Math.round((carPrice + usedPrice) / 2) : carPrice;
+  const [price, setPrice] = useState(Math.min(Math.max(baseDefault, MIN_PRICE), MAX_PRICE));
+  const [residualPct, setResidualPct] = useState<0.50 | 0.55>(0.55);
+  const [showInfo, setShowInfo] = useState(false);
+  const monthly = calcCarMonthly(price, residualPct);
+  const sliderPct = ((price - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100;
+
+  return (
+    <div className="mt-2.5 rounded-xl border border-white/10 bg-white/5 p-3.5 space-y-3" onClick={(e) => e.stopPropagation()}>
+      <div className="flex items-end justify-between gap-2">
+        <div>
+          <p className="text-[9.5px] font-semibold uppercase tracking-wide text-slate-400 mb-0.5">Uppskattad månadskostnad</p>
+          <div className="flex items-baseline gap-1">
+            <span className="text-[22px] font-extrabold text-[#38bdf8] tabular-nums leading-none">{fmt(monthly)}</span>
+            <span className="text-[11px] font-semibold text-[#38bdf8]/60">kr/mån</span>
+          </div>
+          <p className="mt-0.5 text-[9px] text-slate-400">
+            {RATE * 100}% ränta · {MONTHS} mån · {DOWN_PCT * 100}% ins. · {residualPct === 0.55 ? 55 : 50}% restvärde
+          </p>
+        </div>
+        <div className="relative pb-0.5">
+          <button type="button" onClick={() => setShowInfo(v => !v)} className="text-slate-600 hover:text-slate-300 transition-colors">
+            <HelpCircle className="w-3.5 h-3.5" />
+          </button>
+          {showInfo && <InfoTooltip dark onClose={() => setShowInfo(false)} />}
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-1">
+          <label className="text-[10.5px] font-semibold text-slate-300">Bilpris</label>
+          <span className="text-[11px] font-bold tabular-nums text-white">{fmt(price)} kr</span>
+        </div>
+        <input
+          type="range" min={MIN_PRICE} max={MAX_PRICE} step={5_000} value={price}
+          onChange={(e) => setPrice(Number(e.target.value))}
+          className="w-full h-1.5 rounded-full appearance-none cursor-pointer financing-slider"
+          style={{ background: `linear-gradient(to right, #38bdf8 ${sliderPct}%, #334155 ${sliderPct}%)` }}
+        />
+        <div className="flex justify-between mt-0.5">
+          <span className="text-[9px] text-slate-500">50 000 kr</span>
+          <span className="text-[9px] text-slate-500">1 200 000 kr</span>
+        </div>
+      </div>
+
+      <div className="flex gap-2">
+        {([0.55, 0.50] as const).map(pct => (
+          <button
+            key={pct} type="button" onClick={() => setResidualPct(pct)}
+            className={`flex-1 h-7 rounded-lg text-[11px] font-bold border transition-all duration-150 active:scale-[0.98] ${
+              residualPct === pct
+                ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
+                : 'border-white/10 text-slate-400 hover:border-[#0e6efe]/50 hover:text-[#0e6efe]'
+            }`}
+          >
+            {pct === 0.55 ? '55% Standard' : '50%'}
+          </button>
+        ))}
+      </div>
+
+      <div className="pt-2.5 border-t border-white/10 grid grid-cols-3 gap-1.5 text-center">
+        {[
+          { label: 'Kontantinsats', value: `${fmt(price * DOWN_PCT)} kr` },
+          { label: 'Lånesumma', value: `${fmt(price * (1 - DOWN_PCT) + price * FEE_PCT)} kr` },
+          { label: 'Restvärde', value: `${fmt(price * residualPct)} kr` },
+        ].map(({ label, value }) => (
+          <div key={label}>
+            <p className="text-[8.5px] text-slate-500 mb-0.5">{label}</p>
+            <p className="text-[9.5px] font-bold tabular-nums text-slate-200">{value}</p>
+          </div>
+        ))}
+      </div>
+      <p className="text-[8.5px] text-slate-500 leading-relaxed">Uppskattning. Faktisk kostnad beror på kreditgivare och individuella villkor.</p>
+    </div>
+  );
+}
+
 export default function ElCarCard({
   name, imageUrl, rating, expertComment, rangeKm,
   carPrice, usedPrice, isCompared, topBadge,
   onNegotiate, onDetail, onCompare, onFitQuiz,
 }: ElCarCardProps) {
-  const [showInfo, setShowInfo] = useState(false);
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
+  const [expanded, setExpanded] = useState<null | 'calc' | 'fit'>(null);
+
+  const togglePanel = (panel: 'calc' | 'fit', e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpanded(prev => prev === panel ? null : panel);
+  };
 
   return (
     <div
@@ -96,9 +192,7 @@ export default function ElCarCard({
       <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] overflow-hidden bg-[#0c1525]">
         {imageUrl ? (
           <img
-            src={imageUrl}
-            alt={name}
-            loading="lazy"
+            src={imageUrl} alt={name} loading="lazy"
             className="w-full h-full object-contain p-3 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
           />
         ) : (
@@ -131,33 +225,18 @@ export default function ElCarCard({
           <div className="flex-1 min-w-0">
             <h3 className="text-[13px] sm:text-[14px] font-extrabold text-white leading-tight truncate group-hover:text-[#7dd3fc] transition-colors duration-200">{name}</h3>
             {expertComment && (
-              <p className="hidden sm:block mt-0.5 text-[11px] text-slate-400 leading-snug line-clamp-2">{expertComment}</p>
+              <p className="hidden sm:block mt-0.5 text-[11px] text-slate-400 leading-snug line-clamp-1">{expertComment}</p>
             )}
           </div>
         </div>
 
-        {/* Monthly range */}
+        {/* Price summary */}
         {range && (
-          <div
-            className="mt-1 mb-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-0.5">
-              <span className="text-[10px] text-slate-400 font-medium">Ca månadskostnad</span>
-              <div className="relative">
-                <button type="button" onClick={() => setShowInfo(v => !v)} className="text-slate-600 hover:text-slate-300 transition-colors">
-                  <HelpCircle className="w-3.5 h-3.5" />
-                </button>
-                {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
-              </div>
-            </div>
-            <div className="flex items-baseline gap-1 mb-2">
-              <span className="text-[14px] font-extrabold text-[#38bdf8] tabular-nums whitespace-nowrap">
-                {formatSEK(range.low)}–{formatSEK(range.high)}
-              </span>
-              <span className="text-[10px] text-[#38bdf8]/60 font-semibold">kr/mån</span>
-            </div>
-            <FinancingToggle carPrice={carPrice!} usedPrice={usedPrice} dark />
+          <div className="mb-2 flex items-baseline gap-1">
+            <span className="text-[14px] font-extrabold text-[#38bdf8] tabular-nums whitespace-nowrap">
+              {formatSEK(range.low)}–{formatSEK(range.high)}
+            </span>
+            <span className="text-[10px] text-[#38bdf8]/60 font-semibold">kr/mån</span>
           </div>
         )}
 
@@ -170,6 +249,48 @@ export default function ElCarCard({
             <span className="text-[10px] font-bold text-[#38bdf8] tabular-nums shrink-0">{rangeKm} km</span>
           </div>
         )}
+
+        {/* Expandable panels */}
+        <AnimatePresence initial={false}>
+          {expanded === 'calc' && carPrice && (
+            <motion.div
+              key="calc"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.22, ease: 'easeInOut' }}
+              style={{ overflow: 'hidden' }}
+            >
+              <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
+            </motion.div>
+          )}
+          {expanded === 'fit' && onFitQuiz && (
+            <motion.div
+              key="fit"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.22, ease: 'easeInOut' }}
+              style={{ overflow: 'hidden' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mt-2.5 rounded-xl border border-white/10 bg-white/5 p-3.5">
+                <p className="text-[12.5px] font-semibold text-white mb-1">Passar {name} dig?</p>
+                <p className="text-[11.5px] text-slate-400 leading-relaxed mb-3">
+                  Svara på några korta frågor så jämför vi bilen mot dina behov — familj, pendling, budget och körstil.
+                </p>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
+                  className="w-full flex items-center justify-center gap-2 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[12.5px] font-bold transition-all duration-150 shadow-lg shadow-[#0e6efe]/30"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Starta matchning
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Action row */}
@@ -195,16 +316,40 @@ export default function ElCarCard({
             </button>
           )}
         </div>
-        {onFitQuiz && (
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
-            className="w-full h-7 rounded-xl border border-[#38bdf8]/25 bg-[#38bdf8]/8 hover:bg-[#38bdf8]/15 hover:border-[#38bdf8]/40 text-[#7dd3fc] text-[10px] font-semibold transition-all duration-150 flex items-center justify-center gap-1 active:scale-[0.98]"
-          >
-            <Sparkles className="w-2.5 h-2.5" />
-            Är bilen rätt för mig?
-          </button>
-        )}
+
+        {/* Secondary expand row */}
+        <div className="flex gap-1.5">
+          {carPrice && (
+            <button
+              type="button"
+              onClick={(e) => togglePanel('calc', e)}
+              className={`flex-1 h-7 rounded-xl border flex items-center justify-center gap-1 text-[10px] font-semibold transition-all duration-150 active:scale-[0.98] ${
+                expanded === 'calc'
+                  ? 'bg-[#38bdf8]/15 border-[#38bdf8]/40 text-[#7dd3fc]'
+                  : 'bg-white/5 border-white/10 text-slate-400 hover:border-[#38bdf8]/40 hover:text-[#7dd3fc]'
+              }`}
+            >
+              <Calculator className="w-2.5 h-2.5" />
+              Kalkyl
+              <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${expanded === 'calc' ? 'rotate-180' : ''}`} />
+            </button>
+          )}
+          {onFitQuiz && (
+            <button
+              type="button"
+              onClick={(e) => togglePanel('fit', e)}
+              className={`flex-1 h-7 rounded-xl border flex items-center justify-center gap-1 text-[10px] font-semibold transition-all duration-150 active:scale-[0.98] ${
+                expanded === 'fit'
+                  ? 'bg-[#38bdf8]/15 border-[#38bdf8]/40 text-[#7dd3fc]'
+                  : 'bg-white/5 border-white/10 text-slate-400 hover:border-[#38bdf8]/40 hover:text-[#7dd3fc]'
+              }`}
+            >
+              <Sparkles className="w-2.5 h-2.5" />
+              Passar mig?
+              <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${expanded === 'fit' ? 'rotate-180' : ''}`} />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

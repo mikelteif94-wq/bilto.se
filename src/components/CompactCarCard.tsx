@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Star, Car, Check, ChevronRight, SlidersHorizontal, HelpCircle, X, Sparkles } from 'lucide-react';
-import { calcCarMonthlyRange } from '../lib/utils';
-import FinancingToggle from './FinancingToggle';
+import { Star, Car, Check, ChevronRight, SlidersHorizontal, HelpCircle, X, Sparkles, Calculator, ChevronDown } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { calcCarMonthlyRange, calcCarMonthly } from '../lib/utils';
 
 interface CompactCarCardProps {
   name: string;
@@ -23,6 +23,17 @@ interface CompactCarCardProps {
   onFitQuiz?: () => void;
   index?: number;
   disableMotion?: boolean;
+}
+
+const RATE = 0.0649;
+const MONTHS = 36;
+const DOWN_PCT = 0.20;
+const FEE_PCT = 0.01;
+const MIN_PRICE = 50_000;
+const MAX_PRICE = 1_200_000;
+
+function fmt(n: number) {
+  return Math.round(n).toLocaleString('sv-SE');
 }
 
 function formatSEK(n: number) {
@@ -67,18 +78,101 @@ function InfoTooltip({ onClose }: { onClose: () => void }) {
   );
 }
 
+function CalcPanel({ carPrice, usedPrice }: { carPrice: number; usedPrice?: number }) {
+  const baseDefault = usedPrice ? Math.round((carPrice + usedPrice) / 2) : carPrice;
+  const [price, setPrice] = useState(Math.min(Math.max(baseDefault, MIN_PRICE), MAX_PRICE));
+  const [residualPct, setResidualPct] = useState<0.50 | 0.55>(0.55);
+  const [showInfo, setShowInfo] = useState(false);
+  const monthly = calcCarMonthly(price, residualPct);
+  const sliderPct = ((price - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100;
+
+  return (
+    <div className="mt-2.5 rounded-xl border border-slate-100 bg-slate-50 p-3.5 space-y-3" onClick={(e) => e.stopPropagation()}>
+      <div className="flex items-end justify-between gap-2">
+        <div>
+          <p className="text-[9.5px] font-semibold uppercase tracking-wide text-slate-400 mb-0.5">Uppskattad månadskostnad</p>
+          <div className="flex items-baseline gap-1">
+            <span className="text-[22px] font-extrabold text-[#0e6efe] tabular-nums leading-none">{fmt(monthly)}</span>
+            <span className="text-[11px] font-semibold text-[#0e6efe]/60">kr/mån</span>
+          </div>
+          <p className="mt-0.5 text-[9px] text-slate-400">
+            {RATE * 100}% ränta · {MONTHS} mån · {DOWN_PCT * 100}% ins. · {residualPct === 0.55 ? 55 : 50}% restvärde
+          </p>
+        </div>
+        <div className="relative pb-0.5">
+          <button type="button" onClick={() => setShowInfo(v => !v)} className="text-slate-300 hover:text-slate-500 transition-colors">
+            <HelpCircle className="w-3.5 h-3.5" />
+          </button>
+          {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-1">
+          <label className="text-[10.5px] font-semibold text-slate-700">Bilpris</label>
+          <span className="text-[11px] font-bold tabular-nums text-slate-900">{fmt(price)} kr</span>
+        </div>
+        <input
+          type="range" min={MIN_PRICE} max={MAX_PRICE} step={5_000} value={price}
+          onChange={(e) => setPrice(Number(e.target.value))}
+          className="w-full h-1.5 rounded-full appearance-none cursor-pointer financing-slider"
+          style={{ background: `linear-gradient(to right, #0e6efe ${sliderPct}%, #e2e8f0 ${sliderPct}%)` }}
+        />
+        <div className="flex justify-between mt-0.5">
+          <span className="text-[9px] text-slate-400">50 000 kr</span>
+          <span className="text-[9px] text-slate-400">1 200 000 kr</span>
+        </div>
+      </div>
+
+      <div className="flex gap-2">
+        {([0.55, 0.50] as const).map(pct => (
+          <button
+            key={pct} type="button" onClick={() => setResidualPct(pct)}
+            className={`flex-1 h-7 rounded-lg text-[11px] font-bold border transition-all duration-150 active:scale-[0.98] ${
+              residualPct === pct
+                ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
+                : 'border-slate-200 text-slate-500 hover:border-[#0e6efe]/50 hover:text-[#0e6efe]'
+            }`}
+          >
+            {pct === 0.55 ? '55% Standard' : '50%'}
+          </button>
+        ))}
+      </div>
+
+      <div className="pt-2.5 border-t border-slate-100 grid grid-cols-3 gap-1.5 text-center">
+        {[
+          { label: 'Kontantinsats', value: `${fmt(price * DOWN_PCT)} kr` },
+          { label: 'Lånesumma', value: `${fmt(price * (1 - DOWN_PCT) + price * FEE_PCT)} kr` },
+          { label: 'Restvärde', value: `${fmt(price * residualPct)} kr` },
+        ].map(({ label, value }) => (
+          <div key={label}>
+            <p className="text-[8.5px] text-slate-400 mb-0.5">{label}</p>
+            <p className="text-[9.5px] font-bold tabular-nums text-slate-800">{value}</p>
+          </div>
+        ))}
+      </div>
+      <p className="text-[8.5px] text-slate-400 leading-relaxed">Uppskattning. Faktisk kostnad beror på kreditgivare och individuella villkor.</p>
+    </div>
+  );
+}
+
 export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
   fuelLabel, carPrice, usedPrice, monthlySaving, equityFreed,
   isSelected, isCompared,
   onSelect, onCompare, onNegotiate, onDetail, onFitQuiz,
 }: CompactCarCardProps) {
-  const [showInfo, setShowInfo] = useState(false);
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
+  const [expanded, setExpanded] = useState<null | 'calc' | 'fit'>(null);
 
   const handleClick = () => {
     if (onSelect) onSelect();
     else if (onDetail) onDetail();
+  };
+
+  const togglePanel = (panel: 'calc' | 'fit', e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpanded(prev => prev === panel ? null : panel);
   };
 
   return (
@@ -97,15 +191,11 @@ export default function CompactCarCard({
       <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-gradient-to-b from-slate-50 to-[#eef3f8] overflow-hidden">
         {imageUrl ? (
           <img
-            src={imageUrl}
-            alt={name}
-            loading="lazy"
+            src={imageUrl} alt={name} loading="lazy"
             className="w-full h-full object-contain p-2.5 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Car className="w-10 h-10 text-slate-200" />
-          </div>
+          <div className="w-full h-full flex items-center justify-center"><Car className="w-10 h-10 text-slate-200" /></div>
         )}
         <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#eef3f8]/70 to-transparent pointer-events-none" />
 
@@ -116,7 +206,6 @@ export default function CompactCarCard({
             </span>
           </div>
         )}
-
         {onSelect && (
           <div className={`absolute top-2.5 left-2.5 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
             isSelected ? 'bg-[#0e6efe] border-[#0e6efe] shadow-md scale-110' : 'bg-white/85 border-slate-300 backdrop-blur-sm'
@@ -124,7 +213,6 @@ export default function CompactCarCard({
             {isSelected && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
           </div>
         )}
-
         {(monthlySaving != null && monthlySaving > 0) && (
           <div className="absolute top-2.5 right-2.5 bg-emerald-500 text-white px-2 py-0.5 rounded-lg text-[10px] font-bold shadow-sm">
             -{formatSEK(monthlySaving)} kr/mån
@@ -135,7 +223,6 @@ export default function CompactCarCard({
             +{formatSEK(equityFreed)} kr tillbaka
           </div>
         )}
-
         {rating != null && !(monthlySaving && monthlySaving > 0) && !(equityFreed && equityFreed > 0) && (
           <ScoreBadge value={rating} />
         )}
@@ -151,27 +238,13 @@ export default function CompactCarCard({
           <p className="hidden sm:block mt-0.5 text-[11px] text-slate-400 leading-snug line-clamp-1">{expertComment}</p>
         )}
 
+        {/* Price summary */}
         {range && (
-          <div className="mt-2" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between gap-1 mb-1.5">
-              <div className="flex items-baseline gap-1 min-w-0">
-                <span className="text-[15px] font-extrabold text-[#0e6efe] tabular-nums leading-none whitespace-nowrap">
-                  {formatSEK(range.low)}–{formatSEK(range.high)}
-                </span>
-                <span className="text-[10px] font-semibold text-[#0e6efe]/60 shrink-0">kr/mån</span>
-              </div>
-              <div className="relative shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setShowInfo(v => !v)}
-                  className="text-slate-300 hover:text-slate-500 transition-colors"
-                >
-                  <HelpCircle className="w-3 h-3" />
-                </button>
-                {showInfo && <InfoTooltip onClose={() => setShowInfo(false)} />}
-              </div>
-            </div>
-            <FinancingToggle carPrice={carPrice!} usedPrice={usedPrice} />
+          <div className="mt-2 flex items-baseline gap-1 min-w-0">
+            <span className="text-[15px] font-extrabold text-[#0e6efe] tabular-nums leading-none whitespace-nowrap">
+              {formatSEK(range.low)}–{formatSEK(range.high)}
+            </span>
+            <span className="text-[10px] font-semibold text-[#0e6efe]/60 shrink-0">kr/mån</span>
           </div>
         )}
 
@@ -181,6 +254,48 @@ export default function CompactCarCard({
         {equityFreed != null && equityFreed > 0 && (
           <p className="mt-1 text-[10.5px] font-semibold text-emerald-600">+{formatSEK(equityFreed)} kr frigörs vid byte</p>
         )}
+
+        {/* Expandable panels */}
+        <AnimatePresence initial={false}>
+          {expanded === 'calc' && carPrice && (
+            <motion.div
+              key="calc"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.22, ease: 'easeInOut' }}
+              style={{ overflow: 'hidden' }}
+            >
+              <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
+            </motion.div>
+          )}
+          {expanded === 'fit' && onFitQuiz && (
+            <motion.div
+              key="fit"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.22, ease: 'easeInOut' }}
+              style={{ overflow: 'hidden' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mt-2.5 rounded-xl border border-slate-100 bg-slate-50 p-3.5">
+                <p className="text-[12.5px] font-semibold text-slate-800 mb-1">Passar {name} dig?</p>
+                <p className="text-[11.5px] text-slate-500 leading-relaxed mb-3">
+                  Svara på några korta frågor så jämför vi bilen mot dina behov — familj, pendling, budget och körstil.
+                </p>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
+                  className="w-full flex items-center justify-center gap-2 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[12.5px] font-bold transition-all duration-150 shadow-sm shadow-[#0e6efe]/20"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Starta matchning
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Action buttons */}
@@ -195,14 +310,34 @@ export default function CompactCarCard({
           </button>
 
           <div className="flex gap-1.5">
+            {carPrice && (
+              <button
+                type="button"
+                onClick={(e) => togglePanel('calc', e)}
+                className={`flex-1 flex items-center justify-center gap-1 h-7 rounded-lg border text-[10.5px] font-medium transition-all duration-150 active:scale-[0.98] ${
+                  expanded === 'calc'
+                    ? 'bg-[#0e6efe]/8 border-[#0e6efe]/30 text-[#0e6efe]'
+                    : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-[#0e6efe]/30 hover:text-[#0e6efe]'
+                }`}
+              >
+                <Calculator className="w-2.5 h-2.5" />
+                Kalkyl
+                <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${expanded === 'calc' ? 'rotate-180' : ''}`} />
+              </button>
+            )}
             {onFitQuiz && (
               <button
                 type="button"
-                onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
-                className="flex-1 flex items-center justify-center gap-1 h-7 rounded-lg border border-slate-200 hover:border-[#0e6efe]/40 bg-slate-50 hover:bg-[#0e6efe]/5 text-slate-500 hover:text-[#0e6efe] text-[10.5px] font-medium transition-all duration-150 active:scale-[0.98]"
+                onClick={(e) => togglePanel('fit', e)}
+                className={`flex-1 flex items-center justify-center gap-1 h-7 rounded-lg border text-[10.5px] font-medium transition-all duration-150 active:scale-[0.98] ${
+                  expanded === 'fit'
+                    ? 'bg-[#0e6efe]/8 border-[#0e6efe]/30 text-[#0e6efe]'
+                    : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-[#0e6efe]/30 hover:text-[#0e6efe]'
+                }`}
               >
                 <Sparkles className="w-2.5 h-2.5" />
                 Passar mig?
+                <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${expanded === 'fit' ? 'rotate-180' : ''}`} />
               </button>
             )}
             {onCompare && (
@@ -216,10 +351,7 @@ export default function CompactCarCard({
                     : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300 hover:text-slate-700'
                 }`}
               >
-                {isCompared
-                  ? <Check className="w-3 h-3" strokeWidth={2.5} />
-                  : <SlidersHorizontal className="w-3 h-3" />
-                }
+                {isCompared ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
                 {isCompared ? 'Vald' : 'Jämför'}
               </button>
             )}
