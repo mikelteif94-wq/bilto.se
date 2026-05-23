@@ -161,7 +161,7 @@ export default function BuyCarPage({
     try {
       const carModelFull = [details.carBrand, details.carModel].filter(Boolean).join(' ').trim();
       const dbTrack = (track === 'know' || track === 'explore') ? 'searching' : track;
-      const { error: dbError } = await supabase.from('quote_requests').insert({
+      const { data: insertedRow, error: dbError } = await supabase.from('quote_requests').insert({
         search_option: dbTrack,
         regnummer: track === 'trade' ? details.regnummer : '',
         miltal: details.miltal ? parseInt(details.miltal) : 0,
@@ -189,7 +189,7 @@ export default function BuyCarPage({
         phone: contactData.telefon,
         preferred_time: contactData.preferredTime,
         status: 'new',
-      });
+      }).select('id').maybeSingle();
 
       if (dbError) {
         setError('Kunde inte spara din förfrågan. Försök igen eller ring oss.');
@@ -197,6 +197,7 @@ export default function BuyCarPage({
         return;
       }
 
+      const qrId = (insertedRow as { id?: string } | null)?.id ?? null;
       try {
         await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-quote-request`, {
           method: 'POST',
@@ -205,10 +206,7 @@ export default function BuyCarPage({
             Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            email: contactData.mejl,
-            phone: contactData.telefon,
-          }),
+          body: JSON.stringify({ quote_request_id: qrId }),
         });
       } catch { /* best effort */ }
 

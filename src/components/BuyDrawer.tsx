@@ -34,7 +34,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [portalToken, setPortalToken] = useState<string | null>(null);
-  const [magicLinkSent, setMagicLinkSent] = useState(false);
   const sessionIdRef = useRef<string>(crypto.randomUUID());
 
   const [details, setDetails] = useState<BuyDetailsData>({
@@ -77,6 +76,12 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
   const [guidanceSubmitting, setGuidanceSubmitting] = useState(false);
   const [guidanceDone, setGuidanceDone] = useState(false);
   const [guidanceError, setGuidanceError] = useState<string | null>(null);
+
+  const preferredTimeLabel = (time: string, format: 'inline' | 'short') => {
+    if (time === 'morning') return format === 'inline' ? ' på förmiddagen' : 'Förmiddag';
+    if (time === 'afternoon') return format === 'inline' ? ' på eftermiddagen' : 'Eftermiddag';
+    return format === 'inline' ? ' inom en arbetsdag' : 'Inom en arbetsdag';
+  };
 
   const trackEvent = (
     event: 'drawer_opened' | 'form_submitted' | 'portal_clicked',
@@ -232,7 +237,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
       const token = row?.access_token ?? null;
       const qrId = row?.id ?? null;
       setPortalToken(token);
-      setMagicLinkSent(false);
       trackEvent('form_submitted', { quote_request_id: qrId ?? undefined });
 
       const fnHeaders = {
@@ -241,6 +245,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
         'Content-Type': 'application/json',
       };
 
+      // notify-quote-request generates the magic link and sends customer email
       try {
         await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-quote-request`, {
           method: 'POST',
@@ -248,18 +253,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
           body: JSON.stringify({ quote_request_id: qrId }),
         });
       } catch { /* best effort */ }
-
-      // Send magic link so customer can access portal directly from email
-      if (contactData.mejl) {
-        try {
-          const mlResp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-magic-link`, {
-            method: 'POST',
-            headers: fnHeaders,
-            body: JSON.stringify({ email: contactData.mejl.trim().toLowerCase() }),
-          });
-          if (mlResp.ok) setMagicLinkSent(true);
-        } catch { /* best effort */ }
-      }
 
       if (qrId) {
         const leadType = track === 'trade' ? 'trade' : 'buy';
@@ -548,7 +541,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
 
               {step === 'done' && (
                 <div className="text-center pt-6 pb-6">
-                  {/* Success icon */}
                   <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
                     <Check className="w-8 h-8 text-emerald-600" />
                   </div>
@@ -556,10 +548,9 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     Tack, {contact.namn.split(' ')[0]}!
                   </h2>
                   <p className="text-[14.5px] text-slate-500 leading-relaxed max-w-sm mx-auto mb-6">
-                    Förfrågan är skickad. Vi hör av oss{contact.preferredTime === 'morning' ? ' på förmiddagen' : contact.preferredTime === 'afternoon' ? ' på eftermiddagen' : ' inom en arbetsdag'}.
+                    Förfrågan är skickad. Vi hör av oss{preferredTimeLabel(contact.preferredTime, 'inline')}.
                   </p>
 
-                  {/* PRIMARY CTA — portal access */}
                   {portalToken ? (
                     <a
                       href={`/min-forfragan/${portalToken}`}
@@ -580,25 +571,19 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     </button>
                   )}
 
-                  {/* Magic link info */}
                   <div className="max-w-sm mx-auto bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-5 flex items-start gap-2.5 text-left">
                     <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
                       <Check className="w-3 h-3 text-emerald-600" strokeWidth={3} />
                     </div>
                     <p className="text-[13px] text-slate-600 leading-relaxed">
-                      {magicLinkSent
-                        ? <>Vi har skickat en inloggningslänk till <strong className="text-slate-900">{contact.mejl}</strong> — klicka på den för att öppna din portal direkt.</>
-                        : <>Vi har skickat en bekräftelse till <strong className="text-slate-900">{contact.mejl}</strong>.</>
-                      }
-                      {' '}Kolla skräpposten om den inte dyker upp.
+                      Vi har skickat en inloggningslänk till <strong className="text-slate-900">{contact.mejl}</strong> — klicka på den för att öppna din portal direkt. Kolla skräpposten om den inte dyker upp.
                     </p>
                   </div>
 
-                  {/* Next steps */}
                   <div className="max-w-sm mx-auto space-y-2.5 text-left mb-6">
                     {[
                       { label: 'Förfrågan mottagen', sub: 'Vi har all information vi behöver.', done: true },
-                      { label: 'Vi hör av oss', sub: contact.preferredTime === 'morning' ? 'Förmiddag' : contact.preferredTime === 'afternoon' ? 'Eftermiddag' : 'Inom en arbetsdag', done: false },
+                      { label: 'Vi hör av oss', sub: preferredTimeLabel(contact.preferredTime, 'short'), done: false },
                       { label: 'Vi förhandlar och levererar', sub: 'Du lutar dig tillbaka — vi sköter resten.', done: false },
                     ].map((item, i) => (
                       <div key={i} className="flex items-start gap-3 px-4 py-3 bg-slate-50 rounded-xl">
