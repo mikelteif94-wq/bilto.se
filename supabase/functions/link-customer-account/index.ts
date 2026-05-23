@@ -51,6 +51,30 @@ Deno.serve(async (req: Request) => {
       });
     }
 
+    // Only link customer rows that exist — never create rows
+    // First check if any customer rows match this email at all
+    const { data: existingRows, error: selectError } = await adminClient
+      .from("customers")
+      .select("id")
+      .ilike("mejl", email);
+
+    if (selectError) {
+      return new Response(JSON.stringify({ error: selectError.message }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const totalMatching = existingRows?.length ?? 0;
+
+    if (totalMatching === 0) {
+      // No customer rows for this email — nothing to link, no ärenden
+      return new Response(JSON.stringify({ ok: true, linked_count: 0, has_cases: false }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Link only unlinked rows
     const { error: updateError } = await adminClient
       .from("customers")
       .update({ user_id: user.id })
@@ -64,7 +88,7 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    return new Response(JSON.stringify({ ok: true }), {
+    return new Response(JSON.stringify({ ok: true, linked_count: totalMatching, has_cases: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {

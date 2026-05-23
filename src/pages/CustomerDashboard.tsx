@@ -16,6 +16,7 @@ import {
   LayoutDashboard,
   ExternalLink,
   AlertCircle,
+  Search,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import CustomerOfferCard from '../components/CustomerOfferCard';
@@ -108,18 +109,6 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
   useEffect(() => {
     (async () => {
       setLoading(true);
-
-      // Always attempt to link customer rows on load (idempotent — only affects unlinked rows)
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.access_token) {
-        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/link-customer-account`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-      }
 
       const { data: offerRows } = await supabase
         .from('car_offers' as never)
@@ -276,21 +265,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
 
             {/* Cars */}
             {cars.length === 0 ? (
-              <div className="bg-white border border-slate-200 rounded-xl p-10 text-center shadow-sm">
-                <div className="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
-                  <CarIcon className="w-7 h-7 text-slate-400" />
-                </div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-1">Inga bilar ännu</h3>
-                <p className="text-slate-500 text-sm mb-6 max-w-xs mx-auto">
-                  Skicka in din bil så tar vi hand om resten — granskning, auktion och bud.
-                </p>
-                <a
-                  href="/"
-                  className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-sm transition"
-                >
-                  Sälj din bil <ArrowRight className="w-4 h-4" />
-                </a>
-              </div>
+              <EmptyState />
             ) : (
               <div>
                 <SectionLabel
@@ -526,6 +501,67 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
         )}
       </div>
     </PortalLayout>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="py-6 space-y-6">
+      <div className="bg-white border border-slate-200 rounded-2xl p-10 sm:p-14 text-center shadow-sm">
+        <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-5">
+          <CarIcon className="w-8 h-8 text-slate-300" />
+        </div>
+        <h2 className="text-xl font-bold text-slate-900 mb-2">
+          Du har inget aktivt ärende ännu
+        </h2>
+        <p className="text-[15px] text-slate-500 leading-relaxed max-w-sm mx-auto mb-8">
+          Kom igång genom att sälja din bil eller låt oss hjälpa dig hitta rätt bil — helt utan förpliktelser.
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a
+            href="/"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-7 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] transition shadow-sm"
+          >
+            <CarIcon className="w-4.5 h-4.5" />
+            Sälj / värdera bil
+            <ArrowRight className="w-4 h-4" />
+          </a>
+          <a
+            href="/kop-bil"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-7 rounded-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-semibold text-[15px] transition"
+          >
+            <Search className="w-4 h-4" />
+            Hitta / köp bil
+          </a>
+        </div>
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 flex items-start gap-4">
+          <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+            <Gavel className="w-5 h-5 text-[#0e6efe]" />
+          </div>
+          <div>
+            <p className="text-[14px] font-semibold text-slate-900 mb-0.5">Sälj via auktion</p>
+            <p className="text-[13px] text-slate-500 leading-relaxed">
+              Vi skickar din bil till hundratals handlare och du väljer det bästa budet — utan att behöva göra något.
+            </p>
+          </div>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl p-5 flex items-start gap-4">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+            <TrendingUp className="w-5 h-5 text-emerald-600" />
+          </div>
+          <div>
+            <p className="text-[14px] font-semibold text-slate-900 mb-0.5">Köp med förhandlad deal</p>
+            <p className="text-[13px] text-slate-500 leading-relaxed">
+              Beskriv vad du letar efter — vi hittar och förhandlar fram bästa pris från verifierade handlare.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

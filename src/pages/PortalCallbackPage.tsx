@@ -11,7 +11,7 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
 export default function PortalCallbackPage({ onSuccess, onBack }: PortalCallbackPageProps) {
-  const [status, setStatus] = useState<'verifying' | 'error' | 'linking'>('verifying');
+  const [status, setStatus] = useState<'verifying' | 'linking' | 'error'>('verifying');
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function PortalCallbackPage({ onSuccess, onBack }: PortalCallback
 
     void (async () => {
       try {
-        // Verify our custom magic link token
+        // 1. Verify our custom magic link token (single-use, expires in 30 min)
         const resp = await fetch(`${SUPABASE_URL}/functions/v1/verify-magic-link`, {
           method: 'POST',
           headers: {
@@ -45,28 +45,26 @@ export default function PortalCallbackPage({ onSuccess, onBack }: PortalCallback
           return;
         }
 
-        // Exchange Supabase-generated action link for a real session
+        // 2. Exchange the Supabase action_link into a real session
         setStatus('linking');
         const actionLink: string = json.action_link;
-        const url = new URL(actionLink);
-        const sbToken = url.searchParams.get('token') ?? url.hash.match(/access_token=([^&]+)/)?.[1] ?? '';
-        const tokenHash = url.searchParams.get('token') ?? '';
+        const actionUrl = new URL(actionLink);
+        const tokenHash = actionUrl.searchParams.get('token') ?? '';
 
-        // Use verifyOtp to exchange the token into a session
         const { error: otpErr } = await supabase.auth.verifyOtp({
           token_hash: tokenHash,
           type: 'magiclink',
         });
 
         if (otpErr) {
-          // Fallback: try signInWithOtp token directly
           console.error('[portal-callback] verifyOtp error:', otpErr);
           setErrorMsg('Kunde inte logga in. Begär en ny länk.');
           setStatus('error');
           return;
         }
 
-        // Link customer account (matches customer row by email → sets user_id)
+        // 3. Link customer rows to this auth user — only if customer rows exist for this email.
+        //    link-customer-account returns has_cases=true only when rows were found.
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.access_token) {
           await fetch(`${SUPABASE_URL}/functions/v1/link-customer-account`, {
@@ -79,6 +77,7 @@ export default function PortalCallbackPage({ onSuccess, onBack }: PortalCallback
         }
 
         sessionStorage.setItem('bilto_portal', 'customer');
+        // Always go to dashboard — it handles the empty state with CTAs
         onSuccess();
       } catch (err) {
         console.error('[portal-callback]', err);
