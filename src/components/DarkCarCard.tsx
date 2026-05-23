@@ -157,12 +157,13 @@ export default function DarkCarCard({
   onNegotiate, onDetail, onCompare, isComparing, onFitQuiz, index = 0,
 }: DarkCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
-  const [cardExpanded, setCardExpanded] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
   const [panel, setPanel] = useState<null | 'calc' | 'fit'>(null);
 
-  const handleCardClick = () => {
-    setCardExpanded(v => !v);
-    if (cardExpanded) setPanel(null);
+  const toggleTools = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setToolsOpen(v => !v);
+    if (toolsOpen) setPanel(null);
   };
 
   const openPanel = (p: 'calc' | 'fit', e: React.MouseEvent) => {
@@ -176,55 +177,83 @@ export default function DarkCarCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.06, duration: 0.4 }}
-      className={`group relative bg-white rounded-2xl transition-shadow duration-300 cursor-pointer ring-1 ${
-        cardExpanded
-          ? 'ring-slate-200 shadow-[0_8px_32px_rgba(0,0,0,0.12)]'
-          : 'ring-slate-100 hover:ring-slate-200 shadow-[0_1px_4px_rgba(0,0,0,0.07)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.13)]'
-      }`}
+      className="group relative bg-white rounded-2xl transition-shadow duration-300 ring-1 ring-slate-100 hover:ring-slate-200 shadow-[0_1px_4px_rgba(0,0,0,0.07)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.13)]"
       style={{ touchAction: 'pan-y' }}
-      onClick={handleCardClick}
     >
-      {/* Image */}
-      <div className="relative aspect-[16/10] bg-white overflow-hidden rounded-t-2xl">
-        {imageUrl ? (
-          <img
-            src={imageUrl} alt={name} loading="lazy"
-            className="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center"><Car className="w-16 h-16 text-slate-200" /></div>
-        )}
-        <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
-        {topBadge && (
-          <div className="absolute top-3.5 left-3.5">
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-sm text-[11px] font-bold text-[#0e6efe] shadow-sm">
-              <Star className="w-3 h-3 fill-[#0e6efe] text-[#0e6efe]" />Toppval
-            </span>
-          </div>
-        )}
-        {rating != null && <ScoreBadge value={rating} />}
+      {/* Clickable card area */}
+      <div className="cursor-pointer" onClick={() => onDetail?.()}>
+        {/* Image */}
+        <div className="relative aspect-[16/10] bg-white overflow-hidden rounded-t-2xl">
+          {imageUrl ? (
+            <img
+              src={imageUrl} alt={name} loading="lazy"
+              className="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center"><Car className="w-16 h-16 text-slate-200" /></div>
+          )}
+          <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
+          {topBadge && (
+            <div className="absolute top-3.5 left-3.5">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-sm text-[11px] font-bold text-[#0e6efe] shadow-sm">
+                <Star className="w-3 h-3 fill-[#0e6efe] text-[#0e6efe]" />Toppval
+              </span>
+            </div>
+          )}
+          {rating != null && <ScoreBadge value={rating} />}
+        </div>
+
+        {/* Static content */}
+        <div className="px-4 pt-3 pb-3">
+          <h3 className="text-[16px] font-bold text-slate-900 leading-snug group-hover:text-[#0e6efe] transition-colors duration-200">{name}</h3>
+          {expertComment && (
+            <p className="mt-0.5 text-[12px] text-slate-400 leading-relaxed line-clamp-1">{expertComment}</p>
+          )}
+          {range && (
+            <div className="mt-2.5 flex items-baseline gap-1.5">
+              <span className="text-[18px] font-extrabold text-slate-900 tabular-nums leading-none">
+                {formatSEK(range.low)}–{formatSEK(range.high)}
+              </span>
+              <span className="text-[11px] font-semibold text-slate-400">kr/mån</span>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Static content */}
-      <div className="px-4 pt-3 pb-3">
-        <h3 className="text-[16px] font-bold text-slate-900 leading-snug group-hover:text-[#0e6efe] transition-colors duration-200">{name}</h3>
-        {expertComment && (
-          <p className="mt-0.5 text-[12px] text-slate-400 leading-relaxed line-clamp-1">{expertComment}</p>
-        )}
-        {range && (
-          <div className="mt-2.5 flex items-baseline gap-1.5">
-            <span className="text-[18px] font-extrabold text-slate-900 tabular-nums leading-none">
-              {formatSEK(range.low)}–{formatSEK(range.high)}
-            </span>
-            <span className="text-[11px] font-semibold text-slate-400">kr/mån</span>
-          </div>
+      {/* Action area */}
+      <div className="px-4 pb-4 space-y-1.5">
+        {/* Primary CTA */}
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
+          className="w-full flex items-center justify-center gap-2 h-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[13.5px] font-bold transition-all duration-200 shadow-sm shadow-[#0e6efe]/20"
+        >
+          Få hjälp att köpa <ChevronRight className="w-4 h-4 opacity-80" />
+        </button>
+
+        {/* Tools toggle */}
+        {(carPrice || onFitQuiz) && (
+          <button
+            type="button"
+            onClick={toggleTools}
+            className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${
+              toolsOpen
+                ? 'bg-slate-100 border-slate-200 text-slate-700'
+                : 'border-slate-200 bg-white text-slate-400 hover:text-slate-600 hover:border-slate-300'
+            }`}
+          >
+            {toolsOpen
+              ? <><ChevronUp className="w-3 h-3" />Stäng</>
+              : <><ChevronDown className="w-3 h-3" />Kalkyl &amp; passar bilen mig?</>
+            }
+          </button>
         )}
 
-        {/* Expanded section */}
+        {/* Expandable tools panel */}
         <AnimatePresence initial={false}>
-          {cardExpanded && (
+          {toolsOpen && (
             <motion.div
-              key="expanded"
+              key="tools"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
@@ -232,8 +261,7 @@ export default function DarkCarCard({
               style={{ overflow: 'hidden' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="pt-3 space-y-2">
-                {/* Two secondary CTAs */}
+              <div className="pt-1 space-y-1.5">
                 <div className="flex gap-2">
                   {carPrice && (
                     <button
@@ -246,7 +274,7 @@ export default function DarkCarCard({
                       }`}
                     >
                       <Calculator className="w-3.5 h-3.5" />
-                      Räkna månadskostnad
+                      Kalkyl
                     </button>
                   )}
                   {onFitQuiz && (
@@ -265,58 +293,27 @@ export default function DarkCarCard({
                   )}
                 </div>
 
-                {/* Panel content */}
                 <AnimatePresence initial={false}>
                   {panel === 'calc' && carPrice && (
-                    <motion.div
-                      key="calc"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.18, ease: 'easeInOut' }}
-                      style={{ overflow: 'hidden' }}
-                    >
+                    <motion.div key="calc" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.18, ease: 'easeInOut' }} style={{ overflow: 'hidden' }}>
                       <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
                     </motion.div>
                   )}
                   {panel === 'fit' && onFitQuiz && (
-                    <motion.div
-                      key="fit"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.18, ease: 'easeInOut' }}
-                      style={{ overflow: 'hidden' }}
-                    >
+                    <motion.div key="fit" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.18, ease: 'easeInOut' }} style={{ overflow: 'hidden' }}>
                       <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
                         <p className="text-[13px] font-semibold text-slate-800 mb-1">Passar {name} dig?</p>
-                        <p className="text-[12px] text-slate-500 leading-relaxed mb-3">
-                          Svara på några korta frågor — vi jämför bilen mot dina behov, familj, pendling och budget.
-                        </p>
-                        <button
-                          type="button"
-                          onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
-                          className="w-full flex items-center justify-center gap-2 h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[13px] font-bold transition-all duration-150 shadow-sm shadow-[#0e6efe]/20"
-                        >
-                          <Sparkles className="w-3.5 h-3.5" />
-                          Starta matchning
+                        <p className="text-[12px] text-slate-500 leading-relaxed mb-3">Svara på några korta frågor — vi jämför bilen mot dina behov, familj, pendling och budget.</p>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); onFitQuiz(); }} className="w-full flex items-center justify-center gap-2 h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[13px] font-bold transition-all duration-150 shadow-sm shadow-[#0e6efe]/20">
+                          <Sparkles className="w-3.5 h-3.5" />Starta matchning
                         </button>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                {/* Compare */}
                 {onCompare && (
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); onCompare(); }}
-                    className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${
-                      isComparing
-                        ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                        : 'border-slate-200 bg-white text-slate-400 hover:border-slate-300 hover:text-slate-600'
-                    }`}
-                  >
+                  <button type="button" onClick={(e) => { e.stopPropagation(); onCompare(); }} className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${isComparing ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'border-slate-200 bg-white text-slate-400 hover:border-slate-300 hover:text-slate-600'}`}>
                     {isComparing ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
                     {isComparing ? 'Tillagd i jämförelse' : 'Lägg till i jämförelse'}
                   </button>
@@ -325,27 +322,6 @@ export default function DarkCarCard({
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-
-      {/* Primary CTA */}
-      <div className="px-4 pb-4">
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-          className="w-full flex items-center justify-center gap-2 h-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[13.5px] font-bold transition-all duration-200 shadow-sm shadow-[#0e6efe]/20"
-        >
-          Få hjälp att köpa <ChevronRight className="w-4 h-4 opacity-80" />
-        </button>
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); setCardExpanded(v => !v); if (cardExpanded) setPanel(null); }}
-          className="w-full flex items-center justify-center gap-1 mt-1.5 h-6 text-[10px] text-slate-400 hover:text-slate-600 transition-colors"
-        >
-          {cardExpanded
-            ? <><ChevronUp className="w-3 h-3" />Stäng</>
-            : <><ChevronDown className="w-3 h-3" />Kalkyl & matchning</>
-          }
-        </button>
       </div>
     </motion.div>
   );

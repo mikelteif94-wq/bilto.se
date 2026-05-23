@@ -160,12 +160,13 @@ export default function ElCarCard({
   onNegotiate, onDetail, onCompare, onFitQuiz,
 }: ElCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
-  const [cardExpanded, setCardExpanded] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
   const [panel, setPanel] = useState<null | 'calc' | 'fit'>(null);
 
-  const handleCardClick = () => {
-    setCardExpanded(v => !v);
-    if (cardExpanded) setPanel(null);
+  const toggleTools = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setToolsOpen(v => !v);
+    if (toolsOpen) setPanel(null);
   };
 
   const openPanel = (p: 'calc' | 'fit', e: React.MouseEvent) => {
@@ -175,12 +176,9 @@ export default function ElCarCard({
 
   return (
     <div
-      onClick={handleCardClick}
-      className={`group relative flex flex-col rounded-2xl cursor-pointer transition-all duration-300 ${
+      className={`group relative flex flex-col rounded-2xl transition-all duration-300 ${
         isCompared
           ? 'ring-2 ring-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,0.15)]'
-          : cardExpanded
-          ? 'ring-1 ring-white/20 shadow-[0_12px_40px_rgba(0,0,0,0.5)]'
           : 'ring-1 ring-white/10 hover:ring-white/20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]'
       }`}
       style={{ background: 'linear-gradient(155deg, #0f172a 0%, #0c1a2e 55%, #051020 100%)', touchAction: 'pan-y' }}
@@ -190,71 +188,104 @@ export default function ElCarCard({
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-3/4 h-1/2 rounded-full bg-[#0e6efe]/10 blur-3xl" />
       </div>
 
-      {/* Image */}
-      <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] overflow-hidden rounded-t-2xl bg-[#080f1c]">
-        {imageUrl ? (
-          <img
-            src={imageUrl} alt={name} loading="lazy"
-            className="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center"><Car className="w-12 h-12 text-slate-600" /></div>
-        )}
-        <div className="absolute top-2.5 left-2.5">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#38bdf8]/20 backdrop-blur-sm border border-[#38bdf8]/40 text-[10px] font-extrabold text-[#7dd3fc] shadow-sm uppercase tracking-wide">
-            <Zap className="w-2.5 h-2.5 fill-[#7dd3fc]" />Elbil
-          </span>
-        </div>
-        {topBadge && !isCompared && (
-          <div className="absolute top-2.5 right-2.5">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-[10px] font-extrabold text-amber-300 backdrop-blur-sm">★ Toppval</span>
+      {/* Clickable card area */}
+      <div className="cursor-pointer" onClick={() => onDetail?.()}>
+        {/* Image */}
+        <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] overflow-hidden rounded-t-2xl bg-[#080f1c]">
+          {imageUrl ? (
+            <img
+              src={imageUrl} alt={name} loading="lazy"
+              className="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center"><Car className="w-12 h-12 text-slate-600" /></div>
+          )}
+          <div className="absolute top-2.5 left-2.5">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#38bdf8]/20 backdrop-blur-sm border border-[#38bdf8]/40 text-[10px] font-extrabold text-[#7dd3fc] shadow-sm uppercase tracking-wide">
+              <Zap className="w-2.5 h-2.5 fill-[#7dd3fc]" />Elbil
+            </span>
           </div>
-        )}
-        {isCompared && (
-          <div className="absolute top-2.5 right-2.5">
-            <div className="w-6 h-6 rounded-full bg-emerald-400 flex items-center justify-center shadow-md">
-              <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
+          {topBadge && !isCompared && (
+            <div className="absolute top-2.5 right-2.5">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-[10px] font-extrabold text-amber-300 backdrop-blur-sm">★ Toppval</span>
+            </div>
+          )}
+          {isCompared && (
+            <div className="absolute top-2.5 right-2.5">
+              <div className="w-6 h-6 rounded-full bg-emerald-400 flex items-center justify-center shadow-md">
+                <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
+              </div>
+            </div>
+          )}
+          <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#0f172a] to-transparent" />
+        </div>
+
+        {/* Static content */}
+        <div className="px-3.5 pt-3 pb-1">
+          <div className="flex items-start gap-2 mb-2">
+            {rating != null && <RatingRing rating={rating} />}
+            <div className="flex-1 min-w-0">
+              <h3 className="text-[13px] sm:text-[14px] font-extrabold text-white leading-tight truncate group-hover:text-[#7dd3fc] transition-colors duration-200">{name}</h3>
+              {expertComment && (
+                <p className="hidden sm:block mt-0.5 text-[11px] text-slate-400 leading-snug line-clamp-1">{expertComment}</p>
+              )}
             </div>
           </div>
-        )}
-        <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#0f172a] to-transparent" />
+
+          {range && (
+            <div className="mb-2 flex items-baseline gap-1">
+              <span className="text-[14px] font-extrabold text-[#38bdf8] tabular-nums whitespace-nowrap">
+                {formatSEK(range.low)}–{formatSEK(range.high)}
+              </span>
+              <span className="text-[10px] text-[#38bdf8]/60 font-semibold">kr/mån</span>
+            </div>
+          )}
+
+          {rangeKm != null && (
+            <div className="mb-2 flex items-center gap-1.5">
+              <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
+                <div className="h-full rounded-full bg-gradient-to-r from-[#38bdf8] to-[#34d399]" style={{ width: `${Math.min(100, (rangeKm / 700) * 100)}%` }} />
+              </div>
+              <span className="text-[10px] font-bold text-[#38bdf8] tabular-nums shrink-0">{rangeKm} km</span>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Static content */}
-      <div className="px-3.5 pt-3 pb-1 flex-1 flex flex-col">
-        <div className="flex items-start gap-2 mb-2">
-          {rating != null && <RatingRing rating={rating} />}
-          <div className="flex-1 min-w-0">
-            <h3 className="text-[13px] sm:text-[14px] font-extrabold text-white leading-tight truncate group-hover:text-[#7dd3fc] transition-colors duration-200">{name}</h3>
-            {expertComment && (
-              <p className="hidden sm:block mt-0.5 text-[11px] text-slate-400 leading-snug line-clamp-1">{expertComment}</p>
-            )}
-          </div>
-        </div>
+      {/* Action area */}
+      <div className="px-3.5 pb-3.5 pt-1 space-y-1.5">
+        {/* Primary CTA */}
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
+          className="w-full h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1 shadow-lg shadow-[#0e6efe]/30"
+        >
+          Få hjälp att köpa<ChevronRight className="w-3 h-3 opacity-80" />
+        </button>
 
-        {range && (
-          <div className="mb-2 flex items-baseline gap-1">
-            <span className="text-[14px] font-extrabold text-[#38bdf8] tabular-nums whitespace-nowrap">
-              {formatSEK(range.low)}–{formatSEK(range.high)}
-            </span>
-            <span className="text-[10px] text-[#38bdf8]/60 font-semibold">kr/mån</span>
-          </div>
+        {/* Tools toggle */}
+        {(carPrice || onFitQuiz) && (
+          <button
+            type="button"
+            onClick={toggleTools}
+            className={`w-full flex items-center justify-center gap-1 h-7 rounded-xl border text-[10px] font-medium transition-all duration-150 active:scale-[0.98] ${
+              toolsOpen
+                ? 'bg-white/10 border-white/20 text-slate-300'
+                : 'border-white/10 bg-white/5 text-slate-500 hover:text-slate-300 hover:border-white/20'
+            }`}
+          >
+            {toolsOpen
+              ? <><ChevronUp className="w-3 h-3" />Stäng</>
+              : <><ChevronDown className="w-3 h-3" />Kalkyl &amp; passar bilen mig?</>
+            }
+          </button>
         )}
 
-        {rangeKm != null && (
-          <div className="mb-2 flex items-center gap-1.5">
-            <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-[#38bdf8] to-[#34d399]" style={{ width: `${Math.min(100, (rangeKm / 700) * 100)}%` }} />
-            </div>
-            <span className="text-[10px] font-bold text-[#38bdf8] tabular-nums shrink-0">{rangeKm} km</span>
-          </div>
-        )}
-
-        {/* Expanded section */}
+        {/* Expandable tools panel */}
         <AnimatePresence initial={false}>
-          {cardExpanded && (
+          {toolsOpen && (
             <motion.div
-              key="expanded"
+              key="tools"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
@@ -262,91 +293,41 @@ export default function ElCarCard({
               style={{ overflow: 'hidden' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="pt-2 pb-1 space-y-2">
-                {/* Two secondary CTAs */}
+              <div className="pt-1 space-y-1.5">
                 <div className="flex gap-2">
                   {carPrice && (
-                    <button
-                      type="button"
-                      onClick={(e) => openPanel('calc', e)}
-                      className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl border text-[11px] font-semibold transition-all duration-150 active:scale-[0.98] ${
-                        panel === 'calc'
-                          ? 'bg-[#38bdf8] border-[#38bdf8] text-[#0f172a]'
-                          : 'border-white/15 bg-white/5 text-slate-300 hover:border-[#38bdf8]/50 hover:text-[#7dd3fc]'
-                      }`}
-                    >
-                      <Calculator className="w-3.5 h-3.5" />
-                      Räkna månadskostnad
+                    <button type="button" onClick={(e) => openPanel('calc', e)} className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl border text-[11px] font-semibold transition-all duration-150 active:scale-[0.98] ${panel === 'calc' ? 'bg-[#38bdf8] border-[#38bdf8] text-[#0f172a]' : 'border-white/15 bg-white/5 text-slate-300 hover:border-[#38bdf8]/50 hover:text-[#7dd3fc]'}`}>
+                      <Calculator className="w-3.5 h-3.5" />Kalkyl
                     </button>
                   )}
                   {onFitQuiz && (
-                    <button
-                      type="button"
-                      onClick={(e) => openPanel('fit', e)}
-                      className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl border text-[11px] font-semibold transition-all duration-150 active:scale-[0.98] ${
-                        panel === 'fit'
-                          ? 'bg-[#38bdf8] border-[#38bdf8] text-[#0f172a]'
-                          : 'border-white/15 bg-white/5 text-slate-300 hover:border-[#38bdf8]/50 hover:text-[#7dd3fc]'
-                      }`}
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      Passar bilen mig?
+                    <button type="button" onClick={(e) => openPanel('fit', e)} className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl border text-[11px] font-semibold transition-all duration-150 active:scale-[0.98] ${panel === 'fit' ? 'bg-[#38bdf8] border-[#38bdf8] text-[#0f172a]' : 'border-white/15 bg-white/5 text-slate-300 hover:border-[#38bdf8]/50 hover:text-[#7dd3fc]'}`}>
+                      <Sparkles className="w-3.5 h-3.5" />Passar bilen mig?
                     </button>
                   )}
                 </div>
 
-                {/* Panel content */}
                 <AnimatePresence initial={false}>
                   {panel === 'calc' && carPrice && (
-                    <motion.div
-                      key="calc"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.18, ease: 'easeInOut' }}
-                      style={{ overflow: 'hidden' }}
-                    >
+                    <motion.div key="calc" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.18, ease: 'easeInOut' }} style={{ overflow: 'hidden' }}>
                       <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
                     </motion.div>
                   )}
                   {panel === 'fit' && onFitQuiz && (
-                    <motion.div
-                      key="fit"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.18, ease: 'easeInOut' }}
-                      style={{ overflow: 'hidden' }}
-                    >
+                    <motion.div key="fit" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.18, ease: 'easeInOut' }} style={{ overflow: 'hidden' }}>
                       <div className="rounded-xl border border-white/10 bg-white/5 p-3.5">
                         <p className="text-[12.5px] font-semibold text-white mb-1">Passar {name} dig?</p>
-                        <p className="text-[11.5px] text-slate-400 leading-relaxed mb-3">
-                          Svara på några korta frågor — vi jämför bilen mot dina behov, familj, pendling och budget.
-                        </p>
-                        <button
-                          type="button"
-                          onClick={(e) => { e.stopPropagation(); onFitQuiz(); }}
-                          className="w-full flex items-center justify-center gap-2 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[12.5px] font-bold transition-all duration-150 shadow-lg shadow-[#0e6efe]/30"
-                        >
-                          <Sparkles className="w-3.5 h-3.5" />
-                          Starta matchning
+                        <p className="text-[11.5px] text-slate-400 leading-relaxed mb-3">Svara på några korta frågor — vi jämför bilen mot dina behov, familj, pendling och budget.</p>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); onFitQuiz(); }} className="w-full flex items-center justify-center gap-2 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[12.5px] font-bold transition-all duration-150 shadow-lg shadow-[#0e6efe]/30">
+                          <Sparkles className="w-3.5 h-3.5" />Starta matchning
                         </button>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                {/* Compare */}
                 {onCompare && (
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); onCompare(); }}
-                    className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${
-                      isCompared
-                        ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-400'
-                        : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-300'
-                    }`}
-                  >
+                  <button type="button" onClick={(e) => { e.stopPropagation(); onCompare(); }} className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${isCompared ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-400' : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-300'}`}>
                     {isCompared ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
                     {isCompared ? 'Tillagd i jämförelse' : 'Lägg till i jämförelse'}
                   </button>
@@ -355,27 +336,6 @@ export default function ElCarCard({
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-
-      {/* Primary CTA */}
-      <div className="px-3.5 pb-3.5 pt-1">
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
-          className="w-full h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1 shadow-lg shadow-[#0e6efe]/30"
-        >
-          Få hjälp att köpa<ChevronRight className="w-3 h-3 opacity-80" />
-        </button>
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); setCardExpanded(v => !v); if (cardExpanded) setPanel(null); }}
-          className="w-full flex items-center justify-center gap-1 mt-1.5 h-6 text-[10px] text-slate-500 hover:text-slate-300 transition-colors"
-        >
-          {cardExpanded
-            ? <><ChevronUp className="w-3 h-3" />Stäng</>
-            : <><ChevronDown className="w-3 h-3" />Kalkyl & matchning</>
-          }
-        </button>
       </div>
     </div>
   );

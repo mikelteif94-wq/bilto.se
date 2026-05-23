@@ -663,18 +663,18 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   };
 
   const fuelTypeSelector = hideFuel ? null : (
-    <div className="py-6 sm:py-7">
-      <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Drivmedel</label>
+    <div className="py-7">
+      <label className="block text-[15px] font-bold text-slate-900 mb-3">Drivmedel</label>
       <div className="flex flex-wrap gap-2">
         {FUEL_TYPES.map(f => (
           <button
             key={f.value}
             type="button"
             onClick={() => set('fuelType', d.fuelType === f.value ? '' : f.value)}
-            className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+            className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all active:scale-[0.97] ${
               d.fuelType === f.value
-                ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
-                : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
             {f.label}
@@ -685,21 +685,21 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   );
 
   const paymentSection = (
-    <div className="py-6 sm:py-7">
-      <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+    <div className="py-7">
+      <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
         Hur vill du betala?
       </label>
-      <p className="text-sm text-slate-500 mb-4">Välj betalningssätt — det hjälper oss hitta rätt upplägg.</p>
+      <p className="text-[13px] text-slate-500 mb-3 leading-snug">Välj betalningssätt — hjälper oss hitta rätt upplägg.</p>
       <div className="flex flex-wrap gap-2">
         {PAYMENT_TYPES.map(p => (
           <button
             key={p.value}
             type="button"
             onClick={() => set('paymentType', p.value)}
-            className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+            className={`px-5 h-10 rounded-full text-[14px] font-semibold transition-all active:scale-[0.97] ${
               d.paymentType === p.value
-                ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
-                : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
+                : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
             }`}
           >
             {p.label}
@@ -871,55 +871,57 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       {track === 'searching' && !lockedCar && (
         <>
           {(onExplore || onQuiz) && (
-            <div className="mb-6">
-              <p className="text-[12.5px] font-semibold uppercase tracking-wider text-slate-400 mb-3">Inte redo att fylla i? Du kan också:</p>
-              <div className="flex flex-col gap-2.5">
+            <div className="mb-8">
+              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 mb-3">Inte redo att fylla i? Du kan också:</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {onExplore && (
                   <button
                     type="button"
                     onClick={onExplore}
-                    className="group flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-white border border-slate-200 hover:border-[#0e6efe]/40 hover:shadow-md hover:shadow-[#0e6efe]/8 transition-all duration-200 text-left"
+                    className="group relative flex items-center gap-3.5 p-4 rounded-2xl bg-white border border-slate-200 hover:border-[#0e6efe]/50 hover:shadow-lg hover:shadow-[#0e6efe]/8 active:scale-[0.98] transition-all duration-200 text-left overflow-hidden"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors duration-200">
-                      <Search className="w-4.5 h-4.5 text-[#0e6efe]" strokeWidth={2} />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#0e6efe]/0 to-[#0e6efe]/0 group-hover:from-[#0e6efe]/[0.03] group-hover:to-[#0e6efe]/[0.06] transition-all duration-300 rounded-2xl" />
+                    <div className="w-11 h-11 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/18 flex items-center justify-center shrink-0 transition-colors duration-200 relative">
+                      <Search className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[14px] font-semibold text-slate-900 leading-tight">Utforska och jämför bilar</p>
-                      <p className="text-[12px] text-slate-400 mt-0.5">Se specifikationer och priser sida vid sida</p>
+                    <div className="min-w-0 flex-1 relative">
+                      <p className="text-[14px] font-bold text-slate-900 leading-tight">Utforska och jämför bilar</p>
+                      <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">Se spec och priser sida vid sida</p>
                     </div>
-                    <ChevronDown className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] -rotate-90 shrink-0 transition-colors duration-200" />
+                    <ChevronDown className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] -rotate-90 shrink-0 transition-colors duration-200 relative" />
                   </button>
                 )}
                 {onQuiz && (
                   <button
                     type="button"
                     onClick={onQuiz}
-                    className="group flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-white border border-slate-200 hover:border-[#0e6efe]/40 hover:shadow-md hover:shadow-[#0e6efe]/8 transition-all duration-200 text-left"
+                    className="group relative flex items-center gap-3.5 p-4 rounded-2xl bg-white border border-slate-200 hover:border-amber-300/60 hover:shadow-lg hover:shadow-amber-500/8 active:scale-[0.98] transition-all duration-200 text-left overflow-hidden"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-amber-50 group-hover:bg-amber-100 flex items-center justify-center shrink-0 transition-colors duration-200">
-                      <Sparkles className="w-4.5 h-4.5 text-amber-500" strokeWidth={2} />
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-50/0 to-amber-50/0 group-hover:from-amber-50 group-hover:to-amber-50/60 transition-all duration-300 rounded-2xl" />
+                    <div className="w-11 h-11 rounded-xl bg-amber-50 group-hover:bg-amber-100 flex items-center justify-center shrink-0 transition-colors duration-200 relative">
+                      <Sparkles className="w-5 h-5 text-amber-500" strokeWidth={2} />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[14px] font-semibold text-slate-900 leading-tight">Testa bilmatch</p>
-                      <p className="text-[12px] text-slate-400 mt-0.5">Hitta rätt modell på 2 minuter</p>
+                    <div className="min-w-0 flex-1 relative">
+                      <p className="text-[14px] font-bold text-slate-900 leading-tight">Testa bilmatch</p>
+                      <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">Hitta rätt modell på 2 minuter</p>
                     </div>
-                    <ChevronDown className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] -rotate-90 shrink-0 transition-colors duration-200" />
+                    <ChevronDown className="w-4 h-4 text-slate-300 group-hover:text-amber-400 -rotate-90 shrink-0 transition-colors duration-200 relative" />
                   </button>
                 )}
               </div>
-              <div className="mt-5 flex items-center gap-3">
-                <div className="flex-1 h-px bg-slate-200" />
-                <span className="text-[11.5px] text-slate-400 font-medium">eller fortsätt nedan</span>
-                <div className="flex-1 h-px bg-slate-200" />
+              <div className="mt-6 flex items-center gap-3">
+                <div className="flex-1 h-px bg-slate-100" />
+                <span className="text-[11.5px] text-slate-400 font-medium px-1">eller fortsätt nedan</span>
+                <div className="flex-1 h-px bg-slate-100" />
               </div>
             </div>
           )}
 
-          <div className="pb-6 sm:pb-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          <div className="pb-7">
+            <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
               Vilket märke och modell?
             </label>
-            <p className="text-sm text-slate-500 mb-3">
+            <p className="text-[13px] text-slate-500 mb-3 leading-snug">
               Välj märke och modell, eller använd bilmatch om du är osäker.
             </p>
             <BrandModelSelector
@@ -935,7 +937,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 className={`inline-flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-medium transition-all border ${
                   d.carBrand === 'Vet ej'
                     ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-white text-slate-600 border-slate-300 hover:border-slate-400'
+                    : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
                 }`}
               >
                 Vet ej
@@ -944,7 +946,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 <button
                   type="button"
                   onClick={onQuiz}
-                  className="inline-flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-medium bg-[#0e6efe]/10 text-[#0e6efe] hover:bg-[#0e6efe]/20 transition-all"
+                  className="inline-flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-semibold bg-[#0e6efe]/10 text-[#0e6efe] hover:bg-[#0e6efe]/18 transition-all"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   Hitta med bilmatch
@@ -953,9 +955,9 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             </div>
           </div>
 
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">Max miltal</label>
-            <p className="text-sm text-slate-500 mb-3">Hur många mil får bilen max ha gått?</p>
+          <div className="py-7">
+            <label className="block text-[15px] font-bold text-slate-900 mb-0.5">Max miltal</label>
+            <p className="text-[13px] text-slate-500 mb-3 leading-snug">Hur många mil får bilen max ha gått?</p>
             <div className="w-full sm:max-w-xs relative">
               <input
                 type="text"
@@ -1119,21 +1121,21 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       )}
 
       {/* ── Var i processen ── */}
-      <div className="py-6 sm:py-7">
-        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+      <div className="py-7">
+        <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
           Var i processen är du?
         </label>
-        <p className="text-sm text-slate-500 mb-4">Välj det alternativ som bäst beskriver dig.</p>
-        <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
+        <p className="text-[13px] text-slate-500 mb-3 leading-snug">Välj det alternativ som bäst beskriver dig.</p>
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2">
           {BUYING_STAGES.map(s => (
             <button
               key={s.value}
               type="button"
               onClick={() => set('buyingStage', s.value)}
-              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all text-left sm:text-center ${
+              className={`w-full sm:w-auto px-5 h-10 rounded-full text-[14px] font-medium transition-all active:scale-[0.97] text-left sm:text-center ${
                 d.buyingStage === s.value
-                  ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
-                  : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                  ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
+                  : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
               }`}
             >
               {s.label}
@@ -1144,12 +1146,13 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       </div>
 
       {/* ── Övriga önskemål ── */}
-      <div className="py-6 sm:py-7">
-        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+      <div className="py-7">
+        <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
           Övriga önskemål
+          <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
         </label>
-        <p className="text-sm text-slate-500 mb-3">
-          Frivilligt — berätta t.ex. om tillval, färg, garanti eller annat som är viktigt.
+        <p className="text-[13px] text-slate-500 mb-3 leading-snug">
+          T.ex. färg, tillval, garanti eller annat som är viktigt.
         </p>
         <textarea
           value={d.additionalRequests}
@@ -1157,14 +1160,14 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           placeholder="Tillval, färg, garanti..."
           rows={3}
           maxLength={1000}
-          className="form-control"
+          className="form-control resize-none"
         />
       </div>
 
-      <div className="pt-6 sm:pt-7 flex justify-end">
+      <div className="pt-2 pb-2">
         <button
           type="submit"
-          className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-full transition shadow-sm"
+          className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] active:bg-[#0950c0] text-white font-bold text-[15px] rounded-2xl transition-all duration-150 shadow-sm shadow-[#0e6efe]/20 active:scale-[0.99]"
         >
           Nästa
         </button>
