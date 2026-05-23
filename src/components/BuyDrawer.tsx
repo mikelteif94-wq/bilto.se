@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X, ChevronLeft, Check, Phone, Search, ArrowLeftRight, CheckCircle } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ErrorBanner from './ErrorBanner';
@@ -34,6 +34,8 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [portalToken, setPortalToken] = useState<string | null>(null);
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
+  const sessionIdRef = useRef<string>(crypto.randomUUID());
 
   const [details, setDetails] = useState<BuyDetailsData>({
     linkOrSeller: '',
@@ -76,14 +78,30 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
   const [guidanceDone, setGuidanceDone] = useState(false);
   const [guidanceError, setGuidanceError] = useState<string | null>(null);
 
+  const trackEvent = (
+    event: 'drawer_opened' | 'form_submitted' | 'portal_clicked',
+    extra: { track?: string; quote_request_id?: string } = {},
+  ) => {
+    void supabase.from('conversion_events').insert({
+      event,
+      session_id: sessionIdRef.current,
+      track: extra.track ?? track,
+      car: car ?? '',
+      quote_request_id: extra.quote_request_id ?? null,
+      source: window.location.pathname,
+    });
+  };
+
   // Reset form each time drawer opens
   useEffect(() => {
     if (car !== null) {
+      sessionIdRef.current = crypto.randomUUID();
       const resolvedTrack = initialTrack || 'found';
       const searchingPrefill = (resolvedTrack === 'searching' || skipIntent) && !!car;
       setTrack(resolvedTrack);
       setStep(skipIntent ? 'details' : searchingPrefill ? 'details' : car ? 'carIntent' : initialTrack ? 'details' : 'track');
       setError(null);
+      trackEvent('drawer_opened', { track: resolvedTrack });
       setDetails({
         linkOrSeller: '',
         carModel: searchingPrefill ? '' : car,
@@ -214,6 +232,8 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
       const token = row?.access_token ?? null;
       const qrId = row?.id ?? null;
       setPortalToken(token);
+      setMagicLinkSent(false);
+      trackEvent('form_submitted', { quote_request_id: qrId ?? undefined });
 
       const fnHeaders = {
         Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
@@ -225,9 +245,21 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
         await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-quote-request`, {
           method: 'POST',
           headers: fnHeaders,
-          body: JSON.stringify({ email: contactData.mejl, phone: contactData.telefon }),
+          body: JSON.stringify({ quote_request_id: qrId }),
         });
       } catch { /* best effort */ }
+
+      // Send magic link so customer can access portal directly from email
+      if (contactData.mejl) {
+        try {
+          const mlResp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-magic-link`, {
+            method: 'POST',
+            headers: fnHeaders,
+            body: JSON.stringify({ email: contactData.mejl.trim().toLowerCase() }),
+          });
+          if (mlResp.ok) setMagicLinkSent(true);
+        } catch { /* best effort */ }
+      }
 
       if (qrId) {
         const leadType = track === 'trade' ? 'trade' : 'buy';
@@ -515,25 +547,55 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
               )}
 
               {step === 'done' && (
-                <div className="text-center pt-8 pb-6">
-                  <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-5">
+                <div className="text-center pt-6 pb-6">
+                  {/* Success icon */}
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
                     <Check className="w-8 h-8 text-emerald-600" />
                   </div>
-                  <h2 className="text-[22px] sm:text-[26px] font-bold text-slate-900 mb-3">
+                  <h2 className="text-[22px] sm:text-[26px] font-bold text-slate-900 mb-2">
                     Tack, {contact.namn.split(' ')[0]}!
                   </h2>
-                  <p className="text-[15px] text-slate-600 leading-relaxed max-w-sm mx-auto mb-6">
-                    Din förfrågan är skickad. En av våra bilexperter hör av sig och tar det därifrån — du behöver inte göra ett dugg mer.
+                  <p className="text-[14.5px] text-slate-500 leading-relaxed max-w-sm mx-auto mb-6">
+                    Förfrågan är skickad. Vi hör av oss{contact.preferredTime === 'morning' ? ' på förmiddagen' : contact.preferredTime === 'afternoon' ? ' på eftermiddagen' : ' inom en arbetsdag'}.
                   </p>
 
-                  <div className="max-w-sm mx-auto bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 flex items-start gap-2.5 text-left">
-                    <span className="text-amber-500 text-[16px] shrink-0 mt-px">✉</span>
-                    <p className="text-[13px] text-amber-800 leading-relaxed">
-                      Vi har skickat en bekräftelse till din mejl. Hamnar den inte i inkorgen? Kolla skräpposten — den kan ha hamnat där.
+                  {/* PRIMARY CTA — portal access */}
+                  {portalToken ? (
+                    <a
+                      href={`/min-forfragan/${portalToken}`}
+                      onClick={() => trackEvent('portal_clicked')}
+                      className="flex items-center justify-center gap-2.5 w-full max-w-sm h-14 bg-[#0e6efe] hover:bg-[#0b5cd8] active:bg-[#0950c0] text-white font-bold text-[16px] rounded-2xl transition shadow-lg shadow-[#0e6efe]/25 mb-3 mx-auto"
+                    >
+                      <CheckCircle className="w-5 h-5 shrink-0" />
+                      Följ mitt ärende
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="flex items-center justify-center gap-2.5 w-full max-w-sm h-14 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] rounded-2xl transition shadow-lg shadow-[#0e6efe]/25 mb-3 mx-auto"
+                    >
+                      <CheckCircle className="w-5 h-5 shrink-0" />
+                      Tillbaka till startsidan
+                    </button>
+                  )}
+
+                  {/* Magic link info */}
+                  <div className="max-w-sm mx-auto bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-5 flex items-start gap-2.5 text-left">
+                    <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-emerald-600" strokeWidth={3} />
+                    </div>
+                    <p className="text-[13px] text-slate-600 leading-relaxed">
+                      {magicLinkSent
+                        ? <>Vi har skickat en inloggningslänk till <strong className="text-slate-900">{contact.mejl}</strong> — klicka på den för att öppna din portal direkt.</>
+                        : <>Vi har skickat en bekräftelse till <strong className="text-slate-900">{contact.mejl}</strong>.</>
+                      }
+                      {' '}Kolla skräpposten om den inte dyker upp.
                     </p>
                   </div>
 
-                  <div className="max-w-sm mx-auto space-y-3 text-left mb-8">
+                  {/* Next steps */}
+                  <div className="max-w-sm mx-auto space-y-2.5 text-left mb-6">
                     {[
                       { label: 'Förfrågan mottagen', sub: 'Vi har all information vi behöver.', done: true },
                       { label: 'Vi hör av oss', sub: contact.preferredTime === 'morning' ? 'Förmiddag' : contact.preferredTime === 'afternoon' ? 'Eftermiddag' : 'Inom en arbetsdag', done: false },
@@ -554,29 +616,23 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     ))}
                   </div>
 
-                  {portalToken && (
-                    <a
-                      href={`/min-forfragan/${portalToken}`}
-                      className="flex items-center justify-center gap-2 w-full max-w-sm h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold rounded-full transition mb-3 shadow-sm"
+                  <div className="flex items-center justify-center gap-4 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="text-[13.5px] text-slate-500 hover:text-slate-700 transition"
                     >
-                      <CheckCircle className="w-4 h-4" />
-                      Gå till min portal
+                      Fortsätt bläddra
+                    </button>
+                    <span className="text-slate-300 text-[13px]">·</span>
+                    <a
+                      href="tel:+46855550200"
+                      className="inline-flex items-center gap-1.5 text-[13.5px] text-slate-500 hover:text-slate-700 transition"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      08-5555 0200
                     </a>
-                  )}
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="w-full max-w-sm h-12 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-full transition mb-3"
-                  >
-                    Fortsätt bläddra
-                  </button>
-                  <a
-                    href="tel:+46855550200"
-                    className="inline-flex items-center gap-2 text-[14px] text-slate-500 hover:text-slate-700 transition"
-                  >
-                    <Phone className="w-4 h-4" />
-                    Ring oss: 08-5555 0200
-                  </a>
+                  </div>
                 </div>
               )}
             </div>

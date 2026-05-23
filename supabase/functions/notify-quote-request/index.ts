@@ -151,9 +151,32 @@ Deno.serve(async (req: Request) => {
     const html = renderInternalHtml(row, optionLabel, isPhoneQuiz);
     const text = renderInternalText(row, optionLabel, isPhoneQuiz);
 
-    const portalUrl = row.access_token ? `${SITE}/min-forfragan/${row.access_token}` : '';
-    const customerHtml = renderCustomerHtml(row, optionLabel, portalUrl);
-    const customerText = renderCustomerText(row, optionLabel, portalUrl);
+    const origin = Deno.env.get("SITE_URL") ?? SITE;
+    const portalUrl = row.access_token ? `${origin}/min-forfragan/${row.access_token}` : '';
+
+    // Generate a magic link for the customer email so they can open portal directly
+    let magicLoginUrl = '';
+    if (validEmail) {
+      try {
+        const rawBytes = new Uint8Array(48);
+        crypto.getRandomValues(rawBytes);
+        const mlToken = btoa(String.fromCharCode(...rawBytes))
+          .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+        const mlHash = await sha256(mlToken);
+        const mlExpiry = new Date(Date.now() + 30 * 60_000).toISOString();
+        const { error: mlErr } = await supabase.from("customer_magic_links").insert({
+          email: validEmail.toLowerCase(),
+          token_hash: mlHash,
+          expires_at: mlExpiry,
+        });
+        if (!mlErr) {
+          magicLoginUrl = `${origin}/portal?token=${encodeURIComponent(mlToken)}&email=${encodeURIComponent(validEmail.toLowerCase())}`;
+        }
+      } catch { /* best effort */ }
+    }
+
+    const customerHtml = renderCustomerHtml(row, optionLabel, portalUrl, magicLoginUrl);
+    const customerText = renderCustomerText(row, optionLabel, portalUrl, magicLoginUrl);
     const customerSubject = "Tack för din förfrågan — vi hör av oss snart";
 
     const results: { channel: string; ok: boolean; detaljer: string }[] = [];
@@ -422,7 +445,7 @@ function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
-function renderCustomerHtml(row: QuoteRequestRow, optionLabel: string, portalUrl: string): string {
+function renderCustomerHtml(row: QuoteRequestRow, optionLabel: string, portalUrl: string, magicLoginUrl: string): string {
   const firstName = capitalize(row.firstname || "");
   const timeText = row.preferred_time
     ? `En av våra bilexperter ringer dig ${preferredTimePhrase(row.preferred_time)}.`
@@ -431,12 +454,18 @@ function renderCustomerHtml(row: QuoteRequestRow, optionLabel: string, portalUrl
     ? `Toppen! Din expert håller på och letar en <strong>${escapeHtml(row.car_model)}</strong> åt dig.`
     : `Toppen att du vill ha hjälp med: <strong>${escapeHtml(optionLabel.toLowerCase())}</strong>.`;
 
-  const portalBlock = portalUrl ? `
+  // Use magic link if available, otherwise fall back to static portal token URL
+  const ctaUrl = magicLoginUrl || portalUrl;
+  const portalBlock = ctaUrl ? `
     <div style="margin-top:28px;background:#f0f7ff;border:1px solid #bfdbfe;border-radius:12px;overflow:hidden;">
-      <div style="padding:20px 24px;">
+      <div style="padding:24px 28px;text-align:center;">
         <p style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#1e40af;">Din personliga portal</p>
-        <p style="margin:0 0 14px;font-size:14px;color:#475569;line-height:1.6;">Följ din förfrågan, se bilförslag och erbjudanden vi skickar till dig — allt på ett ställe.</p>
-        <a href="${escapeAttr(portalUrl)}" style="display:inline-block;background:#0e6efe;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:13px 28px;border-radius:8px;letter-spacing:0.02em;">Gå till min portal &rarr;</a>
+        <p style="margin:0 0 20px;font-size:14px;color:#475569;line-height:1.6;">Följ din förfrågan, se bilförslag och erbjudanden vi skickar till dig — allt på ett ställe.</p>
+        <a href="${escapeAttr(ctaUrl)}"
+           style="display:inline-block;background:#0e6efe;color:#ffffff;font-size:16px;font-weight:800;text-decoration:none;padding:16px 36px;border-radius:50px;letter-spacing:0.02em;box-shadow:0 4px 14px rgba(14,110,254,0.35);">
+          Följ mitt ärende &rarr;
+        </a>
+        ${magicLoginUrl ? `<p style="margin:14px 0 0;font-size:12px;color:#94a3b8;">Länken loggar in dig direkt och gäller i 30 minuter.</p>` : ''}
       </div>
     </div>` : '';
 
@@ -458,25 +487,32 @@ function renderCustomerHtml(row: QuoteRequestRow, optionLabel: string, portalUrl
   });
 }
 
-function renderCustomerText(row: QuoteRequestRow, optionLabel: string, portalUrl: string): string {
+function renderCustomerText(row: QuoteRequestRow, optionLabel: string, portalUrl: string, magicLoginUrl: string): string {
   const firstName = capitalize(row.firstname || "");
   const timeText = row.preferred_time
     ? `En av våra bilexperter ringer dig ${preferredTimePhrase(row.preferred_time)}.`
     : "En av våra bilexperter hör av sig inom kort — oftast redan samma dag.";
-  const contextGreeting = row.car_model
+  const contextGreeling = row.car_model
     ? `Toppen! Din expert håller på och letar en ${row.car_model} åt dig.`
     : `Toppen att du vill ha hjälp med: ${optionLabel.toLowerCase()}.`;
   const lines = [
     `Tack ${firstName}! Vi har fått din förfrågan.`,
     "",
-    contextGreeting,
+    contextGreeling,
     timeText,
     "Vi går igenom dina önskemål och berättar hur vi kan hjälpa dig vidare — helt utan förpliktelse.",
     "",
     "Behöver du nå oss? Mejla hej@bilto.se.",
   ];
-  if (portalUrl) {
-    lines.push("", "--- Din personliga portal ---", `Följ din förfrågan och se bilförslag vi skickar till dig: ${portalUrl}`);
+  const ctaUrl = magicLoginUrl || portalUrl;
+  if (ctaUrl) {
+    lines.push(
+      "",
+      "--- Följ ditt ärende ---",
+      `Klicka här för att se din förfrågan, bilförslag och erbjudanden:`,
+      ctaUrl,
+      ...(magicLoginUrl ? ["(Länken loggar in dig direkt och gäller i 30 minuter.)"] : []),
+    );
   }
   lines.push("", "Med vänliga hälsningar,", "Teamet på Bilto");
   return lines.join("\n");
@@ -552,6 +588,11 @@ function preferredTimePhrase(t: string): string {
     case "evening": return "på kvällen";
     default: return "så snart som möjligt";
   }
+}
+
+async function sha256(text: string): Promise<string> {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 function escapeHtml(s: string): string {
