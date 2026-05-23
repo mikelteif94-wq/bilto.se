@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Send, CheckCircle2, Eye, MessageSquare, XCircle,
-  Clock, ChevronDown, Loader2, Users, Bell, Search, Zap,
+  Clock, ChevronDown, Loader2, Users, Bell, Search, Zap, Radio,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -98,7 +98,28 @@ export default function DealerDispatchPanel({
     setLoading(false);
   }
 
-  useEffect(() => { load(); }, [carId, quoteRequestId]);
+  useEffect(() => {
+    load();
+
+    const filter = carId
+      ? `car_id=eq.${carId}`
+      : quoteRequestId
+      ? `quote_request_id=eq.${quoteRequestId}`
+      : null;
+
+    if (!filter) return;
+
+    const channel = supabase
+      .channel(`dispatches:${filter}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'dealer_dispatches', filter },
+        () => { load(); }
+      )
+      .subscribe();
+
+    return () => { void supabase.removeChannel(channel); };
+  }, [carId, quoteRequestId]);
 
   const alreadyDispatched = new Set(dispatches.map((d) => d.dealer_id));
   const available = dealers.filter(
@@ -248,6 +269,10 @@ export default function DealerDispatchPanel({
             <span className="flex items-center gap-2">
               <Users className="w-4 h-4 text-slate-400" />
               {dispatches.length} handlare kontaktade
+              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-semibold">
+                <Radio className="w-2.5 h-2.5" />
+                Live
+              </span>
             </span>
             <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${expanded ? 'rotate-180' : ''}`} />
           </button>

@@ -15,6 +15,7 @@ import {
   Pencil,
   Repeat,
   Send,
+  Clock,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
@@ -22,6 +23,7 @@ import PortalLayout from '../components/PortalLayout';
 import CrmPanel from '../components/CrmPanel';
 import BidsPanel from '../components/BidsPanel';
 import DealerDispatchPanel from '../components/DealerDispatchPanel';
+import LeadTimeline from '../components/LeadTimeline';
 import ConditionReportForm, { EMPTY_CONDITION_REPORT } from '../components/forms/ConditionReportForm';
 import type { ConditionReport } from '../components/forms/ConditionReportForm';
 
@@ -86,6 +88,7 @@ export default function AdminCarDetail({
 
   const [adminUserId, setAdminUserId] = useState<string | null>(null);
   const [adminName, setAdminName] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<'crm' | 'timeline'>('crm');
 
   useEffect(() => {
     void fetchCar();
@@ -416,27 +419,63 @@ export default function AdminCarDetail({
                 onChanged={() => fetchCar()}
               />
 
-              <CrmPanel
-                carId={car.id}
-                customerName={car.customers?.namn ?? ''}
-                adminUserId={adminUserId}
-                adminName={adminName}
-                carStatus={car.status}
-                carNotes={car.notes ?? ''}
-                onCarUpdated={(changes) =>
-                  setCar((prev) => (prev ? { ...prev, ...changes } : prev))
-                }
-              />
+              {/* CRM / Timeline / Dispatch tabs */}
+              <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
+                {/* Tab strip */}
+                <div className="flex border-b border-slate-100">
+                  {([
+                    { key: 'crm',      label: 'CRM & Dispatch' },
+                    { key: 'timeline', label: 'Tidslinje', icon: Clock },
+                  ] as const).map((tab) => (
+                    <button
+                      key={tab.key}
+                      onClick={() => setActiveTab(tab.key)}
+                      className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 transition-colors ${
+                        activeTab === tab.key
+                          ? 'border-[#0e6efe] text-[#0e6efe]'
+                          : 'border-transparent text-slate-400 hover:text-slate-700'
+                      }`}
+                    >
+                      {'icon' in tab && tab.icon && <tab.icon className="w-3.5 h-3.5" />}
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
 
-              {/* Dealer Dispatch */}
-              <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
-                <h2 className="text-lg font-bold text-slate-900 mb-4">Dealer Dispatch</h2>
-                <DealerDispatchPanel
-                  carId={car.id}
-                  adminUserId={adminUserId ?? ''}
-                  adminName={adminName}
-                  itemLabel={[car.marke, car.modell, car.ar].filter(Boolean).join(' ') || car.regnummer}
-                />
+                {activeTab === 'crm' && (
+                  <div className="p-5 sm:p-6 space-y-6">
+                    <CrmPanel
+                      carId={car.id}
+                      customerName={car.customers?.namn ?? ''}
+                      adminUserId={adminUserId}
+                      adminName={adminName}
+                      carStatus={car.status}
+                      carNotes={car.notes ?? ''}
+                      onCarUpdated={(changes) =>
+                        setCar((prev) => (prev ? { ...prev, ...changes } : prev))
+                      }
+                    />
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900 mb-4">Dealer Dispatch</h3>
+                      <DealerDispatchPanel
+                        carId={car.id}
+                        adminUserId={adminUserId ?? ''}
+                        adminName={adminName}
+                        itemLabel={[car.marke, car.modell, car.ar].filter(Boolean).join(' ') || car.regnummer}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'timeline' && adminUserId && (
+                  <LeadTimeline
+                    leadType="car"
+                    leadId={car.id}
+                    adminUserId={adminUserId}
+                    adminName={adminName}
+                    inline
+                  />
+                )}
               </div>
             </div>
 

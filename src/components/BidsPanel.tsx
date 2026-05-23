@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Trash2, Loader2, Trophy, Gavel, Check } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import { Trash2, Loader2, Trophy, Gavel, Check, Zap } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface Bid {
@@ -64,10 +64,8 @@ export default function BidsPanel({
   const [approvingId, setApprovingId] = useState<string | null>(null);
   const [clearing, setClearing] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
-
-  useEffect(() => {
-    void load();
-  }, [carId]);
+  const [newBidFlash, setNewBidFlash] = useState(false);
+  const prevCountRef = useRef<number>(0);
 
   const load = async () => {
     setLoading(true);
@@ -76,9 +74,30 @@ export default function BidsPanel({
       .select('*, dealers(id, foretagsnamn, kontaktperson, telefon, mejl)')
       .eq('car_id', carId)
       .order('belopp', { ascending: false });
-    setBids((data ?? []) as Bid[]);
+    const newBids = (data ?? []) as Bid[];
+    if (prevCountRef.current > 0 && newBids.length > prevCountRef.current) {
+      setNewBidFlash(true);
+      setTimeout(() => setNewBidFlash(false), 3000);
+    }
+    prevCountRef.current = newBids.length;
+    setBids(newBids);
     setLoading(false);
   };
+
+  useEffect(() => {
+    void load();
+
+    const channel = supabase
+      .channel(`bids:car_id=eq.${carId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'bids', filter: `car_id=eq.${carId}` },
+        () => { void load(); }
+      )
+      .subscribe();
+
+    return () => { void supabase.removeChannel(channel); };
+  }, [carId]);
 
   const deleteBid = async (id: string) => {
     if (busyId) return;
@@ -114,6 +133,16 @@ export default function BidsPanel({
         status: 'auktion_avslutad',
       })
       .eq('id', carId);
+
+    await supabase.from('car_activities').insert({
+      car_id: carId,
+      type: 'status_change',
+      title: `Vinnande bud godkänt — ${bid.belopp.toLocaleString('sv-SE')} kr`,
+      body: `Handlare: ${bid.dealers?.foretagsnamn ?? 'Okänd'}`,
+      data: { bid_id: bid.id, amount: bid.belopp, dealer_id: bid.dealer_id },
+      source: 'admin',
+      actor_type: 'admin',
+    });
 
     try {
       await fetch(
@@ -159,6 +188,15 @@ export default function BidsPanel({
           <h2 className="text-lg font-bold text-slate-900">
             Inkomna bud {!loading && <span className="text-slate-400 text-base font-medium">({bids.length})</span>}
           </h2>
+          {newBidFlash && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold animate-pulse">
+              <Zap className="w-3 h-3" /> Nytt bud!
+            </span>
+          )}
+          <span className="inline-flex items-center gap-1 text-[10px] text-slate-400 font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+            Live
+          </span>
         </div>
         {bids.length > 0 && (
           confirmClear ? (

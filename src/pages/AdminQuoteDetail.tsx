@@ -22,6 +22,7 @@ import {
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
 import DealerDispatchPanel from '../components/DealerDispatchPanel';
+import LeadTimeline from '../components/LeadTimeline';
 
 interface AdminQuoteDetailProps {
   quoteId: string;
@@ -178,9 +179,24 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
   const [forwarding, setForwarding] = useState(false);
   const [forwarded, setForwarded] = useState(false);
 
+  // Admin identity for timeline
+  const [adminUserId, setAdminUserId] = useState<string>('');
+  const [adminName, setAdminName] = useState<string>('Admin');
+
   useEffect(() => {
     fetchQuote();
     fetchSuggestions();
+    void (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      setAdminUserId(user.id);
+      const { data } = await supabase
+        .from('admin_users')
+        .select('name')
+        .eq('id', user.id)
+        .maybeSingle();
+      setAdminName(data?.name ?? user.email?.split('@')[0] ?? 'Admin');
+    })();
   }, [quoteId]);
 
   const fetchQuote = async () => {
@@ -711,6 +727,17 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
                 className="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm text-slate-900 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 transition resize-none placeholder:text-slate-400"
               />
             </div>
+
+            {/* Timeline */}
+            {adminUserId && (
+              <LeadTimeline
+                leadType="quote"
+                leadId={quoteId}
+                adminUserId={adminUserId}
+                adminName={adminName}
+                inline
+              />
+            )}
           </div>
 
           {/* Sidebar */}
@@ -758,8 +785,8 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
               {quote && (
                 <DealerDispatchPanel
                   quoteRequestId={quote.id}
-                  adminUserId={''}
-                  adminName={'Admin'}
+                  adminUserId={adminUserId}
+                  adminName={adminName}
                   itemLabel={quote.car_model || quote.budget ? `${quote.car_model || 'Bil'} (${quote.budget || '—'})` : 'Köplead'}
                 />
               )}

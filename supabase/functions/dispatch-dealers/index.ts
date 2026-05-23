@@ -94,20 +94,38 @@ Deno.serve(async (req: Request) => {
       return jsonResp({ error: insertErr.message }, 500);
     }
 
-    // Log activity on car
-    if (car_id && dispatched_by) {
-      const { data: dealerNames } = await supabase
-        .from("dealers")
-        .select("foretagsnamn")
-        .in("id", newDealers);
-      const names = (dealerNames ?? []).map((d: { foretagsnamn: string }) => d.foretagsnamn).join(", ");
+    // Log activity
+    const { data: dealerNames } = await supabase
+      .from("dealers")
+      .select("foretagsnamn")
+      .in("id", newDealers);
+    const names = (dealerNames ?? []).map((d: { foretagsnamn: string }) => d.foretagsnamn).join(", ");
+
+    if (car_id) {
       await supabase.from("car_activities").insert({
         car_id,
         type: "dispatch",
         title: `Skickat till ${newDealers.length} handlare`,
         body: `Lead skickat till: ${names}`,
-        created_by: dispatched_by,
+        source: "admin",
+        actor_type: "admin",
+        actor_id: dispatched_by ?? null,
+        created_by: dispatched_by ?? null,
         created_by_name: dispatched_by_name,
+      });
+    }
+    if (quote_request_id) {
+      await supabase.from("quote_request_activities").insert({
+        quote_request_id,
+        type: "dispatch",
+        title: `Skickat till ${newDealers.length} handlare`,
+        body: `Lead skickat till: ${names}`,
+        source: "admin",
+        actor_type: "admin",
+        actor_id: dispatched_by ?? null,
+        created_by: dispatched_by ?? null,
+        created_by_name: dispatched_by_name,
+        data: { dealer_ids: newDealers, dealer_names: names },
       });
     }
 
