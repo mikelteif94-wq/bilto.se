@@ -33,7 +33,7 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 flex items-end justify-center">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -49,11 +49,11 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             className={cn(
-              'absolute bottom-0 left-1/2 -translate-x-1/2 w-full sm:max-w-lg max-h-[92vh] bg-white rounded-t-2xl overflow-hidden flex flex-col',
+              'relative w-full sm:max-w-[460px] max-h-[92vh] bg-white rounded-t-2xl sm:rounded-b-none flex flex-col shadow-2xl',
               className
             )}
           >
-            <div className="sticky top-0 z-10 flex items-center justify-center pt-3 pb-2 bg-white">
+            <div className="sticky top-0 z-10 flex items-center justify-center pt-3 pb-2 bg-white rounded-t-2xl">
               <div className="w-10 h-1 rounded-full bg-slate-200" />
               <button
                 type="button"
