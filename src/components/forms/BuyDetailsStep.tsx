@@ -221,7 +221,7 @@ function LinkField({
   return (
     <div>
       <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-        Länk till annonsen eller säljarens namn
+        Länk till annonsen eller handlarens namn
       </label>
       <p className="text-sm text-slate-500 mb-3">
         Klistra in Blocket-länken, eller skriv handlarens namn.
@@ -648,7 +648,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     if (!d.buyingStage) e.buyingStage = 'Välj var du är i processen';
     if (!d.paymentType) e.paymentType = 'Välj hur du vill betala';
     if (track === 'found' && !d.linkOrSeller.trim()) {
-      e.linkOrSeller = 'Fyll i länk eller säljarens namn';
+      e.linkOrSeller = 'Fyll i länk eller handlarens namn';
     }
     if (track === 'trade' && !d.regnummer.trim()) {
       e.regnummer = 'Fyll i regnummer';
