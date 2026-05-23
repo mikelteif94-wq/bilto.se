@@ -16,6 +16,8 @@ import {
   Repeat,
   Send,
   Clock,
+  ShieldCheck,
+  ShieldAlert,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
@@ -702,12 +704,27 @@ export default function AdminCarDetail({
                     </div>
                     <div className="flex items-start gap-3">
                       <Mail className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
-                      <a
-                        href={`mailto:${car.customers.mejl}`}
-                        className="text-slate-700 hover:text-slate-900 transition break-all"
-                      >
-                        {car.customers.mejl}
-                      </a>
+                      <div className="flex flex-col gap-1">
+                        <a
+                          href={`mailto:${car.customers.mejl}`}
+                          className="text-slate-700 hover:text-slate-900 transition break-all"
+                        >
+                          {car.customers.mejl}
+                        </a>
+                        {(car.customers as { email_verified?: boolean }).email_verified
+                          ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 self-start">
+                              <ShieldCheck className="w-3 h-3" />
+                              E-post verifierad
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 self-start">
+                              <ShieldAlert className="w-3 h-3" />
+                              E-post overifierad
+                            </span>
+                          )
+                        }
+                      </div>
                     </div>
                   </div>
                 ) : (

@@ -30,7 +30,7 @@ Deno.serve(async (req: Request) => {
     const { data: car, error } = await supabase
       .from("cars")
       .select(
-        "id, regnummer, marke, modell, ar, miltal, skick, status, sales_type, auktion_slut, vinnande_bud_id, kund_beslut, kund_beslut_at, created_at, access_token_expires_at, access_token_revoked_at, direct_bid_estimate, brokerage_estimate_low, brokerage_estimate_high, condition_report, customers(namn, telefon, mejl), car_images(storage_url, ordning)",
+        "id, regnummer, marke, modell, ar, miltal, skick, status, sales_type, auktion_slut, vinnande_bud_id, kund_beslut, kund_beslut_at, created_at, access_token_expires_at, access_token_revoked_at, direct_bid_estimate, brokerage_estimate_low, brokerage_estimate_high, condition_report, customers(id, namn, telefon, mejl, email_verified), car_images(storage_url, ordning)",
       )
       .eq("access_token", token)
       .maybeSingle();
@@ -151,6 +151,9 @@ Deno.serve(async (req: Request) => {
         if (car.kund_beslut === "vill_salja") {
           return jsonResp({ error: "Ett erbjudande är redan accepterat" }, 409);
         }
+        if (!car.customers?.email_verified) {
+          return jsonResp({ error: "E-postadressen måste verifieras innan du kan acceptera ett erbjudande." }, 403);
+        }
 
         const { data: offer } = await supabase
           .from("brokerage_offers")
@@ -190,6 +193,9 @@ Deno.serve(async (req: Request) => {
       const decision: string | undefined = body?.beslut as string | undefined;
       if (decision !== "vill_salja" && decision !== "vill_inte_salja") {
         return jsonResp({ error: "Ogiltigt beslut" }, 400);
+      }
+      if (!car.customers?.email_verified) {
+        return jsonResp({ error: "E-postadressen måste verifieras innan du kan lämna beslut." }, 403);
       }
       if (car.status !== "auktion_avslutad") {
         return jsonResp(

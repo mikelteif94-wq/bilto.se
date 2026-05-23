@@ -18,6 +18,8 @@ import {
   Plus,
   Trash2,
   Image,
+  ShieldCheck,
+  ShieldAlert,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
@@ -79,6 +81,8 @@ interface QuoteRequest {
   notes: string;
   quiz_answers?: QuizAnswersData | null;
   access_token: string | null;
+  email_verified: boolean;
+  email_verified_at: string | null;
 }
 
 interface SuggestionRow {
@@ -426,10 +430,25 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
                   {quote.phone}
                 </a>
                 {quote.email && (
-                  <a href={`mailto:${quote.email}`} className="inline-flex items-center gap-1.5 text-slate-700 hover:text-blue-600 transition">
-                    <Mail className="w-4 h-4 text-slate-400" />
-                    {quote.email}
-                  </a>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <a href={`mailto:${quote.email}`} className="inline-flex items-center gap-1.5 text-slate-700 hover:text-blue-600 transition">
+                      <Mail className="w-4 h-4 text-slate-400" />
+                      {quote.email}
+                    </a>
+                    {quote.email_verified
+                      ? (
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                          <ShieldCheck className="w-3 h-3" />
+                          Verifierad
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                          <ShieldAlert className="w-3 h-3" />
+                          Overifierad
+                        </span>
+                      )
+                    }
+                  </div>
                 )}
                 {quote.preferred_time && (
                   <span className="inline-flex items-center gap-1.5 text-slate-600">

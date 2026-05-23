@@ -60,7 +60,6 @@ Deno.serve(async (req: Request) => {
     const inputHash = await sha256(code);
 
     if (inputHash !== otpRow.code_hash) {
-      // Increment attempt counter
       await supabase
         .from("email_otp_codes")
         .update({ attempts: otpRow.attempts + 1 })
@@ -73,11 +72,26 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Mark as verified (single-use)
+    // Mark OTP as verified (single-use)
+    const verifiedAt = new Date().toISOString();
     await supabase
       .from("email_otp_codes")
-      .update({ verified_at: new Date().toISOString() })
+      .update({ verified_at: verifiedAt })
       .eq("id", otpRow.id);
+
+    // Stamp email_verified on any matching customer row (most recent, same email)
+    await supabase
+      .from("customers")
+      .update({ email_verified: true, email_verified_at: verifiedAt })
+      .eq("mejl", email)
+      .eq("email_verified", false);
+
+    // Stamp email_verified on any matching quote_request row (same email, unverified)
+    await supabase
+      .from("quote_requests")
+      .update({ email_verified: true, email_verified_at: verifiedAt })
+      .eq("email", email)
+      .eq("email_verified", false);
 
     return jsonResp({ ok: true, verified_email: email }, 200);
   } catch (err) {

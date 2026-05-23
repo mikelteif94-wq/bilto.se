@@ -6,6 +6,8 @@ import {
   Search,
   Repeat,
   Phone,
+  ShieldCheck,
+  ShieldAlert,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
@@ -31,6 +33,7 @@ interface QuoteRequest {
   email: string;
   status: string;
   preferred_time: string;
+  email_verified: boolean;
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -95,7 +98,7 @@ export default function AdminQuoteRequests({
   const fetchQuotes = async () => {
     const { data } = await supabase
       .from('quote_requests')
-      .select('id, created_at, search_option, car_model, budget, regnummer, firstname, lastname, phone, email, status, preferred_time')
+      .select('id, created_at, search_option, car_model, budget, regnummer, firstname, lastname, phone, email, status, preferred_time, email_verified')
       .order('created_at', { ascending: false });
     setQuotes((data ?? []) as QuoteRequest[]);
     setLoading(false);
@@ -192,6 +195,10 @@ export default function AdminQuoteRequests({
                           <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${STATUS_COLORS[q.status] || STATUS_COLORS.new}`}>
                             {STATUS_LABELS[q.status] || q.status}
                           </span>
+                          {q.email_verified
+                            ? <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700"><ShieldCheck className="w-3 h-3" />Verifierad</span>
+                            : <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700"><ShieldAlert className="w-3 h-3" />Overifierad</span>
+                          }
                         </div>
                         <div className="text-xs text-slate-500 truncate">
                           {OPTION_LABELS[q.search_option] || q.search_option}
@@ -219,6 +226,7 @@ export default function AdminQuoteRequests({
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">Kund</th>
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">Bil / Budget</th>
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">Telefon</th>
+                      <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">E-post</th>
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">Status</th>
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">Inkom</th>
                       <th className="w-10"></th>
@@ -251,6 +259,12 @@ export default function AdminQuoteRequests({
                               <Phone className="w-3.5 h-3.5 text-slate-400" />
                               {q.phone}
                             </span>
+                          </td>
+                          <td className="px-4 lg:px-6 py-4">
+                            {q.email_verified
+                              ? <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700"><ShieldCheck className="w-3 h-3" />Verifierad</span>
+                              : <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700"><ShieldAlert className="w-3 h-3" />Overifierad</span>
+                            }
                           </td>
                           <td className="px-4 lg:px-6 py-4">
                             <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_COLORS[q.status] || STATUS_COLORS.new}`}>
