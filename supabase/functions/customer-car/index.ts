@@ -302,6 +302,45 @@ Deno.serve(async (req: Request) => {
       }
     }
 
+    // Fetch customer-visible activities (exclude internal admin notes)
+    const CUSTOMER_VISIBLE_TYPES = ["status_change", "dispatch", "bid", "bid_placed", "nudge", "auto_dispatch", "customer_decision"];
+    const { data: rawActivities } = await supabase
+      .from("car_activities")
+      .select("id, type, title, body, created_at, actor_type")
+      .eq("car_id", car.id)
+      .in("type", CUSTOMER_VISIBLE_TYPES)
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    // Build customer-friendly activity feed
+    const ACTIVITY_LABELS: Record<string, string> = {
+      status_change: "Statusuppdatering",
+      dispatch: "Skickat till handlare",
+      bid: "Bud inkommet",
+      bid_placed: "Bud inkommet",
+      nudge: "Påminnelse skickad",
+      auto_dispatch: "Automatiskt matchat",
+      customer_decision: "Beslut registrerat",
+    };
+    const activities = (rawActivities ?? []).map((a: { id: string; type: string; title: string; body: string | null; created_at: string; actor_type: string | null }) => ({
+      id: a.id,
+      type: a.type,
+      label: ACTIVITY_LABELS[a.type] ?? "Uppdatering",
+      title: a.title,
+      created_at: a.created_at,
+    }));
+
+    // Bid stats
+    const { count: bidCount } = await supabase
+      .from("bids")
+      .select("id", { count: "exact", head: true })
+      .eq("car_id", car.id);
+
+    const { count: dispatchCount } = await supabase
+      .from("dealer_dispatches")
+      .select("id", { count: "exact", head: true })
+      .eq("car_id", car.id);
+
     return jsonResp({
       car: {
         id: car.id,
@@ -326,6 +365,9 @@ Deno.serve(async (req: Request) => {
         customer: car.customers ? { namn: car.customers.namn, mejl: car.customers.mejl } : null,
         winning_bid: winningBid,
         brokerage_offers: brokerageOffers,
+        bid_count: bidCount ?? 0,
+        dispatch_count: dispatchCount ?? 0,
+        activities,
       },
     }, 200);
   } catch (err) {

@@ -8,12 +8,12 @@ import {
   Gavel,
   ImagePlus,
   Loader2,
-  Lock,
   PhoneCall,
   Sparkles,
   ThumbsDown,
   ThumbsUp,
   MessageSquare,
+  UserPlus,
 } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
 import ConditionReportForm, {
@@ -43,6 +43,14 @@ type AuctionStatus =
   | 'sald'
   | 'avslutad';
 
+interface ActivityItem {
+  id: string;
+  type: string;
+  label: string;
+  title: string;
+  created_at: string;
+}
+
 interface CarResponse {
   id: string;
   regnummer: string;
@@ -62,6 +70,9 @@ interface CarResponse {
   images: string[];
   customer: { namn: string; mejl: string } | null;
   winning_bid: { belopp: number; foretagsnamn: string } | null;
+  bid_count: number;
+  dispatch_count: number;
+  activities: ActivityItem[];
 }
 
 const SKICK_LABELS: Record<string, string> = {
@@ -103,30 +114,21 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
   const [submitting, setSubmitting] = useState(false);
   const [proposals, setProposals] = useState<DealerProposal[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
+    // Always load car via token — no login required
+    void fetchCar();
+
+    // Check auth state in parallel (used to link account, not to gate access)
     supabase.auth.getSession().then(({ data }) => {
-      const loggedIn = !!data.session?.user;
-      setIsLoggedIn(loggedIn);
-      setAuthChecked(true);
-      if (loggedIn) void fetchCar();
-      else setLoading(false);
+      setIsLoggedIn(!!data.session?.user);
     });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const loggedIn = !!session?.user;
       setIsLoggedIn(loggedIn);
-      setAuthChecked(true);
-      if (loggedIn) {
-        // Link customer row first, then fetch car so the car is visible
-        (async () => {
-          if (session?.access_token) {
-            await linkCustomerAccount(session.access_token);
-          }
-          void fetchCar();
-        })();
-      } else {
-        setLoading(false);
+      if (loggedIn && session?.access_token) {
+        void linkCustomerAccount(session.access_token);
       }
     });
     return () => subscription.unsubscribe();
@@ -200,44 +202,6 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
     }
   };
 
-  if (!authChecked || (authChecked && !isLoggedIn && loading)) {
-    return (
-      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-      </div>
-    );
-  }
-
-  if (authChecked && !isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-[#faf8f5] flex flex-col">
-        <header className="bg-[#0e6efe] h-16 flex items-center px-5 lg:px-8">
-          <a href="/" className="flex items-center">
-            <img
-              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
-              alt="Bilto"
-              className="h-20 lg:h-32 w-auto object-contain"
-            />
-          </a>
-        </header>
-        <div className="flex-1 flex items-start justify-center pt-12 px-4">
-          <div className="w-full max-w-sm">
-            <div className="text-center mb-6">
-              <div className="w-14 h-14 bg-[#0e6efe]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lock className="w-7 h-7 text-[#0e6efe]" strokeWidth={2} />
-              </div>
-              <h1 className="text-xl font-bold text-slate-900 mb-1">Följ din bil</h1>
-              <p className="text-sm text-slate-500">
-                Logga in eller skapa konto för att se budgivningen.
-              </p>
-            </div>
-            <LoginOrCreateCard token={token} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -304,6 +268,13 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
 
         <StatusCard car={car} />
 
+        <CustomerLiveFeed
+          bidCount={car.bid_count ?? 0}
+          dispatchCount={car.dispatch_count ?? 0}
+          activities={car.activities ?? []}
+          carCreatedAt={car.created_at}
+        />
+
         {car.images.length > 0 && (
           <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
             <img
@@ -347,6 +318,11 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
             )}
           </dl>
         </div>
+
+        {/* Soft account prompt — optional, never a gate */}
+        {!isLoggedIn && (
+          <SoftLoginPrompt token={token} email={car.customer?.mejl ?? ''} />
+        )}
 
         {(car.status === 'ny' || car.status === 'aktiv') && (
           <CompleteListingCard
@@ -394,6 +370,113 @@ function Row({ label, value }: { label: string; value: string }) {
     <div className="flex justify-between sm:block border-b sm:border-0 border-slate-100 pb-2 sm:pb-0">
       <dt className="text-slate-500">{label}</dt>
       <dd className="font-semibold text-slate-900 sm:mt-1">{value}</dd>
+    </div>
+  );
+}
+
+function timeAgoSv(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 2) return 'Just nu';
+  if (mins < 60) return `${mins} min sedan`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h sedan`;
+  if (hours < 48) return 'Igår';
+  return new Date(dateStr).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
+}
+
+const ACTIVITY_ICONS: Record<string, string> = {
+  dispatch: '📤',
+  bid: '🔨',
+  bid_placed: '🔨',
+  status_change: '🔄',
+  nudge: '🔔',
+  auto_dispatch: '⚡',
+  customer_decision: '✅',
+};
+
+function CustomerLiveFeed({
+  bidCount,
+  dispatchCount,
+  activities,
+  carCreatedAt,
+}: {
+  bidCount: number;
+  dispatchCount: number;
+  activities: ActivityItem[];
+  carCreatedAt: string;
+}) {
+  const hasActivity = bidCount > 0 || dispatchCount > 0 || activities.length > 0;
+
+  return (
+    <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+        <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
+            <span className="text-sm font-bold text-slate-900">Vad händer med din bil</span>
+          </div>
+        </div>
+        <span className="text-xs text-slate-400">Uppdateras automatiskt</span>
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-3 divide-x divide-slate-100 border-b border-slate-100">
+        <div className="px-4 py-3 text-center">
+          <p className="text-xl font-bold text-slate-900">{bidCount}</p>
+          <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+            {bidCount === 1 ? 'Bud' : 'Bud'}
+          </p>
+        </div>
+        <div className="px-4 py-3 text-center">
+          <p className="text-xl font-bold text-slate-900">{dispatchCount}</p>
+          <p className="text-[11px] text-slate-500 font-medium mt-0.5">Handlare kontaktade</p>
+        </div>
+        <div className="px-4 py-3 text-center">
+          <p className="text-xl font-bold text-slate-900">{activities.length}</p>
+          <p className="text-[11px] text-slate-500 font-medium mt-0.5">Händelser</p>
+        </div>
+      </div>
+
+      {/* Timeline */}
+      <div className="px-5 py-4">
+        {!hasActivity ? (
+          <div className="flex items-start gap-3 py-2">
+            <div className="w-8 h-8 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0 text-sm">
+              ⏳
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-800">Bilto granskar din bil</p>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Inkom {timeAgoSv(carCreatedAt)} — vi förbereder för budgivning
+              </p>
+            </div>
+          </div>
+        ) : (
+          <ol className="space-y-3">
+            {/* Inkommit-rad alltid synlig */}
+            <li className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 text-sm">✅</div>
+              <div>
+                <p className="text-sm font-semibold text-slate-800">Bil inskickad</p>
+                <p className="text-xs text-slate-400 mt-0.5">{timeAgoSv(carCreatedAt)}</p>
+              </div>
+            </li>
+            {activities.map((a) => (
+              <li key={a.id} className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0 text-sm">
+                  {ACTIVITY_ICONS[a.type] ?? '📋'}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-800">{a.title}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{timeAgoSv(a.created_at)}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
     </div>
   );
 }
@@ -840,9 +923,47 @@ async function linkCustomerAccount(accessToken: string) {
   });
 }
 
-function LoginOrCreateCard({ token }: { token: string }) {
+function SoftLoginPrompt({ token, email }: { token: string; email: string }) {
+  const [open, setOpen] = useState(false);
+  if (open) {
+    return (
+      <div className="bg-white rounded-md border border-[#0e6efe]/20 p-5 sm:p-6">
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="text-xs text-slate-400 hover:text-slate-600 mb-4 flex items-center gap-1"
+        >
+          <ArrowLeft className="w-3 h-3" /> Avbryt
+        </button>
+        <LoginOrCreateCard token={token} prefillEmail={email} />
+      </div>
+    );
+  }
+  return (
+    <div className="bg-white rounded-md border border-slate-200 p-5 flex items-center gap-4">
+      <div className="w-10 h-10 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+        <UserPlus className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-slate-900">Spara din portal</p>
+        <p className="text-xs text-slate-500 mt-0.5">
+          Skapa ett konto för att enkelt komma tillbaka och följa buden.
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="shrink-0 h-9 px-4 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-xs font-semibold transition"
+      >
+        Skapa konto
+      </button>
+    </div>
+  );
+}
+
+function LoginOrCreateCard({ token: _token, prefillEmail = '' }: { token: string; prefillEmail?: string }) {
   const [mode, setMode] = useState<'login' | 'create'>('create');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(prefillEmail);
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [saving, setSaving] = useState(false);

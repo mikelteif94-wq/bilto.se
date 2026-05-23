@@ -146,7 +146,7 @@ export default function ConfirmationForm({
       }
     }
 
-    const origin = import.meta.env.VITE_APP_URL ?? 'https://bilto.se';
+    const origin = typeof window !== 'undefined' ? window.location.origin : (import.meta.env.VITE_APP_URL ?? 'https://bilto.se');
     const trackingUrl = `${origin.replace(/\/$/, '')}/min-bil/${accessToken}`;
 
     const headers = {
@@ -201,9 +201,7 @@ export default function ConfirmationForm({
     const firstName_cap = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
     const maskedPhone = maskPhone(customer.telefon);
     const reg = car.regnummer.toUpperCase();
-    const trackUrl = savedToken
-      ? `/logga-in?mejl=${encodeURIComponent(customer.mejl)}&skapa=1`
-      : '';
+    const trackUrl = savedToken ? `/min-bil/${savedToken}` : '';
 
     return (
       <div className="py-2 sm:py-4">
@@ -220,10 +218,10 @@ export default function ConfirmationForm({
           {trackUrl && (
             <a
               href={trackUrl}
-              className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[14px] rounded-full transition shadow-sm"
+              className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] rounded-full transition shadow-md"
             >
-              Följ din bil
-              <ArrowRight className="w-4 h-4" strokeWidth={2.2} />
+              Följ din bil live
+              <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
             </a>
           )}
         </div>
@@ -315,15 +313,16 @@ export default function ConfirmationForm({
         </div>
 
         {trackUrl && (
-          <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 flex items-center justify-between gap-3 mb-4">
-            <p className="text-[13px] text-slate-600 leading-relaxed">
-              Vill du följa budgivningen? Vi skickar också länken via mejl när det första budet kommer.
-            </p>
+          <div className="bg-[#0e6efe]/5 border border-[#0e6efe]/20 rounded-xl px-4 py-4 flex items-center justify-between gap-3 mb-4">
+            <div className="min-w-0">
+              <p className="text-[13px] font-semibold text-slate-800">Din personliga portal</p>
+              <p className="text-[12px] text-slate-500 mt-0.5 truncate">{trackUrl}</p>
+            </div>
             <a
               href={trackUrl}
-              className="shrink-0 inline-flex items-center gap-1.5 h-9 px-4 bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[12.5px] rounded-full transition whitespace-nowrap"
+              className="shrink-0 inline-flex items-center gap-1.5 h-9 px-4 bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[12.5px] rounded-full transition whitespace-nowrap"
             >
-              Följ bilen
+              Öppna
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.2} />
             </a>
           </div>

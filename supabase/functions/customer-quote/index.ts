@@ -84,6 +84,41 @@ Deno.serve(async (req: Request) => {
       }
     }
 
+    // Customer-visible activities for buy/trade leads
+    const CUSTOMER_VISIBLE_TYPES = ["status_change", "dispatch", "note", "customer_decision", "convert"];
+    const ACTIVITY_LABELS: Record<string, string> = {
+      status_change: "Statusuppdatering",
+      dispatch: "Skickat till handlare",
+      note: "Notering från din expert",
+      customer_decision: "Beslut registrerat",
+      convert: "Ärendet öppnat",
+    };
+    const { data: rawActivities } = await supabase
+      .from("quote_request_activities")
+      .select("id, type, title, body, created_at, actor_type")
+      .eq("quote_request_id", quote.id)
+      .in("type", CUSTOMER_VISIBLE_TYPES)
+      .order("created_at", { ascending: false })
+      .limit(15);
+
+    const activities = (rawActivities ?? []).map((a: { id: string; type: string; title: string; body: string | null; created_at: string; actor_type: string | null }) => ({
+      id: a.id,
+      type: a.type,
+      label: ACTIVITY_LABELS[a.type] ?? "Uppdatering",
+      title: a.title,
+      created_at: a.created_at,
+    }));
+
+    const { count: dispatchCount } = await supabase
+      .from("dealer_dispatches")
+      .select("id", { count: "exact", head: true })
+      .eq("quote_request_id", quote.id);
+
+    const { count: suggestionCount } = await supabase
+      .from("quote_suggestions")
+      .select("id", { count: "exact", head: true })
+      .eq("quote_request_id", quote.id);
+
     return jsonResp(
       {
         quote: {
@@ -99,6 +134,9 @@ Deno.serve(async (req: Request) => {
         },
         suggestions: suggestions ?? [],
         offers: offers ?? [],
+        activities,
+        dispatch_count: dispatchCount ?? 0,
+        suggestion_count: suggestionCount ?? 0,
       },
       200,
     );

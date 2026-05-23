@@ -21,6 +21,14 @@ interface MyQuotePageProps {
   onBack: () => void;
 }
 
+interface ActivityItem {
+  id: string;
+  type: string;
+  label: string;
+  title: string;
+  created_at: string;
+}
+
 interface QuoteData {
   id: string;
   firstname: string;
@@ -116,6 +124,8 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
   const [quote, setQuote] = useState<QuoteData | null>(null);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
+  const [dispatchCount, setDispatchCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -138,6 +148,8 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
         setQuote(json.quote);
         setSuggestions(json.suggestions ?? []);
         setOffers(json.offers ?? []);
+        setActivities(json.activities ?? []);
+        setDispatchCount(json.dispatch_count ?? 0);
       }
     } catch {
       setError('Kunde inte kontakta servern.');
@@ -266,6 +278,15 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
           </div>
         </div>
 
+        {/* Live activity feed */}
+        <QuoteLiveFeed
+          dispatchCount={dispatchCount}
+          suggestionCount={suggestions.length}
+          offerCount={offers.length}
+          activities={activities}
+          createdAt={quote.created_at}
+        />
+
         {/* Summary card */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
           <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Din förfrågan</h2>
@@ -357,6 +378,97 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
         </div>
 
       </main>
+    </div>
+  );
+}
+
+const ACTIVITY_ICONS: Record<string, string> = {
+  status_change: '📋',
+  dispatch: '📤',
+  note: '💬',
+  customer_decision: '✅',
+  convert: '🚀',
+};
+
+function timeAgoSv(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 2) return 'just nu';
+  if (mins < 60) return `${mins} min sedan`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} tim sedan`;
+  const days = Math.floor(hrs / 24);
+  if (days === 1) return 'igår';
+  return `${days} dagar sedan`;
+}
+
+interface QuoteLiveFeedProps {
+  dispatchCount: number;
+  suggestionCount: number;
+  offerCount: number;
+  activities: ActivityItem[];
+  createdAt: string;
+}
+
+function QuoteLiveFeed({ dispatchCount, suggestionCount, offerCount, activities, createdAt }: QuoteLiveFeedProps) {
+  const stats = [
+    { label: 'Förslag skickade', value: suggestionCount },
+    { label: 'Handlare kontaktade', value: dispatchCount },
+    { label: 'Erbjudanden', value: offerCount },
+  ];
+
+  const timelineItems = [
+    ...activities.map((a) => ({
+      id: a.id,
+      icon: ACTIVITY_ICONS[a.type] ?? '📌',
+      title: a.title,
+      time: timeAgoSv(a.created_at),
+    })),
+    {
+      id: '__created__',
+      icon: '🚀',
+      title: 'Förfrågan mottagen av Bilto',
+      time: timeAgoSv(createdAt),
+    },
+  ];
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h2 className="text-sm font-bold text-slate-700">Aktivitet</h2>
+        <span className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          Live
+        </span>
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-3 divide-x divide-slate-100 border-b border-slate-100">
+        {stats.map((s) => (
+          <div key={s.label} className="px-4 py-4 text-center">
+            <p className="text-2xl font-bold text-slate-900">{s.value}</p>
+            <p className="text-[11px] text-slate-400 mt-0.5 leading-tight">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Timeline */}
+      <div className="px-5 sm:px-6 py-4 space-y-3">
+        {timelineItems.map((item, idx) => (
+          <div key={item.id} className="flex items-start gap-3">
+            <div className="relative flex flex-col items-center">
+              <span className="text-base leading-none">{item.icon}</span>
+              {idx < timelineItems.length - 1 && (
+                <div className="w-px flex-1 bg-slate-100 mt-1.5 min-h-[20px]" />
+              )}
+            </div>
+            <div className="pb-2 min-w-0 flex-1">
+              <p className="text-sm text-slate-800 font-medium leading-snug">{item.title}</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">{item.time}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
