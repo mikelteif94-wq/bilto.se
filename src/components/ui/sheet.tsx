@@ -49,7 +49,7 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             className={cn(
-              'absolute bottom-0 left-0 right-0 max-h-[92vh] bg-white rounded-t-2xl overflow-hidden flex flex-col',
+              'absolute bottom-0 left-1/2 -translate-x-1/2 w-full sm:max-w-lg max-h-[92vh] bg-white rounded-t-2xl overflow-hidden flex flex-col',
               className
             )}
           >

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star, Gauge, Armchair, Briefcase, TrendingDown, Shield,
   Fuel, Battery, Car, Check, X as XIcon, Info, Users, ArrowRight,
-  BarChart2, AlertTriangle, HelpCircle, X, Calculator, Sparkles, ChevronDown, ChevronUp,
+  BarChart2, AlertTriangle, HelpCircle, X,
 } from 'lucide-react';
 import { Sheet } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
@@ -451,25 +451,94 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
     return [pricingSection, ratingsSection, specsSection, prosConsSection];
   })();
 
+  const ctaButtons = (carPrice || onFitQuiz || onSelect) && (
+    <div className="space-y-2.5">
+      {/* Primary CTA */}
+      {onSelect && (
+        <button
+          type="button"
+          onClick={onSelect}
+          className="w-full flex flex-col items-center gap-0.5 py-3.5 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 hover:shadow-lg shadow-md shadow-[#0e6efe]/25"
+        >
+          <span className="text-[15px] font-bold inline-flex items-center gap-2">
+            {cta.headline}
+            <ArrowRight className="w-4 h-4" />
+          </span>
+          <span className="text-[11.5px] text-white/65">{cta.sub}</span>
+        </button>
+      )}
+
+      {/* Secondary: Kalkyl + Passar mig */}
+      {(carPrice || onFitQuiz) && (
+        <div className="grid grid-cols-2 gap-2">
+          {carPrice && (
+            <button
+              type="button"
+              onClick={() => setCalcOpen(v => !v)}
+              className={`relative flex flex-col items-center justify-center gap-0.5 h-14 rounded-2xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.97] ${
+                calcOpen
+                  ? 'bg-slate-900 border-slate-900 text-white shadow-md'
+                  : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
+              }`}
+            >
+              <span className="text-[16px] leading-none">{calcOpen ? '✕' : '◎'}</span>
+              <span>{calcOpen ? 'Stäng' : 'Räkna kalkyl'}</span>
+            </button>
+          )}
+          {onFitQuiz && (
+            <button
+              type="button"
+              onClick={onFitQuiz}
+              className="flex flex-col items-center justify-center gap-0.5 h-14 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:border-slate-300 text-[12px] font-semibold transition-all duration-150 active:scale-[0.97]"
+            >
+              <span className="text-[16px] leading-none">◇</span>
+              <span>Passar den mig?</span>
+            </button>
+          )}
+        </div>
+      )}
+
+      <AnimatePresence initial={false}>
+        {calcOpen && carPrice && (
+          <motion.div
+            key="calc"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
+          >
+            <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+
   return (
     <div className="space-y-7">
-      {/* Expert summary */}
-      <section className="p-4 bg-[#0e6efe]/5 rounded-xl border border-[#0e6efe]/10">
-        <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-wide mb-3">Experternas bedömning</p>
-        {carPrice ? (
-          <MonthlyCostBlock carPrice={carPrice} usedPrice={usedPrice} />
-        ) : (
-          <div>
-            <p className="text-[12px] text-slate-500">Uppskattad månadskostnad</p>
-            <p className="text-[14px] text-slate-400 italic">Pris ej tillgängligt</p>
-          </div>
-        )}
-        {data.meta_description && (
-          <p className="text-[13px] text-slate-600 leading-relaxed mt-3">{data.meta_description}</p>
-        )}
+      {/* Expert summary + CTAs */}
+      <section className="space-y-3">
+        <div className="p-4 bg-[#0e6efe]/5 rounded-xl border border-[#0e6efe]/10">
+          <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-wide mb-3">Experternas bedömning</p>
+          {carPrice ? (
+            <MonthlyCostBlock carPrice={carPrice} usedPrice={usedPrice} />
+          ) : (
+            <div>
+              <p className="text-[12px] text-slate-500">Uppskattad månadskostnad</p>
+              <p className="text-[14px] text-slate-400 italic">Pris ej tillgängligt</p>
+            </div>
+          )}
+          {data.meta_description && (
+            <p className="text-[13px] text-slate-600 leading-relaxed mt-3">{data.meta_description}</p>
+          )}
+        </div>
+
+        {/* CTAs sit right here — prominent, early */}
+        {ctaButtons}
       </section>
 
-      {/* Persona-specific insight — surfaced immediately after summary */}
+      {/* Persona-specific insight */}
       {persona && <PersonaInsightSection persona={persona} data={data} />}
 
       {/* Who it suits */}
@@ -491,67 +560,6 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
 
       {/* Persona-ordered sections */}
       {orderedSections}
-
-      {/* Secondary CTAs — Kalkyl & Passar bilen mig */}
-      <div className="space-y-2">
-        <div className="grid grid-cols-2 gap-2">
-          {carPrice && (
-            <button
-              type="button"
-              onClick={() => setCalcOpen(v => !v)}
-              className={`flex items-center justify-center gap-2 h-11 rounded-xl border text-[13px] font-semibold transition-all duration-150 active:scale-[0.98] ${
-                calcOpen
-                  ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
-                  : 'border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe]/50 hover:text-[#0e6efe]'
-              }`}
-            >
-              <Calculator className="w-4 h-4 shrink-0" />
-              Räkna kalkyl
-              {calcOpen ? <ChevronUp className="w-3.5 h-3.5 ml-auto" /> : <ChevronDown className="w-3.5 h-3.5 ml-auto" />}
-            </button>
-          )}
-          {onFitQuiz && (
-            <button
-              type="button"
-              onClick={onFitQuiz}
-              className="flex items-center justify-center gap-2 h-11 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe]/50 hover:text-[#0e6efe] text-[13px] font-semibold transition-all duration-150 active:scale-[0.98]"
-            >
-              <Sparkles className="w-4 h-4 shrink-0 text-amber-500" />
-              Passar den mig?
-            </button>
-          )}
-        </div>
-
-        <AnimatePresence initial={false}>
-          {calcOpen && carPrice && (
-            <motion.div
-              key="calc"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2, ease: 'easeInOut' }}
-              style={{ overflow: 'hidden' }}
-            >
-              <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Primary CTA */}
-      {onSelect && (
-        <button
-          type="button"
-          onClick={onSelect}
-          className="w-full flex flex-col items-center gap-1 py-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 hover:shadow-lg shadow-sm shadow-[#0e6efe]/20"
-        >
-          <span className="text-[15px] font-bold inline-flex items-center gap-2">
-            {cta.headline}
-            <ArrowRight className="w-4 h-4" />
-          </span>
-          <span className="text-[12px] text-white/70">{cta.sub}</span>
-        </button>
-      )}
     </div>
   );
 }
@@ -562,6 +570,65 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
 
   return (
     <div className="space-y-5">
+      {/* CTAs at top */}
+      <div className="space-y-2.5">
+        {onSelect && (
+          <button
+            type="button"
+            onClick={onSelect}
+            className="w-full flex flex-col items-center gap-0.5 py-3.5 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 hover:shadow-lg shadow-md shadow-[#0e6efe]/25"
+          >
+            <span className="text-[15px] font-bold inline-flex items-center gap-2">
+              Låt oss hitta bästa priset
+              <ArrowRight className="w-4 h-4" />
+            </span>
+            <span className="text-[11.5px] text-white/65">Vi förhandlar {car.make} {car.model} åt dig — helt gratis</span>
+          </button>
+        )}
+        {(carPrice || onFitQuiz) && (
+          <div className="grid grid-cols-2 gap-2">
+            {carPrice && (
+              <button
+                type="button"
+                onClick={() => setCalcOpen(v => !v)}
+                className={`flex flex-col items-center justify-center gap-0.5 h-14 rounded-2xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.97] ${
+                  calcOpen
+                    ? 'bg-slate-900 border-slate-900 text-white shadow-md'
+                    : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
+                }`}
+              >
+                <span className="text-[16px] leading-none">{calcOpen ? '✕' : '◎'}</span>
+                <span>{calcOpen ? 'Stäng' : 'Räkna kalkyl'}</span>
+              </button>
+            )}
+            {onFitQuiz && (
+              <button
+                type="button"
+                onClick={onFitQuiz}
+                className="flex flex-col items-center justify-center gap-0.5 h-14 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:border-slate-300 text-[12px] font-semibold transition-all duration-150 active:scale-[0.97]"
+              >
+                <span className="text-[16px] leading-none">◇</span>
+                <span>Passar den mig?</span>
+              </button>
+            )}
+          </div>
+        )}
+        <AnimatePresence initial={false}>
+          {calcOpen && carPrice && (
+            <motion.div
+              key="calc"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.22, ease: 'easeInOut' }}
+              style={{ overflow: 'hidden' }}
+            >
+              <CalcPanel carPrice={carPrice} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       <div className="flex items-start gap-2.5 p-4 bg-slate-50 rounded-xl">
         <Info className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
         <p className="text-[13px] text-slate-500">
@@ -582,66 +649,6 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
             ))}
           </div>
         </div>
-      )}
-
-      {/* Secondary CTAs */}
-      <div className="space-y-2">
-        <div className="grid grid-cols-2 gap-2">
-          {carPrice && (
-            <button
-              type="button"
-              onClick={() => setCalcOpen(v => !v)}
-              className={`flex items-center justify-center gap-2 h-11 rounded-xl border text-[13px] font-semibold transition-all duration-150 active:scale-[0.98] ${
-                calcOpen
-                  ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
-                  : 'border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe]/50 hover:text-[#0e6efe]'
-              }`}
-            >
-              <Calculator className="w-4 h-4 shrink-0" />
-              Räkna kalkyl
-              {calcOpen ? <ChevronUp className="w-3.5 h-3.5 ml-auto" /> : <ChevronDown className="w-3.5 h-3.5 ml-auto" />}
-            </button>
-          )}
-          {onFitQuiz && (
-            <button
-              type="button"
-              onClick={onFitQuiz}
-              className="flex items-center justify-center gap-2 h-11 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe]/50 hover:text-[#0e6efe] text-[13px] font-semibold transition-all duration-150 active:scale-[0.98]"
-            >
-              <Sparkles className="w-4 h-4 shrink-0 text-amber-500" />
-              Passar den mig?
-            </button>
-          )}
-        </div>
-
-        <AnimatePresence initial={false}>
-          {calcOpen && carPrice && (
-            <motion.div
-              key="calc"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2, ease: 'easeInOut' }}
-              style={{ overflow: 'hidden' }}
-            >
-              <CalcPanel carPrice={carPrice} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {onSelect && (
-        <button
-          type="button"
-          onClick={onSelect}
-          className="w-full flex flex-col items-center gap-1 py-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 hover:shadow-lg shadow-sm shadow-[#0e6efe]/20"
-        >
-          <span className="text-[15px] font-bold inline-flex items-center gap-2">
-            Låt oss hitta bästa priset
-            <ArrowRight className="w-4 h-4" />
-          </span>
-          <span className="text-[12px] text-white/70">Vi förhandlar {car.make} {car.model} åt dig — helt gratis</span>
-        </button>
       )}
     </div>
   );
