@@ -344,28 +344,29 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             Vi hjälper dig sälja, köpa eller byta bil — enkelt, tryggt och helt gratis.
           </p>
 
-          <div className="mt-6 bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] overflow-hidden">
+          <div className="mt-6 bg-white rounded-2xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden">
             {/* Tab strip */}
-            <div className="flex border-b border-slate-100">
+            <div className="flex bg-slate-50/80 p-1 m-3 rounded-xl gap-1">
               {(['salj', 'hitta'] as const).map((t) => (
                 <button
                   key={t}
                   type="button"
                   onClick={() => setHeroTab(t)}
-                  className={`flex-1 py-4 text-center text-[14px] font-bold tracking-[0.04em] relative transition-colors ${
-                    heroTab === t ? 'text-[#0e6efe]' : 'text-slate-400 hover:text-slate-600'
+                  className={`flex-1 py-2.5 text-center text-[13px] font-bold rounded-lg transition-all duration-200 ${
+                    heroTab === t
+                      ? 'bg-white text-slate-900 shadow-sm'
+                      : 'text-slate-400 hover:text-slate-600'
                   }`}
                 >
                   {t === 'salj' ? 'Sälj bil' : 'Hitta bil'}
-                  {heroTab === t && <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-[#0e6efe] rounded-t-full" />}
                 </button>
               ))}
             </div>
 
-            <div className="p-4">
+            <div className="px-4 pb-5">
               {heroTab === 'salj' ? (
                 <>
-                  <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2">
+                  <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
                     <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
                     {formError && (
                       <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
@@ -375,28 +376,33 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     )}
                     <button
                       type="submit"
-                      className="h-10 w-full rounded-lg bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5 shadow-[0_4px_14px_-4px_rgba(14,110,254,0.55)]"
+                      className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[14px] tracking-wide transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
                     >
                       Värdera bilen gratis
-                      <ArrowRight className="w-3.5 h-3.5 opacity-80" />
+                      <ArrowRight className="w-4 h-4" />
                     </button>
                   </form>
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="flex-1 h-px bg-slate-100" />
+                    <span className="text-[11px] text-slate-400 font-medium">eller</span>
+                    <div className="flex-1 h-px bg-slate-100" />
+                  </div>
                   <button
                     type="button"
                     onClick={() => {
                       window.history.pushState({}, '', '/kop-bil?quiz=start');
                       window.dispatchEvent(new PopStateEvent('popstate'));
                     }}
-                    className="mt-2.5 w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-700 font-bold text-[13px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
+                    className="mt-3 w-full h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-600 font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
                   >
-                    Eller låt oss hjälpa dig hitta en bil.
+                    Låt oss hjälpa dig hitta en bil
                   </button>
                 </>
               ) : (
                 <div ref={carSearchRef} className="relative">
-                  <div className="flex items-center h-10 rounded-lg bg-slate-50 border border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition-all">
-                    <span className="flex items-center justify-center w-9 shrink-0">
-                      <Search className="w-3.5 h-3.5 text-slate-400" />
+                  <div className="flex items-center h-11 rounded-xl bg-slate-50 border border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition-all">
+                    <span className="flex items-center justify-center w-10 shrink-0">
+                      <Search className="w-4 h-4 text-slate-400" />
                     </span>
                     <input
                       type="text"
@@ -410,7 +416,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     <button
                       type="button"
                       onClick={handleCarSearch}
-                      className="h-7 mx-1 px-3 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] rounded-md shrink-0 text-white font-semibold text-[12px] transition"
+                      className="h-8 mx-1.5 px-3.5 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] rounded-lg shrink-0 text-white font-semibold text-[12px] transition"
                     >
                       {carSearchLoading
                         ? <div className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -449,16 +455,20 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       </button>
                     ))}
                   </div>
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="flex-1 h-px bg-slate-100" />
+                    <span className="text-[11px] text-slate-400 font-medium">eller</span>
+                    <div className="flex-1 h-px bg-slate-100" />
+                  </div>
                   <button
                     type="button"
                     onClick={() => {
                       window.history.pushState({}, '', '/kop-bil/bestall');
                       window.dispatchEvent(new PopStateEvent('popstate'));
                     }}
-                    className="mt-3 w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-600 font-semibold text-[12px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
+                    className="mt-3 w-full h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-600 font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
                   >
                     Vet inte vad du vill ha? Vi hjälper dig.
-                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}
@@ -549,9 +559,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 </>
               ) : (
                 <div ref={carSearchRef} className="relative">
-                  <div className="flex items-center h-10 rounded-lg bg-slate-50 border border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition-all">
-                    <span className="flex items-center justify-center w-9 shrink-0">
-                      <Search className="w-3.5 h-3.5 text-slate-400" />
+                  <div className="flex items-center h-11 rounded-xl bg-slate-50 border border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition-all">
+                    <span className="flex items-center justify-center w-10 shrink-0">
+                      <Search className="w-4 h-4 text-slate-400" />
                     </span>
                     <input
                       type="text"
@@ -565,7 +575,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     <button
                       type="button"
                       onClick={handleCarSearch}
-                      className="h-7 mx-1 px-3 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] rounded-md shrink-0 text-white font-semibold text-[12px] transition"
+                      className="h-8 mx-1.5 px-3.5 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] rounded-lg shrink-0 text-white font-semibold text-[12px] transition"
                     >
                       {carSearchLoading
                         ? <div className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -604,16 +614,20 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       </button>
                     ))}
                   </div>
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="flex-1 h-px bg-slate-100" />
+                    <span className="text-[11px] text-slate-400 font-medium">eller</span>
+                    <div className="flex-1 h-px bg-slate-100" />
+                  </div>
                   <button
                     type="button"
                     onClick={() => {
                       window.history.pushState({}, '', '/kop-bil/bestall');
                       window.dispatchEvent(new PopStateEvent('popstate'));
                     }}
-                    className="mt-3 w-full h-10 rounded-lg border border-slate-200 bg-white hover:border-[#0e6efe] hover:text-[#0e6efe] active:scale-[0.98] text-slate-600 font-semibold text-[12px] tracking-wide transition-all inline-flex items-center justify-center gap-1.5"
+                    className="mt-3 w-full h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-600 font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
                   >
                     Vet inte vad du vill ha? Vi hjälper dig.
-                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}
