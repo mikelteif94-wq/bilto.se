@@ -664,6 +664,7 @@ export default function QuotePage({
             setDetailCar(null);
             navigateToBuy(`${car.brand_display} ${car.model_display}`);
           }}
+          onFitQuiz={() => setDetailCar(null)}
         />
       )}
     </div>

@@ -1341,6 +1341,11 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             setDetailCar(null);
             openDrawer(`${car.brand_display} ${car.model_display}`);
           }}
+          onFitQuiz={() => {
+            const car = detailCar;
+            setDetailCar(null);
+            setFitQuizCar(car);
+          }}
         />
       )}
 

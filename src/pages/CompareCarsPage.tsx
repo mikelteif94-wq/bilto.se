@@ -2338,6 +2338,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           quizAnswers={quizAnswers ?? undefined}
           onClose={() => setDetailCar(null)}
           onSelect={() => { const car = detailCar; setDetailCar(null); openContactForCar(car); }}
+          onFitQuiz={() => { const car = detailCar; setDetailCar(null); setFitQuizCar(car); }}
         />
       )}
 

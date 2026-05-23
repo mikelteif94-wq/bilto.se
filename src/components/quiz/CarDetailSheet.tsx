@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star, Gauge, Armchair, Briefcase, TrendingDown, Shield,
   Fuel, Battery, Car, Check, X as XIcon, Info, Users, ArrowRight,
-  BarChart2, AlertTriangle, HelpCircle, X,
+  BarChart2, AlertTriangle, HelpCircle, X, Calculator, Sparkles, ChevronDown, ChevronUp,
 } from 'lucide-react';
 import { Sheet } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,7 @@ import { findComparisonCarByMakeModel, type ComparisonCar } from '@/lib/comparis
 import type { QuizAnswers } from './QuizTypes';
 import { inferPersona, type Persona } from './persona';
 import { calcCarMonthlyRange } from '@/lib/utils';
+import { CalcPanel } from '@/components/CalcPanel';
 
 export interface DetailCarData {
   make: string;
@@ -34,6 +35,7 @@ interface CarDetailSheetProps {
   open?: boolean;
   onClose: () => void;
   onSelect?: () => void;
+  onFitQuiz?: () => void;
   quizAnswers?: QuizAnswers;
 }
 
@@ -148,7 +150,7 @@ function MonthlyCostBlock({ carPrice, usedPrice }: { carPrice: number; usedPrice
   );
 }
 
-export function CarDetailSheet({ car, open, onClose, onSelect, quizAnswers }: CarDetailSheetProps) {
+export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAnswers }: CarDetailSheetProps) {
   const isOpen = open !== undefined ? open : !!car;
 
   const comparisonData = useMemo(() => {
@@ -206,9 +208,9 @@ export function CarDetailSheet({ car, open, onClose, onSelect, quizAnswers }: Ca
         </div>
 
         {comparisonData ? (
-          <ComparisonContent data={comparisonData} persona={persona?.type ?? null} onSelect={onSelect} />
+          <ComparisonContent data={comparisonData} persona={persona?.type ?? null} onSelect={onSelect} onFitQuiz={onFitQuiz} carName={`${car.make} ${car.model}`} />
         ) : (
-          <BasicContent car={car} onSelect={onSelect} />
+          <BasicContent car={car} onSelect={onSelect} onFitQuiz={onFitQuiz} />
         )}
       </div>
     </Sheet>
@@ -331,12 +333,13 @@ function getDrivetrainLabel(drivetrain: string[]): string {
   return drivetrain.map(d => labels[d] || d).join(', ');
 }
 
-function ComparisonContent({ data, persona, onSelect }: { data: ComparisonCar; persona: Persona | null; onSelect?: () => void }) {
+function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { data: ComparisonCar; persona: Persona | null; onSelect?: () => void; onFitQuiz?: () => void; carName?: string }) {
   const FuelIcon = getFuelIcon(data.specs.fuel_types);
   const whoSuits = getWhoItSuitsFor(data);
   const cta = getPersonaCTA(persona, data.brand_display, data.model_display);
   const carPrice = data.pricing.new_from_sek ?? null;
   const usedPrice = data.pricing.used_from_sek ?? undefined;
+  const [calcOpen, setCalcOpen] = useState(false);
 
   // Persona-driven section order
   const showSafetyFirst = persona === 'first_time_buyer';
@@ -489,14 +492,60 @@ function ComparisonContent({ data, persona, onSelect }: { data: ComparisonCar; p
       {/* Persona-ordered sections */}
       {orderedSections}
 
-      {/* CTA */}
+      {/* Secondary CTAs — Kalkyl & Passar bilen mig */}
+      <div className="space-y-2">
+        <div className="grid grid-cols-2 gap-2">
+          {carPrice && (
+            <button
+              type="button"
+              onClick={() => setCalcOpen(v => !v)}
+              className={`flex items-center justify-center gap-2 h-11 rounded-xl border text-[13px] font-semibold transition-all duration-150 active:scale-[0.98] ${
+                calcOpen
+                  ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
+                  : 'border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe]/50 hover:text-[#0e6efe]'
+              }`}
+            >
+              <Calculator className="w-4 h-4 shrink-0" />
+              Räkna kalkyl
+              {calcOpen ? <ChevronUp className="w-3.5 h-3.5 ml-auto" /> : <ChevronDown className="w-3.5 h-3.5 ml-auto" />}
+            </button>
+          )}
+          {onFitQuiz && (
+            <button
+              type="button"
+              onClick={onFitQuiz}
+              className="flex items-center justify-center gap-2 h-11 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe]/50 hover:text-[#0e6efe] text-[13px] font-semibold transition-all duration-150 active:scale-[0.98]"
+            >
+              <Sparkles className="w-4 h-4 shrink-0 text-amber-500" />
+              Passar den mig?
+            </button>
+          )}
+        </div>
+
+        <AnimatePresence initial={false}>
+          {calcOpen && carPrice && (
+            <motion.div
+              key="calc"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              style={{ overflow: 'hidden' }}
+            >
+              <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Primary CTA */}
       {onSelect && (
         <button
           type="button"
           onClick={onSelect}
-          className="w-full flex flex-col items-center gap-1 py-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white transition-all duration-200 hover:shadow-lg"
+          className="w-full flex flex-col items-center gap-1 py-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 hover:shadow-lg shadow-sm shadow-[#0e6efe]/20"
         >
-          <span className="text-[15px] font-semibold inline-flex items-center gap-2">
+          <span className="text-[15px] font-bold inline-flex items-center gap-2">
             {cta.headline}
             <ArrowRight className="w-4 h-4" />
           </span>
@@ -507,7 +556,10 @@ function ComparisonContent({ data, persona, onSelect }: { data: ComparisonCar; p
   );
 }
 
-function BasicContent({ car, onSelect }: { car: DetailCarData; onSelect?: () => void }) {
+function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSelect?: () => void; onFitQuiz?: () => void }) {
+  const [calcOpen, setCalcOpen] = useState(false);
+  const carPrice = car.usedPrice ?? null;
+
   return (
     <div className="space-y-5">
       <div className="flex items-start gap-2.5 p-4 bg-slate-50 rounded-xl">
@@ -531,13 +583,60 @@ function BasicContent({ car, onSelect }: { car: DetailCarData; onSelect?: () => 
           </div>
         </div>
       )}
+
+      {/* Secondary CTAs */}
+      <div className="space-y-2">
+        <div className="grid grid-cols-2 gap-2">
+          {carPrice && (
+            <button
+              type="button"
+              onClick={() => setCalcOpen(v => !v)}
+              className={`flex items-center justify-center gap-2 h-11 rounded-xl border text-[13px] font-semibold transition-all duration-150 active:scale-[0.98] ${
+                calcOpen
+                  ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
+                  : 'border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe]/50 hover:text-[#0e6efe]'
+              }`}
+            >
+              <Calculator className="w-4 h-4 shrink-0" />
+              Räkna kalkyl
+              {calcOpen ? <ChevronUp className="w-3.5 h-3.5 ml-auto" /> : <ChevronDown className="w-3.5 h-3.5 ml-auto" />}
+            </button>
+          )}
+          {onFitQuiz && (
+            <button
+              type="button"
+              onClick={onFitQuiz}
+              className="flex items-center justify-center gap-2 h-11 rounded-xl border border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe]/50 hover:text-[#0e6efe] text-[13px] font-semibold transition-all duration-150 active:scale-[0.98]"
+            >
+              <Sparkles className="w-4 h-4 shrink-0 text-amber-500" />
+              Passar den mig?
+            </button>
+          )}
+        </div>
+
+        <AnimatePresence initial={false}>
+          {calcOpen && carPrice && (
+            <motion.div
+              key="calc"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              style={{ overflow: 'hidden' }}
+            >
+              <CalcPanel carPrice={carPrice} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       {onSelect && (
         <button
           type="button"
           onClick={onSelect}
-          className="w-full flex flex-col items-center gap-1 py-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white transition-all duration-200 hover:shadow-lg"
+          className="w-full flex flex-col items-center gap-1 py-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 hover:shadow-lg shadow-sm shadow-[#0e6efe]/20"
         >
-          <span className="text-[15px] font-semibold inline-flex items-center gap-2">
+          <span className="text-[15px] font-bold inline-flex items-center gap-2">
             Låt oss hitta bästa priset
             <ArrowRight className="w-4 h-4" />
           </span>
