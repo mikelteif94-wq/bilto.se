@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import FieldError from './FieldError';
 import { validateSwedishPhone } from '../../lib/utils';
+import EmailOtpStep from './EmailOtpStep';
 
 const TIMES = [
   { value: 'whenever', label: 'När som helst' },
@@ -24,6 +25,8 @@ interface BuyContactStepProps {
 export default function BuyContactStep({ initialData, onNext, submitting = false }: BuyContactStepProps) {
   const [d, setD] = useState<BuyContactData>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showOtp, setShowOtp] = useState(false);
+  const [verifiedMejl, setVerifiedMejl] = useState('');
 
   const validate = (): boolean => {
     const e: Record<string, string> = {};
@@ -41,13 +44,35 @@ export default function BuyContactStep({ initialData, onNext, submitting = false
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) onNext(d);
+    if (!validate()) return;
+    // Skip OTP if same email already verified this session
+    if (verifiedMejl === d.mejl.trim().toLowerCase()) {
+      onNext(d);
+      return;
+    }
+    setShowOtp(true);
   };
 
   const set = (key: keyof BuyContactData, value: string) => {
     setD(prev => ({ ...prev, [key]: value }));
     setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
   };
+
+  if (showOtp) {
+    return (
+      <div className="py-4">
+        <EmailOtpStep
+          email={d.mejl.trim()}
+          onVerified={(verified) => {
+            setVerifiedMejl(verified.toLowerCase());
+            setShowOtp(false);
+            onNext(d);
+          }}
+          onChangeEmail={() => setShowOtp(false)}
+        />
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">

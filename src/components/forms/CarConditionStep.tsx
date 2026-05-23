@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import FieldError from './FieldError';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 import RegInput from '../RegInput';
+import EmailOtpStep from './EmailOtpStep';
 
 const SKICK_OPTIONS = [
   { value: 'mycket_bra', label: 'Mycket bra', desc: 'Inga synliga defekter' },
@@ -76,6 +77,10 @@ export default function CarConditionStep({
   const [skick, setSkick] = useState(initialSkick);
   const [skickKommentar, setSkickKommentar] = useState(initialSkickKommentar);
   const [errors, setErrors] = useState<{ reg?: string; marke?: string; modell?: string; ar?: string; miltal?: string; mejl?: string; skick?: string }>({});
+  const [showOtp, setShowOtp] = useState(false);
+  const [verifiedMejl, setVerifiedMejl] = useState('');
+  // Pending args to pass to onNext after OTP verification
+  const [pendingArgs, setPendingArgs] = useState<Parameters<CarConditionStepProps['onNext']> | null>(null);
   const editableReg = !regnummer;
 
   const modelOptions = useMemo(() => CAR_BRANDS[marke] ?? [], [marke]);
@@ -121,8 +126,38 @@ export default function CarConditionStep({
       return;
     }
 
-    onNext(chosen!.mid, skick, regClean, mejl.trim(), skickKommentar.trim(), marke, modell, arNum);
+    const args: Parameters<CarConditionStepProps['onNext']> = [
+      chosen!.mid, skick, regClean, mejl.trim(), skickKommentar.trim(), marke, modell, arNum,
+    ];
+
+    // If email already verified (same address), skip OTP
+    if (verifiedMejl === mejl.trim().toLowerCase()) {
+      onNext(...args);
+      return;
+    }
+
+    setPendingArgs(args);
+    setShowOtp(true);
   };
+
+  if (showOtp && pendingArgs) {
+    return (
+      <div className="py-6">
+        <EmailOtpStep
+          email={mejl.trim()}
+          onVerified={(verified) => {
+            setVerifiedMejl(verified.toLowerCase());
+            setShowOtp(false);
+            onNext(...pendingArgs);
+          }}
+          onChangeEmail={() => {
+            setShowOtp(false);
+            setPendingArgs(null);
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
