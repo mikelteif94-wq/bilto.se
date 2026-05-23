@@ -11,10 +11,13 @@ interface RegInputProps {
 export default function RegInput({ value, onChange, disabled, error, size = 'md' }: RegInputProps) {
   const isValid = /^[A-Z]{3}\d{2}[A-Z0-9]$/.test(value);
 
+  const INVALID_LETTERS = new Set(['I', 'Q', 'Å', 'Ä', 'Ö']);
+
   const handleChange = (raw: string) => {
-    const cleaned = raw.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const cleaned = raw.toUpperCase().replace(/[^A-ZÅÄÖ0-9]/g, '');
     let result = '';
     for (const ch of cleaned) {
+      if (INVALID_LETTERS.has(ch)) continue;
       const pos = result.length;
       if (pos < 3 && /[A-Z]/.test(ch)) {
         result += ch;
