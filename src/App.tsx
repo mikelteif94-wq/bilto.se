@@ -10,6 +10,7 @@ import DealerOverview from './pages/DealerOverview';
 import DealerCarDetail from './pages/DealerCarDetail';
 import DealerAddCar from './pages/DealerAddCar';
 import DealerSettings from './pages/DealerSettings';
+import DealerInventorySync from './pages/DealerInventorySync';
 import AdminLogin from './pages/AdminLogin';
 import AdminOverview from './pages/AdminOverview';
 import AdminCars from './pages/AdminCars';
@@ -196,6 +197,7 @@ function App() {
     path === '/handlare/installningar' ||
     path === '/handlare/bilar' ||
     path === '/handlare/bilar/ny' ||
+    path === '/handlare/lager' ||
     matchDealerCarDetail(path) !== null;
 
   const myCarToken = matchMyCar(path);
@@ -789,6 +791,23 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
     );
   }
 
+  if (path === '/handlare/lager') {
+    return (
+      <DealerInventorySync
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onBack={() => navigate('/handlare/oversikt')}
+        onLoggedOut={async () => {
+          await supabase.auth.signOut();
+          onLoggedOut();
+        }}
+        onNavigateOverview={() => navigate('/handlare/oversikt')}
+        onNavigateCars={() => navigate('/handlare/bilar')}
+        onNavigateSettings={() => navigate('/handlare/installningar')}
+      />
+    );
+  }
+
   if (path === '/handlare/installningar') {
     return (
       <DealerSettings
@@ -819,6 +838,7 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
         onAddCar={() => navigate('/handlare/bilar/ny')}
         onNavigateCars={() => navigate('/handlare/bilar')}
         onNavigateSettings={() => navigate('/handlare/installningar')}
+        onNavigateInventory={() => navigate('/handlare/lager')}
       />
     );
   }
@@ -862,6 +882,7 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
       onAddCar={() => navigate('/handlare/bilar/ny')}
       onNavigateOverview={() => navigate('/handlare/oversikt')}
       onNavigateSettings={() => navigate('/handlare/installningar')}
+      onNavigateInventory={() => navigate('/handlare/lager')}
     />
   );
 }

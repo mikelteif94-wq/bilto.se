@@ -18,6 +18,7 @@ import {
   Zap,
   Receipt,
   AlertTriangle,
+  Package,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { formatKr, formatTimeLeftSimple } from '../lib/dealer-utils';
@@ -31,6 +32,7 @@ interface DealerOverviewProps {
   onAddCar: () => void;
   onNavigateCars: () => void;
   onNavigateSettings: () => void;
+  onNavigateInventory?: () => void;
 }
 
 interface Stats {
@@ -137,6 +139,7 @@ export default function DealerOverview({
   onAddCar,
   onNavigateCars,
   onNavigateSettings,
+  onNavigateInventory,
 }: DealerOverviewProps) {
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(Date.now());
@@ -325,6 +328,7 @@ export default function DealerOverview({
   const navItems = [
     { icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', active: true, onClick: undefined },
     { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Aktiva uppdrag', onClick: onNavigateCars, badge: stats.aktiva || undefined },
+    ...(onNavigateInventory ? [{ icon: <Package className="w-[18px] h-[18px]" />, label: 'Lager', onClick: onNavigateInventory }] : []),
     { icon: <SettingsIcon className="w-[18px] h-[18px]" />, label: 'Inställningar', onClick: onNavigateSettings },
   ];
 

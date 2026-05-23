@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   Loader2, ChevronRight, Image as ImageIcon, Clock,
   Settings as SettingsIcon, Sparkles, LayoutDashboard, Car as CarIcon,
-  Zap, CheckCircle2, X,
+  Zap, CheckCircle2, X, Package,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
@@ -19,6 +19,7 @@ interface DealerCarsListProps {
   onAddCar: () => void;
   onNavigateOverview?: () => void;
   onNavigateSettings?: () => void;
+  onNavigateInventory?: () => void;
 }
 
 type Car = Database['public']['Tables']['cars']['Row'];
@@ -46,6 +47,7 @@ export default function DealerCarsList({
   onAddCar,
   onNavigateOverview,
   onNavigateSettings,
+  onNavigateInventory,
 }: DealerCarsListProps) {
   const [cars, setCars] = useState<CarRow[]>([]);
   const [bidsByCar, setBidsByCar] = useState<Record<string, number>>({});
@@ -173,6 +175,7 @@ export default function DealerCarsList({
   const navItems = [
     ...(onNavigateOverview ? [{ icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', onClick: onNavigateOverview }] : []),
     { icon: <CarIcon className="w-[18px] h-[18px]" />, label: 'Aktiva uppdrag', active: true },
+    ...(onNavigateInventory ? [{ icon: <Package className="w-[18px] h-[18px]" />, label: 'Lager', onClick: onNavigateInventory }] : []),
     ...(onNavigateSettings ? [{ icon: <SettingsIcon className="w-[18px] h-[18px]" />, label: 'Inställningar', onClick: onNavigateSettings }] : []),
   ];
 
