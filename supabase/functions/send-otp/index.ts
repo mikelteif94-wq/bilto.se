@@ -65,9 +65,9 @@ Deno.serve(async (req: Request) => {
     const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") ?? "Bilto <hej@bilto.se>";
 
     if (!resendKey) {
-      // Dev fallback: log the code so it can be found in function logs
+      // Dev fallback: visible in Supabase edge function logs only, never in response
       console.log(`[send-otp] DEV CODE for ${email}: ${code}`);
-      return jsonResp({ ok: true, dev_code: code }, 200);
+      return jsonResp({ ok: true }, 200);
     }
 
     const html = renderOtpEmail({ email, code, ttlMinutes: CODE_TTL_MINUTES });
