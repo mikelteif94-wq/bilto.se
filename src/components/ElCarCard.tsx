@@ -1,8 +1,5 @@
-import { useState } from 'react';
-import { Zap, Check, ChevronRight, SlidersHorizontal, Car, Sparkles, Calculator, ChevronDown, ChevronUp } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Zap, Check, ChevronRight, SlidersHorizontal, Car } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
-import { CalcPanel } from './CalcPanel';
 
 interface ElCarCardProps {
   name: string;
@@ -46,26 +43,12 @@ function RatingRing({ rating }: { rating: number }) {
   );
 }
 
-
 export default function ElCarCard({
   name, imageUrl, rating, expertComment, rangeKm,
   carPrice, usedPrice, isCompared, topBadge,
-  onNegotiate, onDetail, onCompare, onFitQuiz,
+  onNegotiate, onDetail, onCompare,
 }: ElCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
-  const [toolsOpen, setToolsOpen] = useState(false);
-  const [panel, setPanel] = useState<null | 'calc' | 'fit'>(null);
-
-  const toggleTools = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setToolsOpen(v => !v);
-    if (toolsOpen) setPanel(null);
-  };
-
-  const openPanel = (p: 'calc' | 'fit', e: React.MouseEvent) => {
-    e.stopPropagation();
-    setPanel(prev => prev === p ? null : p);
-  };
 
   return (
     <div
@@ -83,7 +66,6 @@ export default function ElCarCard({
 
       {/* Clickable card area */}
       <div className="cursor-pointer" onClick={() => onDetail?.()}>
-        {/* Image */}
         <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] overflow-hidden rounded-t-2xl bg-[#080f1c]">
           {imageUrl ? (
             <img
@@ -113,7 +95,6 @@ export default function ElCarCard({
           <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#0f172a] to-transparent" />
         </div>
 
-        {/* Static content */}
         <div className="px-3.5 pt-3 pb-1">
           <div className="flex items-start gap-2 mb-2">
             {rating != null && <RatingRing rating={rating} />}
@@ -145,90 +126,29 @@ export default function ElCarCard({
         </div>
       </div>
 
-      {/* Action area */}
+      {/* Actions */}
       <div className="px-3.5 pb-3.5 pt-1 space-y-1.5">
-        {/* Primary CTA */}
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
           className="w-full h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[11px] font-bold transition-all duration-150 flex items-center justify-center gap-1 shadow-lg shadow-[#0e6efe]/30"
         >
-          Få hjälp att köpa<ChevronRight className="w-3 h-3 opacity-80" />
+          Få hjälp att köpa <ChevronRight className="w-3 h-3 opacity-80" />
         </button>
-
-        {/* Tools toggle */}
-        {(carPrice || onFitQuiz) && (
+        {onCompare && (
           <button
             type="button"
-            onClick={toggleTools}
-            className={`w-full flex items-center justify-center gap-1 h-7 rounded-xl border text-[10px] font-medium transition-all duration-150 active:scale-[0.98] ${
-              toolsOpen
-                ? 'bg-white/10 border-white/20 text-slate-300'
-                : 'border-white/10 bg-white/5 text-slate-500 hover:text-slate-300 hover:border-white/20'
+            onClick={(e) => { e.stopPropagation(); onCompare(); }}
+            className={`w-full flex items-center justify-center gap-1.5 h-7 rounded-xl border text-[10px] font-medium transition-all duration-150 active:scale-[0.98] ${
+              isCompared
+                ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-400'
+                : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-300'
             }`}
           >
-            {toolsOpen
-              ? <><ChevronUp className="w-3 h-3" />Stäng</>
-              : <><ChevronDown className="w-3 h-3" />Kalkyl &amp; passar bilen mig?</>
-            }
+            {isCompared ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
+            {isCompared ? 'Tillagd i jämförelse' : 'Jämför'}
           </button>
         )}
-
-        {/* Expandable tools panel */}
-        <AnimatePresence initial={false}>
-          {toolsOpen && (
-            <motion.div
-              key="tools"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2, ease: 'easeInOut' }}
-              style={{ overflow: 'hidden' }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="pt-1 space-y-1.5">
-                <div className="flex gap-2">
-                  {carPrice && (
-                    <button type="button" onClick={(e) => openPanel('calc', e)} className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl border text-[11px] font-semibold transition-all duration-150 active:scale-[0.98] ${panel === 'calc' ? 'bg-[#38bdf8] border-[#38bdf8] text-[#0f172a]' : 'border-white/15 bg-white/5 text-slate-300 hover:border-[#38bdf8]/50 hover:text-[#7dd3fc]'}`}>
-                      <Calculator className="w-3.5 h-3.5" />Kalkyl
-                    </button>
-                  )}
-                  {onFitQuiz && (
-                    <button type="button" onClick={(e) => openPanel('fit', e)} className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl border text-[11px] font-semibold transition-all duration-150 active:scale-[0.98] ${panel === 'fit' ? 'bg-[#38bdf8] border-[#38bdf8] text-[#0f172a]' : 'border-white/15 bg-white/5 text-slate-300 hover:border-[#38bdf8]/50 hover:text-[#7dd3fc]'}`}>
-                      <Sparkles className="w-3.5 h-3.5" />Passar bilen mig?
-                    </button>
-                  )}
-                </div>
-
-                <AnimatePresence initial={false}>
-                  {panel === 'calc' && carPrice && (
-                    <motion.div key="calc" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.18, ease: 'easeInOut' }} style={{ overflow: 'hidden' }}>
-                      <CalcPanel carPrice={carPrice} usedPrice={usedPrice} dark />
-                    </motion.div>
-                  )}
-                  {panel === 'fit' && onFitQuiz && (
-                    <motion.div key="fit" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.18, ease: 'easeInOut' }} style={{ overflow: 'hidden' }}>
-                      <div className="rounded-xl border border-white/10 bg-white/5 p-3.5">
-                        <p className="text-[12.5px] font-semibold text-white mb-1">Passar {name} dig?</p>
-                        <p className="text-[11.5px] text-slate-400 leading-relaxed mb-3">Svara på några korta frågor — vi jämför bilen mot dina behov, familj, pendling och budget.</p>
-                        <button type="button" onClick={(e) => { e.stopPropagation(); onFitQuiz(); }} className="w-full flex items-center justify-center gap-2 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[12.5px] font-bold transition-all duration-150 shadow-lg shadow-[#0e6efe]/30">
-                          <Sparkles className="w-3.5 h-3.5" />Starta matchning
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {onCompare && (
-                  <button type="button" onClick={(e) => { e.stopPropagation(); onCompare(); }} className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${isCompared ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-400' : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-300'}`}>
-                    {isCompared ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
-                    {isCompared ? 'Tillagd i jämförelse' : 'Lägg till i jämförelse'}
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </div>
   );

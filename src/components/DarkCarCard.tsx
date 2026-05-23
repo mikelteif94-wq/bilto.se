@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import { Star, Car, ChevronRight, Check, SlidersHorizontal, Sparkles, Calculator, ChevronDown, ChevronUp } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Star, Car, ChevronRight, Check, SlidersHorizontal } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { calcCarMonthlyRange } from '../lib/utils';
-import { CalcPanel } from './CalcPanel';
 
 interface DarkCarCardProps {
   name: string;
@@ -42,26 +40,12 @@ function ScoreBadge({ value }: { value: number }) {
   );
 }
 
-
 export default function DarkCarCard({
   name, imageUrl, rating, topBadge, expertComment,
   carPrice, usedPrice,
-  onNegotiate, onDetail, onCompare, isComparing, onFitQuiz, index = 0,
+  onNegotiate, onDetail, onCompare, isComparing, index = 0,
 }: DarkCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
-  const [toolsOpen, setToolsOpen] = useState(false);
-  const [panel, setPanel] = useState<null | 'calc' | 'fit'>(null);
-
-  const toggleTools = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setToolsOpen(v => !v);
-    if (toolsOpen) setPanel(null);
-  };
-
-  const openPanel = (p: 'calc' | 'fit', e: React.MouseEvent) => {
-    e.stopPropagation();
-    setPanel(prev => prev === p ? null : p);
-  };
 
   return (
     <motion.div
@@ -74,7 +58,6 @@ export default function DarkCarCard({
     >
       {/* Clickable card area */}
       <div className="cursor-pointer" onClick={() => onDetail?.()}>
-        {/* Image */}
         <div className="relative aspect-[16/10] bg-white overflow-hidden rounded-t-2xl">
           {imageUrl ? (
             <img
@@ -95,7 +78,6 @@ export default function DarkCarCard({
           {rating != null && <ScoreBadge value={rating} />}
         </div>
 
-        {/* Static content */}
         <div className="px-4 pt-3 pb-3">
           <h3 className="text-[16px] font-bold text-slate-900 leading-snug group-hover:text-[#0e6efe] transition-colors duration-200">{name}</h3>
           {expertComment && (
@@ -112,9 +94,8 @@ export default function DarkCarCard({
         </div>
       </div>
 
-      {/* Action area */}
+      {/* Actions */}
       <div className="px-4 pb-4 space-y-1.5">
-        {/* Primary CTA */}
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onNegotiate(); }}
@@ -122,98 +103,20 @@ export default function DarkCarCard({
         >
           Få hjälp att köpa <ChevronRight className="w-4 h-4 opacity-80" />
         </button>
-
-        {/* Tools toggle */}
-        {(carPrice || onFitQuiz) && (
+        {onCompare && (
           <button
             type="button"
-            onClick={toggleTools}
+            onClick={(e) => { e.stopPropagation(); onCompare(); }}
             className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${
-              toolsOpen
-                ? 'bg-slate-100 border-slate-200 text-slate-700'
-                : 'border-slate-200 bg-white text-slate-400 hover:text-slate-600 hover:border-slate-300'
+              isComparing
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+                : 'border-slate-200 bg-white text-slate-400 hover:border-slate-300 hover:text-slate-600'
             }`}
           >
-            {toolsOpen
-              ? <><ChevronUp className="w-3 h-3" />Stäng</>
-              : <><ChevronDown className="w-3 h-3" />Kalkyl &amp; passar bilen mig?</>
-            }
+            {isComparing ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
+            {isComparing ? 'Tillagd i jämförelse' : 'Jämför'}
           </button>
         )}
-
-        {/* Expandable tools panel */}
-        <AnimatePresence initial={false}>
-          {toolsOpen && (
-            <motion.div
-              key="tools"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2, ease: 'easeInOut' }}
-              style={{ overflow: 'hidden' }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="pt-1 space-y-1.5">
-                <div className="flex gap-2">
-                  {carPrice && (
-                    <button
-                      type="button"
-                      onClick={(e) => openPanel('calc', e)}
-                      className={`flex-1 flex items-center justify-center gap-1.5 h-10 rounded-xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.98] ${
-                        panel === 'calc'
-                          ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
-                          : 'border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe]'
-                      }`}
-                    >
-                      <Calculator className="w-3.5 h-3.5" />
-                      Kalkyl
-                    </button>
-                  )}
-                  {onFitQuiz && (
-                    <button
-                      type="button"
-                      onClick={(e) => openPanel('fit', e)}
-                      className={`flex-1 flex items-center justify-center gap-1.5 h-10 rounded-xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.98] ${
-                        panel === 'fit'
-                          ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
-                          : 'border-slate-200 bg-white text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe]'
-                      }`}
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      Passar bilen mig?
-                    </button>
-                  )}
-                </div>
-
-                <AnimatePresence initial={false}>
-                  {panel === 'calc' && carPrice && (
-                    <motion.div key="calc" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.18, ease: 'easeInOut' }} style={{ overflow: 'hidden' }}>
-                      <CalcPanel carPrice={carPrice} usedPrice={usedPrice} />
-                    </motion.div>
-                  )}
-                  {panel === 'fit' && onFitQuiz && (
-                    <motion.div key="fit" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.18, ease: 'easeInOut' }} style={{ overflow: 'hidden' }}>
-                      <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                        <p className="text-[13px] font-semibold text-slate-800 mb-1">Passar {name} dig?</p>
-                        <p className="text-[12px] text-slate-500 leading-relaxed mb-3">Svara på några korta frågor — vi jämför bilen mot dina behov, familj, pendling och budget.</p>
-                        <button type="button" onClick={(e) => { e.stopPropagation(); onFitQuiz(); }} className="w-full flex items-center justify-center gap-2 h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[13px] font-bold transition-all duration-150 shadow-sm shadow-[#0e6efe]/20">
-                          <Sparkles className="w-3.5 h-3.5" />Starta matchning
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {onCompare && (
-                  <button type="button" onClick={(e) => { e.stopPropagation(); onCompare(); }} className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${isComparing ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'border-slate-200 bg-white text-slate-400 hover:border-slate-300 hover:text-slate-600'}`}>
-                    {isComparing ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
-                    {isComparing ? 'Tillagd i jämförelse' : 'Lägg till i jämförelse'}
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </motion.div>
   );
