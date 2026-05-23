@@ -17,6 +17,13 @@ import {
   LayoutDashboard,
   Car as CarIcon,
   Settings as SettingsIcon,
+  Star,
+  Award,
+  TrendingUp,
+  Clock,
+  Target,
+  Zap,
+  CreditCard,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ErrorBanner from '../components/ErrorBanner';
@@ -51,6 +58,184 @@ interface Member {
   user_id: string | null;
 }
 
+interface DealerScore {
+  bilto_score: number | null;
+  tier: string | null;
+  response_score: number | null;
+  hitrate_score: number | null;
+  activity_score: number | null;
+  payment_score: number | null;
+  score_updated_at: string | null;
+}
+
+// ---------- Ranking helpers ----------
+
+function tierConfig(tier: string | null): {
+  label: string;
+  icon: React.ReactNode;
+  headerClass: string;
+  badgeClass: string;
+  barColor: string;
+} {
+  switch (tier) {
+    case 'guld':
+      return {
+        label: 'GULD',
+        icon: <Star className="w-6 h-6 fill-amber-500 text-amber-500" />,
+        headerClass: 'bg-gradient-to-r from-amber-50 to-amber-100 border-amber-200',
+        badgeClass: 'bg-amber-100 text-amber-800 border-amber-300',
+        barColor: 'bg-amber-500',
+      };
+    case 'silver':
+      return {
+        label: 'SILVER',
+        icon: <Award className="w-6 h-6 text-slate-500" />,
+        headerClass: 'bg-gradient-to-r from-slate-100 to-slate-200 border-slate-300',
+        badgeClass: 'bg-slate-200 text-slate-700 border-slate-300',
+        barColor: 'bg-slate-500',
+      };
+    case 'brons':
+      return {
+        label: 'BRONS',
+        icon: <Award className="w-6 h-6 text-orange-500" />,
+        headerClass: 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-200',
+        badgeClass: 'bg-orange-100 text-orange-700 border-orange-300',
+        barColor: 'bg-orange-500',
+      };
+    default:
+      return {
+        label: 'NY',
+        icon: <TrendingUp className="w-6 h-6 text-blue-500" />,
+        headerClass: 'bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200',
+        badgeClass: 'bg-blue-50 text-blue-600 border-blue-200',
+        barColor: 'bg-blue-500',
+      };
+  }
+}
+
+interface ScoreBarProps {
+  score: number | null;
+  max: number;
+  color: string;
+}
+function ScoreBar({ score, max, color }: ScoreBarProps) {
+  const val = score ?? 0;
+  const pct = Math.min(100, (val / max) * 100);
+  return (
+    <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+      <div
+        className={`h-full rounded-full transition-all ${color}`}
+        style={{ width: `${pct}%` }}
+      />
+    </div>
+  );
+}
+
+interface RankingCardProps {
+  score: DealerScore;
+}
+function RankingCard({ score }: RankingCardProps) {
+  const cfg = tierConfig(score.tier);
+  const biltoScore = score.bilto_score ?? 0;
+
+  const breakdown: {
+    icon: React.ReactNode;
+    label: string;
+    value: number | null;
+    hint: string;
+  }[] = [
+    {
+      icon: <Clock className="w-3.5 h-3.5" />,
+      label: 'Svarstid',
+      value: score.response_score,
+      hint: 'Svara snabbare för högre poäng',
+    },
+    {
+      icon: <Target className="w-3.5 h-3.5" />,
+      label: 'Träffsäkerhet',
+      value: score.hitrate_score,
+      hint: 'Vunna affärer / totalt antal bud',
+    },
+    {
+      icon: <Zap className="w-3.5 h-3.5" />,
+      label: 'Aktivitet',
+      value: score.activity_score,
+      hint: 'Bud lagda senaste 30 dagarna',
+    },
+    {
+      icon: <CreditCard className="w-3.5 h-3.5" />,
+      label: 'Betalning',
+      value: score.payment_score,
+      hint: 'Fakturahistorik',
+    },
+  ];
+
+  return (
+    <section className={`rounded-xl border overflow-hidden ${cfg.headerClass}`}>
+      {/* Card header */}
+      <div className="px-5 sm:px-6 pt-5 pb-4">
+        <div className="flex items-center justify-between gap-4">
+          {/* Tier badge + icon */}
+          <div className="flex items-center gap-2.5">
+            {cfg.icon}
+            <div>
+              <span
+                className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded border tracking-widest uppercase ${cfg.badgeClass}`}
+              >
+                {score.tier === 'guld' && (
+                  <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                )}
+                {cfg.label}
+              </span>
+              <p className="text-xs text-slate-500 mt-0.5">Din nuvarande nivå</p>
+            </div>
+          </div>
+
+          {/* Big score number */}
+          <div className="text-right shrink-0">
+            <div className="text-3xl sm:text-4xl font-black text-slate-900 tabular-nums leading-none">
+              {biltoScore}
+            </div>
+            <div className="text-xs text-slate-500 mt-0.5">/ 100</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Breakdown bars */}
+      <div className="bg-white px-5 sm:px-6 py-4 space-y-3.5">
+        {breakdown.map((item) => (
+          <div key={item.label}>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-slate-400">{item.icon}</span>
+              <span className="text-xs font-semibold text-slate-700">{item.label}</span>
+              <span className="ml-auto text-xs font-bold text-slate-800 tabular-nums">
+                {item.value ?? 0}
+                <span className="font-normal text-slate-400">/25</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <ScoreBar score={item.value} max={25} color={cfg.barColor} />
+            </div>
+            <p className="text-[11px] text-slate-400 mt-0.5">{item.hint}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Tip footer */}
+      <div className="bg-amber-50 border-t border-amber-100 px-5 sm:px-6 py-3">
+        <p className="text-xs text-amber-700 flex items-start gap-1.5">
+          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0 mt-0.5" />
+          <span>
+            <strong>Guld-handlare</strong> får leads 30 min tidigare än övriga
+          </span>
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Main component ----------
+
 export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack, onNavigateOverview, onNavigateCars, onLogout }: DealerSettingsProps) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -83,9 +268,14 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
   const [inviteDone, setInviteDone] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
 
+  // Ranking state
+  const [dealerScore, setDealerScore] = useState<DealerScore | null>(null);
+  const [scoreLoading, setScoreLoading] = useState(true);
+
   useEffect(() => {
     void load();
     void loadMembers();
+    void loadScore();
   }, [dealerId]);
 
   const load = async () => {
@@ -107,6 +297,19 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
       });
     }
     setLoading(false);
+  };
+
+  const loadScore = async () => {
+    setScoreLoading(true);
+    const { data } = await supabase
+      .from('dealers')
+      .select('bilto_score, tier, response_score, hitrate_score, activity_score, payment_score, score_updated_at')
+      .eq('id', dealerId)
+      .maybeSingle();
+    if (data) {
+      setDealerScore(data as DealerScore);
+    }
+    setScoreLoading(false);
   };
 
   const loadMembers = async () => {
@@ -263,6 +466,25 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
     >
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
         <ErrorBanner message={error} />
+
+        {/* Din Bilto-ranking — always visible (not gated on main loading) */}
+        <div>
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+            Din Bilto-ranking
+          </h2>
+          {scoreLoading ? (
+            <div className="bg-white rounded-xl border border-slate-200 flex justify-center py-10">
+              <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+            </div>
+          ) : dealerScore ? (
+            <RankingCard score={dealerScore} />
+          ) : (
+            <div className="bg-white rounded-xl border border-slate-200 px-5 py-8 text-center">
+              <p className="text-sm text-slate-500">Ranking ej tillgänglig ännu.</p>
+            </div>
+          )}
+        </div>
 
         {loading ? (
           <div className="flex justify-center py-20">

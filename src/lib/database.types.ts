@@ -219,6 +219,18 @@ export type Database = {
           moms_registrerad: boolean;
           verifierad_at: string | null;
           bankid_verifierad_at: string | null;
+          // Ranking columns
+          bilto_score: number | null;
+          tier: string | null;
+          response_score: number | null;
+          hitrate_score: number | null;
+          activity_score: number | null;
+          payment_score: number | null;
+          score_updated_at: string | null;
+          win_count: number | null;
+          lost_count: number | null;
+          avg_response_minutes: number | null;
+          conversion_rate: number | null;
         };
         Insert: {
           id?: string;
@@ -240,6 +252,17 @@ export type Database = {
           moms_registrerad?: boolean;
           verifierad_at?: string | null;
           bankid_verifierad_at?: string | null;
+          bilto_score?: number | null;
+          tier?: string | null;
+          response_score?: number | null;
+          hitrate_score?: number | null;
+          activity_score?: number | null;
+          payment_score?: number | null;
+          score_updated_at?: string | null;
+          win_count?: number | null;
+          lost_count?: number | null;
+          avg_response_minutes?: number | null;
+          conversion_rate?: number | null;
         };
         Update: {
           id?: string;
@@ -261,6 +284,17 @@ export type Database = {
           moms_registrerad?: boolean;
           verifierad_at?: string | null;
           bankid_verifierad_at?: string | null;
+          bilto_score?: number | null;
+          tier?: string | null;
+          response_score?: number | null;
+          hitrate_score?: number | null;
+          activity_score?: number | null;
+          payment_score?: number | null;
+          score_updated_at?: string | null;
+          win_count?: number | null;
+          lost_count?: number | null;
+          avg_response_minutes?: number | null;
+          conversion_rate?: number | null;
         };
       };
       bids: {

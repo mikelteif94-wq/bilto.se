@@ -12,6 +12,8 @@ import {
   Receipt,
   Wrench,
   ListChecks,
+  Shield,
+  Eye,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
@@ -51,6 +53,10 @@ export default function DealerCarDetail({
   const [now, setNow] = useState(Date.now());
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
 
+  const [reservation, setReservation] = useState<{ id: string; dealer_id: string; expires_at: string } | null>(null);
+  const [reservationLoading, setReservationLoading] = useState(false);
+  const [countdown, setCountdown] = useState('');
+
   const [bidInput, setBidInput] = useState('');
   const [kommentar, setKommentar] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -61,6 +67,27 @@ export default function DealerCarDetail({
     const id = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(id);
   }, []);
+
+  useEffect(() => {
+    if (!reservation) {
+      setCountdown('');
+      return;
+    }
+    const tick = () => {
+      const diffMs = new Date(reservation.expires_at).getTime() - Date.now();
+      if (diffMs <= 0) {
+        setCountdown('00:00');
+        return;
+      }
+      const totalSec = Math.floor(diffMs / 1000);
+      const mins = Math.floor(totalSec / 60);
+      const secs = totalSec % 60;
+      setCountdown(`${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`);
+    };
+    tick();
+    const id = window.setInterval(tick, 1000);
+    return () => window.clearInterval(id);
+  }, [reservation]);
 
   useEffect(() => {
     void load();
@@ -82,9 +109,47 @@ export default function DealerCarDetail({
       setError('Bilen kunde inte hämtas.');
     } else {
       setCar(carData as CarDetail);
+
+      // Check for an active reservation on this car
+      const { data: existingRes } = await supabase
+        .from('lead_reservations')
+        .select('id, dealer_id, expires_at')
+        .eq('car_id', carId)
+        .gt('expires_at', new Date().toISOString())
+        .maybeSingle();
+      setReservation(existingRes);
+
+      // Auto-create a reservation for this dealer if none exists and auction is open
+      const auctionIsOpen =
+        carData.status !== 'avslutad' &&
+        (carData.auktion_slut == null || new Date(carData.auktion_slut).getTime() > Date.now());
+
+      if (!existingRes && auctionIsOpen) {
+        const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
+        const { data: newRes } = await supabase
+          .from('lead_reservations')
+          .insert({ dealer_id: dealerId, car_id: carId, expires_at: expiresAt })
+          .select('id, dealer_id, expires_at')
+          .maybeSingle();
+        setReservation(newRes);
+      }
     }
     setMyBids((bidData ?? []) as Bid[]);
     setLoading(false);
+  };
+
+  const extendReservation = async () => {
+    if (!reservation || reservation.dealer_id !== dealerId) return;
+    setReservationLoading(true);
+    const newExpiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+    const { data: updated } = await supabase
+      .from('lead_reservations')
+      .update({ expires_at: newExpiresAt, extended: true })
+      .eq('id', reservation.id)
+      .select('id, dealer_id, expires_at')
+      .maybeSingle();
+    if (updated) setReservation(updated);
+    setReservationLoading(false);
   };
 
   const highestOwnBid = useMemo(
@@ -154,6 +219,7 @@ export default function DealerCarDetail({
     setBidInput('');
     setKommentar('');
     setSubmitting(false);
+    await extendReservation();
     await load();
   };
 
@@ -474,6 +540,47 @@ export default function DealerCarDetail({
               <p className="text-slate-400">Du har inte lagt något bud ännu.</p>
             )}
           </div>
+
+          {/* Reservation banners */}
+          {reservation && reservation.dealer_id === dealerId && (() => {
+            const diffMs = Math.max(0, new Date(reservation.expires_at).getTime() - Date.now());
+            const totalSec = Math.floor(diffMs / 1000);
+            const isLow = totalSec < 5 * 60;
+            const progressPct = Math.min(100, Math.max(0, (diffMs / (30 * 60 * 1000)) * 100));
+            return (
+              <div className={`bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 space-y-2 ${isLow ? 'border-amber-300 bg-amber-50' : ''}`}>
+                <div className="flex items-center gap-2">
+                  <Shield className={`w-4 h-4 shrink-0 ${isLow ? 'text-amber-600' : 'text-emerald-600'}`} />
+                  <span className={`text-sm font-semibold ${isLow ? 'text-amber-800' : 'text-emerald-800'}`}>
+                    Du har prioritet på detta lead
+                  </span>
+                </div>
+                <p className={`text-xs tabular-nums font-medium ${isLow ? 'text-amber-700' : 'text-emerald-700'}`}>
+                  {countdown || '00:00'} kvar
+                </p>
+                <div className="h-1.5 rounded-full bg-emerald-200 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-1000 ${isLow ? 'bg-amber-400' : 'bg-emerald-500'}`}
+                    style={{ width: `${progressPct}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })()}
+
+          {reservation && reservation.dealer_id !== dealerId && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 space-y-1">
+              <div className="flex items-center gap-2">
+                <Eye className="w-4 h-4 shrink-0 text-amber-600" />
+                <span className="text-sm font-semibold text-amber-800">
+                  En annan handlare tittar just nu på denna bil
+                </span>
+              </div>
+              <p className="text-xs text-amber-700">
+                Du kan fortfarande lägga bud — budet är slutet
+              </p>
+            </div>
+          )}
 
           <form
             onSubmit={handleSubmitBid}

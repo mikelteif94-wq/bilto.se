@@ -1,14 +1,16 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import {
   Loader2, Search, ChevronDown, ChevronRight,
   Car as CarIcon, Bell, CheckCircle2, XCircle, Flame,
   UserCheck, Eye, EyeOff, Download, RefreshCw,
   CarFront, ArrowLeftRight, TrendingDown, Phone,
-  Clock, Tag, User,
+  Clock, Tag, User, Award, MessageCircle, X,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
 import { useAdminNav, type AdminPage } from '../hooks/useAdminNav';
+import { QualityBadgeList, QualityBadgePicker } from '../components/QualityBadges';
+import CrmActivityPanel from '../components/CrmActivityPanel';
 
 interface AdminLeadCommandCenterProps {
   adminUserId: string;
@@ -41,6 +43,7 @@ interface UnifiedLead {
   email?: string;
   budget?: string;
   search_option?: string;
+  quality_badges: string[];
 }
 
 interface AdminUser {
@@ -139,6 +142,31 @@ export default function AdminLeadCommandCenter({
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [bulkAssignOpen, setBulkAssignOpen] = useState(false);
   const [counts, setCounts] = useState<Partial<Record<LeadCategory, number>>>({});
+  const [badgePopover, setBadgePopover] = useState<string | null>(null); // lead.id
+  const [savingBadge, setSavingBadge] = useState(false);
+  const badgePopoverRef = useRef<HTMLDivElement>(null);
+  const [crmPanelId, setCrmPanelId] = useState<string | null>(null);
+
+  // Close badge popover on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (badgePopover && badgePopoverRef.current && !badgePopoverRef.current.contains(e.target as Node)) {
+        setBadgePopover(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [badgePopover]);
+
+  async function saveBadges(lead: UnifiedLead, newBadges: string[]) {
+    setSavingBadge(true);
+    const table = lead.type === 'car' ? 'cars' : 'quote_requests';
+    await supabase.from(table).update({ quality_badges: newBadges }).eq('id', lead.id);
+    setLeads((prev) =>
+      prev.map((l) => (l.id === lead.id ? { ...l, quality_badges: newBadges } : l))
+    );
+    setSavingBadge(false);
+  }
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -151,7 +179,7 @@ export default function AdminLeadCommandCenter({
       .from('cars')
       .select(`
         id, regnummer, marke, modell, ar, status, crm_status, lead_type,
-        assigned_to_name, tags, hidden_from_dealers,
+        assigned_to_name, tags, hidden_from_dealers, quality_badges,
         next_activity_at, deadline_at, created_at,
         customers!inner(namn, telefon),
         bids!car_id(belopp)
@@ -166,7 +194,7 @@ export default function AdminLeadCommandCenter({
         id, search_option, car_model, budget, status,
         assigned_to_name, tags, phone, email,
         firstname, lastname,
-        next_activity_at, deadline_at, created_at
+        next_activity_at, deadline_at, created_at, quality_badges
       `)
       .order('created_at', { ascending: false })
       .limit(500);
@@ -194,6 +222,7 @@ export default function AdminLeadCommandCenter({
         deadline_at: c.deadline_at,
         created_at: c.created_at,
         hidden_from_dealers: c.hidden_from_dealers,
+        quality_badges: c.quality_badges ?? [],
       });
     });
 
@@ -223,6 +252,7 @@ export default function AdminLeadCommandCenter({
         created_at: q.created_at,
         budget: q.budget,
         search_option: q.search_option,
+        quality_badges: q.quality_badges ?? [],
       });
     });
 
@@ -483,12 +513,14 @@ export default function AdminLeadCommandCenter({
                     </th>
                     <th className="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Kund</th>
                     <th className="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Ärende</th>
+                    <th className="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Badges</th>
                     <th className="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Kategori</th>
                     <th className="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Status</th>
                     <th className="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Bud</th>
                     <th className="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Ansvarig</th>
                     <th className="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Inkommen</th>
                     <th className="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Deadline</th>
+                    <th className="px-4 py-3 text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide">CRM</th>
                     <th className="w-8 px-4 py-3" />
                   </tr>
                 </thead>
@@ -538,6 +570,38 @@ export default function AdminLeadCommandCenter({
                             )}
                           </div>
                         </td>
+                        {/* Quality badges cell */}
+                        <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
+                          <div className="relative" ref={badgePopover === lead.id ? badgePopoverRef : undefined}>
+                            <button
+                              onClick={() => setBadgePopover(badgePopover === lead.id ? null : lead.id)}
+                              className={`inline-flex items-center gap-1 h-6 px-2 rounded-full border text-[10px] transition
+                                ${lead.quality_badges.length > 0
+                                  ? 'border-slate-300 bg-slate-50 text-slate-600 hover:bg-slate-100'
+                                  : 'border-slate-200 text-slate-300 hover:border-slate-300 hover:text-slate-500'
+                                }`}
+                              title="Redigera badges"
+                            >
+                              <Award className="w-3 h-3" />
+                              {lead.quality_badges.length > 0 ? lead.quality_badges.length : '+'}
+                            </button>
+                            {lead.quality_badges.length > 0 && (
+                              <div className="mt-1">
+                                <QualityBadgeList badges={lead.quality_badges} size="sm" />
+                              </div>
+                            )}
+                            {badgePopover === lead.id && (
+                              <div className="absolute top-8 left-0 z-30 bg-white border border-slate-200 rounded-xl shadow-xl p-3 min-w-[260px]">
+                                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-2">Kvalitetsbadges</p>
+                                <QualityBadgePicker
+                                  badges={lead.quality_badges}
+                                  saving={savingBadge}
+                                  onChange={(next) => saveBadges(lead, next)}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </td>
                         <td className="px-4 py-3.5">
                           <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${catPill.cls}`}>
                             {catPill.label}
@@ -563,6 +627,24 @@ export default function AdminLeadCommandCenter({
                         </td>
                         <td className={`px-4 py-3.5 text-xs ${deadlineCls}`}>
                           {deadlineLbl}
+                        </td>
+                        <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
+                          {lead.type === 'car' && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setCrmPanelId(lead.id);
+                              }}
+                              className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition border ${
+                                crmPanelId === lead.id
+                                  ? 'bg-slate-900 text-white border-slate-900'
+                                  : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                              }`}
+                              title="Öppna CRM-aktiviteter"
+                            >
+                              <MessageCircle className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </td>
                         <td className="px-4 py-3.5">
                           <ChevronRight className="w-4 h-4 text-slate-200" />
@@ -608,7 +690,14 @@ export default function AdminLeadCommandCenter({
                     </div>
 
                     {/* Car/subject */}
-                    <div className="text-xs text-slate-600 font-medium truncate mb-2">{lead.car_label}</div>
+                    <div className="text-xs text-slate-600 font-medium truncate mb-1">{lead.car_label}</div>
+
+                    {/* Quality badges */}
+                    {lead.quality_badges.length > 0 && (
+                      <div className="mb-2">
+                        <QualityBadgeList badges={lead.quality_badges} size="sm" />
+                      </div>
+                    )}
 
                     {/* Meta row */}
                     <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
@@ -653,6 +742,44 @@ export default function AdminLeadCommandCenter({
           </>
         )}
       </div>
+
+      {/* CRM Activity slide-in panel */}
+      {crmPanelId && (
+        <>
+          {/* Backdrop (mobile) */}
+          <div
+            className="fixed inset-0 bg-black/20 z-40 lg:hidden"
+            onClick={() => setCrmPanelId(null)}
+          />
+          {/* Panel */}
+          <div className="fixed right-0 top-0 h-full w-full max-w-md z-50 shadow-2xl border-l border-slate-200">
+            <div className="h-full flex flex-col bg-white">
+              {/* Panel header with close */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50 shrink-0">
+                <div className="flex items-center gap-2">
+                  <MessageCircle className="w-4 h-4 text-slate-500" />
+                  <span className="text-sm font-semibold text-slate-800">CRM-aktiviteter</span>
+                </div>
+                <button
+                  onClick={() => setCrmPanelId(null)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition"
+                  aria-label="Stäng CRM-panel"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              {/* CRM panel content (no own header/close since we handle it above) */}
+              <div className="flex-1 overflow-hidden">
+                <CrmActivityPanel
+                  carId={crmPanelId}
+                  adminUserId={adminUserId}
+                  adminName={adminName}
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </PortalLayout>
   );
 }
