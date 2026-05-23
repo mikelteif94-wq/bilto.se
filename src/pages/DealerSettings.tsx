@@ -24,6 +24,11 @@ import {
   Target,
   Zap,
   CreditCard,
+  ShoppingCart,
+  X,
+  Plus,
+  MapPin,
+  Gauge,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ErrorBanner from '../components/ErrorBanner';
@@ -67,6 +72,45 @@ interface DealerScore {
   payment_score: number | null;
   score_updated_at: string | null;
 }
+
+interface BuyPrefs {
+  marken: string[];
+  segment: string[];
+  regions: string[];
+  max_miltal: string;
+  min_ar: string;
+  max_ar: string;
+  min_pris: string;
+  max_pris: string;
+}
+
+const EMPTY_PREFS: BuyPrefs = {
+  marken: [], segment: [], regions: [],
+  max_miltal: '', min_ar: '', max_ar: '', min_pris: '', max_pris: '',
+};
+
+const BRAND_OPTIONS = [
+  'Audi','BMW','Chevrolet','Citroën','Dacia','Fiat','Ford','Honda','Hyundai',
+  'Jaguar','Jeep','Kia','Land Rover','Lexus','Mazda','Mercedes-Benz','MG',
+  'Mini','Mitsubishi','Nissan','Opel','Peugeot','Porsche','Renault','Seat',
+  'Skoda','Subaru','Suzuki','Tesla','Toyota','Volkswagen','Volvo',
+];
+
+const SEGMENT_OPTIONS = [
+  { value: 'suv',       label: 'SUV' },
+  { value: 'kombi',     label: 'Kombi' },
+  { value: 'sedan',     label: 'Sedan' },
+  { value: 'halvkombi', label: 'Halvkombi' },
+  { value: 'cab',       label: 'Cab' },
+  { value: 'skåp',      label: 'Skåpbil' },
+  { value: 'minibuss',  label: 'Minibuss' },
+];
+
+const REGION_OPTIONS = [
+  'Stockholm','Göteborg','Malmö','Uppsala','Västerås','Örebro',
+  'Linköping','Helsingborg','Jönköping','Norrköping',
+  'Lund','Umeå','Gävle','Borås','Södertälje',
+];
 
 // ---------- Ranking helpers ----------
 
@@ -272,10 +316,19 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
   const [dealerScore, setDealerScore] = useState<DealerScore | null>(null);
   const [scoreLoading, setScoreLoading] = useState(true);
 
+  // Buy preferences state
+  const [buyPrefs, setBuyPrefs] = useState<BuyPrefs>(EMPTY_PREFS);
+  const [buyPrefsLoading, setBuyPrefsLoading] = useState(true);
+  const [buyPrefsSaving, setBuyPrefsSaving] = useState(false);
+  const [buyPrefsSaved, setBuyPrefsSaved] = useState(false);
+  const [brandInput, setBrandInput] = useState('');
+  const [regionInput, setRegionInput] = useState('');
+
   useEffect(() => {
     void load();
     void loadMembers();
     void loadScore();
+    void loadBuyPrefs();
   }, [dealerId]);
 
   const load = async () => {
@@ -298,6 +351,53 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
     }
     setLoading(false);
   };
+
+  const loadBuyPrefs = async () => {
+    setBuyPrefsLoading(true);
+    const { data } = await supabase
+      .from('dealer_buy_preferences')
+      .select('*')
+      .eq('dealer_id', dealerId)
+      .maybeSingle();
+    if (data) {
+      setBuyPrefs({
+        marken: data.marken ?? [],
+        segment: data.segment ?? [],
+        regions: data.regions ?? [],
+        max_miltal: data.max_miltal != null ? String(data.max_miltal) : '',
+        min_ar: data.min_ar != null ? String(data.min_ar) : '',
+        max_ar: data.max_ar != null ? String(data.max_ar) : '',
+        min_pris: data.min_pris != null ? String(data.min_pris) : '',
+        max_pris: data.max_pris != null ? String(data.max_pris) : '',
+      });
+    }
+    setBuyPrefsLoading(false);
+  };
+
+  const saveBuyPrefs = async () => {
+    setBuyPrefsSaving(true);
+    const payload = {
+      dealer_id: dealerId,
+      marken: buyPrefs.marken,
+      segment: buyPrefs.segment,
+      regions: buyPrefs.regions,
+      max_miltal: buyPrefs.max_miltal ? Number(buyPrefs.max_miltal) : null,
+      min_ar: buyPrefs.min_ar ? Number(buyPrefs.min_ar) : null,
+      max_ar: buyPrefs.max_ar ? Number(buyPrefs.max_ar) : null,
+      min_pris: buyPrefs.min_pris ? Number(buyPrefs.min_pris) : null,
+      max_pris: buyPrefs.max_pris ? Number(buyPrefs.max_pris) : null,
+      aktiv: true,
+    };
+    await supabase
+      .from('dealer_buy_preferences')
+      .upsert(payload, { onConflict: 'dealer_id' });
+    setBuyPrefsSaving(false);
+    setBuyPrefsSaved(true);
+    setTimeout(() => setBuyPrefsSaved(false), 2000);
+  };
+
+  const toggleArrayItem = (arr: string[], item: string): string[] =>
+    arr.includes(item) ? arr.filter((x) => x !== item) : [...arr, item];
 
   const loadScore = async () => {
     setScoreLoading(true);
@@ -483,6 +583,142 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
             <div className="bg-white rounded-xl border border-slate-200 px-5 py-8 text-center">
               <p className="text-sm text-slate-500">Ranking ej tillgänglig ännu.</p>
             </div>
+          )}
+        </div>
+
+        {/* Köpintressen — used by the matching engine */}
+        <div>
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <ShoppingCart className="w-3.5 h-3.5 text-[#0e6efe]" />
+            Köpintressen
+          </h2>
+          <p className="text-xs text-slate-400 mb-3">
+            Berätta vilka bilar du vill köpa. Matchningsmotorn använder detta för att skicka rätt leads till dig.
+          </p>
+          {buyPrefsLoading ? (
+            <div className="bg-white rounded-xl border border-slate-200 flex justify-center py-8">
+              <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+            </div>
+          ) : (
+            <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6 space-y-5">
+
+              {/* Brands */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">
+                  Märken du köper
+                </label>
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {BRAND_OPTIONS.map((b) => (
+                    <button
+                      key={b}
+                      type="button"
+                      onClick={() => setBuyPrefs((p) => ({ ...p, marken: toggleArrayItem(p.marken, b) }))}
+                      className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${
+                        buyPrefs.marken.includes(b)
+                          ? 'bg-[#0e6efe] text-white border-[#0e6efe]'
+                          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      {b}
+                    </button>
+                  ))}
+                </div>
+                {buyPrefs.marken.length === 0 && (
+                  <p className="text-xs text-slate-400">Inget valt = matchar alla märken</p>
+                )}
+              </div>
+
+              {/* Segments */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">
+                  Karosstyper
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {SEGMENT_OPTIONS.map((s) => (
+                    <button
+                      key={s.value}
+                      type="button"
+                      onClick={() => setBuyPrefs((p) => ({ ...p, segment: toggleArrayItem(p.segment, s.value) }))}
+                      className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${
+                        buyPrefs.segment.includes(s.value)
+                          ? 'bg-slate-900 text-white border-slate-900'
+                          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Regions */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5" />
+                  Regioner
+                </label>
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {REGION_OPTIONS.map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setBuyPrefs((p) => ({ ...p, regions: toggleArrayItem(p.regions, r) }))}
+                      className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${
+                        buyPrefs.regions.includes(r)
+                          ? 'bg-emerald-600 text-white border-emerald-600'
+                          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+                {buyPrefs.regions.length === 0 && (
+                  <p className="text-xs text-slate-400">Inget valt = hela Sverige</p>
+                )}
+              </div>
+
+              {/* Numeric filters */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {([
+                  { key: 'min_ar',    label: 'Från år',     icon: <Clock className="w-3.5 h-3.5" />,   placeholder: '2015' },
+                  { key: 'max_ar',    label: 'Till år',     icon: <Clock className="w-3.5 h-3.5" />,   placeholder: '2024' },
+                  { key: 'max_miltal',label: 'Max miltal',  icon: <Gauge className="w-3.5 h-3.5" />,   placeholder: '15000' },
+                  { key: 'max_pris',  label: 'Max pris',    icon: <CreditCard className="w-3.5 h-3.5" />, placeholder: '500000' },
+                ] as { key: keyof BuyPrefs; label: string; icon: React.ReactNode; placeholder: string }[]).map(({ key, label, icon, placeholder }) => (
+                  <label key={key} className="block">
+                    <span className="flex items-center gap-1 text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
+                      {icon}{label}
+                    </span>
+                    <input
+                      type="number"
+                      value={buyPrefs[key] as string}
+                      onChange={(e) => setBuyPrefs((p) => ({ ...p, [key]: e.target.value }))}
+                      placeholder={placeholder}
+                      className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20"
+                    />
+                  </label>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-1">
+                {buyPrefsSaved && (
+                  <span className="inline-flex items-center gap-1.5 text-emerald-700 text-sm font-medium">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Sparat
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={saveBuyPrefs}
+                  disabled={buyPrefsSaving}
+                  className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white font-semibold transition"
+                >
+                  {buyPrefsSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  Spara köpintressen
+                </button>
+              </div>
+            </section>
           )}
         </div>
 

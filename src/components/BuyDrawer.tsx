@@ -202,7 +202,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
         phone: contactData.telefon,
         preferred_time: contactData.preferredTime,
         status: 'new',
-      }).select('access_token').maybeSingle();
+      }).select('id, access_token').maybeSingle();
 
       if (dbError) {
         setError('Kunde inte spara din förfrågan. Försök igen.');
@@ -210,20 +210,33 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
         return;
       }
 
-      const token = (insertedRows as { access_token?: string } | null)?.access_token ?? null;
+      const row = insertedRows as { access_token?: string; id?: string } | null;
+      const token = row?.access_token ?? null;
+      const qrId = row?.id ?? null;
       setPortalToken(token);
+
+      const fnHeaders = {
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+      };
 
       try {
         await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-quote-request`, {
           method: 'POST',
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-            'Content-Type': 'application/json',
-          },
+          headers: fnHeaders,
           body: JSON.stringify({ email: contactData.mejl, phone: contactData.telefon }),
         });
       } catch { /* best effort */ }
+
+      if (qrId) {
+        const leadType = track === 'trade' ? 'trade' : 'buy';
+        void fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/match-and-dispatch`, {
+          method: 'POST',
+          headers: fnHeaders,
+          body: JSON.stringify({ type: leadType, quote_request_id: qrId, triggered_by: 'auto' }),
+        }).catch(() => {});
+      }
 
       setStep('done');
     } catch {

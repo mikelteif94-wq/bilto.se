@@ -1,25 +1,5 @@
-import { useEffect, useState } from 'react';
-import {
-  Loader2,
-  Settings as SettingsIcon,
-  Sparkles,
-  Clock,
-  ChevronRight,
-  LayoutDashboard,
-  Car as CarIcon,
-  Gavel,
-  TrendingUp,
-  AlertCircle,
-  Trophy,
-  ArrowUpRight,
-  CheckCircle2,
-  Flame,
-  Inbox,
-  Zap,
-  Receipt,
-  AlertTriangle,
-  Package,
-} from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Loader2, Settings as SettingsIcon, Sparkles, Clock, ChevronRight, LayoutDashboard, Car as CarIcon, Gavel, TrendingUp, AlertCircle, Trophy, ArrowUpRight, CheckCircle2, Flame, Inbox, Zap, Receipt, AlertTriangle, Package, MessageSquare, SendHorizontal as SendHorizonal, Eye, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { formatKr, formatTimeLeftSimple } from '../lib/dealer-utils';
 import PortalLayout from '../components/PortalLayout';
@@ -413,6 +393,8 @@ export default function DealerOverview({
             now={now}
             onNavigateCars={onNavigateCars}
             onOpenCar={onOpenCar}
+            dealerId={dealerId}
+            onLeadsUpdated={() => void load()}
           />
         ) : (
           <InvoicesTab
@@ -429,9 +411,11 @@ export default function DealerOverview({
   );
 }
 
+type ActionPanel = { id: string; mode: 'reply' | 'offer' };
+
 /* ── Overview tab ── */
 function OverviewTab({
-  stats, endingCars, myBids, newCars, dispatchedLeads, leadTab, setLeadTab, now, onNavigateCars, onOpenCar,
+  stats, endingCars, myBids, newCars, dispatchedLeads, leadTab, setLeadTab, now, onNavigateCars, onOpenCar, dealerId, onLeadsUpdated,
 }: {
   stats: Stats;
   endingCars: CarLite[];
@@ -443,7 +427,44 @@ function OverviewTab({
   now: number;
   onNavigateCars: () => void;
   onOpenCar: (id: string) => void;
+  dealerId: string;
+  onLeadsUpdated: () => void;
 }) {
+  const [actionPanel, setActionPanel] = useState<ActionPanel | null>(null);
+  const [actionText, setActionText] = useState('');
+  const [actionAmount, setActionAmount] = useState('');
+  const [actionSaving, setActionSaving] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (actionPanel) {
+      setActionText('');
+      setActionAmount('');
+      setTimeout(() => textareaRef.current?.focus(), 50);
+    }
+  }, [actionPanel?.id, actionPanel?.mode]);
+
+  const updateDispatchStatus = async (
+    dispatchId: string,
+    newStatus: string,
+    extra?: { reply_text?: string; offered_amount?: number },
+  ) => {
+    setActionSaving(true);
+    const now = new Date().toISOString();
+    const patch: Record<string, unknown> = { response_status: newStatus };
+    if (newStatus === 'read' || newStatus === 'replied' || newStatus === 'offered') {
+      if (newStatus === 'replied') patch.replied_at = now;
+      if (newStatus === 'offered') patch.offered_at = now;
+    }
+    if (extra?.reply_text) patch.reply_text = extra.reply_text;
+    if (extra?.offered_amount) patch.offered_amount = extra.offered_amount;
+
+    await supabase.from('dealer_dispatches').update(patch).eq('id', dispatchId);
+    setActionSaving(false);
+    setActionPanel(null);
+    onLeadsUpdated();
+  };
+
   return (
     <>
       {/* Outbid alert */}
@@ -553,32 +574,151 @@ function OverviewTab({
                 const isOverdue = lead.deadline_at && new Date(lead.deadline_at) < new Date() && !['replied', 'offered'].includes(lead.response_status);
                 const deadlineDiff = lead.deadline_at ? new Date(lead.deadline_at).getTime() - Date.now() : null;
                 const deadlineLabel = deadlineDiff == null ? null : deadlineDiff < 0 ? 'Förfallen' : `${Math.floor(deadlineDiff / 3600000)}h kvar`;
+                const isActive = actionPanel?.id === lead.id;
+                const canAct = !['offered'].includes(lead.response_status);
                 return (
-                  <div
-                    key={lead.id}
-                    className={`px-4 py-3.5 ${isOverdue ? 'bg-red-50' : ''} ${lead.car_id ? 'cursor-pointer hover:bg-slate-50' : ''} transition`}
-                    onClick={() => lead.car_id && onOpenCar(lead.car_id)}
-                  >
-                    <div className="flex items-start justify-between gap-3 mb-1">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className={`shrink-0 inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ${lead.lead_type === 'buy' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
-                          {lead.lead_type === 'buy' ? 'Köplead' : 'Säljlead'}
+                  <div key={lead.id} className={`${isOverdue ? 'bg-red-50' : ''} transition`}>
+                    <div
+                      className={`px-4 py-3.5 ${lead.car_id && !isActive ? 'cursor-pointer hover:bg-slate-50' : ''} transition`}
+                      onClick={() => {
+                        if (!isActive && lead.car_id) onOpenCar(lead.car_id);
+                      }}
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-1">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className={`shrink-0 inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ${lead.lead_type === 'buy' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
+                            {lead.lead_type === 'buy' ? 'Köplead' : 'Säljlead'}
+                          </span>
+                          <span className="font-semibold text-sm text-slate-900 truncate">{lead.car_label}</span>
+                        </div>
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold shrink-0 ${status.cls}`}>
+                          {status.label}
                         </span>
-                        <span className="font-semibold text-sm text-slate-900 truncate">{lead.car_label}</span>
                       </div>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold shrink-0 ${status.cls}`}>
-                        {status.label}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
-                      {lead.budget && <span>Budget: {lead.budget}</span>}
-                      {deadlineLabel && (
-                        <span className={isOverdue ? 'text-red-600 font-medium' : ''}>{deadlineLabel}</span>
+                      <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
+                        {lead.budget && <span>Budget: {lead.budget}</span>}
+                        {deadlineLabel && (
+                          <span className={isOverdue ? 'text-red-600 font-medium' : ''}>{deadlineLabel}</span>
+                        )}
+                        <span className="ml-auto text-slate-400">{new Date(lead.created_at).toLocaleDateString('sv-SE')}</span>
+                      </div>
+                      {lead.message && (
+                        <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">{lead.message}</p>
                       )}
-                      <span className="ml-auto text-slate-400">{new Date(lead.created_at).toLocaleDateString('sv-SE')}</span>
+                      {/* Action buttons row */}
+                      {canAct && (
+                        <div className="flex items-center gap-1.5 mt-3 flex-wrap" onClick={(e) => e.stopPropagation()}>
+                          {lead.response_status === 'sent' && (
+                            <button
+                              onClick={() => void updateDispatchStatus(lead.id, 'read')}
+                              className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full border border-slate-200 text-[11px] font-medium text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 transition"
+                            >
+                              <Eye className="w-3 h-3" />
+                              Markera som läst
+                            </button>
+                          )}
+                          <button
+                            onClick={() => setActionPanel(isActive && actionPanel?.mode === 'reply' ? null : { id: lead.id, mode: 'reply' })}
+                            className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-[11px] font-medium transition ${
+                              isActive && actionPanel?.mode === 'reply'
+                                ? 'bg-slate-900 text-white border-slate-900'
+                                : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300'
+                            }`}
+                          >
+                            <MessageSquare className="w-3 h-3" />
+                            Svara
+                          </button>
+                          <button
+                            onClick={() => setActionPanel(isActive && actionPanel?.mode === 'offer' ? null : { id: lead.id, mode: 'offer' })}
+                            className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-[11px] font-medium transition ${
+                              isActive && actionPanel?.mode === 'offer'
+                                ? 'bg-[#0e6efe] text-white border-[#0e6efe]'
+                                : 'border-[#0e6efe]/30 text-[#0e6efe] bg-blue-50/40 hover:bg-blue-50 hover:border-[#0e6efe]/60'
+                            }`}
+                          >
+                            <SendHorizonal className="w-3 h-3" />
+                            Lämna offert
+                          </button>
+                          {isActive && (
+                            <button
+                              onClick={() => setActionPanel(null)}
+                              className="ml-auto inline-flex items-center justify-center w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
-                    {lead.message && (
-                      <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">{lead.message}</p>
+
+                    {/* Inline action panel */}
+                    {isActive && (
+                      <div className="px-4 pb-4 bg-slate-50 border-t border-slate-100" onClick={(e) => e.stopPropagation()}>
+                        {actionPanel?.mode === 'reply' ? (
+                          <div className="pt-3 space-y-2">
+                            <label className="text-[11px] font-semibold text-slate-600 uppercase tracking-wide">Ditt svar</label>
+                            <textarea
+                              ref={textareaRef}
+                              value={actionText}
+                              onChange={(e) => setActionText(e.target.value)}
+                              rows={3}
+                              placeholder="Skriv ett meddelande till Bilto om detta lead..."
+                              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 resize-none"
+                            />
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={() => setActionPanel(null)}
+                                className="h-8 px-3 rounded-lg border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-100 transition"
+                              >
+                                Avbryt
+                              </button>
+                              <button
+                                disabled={!actionText.trim() || actionSaving}
+                                onClick={() => void updateDispatchStatus(lead.id, 'replied', { reply_text: actionText.trim() })}
+                                className="h-8 px-4 rounded-lg bg-slate-900 text-white text-xs font-semibold disabled:opacity-40 hover:bg-slate-700 transition inline-flex items-center gap-1.5"
+                              >
+                                {actionSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : <MessageSquare className="w-3 h-3" />}
+                                Skicka svar
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="pt-3 space-y-2">
+                            <label className="text-[11px] font-semibold text-slate-600 uppercase tracking-wide">Offererat pris (kr)</label>
+                            <input
+                              ref={textareaRef as unknown as React.RefObject<HTMLInputElement>}
+                              type="number"
+                              value={actionAmount}
+                              onChange={(e) => setActionAmount(e.target.value)}
+                              placeholder="Ex: 185000"
+                              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30"
+                            />
+                            <textarea
+                              value={actionText}
+                              onChange={(e) => setActionText(e.target.value)}
+                              rows={2}
+                              placeholder="Valfri kommentar om offerten..."
+                              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 resize-none"
+                            />
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={() => setActionPanel(null)}
+                                className="h-8 px-3 rounded-lg border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-100 transition"
+                              >
+                                Avbryt
+                              </button>
+                              <button
+                                disabled={!actionAmount || actionSaving}
+                                onClick={() => void updateDispatchStatus(lead.id, 'offered', { offered_amount: parseFloat(actionAmount), reply_text: actionText.trim() || undefined })}
+                                className="h-8 px-4 rounded-lg bg-[#0e6efe] text-white text-xs font-semibold disabled:opacity-40 hover:bg-[#0a57cc] transition inline-flex items-center gap-1.5"
+                              >
+                                {actionSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : <SendHorizonal className="w-3 h-3" />}
+                                Skicka offert
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 );
