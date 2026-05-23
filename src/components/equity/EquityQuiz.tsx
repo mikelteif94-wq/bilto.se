@@ -47,7 +47,9 @@ function SliderStep({
           step={step}
           value={value}
           onChange={e => onChange(Number(e.target.value))}
-          className="w-full h-2 rounded-full appearance-none cursor-pointer accent-[#0e6efe]"
+          onTouchStart={e => e.stopPropagation()}
+          onTouchMove={e => e.stopPropagation()}
+          className="w-full h-2 rounded-full appearance-none cursor-pointer accent-[#0e6efe] touch-none"
           style={{
             background: `linear-gradient(to right, #0e6efe ${pct}%, #e2e8f0 ${pct}%)`,
           }}

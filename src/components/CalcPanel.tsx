@@ -83,7 +83,9 @@ export function CalcPanel({ carPrice, usedPrice, dark = false }: CalcPanelProps)
         <input
           type="range" min={MIN_PRICE} max={MAX_PRICE} step={5_000} value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
-          className="w-full h-1.5 rounded-full appearance-none cursor-pointer financing-slider"
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+          className="w-full h-1.5 rounded-full appearance-none cursor-pointer financing-slider touch-none"
           style={{ background: `linear-gradient(to right, #0e6efe ${sliderPct}%, ${dark ? 'rgba(255,255,255,0.1)' : '#e2e8f0'} ${sliderPct}%)` }}
         />
         <div className="flex justify-between mt-0.5">
