@@ -188,45 +188,81 @@ export default function QuotePage({
         />
         <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-[13px] font-semibold mb-5">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-[13px] font-semibold mb-6">
               <Sparkles className="w-4 h-4" />
               Gratis och opartiskt
             </span>
-            <h1 className="text-white text-[56px] font-semibold leading-[1.05] tracking-tight">
-              Hitta rätt bil — vi hjälper dig få rätt affär
+            <h1 className="text-white text-[58px] font-bold leading-[1.02] tracking-tight">
+              Din bilaffär börjar här
             </h1>
-            <p className="mt-5 text-white/90 text-[19px] leading-[1.55] max-w-xl">
-              Jämför bilar, hitta rätt modell och få hjälp genom hela köpet. Vi hjälper dig med pris, villkor och granskning så att du inte betalar mer än du behöver.
+            <p className="mt-5 text-white/85 text-[19px] leading-[1.6] max-w-lg">
+              Vi hjälper dig köpa, byta eller hitta rätt bil — enkelt, tryggt och helt utan kostnad.
             </p>
-            <ul className="mt-8 space-y-3.5 text-[18px] font-medium text-white">
-              <li className="flex items-center gap-3">
-                <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-                Jag har hittat en bil — få hjälp med pris, villkor och granskning
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-                Jag letar efter bil — utforska, jämför och hitta bilen som passar
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-6 h-6 text-white shrink-0" strokeWidth={3} />
-                Jag vill byta bil — sälj nuvarande och hitta nästa
-              </li>
-            </ul>
           </div>
-          <div className="justify-self-end w-full max-w-[460px]">
-            <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 sm:p-10 text-center">
-              <h3 className="text-[20px] font-bold text-slate-900 mb-2">Redo att komma igång?</h3>
-              <p className="text-[14px] text-slate-500 mb-6 leading-relaxed">
-                Berätta vad du behöver hjälp med så ringer vi dig inom en timme.
-              </p>
-              <button
-                type="button"
-                onClick={() => navigateToBuy()}
-                className="w-full h-14 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[16px] rounded-full transition shadow-sm inline-flex items-center justify-center gap-2"
-              >
-                Kom igång
-                <ArrowRight className="w-5 h-5" />
-              </button>
+          <div className="justify-self-end w-full max-w-[440px]">
+            <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden">
+              {/* Tab strip */}
+              <div className="flex border-b border-slate-100">
+                {([
+                  { key: 'hitta', label: 'Hitta bil' },
+                  { key: 'salj', label: 'Sälj bil' },
+                ] as const).map((t) => (
+                  <button
+                    key={t.key}
+                    type="button"
+                    onClick={() => {
+                      if (t.key === 'salj') {
+                        window.history.pushState({}, '', '/');
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }
+                    }}
+                    className={`flex-1 py-4 text-center text-[14px] font-bold tracking-[0.02em] relative transition-colors ${
+                      t.key === 'hitta' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'
+                    }`}
+                  >
+                    {t.label}
+                    <span className={`absolute bottom-0 inset-x-0 h-[2.5px] rounded-t-full ${t.key === 'hitta' ? 'bg-[#0e6efe]' : 'bg-transparent'}`} />
+                  </button>
+                ))}
+              </div>
+              <div className="px-5 py-5 flex flex-col gap-2.5">
+                {[
+                  {
+                    icon: Search,
+                    label: 'Jag letar efter bil',
+                    sub: 'Utforska, jämför eller testa bilmatch',
+                    action: () => navigateToBuy(),
+                  },
+                  {
+                    icon: Handshake,
+                    label: 'Jag har hittat en bil',
+                    sub: 'Låt oss förhandla och granska åt dig',
+                    action: () => navigateToBuy(),
+                  },
+                  {
+                    icon: ArrowRight,
+                    label: 'Jag vill byta bil',
+                    sub: 'Vi hittar och förhandlar nästa bil åt dig',
+                    action: () => navigateToBuy(),
+                  },
+                ].map(({ icon: Icon, label, sub, action }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={action}
+                    className="group w-full flex items-center gap-4 p-3.5 rounded-xl border border-slate-100 hover:border-[#0e6efe]/40 hover:bg-[#0e6efe]/[0.03] transition-all text-left"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition-colors">
+                      <Icon className="w-4.5 h-4.5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" strokeWidth={2.2} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-semibold text-slate-900 leading-snug">{label}</p>
+                      <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{sub}</p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] group-hover:translate-x-0.5 transition-all shrink-0" />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
