@@ -176,20 +176,20 @@ export default function ElCarCard({
   return (
     <div
       onClick={() => { if (onDetail) onDetail(); }}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl cursor-pointer transition-all duration-300 ${
+      className={`group relative flex flex-col rounded-2xl cursor-pointer transition-all duration-300 ${
         isCompared
           ? 'ring-2 ring-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,0.15)]'
           : 'ring-1 ring-white/10 hover:ring-white/20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]'
       }`}
       style={{ background: 'linear-gradient(155deg, #0f172a 0%, #0c1a2e 55%, #051020 100%)', touchAction: 'pan-y' }}
     >
-      <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#38bdf8] to-transparent opacity-70" />
+      <div className="absolute top-0 inset-x-0 h-[2px] rounded-t-2xl bg-gradient-to-r from-transparent via-[#38bdf8] to-transparent opacity-70" />
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-3/4 h-1/2 rounded-full bg-[#0e6efe]/10 blur-3xl" />
       </div>
 
       {/* Image */}
-      <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] overflow-hidden bg-[#080f1c]">
+      <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] overflow-hidden rounded-t-2xl bg-[#080f1c]">
         {imageUrl ? (
           <img
             src={imageUrl} alt={name} loading="lazy"

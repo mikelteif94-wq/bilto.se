@@ -177,7 +177,7 @@ export default function CompactCarCard({
 
   return (
     <div
-      className={`group relative bg-white rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer ${
+      className={`group relative bg-white rounded-2xl transition-all duration-300 cursor-pointer ${
         isSelected
           ? 'ring-2 ring-[#0e6efe] shadow-[0_0_0_4px_rgba(14,110,254,0.10)]'
           : isCompared
@@ -188,7 +188,7 @@ export default function CompactCarCard({
       onClick={handleClick}
     >
       {/* Image */}
-      <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-white overflow-hidden">
+      <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-white overflow-hidden rounded-t-2xl">
         {imageUrl ? (
           <img
             src={imageUrl} alt={name} loading="lazy"

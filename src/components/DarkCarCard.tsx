@@ -176,12 +176,12 @@ export default function DarkCarCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.06, duration: 0.4 }}
-      className="group relative bg-white rounded-2xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.07)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.13)] transition-shadow duration-300 cursor-pointer ring-1 ring-slate-100 hover:ring-slate-200"
+      className="group relative bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.07)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.13)] transition-shadow duration-300 cursor-pointer ring-1 ring-slate-100 hover:ring-slate-200"
       style={{ touchAction: 'pan-y' }}
       onClick={onDetail}
     >
       {/* Image */}
-      <div className="relative aspect-[16/10] bg-white overflow-hidden">
+      <div className="relative aspect-[16/10] bg-white overflow-hidden rounded-t-2xl">
         {imageUrl ? (
           <img
             src={imageUrl} alt={name} loading="lazy"
