@@ -20,6 +20,7 @@ interface Car {
   auktion_slut: string | null;
   customer_id: string;
   access_token: string;
+  lead_type: string | null;
 }
 
 interface Customer {
@@ -65,7 +66,7 @@ Deno.serve(async (req: Request) => {
     const { data: expiredCars, error: carsErr } = await supabase
       .from("cars")
       .select(
-        "id, regnummer, marke, modell, ar, miltal, skick, status, auktion_slut, customer_id, access_token",
+        "id, regnummer, marke, modell, ar, miltal, skick, status, auktion_slut, customer_id, access_token, lead_type",
       )
       .eq("status", "aktiv")
       .not("auktion_slut", "is", null)
@@ -105,6 +106,49 @@ Deno.serve(async (req: Request) => {
     return jsonResp({ error: (err as Error).message }, 500);
   }
 });
+
+async function createCommissionInvoice(
+  // deno-lint-ignore no-explicit-any
+  supabase: any,
+  car: Car,
+  dealerId: string,
+): Promise<void> {
+  try {
+    // Determine commission type from lead_type
+    const isTradeIn = car.lead_type === "trade_in";
+    const belopp = isTradeIn ? 6000 : 3000;
+    const vatKr = Math.round(belopp * 0.25);
+    const totalKr = belopp + vatKr;
+    const commissionType = isTradeIn ? "trade_in" : "standard";
+
+    // Generate invoice number atomically via DB function
+    const { data: invNumData } = await supabase.rpc("next_invoice_number");
+    const invoiceNumber = invNumData ?? `BLT-${new Date().getFullYear()}-XXXXX`;
+
+    const today = new Date();
+    const dueDate = new Date(today);
+    dueDate.setDate(dueDate.getDate() + 7);
+
+    const carTitle = [car.marke, car.modell, car.ar].filter(Boolean).join(" ") || car.regnummer;
+    const description = `Förmedlingsavgift — ${carTitle} (${car.regnummer})${isTradeIn ? " · Inbyte" : ""}`;
+
+    await supabase.from("dealer_invoices").insert({
+      dealer_id: dealerId,
+      car_id: car.id,
+      status: "pending",
+      belopp,
+      vat_kr: vatKr,
+      total_kr: totalKr,
+      commission_type: commissionType,
+      invoice_number: invoiceNumber,
+      invoice_date: today.toISOString().slice(0, 10),
+      due_date: dueDate.toISOString().slice(0, 10),
+      description,
+    });
+  } catch (_err) {
+    // Invoice creation is non-critical — auction close should not fail because of it
+  }
+}
 
 async function closeAuction(
   // deno-lint-ignore no-explicit-any
@@ -191,6 +235,9 @@ async function closeAuction(
         losingBids.map((b) => b.id),
       );
   }
+
+  // Auto-create commission invoice for winning dealer
+  await createCommissionInvoice(supabase, car, winningBid.dealer_id);
 
   const dealerIds = Array.from(new Set(allBids.map((b) => b.dealer_id)));
   const { data: dealersData } = (await supabase
@@ -418,6 +465,9 @@ function renderWinnerEmail(
     ? `${appUrl.replace(/\/$/, "")}/handlare/bilar/${car.id}`
     : `/handlare/bilar/${car.id}`;
   const firstName = dealer.kontaktperson?.split(" ")[0] || dealer.foretagsnamn;
+  const isTradeIn = car.lead_type === "trade_in";
+  const commissionKr = isTradeIn ? "7 500" : "3 750";
+  const commissionLabel = isTradeIn ? "Inbytesaffär — 6 000 kr + moms" : "Standardförmedling — 3 000 kr + moms";
   return emailShell({
     preheader: `Grattis ${esc(firstName)}! Du vann auktionen för ${esc(buildTitle(car))}.`,
     heroContent: `
@@ -437,6 +487,11 @@ function renderWinnerEmail(
           <tr><td style="padding:5px 0;color:#64748b;">Mejl</td><td><a href="mailto:${escAttr(customer.mejl)}" style="color:#0e6efe;text-decoration:none;font-weight:600;">${esc(customer.mejl)}</a></td></tr>
         </table>
       </div>` : ""}
+      <div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;margin-bottom:24px;">
+        <p style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#92400e;">Förmedlingsavgift</p>
+        <p style="margin:0;font-size:14px;color:#78350f;">${commissionLabel} = <strong>${commissionKr} kr inkl. moms</strong></p>
+        <p style="margin:4px 0 0;font-size:13px;color:#92400e;">Faktura skickas inom 1–2 arbetsdagar. Betalning inom 7 dagar.</p>
+      </div>
       <a href="${escAttr(detailUrl)}" style="display:inline-block;background:#ffffff;color:#0e6efe !important;text-decoration:none;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;letter-spacing:0.02em;border:1.5px solid #0e6efe;-webkit-text-fill-color:#0e6efe !important;">Öppna bilen &rarr;</a>
     `,
   });
@@ -452,6 +507,8 @@ function renderWinnerText(
   const detailUrl = appUrl
     ? `${appUrl.replace(/\/$/, "")}/handlare/bilar/${car.id}`
     : `/handlare/bilar/${car.id}`;
+  const isTradeIn = car.lead_type === "trade_in";
+  const commissionKr = isTradeIn ? "7 500" : "3 750";
   return [
     `Grattis ${dealer.foretagsnamn}!`,
     `Du vann auktionen för ${buildTitle(car)} (${car.regnummer}) med ${formatKr(bid.belopp)} kr.`,
@@ -460,6 +517,8 @@ function renderWinnerText(
     customer ? `  Namn: ${customer.namn}` : "",
     customer ? `  Telefon: ${customer.telefon}` : "",
     customer ? `  Mejl: ${customer.mejl}` : "",
+    "",
+    `Förmedlingsavgift: ${commissionKr} kr inkl. moms (faktura skickas inom 1-2 dagar, betalning inom 7 dagar).`,
     "",
     `Bil: ${detailUrl}`,
   ].filter(Boolean).join("\n");
@@ -511,18 +570,19 @@ function renderCustomerText(
 }
 
 function renderLoserEmail(car: Car, winningAmount: number, dealer: Dealer): string {
-  return shell(`
-    <tr><td style="padding:32px 32px 16px;">
-      <p style="margin:0 0 6px;color:#64748b;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Auktionen är avslutad</p>
-      <h1 style="margin:0;color:#0f172a;font-size:24px;">${esc(buildTitle(car))}</h1>
-      <p style="margin:6px 0 0;color:#64748b;font-family:monospace;font-weight:600;">${esc(car.regnummer)}</p>
-    </td></tr>
-    <tr><td style="padding:0 32px 28px;color:#334155;font-size:15px;line-height:1.7;">
-      <p style="margin:0 0 12px;">Hej ${esc(dealer.kontaktperson?.split(" ")[0] || dealer.foretagsnamn)},</p>
-      <p style="margin:0 0 12px;">Auktionen är avslutad. Vinnande bud var <strong>${formatKr(winningAmount)} kr</strong>.</p>
-      <p style="margin:0 0 12px;color:#64748b;font-size:14px;">Tack för ditt bud — vi hör av oss nästa gång en bil som matchar läggs upp.</p>
-    </td></tr>
-  `);
+  return emailShell({
+    preheader: `Auktionen för ${esc(buildTitle(car))} är avslutad. Vinnande bud: ${formatKr(winningAmount)} kr.`,
+    heroContent: `
+      <p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);">Auktionen är avslutad</p>
+      <h1 style="margin:0;font-size:24px;font-weight:800;color:#ffffff;line-height:1.2;">${esc(buildTitle(car))}</h1>
+      <p style="margin:8px 0 0;font-size:13px;font-family:monospace;color:rgba(255,255,255,0.7);">${esc(car.regnummer)}</p>
+    `,
+    bodyContent: `
+      <p style="margin:0 0 12px;font-size:15px;color:#334155;line-height:1.7;">Hej ${esc(dealer.kontaktperson?.split(" ")[0] || dealer.foretagsnamn)},</p>
+      <p style="margin:0 0 12px;font-size:15px;color:#334155;line-height:1.7;">Auktionen är avslutad. Vinnande bud var <strong>${formatKr(winningAmount)} kr</strong>.</p>
+      <p style="margin:0;font-size:14px;color:#64748b;line-height:1.7;">Tack för ditt bud — vi hör av oss nästa gång en bil som matchar läggs upp.</p>
+    `,
+  });
 }
 
 function renderLoserText(car: Car, winningAmount: number, dealer: Dealer): string {

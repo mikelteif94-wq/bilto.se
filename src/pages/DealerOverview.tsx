@@ -16,6 +16,8 @@ import {
   Flame,
   Inbox,
   Zap,
+  Receipt,
+  AlertTriangle,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { formatKr, formatTimeLeftSimple } from '../lib/dealer-utils';
@@ -44,6 +46,7 @@ interface Stats {
 }
 
 type LeadTab = 'sell' | 'buy' | 'all';
+type MainTab = 'overview' | 'invoices';
 
 interface DispatchedLead {
   id: string;
@@ -79,6 +82,34 @@ interface MyBidRow {
   isLeading: boolean;
 }
 
+interface WonDeal {
+  bid_id: string;
+  belopp: number;
+  created_at: string;
+  car: {
+    id: string;
+    marke: string;
+    modell: string;
+    ar: number | null;
+    regnummer: string;
+  } | null;
+  invoice: DealerInvoice | null;
+}
+
+interface DealerInvoice {
+  id: string;
+  invoice_number: string | null;
+  invoice_date: string | null;
+  due_date: string | null;
+  belopp: number;
+  vat_kr: number;
+  total_kr: number;
+  commission_type: string;
+  status: string;
+  description: string;
+  car_id: string | null;
+}
+
 const formatTimeLeft = formatTimeLeftSimple;
 
 const DISPATCH_STATUS: Record<string, { label: string; cls: string }> = {
@@ -88,6 +119,14 @@ const DISPATCH_STATUS: Record<string, { label: string; cls: string }> = {
   replied: { label: 'Svarat', cls: 'bg-amber-100 text-amber-700' },
   offered: { label: 'Offert lämnad', cls: 'bg-green-100 text-green-700' },
   ignored: { label: 'Ej besvarat', cls: 'bg-red-100 text-red-600' },
+};
+
+const INVOICE_STATUS: Record<string, { label: string; cls: string }> = {
+  pending:   { label: 'Väntar',    cls: 'bg-amber-50 text-amber-700 ring-amber-200' },
+  invoiced:  { label: 'Fakturerad', cls: 'bg-blue-50 text-blue-700 ring-blue-200' },
+  paid:      { label: 'Betald',    cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200' },
+  overdue:   { label: 'Förfallen', cls: 'bg-red-50 text-red-700 ring-red-200' },
+  cancelled: { label: 'Avbruten',  cls: 'bg-slate-100 text-slate-500 ring-slate-200' },
 };
 
 export default function DealerOverview({
@@ -101,6 +140,7 @@ export default function DealerOverview({
 }: DealerOverviewProps) {
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(Date.now());
+  const [mainTab, setMainTab] = useState<MainTab>('overview');
   const [stats, setStats] = useState<Stats>({
     aktiva: 0,
     endingSoon: 0,
@@ -117,6 +157,9 @@ export default function DealerOverview({
   const [newCars, setNewCars] = useState<CarLite[]>([]);
   const [dispatchedLeads, setDispatchedLeads] = useState<DispatchedLead[]>([]);
   const [leadTab, setLeadTab] = useState<LeadTab>('all');
+  const [invoices, setInvoices] = useState<DealerInvoice[]>([]);
+  const [wonDeals, setWonDeals] = useState<WonDeal[]>([]);
+  const [loadingInvoices, setLoadingInvoices] = useState(false);
 
   useEffect(() => {
     const t = window.setInterval(() => setNow(Date.now()), 60_000);
@@ -127,6 +170,12 @@ export default function DealerOverview({
     void load();
   }, [dealerId]);
 
+  useEffect(() => {
+    if (mainTab === 'invoices' && invoices.length === 0 && !loadingInvoices) {
+      void loadInvoices();
+    }
+  }, [mainTab]);
+
   const load = async () => {
     setLoading(true);
     const nowIso = new Date().toISOString();
@@ -136,7 +185,7 @@ export default function DealerOverview({
       supabase.from('cars').select('id', { count: 'exact', head: true }).eq('status', 'aktiv').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso),
       supabase.from('cars').select('id, regnummer, marke, modell, ar, miltal, auktion_slut, status, car_images(id)').eq('status', 'aktiv').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso).lte('auktion_slut', in24h).order('auktion_slut', { ascending: true }).limit(8),
       supabase.from('bids').select('car_id, belopp, max_bid, cars:car_id(id, regnummer, marke, modell, ar, miltal, auktion_slut, status, car_images(id))').eq('dealer_id', dealerId).order('created_at', { ascending: false }),
-      supabase.from('bids').select('id', { count: 'exact', head: true }).eq('dealer_id', dealerId).eq('status', 'vinnande'),
+      supabase.from('bids').select('id', { count: 'exact', head: true }).eq('dealer_id', dealerId).eq('status', 'vunnit'),
       supabase.from('cars').select('id, regnummer, marke, modell, ar, miltal, auktion_slut, status, car_images(id)').eq('status', 'aktiv').eq('hidden_from_dealers', false).gt('auktion_slut', nowIso).order('created_at', { ascending: false }).limit(6),
       supabase.from('dealers').select('win_count, lost_count, avg_response_minutes, conversion_rate').eq('id', dealerId).maybeSingle(),
       supabase.from('dealer_dispatches').select(`
@@ -149,7 +198,6 @@ export default function DealerOverview({
     setEndingCars((endingRes.data ?? []) as unknown as CarLite[]);
     setNewCars((recentRes.data ?? []) as unknown as CarLite[]);
 
-    // Process dispatched leads
     const dLeads: DispatchedLead[] = (dispatchRes.data ?? []).map((d: any) => {
       const car = Array.isArray(d.cars) ? d.cars[0] : d.cars;
       const quote = Array.isArray(d.quote_requests) ? d.quote_requests[0] : d.quote_requests;
@@ -224,10 +272,55 @@ export default function DealerOverview({
     setLoading(false);
   };
 
+  const loadInvoices = async () => {
+    setLoadingInvoices(true);
+
+    const [invoicesRes, wonBidsRes] = await Promise.all([
+      supabase
+        .from('dealer_invoices')
+        .select('id, invoice_number, invoice_date, due_date, belopp, vat_kr, total_kr, commission_type, status, description, car_id')
+        .eq('dealer_id', dealerId)
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('bids')
+        .select('id, belopp, created_at, cars:car_id(id, marke, modell, ar, regnummer)')
+        .eq('dealer_id', dealerId)
+        .eq('status', 'vunnit')
+        .order('created_at', { ascending: false })
+        .limit(20),
+    ]);
+
+    const invList = (invoicesRes.data ?? []) as DealerInvoice[];
+    setInvoices(invList);
+
+    const invByCarId = new Map<string, DealerInvoice>();
+    for (const inv of invList) {
+      if (inv.car_id) invByCarId.set(inv.car_id, inv);
+    }
+
+    const won: WonDeal[] = (wonBidsRes.data ?? []).map((b: any) => {
+      const car = Array.isArray(b.cars) ? b.cars[0] : b.cars;
+      return {
+        bid_id: b.id,
+        belopp: b.belopp,
+        created_at: b.created_at,
+        car: car ?? null,
+        invoice: car ? (invByCarId.get(car.id) ?? null) : null,
+      };
+    });
+    setWonDeals(won);
+
+    setLoadingInvoices(false);
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     onLoggedOut();
   };
+
+  const pendingInvoices = invoices.filter(i => i.status === 'pending' || i.status === 'invoiced');
+  const overdueInvoices = invoices.filter(i => i.status === 'overdue');
+  const totalUnpaid = pendingInvoices.reduce((s, i) => s + (i.total_kr || (i.belopp + (i.vat_kr ?? 0))), 0);
 
   const navItems = [
     { icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Översikt', active: true, onClick: undefined },
@@ -261,7 +354,7 @@ export default function DealerOverview({
           <div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Översikt</h1>
             <p className="text-sm text-slate-400 mt-0.5">
-              {foretagsnamn ? foretagsnamn : 'Realtidsbild av dina pågående bud.'}
+              {foretagsnamn || 'Realtidsbild av dina pågående bud.'}
             </p>
           </div>
           <button
@@ -273,293 +366,552 @@ export default function DealerOverview({
           </button>
         </div>
 
+        {/* Main tab switcher */}
+        <div className="flex gap-1 bg-white border border-slate-200 rounded-xl p-1 w-fit">
+          <button
+            onClick={() => setMainTab('overview')}
+            className={`px-5 h-9 rounded-lg text-sm font-semibold transition flex items-center gap-2 ${
+              mainTab === 'overview' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <LayoutDashboard className="w-3.5 h-3.5" />
+            Översikt
+          </button>
+          <button
+            onClick={() => setMainTab('invoices')}
+            className={`px-5 h-9 rounded-lg text-sm font-semibold transition flex items-center gap-2 relative ${
+              mainTab === 'invoices' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <Receipt className="w-3.5 h-3.5" />
+            Förmedlingsavgifter
+            {overdueInvoices.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                {overdueInvoices.length}
+              </span>
+            )}
+          </button>
+        </div>
+
         {loading ? (
           <div className="py-32 flex justify-center">
             <Loader2 className="w-7 h-7 animate-spin text-slate-300" />
           </div>
+        ) : mainTab === 'overview' ? (
+          <OverviewTab
+            stats={stats}
+            endingCars={endingCars}
+            myBids={myBids}
+            newCars={newCars}
+            dispatchedLeads={dispatchedLeads}
+            leadTab={leadTab}
+            setLeadTab={setLeadTab}
+            now={now}
+            onNavigateCars={onNavigateCars}
+            onOpenCar={onOpenCar}
+          />
         ) : (
-          <>
-            {/* Outbid alert */}
-            {stats.outbidCount > 0 && (
-              <button
-                onClick={onNavigateCars}
-                className="w-full flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3.5 text-left hover:bg-red-100 transition"
-              >
-                <span className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
-                  <AlertCircle className="w-4 h-4 text-red-600" />
-                </span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-red-900">
-                    Du är överbjuden på {stats.outbidCount} {stats.outbidCount === 1 ? 'auktion' : 'auktioner'}
-                  </div>
-                  <div className="text-xs text-red-700/70 mt-0.5">Höj ditt bud innan auktionen stänger</div>
-                </div>
-                <ArrowUpRight className="w-4 h-4 text-red-500 shrink-0" />
-              </button>
-            )}
-
-            {/* KPI grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              <DealerKpiCard
-                label="Aktiva auktioner"
-                value={stats.aktiva}
-                icon={<CarIcon className="w-4 h-4" />}
-                topColor="bg-[#0e6efe]"
-                iconCls="bg-[#0e6efe]/10 text-[#0e6efe]"
-                onClick={onNavigateCars}
-              />
-              <DealerKpiCard
-                label="Slutar inom 24 h"
-                value={stats.endingSoon}
-                icon={<Clock className="w-4 h-4" />}
-                topColor={stats.endingSoon > 0 ? 'bg-amber-400' : 'bg-slate-200'}
-                iconCls={stats.endingSoon > 0 ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-500'}
-                highlight={stats.endingSoon > 0}
-              />
-              <DealerKpiCard
-                label="Mina aktiva bud"
-                value={stats.myBidsCount}
-                icon={<Gavel className="w-4 h-4" />}
-                topColor="bg-slate-300"
-                iconCls="bg-slate-100 text-slate-600"
-              />
-              <DealerKpiCard
-                label="Vunna affärer"
-                value={stats.wonCount}
-                icon={<Trophy className="w-4 h-4" />}
-                topColor="bg-emerald-500"
-                iconCls="bg-emerald-50 text-emerald-600"
-              />
-            </div>
-
-            {/* Secondary stats */}
-            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-y sm:divide-y-0 divide-x-0 sm:divide-x divide-slate-100">
-                {[
-                  { label: 'Leder', value: stats.leadingCount, icon: <TrendingUp className="w-3.5 h-3.5" />, iconCls: 'text-emerald-500', valCls: stats.leadingCount > 0 ? 'text-emerald-700' : 'text-slate-900' },
-                  { label: 'Överbjuden', value: stats.outbidCount, icon: <AlertCircle className="w-3.5 h-3.5" />, iconCls: 'text-red-500', valCls: stats.outbidCount > 0 ? 'text-red-600' : 'text-slate-900' },
-                  { label: 'Nya bilar', value: newCars.length, icon: <Zap className="w-3.5 h-3.5" />, iconCls: 'text-sky-500', valCls: 'text-slate-900' },
-                  { label: 'Slutar snart', value: endingCars.length, icon: <Flame className="w-3.5 h-3.5" />, iconCls: 'text-amber-500', valCls: 'text-slate-900' },
-                  { label: 'Mottagna leads', value: stats.dispatchedLeads, icon: <Inbox className="w-3.5 h-3.5" />, iconCls: 'text-blue-500', valCls: 'text-slate-900' },
-                  { label: stats.avgResponseMin > 0 ? `Svarstid ${stats.avgResponseMin}m` : 'Konvertering', value: stats.conversionRate ? Math.round(stats.conversionRate) : 0, icon: <Trophy className="w-3.5 h-3.5" />, iconCls: 'text-slate-400', valCls: 'text-slate-900', suffix: '%' },
-                ].map((s) => (
-                  <div key={s.label} className="flex items-center gap-2.5 px-4 py-3.5">
-                    <span className={s.iconCls}>{s.icon}</span>
-                    <div>
-                      <div className="text-[10px] font-medium text-slate-400 uppercase tracking-wide leading-none">{s.label}</div>
-                      <div className={`text-lg font-bold mt-0.5 tabular-nums ${s.valCls}`}>{s.value}{'suffix' in s ? s.suffix : ''}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Dispatched leads panel */}
-            {dispatchedLeads.length > 0 && (
-              <div>
-                <SectionLabel text="Mina leads" icon={<Inbox className="w-3.5 h-3.5 text-blue-500" />} />
-                <div className="flex gap-1.5 mb-3">
-                  {([
-                    { key: 'all' as LeadTab, label: 'Alla', count: dispatchedLeads.length },
-                    { key: 'sell' as LeadTab, label: 'Säljleads', count: dispatchedLeads.filter((d) => d.lead_type === 'sell').length },
-                    { key: 'buy' as LeadTab, label: 'Köpleads', count: dispatchedLeads.filter((d) => d.lead_type === 'buy').length },
-                  ]).map((tab) => (
-                    <button
-                      key={tab.key}
-                      onClick={() => setLeadTab(tab.key)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
-                        leadTab === tab.key
-                          ? 'bg-slate-900 text-white border-slate-900'
-                          : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                      }`}
-                    >
-                      {tab.label}{' '}
-                      <span className={`tabular-nums ${leadTab === tab.key ? 'text-slate-300' : 'text-slate-400'}`}>{tab.count}</span>
-                    </button>
-                  ))}
-                </div>
-                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
-                  {dispatchedLeads
-                    .filter((d) => leadTab === 'all' || d.lead_type === leadTab)
-                    .map((lead) => {
-                      const status = DISPATCH_STATUS[lead.response_status] ?? DISPATCH_STATUS.sent;
-                      const isOverdue = lead.deadline_at && new Date(lead.deadline_at) < new Date() && !['replied', 'offered'].includes(lead.response_status);
-                      const deadlineDiff = lead.deadline_at ? new Date(lead.deadline_at).getTime() - Date.now() : null;
-                      const deadlineLabel = deadlineDiff == null ? null : deadlineDiff < 0 ? 'Förfallen' : `${Math.floor(deadlineDiff / 3600000)}h kvar`;
-                      return (
-                        <div
-                          key={lead.id}
-                          className={`px-4 py-3.5 ${isOverdue ? 'bg-red-50' : ''} ${lead.car_id ? 'cursor-pointer hover:bg-slate-50' : ''} transition`}
-                          onClick={() => lead.car_id && onOpenCar(lead.car_id)}
-                        >
-                          <div className="flex items-start justify-between gap-3 mb-1">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className={`shrink-0 inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ${lead.lead_type === 'buy' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
-                                {lead.lead_type === 'buy' ? 'Köplead' : 'Säljlead'}
-                              </span>
-                              <span className="font-semibold text-sm text-slate-900 truncate">{lead.car_label}</span>
-                            </div>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold shrink-0 ${status.cls}`}>
-                              {status.label}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
-                            {lead.budget && <span>Budget: {lead.budget}</span>}
-                            {deadlineLabel && (
-                              <span className={isOverdue ? 'text-red-600 font-medium' : ''}>{deadlineLabel}</span>
-                            )}
-                            <span className="ml-auto text-slate-400">{new Date(lead.created_at).toLocaleDateString('sv-SE')}</span>
-                          </div>
-                          {lead.message && (
-                            <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">{lead.message}</p>
-                          )}
-                        </div>
-                      );
-                    })}
-                </div>
-              </div>
-            )}
-
-            {/* Main two-col */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-              {/* Ending soon */}
-              <div>
-                <SectionLabel
-                  text="Slutar snart"
-                  icon={<Flame className="w-3.5 h-3.5 text-amber-500" />}
-                  action={endingCars.length > 0 ? <NavLink label="Visa alla" onClick={onNavigateCars} /> : undefined}
-                />
-                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
-                  {endingCars.length === 0 ? (
-                    <EmptyState icon={<CheckCircle2 className="w-5 h-5 text-emerald-400" />} text="Inga auktioner slutar inom 24 h" />
-                  ) : (
-                    endingCars.map((c) => {
-                      const ms = c.auktion_slut ? new Date(c.auktion_slut).getTime() - now : Infinity;
-                      const critical = ms < 3600000;
-                      const urgent = ms < 3 * 3600000;
-                      return (
-                        <button
-                          key={c.id}
-                          onClick={() => onOpenCar(c.id)}
-                          className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
-                        >
-                          <div className="relative shrink-0">
-                            <div className={`w-2 h-8 rounded-full ${critical ? 'bg-red-400' : urgent ? 'bg-amber-400' : 'bg-slate-200'}`} />
-                            {critical && <div className="absolute inset-0 w-2 rounded-full bg-red-400 animate-pulse" />}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="text-sm font-semibold text-slate-900 truncate">
-                              {[c.marke, c.modell].filter(Boolean).join(' ') || c.regnummer}
-                            </div>
-                            <div className="text-xs font-mono text-slate-400 mt-0.5">
-                              {c.regnummer} · {c.ar || '—'} · {c.miltal.toLocaleString('sv-SE')} mil
-                            </div>
-                          </div>
-                          <span className={`text-xs font-bold shrink-0 tabular-nums ${critical ? 'text-red-600' : urgent ? 'text-amber-600' : 'text-slate-500'}`}>
-                            {formatTimeLeft(c.auktion_slut, now)}
-                          </span>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-200 group-hover:text-slate-400 transition shrink-0" />
-                        </button>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-
-              {/* My bids */}
-              <div>
-                <SectionLabel
-                  text="Mina aktiva bud"
-                  icon={<Gavel className="w-3.5 h-3.5 text-slate-400" />}
-                  action={stats.myBidsCount > 0 ? <NavLink label="Visa alla" onClick={onNavigateCars} /> : undefined}
-                />
-                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
-                  {myBids.length === 0 ? (
-                    <EmptyState icon={<Gavel className="w-5 h-5 text-slate-300" />} text="Du har inga aktiva bud just nu" />
-                  ) : (
-                    myBids.map((b) => (
-                      <button
-                        key={b.car_id}
-                        onClick={() => onOpenCar(b.car_id)}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
-                      >
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${b.isLeading ? 'bg-emerald-50' : 'bg-red-50'}`}>
-                          {b.isLeading
-                            ? <TrendingUp className="w-4 h-4 text-emerald-600" />
-                            : <AlertCircle className="w-4 h-4 text-red-500" />
-                          }
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-semibold text-slate-900 truncate">
-                            {b.car ? [b.car.marke, b.car.modell].filter(Boolean).join(' ') || b.car.regnummer : '—'}
-                          </div>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-xs font-mono text-slate-400">{b.car?.regnummer}</span>
-                            <span className="text-slate-200">·</span>
-                            <span className="text-xs font-semibold text-slate-700">{formatKr(b.belopp)} kr</span>
-                          </div>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <span className={`inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full ${b.isLeading ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}`}>
-                            {b.isLeading ? 'Leder' : 'Överbjuden'}
-                          </span>
-                          {!b.isLeading && (
-                            <div className="text-[10px] text-slate-400 mt-1">
-                              Högsta: {formatKr(b.highest)} kr
-                            </div>
-                          )}
-                        </div>
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-200 group-hover:text-slate-400 transition shrink-0" />
-                      </button>
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* New listings feed */}
-            {newCars.length > 0 && (
-              <div>
-                <SectionLabel text="Nyligen inlagda bilar" icon={<Zap className="w-3.5 h-3.5 text-sky-500" />} action={<NavLink label="Visa alla" onClick={onNavigateCars} />} />
-                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
-                  {newCars.map((c) => (
-                    <button
-                      key={c.id}
-                      onClick={() => onOpenCar(c.id)}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
-                    >
-                      <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
-                        <CarIcon className="w-4 h-4 text-slate-400" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-semibold text-slate-900 truncate">
-                          {[c.marke, c.modell].filter(Boolean).join(' ') || c.regnummer}
-                        </div>
-                        <div className="text-xs font-mono text-slate-400 mt-0.5">
-                          {c.regnummer} · {c.ar || '—'} · {c.miltal.toLocaleString('sv-SE')} mil
-                        </div>
-                      </div>
-                      <div className="text-right shrink-0">
-                        {c.auktion_slut && (
-                          <span className="text-xs text-slate-500 font-semibold">
-                            {formatTimeLeft(c.auktion_slut, now)} kvar
-                          </span>
-                        )}
-                        <div className="text-[10px] text-slate-400 mt-0.5">
-                          {c.car_images.length} foto{c.car_images.length !== 1 ? 'n' : ''}
-                        </div>
-                      </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-slate-200 group-hover:text-slate-400 transition shrink-0" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
+          <InvoicesTab
+            invoices={invoices}
+            wonDeals={wonDeals}
+            loading={loadingInvoices}
+            totalUnpaid={totalUnpaid}
+            overdueCount={overdueInvoices.length}
+            onOpenCar={onOpenCar}
+          />
         )}
       </div>
     </PortalLayout>
+  );
+}
+
+/* ── Overview tab ── */
+function OverviewTab({
+  stats, endingCars, myBids, newCars, dispatchedLeads, leadTab, setLeadTab, now, onNavigateCars, onOpenCar,
+}: {
+  stats: Stats;
+  endingCars: CarLite[];
+  myBids: MyBidRow[];
+  newCars: CarLite[];
+  dispatchedLeads: DispatchedLead[];
+  leadTab: LeadTab;
+  setLeadTab: (t: LeadTab) => void;
+  now: number;
+  onNavigateCars: () => void;
+  onOpenCar: (id: string) => void;
+}) {
+  return (
+    <>
+      {/* Outbid alert */}
+      {stats.outbidCount > 0 && (
+        <button
+          onClick={onNavigateCars}
+          className="w-full flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3.5 text-left hover:bg-red-100 transition"
+        >
+          <span className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
+            <AlertCircle className="w-4 h-4 text-red-600" />
+          </span>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-red-900">
+              Du är överbjuden på {stats.outbidCount} {stats.outbidCount === 1 ? 'auktion' : 'auktioner'}
+            </div>
+            <div className="text-xs text-red-700/70 mt-0.5">Höj ditt bud innan auktionen stänger</div>
+          </div>
+          <ArrowUpRight className="w-4 h-4 text-red-500 shrink-0" />
+        </button>
+      )}
+
+      {/* KPI grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <DealerKpiCard
+          label="Aktiva auktioner"
+          value={stats.aktiva}
+          icon={<CarIcon className="w-4 h-4" />}
+          topColor="bg-[#0e6efe]"
+          iconCls="bg-[#0e6efe]/10 text-[#0e6efe]"
+          onClick={onNavigateCars}
+        />
+        <DealerKpiCard
+          label="Slutar inom 24 h"
+          value={stats.endingSoon}
+          icon={<Clock className="w-4 h-4" />}
+          topColor={stats.endingSoon > 0 ? 'bg-amber-400' : 'bg-slate-200'}
+          iconCls={stats.endingSoon > 0 ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-500'}
+          highlight={stats.endingSoon > 0}
+        />
+        <DealerKpiCard
+          label="Mina aktiva bud"
+          value={stats.myBidsCount}
+          icon={<Gavel className="w-4 h-4" />}
+          topColor="bg-slate-300"
+          iconCls="bg-slate-100 text-slate-600"
+        />
+        <DealerKpiCard
+          label="Vunna affärer"
+          value={stats.wonCount}
+          icon={<Trophy className="w-4 h-4" />}
+          topColor="bg-emerald-500"
+          iconCls="bg-emerald-50 text-emerald-600"
+        />
+      </div>
+
+      {/* Secondary stats */}
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-y sm:divide-y-0 divide-x-0 sm:divide-x divide-slate-100">
+          {[
+            { label: 'Leder', value: stats.leadingCount, icon: <TrendingUp className="w-3.5 h-3.5" />, iconCls: 'text-emerald-500', valCls: stats.leadingCount > 0 ? 'text-emerald-700' : 'text-slate-900' },
+            { label: 'Överbjuden', value: stats.outbidCount, icon: <AlertCircle className="w-3.5 h-3.5" />, iconCls: 'text-red-500', valCls: stats.outbidCount > 0 ? 'text-red-600' : 'text-slate-900' },
+            { label: 'Nya bilar', value: newCars.length, icon: <Zap className="w-3.5 h-3.5" />, iconCls: 'text-sky-500', valCls: 'text-slate-900' },
+            { label: 'Slutar snart', value: endingCars.length, icon: <Flame className="w-3.5 h-3.5" />, iconCls: 'text-amber-500', valCls: 'text-slate-900' },
+            { label: 'Mottagna leads', value: stats.dispatchedLeads, icon: <Inbox className="w-3.5 h-3.5" />, iconCls: 'text-blue-500', valCls: 'text-slate-900' },
+            { label: stats.avgResponseMin > 0 ? `Svarstid ${stats.avgResponseMin}m` : 'Konvertering', value: stats.conversionRate ? Math.round(stats.conversionRate) : 0, icon: <Trophy className="w-3.5 h-3.5" />, iconCls: 'text-slate-400', valCls: 'text-slate-900', suffix: '%' },
+          ].map((s) => (
+            <div key={s.label} className="flex items-center gap-2.5 px-4 py-3.5">
+              <span className={s.iconCls}>{s.icon}</span>
+              <div>
+                <div className="text-[10px] font-medium text-slate-400 uppercase tracking-wide leading-none">{s.label}</div>
+                <div className={`text-lg font-bold mt-0.5 tabular-nums ${s.valCls}`}>{s.value}{'suffix' in s ? s.suffix : ''}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Dispatched leads panel */}
+      {dispatchedLeads.length > 0 && (
+        <div>
+          <SectionLabel text="Mina leads" icon={<Inbox className="w-3.5 h-3.5 text-blue-500" />} />
+          <div className="flex gap-1.5 mb-3">
+            {([
+              { key: 'all' as LeadTab, label: 'Alla', count: dispatchedLeads.length },
+              { key: 'sell' as LeadTab, label: 'Säljleads', count: dispatchedLeads.filter((d) => d.lead_type === 'sell').length },
+              { key: 'buy' as LeadTab, label: 'Köpleads', count: dispatchedLeads.filter((d) => d.lead_type === 'buy').length },
+            ]).map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setLeadTab(tab.key)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
+                  leadTab === tab.key
+                    ? 'bg-slate-900 text-white border-slate-900'
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                {tab.label}{' '}
+                <span className={`tabular-nums ${leadTab === tab.key ? 'text-slate-300' : 'text-slate-400'}`}>{tab.count}</span>
+              </button>
+            ))}
+          </div>
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+            {dispatchedLeads
+              .filter((d) => leadTab === 'all' || d.lead_type === leadTab)
+              .map((lead) => {
+                const status = DISPATCH_STATUS[lead.response_status] ?? DISPATCH_STATUS.sent;
+                const isOverdue = lead.deadline_at && new Date(lead.deadline_at) < new Date() && !['replied', 'offered'].includes(lead.response_status);
+                const deadlineDiff = lead.deadline_at ? new Date(lead.deadline_at).getTime() - Date.now() : null;
+                const deadlineLabel = deadlineDiff == null ? null : deadlineDiff < 0 ? 'Förfallen' : `${Math.floor(deadlineDiff / 3600000)}h kvar`;
+                return (
+                  <div
+                    key={lead.id}
+                    className={`px-4 py-3.5 ${isOverdue ? 'bg-red-50' : ''} ${lead.car_id ? 'cursor-pointer hover:bg-slate-50' : ''} transition`}
+                    onClick={() => lead.car_id && onOpenCar(lead.car_id)}
+                  >
+                    <div className="flex items-start justify-between gap-3 mb-1">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className={`shrink-0 inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ${lead.lead_type === 'buy' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
+                          {lead.lead_type === 'buy' ? 'Köplead' : 'Säljlead'}
+                        </span>
+                        <span className="font-semibold text-sm text-slate-900 truncate">{lead.car_label}</span>
+                      </div>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold shrink-0 ${status.cls}`}>
+                        {status.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
+                      {lead.budget && <span>Budget: {lead.budget}</span>}
+                      {deadlineLabel && (
+                        <span className={isOverdue ? 'text-red-600 font-medium' : ''}>{deadlineLabel}</span>
+                      )}
+                      <span className="ml-auto text-slate-400">{new Date(lead.created_at).toLocaleDateString('sv-SE')}</span>
+                    </div>
+                    {lead.message && (
+                      <p className="mt-1.5 text-xs text-slate-400 line-clamp-2">{lead.message}</p>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
+
+      {/* Main two-col */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+        {/* Ending soon */}
+        <div>
+          <SectionLabel
+            text="Slutar snart"
+            icon={<Flame className="w-3.5 h-3.5 text-amber-500" />}
+            action={endingCars.length > 0 ? <NavLink label="Visa alla" onClick={onNavigateCars} /> : undefined}
+          />
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+            {endingCars.length === 0 ? (
+              <EmptyState icon={<CheckCircle2 className="w-5 h-5 text-emerald-400" />} text="Inga auktioner slutar inom 24 h" />
+            ) : (
+              endingCars.map((c) => {
+                const ms = c.auktion_slut ? new Date(c.auktion_slut).getTime() - now : Infinity;
+                const critical = ms < 3600000;
+                const urgent = ms < 3 * 3600000;
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => onOpenCar(c.id)}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
+                  >
+                    <div className="relative shrink-0">
+                      <div className={`w-2 h-8 rounded-full ${critical ? 'bg-red-400' : urgent ? 'bg-amber-400' : 'bg-slate-200'}`} />
+                      {critical && <div className="absolute inset-0 w-2 rounded-full bg-red-400 animate-pulse" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold text-slate-900 truncate">
+                        {[c.marke, c.modell].filter(Boolean).join(' ') || c.regnummer}
+                      </div>
+                      <div className="text-xs font-mono text-slate-400 mt-0.5">
+                        {c.regnummer} · {c.ar || '—'} · {c.miltal.toLocaleString('sv-SE')} mil
+                      </div>
+                    </div>
+                    <span className={`text-xs font-bold shrink-0 tabular-nums ${critical ? 'text-red-600' : urgent ? 'text-amber-600' : 'text-slate-500'}`}>
+                      {formatTimeLeft(c.auktion_slut, now)}
+                    </span>
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-200 group-hover:text-slate-400 transition shrink-0" />
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* My bids */}
+        <div>
+          <SectionLabel
+            text="Mina aktiva bud"
+            icon={<Gavel className="w-3.5 h-3.5 text-slate-400" />}
+            action={stats.myBidsCount > 0 ? <NavLink label="Visa alla" onClick={onNavigateCars} /> : undefined}
+          />
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+            {myBids.length === 0 ? (
+              <EmptyState icon={<Gavel className="w-5 h-5 text-slate-300" />} text="Du har inga aktiva bud just nu" />
+            ) : (
+              myBids.map((b) => (
+                <button
+                  key={b.car_id}
+                  onClick={() => onOpenCar(b.car_id)}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
+                >
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${b.isLeading ? 'bg-emerald-50' : 'bg-red-50'}`}>
+                    {b.isLeading
+                      ? <TrendingUp className="w-4 h-4 text-emerald-600" />
+                      : <AlertCircle className="w-4 h-4 text-red-500" />
+                    }
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-slate-900 truncate">
+                      {b.car ? [b.car.marke, b.car.modell].filter(Boolean).join(' ') || b.car.regnummer : '—'}
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs font-mono text-slate-400">{b.car?.regnummer}</span>
+                      <span className="text-slate-200">·</span>
+                      <span className="text-xs font-semibold text-slate-700">{formatKr(b.belopp)} kr</span>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className={`inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full ${b.isLeading ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}`}>
+                      {b.isLeading ? 'Leder' : 'Överbjuden'}
+                    </span>
+                    {!b.isLeading && (
+                      <div className="text-[10px] text-slate-400 mt-1">
+                        Högsta: {formatKr(b.highest)} kr
+                      </div>
+                    )}
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-200 group-hover:text-slate-400 transition shrink-0" />
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* New listings feed */}
+      {newCars.length > 0 && (
+        <div>
+          <SectionLabel text="Nyligen inlagda bilar" icon={<Zap className="w-3.5 h-3.5 text-sky-500" />} action={<NavLink label="Visa alla" onClick={onNavigateCars} />} />
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+            {newCars.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => onOpenCar(c.id)}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
+              >
+                <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                  <CarIcon className="w-4 h-4 text-slate-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-slate-900 truncate">
+                    {[c.marke, c.modell].filter(Boolean).join(' ') || c.regnummer}
+                  </div>
+                  <div className="text-xs font-mono text-slate-400 mt-0.5">
+                    {c.regnummer} · {c.ar || '—'} · {c.miltal.toLocaleString('sv-SE')} mil
+                  </div>
+                </div>
+                <div className="text-right shrink-0">
+                  {c.auktion_slut && (
+                    <span className="text-xs text-slate-500 font-semibold">
+                      {formatTimeLeft(c.auktion_slut, now)} kvar
+                    </span>
+                  )}
+                  <div className="text-[10px] text-slate-400 mt-0.5">
+                    {c.car_images.length} foto{c.car_images.length !== 1 ? 'n' : ''}
+                  </div>
+                </div>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-200 group-hover:text-slate-400 transition shrink-0" />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+/* ── Invoices tab ── */
+function InvoicesTab({
+  invoices, wonDeals, loading, totalUnpaid, overdueCount, onOpenCar,
+}: {
+  invoices: DealerInvoice[];
+  wonDeals: WonDeal[];
+  loading: boolean;
+  totalUnpaid: number;
+  overdueCount: number;
+  onOpenCar: (id: string) => void;
+}) {
+  if (loading) {
+    return (
+      <div className="py-20 flex justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-slate-300" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center">
+              <Receipt className="w-4 h-4 text-slate-500" />
+            </div>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Totalt fakturor</span>
+          </div>
+          <div className="text-2xl font-bold text-slate-900 tabular-nums">{invoices.length}</div>
+        </div>
+        <div className={`bg-white border rounded-xl p-5 shadow-sm ${overdueCount > 0 ? 'border-red-200' : 'border-slate-200'}`}>
+          <div className="flex items-center gap-3 mb-3">
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${overdueCount > 0 ? 'bg-red-50' : 'bg-slate-100'}`}>
+              <AlertTriangle className={`w-4 h-4 ${overdueCount > 0 ? 'text-red-500' : 'text-slate-400'}`} />
+            </div>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Förfallna</span>
+          </div>
+          <div className={`text-2xl font-bold tabular-nums ${overdueCount > 0 ? 'text-red-600' : 'text-slate-900'}`}>{overdueCount}</div>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center">
+              <Receipt className="w-4 h-4 text-amber-600" />
+            </div>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Obetalt</span>
+          </div>
+          <div className="text-2xl font-bold text-slate-900 tabular-nums">{totalUnpaid.toLocaleString('sv-SE')} kr</div>
+        </div>
+      </div>
+
+      {/* Overdue banner */}
+      {overdueCount > 0 && (
+        <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3.5">
+          <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-red-900">
+              Du har {overdueCount} förfallen {overdueCount === 1 ? 'faktura' : 'fakturor'}
+            </p>
+            <p className="text-xs text-red-700 mt-0.5">Kontakta oss på hej@bilto.se om du har frågor om din faktura.</p>
+          </div>
+        </div>
+      )}
+
+      {/* Won deals with invoice status */}
+      {wonDeals.length > 0 && (
+        <div>
+          <SectionLabel text="Vunna affärer" icon={<Trophy className="w-3.5 h-3.5 text-emerald-500" />} />
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+            {wonDeals.map((deal) => {
+              const inv = deal.invoice;
+              const invStatus = inv ? (INVOICE_STATUS[inv.status] ?? INVOICE_STATUS.pending) : null;
+              const isOverdue = inv && inv.due_date && new Date(inv.due_date) < new Date() && inv.status !== 'paid' && inv.status !== 'cancelled';
+              const daysUntilDue = inv?.due_date ? Math.ceil((new Date(inv.due_date).getTime() - Date.now()) / 86400000) : null;
+              return (
+                <div
+                  key={deal.bid_id}
+                  className={`flex items-center gap-3 px-4 py-3.5 ${isOverdue ? 'bg-red-50/60' : ''} ${deal.car?.id ? 'cursor-pointer hover:bg-slate-50' : ''} transition`}
+                  onClick={() => deal.car?.id && onOpenCar(deal.car.id)}
+                >
+                  <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+                    <Trophy className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-slate-900 truncate">
+                      {deal.car ? [deal.car.marke, deal.car.modell, deal.car.ar].filter(Boolean).join(' ') : '—'}
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                      <span className="text-xs font-mono text-slate-400">{deal.car?.regnummer}</span>
+                      <span className="text-slate-200">·</span>
+                      <span className="text-xs text-slate-500">Bud: {formatKr(deal.belopp)} kr</span>
+                      <span className="text-slate-200">·</span>
+                      <span className="text-xs text-slate-400">{new Date(deal.created_at).toLocaleDateString('sv-SE')}</span>
+                    </div>
+                    {inv && (
+                      <div className="flex items-center gap-2 mt-1 flex-wrap">
+                        {inv.invoice_number && (
+                          <span className="text-[11px] font-mono text-slate-400">{inv.invoice_number}</span>
+                        )}
+                        <span className="text-[11px] font-semibold text-slate-700">
+                          {(inv.total_kr || inv.belopp).toLocaleString('sv-SE')} kr inkl. moms
+                        </span>
+                        {daysUntilDue !== null && inv.status !== 'paid' && inv.status !== 'cancelled' && (
+                          <span className={`text-[11px] font-medium ${isOverdue ? 'text-red-600' : daysUntilDue <= 3 ? 'text-amber-600' : 'text-slate-500'}`}>
+                            {isOverdue ? `Förfallen ${Math.abs(daysUntilDue)}d sedan` : `Förfaller om ${daysUntilDue}d`}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="shrink-0 text-right">
+                    {invStatus ? (
+                      <span className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${invStatus.cls}`}>
+                        {invStatus.label}
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-slate-300">Ingen faktura</span>
+                    )}
+                    {deal.car?.id && <ChevronRight className="w-3.5 h-3.5 text-slate-200 mt-1 ml-auto" />}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Full invoice list */}
+      {invoices.length > 0 ? (
+        <div>
+          <SectionLabel text="Alla fakturor" icon={<Receipt className="w-3.5 h-3.5 text-slate-400" />} />
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+            {invoices.map((inv) => {
+              const s = INVOICE_STATUS[inv.status] ?? INVOICE_STATUS.pending;
+              const isOverdue = inv.due_date && new Date(inv.due_date) < new Date() && inv.status !== 'paid' && inv.status !== 'cancelled';
+              return (
+                <div key={inv.id} className={`flex items-center gap-3 px-4 py-3.5 ${isOverdue ? 'bg-red-50/40' : ''}`}>
+                  <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                    <Receipt className="w-4 h-4 text-slate-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {inv.invoice_number && (
+                        <span className="text-sm font-bold font-mono text-slate-900">{inv.invoice_number}</span>
+                      )}
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${inv.commission_type === 'trade_in' ? 'bg-sky-50 text-sky-700 ring-sky-200' : 'bg-slate-100 text-slate-600 ring-slate-200'}`}>
+                        {inv.commission_type === 'trade_in' ? 'Inbyte' : 'Standard'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-0.5 truncate">{inv.description || '—'}</p>
+                    <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-400 flex-wrap">
+                      {inv.invoice_date && <span>Fakturadatum: {new Date(inv.invoice_date).toLocaleDateString('sv-SE')}</span>}
+                      {inv.due_date && (
+                        <span className={isOverdue ? 'text-red-600 font-semibold' : ''}>
+                          Förfaller: {new Date(inv.due_date).toLocaleDateString('sv-SE')}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="shrink-0 text-right space-y-1">
+                    <div className="text-sm font-bold text-slate-900 tabular-nums">
+                      {(inv.total_kr || inv.belopp).toLocaleString('sv-SE')} kr
+                    </div>
+                    <div className="text-[10px] text-slate-400">
+                      exkl. moms {inv.belopp.toLocaleString('sv-SE')} kr
+                    </div>
+                    <span className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${s.cls}`}>
+                      {s.label}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        wonDeals.length === 0 && (
+          <div className="bg-white border border-slate-200 rounded-xl p-12 text-center">
+            <div className="w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto mb-3">
+              <Receipt className="w-5 h-5 text-slate-300" />
+            </div>
+            <p className="text-sm font-semibold text-slate-700 mb-1">Inga fakturor ännu</p>
+            <p className="text-xs text-slate-400">Förmedlingsavgifter skapas automatiskt när du vinner en auktion.</p>
+          </div>
+        )
+      )}
+    </div>
   );
 }
 
