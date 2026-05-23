@@ -181,16 +181,16 @@ export default function DarkCarCard({
       onClick={onDetail}
     >
       {/* Image */}
-      <div className="relative aspect-[16/10] bg-gradient-to-b from-slate-50 to-[#eef3f8] overflow-hidden">
+      <div className="relative aspect-[16/10] bg-white overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl} alt={name} loading="lazy"
-            className="w-full h-full object-contain p-3 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+            className="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center"><Car className="w-16 h-16 text-slate-200" /></div>
         )}
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#eef3f8]/80 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
         {topBadge && (
           <div className="absolute top-3.5 left-3.5">
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-sm text-[11px] font-bold text-[#0e6efe] shadow-sm">

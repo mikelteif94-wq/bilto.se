@@ -188,16 +188,16 @@ export default function CompactCarCard({
       onClick={handleClick}
     >
       {/* Image */}
-      <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-gradient-to-b from-slate-50 to-[#eef3f8] overflow-hidden">
+      <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-white overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl} alt={name} loading="lazy"
-            className="w-full h-full object-contain p-2.5 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+            className="w-full h-full object-contain p-3 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center"><Car className="w-10 h-10 text-slate-200" /></div>
         )}
-        <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#eef3f8]/70 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
 
         {topBadge && !isSelected && !isCompared && (
           <div className="absolute top-2.5 left-2.5">
