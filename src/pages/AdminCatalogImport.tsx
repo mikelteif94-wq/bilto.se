@@ -89,8 +89,9 @@ function parseCarJson(raw: unknown): CarRow | null {
   const dep = (c.vardeminskning_3ar ?? {}) as Record<string, unknown>;
   const expert = c.experternas_bedomning;
 
-  const kaross = spec.kaross as string | undefined;
-  const drivmedel = spec.drivmedel as string | undefined;
+  // kaross/drivmedel: top-level in bilar_latt.json, nested under specifikationer in enriched format
+  const kaross = (c.kaross ?? spec.kaross) as string | undefined;
+  const drivmedel = (c.drivmedel ?? spec.drivmedel) as string | undefined;
 
   const nySpann = Array.isArray(mk.ny_spann) ? mk.ny_spann as number[] : [];
   const begSpann = Array.isArray(mk.begagnad_spann) ? mk.begagnad_spann as number[] : [];
@@ -102,11 +103,15 @@ function parseCarJson(raw: unknown): CarRow | null {
       ? expert
       : null;
 
+  // rating_overall: top-level betyg_totalt (bilar_latt) or nested betyg.totalt (enriched)
+  const ratingOverall = c.betyg_totalt !== undefined ? numOrNull(c.betyg_totalt) : numOrNull(betyg.totalt);
+
   return {
     make,
     model,
     slug: (c.slug as string) ?? null,
-    price_used_from: numOrNull(pris.begagnat_fran),
+    // begagnat_typisk (bilar_latt) or begagnat_fran (enriched)
+    price_used_from: numOrNull(pris.begagnat_typisk ?? pris.begagnat_fran),
     price_new_from: numOrNull(pris.ny_fran),
     price_new_to: numOrNull(pris.ny_till),
     price_recommended: (pris.rekommenderat as string) ?? null,
@@ -122,7 +127,7 @@ function parseCarJson(raw: unknown): CarRow | null {
     body_type: kaross ? (KAROSS_MAP[kaross] ?? 'hatchback') : null,
     fuel_types: drivmedel ? (DRIVMEDEL_MAP[drivmedel] ?? ['bensin']) : null,
     segment: null,
-    rating_overall: numOrNull(betyg.totalt),
+    rating_overall: ratingOverall,
     rating_driving: numOrNull(betyg.korning),
     rating_comfort: numOrNull(betyg.komfort),
     rating_practicality: numOrNull(betyg.praktiskt),
