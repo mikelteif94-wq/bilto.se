@@ -132,16 +132,9 @@ function parseCarJson(raw: unknown): CarRow | null {
 
   const gen = (c.generation ?? {}) as Record<string, unknown>;
 
-  const ctaRaw = c.cta;
-  const ctaParsed =
-    ctaRaw && typeof ctaRaw === 'object' && !Array.isArray(ctaRaw)
-      ? (ctaRaw as Record<string, unknown>)
-      : null;
-
-  const persona = (c.persona ?? {}) as Record<string, unknown>;
-
-  // begagnat_typisk (bilar_latt) | begagnat_fran | begagnad_fran | used_from | begagnat
+  // Begagnatpris: toppnivå (berikad JSON) | nästlat under pris
   const prisBegagnat = numOrNull(
+    c.pris_begagnat ??
     pris.begagnat_typisk ??
     pris.begagnat_fran ??
     pris.begagnad_fran ??
@@ -149,69 +142,97 @@ function parseCarJson(raw: unknown): CarRow | null {
     pris.begagnat
   );
 
-  // manadskostnad: "begagnad" (bilar_latt) | "begagnad_typisk" | "used" | "beg"
+  // Månadskostnad begagnad: toppnivå (berikad JSON) | nästlat under manadskostnad
   const manKostBeg = numOrNull(
+    c.manadskostnad_begagnad ??
     mk.begagnad ??
     mk.begagnad_typisk ??
     mk.used ??
     mk.beg
   );
 
+  const manKostNy = numOrNull(c.manadskostnad_ny ?? mk.ny);
+
+  const prisNyFran = numOrNull(c.pris_ny_fran ?? pris.ny_fran);
+  const prisNyTill = numOrNull(c.pris_ny_till ?? pris.ny_till);
+
+  // cta: kan vara array eller objekt — spara som jsonb
+  const ctaRawTop = c.cta;
+  const ctaParsed =
+    ctaRawTop !== null && ctaRawTop !== undefined &&
+    typeof ctaRawTop === 'object'
+      ? (ctaRawTop as Record<string, unknown> | unknown[])
+      : null;
+
+  // persona: berikad JSON har "persona_insikt" med familjetest/kordynamik
+  const personaInsikt = (c.persona_insikt ?? c.persona ?? {}) as Record<string, unknown>;
+  const personaFamilj = (c.persona_familjetest ?? personaInsikt.familjetest ?? null) as string | null;
+  const personaKor = (c.persona_kordynamik ?? personaInsikt.kordynamik ?? null) as string | null;
+
+  // begagnat_spann: array [min, max] nästlat under pris
+  const begSpannPris = Array.isArray(pris.begagnat_spann) ? pris.begagnat_spann as number[] : [];
+
   return {
     make,
     model,
     slug: (c.slug as string) ?? null,
-    // Pris — svenska kolumnnamn
-    pris_ny_fran: numOrNull(pris.ny_fran),
-    pris_ny_till: numOrNull(pris.ny_till),
+    // Pris: toppnivå i berikad JSON (c.pris_*) | nästlat under pris-objekt
+    pris_ny_fran: prisNyFran,
+    pris_ny_till: prisNyTill,
     pris_begagnat: prisBegagnat,
-    pris_begagnat_spann_min: numOrNull(pris.begagnat_spann_min ?? begSpann[0]),
-    pris_begagnat_spann_max: numOrNull(pris.begagnat_spann_max ?? begSpann[1]),
-    pris_billigast: numOrNull(pris.billigast),
-    pris_rekommenderat: (pris.rekommenderat as string) ?? null,
-    // Manadskostnad — svenska kolumnnamn
-    manadskostnad_ny: numOrNull(mk.ny),
-    manadskostnad_ny_min: numOrNull(nySpann[0]),
-    manadskostnad_ny_max: numOrNull(nySpann[1]),
+    pris_begagnat_spann_min: numOrNull(c.pris_begagnat_spann_min ?? pris.begagnat_spann_min ?? begSpannPris[0] ?? begSpann[0]),
+    pris_begagnat_spann_max: numOrNull(c.pris_begagnat_spann_max ?? pris.begagnat_spann_max ?? begSpannPris[1] ?? begSpann[1]),
+    pris_billigast: numOrNull(
+      c.pris_billigast ??
+      (pris.begagnat_billigast && typeof pris.begagnat_billigast === 'object'
+        ? (pris.begagnat_billigast as Record<string, unknown>).pris
+        : null) ??
+      pris.billigast
+    ),
+    pris_rekommenderat: (c.pris_rekommenderat ?? pris.rekommenderat) as string | null ?? null,
+    // Manadskostnad: toppnivå (c.manadskostnad_*) | nästlat under manadskostnad-objekt
+    manadskostnad_ny: manKostNy,
+    manadskostnad_ny_min: numOrNull(c.manadskostnad_ny_min ?? nySpann[0]),
+    manadskostnad_ny_max: numOrNull(c.manadskostnad_ny_max ?? nySpann[1]),
     manadskostnad_begagnad: manKostBeg,
-    manadskostnad_beg_min: numOrNull(begSpann[0]),
-    manadskostnad_beg_max: numOrNull(begSpann[1]),
-    // Specifikationer — svenska kolumnnamn (råvärden från JSON, ej normaliserade)
-    kaross: karossRaw ?? null,
-    drivmedel: drivmedelsRaw ?? null,
-    drivlina: (spec.drivlina as string) ?? null,
-    drivlina_kort: (spec.drivlina_kort as string) ?? null,
-    bagage_liter: numOrNull(spec.bagageutrymme_liter),
-    // Betyg — svenska kolumnnamn
-    betyg_skala: (c.betyg_skala as string) ?? null,
+    manadskostnad_beg_min: numOrNull(c.manadskostnad_beg_min ?? (Array.isArray(mk.begagnad_spann) ? (mk.begagnad_spann as number[])[0] : null) ?? begSpann[0]),
+    manadskostnad_beg_max: numOrNull(c.manadskostnad_beg_max ?? (Array.isArray(mk.begagnad_spann) ? (mk.begagnad_spann as number[])[1] : null) ?? begSpann[1]),
+    // Specifikationer: toppnivå (berikad) | nästlat under specifikationer
+    kaross: (c.kaross ?? spec.kaross) as string | null ?? null,
+    drivmedel: (c.drivmedel ?? spec.drivmedel) as string | null ?? null,
+    drivlina: (c.drivlina ?? spec.drivlina) as string | null ?? null,
+    drivlina_kort: (c.drivlina_kort ?? spec.drivlina_kort) as string | null ?? null,
+    bagage_liter: numOrNull(c.bagage_liter ?? spec.bagageutrymme_liter),
+    // Betyg: toppnivå (berikad) | nästlat under betyg
+    betyg_skala: String(c.betyg_skala ?? betyg.skala ?? '') || null,
     betyg_totalt: betygTotalt,
-    betyg_korning: numOrNull(betyg.korning),
-    betyg_komfort: numOrNull(betyg.komfort),
-    betyg_praktiskt: numOrNull(betyg.praktiskt),
-    betyg_varde: numOrNull(betyg.varde),
-    // Vardeminskning — svenska kolumnnamn
-    vardeminskning_betyg: (dep.betyg as string) ?? null,
-    vardeminskning_text: (dep.beskrivning as string) ?? null,
-    // Generation — svenska kolumnnamn
-    generation_namn: (gen.namn ?? c.generation_namn) as string | null ?? null,
-    generation_fran_ar: numOrNull(gen.fran_ar ?? c.generation_fran_ar),
-    generation_till_ar: numOrNull(gen.till_ar ?? c.generation_till_ar),
-    // Listor — svenska kolumnnamn (jsonb)
+    betyg_korning: numOrNull(c.betyg_korning ?? betyg.korning),
+    betyg_komfort: numOrNull(c.betyg_komfort ?? betyg.komfort),
+    betyg_praktiskt: numOrNull(c.betyg_praktiskt ?? betyg.praktiskt),
+    betyg_varde: numOrNull(c.betyg_varde ?? betyg.varde),
+    // Vardeminskning
+    vardeminskning_betyg: (c.vardeminskning_betyg ?? dep.betyg) as string | null ?? null,
+    vardeminskning_text: (c.vardeminskning_text ?? dep.beskrivning) as string | null ?? null,
+    // Generation: toppnivå (berikad) | nästlat under generation
+    generation_namn: (c.generation_namn ?? gen.namn) as string | null ?? null,
+    generation_fran_ar: numOrNull(c.generation_fran_ar ?? gen.fran_ar),
+    generation_till_ar: numOrNull(c.generation_till_ar ?? gen.till_ar),
+    // Listor
     passar_for: arrayOrNull(c.passar_for),
     styrkor: arrayOrNull(c.styrkor),
     svagheter: arrayOrNull(c.svagheter),
-    cta_sv: ctaParsed,
-    // Text/persona — svenska kolumnnamn
-    expert_text: expertText ?? null,
-    meta_description: (c.meta_description as string) ?? null,
-    persona_familjetest: (persona.familjetest ?? c.persona_familjetest) as string | null ?? null,
-    persona_kordynamik: (persona.kordynamik ?? c.persona_kordynamik) as string | null ?? null,
+    cta_sv: ctaParsed as Record<string, unknown> | null,
+    // Text/persona
+    expert_text: (c.expert_text ?? expertText) as string | null ?? null,
+    meta_description: (c.meta_description) as string | null ?? null,
+    persona_familjetest: personaFamilj,
+    persona_kordynamik: personaKor,
     // Befintliga engelska kolumner — uppdateras parallellt för bakåtkompatibilitet
-    body_type: karossRaw ? (KAROSS_MAP[karossRaw] ?? 'hatchback') : null,
-    fuel_types: drivmedelsRaw ? (DRIVMEDEL_MAP[drivmedelsRaw] ?? ['bensin']) : null,
+    body_type: karossRaw ? (KAROSS_MAP[karossRaw] ?? karossRaw) : null,
+    fuel_types: drivmedelsRaw ? (DRIVMEDEL_MAP[drivmedelsRaw] ?? [drivmedelsRaw.toLowerCase()]) : null,
     rating_overall: betygTotalt,
     price_used_from: prisBegagnat,
-    monthly_cost_new: numOrNull(mk.ny),
+    monthly_cost_new: manKostNy,
     monthly_cost_used: manKostBeg,
   };
 }
