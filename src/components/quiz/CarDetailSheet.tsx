@@ -471,7 +471,7 @@ function CarEquityCalc({ carPrice, usedPrice, carName }: { carPrice: number; use
             <div className="space-y-3">
               <div>
                 <p className="text-[13px] font-semibold text-slate-800">Vad är din bil värd?</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">Uppskatta på Blocket eller Kvdbil — för en exakt värdering, ring oss</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">För exakt värdering, ring oss på <span className="font-semibold text-slate-600">08-555 502 00</span></p>
               </div>
               <div className="text-center py-1">
                 <span className="text-[28px] font-bold text-slate-900 tabular-nums">{fmt(carValue)} kr</span>
