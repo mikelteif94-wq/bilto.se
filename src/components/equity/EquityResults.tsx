@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   TrendingDown, Wallet, ArrowRight, Car, Loader2,
-  ChevronRight, RotateCcw, GitCompareArrows, Check,
+  ChevronRight, RotateCcw, GitCompareArrows, Check, Plus,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { calcCarMonthly } from '@/lib/utils';
 import {
-  BRAND_CATEGORIES, BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS, PRIORITY_TRAITS,
+  BRAND_CATEGORIES, BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS,
 } from '@/components/quiz/QuizTypes';
 import { findComparisonCarByMakeModel } from '@/lib/comparison';
 import type { EquityData } from './EquityQuiz';
@@ -28,14 +28,14 @@ interface MatchedCar {
   cleaned_image_url: string | null;
   matchScore: number;
   matchReasons: string[];
-  carPrice?: number;
+  carPrice: number;
   rating?: number;
   fuelLabel?: string;
   compData?: ComparisonCar;
-  // equity calcs
-  monthlySaving: number;
+  estimatedMonthly: number;
+  extraNeeded: number;
   equityFreed: number;
-  depositNeeded: number;
+  depositRequired: number;
 }
 
 function formatSEK(n: number) {
@@ -70,11 +70,9 @@ function scoreMatch(car: { make: string; model: string }, desiredMonthly: number
   const reasons: string[] = [];
   const m = car.model.toLowerCase();
   const cat = getBrandCategory(car.make);
-
   const bodyType = detectBodyType(car.model);
   const fuelType = detectFuelType(car.model, car.make);
 
-  // Lean toward economy if low budget
   if (desiredMonthly < 3500) {
     if (cat === 'value') { score += 20; reasons.push('Prisvärt märke'); }
     if (['hybrid', 'electric'].includes(fuelType || '')) { score += 15; reasons.push('Låga driftskostnader'); }
@@ -84,39 +82,31 @@ function scoreMatch(car: { make: string; model: string }, desiredMonthly: number
     if (cat === 'mainstream') { score += 15; reasons.push('Pålitligt märke'); }
   }
 
-  // Popular body types
   if (bodyType === 'suv') { score += 10; reasons.push('Populär SUV'); }
   if (bodyType === 'kombi') { score += 8; reasons.push('Praktisk kombi'); }
-
-  // EV bonus for low monthly (lower running costs)
   if (fuelType === 'electric' && desiredMonthly < 5000) { score += 10; reasons.push('Låga driftkostnader'); }
 
-  // Known reliable/value brands get a boost
   const reliableKw = ['toyota', 'volvo', 'skoda', 'kia', 'mazda'];
   if (reliableKw.some(k => m.includes(k) || car.make.toLowerCase().includes(k))) {
     score += 5; reasons.push('Känd för pålitlighet');
   }
 
-  // Avoid sports/luxury keywords when budget is tight
   const luxuryKw = ['amg', 'rs ', 'porsche', '911', 'cayenne', 'maserati'];
   if (desiredMonthly < 5000 && luxuryKw.some(k => m.includes(k))) score -= 20;
 
   return { score: Math.min(100, score), reasons: reasons.slice(0, 3) };
 }
 
-// DEPOSIT = roughly 20% of car price
 const DEPOSIT_RATE = 0.20;
+const MAX_EXTRA_FACTOR = 2.0;
+const MAX_EXTRA_ABS = 200_000;
 
-function calcEquityMetrics(carPrice: number, equity: EquityData) {
+function calcCarMetrics(carPrice: number, equity: EquityData) {
+  const depositRequired = Math.round(carPrice * DEPOSIT_RATE);
+  const extraNeeded = Math.max(0, depositRequired - equity.equity);
+  const equityFreed = Math.max(0, equity.equity - depositRequired);
   const estimatedMonthly = calcCarMonthly(carPrice, 0.55);
-  const monthlySaving = equity.currentMonthly > 0
-    ? Math.max(0, equity.currentMonthly - estimatedMonthly)
-    : Math.max(0, equity.desiredMonthly - estimatedMonthly);
-
-  const depositNeeded = Math.round(carPrice * DEPOSIT_RATE);
-  const equityFreed = Math.max(0, equity.equity - depositNeeded);
-
-  return { monthlySaving, depositNeeded, equityFreed };
+  return { depositRequired, extraNeeded, equityFreed, estimatedMonthly };
 }
 
 export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsProps) {
@@ -129,6 +119,9 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
   const FUEL_LABELS: Record<string, string> = {
     bensin: 'Bensin', diesel: 'Diesel', hybrid: 'Hybrid', laddhybrid: 'Laddhybrid', el: 'El',
   };
+
+  const hasEquity = equity.equity > 0;
+  const monthlySavingPossible = equity.currentMonthly > 0;
 
   useEffect(() => {
     async function load() {
@@ -144,37 +137,51 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
 
         const scored = catalog
           .map(car => {
-            const { score, reasons } = scoreMatch(car, equity.desiredMonthly);
             const compData = findComparisonCarByMakeModel(car.make, car.model) || undefined;
-            const basePrice = compData?.pricing.used_from_sek || compData?.pricing.new_from_sek;
+            const carPrice = compData?.pricing.used_from_sek || compData?.pricing.new_from_sek;
+
+            if (!carPrice) return null;
+
+            const { score, reasons } = scoreMatch(car, equity.desiredMonthly);
+            const { depositRequired, extraNeeded, equityFreed, estimatedMonthly } = calcCarMetrics(carPrice, equity);
+
+            // Monthly cost must be within ±30% of desired
+            const monthlyRatio = estimatedMonthly / equity.desiredMonthly;
+            if (monthlyRatio > 1.3 || monthlyRatio < 0.5) return null;
+
+            // No equity: only show cars with very low deposit
+            if (!hasEquity && depositRequired > 30_000) return null;
+
+            // Has equity: extra needed must be reasonable
+            if (hasEquity && extraNeeded > Math.min(equity.equity * MAX_EXTRA_FACTOR, MAX_EXTRA_ABS)) return null;
+
+            if (score < 45) return null;
+
             const fuelLabel = compData?.specs.fuel_types
               ? compData.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')
               : undefined;
-
-            // only include cars where monthly cost is within ±50% of desired
-            if (basePrice) {
-              const monthly = calcCarMonthly(basePrice, 0.55);
-              const ratio = monthly / equity.desiredMonthly;
-              if (ratio > 1.6 || ratio < 0.3) return null;
-            }
-
-            const metrics = basePrice
-              ? calcEquityMetrics(basePrice, equity)
-              : { monthlySaving: 0, depositNeeded: 0, equityFreed: 0 };
 
             return {
               ...car,
               matchScore: score,
               matchReasons: reasons,
-              carPrice: basePrice ?? undefined,
+              carPrice,
               rating: compData?.ratings.overall,
               fuelLabel,
               compData,
-              ...metrics,
-            };
+              estimatedMonthly,
+              extraNeeded,
+              equityFreed,
+              depositRequired,
+            } as MatchedCar;
           })
-          .filter((c): c is MatchedCar => c !== null && c.matchScore >= 45)
-          .sort((a, b) => b.matchScore - a.matchScore)
+          .filter((c): c is MatchedCar => c !== null)
+          .sort((a, b) => {
+            // Sort by extra needed ascending, then by match score
+            const aDelta = a.extraNeeded - b.extraNeeded;
+            if (Math.abs(aDelta) > 5000) return aDelta;
+            return b.matchScore - a.matchScore;
+          })
           .slice(0, 6);
 
         setCars(scored);
@@ -207,7 +214,10 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
     );
   }
 
-  const bestSaving = cars.reduce((best, c) => Math.max(best, c.monthlySaving), 0);
+  // Only show savings when customer has a current monthly cost AND equity
+  const bestSaving = monthlySavingPossible && hasEquity
+    ? cars.reduce((best, c) => Math.max(best, Math.max(0, equity.currentMonthly - c.estimatedMonthly)), 0)
+    : 0;
 
   return (
     <div className="space-y-5">
@@ -219,7 +229,9 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
           </div>
           <div>
             <p className="text-[11px] text-slate-400 uppercase tracking-wide font-semibold">Din insats</p>
-            <p className="text-[20px] font-bold text-white tabular-nums">{formatSEK(equity.equity)} kr</p>
+            <p className="text-[20px] font-bold text-white tabular-nums">
+              {hasEquity ? `${formatSEK(equity.equity)} kr` : 'Ingen insats'}
+            </p>
           </div>
         </div>
         {equity.currentMonthly > 0 && (
@@ -228,16 +240,25 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
               <TrendingDown className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="text-[11px] text-slate-400 uppercase tracking-wide font-semibold">Nuvarande kostnad</p>
+              <p className="text-[11px] text-slate-400 uppercase tracking-wide font-semibold">Nuv. månadskostnad</p>
               <p className="text-[20px] font-bold text-white tabular-nums">{formatSEK(equity.currentMonthly)} kr/mån</p>
             </div>
           </div>
         )}
-        {bestSaving > 0 && (
+        {bestSaving > 200 && (
           <div className="w-full flex items-center gap-2 bg-emerald-500/15 rounded-xl px-3 py-2.5">
             <TrendingDown className="w-4 h-4 text-emerald-400 shrink-0" />
             <p className="text-[13px] text-emerald-300 font-semibold">
-              Du kan spara upp till <span className="text-white">{formatSEK(bestSaving)} kr/mån</span> med rätt bilval
+              Du kan sänka din månadskostnad med upp till{' '}
+              <span className="text-white">{formatSEK(bestSaving)} kr/mån</span>
+            </p>
+          </div>
+        )}
+        {!hasEquity && (
+          <div className="w-full flex items-center gap-2 bg-amber-500/15 rounded-xl px-3 py-2.5">
+            <Wallet className="w-4 h-4 text-amber-400 shrink-0" />
+            <p className="text-[13px] text-amber-300 font-semibold">
+              Du har ingen insats just nu — vi visar bilar med låg kontantinsats
             </p>
           </div>
         )}
@@ -247,10 +268,10 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
       <div className="flex items-center justify-between">
         <div>
           <p className="text-[15px] font-bold text-slate-800">
-            {cars.length} bilar matchar din budget
+            {cars.length} bilar matchar din situation
           </p>
           <p className="text-[12px] text-slate-400 mt-0.5">
-            Baserat på {formatSEK(equity.desiredMonthly)} kr/mån önskad kostnad
+            Önskad månadskostnad: {formatSEK(equity.desiredMonthly)} kr/mån
           </p>
         </div>
         <button
@@ -268,8 +289,10 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
         {cars.map((car, i) => {
           const id = `${car.make}-${car.model}`;
           const isCompared = selectedIds.has(id);
-          const imgUrl = car.cleaned_image_url || car.image_url
-            || getCarImage(car.make, car.model);
+          const imgUrl = car.cleaned_image_url || car.image_url || getCarImage(car.make, car.model);
+          const monthlySaving = equity.currentMonthly > 0
+            ? Math.max(0, equity.currentMonthly - car.estimatedMonthly)
+            : 0;
 
           return (
             <motion.div
@@ -302,10 +325,10 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
                   </div>
                 )}
 
-                {/* Saving badge */}
-                {car.monthlySaving > 0 && (
+                {/* Only show saving badge if there is a real saving vs current monthly */}
+                {monthlySaving > 200 && (
                   <div className="absolute top-2 right-2 bg-emerald-500 text-white px-2 py-0.5 rounded-md text-[10px] font-bold shadow-sm">
-                    -{formatSEK(car.monthlySaving)} kr/mån
+                    -{formatSEK(monthlySaving)} kr/mån
                   </div>
                 )}
               </div>
@@ -316,7 +339,6 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
                   {car.make} {car.model}
                 </h3>
 
-                {/* Rating bar */}
                 {car.rating != null && (() => {
                   const pct = ((Math.max(5, Math.min(10, car.rating)) - 5) / 5) * 100;
                   const color = car.rating >= 9 ? '#10b981' : car.rating >= 7.5 ? '#0e6efe' : '#64748b';
@@ -333,35 +355,55 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
                   );
                 })()}
 
-                {/* Monthly + equity freed */}
-                <div className="mt-2 space-y-1">
-                  {car.carPrice && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-[12px] text-slate-500">Uppskattad kostnad</span>
-                      <span className="text-[13px] font-bold text-[#0e6efe]">
-                        {formatSEK(calcCarMonthly(car.carPrice, 0.55))} kr/mån
+                {/* Financial delta */}
+                <div className="mt-2.5 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] text-slate-500">Månadskostnad</span>
+                    <span className="text-[13px] font-bold text-[#0e6efe]">
+                      {formatSEK(car.estimatedMonthly)} kr/mån
+                    </span>
+                  </div>
+
+                  {car.extraNeeded > 0 ? (
+                    <div className="flex items-center justify-between bg-amber-50 rounded-lg px-2.5 py-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <Plus className="w-3 h-3 text-amber-500 shrink-0" />
+                        <span className="text-[12px] text-amber-700 font-medium">Saknas till insats</span>
+                      </div>
+                      <span className="text-[12px] font-bold text-amber-700">
+                        {formatSEK(car.extraNeeded)} kr
                       </span>
                     </div>
-                  )}
-                  {car.equityFreed > 0 && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-[12px] text-slate-500">Pengar tillbaka</span>
-                      <span className="text-[12px] font-semibold text-emerald-600">
+                  ) : car.equityFreed > 0 ? (
+                    <div className="flex items-center justify-between bg-emerald-50 rounded-lg px-2.5 py-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <TrendingDown className="w-3 h-3 text-emerald-600 shrink-0" />
+                        <span className="text-[12px] text-emerald-700 font-medium">Pengar tillbaka</span>
+                      </div>
+                      <span className="text-[12px] font-bold text-emerald-700">
                         +{formatSEK(car.equityFreed)} kr
                       </span>
                     </div>
-                  )}
-                  {car.equityFreed <= 0 && car.depositNeeded > 0 && (
+                  ) : (
                     <div className="flex items-center justify-between">
-                      <span className="text-[12px] text-slate-500">Insats behövs</span>
-                      <span className="text-[12px] font-semibold text-slate-600">
-                        {formatSEK(car.depositNeeded)} kr
+                      <span className="text-[12px] text-slate-500">Kontantinsats (20%)</span>
+                      <span className="text-[12px] font-semibold text-slate-700">
+                        {formatSEK(car.depositRequired)} kr
                       </span>
                     </div>
                   )}
                 </div>
 
-                {/* Match reasons */}
+                {/* Contextual sentence — the key UX */}
+                <p className="mt-2 text-[11px] text-slate-500 leading-snug">
+                  {car.extraNeeded > 0
+                    ? `Med din insats på ${formatSEK(equity.equity)} kr behöver du lägga till ${formatSEK(car.extraNeeded)} kr — totalt ${formatSEK(car.depositRequired)} kr i kontantinsats.`
+                    : car.equityFreed > 0
+                    ? `Din insats täcker hela kontantinsatsen och du får ${formatSEK(car.equityFreed)} kr tillbaka.`
+                    : `Din insats täcker exakt kontantinsatsen för denna bil.`
+                  }
+                </p>
+
                 {car.matchReasons.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-1">
                     {car.matchReasons.map(r => (
@@ -372,7 +414,6 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
                   </div>
                 )}
 
-                {/* Actions */}
                 <div className="mt-3 flex gap-2">
                   <button
                     type="button"
@@ -381,6 +422,8 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
                         `[Insatskalkyl] Insats: ${formatSEK(equity.equity)} kr`,
                         equity.currentMonthly > 0 ? `Nuv. månadskostnad: ${formatSEK(equity.currentMonthly)} kr/mån` : null,
                         `Önskad månadskostnad: ${formatSEK(equity.desiredMonthly)} kr/mån`,
+                        car.extraNeeded > 0 ? `Saknas till insats: ${formatSEK(car.extraNeeded)} kr` : null,
+                        car.equityFreed > 0 ? `Pengar tillbaka: ${formatSEK(car.equityFreed)} kr` : null,
                         equity.hasCurrentCar ? `Bilens värde: ${formatSEK(equity.carValue)} kr` : null,
                         equity.carDebt > 0 ? `Billån: ${formatSEK(equity.carDebt)} kr` : null,
                         equity.cashSavings > 0 ? `Sparpengar: ${formatSEK(equity.cashSavings)} kr` : null,
@@ -420,7 +463,11 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
         <div className="text-center py-12">
           <Car className="w-10 h-10 text-slate-200 mx-auto mb-3" />
           <p className="text-[14px] font-semibold text-slate-700 mb-1">Inga matchningar hittades</p>
-          <p className="text-[12px] text-slate-400">Prova att justera din önskade månadskostnad</p>
+          <p className="text-[12px] text-slate-400">
+            {hasEquity
+              ? 'Prova att justera din önskade månadskostnad'
+              : 'Du behöver en insats för att matcha fler bilar'}
+          </p>
           <button
             type="button"
             onClick={onReset}
@@ -431,38 +478,39 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
         </div>
       )}
 
-      {/* Equity explanation */}
+      {/* How it works */}
       <div className="bg-blue-50 rounded-2xl px-5 py-4 space-y-3">
-        <p className="text-[13px] font-bold text-slate-800">Hur fungerar din insats?</p>
+        <p className="text-[13px] font-bold text-slate-800">Hur fungerar insatsen?</p>
         <div className="space-y-2 text-[12px] text-slate-600 leading-relaxed">
-          {equity.hasCurrentCar && equity.equityFreed !== undefined && (
+          {equity.hasCurrentCar && (
             <div className="flex items-start gap-2">
               <ArrowRight className="w-3.5 h-3.5 text-[#0e6efe] shrink-0 mt-0.5" />
               <p>
-                Din nuvarande bil är värd ungefär {formatSEK(equity.carValue)} kr. Med{' '}
-                {equity.carDebt > 0 ? `${formatSEK(equity.carDebt)} kr kvar i skuld` : 'ingen skuld'} har du{' '}
-                <strong>{formatSEK(Math.max(0, equity.carValue - equity.carDebt))} kr</strong> i nettovärde att använda.
+                Din nuvarande bil är värd ca {formatSEK(equity.carValue)} kr.{' '}
+                {equity.carDebt > 0
+                  ? `Med ${formatSEK(equity.carDebt)} kr kvar i skuld har du ${formatSEK(Math.max(0, equity.carValue - equity.carDebt))} kr i nettovärde.`
+                  : 'Utan skuld är hela värdet din insats.'
+                }
               </p>
             </div>
           )}
           <div className="flex items-start gap-2">
             <ArrowRight className="w-3.5 h-3.5 text-[#0e6efe] shrink-0 mt-0.5" />
             <p>
-              Du behöver inte använda hela insatsen. En del av pengarna kan stanna kvar hos dig — vi visar
-              hur lite du faktiskt behöver lägga ner.
+              Kontantinsatsen är 20% av bilens pris. Vi visar exakt hur mycket mer du behöver — eller
+              hur mycket du får tillbaka — baserat på din insats.
             </p>
           </div>
           <div className="flex items-start gap-2">
             <ArrowRight className="w-3.5 h-3.5 text-[#0e6efe] shrink-0 mt-0.5" />
             <p>
-              Väljer du en <strong>billigare bil</strong> frigörs kapital tillbaka till ditt konto — och
-              din månadskostnad sjunker dessutom.
+              Väljer du en <strong>billigare bil</strong> frigörs kapital tillbaka och din månadskostnad
+              sjunker dessutom.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Floating compare bar */}
       {selectedIds.size > 0 && !compareOpen && (
         <div className="fixed bottom-0 inset-x-0 z-40 pb-[env(safe-area-inset-bottom)]">
           <div className="mx-3 mb-3">
