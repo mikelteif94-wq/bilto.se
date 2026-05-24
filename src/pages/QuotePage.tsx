@@ -339,6 +339,9 @@ export default function QuotePage({
               onClick={() => {
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
+                setTimeout(() => {
+                  document.getElementById('experternas-val')?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
               }}
               className="h-12 px-8 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] inline-flex items-center gap-2 group transition shadow-sm"
             >

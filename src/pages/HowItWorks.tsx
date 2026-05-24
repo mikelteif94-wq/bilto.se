@@ -765,7 +765,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       </section>
 
       {/* Popular cars + budget browser */}
-      <section className="bg-white py-14 sm:py-20 px-5 sm:px-6">
+      <section id="experternas-val" className="bg-white py-14 sm:py-20 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 leading-[1.08] tracking-[-0.02em]">
