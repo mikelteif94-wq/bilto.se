@@ -45,10 +45,16 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    if (!dealer.godkand) {
+    // Set godkand = true before creating the account
+    const { error: approveErr } = await supabase
+      .from("dealers")
+      .update({ godkand: true })
+      .eq("id", dealer.id);
+
+    if (approveErr) {
       return new Response(
-        JSON.stringify({ error: "Handlaren är inte godkänd" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        JSON.stringify({ error: "Kunde inte godkänna handlaren", details: approveErr.message }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
