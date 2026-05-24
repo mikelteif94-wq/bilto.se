@@ -642,7 +642,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section className="bg-[#f5f8fc] py-16 sm:py-24 sm:overflow-hidden px-5 sm:px-6">
+      <section id="sa-fungerar-det" className="bg-[#f5f8fc] py-16 sm:py-24 sm:overflow-hidden px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-16">
             <h2 className="text-[34px] sm:text-[48px] font-semibold leading-[1.02] text-slate-900 tracking-[-0.02em]">
@@ -697,24 +697,24 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <span className="text-[11px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-4 block">
                 Din personliga bilmäklare
               </span>
-              <h2 className="text-[32px] sm:text-[44px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
-                Ska du köpa eller byta bil? Din personliga bilmäklare hjälper dig hela vägen.
+              <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
+                Ska du köpa eller byta bil?
               </h2>
-              <p className="text-[17px] text-slate-600 mt-5 leading-[1.6] max-w-lg">
-                Oavsett om du letar efter en ny bil, redan hittat en eller vill byta in din nuvarande hjälper vi dig genom hela affären — från pris och villkor till avtal och trygghet.
+              <p className="text-[15px] text-slate-600 mt-4 leading-[1.6] max-w-lg">
+                Din personliga bilmäklare hjälper dig hela vägen — oavsett om du letar efter en ny bil, redan hittat en eller vill byta in din nuvarande.
               </p>
-              <ul className="mt-8 space-y-3.5">
+              <ul className="mt-6 space-y-2">
                 {[
                   'En personlig bilmäklare på din sida',
                   'Vi granskar pris, villkor och avtal',
                   'Betala bara om affären blir av',
                   'Fungerar vid köp, byte och leasing',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span className="mt-0.5 w-5 h-5 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3" strokeWidth={3} />
+                  <li key={item} className="flex items-center gap-2.5">
+                    <span className="w-4 h-4 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0">
+                      <Check className="w-2.5 h-2.5" strokeWidth={3} />
                     </span>
-                    <span className="text-[15.5px] text-slate-700 leading-[1.55]">
+                    <span className="text-[14px] text-slate-700 leading-[1.5]">
                       {item}
                     </span>
                   </li>
@@ -726,6 +726,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   onClick={() => {
                     window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
+                    setTimeout(() => {
+                      document.getElementById('sa-fungerar-det')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
                   }}
                   className="h-12 px-7 rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
                 >
