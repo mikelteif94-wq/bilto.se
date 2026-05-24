@@ -2257,7 +2257,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       {/* Hero image CTA */}
       <section className="relative overflow-hidden">
         <img
-          src="/BSM_car_sale_key_woman_handover_101122.jpg"
+          src="/b858d9c8-9893-488f-8103-98fee9292c16.png"
           alt="Bilaffär med Bilto"
           className="w-full h-[340px] sm:h-[480px] object-cover object-center"
         />
