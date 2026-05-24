@@ -9,38 +9,57 @@ interface Props {
 type Status = 'idle' | 'parsing' | 'previewing' | 'importing' | 'done';
 
 interface CarRow {
+  // Identitet
   make: string;
   model: string;
   slug: string | null;
-  price_used_from: number | null;
+  // Pris
   price_new_from: number | null;
   price_new_to: number | null;
+  price_used_from: number | null;
+  price_used_min: number | null;
+  price_used_max: number | null;
+  price_cheapest: number | null;
   price_recommended: string | null;
+  // Manadskostnad
   monthly_cost_new: number | null;
   monthly_cost_new_min: number | null;
   monthly_cost_new_max: number | null;
   monthly_cost_used: number | null;
   monthly_cost_used_min: number | null;
   monthly_cost_used_max: number | null;
-  baggage_liters: number | null;
-  drivetrain_label: string | null;
-  fuel_label_short: string | null;
+  // Specifikationer
   body_type: string | null;
   fuel_types: string[] | null;
+  drivetrain_label: string | null;
+  fuel_label_short: string | null;
+  baggage_liters: number | null;
+  seats: number | null;
   segment: string | null;
+  // Betyg
+  rating_scale: string | null;
   rating_overall: number | null;
   rating_driving: number | null;
   rating_comfort: number | null;
   rating_practicality: number | null;
   rating_value: number | null;
+  // Vardeminskning
   depreciation_grade: string | null;
   depreciation_description: string | null;
+  // Generation
+  generation_name: string | null;
+  generation_from_year: number | null;
+  generation_to_year: number | null;
+  // Listor
   fits_for: string[] | null;
   strengths: string[] | null;
   weaknesses: string[] | null;
-  meta_description: string | null;
+  cta: Record<string, unknown> | null;
+  // Text/persona
   expert_comment: string | null;
-  seats: number | null;
+  meta_description: string | null;
+  persona_family: string | null;
+  persona_driving: string | null;
 }
 
 interface ImportResult {
@@ -106,40 +125,68 @@ function parseCarJson(raw: unknown): CarRow | null {
   // rating_overall: top-level betyg_totalt (bilar_latt) or nested betyg.totalt (enriched)
   const ratingOverall = c.betyg_totalt !== undefined ? numOrNull(c.betyg_totalt) : numOrNull(betyg.totalt);
 
+  const gen = (c.generation ?? {}) as Record<string, unknown>;
+
+  const ctaRaw = c.cta;
+  const ctaParsed =
+    ctaRaw && typeof ctaRaw === 'object' && !Array.isArray(ctaRaw)
+      ? (ctaRaw as Record<string, unknown>)
+      : null;
+
+  const persona = (c.persona ?? {}) as Record<string, unknown>;
+
   return {
     make,
     model,
     slug: (c.slug as string) ?? null,
-    // begagnat_typisk (bilar_latt) or begagnat_fran (enriched)
-    price_used_from: numOrNull(pris.begagnat_typisk ?? pris.begagnat_fran),
+    // Pris
     price_new_from: numOrNull(pris.ny_fran),
     price_new_to: numOrNull(pris.ny_till),
+    // begagnat_typisk (bilar_latt) or begagnat_fran (enriched)
+    price_used_from: numOrNull(pris.begagnat_typisk ?? pris.begagnat_fran),
+    price_used_min: numOrNull(pris.begagnat_spann_min ?? begSpann[0]),
+    price_used_max: numOrNull(pris.begagnat_spann_max ?? begSpann[1]),
+    price_cheapest: numOrNull(pris.billigast),
     price_recommended: (pris.rekommenderat as string) ?? null,
+    // Manadskostnad
     monthly_cost_new: numOrNull(mk.ny),
     monthly_cost_new_min: numOrNull(nySpann[0]),
     monthly_cost_new_max: numOrNull(nySpann[1]),
     monthly_cost_used: numOrNull(mk.begagnad),
     monthly_cost_used_min: numOrNull(begSpann[0]),
     monthly_cost_used_max: numOrNull(begSpann[1]),
-    baggage_liters: numOrNull(spec.bagageutrymme_liter),
-    drivetrain_label: (spec.drivlina as string) ?? null,
-    fuel_label_short: (spec.drivlina_kort as string) ?? null,
+    // Specifikationer
     body_type: kaross ? (KAROSS_MAP[kaross] ?? 'hatchback') : null,
     fuel_types: drivmedel ? (DRIVMEDEL_MAP[drivmedel] ?? ['bensin']) : null,
-    segment: null,
+    drivetrain_label: (spec.drivlina as string) ?? null,
+    fuel_label_short: (spec.drivlina_kort as string) ?? null,
+    baggage_liters: numOrNull(spec.bagageutrymme_liter),
+    seats: numOrNull(spec.saten ?? c.seats),
+    segment: (c.segment as string) ?? null,
+    // Betyg
+    rating_scale: (c.betyg_skala as string) ?? null,
     rating_overall: ratingOverall,
     rating_driving: numOrNull(betyg.korning),
     rating_comfort: numOrNull(betyg.komfort),
     rating_practicality: numOrNull(betyg.praktiskt),
     rating_value: numOrNull(betyg.varde),
+    // Vardeminskning
     depreciation_grade: (dep.betyg as string) ?? null,
     depreciation_description: (dep.beskrivning as string) ?? null,
+    // Generation
+    generation_name: (gen.namn ?? c.generation_namn) as string | null ?? null,
+    generation_from_year: numOrNull(gen.fran_ar ?? c.generation_fran_ar),
+    generation_to_year: numOrNull(gen.till_ar ?? c.generation_till_ar),
+    // Listor
     fits_for: arrayOrNull(c.passar_for),
     strengths: arrayOrNull(c.styrkor),
     weaknesses: arrayOrNull(c.svagheter),
-    meta_description: (c.meta_description as string) ?? null,
+    cta: ctaParsed,
+    // Text/persona
     expert_comment: expertText ?? null,
-    seats: numOrNull((c.specifikationer as Record<string, unknown> | undefined)?.saten ?? c.seats),
+    meta_description: (c.meta_description as string) ?? null,
+    persona_family: (persona.familjetest ?? c.persona_familjetest) as string | null ?? null,
+    persona_driving: (persona.kordynamik ?? c.persona_kordynamik) as string | null ?? null,
   };
 }
 
@@ -210,15 +257,17 @@ export default function AdminCatalogImport({ onBack }: Props) {
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
 
       const fields: (keyof CarRow)[] = [
-        'slug', 'price_used_from', 'price_new_from', 'price_new_to', 'price_recommended',
+        'slug',
+        'price_new_from', 'price_new_to', 'price_used_from', 'price_used_min', 'price_used_max',
+        'price_cheapest', 'price_recommended',
         'monthly_cost_new', 'monthly_cost_new_min', 'monthly_cost_new_max',
         'monthly_cost_used', 'monthly_cost_used_min', 'monthly_cost_used_max',
-        'baggage_liters', 'drivetrain_label', 'fuel_label_short',
-        'body_type', 'fuel_types', 'rating_overall',
-        'rating_driving', 'rating_comfort', 'rating_practicality', 'rating_value',
+        'body_type', 'fuel_types', 'drivetrain_label', 'fuel_label_short', 'baggage_liters',
+        'rating_scale', 'rating_overall', 'rating_driving', 'rating_comfort', 'rating_practicality', 'rating_value',
         'depreciation_grade', 'depreciation_description',
-        'fits_for', 'strengths', 'weaknesses',
-        'meta_description', 'expert_comment',
+        'generation_name', 'generation_from_year', 'generation_to_year',
+        'fits_for', 'strengths', 'weaknesses', 'cta',
+        'expert_comment', 'meta_description', 'persona_family', 'persona_driving',
       ];
       if (row.seats !== null) fields.push('seats');
       if (row.segment !== null) fields.push('segment');
