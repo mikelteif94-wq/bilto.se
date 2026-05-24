@@ -383,30 +383,6 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
     </section>
   );
 
-  const pricingSection = (
-    <section key="pricing">
-      <SectionTitle>Pris</SectionTitle>
-      <div className="space-y-2.5">
-        {data.pricing.used_from_sek && (
-          <div className="p-3.5 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl">
-            <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-wide mb-0.5">Begagnad</p>
-            <p className="text-[18px] font-bold text-slate-900">{formatPriceSEK(data.pricing.used_from_sek)}</p>
-          </div>
-        )}
-        {data.pricing.new_from_sek && (
-          <div className="p-3 bg-slate-50 rounded-xl flex items-start justify-between gap-3">
-            <div>
-              <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Ny från</p>
-              <p className="text-[15px] font-bold text-slate-700 mt-0.5">{formatPriceSEK(data.pricing.new_from_sek)}</p>
-              {data.pricing.new_to_sek && (
-                <p className="text-[11px] text-slate-400">till {formatPriceSEK(data.pricing.new_to_sek)}</p>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    </section>
-  );
 
   const specsSection = (
     <section key="specs">
@@ -455,11 +431,11 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
 
   // Ordered sections based on persona
   const orderedSections = (() => {
-    if (showSafetyFirst) return [ratingsSection, specsSection, pricingSection, prosConsSection];
-    if (showFamilyFirst) return [specsSection, ratingsSection, pricingSection, prosConsSection];
-    if (showPricingFirst) return [pricingSection, ratingsSection, specsSection, prosConsSection];
-    if (showDrivingFirst) return [ratingsSection, specsSection, prosConsSection, pricingSection];
-    return [pricingSection, ratingsSection, specsSection, prosConsSection];
+    if (showSafetyFirst) return [ratingsSection, specsSection, prosConsSection];
+    if (showFamilyFirst) return [specsSection, ratingsSection, prosConsSection];
+    if (showPricingFirst) return [ratingsSection, specsSection, prosConsSection];
+    if (showDrivingFirst) return [ratingsSection, specsSection, prosConsSection];
+    return [ratingsSection, specsSection, prosConsSection];
   })();
 
   const ctaButtons = (carPrice || onFitQuiz || onSelect) && (
