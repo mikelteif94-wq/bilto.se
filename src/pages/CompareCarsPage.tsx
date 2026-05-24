@@ -1472,19 +1472,15 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       {/* Curated grid */}
       <section
         id="cars-grid"
-        className={`py-10 sm:py-16 px-4 sm:px-6 transition-colors duration-500 ${
-          activeCategory === 'el'
-            ? 'bg-[#070e1a]'
-            : 'bg-slate-50'
-        }`}
+        className="py-10 sm:py-16 px-4 sm:px-6 bg-slate-50"
       >
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
             <div>
-              <h2 className={`text-[20px] sm:text-[28px] font-bold transition-colors duration-300 ${activeCategory === 'el' ? 'text-white' : 'text-slate-900'}`}>
+              <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900">
                 {activeCategory === 'el' ? 'Elbilar' : 'Experternas val'}
               </h2>
-              <p className={`text-[13px] mt-0.5 transition-colors duration-300 ${activeCategory === 'el' ? 'text-slate-400' : 'text-slate-400'}`}>
+              <p className="text-[13px] mt-0.5 text-slate-400">
                 {activeCategory === 'el'
                   ? 'Alla bilar kör enbart på el — välj ett kort för att jämföra'
                   : 'Markera bilar för att jämföra dem sida vid sida'}
@@ -1519,19 +1515,14 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             {CATEGORIES.map(cat => {
               const Icon = cat.icon;
               const isActive = activeCategory === cat.key && !carSearchQuery;
-              const isElMode = activeCategory === 'el';
               return (
                 <button
                   key={cat.key}
                   onClick={() => { setActiveCategory(cat.key); setShowAllCars(false); setCarSearchQuery(''); setExpertShowCount(6); }}
                   className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                     isActive
-                      ? cat.key === 'el'
-                        ? 'bg-[#38bdf8] text-[#0c1a2e] shadow-md shadow-[#38bdf8]/30'
-                        : 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/20'
-                      : isElMode
-                        ? 'bg-white/8 text-slate-300 ring-1 ring-white/15 hover:ring-white/30 hover:text-white'
-                        : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:ring-slate-300 hover:shadow-sm'
+                      ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/20'
+                      : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:ring-slate-300 hover:shadow-sm'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
