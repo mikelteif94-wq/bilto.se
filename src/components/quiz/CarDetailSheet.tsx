@@ -110,8 +110,10 @@ function MonthlyTooltip({ onClose }: { onClose: () => void }) {
       </button>
       <p className="text-[11px] font-bold text-white mb-1.5">Hur räknar vi?</p>
       <p className="text-[10px] text-slate-400 leading-relaxed">
-        Spannet baseras på snittpriset mellan begagnad och ny, vid 55% respektive 50% restvärde:<br />
-        <span className="text-slate-200">20% kontantinsats · 1% uppläggning · 6,49% ränta · 36 månader</span>
+        Spannet baseras på snittpriset mellan begagnad och ny, vid 55% respektive 50% restvärde.
+      </p>
+      <p className="text-[10px] text-slate-300 leading-relaxed mt-1.5">
+        20% kontantinsats · 1% uppläggning · 6,49% ränta · 36 månader
       </p>
       <p className="text-[10px] text-slate-400 leading-relaxed mt-1.5">
         Lägre siffra = 55% restvärde &nbsp;·&nbsp; Högre siffra = 50% restvärde
@@ -155,9 +157,6 @@ function MonthlyCostBlock({
           ? `${formatSEK(low)}`
           : `${formatSEK(low)}–${formatSEK(high)}`}{' '}
         <span className="text-[14px] font-semibold text-slate-500">kr/mån</span>
-      </p>
-      <p className="text-[10px] text-slate-400 mt-0.5">
-        Beräknat på snittpris ny/beg · 20% kontantinsats · 6,49% ränta · 36 mån
       </p>
     </div>
   );
