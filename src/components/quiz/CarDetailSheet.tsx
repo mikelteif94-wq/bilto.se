@@ -183,7 +183,7 @@ export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAn
         {/* Hero */}
         <div className="relative mb-5">
           {heroImage && (
-            <div className="w-full bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center" style={{ height: '180px' }}>
+            <div className="w-full bg-white rounded-xl overflow-hidden flex items-center justify-center" style={{ height: '180px' }}>
               <img
                 src={heroImage}
                 alt={`${car.make} ${car.model}`}
