@@ -94,12 +94,16 @@ function parseCsv(text: string): CsvRow[] {
     const cols = splitLine(line);
     const row: Record<string, string> = {};
     headers.forEach((h, i) => { row[h] = (cols[i] ?? '').replace(/^["']|["']$/g, '').trim(); });
-    const out: CsvRow = { make: row['make'] ?? '', model: row['model'] ?? '' };
-    if (row['bagage_liter']) {
-      const n = parseInt(row['bagage_liter']);
+    const make = row['make'] || row['marke'] || row['märke'] || row['brand'] || '';
+    const model = row['model'] || row['modell'] || '';
+    const out: CsvRow = { make, model };
+    const bagKey = Object.keys(row).find(k => k.includes('bagage') || k.includes('baggage') || k.includes('trunk'));
+    if (bagKey && row[bagKey]) {
+      const n = parseInt(row[bagKey]);
       if (!isNaN(n)) out.bagage_liter = n;
     }
-    if (row['drivetrain_options']) out.drivetrain_options = row['drivetrain_options'];
+    const dtKey = Object.keys(row).find(k => k.includes('drivetrain') || k.includes('drivlina'));
+    if (dtKey && row[dtKey]) out.drivetrain_options = row[dtKey];
     return out;
   }).filter(r => r.make && r.model);
 }
