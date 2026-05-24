@@ -645,7 +645,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <section id="sa-fungerar-det" className="bg-[#f5f8fc] py-16 sm:py-24 sm:overflow-hidden px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-16">
-            <h2 className="text-[34px] sm:text-[48px] font-semibold leading-[1.02] text-slate-900 tracking-[-0.02em]">
+            <h2 className="text-[28px] sm:text-[38px] font-semibold leading-[1.08] text-slate-900 tracking-[-0.02em]">
               Så enkelt är det
             </h2>
           </div>
@@ -680,7 +680,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       {step.title}
                     </h3>
                   </div>
-                  <p className="text-slate-600 text-[15px] sm:text-[16px] leading-[1.65]">
+                  <p className="text-slate-600 text-[15px] leading-[1.6]">
                     {step.text}
                   </p>
                 </li>
@@ -768,10 +768,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <section className="bg-white py-14 sm:py-20 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-[24px] sm:text-[36px] font-semibold text-slate-900 leading-[1.1] tracking-tight">
+            <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 leading-[1.08] tracking-[-0.02em]">
               Experternas val
             </h2>
-            <p className="mt-3 text-slate-500 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
+            <p className="mt-3 text-slate-500 text-[15px] max-w-lg mx-auto leading-[1.6]">
               Hitta din nästa bil bland de mest eftertraktade modellerna. Vi förhandlar priset åt dig.
             </p>
           </div>
@@ -885,10 +885,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-4 block">
                 Personlig rådgivare
               </span>
-              <h2 className="text-[30px] sm:text-[38px] font-semibold leading-[1.1] text-slate-900 tracking-tight">
+              <h2 className="text-[28px] sm:text-[38px] font-semibold leading-[1.08] text-slate-900 tracking-[-0.02em]">
                 Din personliga rådgivare
               </h2>
-              <p className="text-slate-600 mt-5 text-[16px] leading-[1.65]">
+              <p className="text-slate-600 mt-4 text-[15px] leading-[1.6]">
                 En dedikerad rådgivare jämför bud från utvalda bilhandlare och
                 presenterar det bästa erbjudandet — du slipper samtal och
                 förhandlingar.
@@ -899,8 +899,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   'Du slipper samtal från olika bilhandlare',
                   'Vi sköter kontakten och förhandlingen åt dig',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-[15px] text-slate-700">
-                    <Check className="w-5 h-5 mt-0.5 text-emerald-600 shrink-0" strokeWidth={2} />
+                  <li key={item} className="flex items-start gap-3 text-[14px] text-slate-700">
+                    <Check className="w-4 h-4 mt-0.5 text-emerald-600 shrink-0" strokeWidth={2} />
                     {item}
                   </li>
                 ))}
@@ -950,25 +950,25 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-4 block">
                 Hämtning i hela Sverige
               </span>
-              <h2 className="text-[30px] sm:text-[40px] font-semibold leading-[1.1] text-slate-900 tracking-tight">
+              <h2 className="text-[28px] sm:text-[38px] font-semibold leading-[1.08] text-slate-900 tracking-[-0.02em]">
                 Vi gör det enkelt att sälja bilen, oavsett var du bor
               </h2>
-              <p className="text-slate-600 mt-5 text-[16px] leading-[1.7]">
+              <p className="text-slate-600 mt-4 text-[15px] leading-[1.6]">
                 När du accepterar ett bud bokar vi upphämtning på en plats som
                 passar dig. Du slipper stress, krångel och onödiga resor – bilen
                 hämtas tryggt och smidigt.
               </p>
               <ul className="mt-8 space-y-3">
-                <li className="flex items-start gap-3 text-[15px] text-slate-800">
-                  <Check className="w-5 h-5 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
+                <li className="flex items-start gap-3 text-[14px] text-slate-800">
+                  <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
                   Vi hämtar där det passar dig
                 </li>
-                <li className="flex items-start gap-3 text-[15px] text-slate-800">
-                  <Check className="w-5 h-5 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
+                <li className="flex items-start gap-3 text-[14px] text-slate-800">
+                  <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
                   Trygg upphämtning utan krångel
                 </li>
-                <li className="flex items-start gap-3 text-[15px] text-slate-800">
-                  <Check className="w-5 h-5 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
+                <li className="flex items-start gap-3 text-[14px] text-slate-800">
+                  <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
                   Ingen upphämtningsavgift
                 </li>
               </ul>
@@ -980,10 +980,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <section className="bg-white">
         <div className="max-w-6xl mx-auto px-6 py-16 sm:py-24">
           <div className="mb-12 sm:mb-16 max-w-2xl">
-            <span className="text-[12px] font-medium text-slate-500 mb-3 block">
-              — Varför Bilto
+            <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-4 block">
+              Varför Bilto
             </span>
-            <h2 className="text-[32px] sm:text-[48px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.05]">
+            <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
               Din partner för en trygg och smart bilaffär.
             </h2>
           </div>
@@ -1013,10 +1013,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               return (
                 <div key={b.title} className="bg-white p-8 sm:p-10 flex flex-col">
                   <Icon className="w-7 h-7 text-[#0e6efe] mb-6" strokeWidth={1.75} />
-                  <h3 className="text-[20px] sm:text-[22px] font-semibold text-slate-900 mb-3 tracking-[-0.01em]">
+                  <h3 className="text-[16px] font-semibold text-slate-900 mb-3 tracking-[-0.01em]">
                     {b.title}
                   </h3>
-                  <p className="text-slate-600 leading-[1.65] text-[15px]">
+                  <p className="text-slate-600 leading-[1.6] text-[15px]">
                     {b.text}
                   </p>
                 </div>
@@ -1031,10 +1031,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           <div className="relative rounded-[28px] sm:rounded-[56px] bg-[#0e6efe] px-5 py-8 sm:px-14 sm:py-12 lg:px-20 lg:py-14">
             <div className="relative grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
               <div className="text-white">
-                <h2 className="text-[26px] sm:text-[40px] lg:text-[44px] font-semibold tracking-tight leading-[1.1] text-white">
+                <h2 className="text-[28px] sm:text-[38px] font-semibold tracking-[-0.02em] leading-[1.08] text-white">
                   Ring våra bilexperter
                 </h2>
-                <p className="mt-4 text-[14.5px] sm:text-[16px] text-white leading-[1.6] max-w-md">
+                <p className="mt-4 text-[15px] text-white leading-[1.6] max-w-md">
                   Har du frågor om din bilaffär? Ring oss direkt så hjälper vår
                   bilexpert dig. Kostnadsfritt och helt utan förpliktelse.
                 </p>
@@ -1105,10 +1105,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-4 block">
                 Kundcase
               </span>
-              <h2 className="text-[24px] sm:text-[38px] font-semibold leading-[1.15] sm:leading-[1.08] text-slate-900 tracking-[-0.02em]">
+              <h2 className="text-[28px] sm:text-[38px] font-semibold leading-[1.08] text-slate-900 tracking-[-0.02em]">
                 "Jag visste ingenting om bilar — Bilto skötte allt och jag fick mer än jag vågat hoppas på."
               </h2>
-              <p className="text-slate-600 mt-5 text-[15px] sm:text-[16px] leading-[1.65] max-w-md">
+              <p className="text-slate-600 mt-4 text-[15px] leading-[1.6] max-w-md">
                 Josefin hade hittat en Volvo XC40 men kände sig osäker. Annonsen visade elstolar som inte fanns — Bilto fick 15 000 kr i ersättning för det, förhandlade ner räntan 2 %, fick med dubbdäck och 2 års garanti, och pressade upp inbytesvärdet med 7 000 kr.
               </p>
               <dl className="mt-6 grid grid-cols-2 gap-3">
@@ -1150,7 +1150,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-4 block">
               Vanliga frågor
             </span>
-            <h2 className="text-[32px] sm:text-[40px] font-semibold text-slate-900 tracking-tight leading-[1.08]">
+            <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
               Fler frågor? Vi har svaren.
             </h2>
           </div>
@@ -1165,11 +1165,11 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   className="w-full text-left py-5 px-4 flex items-start gap-4 group"
                 >
                   <div className="flex-1">
-                    <h3 className="text-[16px] lg:text-[17px] font-bold text-slate-900">
+                    <h3 className="text-[16px] font-semibold text-slate-900">
                       {item.q}
                     </h3>
                     {open && (
-                      <p className="mt-3 text-[15px] text-slate-600 leading-[1.65]">
+                      <p className="mt-3 text-[15px] text-slate-600 leading-[1.6]">
                         {item.a}
                       </p>
                     )}
@@ -1210,17 +1210,17 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <X className="w-5 h-5" />
             </button>
             <div className="p-8 sm:p-10">
-              <h2 className="text-[24px] sm:text-[28px] font-semibold text-slate-900 tracking-tight mb-4">
+              <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08] mb-4">
                 Vilka bilar köper Bilto?
               </h2>
-              <p className="text-slate-600 text-[15px] leading-[1.65]">
+              <p className="text-slate-600 text-[15px] leading-[1.6]">
                 Bilto hjälper till att förmedla och sälja de flesta typer av bilar – oavsett märke, modell eller skick.
                 Vi arbetar både med privatpersoner och ett nätverk av seriösa bilhandlare över hela Sverige, vilket gör
                 att vi kan hitta köpare för många olika typer av fordon.
               </p>
 
               <h3 className="mt-6 text-[16px] font-semibold text-slate-900">Vi hjälper bland annat till med:</h3>
-              <ul className="mt-2 space-y-1 text-slate-600 text-[15px] leading-[1.65] list-disc pl-5">
+              <ul className="mt-2 space-y-1 text-slate-600 text-[14px] leading-[1.6] list-disc pl-5">
                 <li>Personbilar</li>
                 <li>Kombibilar</li>
                 <li>SUV:ar</li>
@@ -1232,10 +1232,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               </ul>
 
               <h3 className="mt-6 text-[16px] font-semibold text-slate-900">Bilar vi oftast kan sälja snabbt</h3>
-              <p className="mt-1 text-slate-600 text-[15px] leading-[1.65]">
+              <p className="mt-1 text-slate-600 text-[15px] leading-[1.6]">
                 Vissa bilar är extra eftertraktade på marknaden och får ofta många intressenter:
               </p>
-              <ul className="mt-2 space-y-1 text-slate-600 text-[15px] leading-[1.65] list-disc pl-5">
+              <ul className="mt-2 space-y-1 text-slate-600 text-[14px] leading-[1.6] list-disc pl-5">
                 <li>Nyare bilar</li>
                 <li>Svensksålda bilar</li>
                 <li>Bilar med servicehistorik</li>
@@ -1245,13 +1245,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               </ul>
 
               <h3 className="mt-6 text-[16px] font-semibold text-slate-900">Kan ni hjälpa till med äldre eller skadade bilar?</h3>
-              <p className="mt-1 text-slate-600 text-[15px] leading-[1.65]">
+              <p className="mt-1 text-slate-600 text-[15px] leading-[1.6]">
                 Ja. Även äldre bilar, bilar med kosmetiska skador eller högre miltal kan vara intressanta för våra köpare och handlare.
                 Det viktigaste är att informationen om bilen är korrekt när du skickar in din förfrågan.
               </p>
 
               <h3 className="mt-6 text-[16px] font-semibold text-slate-900">Hur vet jag om min bil är intressant?</h3>
-              <p className="mt-1 text-slate-600 text-[15px] leading-[1.65]">
+              <p className="mt-1 text-slate-600 text-[15px] leading-[1.6]">
                 Det kostar inget att skicka in bilen till Bilto för en första bedömning. När vi fått in information och
                 bilder gör vi en värdering och ser vilka köpare eller handlare som kan vara intresserade. Du väljer
                 alltid själv om du vill gå vidare med försäljningen eller inte.
