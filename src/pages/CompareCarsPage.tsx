@@ -933,7 +933,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             <Menu className="w-6 h-6 text-white" strokeWidth={2} />
           </button>
           <button onClick={onBackHome} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center">
-            <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" />
+            <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {NAV_ITEMS.map((item) => (

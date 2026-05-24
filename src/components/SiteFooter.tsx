@@ -6,6 +6,8 @@ export function SiteFooter() {
           <img
             src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
             alt="Bilto"
+            loading="lazy"
+            decoding="async"
             className="h-40 w-auto object-contain"
           />
           <p className="mt-2 text-[14px] text-white/85 leading-relaxed max-w-xs">
@@ -18,6 +20,8 @@ export function SiteFooter() {
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
+              loading="lazy"
+              decoding="async"
               className="h-20 lg:h-32 w-auto object-contain -ml-2"
             />
             <p className="mt-4 text-sm text-white/80 leading-relaxed max-w-xs">

@@ -45,7 +45,8 @@ export function useCarImages() {
         const { data, error } = await supabase
           .from('car_catalog')
           .select('make, model, image_url, cleaned_image_url, fuel_types, body_type, rating_overall, expert_comment, is_active')
-          .eq('is_active', true);
+          .eq('is_active', true)
+          .limit(500);
 
         if (error) {
           console.error('Error fetching car images:', error);

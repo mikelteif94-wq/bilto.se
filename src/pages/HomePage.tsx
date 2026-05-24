@@ -184,6 +184,8 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
+              fetchPriority="high"
+              decoding="async"
               className="hidden lg:block h-16 lg:h-32 w-auto object-contain"
             />
           </a>
@@ -539,6 +541,8 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                     <img
                       src={b.img}
                       alt=""
+                      loading="lazy"
+                      decoding="async"
                       className="w-full max-w-[260px] h-[180px] object-contain"
                     />
                   </div>
@@ -588,6 +592,8 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 <img
                   src={r.img}
                   alt={r.name}
+                  loading="lazy"
+                  decoding="async"
                   className="w-14 h-14 rounded-full object-cover flex-shrink-0"
                 />
                 <div>
@@ -617,6 +623,8 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               <img
                 src="https://www.truecar.com/assets/_next/static/media/audi-a5.06472ad9.png?auto=format&h=484&w=960"
                 alt="Audi A5"
+                loading="lazy"
+                decoding="async"
                 className="w-full max-w-md object-contain"
               />
             </div>

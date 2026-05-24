@@ -159,6 +159,8 @@ export default function SellCarPage({
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
               className="h-20 lg:h-32 w-auto object-contain"
+              fetchPriority="high"
+              decoding="async"
             />
           </button>
           <div className="flex items-center ml-auto">

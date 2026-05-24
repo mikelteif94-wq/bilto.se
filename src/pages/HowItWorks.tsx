@@ -275,6 +275,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
               className="h-20 lg:h-32 w-auto object-contain"
+              fetchPriority="high"
+              decoding="async"
             />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">

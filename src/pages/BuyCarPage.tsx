@@ -226,6 +226,8 @@ export default function BuyCarPage({
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
+              fetchPriority="high"
+              decoding="async"
               className="h-20 lg:h-32 w-auto object-contain"
             />
           </button>
