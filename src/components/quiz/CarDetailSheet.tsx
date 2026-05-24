@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { Sheet } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
-import { type ComparisonCar } from '@/lib/comparison';
+import { type ComparisonCar, getAllComparisonCars } from '@/lib/comparison';
 import { useCarCatalogLookup } from '@/lib/comparison/useCarCatalogLookup';
 import type { QuizAnswers } from './QuizTypes';
 import { inferPersona, type Persona } from './persona';
@@ -379,7 +379,16 @@ function EqSlider({ value, min, max, step, onChange }: { value: number; min: num
 
 type EquityStep = 'start' | 'car' | 'debt' | 'cash' | 'result';
 
-function CarEquityCalc({ carPrice, usedPrice, carName }: { carPrice: number; usedPrice?: number; carName?: string }) {
+interface AffordableAlt {
+  brand: string;
+  model: string;
+  price: number;
+  depositNeeded: number;
+  monthly: number;
+  image?: string;
+}
+
+function CarEquityCalc({ carPrice, usedPrice, carName, bodyType }: { carPrice: number; usedPrice?: number; carName?: string; bodyType?: string }) {
   const basePrice = usedPrice ? Math.round((carPrice + usedPrice) / 2) : carPrice;
   const depositNeeded = Math.round(basePrice * 0.20);
   const monthlyBase = Math.round(calcCarMonthly(basePrice, 0.55));
@@ -397,6 +406,39 @@ function CarEquityCalc({ carPrice, usedPrice, carName }: { carPrice: number; use
   const r = 0.0649 / 12; const n = 36; const residual = basePrice * 0.55;
   const monthly = Math.round(((loanBase - residual / Math.pow(1 + r, n)) * r) / (1 - Math.pow(1 + r, -n)));
   const monthlySaving = monthlyBase - monthly;
+
+  const affordableAlts = useMemo((): AffordableAlt[] => {
+    if (equity === 0) return [];
+    const all = getAllComparisonCars();
+    return all
+      .filter(c => {
+        const price = c.pricing.used_from_sek || c.pricing.new_from_sek;
+        if (!price || price >= basePrice) return false;
+        const dep = Math.round(price * 0.20);
+        if (dep > equity) return false;
+        if (bodyType && c.specs.body_type !== bodyType) return false;
+        const label = `${c.brand_display} ${c.model_display}`;
+        if (label === carName) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        const pa = a.pricing.used_from_sek || a.pricing.new_from_sek || 0;
+        const pb = b.pricing.used_from_sek || b.pricing.new_from_sek || 0;
+        return pb - pa;
+      })
+      .slice(0, 3)
+      .map(c => {
+        const price = (c.pricing.used_from_sek || c.pricing.new_from_sek)!;
+        return {
+          brand: c.brand_display,
+          model: c.model_display,
+          price,
+          depositNeeded: Math.round(price * 0.20),
+          monthly: Math.round(calcCarMonthly(price, 0.55)),
+          image: c.image_url,
+        };
+      });
+  }, [equity, basePrice, bodyType, carName]);
 
   if (step === 'start') {
     return (
@@ -601,6 +643,33 @@ function CarEquityCalc({ carPrice, usedPrice, carName }: { carPrice: number; use
               >
                 Räkna om
               </button>
+
+              {extraNeeded > 0 && affordableAlts.length > 0 && (
+                <div className="pt-1 border-t border-slate-100 space-y-2">
+                  <p className="text-[11.5px] font-bold text-slate-700">
+                    Bilar du har råd med i samma kategori
+                  </p>
+                  {affordableAlts.map(alt => (
+                    <div key={`${alt.brand}-${alt.model}`} className="flex items-center gap-3 bg-white rounded-xl border border-slate-200 px-3 py-2.5">
+                      {alt.image ? (
+                        <img src={alt.image} alt={`${alt.brand} ${alt.model}`} className="w-14 h-10 object-cover rounded-lg shrink-0 bg-slate-100" />
+                      ) : (
+                        <div className="w-14 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                          <Car className="w-5 h-5 text-slate-300" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[12px] font-bold text-slate-800 truncate">{alt.brand} {alt.model}</p>
+                        <p className="text-[10.5px] text-slate-500 mt-0.5">Insats: {fmt(alt.depositNeeded)} kr · {fmt(alt.monthly)} kr/mån</p>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <p className="text-[10px] text-emerald-600 font-bold">Passar din insats</p>
+                        <p className="text-[9.5px] text-slate-400 tabular-nums">{fmt(alt.price)} kr</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -814,7 +883,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
       )}
 
       {carPrice && (
-        <CarEquityCalc carPrice={carPrice} usedPrice={usedPrice} carName={`${data.brand_display} ${data.model_display}`} />
+        <CarEquityCalc carPrice={carPrice} usedPrice={usedPrice} carName={`${data.brand_display} ${data.model_display}`} bodyType={data.specs.body_type} />
       )}
 
       {/* Persona-ordered sections */}
