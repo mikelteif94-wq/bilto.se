@@ -389,12 +389,8 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
       <div className="space-y-2.5">
         {data.pricing.used_from_sek && (
           <div className="p-3.5 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl">
-            <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-wide mb-0.5">Begagnad — rekommenderat val</p>
+            <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-wide mb-0.5">Begagnad</p>
             <p className="text-[18px] font-bold text-slate-900">{formatPriceSEK(data.pricing.used_from_sek)}</p>
-            <p className="text-[12px] text-slate-500 mt-1 leading-relaxed">
-              Priset avser välskött exemplar med normalt miltal (1–3 år, ca 1 000–2 500 mil).
-              Äldre årsmodeller, högt miltal eller utökad utrustning påverkar priset markant — kontrollera alltid servicelog och besiktning.
-            </p>
           </div>
         )}
         {data.pricing.new_from_sek && (
@@ -406,7 +402,6 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
                 <p className="text-[11px] text-slate-400">till {formatPriceSEK(data.pricing.new_to_sek)}</p>
               )}
             </div>
-            <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-1 rounded-md whitespace-nowrap mt-0.5">Referenspris</span>
           </div>
         )}
       </div>
