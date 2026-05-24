@@ -20,6 +20,7 @@ type DbRow = {
   kaross: string | null;
   drivmedel: string | null;
   drivlina_kort: string | null;
+  drivetrain_type: string | null;
   bagage_liter: number | null;
   generation_fran_ar: number | null;
   generation_till_ar: number | null;
@@ -61,9 +62,15 @@ function mapFuelTypes(drivmedel: string | null): ComparisonCar['specs']['fuel_ty
   return types.length > 0 ? types : ['bensin'];
 }
 
-function mapDrivetrain(drivlina: string | null): ComparisonCar['specs']['drivetrain'] {
+function mapDrivetrain(drivetrain_type: string | null, drivlina: string | null): ComparisonCar['specs']['drivetrain'] {
+  // Prefer the dedicated drivetrain_type column
+  const dt = (drivetrain_type ?? '').toLowerCase();
+  if (dt.includes('fyrhjul') || dt.includes('awd')) return ['awd'];
+  if (dt.includes('bakhjul') || dt.includes('rwd')) return ['rwd'];
+  if (dt.includes('framhjul') || dt.includes('fwd')) return ['fwd'];
+  // Fall back to drivlina_kort
   const s = (drivlina ?? '').toLowerCase();
-  if (s.includes('fyrhjuls') || s.includes('awd') || s.includes('4wd')) return ['awd'];
+  if (s.includes('fyrhjuls') || s.includes('awd')) return ['awd'];
   if (s.includes('bak') || s.includes('rwd')) return ['rwd'];
   return ['fwd'];
 }
@@ -110,7 +117,7 @@ export function dbRowToComparisonCar(row: DbRow): ComparisonCar {
     specs: {
       body_type: mapBodyType(row.kaross),
       fuel_types: mapFuelTypes(row.drivmedel),
-      drivetrain: mapDrivetrain(row.drivlina_kort),
+      drivetrain: mapDrivetrain(row.drivetrain_type, row.drivlina_kort),
       seats: row.seats ?? 5,
       trunk_liters: row.bagage_liter ?? undefined,
     },
@@ -142,7 +149,7 @@ export function useCarCatalogLookup(make: string, model: string): {
 
     supabase
       .from('car_catalog')
-      .select('make, model, slug, betyg_totalt, betyg_korning, betyg_komfort, betyg_praktiskt, betyg_varde, pris_ny_fran, pris_ny_till, pris_begagnat, manadskostnad_begagnad, manadskostnad_beg_min, manadskostnad_beg_max, kaross, drivmedel, drivlina_kort, bagage_liter, generation_fran_ar, generation_till_ar, expert_text, meta_description, styrkor, svagheter, passar_for, segment, image_url, cleaned_image_url, is_active, seats')
+      .select('make, model, slug, betyg_totalt, betyg_korning, betyg_komfort, betyg_praktiskt, betyg_varde, pris_ny_fran, pris_ny_till, pris_begagnat, manadskostnad_begagnad, manadskostnad_beg_min, manadskostnad_beg_max, kaross, drivmedel, drivlina_kort, drivetrain_type, bagage_liter, generation_fran_ar, generation_till_ar, expert_text, meta_description, styrkor, svagheter, passar_for, segment, image_url, cleaned_image_url, is_active, seats')
       .ilike('make', make)
       .ilike('model', model)
       .maybeSingle()
