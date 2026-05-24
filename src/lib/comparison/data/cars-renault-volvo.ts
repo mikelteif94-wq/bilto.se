@@ -256,6 +256,8 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
   {
     id: 'tesla_model_y', brand_id: 'tesla', brand_display: 'Tesla', model_display: 'Model Y',
     generation: '2020-present', slug: 'tesla-model-y',
+    meta_description: 'Tesla Model Y är en av världens mest sålda elbilar. Med enorm lastkapacitet, lång räckvidd och snabb laddning passar den såväl barnfamiljen som pendlaren. Begagnad är ofta det klokaste köpet — priset sjunker snabbt de första åren.',
+  meta_description: 'Tesla Model Y är en av världens mest sålda elbilar. Med enorm lastkapacitet, lång räckvidd och snabb laddning passar den såväl barnfamiljen som pendlaren. Begagnad är ofta det klokaste köpet — priset sjunker snabbt de första åren.',
     ratings: { overall: 9, driving: 8, comfort: 8, practicality: 9, value: 8 },
     pricing: { new_from_sek: 587900, new_to_sek: 867900, used_from_sek: 218400 },
     specs: { body_type: 'suv', fuel_types: ['el'], drivetrain: ['rwd', 'awd'], seats: 5, trunk_liters: 854, trunk_liters_max: 2158 },
