@@ -21,6 +21,8 @@ import {
   FileUp,
   CheckCircle2,
   XCircle,
+  Images,
+  RefreshCw,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -207,6 +209,11 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
   const [csvResult, setCsvResult] = useState<CsvResult | null>(null);
   const csvInputRef = useRef<HTMLInputElement>(null);
 
+  const [imgSearchId, setImgSearchId] = useState<string | null>(null);
+  const [imgSearchResults, setImgSearchResults] = useState<string[]>([]);
+  const [imgSearchLoading, setImgSearchLoading] = useState(false);
+  const [imgSearchQuery, setImgSearchQuery] = useState('');
+
   const load = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase
@@ -317,6 +324,45 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
 
   const SortIcon = ({ k }: { k: SortKey }) =>
     sortBy === k ? (sortAsc ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />) : null;
+
+  const searchImages = async (entry: CatalogEntry, customQuery?: string) => {
+    const q = customQuery ?? `${entry.make} ${entry.model} car`;
+    setImgSearchQuery(q);
+    setImgSearchId(entry.id);
+    setImgSearchLoading(true);
+    setImgSearchResults([]);
+    try {
+      const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}&srnamespace=6&srlimit=12&format=json&origin=*`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const titles: string[] = (data.query?.search ?? []).map((r: { title: string }) => r.title);
+      const imageUrls: string[] = [];
+      for (const title of titles.slice(0, 8)) {
+        const imgRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=imageinfo&iiprop=url|mime&iiurlwidth=400&format=json&origin=*`);
+        const imgData = await imgRes.json();
+        const pages = Object.values(imgData.query?.pages ?? {}) as Array<{ imageinfo?: Array<{ url: string; mime: string }> }>;
+        for (const page of pages) {
+          const info = page.imageinfo?.[0];
+          if (info?.url && (info.mime?.startsWith('image/jpeg') || info.mime?.startsWith('image/png') || info.mime?.startsWith('image/webp'))) {
+            imageUrls.push(info.url);
+          }
+        }
+        if (imageUrls.length >= 6) break;
+      }
+      setImgSearchResults(imageUrls);
+    } catch {
+      setImgSearchResults([]);
+    } finally {
+      setImgSearchLoading(false);
+    }
+  };
+
+  const pickImage = (url: string) => {
+    if (!editState) return;
+    setEditState({ ...editState, image_url: url });
+    setImgSearchId(null);
+    setImgSearchResults([]);
+  };
 
   const handleCsvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -693,38 +739,67 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                             </button>
                           </div>
                         ) : (
-                          <button
-                            onClick={() => openEdit(entry)}
-                            className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold border transition ${
-                              wasSaved
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                : 'bg-white text-slate-600 border-slate-200 hover:border-[#0e6efe] hover:text-[#0e6efe]'
-                            }`}
-                          >
-                            {wasSaved ? <Check className="w-3 h-3" /> : <Pencil className="w-3 h-3" />}
-                            {wasSaved ? 'Sparat' : 'Enrichera'}
-                          </button>
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => { openEdit(entry); searchImages(entry); }}
+                              className="inline-flex items-center gap-1 h-8 px-2 rounded-lg text-xs font-semibold border bg-white text-slate-500 border-slate-200 hover:border-[#0e6efe] hover:text-[#0e6efe] transition"
+                              title="Sök och matcha bild"
+                            >
+                              <Images className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => openEdit(entry)}
+                              className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold border transition ${
+                                wasSaved
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                  : 'bg-white text-slate-600 border-slate-200 hover:border-[#0e6efe] hover:text-[#0e6efe]'
+                              }`}
+                            >
+                              {wasSaved ? <Check className="w-3 h-3" /> : <Pencil className="w-3 h-3" />}
+                              {wasSaved ? 'Sparat' : 'Enrichera'}
+                            </button>
+                          </div>
                         )}
                       </td>
                     </tr>
                     {isEditing && editState && (
                       <tr className="bg-blue-50/40 border-b border-blue-100">
-                        <td colSpan={8} className="px-4 pb-3 pt-0">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-7 rounded overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
+                        <td colSpan={8} className="px-4 pb-4 pt-0">
+                          {/* Image URL row */}
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-16 h-11 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
                               {editState.image_url ? (
-                                <img src={editState.image_url} alt="preview" className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                <img src={editState.image_url} alt="preview" className="w-full h-full object-contain p-1" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                               ) : (
-                                <Car className="w-4 h-4 text-slate-300" />
+                                <Car className="w-5 h-5 text-slate-300" />
                               )}
                             </div>
                             <input
                               type="url"
                               value={editState.image_url}
                               onChange={e => setEditState({ ...editState, image_url: e.target.value })}
-                              placeholder="Bild-URL (https://…)"
+                              placeholder="Klistra in bild-URL (https://…) eller sök nedan"
                               className="flex-1 h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition placeholder:text-slate-400"
                             />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (imgSearchId === entry.id) {
+                                  setImgSearchId(null);
+                                } else {
+                                  searchImages(entry);
+                                }
+                              }}
+                              className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold border transition ${
+                                imgSearchId === entry.id
+                                  ? 'bg-[#0e6efe] text-white border-[#0e6efe]'
+                                  : 'bg-white text-slate-600 border-slate-200 hover:border-[#0e6efe] hover:text-[#0e6efe]'
+                              }`}
+                              title="Sök bild automatiskt"
+                            >
+                              <Images className="w-3.5 h-3.5" />
+                              {imgSearchId === entry.id ? 'Dölj' : 'Sök bild'}
+                            </button>
                             {editState.image_url && (
                               <button
                                 type="button"
@@ -736,6 +811,69 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                               </button>
                             )}
                           </div>
+
+                          {/* Image search panel */}
+                          {imgSearchId === entry.id && (
+                            <div className="rounded-xl border border-slate-200 bg-white p-3">
+                              <div className="flex items-center gap-2 mb-3">
+                                <div className="relative flex-1">
+                                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+                                  <input
+                                    type="text"
+                                    value={imgSearchQuery}
+                                    onChange={e => setImgSearchQuery(e.target.value)}
+                                    onKeyDown={e => { if (e.key === 'Enter') searchImages(entry, imgSearchQuery); }}
+                                    placeholder={`Sök t.ex. "${entry.make} ${entry.model} car"`}
+                                    className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-900 focus:outline-none focus:border-[#0e6efe] transition"
+                                  />
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => searchImages(entry, imgSearchQuery)}
+                                  disabled={imgSearchLoading}
+                                  className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-slate-800 text-white text-xs font-semibold hover:bg-slate-700 transition disabled:opacity-50"
+                                >
+                                  {imgSearchLoading
+                                    ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                    : <RefreshCw className="w-3.5 h-3.5" />}
+                                  Sök
+                                </button>
+                              </div>
+                              {imgSearchLoading && (
+                                <div className="flex justify-center py-6">
+                                  <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+                                </div>
+                              )}
+                              {!imgSearchLoading && imgSearchResults.length === 0 && (
+                                <p className="text-xs text-slate-400 text-center py-4">Inga bilder hittades — prova en annan sökning.</p>
+                              )}
+                              {!imgSearchLoading && imgSearchResults.length > 0 && (
+                                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                                  {imgSearchResults.map((url, i) => (
+                                    <button
+                                      key={i}
+                                      type="button"
+                                      onClick={() => pickImage(url)}
+                                      className="group relative aspect-[4/3] rounded-lg overflow-hidden border-2 border-transparent hover:border-[#0e6efe] transition-all"
+                                      title="Använd denna bild"
+                                    >
+                                      <img
+                                        src={url}
+                                        alt=""
+                                        loading="lazy"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                        onError={e => { (e.target as HTMLImageElement).closest('button')?.remove(); }}
+                                      />
+                                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center">
+                                        <Check className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition drop-shadow-lg" />
+                                      </div>
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                              <p className="mt-2 text-[10px] text-slate-400">Bilder hämtade från Wikimedia Commons. Klicka på en bild för att använda den.</p>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     )}
