@@ -262,8 +262,9 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     safety: { euro_ncap_stars: 5, euro_ncap_year: 2022 },
     pros: ['Enormt bagageutrymme', 'Bra räckvidd', 'Snabb laddning', 'Låga driftskostnader'],
     cons: ['Stötigt chassi', 'Varierande byggkvalitet', 'Spartansk interiör', 'Inget traditionellt instrument'],
+    meta_description: 'Tesla Model Y är en av världens mest sålda elbilar. Med enorm lastkapacitet, lång räckvidd och snabb laddning passar den såväl barnfamiljen som pendlaren. Begagnad är ofta det klokaste köpet — priset sjunker snabbt de första åren.',
     segment: 'premium', competitors: ['volvo_c40', 'bmw_ix3', 'audi_q4_etron'],
-    is_active: true, updated_at: '2025-01-15',
+    is_active: true, updated_at: '2026-05-24',
   },
   {
     id: 'toyota_aygo_x', brand_id: 'toyota', brand_display: 'Toyota', model_display: 'Aygo X',
