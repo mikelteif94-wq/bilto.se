@@ -17,11 +17,13 @@ import {
   Zap,
   Fuel,
   Star,
+  Upload,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface AdminCarCatalogProps {
   onBack: () => void;
+  onImport?: () => void;
 }
 
 interface CatalogEntry {
@@ -124,7 +126,7 @@ function emptyEdit(entry: CatalogEntry): EditState {
 const inputCls =
   'w-full h-9 px-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition placeholder:text-slate-400';
 
-export default function AdminCarCatalog({ onBack }: AdminCarCatalogProps) {
+export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogProps) {
   const [entries, setEntries] = useState<CatalogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -260,6 +262,16 @@ export default function AdminCarCatalog({ onBack }: AdminCarCatalogProps) {
           <span className="text-slate-300 select-none">/</span>
           <span className="text-sm font-semibold text-slate-900">Bilkatalog</span>
           <span className="ml-1 px-2 py-0.5 rounded-full bg-slate-100 text-xs font-bold text-slate-500">{stats.total}</span>
+          <div className="flex-1" />
+          {onImport && (
+            <button
+              onClick={onImport}
+              className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-semibold text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              Importera JSON
+            </button>
+          )}
         </div>
       </header>
 

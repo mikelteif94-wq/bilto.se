@@ -25,6 +25,7 @@ import AdminBulkUpload from './pages/AdminBulkUpload';
 import AdminQuizSubmissions from './pages/AdminQuizSubmissions';
 import AdminLeadCommandCenter from './pages/AdminLeadCommandCenter';
 import AdminCarCatalog from './pages/AdminCarCatalog';
+import AdminCatalogImport from './pages/AdminCatalogImport';
 import MyCarPage from './pages/MyCarPage';
 import MyQuotePage from './pages/MyQuotePage';
 import SetPasswordPage from './pages/SetPasswordPage';
@@ -509,7 +510,16 @@ function App() {
     }
 
     if (path === '/admin/katalog') {
-      return <AdminCarCatalog onBack={() => navigate('/admin/bilar')} />;
+      return (
+        <AdminCarCatalog
+          onBack={() => navigate('/admin/bilar')}
+          onImport={() => navigate('/admin/katalog/importera')}
+        />
+      );
+    }
+
+    if (path === '/admin/katalog/importera') {
+      return <AdminCatalogImport onBack={() => navigate('/admin/katalog')} />;
     }
 
     if (path !== '/admin/bilar') {
