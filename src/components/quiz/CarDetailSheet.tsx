@@ -446,18 +446,18 @@ function CarEquityCalc({ carPrice, usedPrice, carName, bodyType }: { carPrice: n
         <button
           type="button"
           onClick={() => setStep('car')}
-          className="w-full flex items-center gap-3 bg-white hover:bg-slate-50 border border-slate-200 hover:border-[#0e6efe]/40 rounded-xl px-4 py-3.5 transition-all duration-150 group text-left active:scale-[0.99]"
+          className="w-full flex items-center gap-3 bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-400 rounded-xl px-4 py-3.5 transition-all duration-150 group text-left active:scale-[0.99]"
         >
-          <div className="w-9 h-9 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
-            <Wallet className="w-4 h-4 text-[#0e6efe]" />
+          <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+            <Wallet className="w-4 h-4 text-emerald-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-bold text-slate-800">Räkna vad din insats ger dig</p>
+            <p className="text-[13px] font-bold text-emerald-700">Beräkna vad din insats ger dig</p>
             <p className="text-[11px] text-slate-400 mt-0.5">
               Insatskrav: <span className="font-semibold text-slate-600">{fmt(depositNeeded)} kr</span> · ~{fmt(monthlyBase)} kr/mån
             </p>
           </div>
-          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-[#0e6efe] transition-colors shrink-0" />
+          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 transition-colors shrink-0" />
         </button>
       </section>
     );
