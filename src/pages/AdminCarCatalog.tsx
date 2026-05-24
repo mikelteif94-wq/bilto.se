@@ -61,13 +61,39 @@ interface CsvResult {
 }
 
 function parseCsv(text: string): CsvRow[] {
-  const lines = text.trim().split(/\r?\n/);
+  // Strip BOM
+  const clean = text.replace(/^\uFEFF/, '').trim();
+  const lines = clean.split(/\r?\n/).filter(l => l.trim().length > 0);
   if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/['"]/g, ''));
+
+  // Auto-detect separator: semicolon or comma
+  const sep = lines[0].includes(';') ? ';' : ',';
+
+  function splitLine(line: string): string[] {
+    const result: string[] = [];
+    let cur = '';
+    let inQuote = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        inQuote = !inQuote;
+      } else if (ch === sep && !inQuote) {
+        result.push(cur.trim());
+        cur = '';
+      } else {
+        cur += ch;
+      }
+    }
+    result.push(cur.trim());
+    return result;
+  }
+
+  const headers = splitLine(lines[0]).map(h => h.toLowerCase().replace(/['"]/g, '').trim());
+
   return lines.slice(1).map(line => {
-    const cols = line.split(',').map(c => c.trim().replace(/^["']|["']$/g, ''));
+    const cols = splitLine(line);
     const row: Record<string, string> = {};
-    headers.forEach((h, i) => { row[h] = cols[i] ?? ''; });
+    headers.forEach((h, i) => { row[h] = (cols[i] ?? '').replace(/^["']|["']$/g, '').trim(); });
     const out: CsvRow = { make: row['make'] ?? '', model: row['model'] ?? '' };
     if (row['bagage_liter']) {
       const n = parseInt(row['bagage_liter']);
@@ -298,7 +324,11 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
     const text = await file.text();
     const rows = parseCsv(text);
     if (rows.length === 0) {
-      setCsvResult({ updated: 0, skipped: 0, errors: ['Inga rader hittades. Kontrollera CSV-format.'] });
+      const preview = text.slice(0, 200).replace(/\n/g, '↵');
+      setCsvResult({ updated: 0, skipped: 0, errors: [
+        `Inga rader tolkades. Kontrollera att filen är CSV med komma- eller semikolonseparering och kolumnerna make,model,bagage_liter.`,
+        `Filens start: ${preview}`,
+      ]});
       setCsvUploading(false);
       return;
     }
