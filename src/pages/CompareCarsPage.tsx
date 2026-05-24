@@ -1728,7 +1728,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       {/* Bilbyte Section */}
       <section className="relative overflow-hidden bg-slate-900">
         <img
-          src="/BSM_car_sale_key_woman_handover_101122.jpg"
+          src="/9e88d67e-f888-4b7f-b55b-60dea75193a3.png"
           alt=""
           className="absolute inset-0 w-full h-full object-cover object-center opacity-30"
           aria-hidden="true"
