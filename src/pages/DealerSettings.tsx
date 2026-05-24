@@ -114,9 +114,82 @@ const REGION_OPTIONS = [
 
 // ---------- Ranking helpers ----------
 
+function TierMedal({ tier }: { tier: string | null }) {
+  if (tier === 'guld') {
+    return (
+      <div className="relative inline-flex items-center justify-center">
+        <svg viewBox="0 0 56 64" className="w-14 h-14 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* ribbon left */}
+          <path d="M18 6 L10 26 L20 22 Z" fill="#b45309" />
+          {/* ribbon right */}
+          <path d="M38 6 L46 26 L36 22 Z" fill="#b45309" />
+          {/* ribbon top bar */}
+          <rect x="16" y="2" width="24" height="10" rx="3" fill="#d97706" />
+          {/* medal circle */}
+          <circle cx="28" cy="40" r="20" fill="url(#goldGrad)" />
+          <circle cx="28" cy="40" r="17" fill="none" stroke="#fbbf24" strokeWidth="1.5" strokeDasharray="3 2" />
+          {/* star */}
+          <path d="M28 30 L29.8 36.2 H36.2 L31.2 40.1 L33 46.3 L28 42.4 L23 46.3 L24.8 40.1 L19.8 36.2 H26.2 Z" fill="#fef3c7" />
+          <defs>
+            <radialGradient id="goldGrad" cx="40%" cy="35%" r="60%">
+              <stop offset="0%" stopColor="#fcd34d" />
+              <stop offset="100%" stopColor="#d97706" />
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
+    );
+  }
+  if (tier === 'silver') {
+    return (
+      <div className="relative inline-flex items-center justify-center">
+        <svg viewBox="0 0 56 64" className="w-14 h-14 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6 L10 26 L20 22 Z" fill="#64748b" />
+          <path d="M38 6 L46 26 L36 22 Z" fill="#64748b" />
+          <rect x="16" y="2" width="24" height="10" rx="3" fill="#94a3b8" />
+          <circle cx="28" cy="40" r="20" fill="url(#silverGrad)" />
+          <circle cx="28" cy="40" r="17" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="3 2" />
+          <path d="M28 30 L29.8 36.2 H36.2 L31.2 40.1 L33 46.3 L28 42.4 L23 46.3 L24.8 40.1 L19.8 36.2 H26.2 Z" fill="#f1f5f9" />
+          <defs>
+            <radialGradient id="silverGrad" cx="40%" cy="35%" r="60%">
+              <stop offset="0%" stopColor="#e2e8f0" />
+              <stop offset="100%" stopColor="#94a3b8" />
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
+    );
+  }
+  if (tier === 'brons') {
+    return (
+      <div className="relative inline-flex items-center justify-center">
+        <svg viewBox="0 0 56 64" className="w-14 h-14 drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6 L10 26 L20 22 Z" fill="#92400e" />
+          <path d="M38 6 L46 26 L36 22 Z" fill="#92400e" />
+          <rect x="16" y="2" width="24" height="10" rx="3" fill="#b45309" />
+          <circle cx="28" cy="40" r="20" fill="url(#bronzeGrad)" />
+          <circle cx="28" cy="40" r="17" fill="none" stroke="#d97706" strokeWidth="1.5" strokeDasharray="3 2" />
+          <path d="M28 30 L29.8 36.2 H36.2 L31.2 40.1 L33 46.3 L28 42.4 L23 46.3 L24.8 40.1 L19.8 36.2 H26.2 Z" fill="#fde68a" />
+          <defs>
+            <radialGradient id="bronzeGrad" cx="40%" cy="35%" r="60%">
+              <stop offset="0%" stopColor="#fdba74" />
+              <stop offset="100%" stopColor="#92400e" />
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
+    );
+  }
+  // default: new/unranked
+  return (
+    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 border-2 border-blue-300 flex items-center justify-center">
+      <TrendingUp className="w-6 h-6 text-blue-500" />
+    </div>
+  );
+}
+
 function tierConfig(tier: string | null): {
   label: string;
-  icon: React.ReactNode;
   headerClass: string;
   badgeClass: string;
   barColor: string;
@@ -124,32 +197,28 @@ function tierConfig(tier: string | null): {
   switch (tier) {
     case 'guld':
       return {
-        label: 'GULD',
-        icon: <Star className="w-6 h-6 fill-amber-500 text-amber-500" />,
+        label: 'Guld',
         headerClass: 'bg-gradient-to-r from-amber-50 to-amber-100 border-amber-200',
         badgeClass: 'bg-amber-100 text-amber-800 border-amber-300',
         barColor: 'bg-amber-500',
       };
     case 'silver':
       return {
-        label: 'SILVER',
-        icon: <Award className="w-6 h-6 text-slate-500" />,
+        label: 'Silver',
         headerClass: 'bg-gradient-to-r from-slate-100 to-slate-200 border-slate-300',
         badgeClass: 'bg-slate-200 text-slate-700 border-slate-300',
         barColor: 'bg-slate-500',
       };
     case 'brons':
       return {
-        label: 'BRONS',
-        icon: <Award className="w-6 h-6 text-orange-500" />,
+        label: 'Brons',
         headerClass: 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-200',
         badgeClass: 'bg-orange-100 text-orange-700 border-orange-300',
         barColor: 'bg-orange-500',
       };
     default:
       return {
-        label: 'NY',
-        icon: <TrendingUp className="w-6 h-6 text-blue-500" />,
+        label: 'Ny',
         headerClass: 'bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200',
         badgeClass: 'bg-blue-50 text-blue-600 border-blue-200',
         barColor: 'bg-blue-500',
@@ -219,19 +288,12 @@ function RankingCard({ score }: RankingCardProps) {
       {/* Card header */}
       <div className="px-5 sm:px-6 pt-5 pb-4">
         <div className="flex items-center justify-between gap-4">
-          {/* Tier badge + icon */}
-          <div className="flex items-center gap-2.5">
-            {cfg.icon}
+          {/* Tier medal + label */}
+          <div className="flex items-center gap-3">
+            <TierMedal tier={score.tier} />
             <div>
-              <span
-                className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded border tracking-widest uppercase ${cfg.badgeClass}`}
-              >
-                {score.tier === 'guld' && (
-                  <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                )}
-                {cfg.label}
-              </span>
-              <p className="text-xs text-slate-500 mt-0.5">Din nuvarande nivå</p>
+              <p className="text-lg font-bold text-slate-900 leading-tight">{cfg.label}</p>
+              <p className="text-xs text-slate-500">Din nuvarande nivå</p>
             </div>
           </div>
 
