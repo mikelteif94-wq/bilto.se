@@ -7,7 +7,8 @@ import {
 } from 'lucide-react';
 import { Sheet } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
-import { findComparisonCarByMakeModel, type ComparisonCar } from '@/lib/comparison';
+import { type ComparisonCar } from '@/lib/comparison';
+import { useCarCatalogLookup } from '@/lib/comparison/useCarCatalogLookup';
 import type { QuizAnswers } from './QuizTypes';
 import { inferPersona, type Persona } from './persona';
 import { calcCarMonthlyRange } from '@/lib/utils';
@@ -122,10 +123,21 @@ function MonthlyTooltip({ onClose }: { onClose: () => void }) {
   );
 }
 
-function MonthlyCostBlock({ carPrice, usedPrice }: { carPrice: number; usedPrice?: number }) {
+function MonthlyCostBlock({
+  carPrice, usedPrice, monthlyUsed, monthlyUsedMin, monthlyUsedMax,
+}: {
+  carPrice: number;
+  usedPrice?: number;
+  monthlyUsed?: number;
+  monthlyUsedMin?: number;
+  monthlyUsedMax?: number;
+}) {
   const [showTooltip, setShowTooltip] = useState(false);
-  const range = calcCarMonthlyRange(carPrice, usedPrice);
-  const basedOnUsed = !!usedPrice;
+
+  // Prefer DB values; fall back to calculated
+  const hasDbMonthly = !!(monthlyUsed || (monthlyUsedMin && monthlyUsedMax));
+  const low = monthlyUsedMin ?? (hasDbMonthly ? monthlyUsed! : calcCarMonthlyRange(carPrice, usedPrice).low);
+  const high = monthlyUsedMax ?? (hasDbMonthly ? monthlyUsed! : calcCarMonthlyRange(carPrice, usedPrice).high);
 
   return (
     <div>
@@ -139,12 +151,13 @@ function MonthlyCostBlock({ carPrice, usedPrice }: { carPrice: number; usedPrice
         </div>
       </div>
       <p className="text-[18px] font-bold text-slate-900 tabular-nums">
-        {formatSEK(range.low)}–{formatSEK(range.high)} <span className="text-[14px] font-semibold text-slate-500">kr/mån</span>
+        {low === high
+          ? `${formatSEK(low)}`
+          : `${formatSEK(low)}–${formatSEK(high)}`}{' '}
+        <span className="text-[14px] font-semibold text-slate-500">kr/mån</span>
       </p>
       <p className="text-[10px] text-slate-400 mt-0.5">
-        {basedOnUsed
-          ? `Beräknat på snittpris ny/beg · 20% kontantinsats · 6,49% ränta · 36 mån`
-          : `20% kontantinsats · 6,49% ränta · 36 mån · 55–50% restvärde`}
+        Beräknat på snittpris ny/beg · 20% kontantinsats · 6,49% ränta · 36 mån
       </p>
     </div>
   );
@@ -153,10 +166,7 @@ function MonthlyCostBlock({ carPrice, usedPrice }: { carPrice: number; usedPrice
 export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAnswers }: CarDetailSheetProps) {
   const isOpen = open !== undefined ? open : !!car;
 
-  const comparisonData = useMemo(() => {
-    if (!car) return null;
-    return findComparisonCarByMakeModel(car.make, car.model);
-  }, [car]);
+  const { data: comparisonData } = useCarCatalogLookup(car?.make ?? '', car?.model ?? '');
 
   const persona = useMemo(() => {
     if (!quizAnswers) return null;
@@ -165,15 +175,17 @@ export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAn
 
   if (!car) return null;
 
+  const heroImage = comparisonData?.image_url ?? car.cleaned_image_url ?? car.image_url;
+
   return (
     <Sheet open={isOpen} onClose={onClose}>
       <div className="px-4 sm:px-5 pb-8">
         {/* Hero */}
         <div className="relative mb-5">
-          {(car.cleaned_image_url || car.image_url) && (
+          {heroImage && (
             <div className="w-full bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center" style={{ height: '180px' }}>
               <img
-                src={car.cleaned_image_url || car.image_url || ''}
+                src={heroImage}
                 alt={`${car.make} ${car.model}`}
                 className="max-w-full max-h-full object-contain px-6 py-3"
                 style={{ display: 'block' }}
@@ -341,6 +353,9 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
   const carPrice = data.pricing.new_from_sek ?? null;
   const usedPrice = data.pricing.used_from_sek ?? undefined;
   const [calcOpen, setCalcOpen] = useState(false);
+  const monthlyUsed = data.pricing.monthly_used;
+  const monthlyUsedMin = data.pricing.monthly_used_min;
+  const monthlyUsedMax = data.pricing.monthly_used_max;
 
   // Persona-driven section order
   const showSafetyFirst = persona === 'first_time_buyer';
@@ -523,7 +538,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
         <div className="p-4 bg-[#0e6efe]/5 rounded-xl border border-[#0e6efe]/10">
           <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-wide mb-3">Experternas bedömning</p>
           {carPrice ? (
-            <MonthlyCostBlock carPrice={carPrice} usedPrice={usedPrice} />
+            <MonthlyCostBlock carPrice={carPrice} usedPrice={usedPrice} monthlyUsed={monthlyUsed} monthlyUsedMin={monthlyUsedMin} monthlyUsedMax={monthlyUsedMax} />
           ) : (
             <div>
               <p className="text-[12px] text-slate-500">Uppskattad månadskostnad</p>

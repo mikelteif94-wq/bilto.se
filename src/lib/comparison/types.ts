@@ -10,6 +10,9 @@ export interface CarPricing {
   new_from_sek?: number;
   new_to_sek?: number;
   used_from_sek?: number;
+  monthly_used?: number;
+  monthly_used_min?: number;
+  monthly_used_max?: number;
 }
 
 export interface CarSpecs {
