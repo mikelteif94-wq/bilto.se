@@ -78,17 +78,31 @@ Deno.serve(async (req: Request) => {
         if (v !== undefined && v !== null) payload[k] = v;
       }
 
-      const { error, count } = await supabase
+      // First check if the row exists, then update
+      const { data: existing, error: checkErr } = await supabase
         .from("car_catalog")
-        .update(payload)
+        .select("id")
         .eq("make", make)
         .eq("model", model)
-        .select("id", { count: "exact", head: true });
+        .maybeSingle();
 
-      if (error) {
-        results.push({ make, model, status: "error", error: error.message });
-      } else if ((count ?? 0) === 0) {
+      if (checkErr) {
+        results.push({ make, model, status: "error", error: checkErr.message });
+        continue;
+      }
+
+      if (!existing) {
         results.push({ make, model, status: "not_found" });
+        continue;
+      }
+
+      const { error: updateErr } = await supabase
+        .from("car_catalog")
+        .update(payload)
+        .eq("id", existing.id);
+
+      if (updateErr) {
+        results.push({ make, model, status: "error", error: updateErr.message });
       } else {
         results.push({ make, model, status: "updated" });
       }
