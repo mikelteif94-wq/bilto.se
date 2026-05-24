@@ -1,5 +1,4 @@
 import { Star, Car, ChevronRight, Check, SlidersHorizontal } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { calcCarMonthlyRange } from '../lib/utils';
 
 interface DarkCarCardProps {
@@ -32,7 +31,7 @@ function ScoreBadge({ value }: { value: number }) {
   const color = value >= 8.5 ? '#059669' : value >= 7 ? '#0e6efe' : '#d97706';
   return (
     <div
-      className="absolute top-3 right-3 flex items-center justify-center w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-md"
+      className="absolute top-3 right-3 flex items-center justify-center w-10 h-10 rounded-full bg-white/95 shadow-md"
       style={{ border: `2.5px solid ${color}` }}
     >
       <span className="text-[13px] font-extrabold leading-none" style={{ color }}>{value}</span>
@@ -48,12 +47,8 @@ export default function DarkCarCard({
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.06, duration: 0.4 }}
-      className="group relative bg-white rounded-2xl transition-shadow duration-300 ring-1 ring-slate-100 hover:ring-slate-200 shadow-[0_1px_4px_rgba(0,0,0,0.07)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.13)]"
+    <div
+      className="group relative bg-white rounded-2xl transition-shadow duration-200 ring-1 ring-slate-100 hover:ring-slate-200 shadow-[0_1px_4px_rgba(0,0,0,0.07)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)]"
       style={{ touchAction: 'pan-y' }}
     >
       {/* Clickable card area */}
@@ -62,7 +57,7 @@ export default function DarkCarCard({
           {imageUrl ? (
             <img
               src={imageUrl} alt={name} loading="lazy"
-              className="w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+              className="w-full h-full object-contain p-4"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center"><Car className="w-16 h-16 text-slate-200" /></div>
@@ -70,7 +65,7 @@ export default function DarkCarCard({
           <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
           {topBadge && (
             <div className="absolute top-3.5 left-3.5">
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-sm text-[11px] font-bold text-[#0e6efe] shadow-sm">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 text-[11px] font-bold text-[#0e6efe] shadow-sm">
                 <Star className="w-3 h-3 fill-[#0e6efe] text-[#0e6efe]" />Toppval
               </span>
             </div>
@@ -118,6 +113,6 @@ export default function DarkCarCard({
           </button>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }

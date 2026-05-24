@@ -38,8 +38,8 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            transition={{ duration: 0.15 }}
+            className="absolute inset-0 bg-black/50"
             onClick={onClose}
           />
           <motion.div
@@ -47,7 +47,7 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            transition={{ type: 'tween', ease: [0.32, 0.72, 0, 1], duration: 0.35 }}
             className={cn(
               'relative w-full sm:max-w-[460px] max-h-[92vh] bg-white rounded-t-2xl sm:rounded-b-none flex flex-col shadow-2xl',
               className

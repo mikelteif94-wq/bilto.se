@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star, Gauge, Armchair, Briefcase, TrendingDown, Shield,
   Fuel, Battery, Car, Check, X as XIcon, Info, Users, ArrowRight,
-  BarChart2, AlertTriangle, HelpCircle, X,
+  BarChart2, AlertTriangle, HelpCircle, X, Wallet,
 } from 'lucide-react';
 import { Sheet } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +11,7 @@ import { type ComparisonCar } from '@/lib/comparison';
 import { useCarCatalogLookup } from '@/lib/comparison/useCarCatalogLookup';
 import type { QuizAnswers } from './QuizTypes';
 import { inferPersona, type Persona } from './persona';
-import { calcCarMonthlyRange } from '@/lib/utils';
+import { calcCarMonthlyRange, calcCarMonthly } from '@/lib/utils';
 import { CalcPanel } from '@/components/CalcPanel';
 
 export interface DetailCarData {
@@ -341,6 +341,155 @@ function PersonaInsightSection({ persona, data }: { persona: Persona; data: Comp
   );
 }
 
+function useSlider(min: number, max: number, step: number, onChange: (v: number) => void) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const dragging = useRef(false);
+  const valueFromX = useCallback((clientX: number) => {
+    const track = trackRef.current;
+    if (!track) return min;
+    const rect = track.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    return Math.round((min + ratio * (max - min)) / step) * step;
+  }, [min, max, step]);
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    dragging.current = true;
+    onChange(valueFromX(e.clientX));
+    const onMove = (ev: MouseEvent) => { if (dragging.current) onChange(valueFromX(ev.clientX)); };
+    const onUp = () => { dragging.current = false; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }, [onChange, valueFromX]);
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    e.stopPropagation();
+    dragging.current = true;
+    onChange(valueFromX(e.touches[0].clientX));
+    const onMove = (ev: TouchEvent) => { ev.preventDefault(); if (dragging.current) onChange(valueFromX(ev.touches[0].clientX)); };
+    const onEnd = () => { dragging.current = false; window.removeEventListener('touchmove', onMove); window.removeEventListener('touchend', onEnd); };
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('touchend', onEnd);
+  }, [onChange, valueFromX]);
+  return { trackRef, onMouseDown, onTouchStart };
+}
+
+function fmt(n: number) {
+  return Math.round(n).toLocaleString('sv-SE');
+}
+
+function DownPaymentCalculator({ carPrice, usedPrice }: { carPrice: number; usedPrice?: number }) {
+  const basePrice = usedPrice ? Math.round((carPrice + usedPrice) / 2) : carPrice;
+  const minDown = Math.round(basePrice * 0.10);
+  const maxDown = Math.round(basePrice * 0.60);
+  const defaultDown = Math.round(basePrice * 0.20);
+  const step = 5_000;
+
+  const [downPayment, setDownPayment] = useState(Math.min(Math.max(defaultDown, minDown), maxDown));
+  const slider = useSlider(minDown, maxDown, step, setDownPayment);
+
+  const downPct = downPayment / basePrice;
+  const loan = basePrice - downPayment + basePrice * 0.01;
+  const r = 0.0649 / 12;
+  const n = 36;
+  const residual = basePrice * 0.55;
+  const monthly = Math.round(((loan - residual / Math.pow(1 + r, n)) * r) / (1 - Math.pow(1 + r, -n)));
+  const monthlyAt20 = Math.round(calcCarMonthly(basePrice, 0.55));
+  const saving = monthlyAt20 - monthly;
+  const sliderPct = ((downPayment - minDown) / (maxDown - minDown)) * 100;
+
+  const tiers = [
+    { pct: 0.10, label: '10%' },
+    { pct: 0.20, label: '20%' },
+    { pct: 0.30, label: '30%' },
+    { pct: 0.40, label: '40%' },
+  ];
+
+  return (
+    <section>
+      <div className="flex items-center gap-2 mb-3">
+        <Wallet className="w-4 h-4 text-[#0e6efe]" />
+        <span className="text-[12px] font-bold text-slate-700 uppercase tracking-wide">Vad ger din insats?</span>
+      </div>
+      <div className="bg-slate-50 rounded-xl border border-slate-100 p-4 space-y-4" onClick={e => e.stopPropagation()}>
+        {/* Quick-pick tier buttons */}
+        <div className="grid grid-cols-4 gap-1.5">
+          {tiers.map(t => {
+            const val = Math.round(basePrice * t.pct / step) * step;
+            const active = Math.abs(downPayment - val) < step / 2;
+            return (
+              <button
+                key={t.pct}
+                type="button"
+                onClick={() => setDownPayment(Math.min(Math.max(val, minDown), maxDown))}
+                className={`h-9 rounded-lg text-[11px] font-bold border transition-all duration-150 active:scale-[0.97] ${
+                  active
+                    ? 'bg-[#0e6efe] border-[#0e6efe] text-white shadow-sm'
+                    : 'border-slate-200 bg-white text-slate-500 hover:border-[#0e6efe]/40 hover:text-[#0e6efe]'
+                }`}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Slider */}
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[10.5px] font-semibold text-slate-500">Kontantinsats</span>
+            <span className="text-[12px] font-bold text-slate-900 tabular-nums">
+              {fmt(downPayment)} kr <span className="text-[10px] font-normal text-slate-400">({Math.round(downPct * 100)}%)</span>
+            </span>
+          </div>
+          <div
+            ref={slider.trackRef}
+            className="relative h-8 flex items-center cursor-pointer select-none"
+            onMouseDown={slider.onMouseDown}
+            onTouchStart={slider.onTouchStart}
+          >
+            <div className="absolute inset-x-0 h-1.5 rounded-full bg-slate-200">
+              <div className="absolute left-0 top-0 h-full rounded-full bg-[#0e6efe]" style={{ width: `${sliderPct}%` }} />
+            </div>
+            <div
+              className="absolute w-5 h-5 rounded-full bg-white border-2 border-[#0e6efe] shadow-md -translate-x-1/2"
+              style={{ left: `${sliderPct}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Result */}
+        <div className="grid grid-cols-2 gap-3 pt-1 border-t border-slate-100">
+          <div className="text-center">
+            <p className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">Månadskostnad</p>
+            <p className="text-[22px] font-extrabold text-[#0e6efe] tabular-nums leading-none">{fmt(monthly)}</p>
+            <p className="text-[9px] text-slate-400 mt-0.5">kr/mån · 36 mån</p>
+          </div>
+          <div className="text-center">
+            <p className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
+              {saving >= 0 ? 'Du sparar/mån' : 'Extra/mån'}
+            </p>
+            <p className={`text-[22px] font-extrabold tabular-nums leading-none ${saving >= 0 ? 'text-emerald-600' : 'text-orange-500'}`}>
+              {saving >= 0 ? '+' : ''}{fmt(saving)}
+            </p>
+            <p className="text-[9px] text-slate-400 mt-0.5">vs 20% insats</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-slate-100">
+          {[
+            { label: 'Lånesumma', value: `${fmt(loan)} kr` },
+            { label: 'Restvärde (55%)', value: `${fmt(residual)} kr` },
+          ].map(({ label, value }) => (
+            <div key={label} className="text-center">
+              <p className="text-[8.5px] text-slate-400 mb-0.5">{label}</p>
+              <p className="text-[9.5px] font-bold text-slate-700 tabular-nums">{value}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-[8.5px] text-slate-400 leading-relaxed">6,49% ränta · 55% restvärde · 1% uppläggning. Uppskattning.</p>
+      </div>
+    </section>
+  );
+}
+
 function getDrivetrainLabel(drivetrain: string[]): string {
   const labels: Record<string, string> = { fwd: 'Framhjulsdrift', rwd: 'Bakhjulsdrift', awd: 'Fyrhjulsdrift' };
   return drivetrain.map(d => labels[d] || d).join(', ');
@@ -545,6 +694,11 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
         </section>
       )}
 
+      {/* Down payment calculator */}
+      {carPrice && (
+        <DownPaymentCalculator carPrice={carPrice} usedPrice={usedPrice} />
+      )}
+
       {/* Persona-ordered sections */}
       {orderedSections}
     </div>
@@ -622,6 +776,9 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
           Detaljerad data för denna modell är inte tillgänglig ännu. Vi arbetar på att lägga till fler bilmodeller.
         </p>
       </div>
+
+      {carPrice && <DownPaymentCalculator carPrice={carPrice} />}
+
       {car.matchReasons.length > 0 && (
         <div>
           <SectionTitle>Varför vi rekommenderar den</SectionTitle>
