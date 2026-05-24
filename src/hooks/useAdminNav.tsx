@@ -1,7 +1,7 @@
-import { LayoutDashboard, Building2, Users } from 'lucide-react';
+import { LayoutDashboard, Building2, Users, BookOpen } from 'lucide-react';
 import { useAdminBadges } from './useAdminBadges';
 
-export type AdminPage = 'overview' | 'leads' | 'handlare';
+export type AdminPage = 'overview' | 'leads' | 'handlare' | 'katalog';
 
 interface AdminNavOptions {
   activePage: AdminPage;
@@ -31,6 +31,12 @@ export function useAdminNav({ activePage, onNavigate }: AdminNavOptions) {
       active: activePage === 'handlare',
       badge: badges.pendingDealers,
       onClick: activePage !== 'handlare' ? () => onNavigate('handlare') : undefined,
+    },
+    {
+      icon: <BookOpen className="w-[18px] h-[18px]" />,
+      label: 'Katalog',
+      active: activePage === 'katalog',
+      onClick: activePage !== 'katalog' ? () => onNavigate('katalog') : undefined,
     },
   ];
 }

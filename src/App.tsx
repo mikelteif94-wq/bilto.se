@@ -364,6 +364,7 @@ function App() {
       if (page === 'overview') navigate('/admin/oversikt');
       else if (page === 'leads') navigate('/admin/leads');
       else if (page === 'handlare') navigate('/admin/handlare');
+      else if (page === 'katalog') navigate('/admin/katalog');
     };
 
     if (path === '/admin' || path === '/admin/oversikt') {
