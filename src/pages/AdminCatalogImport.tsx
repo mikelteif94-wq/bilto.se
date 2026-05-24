@@ -297,58 +297,75 @@ export default function AdminCatalogImport({ onBack }: Props) {
   const runImport = useCallback(async () => {
     setStatus('importing');
     setProgress(0);
+
+    // Get current admin session token
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    if (!token) {
+      setResults([{ make: '—', model: '—', status: 'error', error: 'Inte inloggad som admin. Logga in och försök igen.' }]);
+      setStatus('done');
+      return;
+    }
+
+    // Build payload rows — strip null values to keep request lean
+    const FIELDS: (keyof CarRow)[] = [
+      'slug',
+      'pris_ny_fran', 'pris_ny_till', 'pris_begagnat',
+      'pris_begagnat_spann_min', 'pris_begagnat_spann_max',
+      'pris_billigast', 'pris_rekommenderat',
+      'manadskostnad_ny', 'manadskostnad_ny_min', 'manadskostnad_ny_max',
+      'manadskostnad_begagnad', 'manadskostnad_beg_min', 'manadskostnad_beg_max',
+      'kaross', 'drivmedel', 'drivlina', 'drivlina_kort', 'bagage_liter',
+      'betyg_skala', 'betyg_totalt', 'betyg_korning', 'betyg_komfort', 'betyg_praktiskt', 'betyg_varde',
+      'vardeminskning_betyg', 'vardeminskning_text',
+      'generation_namn', 'generation_fran_ar', 'generation_till_ar',
+      'passar_for', 'styrkor', 'svagheter', 'cta_sv',
+      'expert_text', 'meta_description', 'persona_familjetest', 'persona_kordynamik',
+      'body_type', 'fuel_types', 'rating_overall', 'price_used_from',
+      'monthly_cost_new', 'monthly_cost_used',
+    ];
+
+    // Send in batches of 50 to avoid huge payloads
+    const BATCH = 50;
     const resultList: ImportResult[] = [];
+    const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/catalog-import`;
 
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
-      const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
+    for (let i = 0; i < rows.length; i += BATCH) {
+      const batch = rows.slice(i, i + BATCH).map(row => {
+        const payload: Record<string, unknown> = { make: row.make, model: row.model };
+        for (const f of FIELDS) {
+          if (row[f] !== null && row[f] !== undefined) payload[f as string] = row[f];
+        }
+        return payload;
+      });
 
-      const fields: (keyof CarRow)[] = [
-        'slug',
-        // Svenska pris-kolumner
-        'pris_ny_fran', 'pris_ny_till', 'pris_begagnat',
-        'pris_begagnat_spann_min', 'pris_begagnat_spann_max',
-        'pris_billigast', 'pris_rekommenderat',
-        // Svenska månadskostnad-kolumner
-        'manadskostnad_ny', 'manadskostnad_ny_min', 'manadskostnad_ny_max',
-        'manadskostnad_begagnad', 'manadskostnad_beg_min', 'manadskostnad_beg_max',
-        // Svenska spec-kolumner
-        'kaross', 'drivmedel', 'drivlina', 'drivlina_kort', 'bagage_liter',
-        // Svenska betyg-kolumner
-        'betyg_skala', 'betyg_totalt', 'betyg_korning', 'betyg_komfort', 'betyg_praktiskt', 'betyg_varde',
-        // Svenska värdeminskning-kolumner
-        'vardeminskning_betyg', 'vardeminskning_text',
-        // Svenska generation-kolumner
-        'generation_namn', 'generation_fran_ar', 'generation_till_ar',
-        // Listor
-        'passar_for', 'styrkor', 'svagheter', 'cta_sv',
-        // Text/persona
-        'expert_text', 'meta_description', 'persona_familjetest', 'persona_kordynamik',
-        // Befintliga engelska kolumner (bakåtkompatibilitet)
-        'body_type', 'fuel_types', 'rating_overall', 'price_used_from',
-        'monthly_cost_new', 'monthly_cost_used',
-      ];
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ rows: batch }),
+        });
 
-      for (const f of fields) {
-        if (row[f] !== undefined) payload[f] = row[f];
+        if (!res.ok) {
+          const text = await res.text();
+          // Mark whole batch as error
+          for (const r of batch) {
+            resultList.push({ make: String(r.make), model: String(r.model), status: 'error', error: text });
+          }
+        } else {
+          const { results } = await res.json() as { results: ImportResult[] };
+          resultList.push(...results);
+        }
+      } catch (err) {
+        for (const r of batch) {
+          resultList.push({ make: String(r.make), model: String(r.model), status: 'error', error: String(err) });
+        }
       }
 
-      const { error, count } = await supabase
-        .from('car_catalog')
-        .update(payload)
-        .eq('make', row.make)
-        .eq('model', row.model)
-        .select('id', { count: 'exact', head: true });
-
-      if (error) {
-        resultList.push({ make: row.make, model: row.model, status: 'error', error: error.message });
-      } else if ((count ?? 0) === 0) {
-        resultList.push({ make: row.make, model: row.model, status: 'not_found' });
-      } else {
-        resultList.push({ make: row.make, model: row.model, status: 'updated' });
-      }
-
-      setProgress(Math.round(((i + 1) / rows.length) * 100));
+      setProgress(Math.round(Math.min(i + BATCH, rows.length) / rows.length * 100));
     }
 
     setResults(resultList);
