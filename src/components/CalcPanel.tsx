@@ -1,5 +1,43 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { HelpCircle, X } from 'lucide-react';
+
+function useCustomSlider(min: number, max: number, step: number, onChange: (v: number) => void) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const dragging = useRef(false);
+
+  const valueFromX = useCallback((clientX: number) => {
+    const track = trackRef.current;
+    if (!track) return min;
+    const rect = track.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const raw = min + ratio * (max - min);
+    return Math.round(raw / step) * step;
+  }, [min, max, step]);
+
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    dragging.current = true;
+    onChange(valueFromX(e.clientX));
+    const onMove = (ev: MouseEvent) => { if (dragging.current) onChange(valueFromX(ev.clientX)); };
+    const onUp = () => { dragging.current = false; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }, [onChange, valueFromX]);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    e.stopPropagation();
+    dragging.current = true;
+    onChange(valueFromX(e.touches[0].clientX));
+    const onMove = (ev: TouchEvent) => {
+      ev.preventDefault();
+      if (dragging.current) onChange(valueFromX(ev.touches[0].clientX));
+    };
+    const onEnd = () => { dragging.current = false; window.removeEventListener('touchmove', onMove); window.removeEventListener('touchend', onEnd); };
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('touchend', onEnd);
+  }, [onChange, valueFromX]);
+
+  return { trackRef, onMouseDown, onTouchStart };
+}
 import { calcCarMonthly } from '../lib/utils';
 
 const RATE = 0.0649;
@@ -48,6 +86,7 @@ export function CalcPanel({ carPrice, usedPrice, dark = false }: CalcPanelProps)
   const [showInfo, setShowInfo] = useState(false);
   const monthly = calcCarMonthly(price, residualPct);
   const sliderPct = ((price - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100;
+  const slider = useCustomSlider(MIN_PRICE, MAX_PRICE, 5_000, setPrice);
 
   const bg = dark ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-100';
   const labelColor = dark ? 'text-slate-400' : 'text-slate-400';
@@ -80,15 +119,21 @@ export function CalcPanel({ carPrice, usedPrice, dark = false }: CalcPanelProps)
           <label className={`text-[10.5px] font-semibold ${dark ? 'text-slate-300' : 'text-slate-700'}`}>Bilpris</label>
           <span className={`text-[11px] font-bold tabular-nums ${valueColor}`}>{fmt(price)} kr</span>
         </div>
-        <input
-          type="range" min={MIN_PRICE} max={MAX_PRICE} step={5_000} value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
-          onTouchStart={(e) => e.stopPropagation()}
-          onTouchMove={(e) => e.stopPropagation()}
-          className="w-full h-1.5 rounded-full appearance-none cursor-pointer financing-slider touch-none"
-          style={{ background: `linear-gradient(to right, #0e6efe ${sliderPct}%, ${dark ? 'rgba(255,255,255,0.1)' : '#e2e8f0'} ${sliderPct}%)` }}
-        />
-        <div className="flex justify-between mt-0.5">
+        <div
+          ref={slider.trackRef}
+          className="relative h-8 flex items-center cursor-pointer select-none"
+          onMouseDown={slider.onMouseDown}
+          onTouchStart={slider.onTouchStart}
+        >
+          <div className={`absolute inset-x-0 h-1.5 rounded-full ${dark ? 'bg-white/10' : 'bg-slate-200'}`}>
+            <div className="absolute left-0 top-0 h-full rounded-full bg-[#0e6efe]" style={{ width: `${sliderPct}%` }} />
+          </div>
+          <div
+            className="absolute w-5 h-5 rounded-full bg-white border-2 border-[#0e6efe] shadow-md -translate-x-1/2"
+            style={{ left: `${sliderPct}%` }}
+          />
+        </div>
+        <div className="flex justify-between -mt-1">
           <span className={`text-[9px] ${subColor}`}>50 000 kr</span>
           <span className={`text-[9px] ${subColor}`}>1 200 000 kr</span>
         </div>

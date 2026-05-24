@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Car, Wallet, TrendingDown, ArrowRight, Info, X } from 'lucide-react';
 
@@ -23,13 +23,75 @@ function formatSEK(n: number) {
   return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n) + ' kr';
 }
 
+function CustomSlider({
+  value, min, max, step, onChange,
+}: {
+  value: number; min: number; max: number; step: number; onChange: (v: number) => void;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const dragging = useRef(false);
+  const pct = ((value - min) / (max - min)) * 100;
+
+  const valueFromX = useCallback((clientX: number) => {
+    const track = trackRef.current;
+    if (!track) return value;
+    const rect = track.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const raw = min + ratio * (max - min);
+    return Math.round(raw / step) * step;
+  }, [min, max, step, value]);
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    dragging.current = true;
+    onChange(valueFromX(e.clientX));
+    const onMove = (ev: MouseEvent) => { if (dragging.current) onChange(valueFromX(ev.clientX)); };
+    const onUp = () => { dragging.current = false; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  };
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    dragging.current = true;
+    onChange(valueFromX(e.touches[0].clientX));
+    const onMove = (ev: TouchEvent) => {
+      ev.preventDefault();
+      if (dragging.current) onChange(valueFromX(ev.touches[0].clientX));
+    };
+    const onEnd = () => { dragging.current = false; window.removeEventListener('touchmove', onMove); window.removeEventListener('touchend', onEnd); };
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('touchend', onEnd);
+  };
+
+  return (
+    <div
+      ref={trackRef}
+      className="relative h-10 flex items-center cursor-pointer select-none"
+      onMouseDown={onMouseDown}
+      onTouchStart={onTouchStart}
+    >
+      {/* Track */}
+      <div className="absolute inset-x-0 h-2 rounded-full bg-slate-200">
+        <div
+          className="absolute left-0 top-0 h-full rounded-full bg-[#0e6efe]"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      {/* Thumb */}
+      <div
+        className="absolute w-6 h-6 rounded-full bg-white border-2 border-[#0e6efe] shadow-md -translate-x-1/2 transition-shadow active:shadow-lg"
+        style={{ left: `${pct}%` }}
+      />
+    </div>
+  );
+}
+
 function SliderStep({
   label, sublabel, value, min, max, step, onChange, formatValue, note,
 }: {
   label: string; sublabel?: string; value: number; min: number; max: number; step: number;
   onChange: (v: number) => void; formatValue: (v: number) => string; note?: string;
 }) {
-  const pct = ((value - min) / (max - min)) * 100;
   return (
     <div className="space-y-5">
       <div>
@@ -40,21 +102,8 @@ function SliderStep({
         <span className="text-[32px] font-bold text-slate-900 tabular-nums">{formatValue(value)}</span>
       </div>
       <div className="relative px-1">
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={e => onChange(Number(e.target.value))}
-          onTouchStart={e => e.stopPropagation()}
-          onTouchMove={e => e.stopPropagation()}
-          className="w-full h-2 rounded-full appearance-none cursor-pointer accent-[#0e6efe] touch-none"
-          style={{
-            background: `linear-gradient(to right, #0e6efe ${pct}%, #e2e8f0 ${pct}%)`,
-          }}
-        />
-        <div className="flex justify-between mt-2 text-[11px] text-slate-400">
+        <CustomSlider value={value} min={min} max={max} step={step} onChange={onChange} />
+        <div className="flex justify-between mt-1 text-[11px] text-slate-400">
           <span>{formatValue(min)}</span>
           <span>{formatValue(max)}</span>
         </div>
