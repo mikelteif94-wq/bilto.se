@@ -341,150 +341,269 @@ function PersonaInsightSection({ persona, data }: { persona: Persona; data: Comp
   );
 }
 
-function useSlider(min: number, max: number, step: number, onChange: (v: number) => void) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const dragging = useRef(false);
-  const valueFromX = useCallback((clientX: number) => {
-    const track = trackRef.current;
-    if (!track) return min;
-    const rect = track.getBoundingClientRect();
-    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    return Math.round((min + ratio * (max - min)) / step) * step;
-  }, [min, max, step]);
-  const onMouseDown = useCallback((e: React.MouseEvent) => {
-    dragging.current = true;
-    onChange(valueFromX(e.clientX));
-    const onMove = (ev: MouseEvent) => { if (dragging.current) onChange(valueFromX(ev.clientX)); };
-    const onUp = () => { dragging.current = false; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-  }, [onChange, valueFromX]);
-  const onTouchStart = useCallback((e: React.TouchEvent) => {
-    e.stopPropagation();
-    dragging.current = true;
-    onChange(valueFromX(e.touches[0].clientX));
-    const onMove = (ev: TouchEvent) => { ev.preventDefault(); if (dragging.current) onChange(valueFromX(ev.touches[0].clientX)); };
-    const onEnd = () => { dragging.current = false; window.removeEventListener('touchmove', onMove); window.removeEventListener('touchend', onEnd); };
-    window.addEventListener('touchmove', onMove, { passive: false });
-    window.addEventListener('touchend', onEnd);
-  }, [onChange, valueFromX]);
-  return { trackRef, onMouseDown, onTouchStart };
-}
-
 function fmt(n: number) {
   return Math.round(n).toLocaleString('sv-SE');
 }
 
-function DownPaymentCalculator({ carPrice, usedPrice }: { carPrice: number; usedPrice?: number }) {
+function EqSlider({ value, min, max, step, onChange }: { value: number; min: number; max: number; step: number; onChange: (v: number) => void }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const dragging = useRef(false);
+  const pct = ((value - min) / (max - min)) * 100;
+  const valueFromX = useCallback((clientX: number) => {
+    const t = trackRef.current;
+    if (!t) return value;
+    const rect = t.getBoundingClientRect();
+    return Math.round((min + Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)) * (max - min)) / step) * step;
+  }, [min, max, step, value]);
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    dragging.current = true; onChange(valueFromX(e.clientX));
+    const mv = (ev: MouseEvent) => { if (dragging.current) onChange(valueFromX(ev.clientX)); };
+    const up = () => { dragging.current = false; window.removeEventListener('mousemove', mv); window.removeEventListener('mouseup', up); };
+    window.addEventListener('mousemove', mv); window.addEventListener('mouseup', up);
+  }, [onChange, valueFromX]);
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    e.stopPropagation(); dragging.current = true; onChange(valueFromX(e.touches[0].clientX));
+    const mv = (ev: TouchEvent) => { ev.preventDefault(); if (dragging.current) onChange(valueFromX(ev.touches[0].clientX)); };
+    const end = () => { dragging.current = false; window.removeEventListener('touchmove', mv); window.removeEventListener('touchend', end); };
+    window.addEventListener('touchmove', mv, { passive: false }); window.addEventListener('touchend', end);
+  }, [onChange, valueFromX]);
+  return (
+    <div ref={trackRef} className="relative h-9 flex items-center cursor-pointer select-none" onMouseDown={onMouseDown} onTouchStart={onTouchStart}>
+      <div className="absolute inset-x-0 h-1.5 rounded-full bg-slate-200">
+        <div className="absolute left-0 top-0 h-full rounded-full bg-[#0e6efe]" style={{ width: `${pct}%` }} />
+      </div>
+      <div className="absolute w-5 h-5 rounded-full bg-white border-2 border-[#0e6efe] shadow-md -translate-x-1/2" style={{ left: `${pct}%` }} />
+    </div>
+  );
+}
+
+type EquityStep = 'start' | 'car' | 'debt' | 'cash' | 'result';
+
+function CarEquityCalc({ carPrice, usedPrice, carName }: { carPrice: number; usedPrice?: number; carName?: string }) {
   const basePrice = usedPrice ? Math.round((carPrice + usedPrice) / 2) : carPrice;
-  const minDown = Math.round(basePrice * 0.10);
-  const maxDown = Math.round(basePrice * 0.60);
-  const defaultDown = Math.round(basePrice * 0.20);
-  const step = 5_000;
+  const depositNeeded = Math.round(basePrice * 0.20);
+  const monthlyBase = Math.round(calcCarMonthly(basePrice, 0.55));
 
-  const [downPayment, setDownPayment] = useState(Math.min(Math.max(defaultDown, minDown), maxDown));
-  const slider = useSlider(minDown, maxDown, step, setDownPayment);
+  const [step, setStep] = useState<EquityStep>('start');
+  const [hasCar, setHasCar] = useState<boolean | null>(null);
+  const [carValue, setCarValue] = useState(150_000);
+  const [carDebt, setCarDebt] = useState(0);
+  const [cash, setCash] = useState(0);
 
-  const downPct = downPayment / basePrice;
-  const loan = basePrice - downPayment + basePrice * 0.01;
-  const r = 0.0649 / 12;
-  const n = 36;
-  const residual = basePrice * 0.55;
-  const monthly = Math.round(((loan - residual / Math.pow(1 + r, n)) * r) / (1 - Math.pow(1 + r, -n)));
-  const monthlyAt20 = Math.round(calcCarMonthly(basePrice, 0.55));
-  const saving = monthlyAt20 - monthly;
-  const sliderPct = ((downPayment - minDown) / (maxDown - minDown)) * 100;
+  const equity = Math.max(0, (hasCar ? carValue - carDebt : 0) + cash);
+  const extraNeeded = Math.max(0, depositNeeded - equity);
+  const freed = Math.max(0, equity - depositNeeded);
+  const loanBase = basePrice - Math.min(equity, depositNeeded) + basePrice * 0.01;
+  const r = 0.0649 / 12; const n = 36; const residual = basePrice * 0.55;
+  const monthly = Math.round(((loanBase - residual / Math.pow(1 + r, n)) * r) / (1 - Math.pow(1 + r, -n)));
+  const monthlySaving = monthlyBase - monthly;
 
-  const tiers = [
-    { pct: 0.10, label: '10%' },
-    { pct: 0.20, label: '20%' },
-    { pct: 0.30, label: '30%' },
-    { pct: 0.40, label: '40%' },
-  ];
+  if (step === 'start') {
+    return (
+      <section>
+        <button
+          type="button"
+          onClick={() => setStep('car')}
+          className="w-full flex items-center gap-3 bg-white hover:bg-slate-50 border border-slate-200 hover:border-[#0e6efe]/40 rounded-xl px-4 py-3.5 transition-all duration-150 group text-left active:scale-[0.99]"
+        >
+          <div className="w-9 h-9 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+            <Wallet className="w-4 h-4 text-[#0e6efe]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-bold text-slate-800">Räkna vad din insats ger dig</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Insatskrav: <span className="font-semibold text-slate-600">{fmt(depositNeeded)} kr</span> · ~{fmt(monthlyBase)} kr/mån
+            </p>
+          </div>
+          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-[#0e6efe] transition-colors shrink-0" />
+        </button>
+      </section>
+    );
+  }
 
   return (
-    <section>
-      <div className="flex items-center gap-2 mb-3">
-        <Wallet className="w-4 h-4 text-[#0e6efe]" />
-        <span className="text-[12px] font-bold text-slate-700 uppercase tracking-wide">Vad ger din insats?</span>
+    <section onClick={e => e.stopPropagation()}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Wallet className="w-4 h-4 text-[#0e6efe]" />
+          <span className="text-[12px] font-bold text-slate-700 uppercase tracking-wide">Din insats för {carName ?? 'denna bil'}</span>
+        </div>
+        <button type="button" onClick={() => { setStep('start'); setHasCar(null); setCarValue(150_000); setCarDebt(0); setCash(0); }} className="text-[11px] text-slate-400 hover:text-slate-600 transition-colors">
+          <X className="w-3.5 h-3.5" />
+        </button>
       </div>
-      <div className="bg-slate-50 rounded-xl border border-slate-100 p-4 space-y-4" onClick={e => e.stopPropagation()}>
-        {/* Quick-pick tier buttons */}
-        <div className="grid grid-cols-4 gap-1.5">
-          {tiers.map(t => {
-            const val = Math.round(basePrice * t.pct / step) * step;
-            const active = Math.abs(downPayment - val) < step / 2;
+
+      <div className="bg-slate-50 rounded-xl border border-slate-100 overflow-hidden">
+        {/* Progress bar */}
+        <div className="flex h-1">
+          {(['car', 'debt', 'cash', 'result'] as EquityStep[]).map((s, i) => {
+            const steps: EquityStep[] = ['car', 'debt', 'cash', 'result'];
+            const currentIdx = steps.indexOf(step);
             return (
-              <button
-                key={t.pct}
-                type="button"
-                onClick={() => setDownPayment(Math.min(Math.max(val, minDown), maxDown))}
-                className={`h-9 rounded-lg text-[11px] font-bold border transition-all duration-150 active:scale-[0.97] ${
-                  active
-                    ? 'bg-[#0e6efe] border-[#0e6efe] text-white shadow-sm'
-                    : 'border-slate-200 bg-white text-slate-500 hover:border-[#0e6efe]/40 hover:text-[#0e6efe]'
-                }`}
-              >
-                {t.label}
-              </button>
+              <div key={s} className={`flex-1 transition-colors duration-300 ${i <= currentIdx ? 'bg-[#0e6efe]' : 'bg-slate-200'} ${i > 0 ? 'ml-0.5' : ''}`} />
             );
           })}
         </div>
 
-        {/* Slider */}
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10.5px] font-semibold text-slate-500">Kontantinsats</span>
-            <span className="text-[12px] font-bold text-slate-900 tabular-nums">
-              {fmt(downPayment)} kr <span className="text-[10px] font-normal text-slate-400">({Math.round(downPct * 100)}%)</span>
-            </span>
-          </div>
-          <div
-            ref={slider.trackRef}
-            className="relative h-8 flex items-center cursor-pointer select-none"
-            onMouseDown={slider.onMouseDown}
-            onTouchStart={slider.onTouchStart}
-          >
-            <div className="absolute inset-x-0 h-1.5 rounded-full bg-slate-200">
-              <div className="absolute left-0 top-0 h-full rounded-full bg-[#0e6efe]" style={{ width: `${sliderPct}%` }} />
+        <div className="p-4 space-y-4">
+          {/* Step: har du bil? */}
+          {step === 'car' && (
+            <div className="space-y-3">
+              <p className="text-[13px] font-semibold text-slate-800">Har du en bil att byta in?</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[{ val: true, label: 'Ja, byta in', icon: Car }, { val: false, label: 'Nej, enbart kontanter', icon: Wallet }].map(opt => (
+                  <button
+                    key={String(opt.val)}
+                    type="button"
+                    onClick={() => { setHasCar(opt.val); setStep(opt.val ? 'debt' : 'cash'); }}
+                    className={`flex flex-col items-center gap-2 p-3.5 rounded-xl border-2 text-center transition-all duration-150 ${hasCar === opt.val ? 'border-[#0e6efe] bg-blue-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
+                  >
+                    <opt.icon className={`w-5 h-5 ${hasCar === opt.val ? 'text-[#0e6efe]' : 'text-slate-400'}`} />
+                    <span className={`text-[11.5px] font-semibold leading-tight ${hasCar === opt.val ? 'text-[#0e6efe]' : 'text-slate-600'}`}>{opt.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-            <div
-              className="absolute w-5 h-5 rounded-full bg-white border-2 border-[#0e6efe] shadow-md -translate-x-1/2"
-              style={{ left: `${sliderPct}%` }}
-            />
-          </div>
-        </div>
+          )}
 
-        {/* Result */}
-        <div className="grid grid-cols-2 gap-3 pt-1 border-t border-slate-100">
-          <div className="text-center">
-            <p className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">Månadskostnad</p>
-            <p className="text-[22px] font-extrabold text-[#0e6efe] tabular-nums leading-none">{fmt(monthly)}</p>
-            <p className="text-[9px] text-slate-400 mt-0.5">kr/mån · 36 mån</p>
-          </div>
-          <div className="text-center">
-            <p className="text-[9.5px] font-semibold text-slate-400 uppercase tracking-wide mb-0.5">
-              {saving >= 0 ? 'Du sparar/mån' : 'Extra/mån'}
-            </p>
-            <p className={`text-[22px] font-extrabold tabular-nums leading-none ${saving >= 0 ? 'text-emerald-600' : 'text-orange-500'}`}>
-              {saving >= 0 ? '+' : ''}{fmt(saving)}
-            </p>
-            <p className="text-[9px] text-slate-400 mt-0.5">vs 20% insats</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-slate-100">
-          {[
-            { label: 'Lånesumma', value: `${fmt(loan)} kr` },
-            { label: 'Restvärde (55%)', value: `${fmt(residual)} kr` },
-          ].map(({ label, value }) => (
-            <div key={label} className="text-center">
-              <p className="text-[8.5px] text-slate-400 mb-0.5">{label}</p>
-              <p className="text-[9.5px] font-bold text-slate-700 tabular-nums">{value}</p>
+          {/* Step: skuld (visas efter att man valt "ja") */}
+          {step === 'debt' && (
+            <div className="space-y-3">
+              <div>
+                <p className="text-[13px] font-semibold text-slate-800">Vad är din bil värd?</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">Uppskatta på Blocket eller Kvdbil</p>
+              </div>
+              <div className="text-center py-1">
+                <span className="text-[28px] font-bold text-slate-900 tabular-nums">{fmt(carValue)} kr</span>
+              </div>
+              <EqSlider value={carValue} min={20_000} max={600_000} step={5_000} onChange={setCarValue} />
+              <div className="flex justify-between text-[10px] text-slate-400 -mt-2">
+                <span>20 000 kr</span><span>600 000 kr</span>
+              </div>
+              <div className="mt-1">
+                <p className="text-[12px] font-semibold text-slate-700 mb-1">Kvarvarande skuld på bilen</p>
+                <div className="text-center py-1">
+                  <span className="text-[22px] font-bold text-slate-900 tabular-nums">
+                    {carDebt === 0 ? 'Ingen skuld' : `${fmt(carDebt)} kr`}
+                  </span>
+                  {carDebt > 0 && <span className="text-[11px] text-emerald-600 font-semibold ml-2">Netto: {fmt(Math.max(0, carValue - carDebt))} kr</span>}
+                </div>
+                <EqSlider value={carDebt} min={0} max={Math.max(carValue, 300_000)} step={5_000} onChange={setCarDebt} />
+              </div>
+              <div className="flex gap-2 pt-1">
+                <button type="button" onClick={() => setStep('car')} className="h-10 px-4 rounded-xl border border-slate-200 text-slate-500 text-[12px] font-semibold hover:border-slate-300 transition-colors">Tillbaka</button>
+                <button type="button" onClick={() => setStep('cash')} className="flex-1 h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold transition-colors flex items-center justify-center gap-1.5">
+                  Fortsätt <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
-          ))}
+          )}
+
+          {/* Step: kontanter */}
+          {step === 'cash' && (
+            <div className="space-y-3">
+              <div>
+                <p className="text-[13px] font-semibold text-slate-800">Extra kontanter till insatsen?</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">Utöver inbytesbilen — valfritt</p>
+              </div>
+              <div className="text-center py-1">
+                <span className="text-[28px] font-bold text-slate-900 tabular-nums">
+                  {cash === 0 ? 'Inga extra' : `${fmt(cash)} kr`}
+                </span>
+              </div>
+              <EqSlider value={cash} min={0} max={500_000} step={5_000} onChange={setCash} />
+              <div className="flex justify-between text-[10px] text-slate-400 -mt-2">
+                <span>0 kr</span><span>500 000 kr</span>
+              </div>
+              {hasCar && (
+                <div className="bg-white rounded-lg border border-slate-200 px-3 py-2 flex items-center justify-between">
+                  <span className="text-[11px] text-slate-500">Total insats</span>
+                  <span className="text-[13px] font-bold text-slate-900 tabular-nums">{fmt(Math.max(0, carValue - carDebt) + cash)} kr</span>
+                </div>
+              )}
+              <div className="flex gap-2 pt-1">
+                <button type="button" onClick={() => setStep(hasCar ? 'debt' : 'car')} className="h-10 px-4 rounded-xl border border-slate-200 text-slate-500 text-[12px] font-semibold hover:border-slate-300 transition-colors">Tillbaka</button>
+                <button type="button" onClick={() => setStep('result')} className="flex-1 h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold transition-colors flex items-center justify-center gap-1.5">
+                  Se resultat <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Result */}
+          {step === 'result' && (
+            <div className="space-y-3">
+              {/* Status banner */}
+              {extraNeeded === 0 ? (
+                <div className="flex items-start gap-2.5 bg-emerald-50 border border-emerald-100 rounded-xl px-3.5 py-3">
+                  <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-[12.5px] font-bold text-emerald-800">Din insats täcker!</p>
+                    <p className="text-[11.5px] text-emerald-700 mt-0.5">
+                      {freed > 0
+                        ? `Du har ${fmt(freed)} kr över efter insatsen — pengarna är dina att behålla.`
+                        : `Din insats matchar exakt kontantinsatskravet på ${fmt(depositNeeded)} kr.`}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-3">
+                  <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-[12.5px] font-bold text-amber-800">Saknas {fmt(extraNeeded)} kr</p>
+                    <p className="text-[11.5px] text-amber-700 mt-0.5">
+                      Din insats är {fmt(equity)} kr — du behöver {fmt(extraNeeded)} kr till för att nå 20% ({fmt(depositNeeded)} kr).
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Key numbers */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-white rounded-xl border border-slate-200 p-3 text-center">
+                  <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Din insats</p>
+                  <p className="text-[20px] font-extrabold text-slate-900 tabular-nums leading-none">{fmt(equity)}</p>
+                  <p className="text-[9px] text-slate-400 mt-0.5">kr</p>
+                </div>
+                <div className="bg-white rounded-xl border border-slate-200 p-3 text-center">
+                  <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Månadskostnad</p>
+                  <p className={`text-[20px] font-extrabold tabular-nums leading-none ${extraNeeded === 0 ? 'text-[#0e6efe]' : 'text-slate-700'}`}>{fmt(monthly)}</p>
+                  <p className="text-[9px] text-slate-400 mt-0.5">kr/mån</p>
+                </div>
+              </div>
+
+              {monthlySaving > 100 && extraNeeded === 0 && (
+                <div className="flex items-center gap-2 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl px-3 py-2.5">
+                  <TrendingDown className="w-3.5 h-3.5 text-[#0e6efe] shrink-0" />
+                  <p className="text-[11.5px] text-[#0e6efe] font-semibold">
+                    Din insats sänker månadskostnaden med {fmt(monthlySaving)} kr/mån vs 0 kr i insats
+                  </p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-3 gap-1.5 pt-1 border-t border-slate-100">
+                {[
+                  { label: 'Insatskrav (20%)', value: `${fmt(depositNeeded)} kr` },
+                  { label: freed > 0 ? 'Frigjort kapital' : 'Saknas', value: freed > 0 ? `+${fmt(freed)} kr` : extraNeeded > 0 ? `${fmt(extraNeeded)} kr` : '–' },
+                  { label: 'Lånesumma', value: `${fmt(loanBase)} kr` },
+                ].map(({ label, value }) => (
+                  <div key={label} className="text-center">
+                    <p className="text-[8.5px] text-slate-400 mb-0.5 leading-tight">{label}</p>
+                    <p className="text-[9.5px] font-bold text-slate-700 tabular-nums">{value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => { setStep('car'); setHasCar(null); setCarValue(150_000); setCarDebt(0); setCash(0); }}
+                className="w-full h-9 rounded-xl border border-slate-200 text-slate-500 text-[12px] font-semibold hover:border-slate-300 hover:text-slate-700 transition-colors"
+              >
+                Räkna om
+              </button>
+            </div>
+          )}
         </div>
-        <p className="text-[8.5px] text-slate-400 leading-relaxed">6,49% ränta · 55% restvärde · 1% uppläggning. Uppskattning.</p>
       </div>
     </section>
   );
@@ -694,9 +813,8 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
         </section>
       )}
 
-      {/* Down payment calculator */}
       {carPrice && (
-        <DownPaymentCalculator carPrice={carPrice} usedPrice={usedPrice} />
+        <CarEquityCalc carPrice={carPrice} usedPrice={usedPrice} carName={`${data.brand_display} ${data.model_display}`} />
       )}
 
       {/* Persona-ordered sections */}
@@ -777,7 +895,7 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
         </p>
       </div>
 
-      {carPrice && <DownPaymentCalculator carPrice={carPrice} />}
+      {carPrice && <CarEquityCalc carPrice={carPrice} carName={`${car.make} ${car.model}`} />}
 
       {car.matchReasons.length > 0 && (
         <div>
