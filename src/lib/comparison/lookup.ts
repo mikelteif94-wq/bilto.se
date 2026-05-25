@@ -34,7 +34,12 @@ export function findComparisonCarByMakeModel(
   model: string
 ): ComparisonCar | null {
   const searchMake = normalize(make);
-  const searchModel = normalize(model);
+  // Strip leading make name from model if present (e.g. "BMW X5" → "X5")
+  const normalizedMakePrefix = searchMake + ' ';
+  const rawModel = normalize(model);
+  const searchModel = rawModel.startsWith(normalizedMakePrefix)
+    ? rawModel.slice(normalizedMakePrefix.length).trim()
+    : rawModel;
   const searchFull = `${searchMake} ${searchModel}`;
 
   let bestMatch: ComparisonCar | null = null;
