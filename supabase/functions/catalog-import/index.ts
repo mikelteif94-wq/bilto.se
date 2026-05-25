@@ -12,9 +12,14 @@ interface CarPayload {
   [key: string]: unknown;
 }
 
-// Normalize string for fuzzy matching
+// Normalize string for fuzzy matching (strips accents, lowercases, collapses whitespace/hyphens)
 function norm(s: string): string {
-  return s.toLowerCase().replace(/[-\s]+/g, " ").trim();
+  return s
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[-\s]+/g, " ")
+    .trim();
 }
 
 // Strip leading make prefix from model if present (e.g. "BMW X5" → "X5")
