@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import HowItWorks from './pages/HowItWorks';
 import SellCarPage from './pages/SellCarPage';
+import SellLandingPage from './pages/SellLandingPage';
 import BuyCarPage from './pages/BuyCarPage';
 import DealerRegister from './pages/DealerRegister';
 import DealerLogin from './pages/DealerLogin';
@@ -632,11 +633,28 @@ function App() {
     return null;
   }
 
-  if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
+  if (path === '/sa-funkar-det') {
     return (
       <HowItWorks
-        showSeo={path === '/salj-din-bil'}
-        pageTitle={path === '/salj-din-bil' ? 'Sälj din bil | Bilto' : undefined}
+        onBackHome={() => {
+          window.history.pushState({}, '', '/');
+          setPath('/');
+          setPublicRoute({ page: 'home' });
+        }}
+        onSell={(reg) => {
+          window.history.pushState({}, '', '/');
+          setPath('/');
+          setPublicRoute({ page: 'sell', regnummer: reg });
+        }}
+      />
+    );
+  }
+
+  if (path === '/salj-din-bil') {
+    return (
+      <SellLandingPage
+        showSeo
+        pageTitle="Sälj din bil | Bilto"
         onBackHome={() => {
           window.history.pushState({}, '', '/');
           setPath('/');
