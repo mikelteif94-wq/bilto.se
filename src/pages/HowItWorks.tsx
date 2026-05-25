@@ -18,8 +18,6 @@ import {
   X,
   XCircle,
   Car as CarIcon,
-  TrendingDown,
-  Lock,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { calcCarMonthly } from '../lib/utils';
@@ -349,41 +347,132 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           </p>
 
           <div className="mt-6 bg-white rounded-2xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden">
-            <div className="px-4 pb-5 pt-5">
-              <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
-                <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
-                {formError && (
-                  <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
-                    <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
-                    <span className="leading-snug">{formError}</span>
-                  </div>
-                )}
+            {/* Tab strip */}
+            <div className="flex border-b border-slate-100">
+              {(['salj', 'hitta'] as const).map((t) => (
                 <button
-                  type="submit"
-                  className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[14px] tracking-wide transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
+                  key={t}
+                  type="button"
+                  onClick={() => setHeroTab(t)}
+                  className={`flex-1 py-4 text-center text-[14px] font-bold tracking-[0.02em] relative transition-colors ${
+                    heroTab === t ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'
+                  }`}
                 >
-                  Sälj bilen gratis
-                  <ArrowRight className="w-4 h-4" />
+                  {t === 'salj' ? 'Sälj bil' : 'Hitta bil'}
+                  <span className={`absolute bottom-0 inset-x-0 h-[2.5px] rounded-t-full transition-all duration-200 ${heroTab === t ? 'bg-[#0e6efe]' : 'bg-transparent'}`} />
                 </button>
-              </form>
-              <div className="mt-3 flex items-center gap-3">
-                <div className="flex-1 h-px bg-slate-100" />
-                <span className="text-[11px] text-slate-400 font-medium">eller</span>
-                <div className="flex-1 h-px bg-slate-100" />
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                  setTimeout(() => {
-                    document.getElementById('experternas-val')?.scrollIntoView({ behavior: 'smooth' });
-                  }, 100);
-                }}
-                className="mt-3 w-full h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-600 font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
-              >
-                Köp bil — vi förhandlar priset
-              </button>
+              ))}
+            </div>
+
+            <div className="px-4 pb-5 pt-4">
+              {heroTab === 'salj' ? (
+                <>
+                  <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
+                    <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
+                    {formError && (
+                      <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
+                        <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
+                        <span className="leading-snug">{formError}</span>
+                      </div>
+                    )}
+                    <button
+                      type="submit"
+                      className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[14px] tracking-wide transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
+                    >
+                      Värdera bilen gratis
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </form>
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="flex-1 h-px bg-slate-100" />
+                    <span className="text-[11px] text-slate-400 font-medium">eller</span>
+                    <div className="flex-1 h-px bg-slate-100" />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/kop-bil?quiz=start');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="mt-3 w-full h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-600 font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
+                  >
+                    Låt oss hjälpa dig hitta en bil
+                  </button>
+                </>
+              ) : (
+                <div ref={carSearchRef} className="relative">
+                  <div className="flex items-center h-11 rounded-xl bg-slate-50 border border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition-all">
+                    <span className="flex items-center justify-center w-10 shrink-0">
+                      <Search className="w-4 h-4 text-slate-400" />
+                    </span>
+                    <input
+                      type="text"
+                      value={carQuery}
+                      onChange={(e) => handleCarQueryChange(e.target.value)}
+                      onFocus={() => carQuery.trim() && setShowSuggestions(true)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
+                      placeholder="Sök märke eller modell..."
+                      className="flex-1 min-w-0 w-0 h-full pr-2 text-[13px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCarSearch}
+                      className="h-8 mx-1.5 px-3.5 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] rounded-lg shrink-0 text-white font-semibold text-[12px] transition"
+                    >
+                      {carSearchLoading
+                        ? <div className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        : 'Sök'
+                      }
+                    </button>
+                  </div>
+                  {showSuggestions && carSuggestions.length > 0 && (
+                    <div className="absolute left-0 right-0 top-full mt-1 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
+                      {carSuggestions.map((s, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => handleCarSelect(s.make, s.model)}
+                          className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left hover:bg-slate-50 transition text-[13px] text-slate-800 border-b border-slate-100 last:border-0"
+                        >
+                          <CarIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span className="font-semibold">{s.make}</span>
+                          <span className="text-slate-500">{s.model}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {['Tesla Model 3', 'Volvo XC60', 'BMW 3-serie', 'Audi A4'].map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => {
+                          const [make, ...rest] = suggestion.split(' ');
+                          handleCarSelect(make, rest.join(' '));
+                        }}
+                        className="text-[11px] text-slate-500 hover:text-[#0e6efe] bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-[#0e6efe]/30 rounded-full px-2.5 py-1 transition"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="flex-1 h-px bg-slate-100" />
+                    <span className="text-[11px] text-slate-400 font-medium">eller</span>
+                    <div className="flex-1 h-px bg-slate-100" />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/kop-bil/bestall');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="mt-3 w-full h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-600 font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
+                  >
+                    Vet inte vad du vill ha? Vi hjälper dig.
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -422,42 +511,132 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           </div>
 
           <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden max-w-[440px] w-full justify-self-end">
-            <div className="px-5 py-6">
-              <p className="text-[13px] font-semibold text-slate-500 mb-3">Sälj din bil — ange registreringsnummer</p>
-              <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
-                <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
-                {formError && (
-                  <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
-                    <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
-                    <span className="leading-snug">{formError}</span>
-                  </div>
-                )}
+            {/* Tab strip */}
+            <div className="flex border-b border-slate-100">
+              {(['salj', 'hitta'] as const).map((t) => (
                 <button
-                  type="submit"
-                  className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[14px] transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
+                  key={t}
+                  type="button"
+                  onClick={() => setHeroTab(t)}
+                  className={`flex-1 py-4 text-center text-[14px] font-bold tracking-[0.02em] relative transition-colors ${
+                    heroTab === t ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'
+                  }`}
                 >
-                  Sälj bilen gratis
-                  <ArrowRight className="w-4 h-4" />
+                  {t === 'salj' ? 'Sälj bil' : 'Hitta bil'}
+                  <span className={`absolute bottom-0 inset-x-0 h-[2.5px] rounded-t-full transition-all duration-200 ${heroTab === t ? 'bg-[#0e6efe]' : 'bg-transparent'}`} />
                 </button>
-              </form>
-              <div className="mt-3 flex items-center gap-3">
-                <div className="flex-1 h-px bg-slate-100" />
-                <span className="text-[11px] text-slate-400 font-medium">eller</span>
-                <div className="flex-1 h-px bg-slate-100" />
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  window.history.pushState({}, '', '/kop-bil');
-                  window.dispatchEvent(new PopStateEvent('popstate'));
-                  setTimeout(() => {
-                    document.getElementById('experternas-val')?.scrollIntoView({ behavior: 'smooth' });
-                  }, 100);
-                }}
-                className="mt-3 w-full h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-600 font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
-              >
-                Köp bil — vi förhandlar priset
-              </button>
+              ))}
+            </div>
+
+            <div className="px-5 py-5">
+              {heroTab === 'salj' ? (
+                <>
+                  <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
+                    <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
+                    {formError && (
+                      <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
+                        <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
+                        <span className="leading-snug">{formError}</span>
+                      </div>
+                    )}
+                    <button
+                      type="submit"
+                      className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[14px] transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
+                    >
+                      Värdera bilen gratis
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </form>
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="flex-1 h-px bg-slate-100" />
+                    <span className="text-[11px] text-slate-400 font-medium">eller</span>
+                    <div className="flex-1 h-px bg-slate-100" />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/kop-bil?quiz=start');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="mt-3 w-full h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-600 font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
+                  >
+                    Låt oss hjälpa dig hitta en bil
+                  </button>
+                </>
+              ) : (
+                <div ref={carSearchRef} className="relative">
+                  <div className="flex items-center h-11 rounded-xl bg-slate-50 border border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition-all">
+                    <span className="flex items-center justify-center w-10 shrink-0">
+                      <Search className="w-4 h-4 text-slate-400" />
+                    </span>
+                    <input
+                      type="text"
+                      value={carQuery}
+                      onChange={(e) => handleCarQueryChange(e.target.value)}
+                      onFocus={() => carQuery.trim() && setShowSuggestions(true)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
+                      placeholder="Sök märke eller modell..."
+                      className="flex-1 min-w-0 w-0 h-full pr-2 text-[13px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCarSearch}
+                      className="h-8 mx-1.5 px-3.5 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] rounded-lg shrink-0 text-white font-semibold text-[12px] transition"
+                    >
+                      {carSearchLoading
+                        ? <div className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        : 'Sök'
+                      }
+                    </button>
+                  </div>
+                  {showSuggestions && carSuggestions.length > 0 && (
+                    <div className="absolute left-0 right-0 top-full mt-1 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
+                      {carSuggestions.map((s, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => handleCarSelect(s.make, s.model)}
+                          className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left hover:bg-slate-50 transition text-[13px] text-slate-800 border-b border-slate-100 last:border-0"
+                        >
+                          <CarIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span className="font-semibold">{s.make}</span>
+                          <span className="text-slate-500">{s.model}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {['Tesla Model 3', 'Volvo XC60', 'BMW 3-serie', 'Audi A4'].map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => {
+                          const [make, ...rest] = suggestion.split(' ');
+                          handleCarSelect(make, rest.join(' '));
+                        }}
+                        className="text-[11px] text-slate-500 hover:text-[#0e6efe] bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-[#0e6efe]/30 rounded-full px-2.5 py-1 transition"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="flex-1 h-px bg-slate-100" />
+                    <span className="text-[11px] text-slate-400 font-medium">eller</span>
+                    <div className="flex-1 h-px bg-slate-100" />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/kop-bil/bestall');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="mt-3 w-full h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-600 font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
+                  >
+                    Vet inte vad du vill ha? Vi hjälper dig.
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -695,115 +874,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               Utforska alla bilar
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Vi möter dig där du är */}
-      <section className="bg-white border-t border-slate-100">
-        <div className="max-w-5xl mx-auto px-5 sm:px-6 py-12 sm:py-20">
-          <div className="mb-8 sm:mb-10">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] text-[12px] font-semibold mb-4">
-              Vad behöver du hjälp med?
-            </span>
-            <h2 className="text-[28px] sm:text-[38px] font-semibold leading-[1.08] tracking-[-0.02em] text-slate-900">
-              Vi möter dig där du är i din bilresa.
-            </h2>
-            <p className="mt-3 text-slate-600 text-[15px] leading-[1.6] max-w-lg">
-              Oavsett om du redan hittat en bil, letar aktivt eller vill byta — vi granskar historik, jämför priser och hjälper dig igenom hela affären. Helt gratis och opartiskt.
-            </p>
-          </div>
-          <div className="flex flex-col divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
-            {[
-              {
-                icon: Search,
-                accent: 'text-[#0e6efe]',
-                accentBg: 'bg-[#0e6efe]/8',
-                title: 'Vi hittar rätt bil åt dig',
-                body: 'Berätta vad du söker — märke, budget eller bara ett behov. Vi söker i hela marknaden och presenterar de bästa alternativen.',
-                stat: null,
-                statLabel: null,
-              },
-              {
-                icon: TrendingDown,
-                accent: 'text-emerald-600',
-                accentBg: 'bg-emerald-50',
-                title: 'Vi förhandlar priset',
-                body: 'Vår expert tar dialogen med handlaren, pressar priset och förhandlar fram bästa ränta, tillval och villkor.',
-                stat: '~15 000 kr',
-                statLabel: 'genomsnittlig besparing',
-              },
-              {
-                icon: Lock,
-                accent: 'text-slate-700',
-                accentBg: 'bg-slate-100',
-                title: 'Trygg och utan press',
-                body: 'Du bestämmer. Vi granskar historik och skick innan affär. Ingen bindning, inga dolda avgifter — du tackar ja eller nej.',
-                stat: '100%',
-                statLabel: 'utan förpliktelse',
-              },
-            ].map(({ icon: Icon, accent, accentBg, title, body, stat, statLabel }) => (
-              <div key={title} className="flex items-start gap-5 sm:gap-8 px-6 py-6 sm:py-7">
-                <div className={`shrink-0 w-11 h-11 rounded-xl ${accentBg} flex items-center justify-center mt-0.5`}>
-                  <Icon className={`w-5 h-5 ${accent}`} strokeWidth={2.2} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-[16px] font-semibold text-slate-900 leading-snug mb-1">{title}</h4>
-                  <p className="text-[14px] text-slate-500 leading-relaxed">{body}</p>
-                </div>
-                {stat && (
-                  <div className="shrink-0 text-right pl-4 hidden sm:block">
-                    <p className={`text-[22px] font-bold leading-none ${accent}`}>{stat}</p>
-                    <p className="text-[11px] text-slate-400 mt-1 whitespace-nowrap">{statLabel}</p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 text-center sm:text-left">
-            <button
-              type="button"
-              onClick={() => {
-                window.history.pushState({}, '', '/kop-bil');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-                setTimeout(() => {
-                  document.getElementById('experternas-val')?.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-              }}
-              className="h-12 px-8 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] inline-flex items-center gap-2 group transition shadow-sm"
-            >
-              Utforska alla bilar
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Erfarna förhandlare */}
-      <section className="bg-[#0e6efe] py-12 sm:py-20 px-5 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-[28px] sm:text-[38px] font-semibold leading-[1.08] text-white tracking-[-0.02em]">
-              Erfarna förhandlare — på din sida
-            </h2>
-            <p className="text-white/80 mt-3 sm:mt-4 text-[15px] leading-[1.6] max-w-lg mx-auto">
-              Vårt team har jobbat som toppsäljare hos Sveriges största bilhandlare. Nu jobbar vi för dig istället.
-            </p>
-          </div>
-          <div className="flex items-center justify-center gap-6 sm:gap-12 flex-wrap">
-            {[
-              { value: '5 000+', label: 'Bilar sålda' },
-              { value: '10+', label: 'År i branschen' },
-              { value: '100%', label: 'På kundens sida' },
-            ].map((stat, i, arr) => (
-              <div key={stat.label} className="flex items-center gap-6 sm:gap-12">
-                <div className="text-center">
-                  <div className="text-[28px] sm:text-[38px] font-bold text-white tabular-nums tracking-tight">{stat.value}</div>
-                  <div className="text-[11px] sm:text-[13px] text-white/70 font-medium mt-0.5">{stat.label}</div>
-                </div>
-                {i < arr.length - 1 && <div className="w-px h-8 sm:h-10 bg-white/25" />}
-              </div>
-            ))}
           </div>
         </div>
       </section>
