@@ -74,6 +74,8 @@ interface ImportResult {
   error?: string;
 }
 
+const VALID_BODY_TYPES = new Set(['sedan','kombi','suv','coupe','hatchback','cab','mpv','pickup']);
+
 const KAROSS_MAP: Record<string, string> = {
   'SUV': 'suv',
   'Sedan': 'sedan',
@@ -83,8 +85,12 @@ const KAROSS_MAP: Record<string, string> = {
   'Kombi': 'kombi',
   'Coupé': 'coupe',
   'Coupé/Cab': 'cab',
+  'Cab': 'cab',
+  'Cabriolet': 'cab',
   'Pickup': 'pickup',
   'Skåp/MPV': 'mpv',
+  'MPV': 'mpv',
+  'Minibuss': 'mpv',
 };
 
 const DRIVMEDEL_MAP: Record<string, string[]> = {
@@ -228,7 +234,10 @@ function parseCarJson(raw: unknown): CarRow | null {
     persona_familjetest: personaFamilj,
     persona_kordynamik: personaKor,
     // Befintliga engelska kolumner — uppdateras parallellt för bakåtkompatibilitet
-    body_type: karossRaw ? (KAROSS_MAP[karossRaw] ?? karossRaw) : null,
+    body_type: (() => {
+      const mapped = karossRaw ? (KAROSS_MAP[karossRaw] ?? karossRaw.toLowerCase()) : null;
+      return mapped && VALID_BODY_TYPES.has(mapped) ? mapped : null;
+    })(),
     fuel_types: drivmedelsRaw ? (DRIVMEDEL_MAP[drivmedelsRaw] ?? [drivmedelsRaw.toLowerCase()]) : null,
     rating_overall: betygTotalt,
     price_used_from: prisBegagnat,
