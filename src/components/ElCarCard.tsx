@@ -54,10 +54,10 @@ export default function ElCarCard({
     >
       {/* Clickable card area */}
       <div className="cursor-pointer" onClick={() => onDetail?.()}>
-        <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-white overflow-hidden rounded-t-2xl">
+        <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-white overflow-hidden rounded-t-2xl" style={{ minHeight: 150 }}>
           {imageUrl ? (
             <img
-              src={imageUrl} alt={name} loading="lazy"
+              src={imageUrl} alt={name}
               className="w-full h-full object-contain p-3 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
             />
           ) : (

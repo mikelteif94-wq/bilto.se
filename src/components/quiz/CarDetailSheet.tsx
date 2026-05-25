@@ -413,14 +413,17 @@ function CarEquityCalc({ carPrice, usedPrice, carName, bodyType }: { carPrice: n
         if (!price || price >= basePrice) return false;
         const dep = Math.round(price * 0.20);
         if (dep > equity) return false;
-        if (bodyType && c.specs.body_type !== bodyType) return false;
         const label = `${c.brand_display} ${c.model_display}`;
         if (label === carName) return false;
         return true;
       })
       .sort((a, b) => {
+        // Prefer same body type, then sort by price descending (closest to basePrice first)
         const pa = a.pricing.used_from_sek || a.pricing.new_from_sek || 0;
         const pb = b.pricing.used_from_sek || b.pricing.new_from_sek || 0;
+        const sameA = bodyType && a.specs.body_type === bodyType ? 1 : 0;
+        const sameB = bodyType && b.specs.body_type === bodyType ? 1 : 0;
+        if (sameB !== sameA) return sameB - sameA;
         return pb - pa;
       })
       .slice(0, 3)
@@ -484,191 +487,191 @@ function CarEquityCalc({ carPrice, usedPrice, carName, bodyType }: { carPrice: n
           })}
         </div>
 
-        <div className="p-4 space-y-4">
-          {/* Step: har du bil? */}
-          {step === 'car' && (
-            <div className="space-y-3">
-              <p className="text-[13px] font-semibold text-slate-800">Har du en bil att byta in?</p>
-              <div className="grid grid-cols-2 gap-2">
-                {[{ val: true, label: 'Ja, byta in', icon: Car }, { val: false, label: 'Nej, enbart kontanter', icon: Wallet }].map(opt => (
-                  <button
-                    key={String(opt.val)}
-                    type="button"
-                    onClick={() => { setHasCar(opt.val); setStep(opt.val ? 'debt' : 'cash'); }}
-                    className={`flex flex-col items-center gap-2 p-3.5 rounded-xl border-2 text-center transition-all duration-150 ${hasCar === opt.val ? 'border-[#0e6efe] bg-blue-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
-                  >
-                    <opt.icon className={`w-5 h-5 ${hasCar === opt.val ? 'text-[#0e6efe]' : 'text-slate-400'}`} />
-                    <span className={`text-[11.5px] font-semibold leading-tight ${hasCar === opt.val ? 'text-[#0e6efe]' : 'text-slate-600'}`}>{opt.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+        <div className="p-4">
+          <AnimatePresence mode="wait" initial={false}>
+            {/* Step: har du bil? */}
+            {step === 'car' && (
+              <motion.div key="car" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.18 }} className="space-y-3">
+                <p className="text-[13px] font-semibold text-slate-800">Har du en bil att byta in?</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {[{ val: true, label: 'Ja, byta in', icon: Car }, { val: false, label: 'Nej, enbart kontanter', icon: Wallet }].map(opt => (
+                    <button
+                      key={String(opt.val)}
+                      type="button"
+                      onClick={() => { setHasCar(opt.val); setStep(opt.val ? 'debt' : 'cash'); }}
+                      className={`flex flex-col items-center gap-2 p-3.5 rounded-xl border-2 text-center transition-all duration-150 ${hasCar === opt.val ? 'border-[#0e6efe] bg-blue-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
+                    >
+                      <opt.icon className={`w-5 h-5 ${hasCar === opt.val ? 'text-[#0e6efe]' : 'text-slate-400'}`} />
+                      <span className={`text-[11.5px] font-semibold leading-tight ${hasCar === opt.val ? 'text-[#0e6efe]' : 'text-slate-600'}`}>{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
-          {/* Step: skuld (visas efter att man valt "ja") */}
-          {step === 'debt' && (
-            <div className="space-y-3">
-              <div>
-                <p className="text-[13px] font-semibold text-slate-800">Vad är din bil värd?</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">För exakt värdering, ring oss på <span className="font-semibold text-slate-600">08-555 502 00</span></p>
-              </div>
-              <div className="text-center py-1">
-                <span className="text-[28px] font-bold text-slate-900 tabular-nums">{fmt(carValue)} kr</span>
-              </div>
-              <EqSlider value={carValue} min={20_000} max={600_000} step={5_000} onChange={setCarValue} />
-              <div className="flex justify-between text-[10px] text-slate-400 -mt-2">
-                <span>20 000 kr</span><span>600 000 kr</span>
-              </div>
-              <div className="mt-1">
-                <p className="text-[12px] font-semibold text-slate-700 mb-1">Kvarvarande skuld på bilen</p>
+            {/* Step: skuld */}
+            {step === 'debt' && (
+              <motion.div key="debt" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.18 }} className="space-y-3">
+                <div>
+                  <p className="text-[13px] font-semibold text-slate-800">Vad är din bil värd?</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">För exakt värdering, ring oss på <span className="font-semibold text-slate-600">08-555 502 00</span></p>
+                </div>
                 <div className="text-center py-1">
-                  <span className="text-[22px] font-bold text-slate-900 tabular-nums">
-                    {carDebt === 0 ? 'Ingen skuld' : `${fmt(carDebt)} kr`}
+                  <span className="text-[28px] font-bold text-slate-900 tabular-nums">{fmt(carValue)} kr</span>
+                </div>
+                <EqSlider value={carValue} min={20_000} max={600_000} step={5_000} onChange={setCarValue} />
+                <div className="flex justify-between text-[10px] text-slate-400 -mt-2">
+                  <span>20 000 kr</span><span>600 000 kr</span>
+                </div>
+                <div className="mt-1">
+                  <p className="text-[12px] font-semibold text-slate-700 mb-1">Kvarvarande skuld på bilen</p>
+                  <div className="text-center py-1">
+                    <span className="text-[22px] font-bold text-slate-900 tabular-nums">
+                      {carDebt === 0 ? 'Ingen skuld' : `${fmt(carDebt)} kr`}
+                    </span>
+                    {carDebt > 0 && <span className="text-[11px] text-emerald-600 font-semibold ml-2">Netto: {fmt(Math.max(0, carValue - carDebt))} kr</span>}
+                  </div>
+                  <EqSlider value={carDebt} min={0} max={Math.max(carValue, 300_000)} step={5_000} onChange={setCarDebt} />
+                </div>
+                <div className="flex gap-2 pt-1">
+                  <button type="button" onClick={() => setStep('car')} className="h-10 px-4 rounded-xl border border-slate-200 text-slate-500 text-[12px] font-semibold hover:border-slate-300 transition-colors">Tillbaka</button>
+                  <button type="button" onClick={() => setStep('cash')} className="flex-1 h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold transition-colors flex items-center justify-center gap-1.5">
+                    Fortsätt <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step: kontanter */}
+            {step === 'cash' && (
+              <motion.div key="cash" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.18 }} className="space-y-3">
+                <div>
+                  <p className="text-[13px] font-semibold text-slate-800">Extra kontanter till insatsen?</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">Utöver inbytesbilen — valfritt</p>
+                </div>
+                <div className="text-center py-1">
+                  <span className="text-[28px] font-bold text-slate-900 tabular-nums">
+                    {cash === 0 ? 'Inga extra' : `${fmt(cash)} kr`}
                   </span>
-                  {carDebt > 0 && <span className="text-[11px] text-emerald-600 font-semibold ml-2">Netto: {fmt(Math.max(0, carValue - carDebt))} kr</span>}
                 </div>
-                <EqSlider value={carDebt} min={0} max={Math.max(carValue, 300_000)} step={5_000} onChange={setCarDebt} />
-              </div>
-              <div className="flex gap-2 pt-1">
-                <button type="button" onClick={() => setStep('car')} className="h-10 px-4 rounded-xl border border-slate-200 text-slate-500 text-[12px] font-semibold hover:border-slate-300 transition-colors">Tillbaka</button>
-                <button type="button" onClick={() => setStep('cash')} className="flex-1 h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold transition-colors flex items-center justify-center gap-1.5">
-                  Fortsätt <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Step: kontanter */}
-          {step === 'cash' && (
-            <div className="space-y-3">
-              <div>
-                <p className="text-[13px] font-semibold text-slate-800">Extra kontanter till insatsen?</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">Utöver inbytesbilen — valfritt</p>
-              </div>
-              <div className="text-center py-1">
-                <span className="text-[28px] font-bold text-slate-900 tabular-nums">
-                  {cash === 0 ? 'Inga extra' : `${fmt(cash)} kr`}
-                </span>
-              </div>
-              <EqSlider value={cash} min={0} max={500_000} step={5_000} onChange={setCash} />
-              <div className="flex justify-between text-[10px] text-slate-400 -mt-2">
-                <span>0 kr</span><span>500 000 kr</span>
-              </div>
-              {hasCar && (
-                <div className="bg-white rounded-lg border border-slate-200 px-3 py-2 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-500">Total insats</span>
-                  <span className="text-[13px] font-bold text-slate-900 tabular-nums">{fmt(Math.max(0, carValue - carDebt) + cash)} kr</span>
+                <EqSlider value={cash} min={0} max={500_000} step={5_000} onChange={setCash} />
+                <div className="flex justify-between text-[10px] text-slate-400 -mt-2">
+                  <span>0 kr</span><span>500 000 kr</span>
                 </div>
-              )}
-              <div className="flex gap-2 pt-1">
-                <button type="button" onClick={() => setStep(hasCar ? 'debt' : 'car')} className="h-10 px-4 rounded-xl border border-slate-200 text-slate-500 text-[12px] font-semibold hover:border-slate-300 transition-colors">Tillbaka</button>
-                <button type="button" onClick={() => setStep('result')} className="flex-1 h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold transition-colors flex items-center justify-center gap-1.5">
-                  Se resultat <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          )}
+                {hasCar && (
+                  <div className="bg-white rounded-lg border border-slate-200 px-3 py-2 flex items-center justify-between">
+                    <span className="text-[11px] text-slate-500">Total insats</span>
+                    <span className="text-[13px] font-bold text-slate-900 tabular-nums">{fmt(Math.max(0, carValue - carDebt) + cash)} kr</span>
+                  </div>
+                )}
+                <div className="flex gap-2 pt-1">
+                  <button type="button" onClick={() => setStep(hasCar ? 'debt' : 'car')} className="h-10 px-4 rounded-xl border border-slate-200 text-slate-500 text-[12px] font-semibold hover:border-slate-300 transition-colors">Tillbaka</button>
+                  <button type="button" onClick={() => setStep('result')} className="flex-1 h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold transition-colors flex items-center justify-center gap-1.5">
+                    Se resultat <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
-          {/* Result */}
-          {step === 'result' && (
-            <div className="space-y-3">
-              {/* Status banner */}
-              {extraNeeded === 0 ? (
-                <div className="flex items-start gap-2.5 bg-emerald-50 border border-emerald-100 rounded-xl px-3.5 py-3">
-                  <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[12.5px] font-bold text-emerald-800">Din insats täcker!</p>
-                    <p className="text-[11.5px] text-emerald-700 mt-0.5">
-                      {freed > 0
-                        ? `Du har ${fmt(freed)} kr över efter insatsen — pengarna är dina att behålla.`
-                        : `Din insats matchar exakt kontantinsatskravet på ${fmt(depositNeeded)} kr.`}
+            {/* Result */}
+            {step === 'result' && (
+              <motion.div key="result" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.18 }} className="space-y-3">
+                {extraNeeded === 0 ? (
+                  <div className="flex items-start gap-2.5 bg-emerald-50 border border-emerald-100 rounded-xl px-3.5 py-3">
+                    <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-[12.5px] font-bold text-emerald-800">Din insats täcker!</p>
+                      <p className="text-[11.5px] text-emerald-700 mt-0.5">
+                        {freed > 0
+                          ? `Du har ${fmt(freed)} kr över efter insatsen — pengarna är dina att behålla.`
+                          : `Din insats matchar exakt kontantinsatskravet på ${fmt(depositNeeded)} kr.`}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-3">
+                    <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-[12.5px] font-bold text-amber-800">Saknas {fmt(extraNeeded)} kr</p>
+                      <p className="text-[11.5px] text-amber-700 mt-0.5">
+                        Din insats är {fmt(equity)} kr — du behöver {fmt(extraNeeded)} kr till för att nå 20% ({fmt(depositNeeded)} kr).
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-white rounded-xl border border-slate-200 p-3 text-center">
+                    <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Din insats</p>
+                    <p className="text-[20px] font-extrabold text-slate-900 tabular-nums leading-none">{fmt(equity)}</p>
+                    <p className="text-[9px] text-slate-400 mt-0.5">kr</p>
+                  </div>
+                  <div className="bg-white rounded-xl border border-slate-200 p-3 text-center">
+                    <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Månadskostnad</p>
+                    <p className={`text-[20px] font-extrabold tabular-nums leading-none ${extraNeeded === 0 ? 'text-[#0e6efe]' : 'text-slate-700'}`}>{fmt(monthly)}</p>
+                    <p className="text-[9px] text-slate-400 mt-0.5">kr/mån</p>
+                  </div>
+                </div>
+
+                {monthlySaving > 100 && extraNeeded === 0 && (
+                  <div className="flex items-center gap-2 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl px-3 py-2.5">
+                    <TrendingDown className="w-3.5 h-3.5 text-[#0e6efe] shrink-0" />
+                    <p className="text-[11.5px] text-[#0e6efe] font-semibold">
+                      Din insats sänker månadskostnaden med {fmt(monthlySaving)} kr/mån vs 0 kr i insats
                     </p>
                   </div>
-                </div>
-              ) : (
-                <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-3">
-                  <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[12.5px] font-bold text-amber-800">Saknas {fmt(extraNeeded)} kr</p>
-                    <p className="text-[11.5px] text-amber-700 mt-0.5">
-                      Din insats är {fmt(equity)} kr — du behöver {fmt(extraNeeded)} kr till för att nå 20% ({fmt(depositNeeded)} kr).
-                    </p>
-                  </div>
-                </div>
-              )}
+                )}
 
-              {/* Key numbers */}
-              <div className="grid grid-cols-2 gap-2">
-                <div className="bg-white rounded-xl border border-slate-200 p-3 text-center">
-                  <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Din insats</p>
-                  <p className="text-[20px] font-extrabold text-slate-900 tabular-nums leading-none">{fmt(equity)}</p>
-                  <p className="text-[9px] text-slate-400 mt-0.5">kr</p>
-                </div>
-                <div className="bg-white rounded-xl border border-slate-200 p-3 text-center">
-                  <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Månadskostnad</p>
-                  <p className={`text-[20px] font-extrabold tabular-nums leading-none ${extraNeeded === 0 ? 'text-[#0e6efe]' : 'text-slate-700'}`}>{fmt(monthly)}</p>
-                  <p className="text-[9px] text-slate-400 mt-0.5">kr/mån</p>
-                </div>
-              </div>
-
-              {monthlySaving > 100 && extraNeeded === 0 && (
-                <div className="flex items-center gap-2 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl px-3 py-2.5">
-                  <TrendingDown className="w-3.5 h-3.5 text-[#0e6efe] shrink-0" />
-                  <p className="text-[11.5px] text-[#0e6efe] font-semibold">
-                    Din insats sänker månadskostnaden med {fmt(monthlySaving)} kr/mån vs 0 kr i insats
-                  </p>
-                </div>
-              )}
-
-              <div className="grid grid-cols-3 gap-1.5 pt-1 border-t border-slate-100">
-                {[
-                  { label: 'Insatskrav (20%)', value: `${fmt(depositNeeded)} kr` },
-                  { label: freed > 0 ? 'Frigjort kapital' : 'Saknas', value: freed > 0 ? `+${fmt(freed)} kr` : extraNeeded > 0 ? `${fmt(extraNeeded)} kr` : '–' },
-                  { label: 'Lånesumma', value: `${fmt(loanBase)} kr` },
-                ].map(({ label, value }) => (
-                  <div key={label} className="text-center">
-                    <p className="text-[8.5px] text-slate-400 mb-0.5 leading-tight">{label}</p>
-                    <p className="text-[9.5px] font-bold text-slate-700 tabular-nums">{value}</p>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                type="button"
-                onClick={() => { setStep('car'); setHasCar(null); setCarValue(150_000); setCarDebt(0); setCash(0); }}
-                className="w-full h-9 rounded-xl border border-slate-200 text-slate-500 text-[12px] font-semibold hover:border-slate-300 hover:text-slate-700 transition-colors"
-              >
-                Räkna om
-              </button>
-
-              {extraNeeded > 0 && affordableAlts.length > 0 && (
-                <div className="pt-1 border-t border-slate-100 space-y-2">
-                  <p className="text-[11.5px] font-bold text-slate-700">
-                    Bilar du har råd med i samma kategori
-                  </p>
-                  {affordableAlts.map(alt => (
-                    <div key={`${alt.brand}-${alt.model}`} className="flex items-center gap-3 bg-white rounded-xl border border-slate-200 px-3 py-2.5">
-                      {alt.image ? (
-                        <img src={alt.image} alt={`${alt.brand} ${alt.model}`} className="w-14 h-10 object-cover rounded-lg shrink-0 bg-slate-100" />
-                      ) : (
-                        <div className="w-14 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
-                          <Car className="w-5 h-5 text-slate-300" />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-bold text-slate-800 truncate">{alt.brand} {alt.model}</p>
-                        <p className="text-[10.5px] text-slate-500 mt-0.5">Insats: {fmt(alt.depositNeeded)} kr · {fmt(alt.monthly)} kr/mån</p>
-                      </div>
-                      <div className="shrink-0 text-right">
-                        <p className="text-[10px] text-emerald-600 font-bold">Passar din insats</p>
-                        <p className="text-[9.5px] text-slate-400 tabular-nums">{fmt(alt.price)} kr</p>
-                      </div>
+                <div className="grid grid-cols-3 gap-1.5 pt-1 border-t border-slate-100">
+                  {[
+                    { label: 'Insatskrav (20%)', value: `${fmt(depositNeeded)} kr` },
+                    { label: freed > 0 ? 'Frigjort kapital' : 'Saknas', value: freed > 0 ? `+${fmt(freed)} kr` : extraNeeded > 0 ? `${fmt(extraNeeded)} kr` : '–' },
+                    { label: 'Lånesumma', value: `${fmt(loanBase)} kr` },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="text-center">
+                      <p className="text-[8.5px] text-slate-400 mb-0.5 leading-tight">{label}</p>
+                      <p className="text-[9.5px] font-bold text-slate-700 tabular-nums">{value}</p>
                     </div>
                   ))}
                 </div>
-              )}
-            </div>
-          )}
+
+                <button
+                  type="button"
+                  onClick={() => { setStep('car'); setHasCar(null); setCarValue(150_000); setCarDebt(0); setCash(0); }}
+                  className="w-full h-9 rounded-xl border border-slate-200 text-slate-500 text-[12px] font-semibold hover:border-slate-300 hover:text-slate-700 transition-colors"
+                >
+                  Räkna om
+                </button>
+
+                {extraNeeded > 0 && affordableAlts.length > 0 && (
+                  <div className="pt-1 border-t border-slate-100 space-y-2">
+                    <p className="text-[11.5px] font-bold text-slate-700">
+                      Bilar du har råd med
+                    </p>
+                    {affordableAlts.map(alt => (
+                      <div key={`${alt.brand}-${alt.model}`} className="flex items-center gap-3 bg-white rounded-xl border border-slate-200 px-3 py-2.5">
+                        {alt.image ? (
+                          <img src={alt.image} alt={`${alt.brand} ${alt.model}`} className="w-14 h-10 object-contain rounded-lg shrink-0 bg-slate-50 p-1" />
+                        ) : (
+                          <div className="w-14 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                            <Car className="w-5 h-5 text-slate-300" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[12px] font-bold text-slate-800 truncate">{alt.brand} {alt.model}</p>
+                          <p className="text-[10.5px] text-slate-500 mt-0.5">Insats: {fmt(alt.depositNeeded)} kr · {fmt(alt.monthly)} kr/mån</p>
+                        </div>
+                        <div className="shrink-0 text-right">
+                          <p className="text-[10px] text-emerald-600 font-bold">Passar din insats</p>
+                          <p className="text-[9.5px] text-slate-400 tabular-nums">{fmt(alt.price)} kr</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </section>

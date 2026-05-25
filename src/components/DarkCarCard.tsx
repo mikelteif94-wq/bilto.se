@@ -53,10 +53,10 @@ export default function DarkCarCard({
     >
       {/* Clickable card area */}
       <div className="cursor-pointer" onClick={() => onDetail?.()}>
-        <div className="relative aspect-[16/10] bg-white overflow-hidden rounded-t-2xl">
+        <div className="relative aspect-[16/10] bg-white overflow-hidden rounded-t-2xl" style={{ minHeight: 160 }}>
           {imageUrl ? (
             <img
-              src={imageUrl} alt={name} loading="lazy"
+              src={imageUrl} alt={name}
               className="w-full h-full object-contain p-4"
             />
           ) : (
