@@ -72,6 +72,13 @@ Deno.serve(async (req: Request) => {
         continue;
       }
 
+      // Strip leading make prefix from model if present (e.g. "BMW X5" → "X5")
+      const makePrefix = make.toLowerCase() + " ";
+      const normalizedModel =
+        model.toLowerCase().startsWith(makePrefix)
+          ? model.slice(make.length + 1).trim()
+          : model;
+
       // Remove undefined values
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
       for (const [k, v] of Object.entries(fields)) {
@@ -83,7 +90,7 @@ Deno.serve(async (req: Request) => {
         .from("car_catalog")
         .select("id")
         .eq("make", make)
-        .eq("model", model)
+        .eq("model", normalizedModel)
         .maybeSingle();
 
       if (checkErr) {
