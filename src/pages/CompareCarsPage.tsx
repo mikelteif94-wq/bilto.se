@@ -969,10 +969,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         <div className="absolute right-0 -bottom-32 w-[400px] h-[400px] rounded-full bg-[#3d8cff] opacity-30" />
         <div className="relative max-w-3xl mx-auto text-center">
           <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
-            Hitta din drömbil och förhandla priset
+            Hitta din dr&ouml;mbil och f&ouml;rhandla priset
           </h1>
           <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto">
-            Jämför bilar, hitta rätt modell och låt oss förhandla fram bästa priset åt dig.
+            J&auml;mf&ouml;r bilar, hitta r&auml;tt modell och l&aring;t oss f&ouml;rhandla fram b&auml;sta priset &aring;t dig. Helt gratis och opartiskt.
           </p>
 
           <div className="mt-8 bg-white rounded-2xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden max-w-md mx-auto text-left">
