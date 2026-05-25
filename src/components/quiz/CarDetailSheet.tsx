@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef, useCallback } from 'react';
+import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star, Gauge, Armchair, Briefcase, TrendingDown, Shield,
@@ -67,11 +67,9 @@ function RatingBar({ label, value, icon: Icon }: { label: string; value: number;
       <Icon className="w-4 h-4 text-slate-400 shrink-0" />
       <span className="text-[13px] text-slate-600 w-24 shrink-0">{label}</span>
       <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${value * 10}%` }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+        <div
           className="h-full bg-[#0047B3] rounded-full"
+          style={{ width: `${value * 10}%` }}
         />
       </div>
       <span className="text-[13px] font-semibold text-slate-900 w-8 text-right">{value}</span>
@@ -689,6 +687,11 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
   const carPrice = data.pricing.new_from_sek ?? null;
   const usedPrice = data.pricing.used_from_sek ?? undefined;
   const [calcOpen, setCalcOpen] = useState(false);
+  const [showEquity, setShowEquity] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShowEquity(true), 400);
+    return () => clearTimeout(t);
+  }, []);
   const monthlyUsed = data.pricing.monthly_used;
   const monthlyUsedMin = data.pricing.monthly_used_min;
   const monthlyUsedMax = data.pricing.monthly_used_max;
@@ -881,7 +884,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
         </section>
       )}
 
-      {carPrice && (
+      {carPrice && showEquity && (
         <CarEquityCalc carPrice={carPrice} usedPrice={usedPrice} carName={`${data.brand_display} ${data.model_display}`} bodyType={data.specs.body_type} />
       )}
 
@@ -893,6 +896,11 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
 
 function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSelect?: () => void; onFitQuiz?: () => void }) {
   const [calcOpen, setCalcOpen] = useState(false);
+  const [showEquity, setShowEquity] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShowEquity(true), 400);
+    return () => clearTimeout(t);
+  }, []);
   const carPrice = car.usedPrice ?? null;
 
   return (
@@ -963,7 +971,7 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
         </p>
       </div>
 
-      {carPrice && <CarEquityCalc carPrice={carPrice} carName={`${car.make} ${car.model}`} />}
+      {carPrice && showEquity && <CarEquityCalc carPrice={carPrice} carName={`${car.make} ${car.model}`} />}
 
       {car.matchReasons.length > 0 && (
         <div>
