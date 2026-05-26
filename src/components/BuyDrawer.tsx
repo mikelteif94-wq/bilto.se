@@ -15,12 +15,13 @@ interface BuyDrawerProps {
   initialAdditionalRequests?: string;
   initialDesiredMonthlyCost?: string;
   fuelTypes?: string[];
+  initialReg?: string;
   onClose: () => void;
 }
 
 type FormStep = 'track' | 'carIntent' | 'details' | 'tradeIn' | 'contact' | 'done';
 
-export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditionalRequests, initialDesiredMonthlyCost, fuelTypes, onClose }: BuyDrawerProps) {
+export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditionalRequests, initialDesiredMonthlyCost, fuelTypes, initialReg = '', onClose }: BuyDrawerProps) {
   const open = car !== null;
   // When initialTrack is 'searching', car is a pre-filled target (possibly multiple), not a specific single car
   const isSearchingWithPrefill = (initialTrack === 'searching' || skipIntent) && !!car;
@@ -55,8 +56,8 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
   });
 
   const [tradeIn, setTradeIn] = useState<BuyTradeInData>({
-    hasTradeIn: null,
-    tradeInReg: '',
+    hasTradeIn: initialTrack === 'trade' && !!initialReg ? true : null,
+    tradeInReg: initialTrack === 'trade' ? initialReg : '',
     hasLoan: null,
     loanAmount: '',
     interestRate: '',
@@ -127,7 +128,14 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
         yearTo: '',
         maxMiltal: '',
       });
-      setTradeIn({ hasTradeIn: null, tradeInReg: '', hasLoan: null, loanAmount: '', interestRate: '' });
+      const resolvedReg = initialReg || '';
+      setTradeIn({
+        hasTradeIn: resolvedTrack === 'trade' && !!resolvedReg ? true : null,
+        tradeInReg: resolvedTrack === 'trade' ? resolvedReg : '',
+        hasLoan: null,
+        loanAmount: '',
+        interestRate: '',
+      });
       setContact({ namn: '', telefon: '', mejl: '', preferredTime: '' });
     }
   }, [car]);

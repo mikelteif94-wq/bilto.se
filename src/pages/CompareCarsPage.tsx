@@ -623,15 +623,17 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const [buyDrawerTrack, setBuyDrawerTrack] = useState<'found' | 'searching' | 'trade' | undefined>(undefined);
   const [buyDrawerSkipIntent, setBuyDrawerSkipIntent] = useState(false);
   const [buyDrawerEquity, setBuyDrawerEquity] = useState<string>('');
+  const [buyDrawerInitialReg, setBuyDrawerInitialReg] = useState<string>('');
   const [quizPreselectedCar, setQuizPreselectedCar] = useState<string | undefined>(undefined);
 
   const [buyDrawerFuelTypes, setBuyDrawerFuelTypes] = useState<string[] | undefined>(undefined);
 
-  const openBuyDrawer = (car: string, track?: 'found' | 'searching' | 'trade', skipIntent?: boolean, equitySummary?: string, fuelTypes?: string[]) => {
+  const openBuyDrawer = (car: string, track?: 'found' | 'searching' | 'trade', skipIntent?: boolean, equitySummary?: string, fuelTypes?: string[], tradeReg?: string) => {
     setBuyDrawerTrack(track);
     setBuyDrawerSkipIntent(!!skipIntent);
     setBuyDrawerEquity(equitySummary ?? '');
     setBuyDrawerFuelTypes(fuelTypes);
+    setBuyDrawerInitialReg(tradeReg ?? '');
     setBuyDrawerCar(car);
   };
 
@@ -1763,7 +1765,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     setBilbyteRegError(true);
                     return;
                   }
-                  openBuyDrawer(`inbytesbil ${bilbyteReg}`, 'trade');
+                  openBuyDrawer('', 'trade', false, undefined, undefined, bilbyteReg.trim().toUpperCase());
                 }}
                 className="mt-4 w-full h-12 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] flex items-center justify-center gap-2 transition active:scale-[0.98]"
               >
@@ -2286,7 +2288,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       <SiteFooter />
 
       {/* Buy drawer */}
-      <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} skipIntent={buyDrawerSkipIntent} initialAdditionalRequests={buyDrawerEquity || undefined} fuelTypes={buyDrawerFuelTypes} onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); setBuyDrawerFuelTypes(undefined); }} />
+      <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} skipIntent={buyDrawerSkipIntent} initialAdditionalRequests={buyDrawerEquity || undefined} fuelTypes={buyDrawerFuelTypes} initialReg={buyDrawerInitialReg} onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); setBuyDrawerFuelTypes(undefined); setBuyDrawerInitialReg(''); }} />
 
       {/* Compare drawer */}
       <CompareDrawer

@@ -27,7 +27,8 @@ export function useVehicleLookup(regnummer: string): LookupState {
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    if (!REG_REGEX.test(regnummer)) {
+    const normalized = regnummer.trim().toUpperCase().replace(/\s/g, '');
+    if (!REG_REGEX.test(normalized)) {
       setState({ status: 'idle' });
       return;
     }
@@ -45,7 +46,7 @@ export function useVehicleLookup(regnummer: string): LookupState {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
       },
-      body: JSON.stringify({ regnummer }),
+      body: JSON.stringify({ regnummer: normalized }),
       signal: controller.signal,
     })
       .then((res) => res.json())
