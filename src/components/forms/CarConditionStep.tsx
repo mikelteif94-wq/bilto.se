@@ -285,8 +285,16 @@ export default function CarConditionStep({
             <FieldError message={errors.reg} />
           </div>
         ) : (
-          <div className="inline-flex items-center h-10 px-4 bg-[#0e6efe]/10 text-[#0e6efe] font-bold tracking-widest text-[15px] rounded-md">
-            {regnummer}
+          <div>
+            <div className="inline-flex items-center h-10 px-4 bg-[#0e6efe]/10 text-[#0e6efe] font-bold tracking-widest text-[15px] rounded-md gap-2">
+              {regnummer}
+              {lookup.status === 'loading' && (
+                <Loader2 className="w-4 h-4 animate-spin opacity-60" />
+              )}
+            </div>
+            {foundData && lookup.status === 'found' && (
+              <VehicleFoundCard regnummer={reg} data={foundData} />
+            )}
           </div>
         )}
       </div>
