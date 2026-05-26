@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle, Loader2, AlertCircle, Repeat, Check } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AlertCircle, Car, Check, Fuel, Loader2, Palette, Repeat, Sparkles } from 'lucide-react';
 import FieldError from './FieldError';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 import RegInput from '../RegInput';
-import { useVehicleLookup } from '../../lib/useVehicleLookup';
+import { useVehicleLookup, VehicleData } from '../../lib/useVehicleLookup';
 
 const SKICK_OPTIONS = [
   { value: 'mycket_bra', label: 'Mycket bra', desc: 'Inga synliga defekter' },
@@ -28,6 +28,100 @@ function intervalForMiltal(mil: number): string {
   if (mil <= 0) return '';
   const start = Math.floor(mil / 500) * 500;
   return `${start}-${start + 499}`;
+}
+
+function fuelLabel(bransle: string): string {
+  const map: Record<string, string> = {
+    bensin: 'Bensin', diesel: 'Diesel', el: 'El', elhybrid: 'Elhybrid',
+    laddhybrid: 'Laddhybrid', gas: 'Gas', etanol: 'Etanol',
+  };
+  return map[bransle?.toLowerCase()] ?? bransle ?? '';
+}
+
+interface VehicleFoundCardProps {
+  regnummer: string;
+  data: VehicleData;
+}
+
+function VehicleFoundCard({ regnummer, data }: VehicleFoundCardProps) {
+  const [visible, setVisible] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setVisible(true), 30);
+    const t2 = setTimeout(() => setRevealed(true), 200);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
+  const chips: { icon: React.ReactNode; label: string }[] = [
+    data.ar ? { icon: <Car className="w-3.5 h-3.5" />, label: String(data.ar) } : null,
+    data.bransle ? { icon: <Fuel className="w-3.5 h-3.5" />, label: fuelLabel(data.bransle) } : null,
+    data.farg ? { icon: <Palette className="w-3.5 h-3.5" />, label: data.farg } : null,
+    data.miltal && data.miltal > 0 ? { icon: null, label: `${data.miltal.toLocaleString('sv-SE')} mil` } : null,
+  ].filter(Boolean) as { icon: React.ReactNode; label: string }[];
+
+  return (
+    <div
+      className={`mt-4 rounded-2xl overflow-hidden border transition-all duration-500 ${
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+      } border-emerald-200 bg-gradient-to-br from-emerald-50 to-white shadow-sm`}
+    >
+      {/* Top bar */}
+      <div className="bg-gradient-to-r from-emerald-500 to-emerald-400 px-4 py-2.5 flex items-center gap-2">
+        <Sparkles className="w-4 h-4 text-white/90 shrink-0" />
+        <span className="text-white text-[13px] font-semibold tracking-wide">
+          Fordon identifierat
+        </span>
+        <span className="ml-auto text-white/80 font-mono text-[12px] tracking-widest font-bold">
+          {regnummer}
+        </span>
+      </div>
+
+      {/* Content */}
+      <div className="px-4 py-4">
+        <div
+          className={`transition-all duration-400 delay-100 ${
+            revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+          }`}
+        >
+          {/* Car name */}
+          <div className="flex items-baseline gap-2 mb-3">
+            <h3 className="text-[19px] font-bold text-slate-900 leading-tight">
+              {[data.marke, data.modell].filter(Boolean).join(' ')}
+            </h3>
+            {data.ar && (
+              <span className="text-[14px] text-slate-500 font-medium">{data.ar}</span>
+            )}
+          </div>
+
+          {/* Chips */}
+          {chips.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {chips.map((chip, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-white border border-slate-200 text-[12px] font-medium text-slate-600 shadow-sm"
+                >
+                  {chip.icon}
+                  {chip.label}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="px-4 pb-3">
+        <div className="flex items-center gap-1.5 text-emerald-600 text-[12px] font-medium">
+          <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
+            <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+          </div>
+          Uppgifter hämtade automatiskt från fordonsregistret
+        </div>
+      </div>
+    </div>
+  );
 }
 
 interface CarConditionStepProps {
@@ -82,21 +176,28 @@ export default function CarConditionStep({
   const [skickKommentar, setSkickKommentar] = useState(initialSkickKommentar);
   const [wantsTradeIn, setWantsTradeIn] = useState(false);
   const [errors, setErrors] = useState<{ reg?: string; marke?: string; modell?: string; ar?: string; miltal?: string; mejl?: string; skick?: string }>({});
-  const [autoFilled, setAutoFilled] = useState(false);
+  const [foundData, setFoundData] = useState<VehicleData | null>(null);
+  const prevReg = useRef('');
   const editableReg = !regnummer;
 
   const lookup = useVehicleLookup(reg);
 
   useEffect(() => {
-    if (lookup.status !== 'found') return;
+    if (lookup.status !== 'found') {
+      if (lookup.status === 'idle' || lookup.status === 'loading') {
+        if (reg !== prevReg.current) setFoundData(null);
+      }
+      return;
+    }
+    prevReg.current = reg;
     const { data } = lookup;
+    setFoundData(data);
     if (data.marke) setMarke(data.marke);
     if (data.modell) setModell(data.modell);
     if (data.ar) setAr(String(data.ar));
     if (data.miltal && data.miltal > 0) setMiltalInterval(intervalForMiltal(data.miltal));
-    setAutoFilled(true);
     setErrors((prev) => ({ ...prev, marke: undefined, modell: undefined, ar: undefined }));
-  }, [lookup.status]);
+  }, [lookup.status, reg]);
 
   const modelOptions = useMemo(() => CAR_BRANDS[marke] ?? [], [marke]);
 
@@ -110,10 +211,7 @@ export default function CarConditionStep({
     }
 
     const chosen = MILTAL_INTERVALS.find((i) => i.value === miltalInterval);
-    if (!chosen) {
-      newErrors.miltal = 'Välj ett miltalsintervall';
-    }
-
+    if (!chosen) newErrors.miltal = 'Välj ett miltalsintervall';
     if (!marke) newErrors.marke = 'Välj märke';
     if (!modell) newErrors.modell = 'Välj modell';
 
@@ -153,30 +251,33 @@ export default function CarConditionStep({
                   value={reg}
                   onChange={(v) => {
                     setReg(v);
-                    setAutoFilled(false);
+                    if (v !== prevReg.current) setFoundData(null);
                     setErrors((prev) => ({ ...prev, reg: undefined }));
                   }}
                   error={!!errors.reg}
                 />
               </div>
               {lookup.status === 'loading' && (
-                <Loader2 className="w-5 h-5 text-[#0e6efe] animate-spin shrink-0" />
+                <div className="flex items-center gap-1.5 text-[#0e6efe] text-[13px] shrink-0">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="font-medium">Hämtar...</span>
+                </div>
               )}
             </div>
-            {lookup.status === 'found' && autoFilled && (
-              <div className="mt-2 flex items-center gap-1.5 text-emerald-600 text-[13px] font-medium">
-                <CheckCircle className="w-4 h-4 shrink-0" />
-                Fordonsuppgifter hämtade automatiskt
-              </div>
+
+            {/* Vehicle found card */}
+            {foundData && lookup.status === 'found' && (
+              <VehicleFoundCard regnummer={reg} data={foundData} />
             )}
+
             {lookup.status === 'not_found' && (
-              <div className="mt-2 flex items-center gap-1.5 text-amber-600 text-[13px]">
+              <div className="mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-[13px]">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 Bilen hittades inte — fyll i uppgifterna manuellt
               </div>
             )}
             {lookup.status === 'error' && (
-              <div className="mt-2 flex items-center gap-1.5 text-slate-500 text-[13px]">
+              <div className="mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-[13px]">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 Kunde inte hämta uppgifter — fyll i manuellt
               </div>
