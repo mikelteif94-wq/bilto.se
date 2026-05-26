@@ -16,20 +16,21 @@ export default function TradeInStep({ regnummer, marke, modell, ar, miltal, onYe
   return (
     <div className="space-y-4">
       {/* Car summary */}
-      <div className="bg-[#0e6efe]/[0.06] border border-[#0e6efe]/20 rounded-xl px-4 py-3.5 flex items-center gap-3">
-        <div className="flex-1 min-w-0">
+      <div className="bg-[#0e6efe]/[0.06] border border-[#0e6efe]/20 rounded-xl px-4 py-3.5">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-[14px] font-bold text-[#0e6efe] tracking-widest">{regnummer.toUpperCase()}</span>
           {carLabel && (
-            <p className="text-[14px] font-semibold text-slate-900 leading-tight truncate">{carLabel}</p>
+            <>
+              <span className="text-slate-300">&middot;</span>
+              <span className="text-[14px] font-semibold text-slate-800">{carLabel}</span>
+            </>
           )}
-          <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-            <span className="text-[13px] font-semibold text-[#0e6efe] tracking-widest">{regnummer.toUpperCase()}</span>
-            {miltal > 0 && (
-              <>
-                <span className="text-slate-300">&middot;</span>
-                <span className="text-[13px] text-slate-500">{miltal.toLocaleString('sv-SE')} mil</span>
-              </>
-            )}
-          </div>
+          {miltal > 0 && (
+            <>
+              <span className="text-slate-300">&middot;</span>
+              <span className="text-[13px] text-slate-500">{miltal.toLocaleString('sv-SE')} mil</span>
+            </>
+          )}
         </div>
       </div>
 

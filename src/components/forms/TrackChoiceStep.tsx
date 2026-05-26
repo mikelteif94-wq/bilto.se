@@ -34,12 +34,6 @@ export default function TrackChoiceStep({ regnummer, miltal, onChoose, onGuidanc
         />
       </div>
 
-      <div>
-        <p className="text-[15px] text-slate-600 leading-[1.55]">
-          Vi f&ouml;resl&aring;r maxpris &mdash; du kan annars s&auml;lja direkt.
-        </p>
-      </div>
-
       {onNavigateTrade && (
         <button
           type="button"
