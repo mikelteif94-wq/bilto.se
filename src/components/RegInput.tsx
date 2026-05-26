@@ -32,13 +32,13 @@ export default function RegInput({ value, onChange, disabled, error, size = 'md'
 
   return (
     <label
-      className={`flex items-stretch ${size === 'sm' ? 'h-10' : 'h-12'} rounded-lg border overflow-hidden transition focus-within:ring-2 focus-within:ring-[#0e6efe]/20 focus-within:border-[#0e6efe] ${
+      className={`flex items-stretch ${size === 'sm' ? 'h-12' : 'h-14'} rounded-xl border overflow-hidden transition focus-within:ring-2 focus-within:ring-[#0e6efe]/20 focus-within:border-[#0e6efe] ${
         error
           ? 'border-red-400 bg-red-50'
           : 'border-slate-300 bg-white'
       }`}
     >
-      <span className={`flex items-center justify-center ${size === 'sm' ? 'w-9 text-[14px]' : 'w-11 text-[18px]'} bg-[#0e6efe] text-white font-bold shrink-0`}>
+      <span className={`flex items-center justify-center ${size === 'sm' ? 'w-10 text-[15px]' : 'w-12 text-[20px]'} bg-[#0e6efe] text-white font-bold shrink-0`}>
         S
       </span>
       <input
@@ -49,7 +49,7 @@ export default function RegInput({ value, onChange, disabled, error, size = 'md'
         maxLength={6}
         autoComplete="off"
         disabled={disabled}
-        className={`flex-1 min-w-0 w-0 px-3 bg-white ${size === 'sm' ? 'text-[13px]' : 'text-[15px]'} font-semibold tracking-wider text-slate-900 focus:outline-none placeholder:text-slate-400 placeholder:font-normal placeholder:tracking-normal disabled:opacity-50`}
+        className={`flex-1 min-w-0 w-0 px-3 bg-white ${size === 'sm' ? 'text-[15px]' : 'text-[18px]'} font-bold tracking-widest text-slate-900 italic text-center focus:outline-none placeholder:text-slate-400 placeholder:font-normal placeholder:tracking-normal placeholder:not-italic disabled:opacity-50`}
       />
       {isValid && (
         <span className="flex items-center justify-center w-10 shrink-0">
