@@ -49,7 +49,7 @@ export default function RegInput({ value, onChange, disabled, error, size = 'md'
         maxLength={6}
         autoComplete="off"
         disabled={disabled}
-        className={`flex-1 min-w-0 px-3 bg-white ${size === 'sm' ? 'text-[15px]' : 'text-[18px]'} font-bold tracking-widest text-slate-900 italic text-center focus:outline-none placeholder:text-slate-400 placeholder:font-normal placeholder:tracking-normal placeholder:not-italic placeholder:italic placeholder:-skew-x-6 disabled:opacity-50`}
+        className={`flex-1 min-w-0 px-3 bg-white ${size === 'sm' ? 'text-[15px]' : 'text-[18px]'} font-bold tracking-widest text-slate-900 italic text-left focus:outline-none placeholder:text-slate-400 placeholder:font-normal placeholder:tracking-normal placeholder:not-italic disabled:opacity-50`}
       />
       {isValid && (
         <span className="flex items-center justify-center w-10 shrink-0">
