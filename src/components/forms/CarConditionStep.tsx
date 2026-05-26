@@ -415,6 +415,62 @@ export default function CarConditionStep({
         <FieldError message={errors.ar} />
       </div>
 
+      {/* Skick */}
+      <div className="py-6 sm:py-7">
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Vilket skick är bilen i?
+        </label>
+        <p className="text-sm text-slate-500 mb-4">
+          Välj det alternativ som bäst beskriver bilen.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {SKICK_OPTIONS.map((option) => {
+            const selected = skick === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => {
+                  setSkick(option.value);
+                  setErrors((prev) => ({ ...prev, skick: undefined }));
+                }}
+                className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+                  selected
+                    ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
+                    : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                }`}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+        {skick && (
+          <p className="text-sm text-slate-500 mt-3">
+            {SKICK_OPTIONS.find((o) => o.value === skick)?.desc}
+          </p>
+        )}
+        <FieldError message={errors.skick} />
+      </div>
+
+      {/* Kommentar om skicket (frivilligt) */}
+      <div className="py-6 sm:py-7">
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Vill du beskriva skicket närmare?
+        </label>
+        <p className="text-sm text-slate-500 mb-3">
+          Frivilligt — berätta t.ex. om servicehistorik, skador eller något unikt.
+        </p>
+        <textarea
+          value={skickKommentar}
+          onChange={(e) => setSkickKommentar(e.target.value)}
+          placeholder="Lägg till information om skicket, utrustning eller prisförväntningar"
+          rows={4}
+          maxLength={1000}
+          className="form-control"
+        />
+      </div>
+
       {/* Byta bil — toggle + inline fält */}
       {showTradeIn && (
         <div className="py-6 sm:py-7">
@@ -550,62 +606,6 @@ export default function CarConditionStep({
           )}
         </div>
       )}
-
-      {/* Skick */}
-      <div className="py-6 sm:py-7">
-        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Vilket skick är bilen i?
-        </label>
-        <p className="text-sm text-slate-500 mb-4">
-          Välj det alternativ som bäst beskriver bilen.
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {SKICK_OPTIONS.map((option) => {
-            const selected = skick === option.value;
-            return (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => {
-                  setSkick(option.value);
-                  setErrors((prev) => ({ ...prev, skick: undefined }));
-                }}
-                className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
-                  selected
-                    ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
-                    : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
-                }`}
-              >
-                {option.label}
-              </button>
-            );
-          })}
-        </div>
-        {skick && (
-          <p className="text-sm text-slate-500 mt-3">
-            {SKICK_OPTIONS.find((o) => o.value === skick)?.desc}
-          </p>
-        )}
-        <FieldError message={errors.skick} />
-      </div>
-
-      {/* Kommentar om skicket (frivilligt) */}
-      <div className="py-6 sm:py-7">
-        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Vill du beskriva skicket närmare?
-        </label>
-        <p className="text-sm text-slate-500 mb-3">
-          Frivilligt — berätta t.ex. om servicehistorik, skador eller något unikt.
-        </p>
-        <textarea
-          value={skickKommentar}
-          onChange={(e) => setSkickKommentar(e.target.value)}
-          placeholder="Lägg till information om skicket, utrustning eller prisförväntningar"
-          rows={4}
-          maxLength={1000}
-          className="form-control"
-        />
-      </div>
 
       <div className="pt-6 sm:pt-7 flex justify-end">
         <button
