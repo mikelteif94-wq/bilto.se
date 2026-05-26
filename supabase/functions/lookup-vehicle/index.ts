@@ -77,7 +77,9 @@ Deno.serve(async (req: Request) => {
     const result = {
       found: true,
       marke: capitalize(v.make ?? ""),
-      modell: capitalize(v.model ?? v.market_name ?? ""),
+      modell: capitalize(v.model ?? ""),
+      fullname: capitalize(v.name ?? ""),
+      variant: capitalize(v.variant ?? ""),
       ar: toYear(v.model_year ?? v.vehicle_year ?? v.manufactured ?? ""),
       farg: capitalize(v.color ?? v.exterior_color ?? ""),
       fordonstyp: capitalize(v.type ?? ""),

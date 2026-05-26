@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 export interface VehicleData {
   marke: string;
   modell: string;
+  fullname: string;
+  variant: string;
   ar: number | null;
   bransle: string;
   farg: string;
