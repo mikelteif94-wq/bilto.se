@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -12,6 +12,14 @@ interface SheetProps {
 
 export function Sheet({ open, onClose, children, className }: SheetProps) {
   const contentRef = useRef<HTMLDivElement>(null);
+  // Defer rendering children until slide-up animation completes to avoid reflow jank
+  const [contentReady, setContentReady] = useState(false);
+
+  useEffect(() => {
+    if (!open) {
+      setContentReady(false);
+    }
+  }, [open]);
 
   useEffect(() => {
     if (open) {
@@ -47,7 +55,10 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'tween', ease: [0.32, 0.72, 0, 1], duration: 0.35 }}
+            transition={{ type: 'tween', ease: [0.32, 0.72, 0, 1], duration: 0.32 }}
+            onAnimationComplete={(def) => {
+              if (def === 'animate') setContentReady(true);
+            }}
             className={cn(
               'relative w-full sm:max-w-[460px] max-h-[92vh] bg-white rounded-t-2xl sm:rounded-b-none flex flex-col shadow-2xl',
               className
@@ -64,7 +75,16 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
               </button>
             </div>
             <div className="flex-1 overflow-y-auto overscroll-contain">
-              {children}
+              {contentReady ? children : (
+                <div className="px-4 pt-4 space-y-4 animate-pulse">
+                  <div className="w-full h-44 bg-slate-100 rounded-xl" />
+                  <div className="h-6 bg-slate-100 rounded-lg w-2/3" />
+                  <div className="h-4 bg-slate-100 rounded-lg w-1/2" />
+                  <div className="h-4 bg-slate-100 rounded-lg w-3/4" />
+                  <div className="h-12 bg-slate-100 rounded-xl" />
+                  <div className="h-12 bg-slate-100 rounded-xl" />
+                </div>
+              )}
             </div>
           </motion.div>
         </div>
