@@ -744,7 +744,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
               </div>
             </div>
             <p className="text-[10.5px] text-slate-400 mt-2 leading-snug">
-              Cirka-priser — varierar beroende på årsmodell, miltal och utrustning
+              Faktiska priser varierar beroende på årsmodell, miltal och utrustning
             </p>
           </div>
         )}
