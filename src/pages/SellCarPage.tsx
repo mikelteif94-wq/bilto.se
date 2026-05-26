@@ -7,7 +7,7 @@ import CarEquipmentStep from '../components/forms/CarEquipmentStep';
 import CustomerForm from '../components/forms/CustomerForm';
 import ImageUploadForm from '../components/forms/ImageUploadForm';
 import ConfirmationForm from '../components/forms/ConfirmationForm';
-import BuyDetailsStep, { BuyDetailsData } from '../components/forms/BuyDetailsStep';
+import type { TradeInData } from '../components/forms/CarConditionStep';
 import { supabase } from '../lib/supabase';
 
 interface SellCarPageProps {
@@ -18,7 +18,7 @@ interface SellCarPageProps {
   onNavigateTrade?: (regnummer: string, miltal: number) => void;
 }
 
-export type FormStep = 'condition' | 'trade' | 'equipment' | 'images' | 'contact' | 'confirm';
+export type FormStep = 'condition' | 'equipment' | 'images' | 'contact' | 'confirm';
 
 export interface CustomerData {
   namn: string;
@@ -69,7 +69,7 @@ export default function SellCarPage({
     mejl: '',
   });
   const [images, setImages] = useState<ImageFile[]>([]);
-  const [tradeDetails, setTradeDetails] = useState<BuyDetailsData | null>(null);
+  const [tradeDetails, setTradeDetails] = useState<TradeInData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [guidanceOpen, setGuidanceOpen] = useState(false);
   const [guidanceName, setGuidanceName] = useState('');
@@ -121,10 +121,7 @@ export default function SellCarPage({
     setGuidanceDone(true);
   };
 
-  const includeTradeStep = tradeDetails !== null || step === 'trade';
-  const stepFlow: FormStep[] = includeTradeStep
-    ? ['condition', 'trade', 'equipment', 'images', 'contact', 'confirm']
-    : ['condition', 'equipment', 'images', 'contact', 'confirm'];
+  const stepFlow: FormStep[] = ['condition', 'equipment', 'images', 'contact', 'confirm'];
 
   const currentIndex = stepFlow.indexOf(step);
   const totalSteps = stepFlow.length;
@@ -132,7 +129,6 @@ export default function SellCarPage({
 
   const titles: Record<FormStep, string> = {
     condition: 'Om din bil',
-    trade: 'Din nästa bil',
     equipment: 'Utrustning och tillval',
     images: 'Bilder av bilen',
     contact: 'Dina uppgifter',
@@ -145,9 +141,6 @@ export default function SellCarPage({
     if (!prev) {
       onBack();
       return;
-    }
-    if (step === 'trade') {
-      setTradeDetails(null);
     }
     setStep(prev);
   };
@@ -236,7 +229,7 @@ export default function SellCarPage({
               initialSkick={car.skick}
               initialSkickKommentar={car.skickKommentar}
               showTradeIn={!!onNavigateTrade}
-              onNext={(miltal, skick, regnummer, skickKommentar, marke, modell, ar, wantsTradeIn) => {
+              onNext={(miltal, skick, regnummer, skickKommentar, marke, modell, ar, tradeIn) => {
                 const updatedReg = regnummer || car.regnummer;
                 setCar((c) => ({
                   ...c,
@@ -248,30 +241,9 @@ export default function SellCarPage({
                   ar,
                   regnummer: updatedReg,
                 }));
+                setTradeDetails(tradeIn ?? null);
                 setError(null);
-                if (wantsTradeIn) {
-                  setStep('trade');
-                } else {
-                  goNext();
-                }
-              }}
-            />
-          )}
-
-          {step === 'trade' && (
-            <BuyDetailsStep
-              track="trade"
-              initialData={tradeDetails ?? {
-                linkOrSeller: '', carModel: '', carBrand: '', paymentType: '',
-                buyingStage: '', fuelType: '', regnummer: car.regnummer,
-                miltal: String(car.miltal || ''), targetCar: '', desiredMonthlyCost: '',
-                additionalRequests: '', carPrice: '', yearFrom: '', yearTo: '',
-                maxMiltal: '', hasQuote: null,
-              }}
-              onNext={(data) => {
-                setTradeDetails(data);
                 goNext();
-                setError(null);
               }}
             />
           )}
@@ -317,7 +289,6 @@ export default function SellCarPage({
               images={images}
               salesType={salesType}
               tradeDetails={tradeDetails ?? undefined}
-              tradeTrack={tradeDetails ? 'trade' : undefined}
               onSubmit={async () => {}}
               loading={false}
               onError={setError}

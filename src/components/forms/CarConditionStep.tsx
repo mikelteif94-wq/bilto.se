@@ -1,9 +1,31 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AlertCircle, Car, Check, Fuel, Loader2, Palette, Repeat, Sparkles } from 'lucide-react';
+import { AlertCircle, Car, Check, ChevronDown, Fuel, Loader2, Palette, Repeat, Sparkles } from 'lucide-react';
 import FieldError from './FieldError';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 import RegInput from '../RegInput';
 import { useVehicleLookup, VehicleData } from '../../lib/useVehicleLookup';
+
+export interface TradeInData {
+  carBrand: string;
+  carModel: string;
+  targetCar: string;
+  carPrice: string;
+  fuelType: string;
+  paymentType: string;
+}
+
+const TRADE_FUEL_TYPES = [
+  { value: 'petrol', label: 'Bensin' },
+  { value: 'diesel', label: 'Diesel' },
+  { value: 'hybrid', label: 'Hybrid / Laddhybrid' },
+  { value: 'electric', label: 'El' },
+  { value: 'no_pref', label: 'Spelar ingen roll' },
+];
+
+const TRADE_PAYMENT_TYPES = [
+  { value: 'cash', label: 'Kontant' },
+  { value: 'finance', label: 'Finansiering' },
+];
 
 const SKICK_OPTIONS = [
   { value: 'mycket_bra', label: 'Mycket bra', desc: 'Inga synliga defekter' },
@@ -140,7 +162,7 @@ interface CarConditionStepProps {
     marke: string,
     modell: string,
     ar: number,
-    wantsTradeIn?: boolean,
+    tradeIn?: TradeInData,
   ) => void;
 }
 
@@ -170,6 +192,9 @@ export default function CarConditionStep({
   const [skick, setSkick] = useState(initialSkick);
   const [skickKommentar, setSkickKommentar] = useState(initialSkickKommentar);
   const [wantsTradeIn, setWantsTradeIn] = useState(false);
+  const [tradeIn, setTradeIn] = useState<TradeInData>({
+    carBrand: '', carModel: '', targetCar: '', carPrice: '', fuelType: '', paymentType: '',
+  });
   const [errors, setErrors] = useState<{ reg?: string; marke?: string; modell?: string; ar?: string; miltal?: string; skick?: string }>({});
   const [foundData, setFoundData] = useState<VehicleData | null>(null);
   const prevReg = useRef('');
@@ -222,7 +247,7 @@ export default function CarConditionStep({
       return;
     }
 
-    onNext(chosen!.mid, skick, regClean, skickKommentar.trim(), marke, modell, arNum, showTradeIn ? wantsTradeIn : undefined);
+    onNext(chosen!.mid, skick, regClean, skickKommentar.trim(), marke, modell, arNum, showTradeIn && wantsTradeIn ? tradeIn : undefined);
   };
 
   return (
@@ -390,7 +415,7 @@ export default function CarConditionStep({
         <FieldError message={errors.ar} />
       </div>
 
-      {/* Byta bil — checkbox */}
+      {/* Byta bil — toggle + inline fält */}
       {showTradeIn && (
         <div className="py-6 sm:py-7">
           <button
@@ -421,6 +446,108 @@ export default function CarConditionStep({
               {wantsTradeIn && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
             </div>
           </button>
+
+          {wantsTradeIn && (
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-white overflow-hidden divide-y divide-slate-100">
+              {/* Vilken bil vill du ha? */}
+              <div className="p-4 sm:p-5">
+                <p className="text-[14px] font-semibold text-slate-800 mb-3">Vilken bil vill du ha istället?</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="relative">
+                    <select
+                      value={tradeIn.carBrand}
+                      onChange={e => setTradeIn(t => ({ ...t, carBrand: e.target.value, carModel: '' }))}
+                      className="form-control appearance-none pr-8 text-[14px]"
+                    >
+                      <option value="">Märke</option>
+                      {POPULAR_BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
+                    </select>
+                    <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+                  </div>
+                  <div className="relative">
+                    <select
+                      value={tradeIn.carModel}
+                      onChange={e => setTradeIn(t => ({ ...t, carModel: e.target.value }))}
+                      disabled={!tradeIn.carBrand}
+                      className="form-control appearance-none pr-8 text-[14px] disabled:opacity-50"
+                    >
+                      <option value="">{tradeIn.carBrand ? 'Modell' : 'Välj märke'}</option>
+                      {(CAR_BRANDS[tradeIn.carBrand] ?? []).map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                    <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  value={tradeIn.targetCar}
+                  onChange={e => setTradeIn(t => ({ ...t, targetCar: e.target.value }))}
+                  placeholder="Eller skriv fritt — t.ex. SUV med dragkrok"
+                  className="form-control mt-2 text-[14px]"
+                />
+              </div>
+
+              {/* Budget */}
+              <div className="p-4 sm:p-5">
+                <p className="text-[14px] font-semibold text-slate-800 mb-2">
+                  Max budget <span className="font-normal text-slate-400 text-[13px]">Frivilligt</span>
+                </p>
+                <div className="relative sm:max-w-[200px]">
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={tradeIn.carPrice}
+                    onChange={e => setTradeIn(t => ({ ...t, carPrice: e.target.value }))}
+                    placeholder="T.ex. 300 000"
+                    className="form-control text-[14px]"
+                  />
+                </div>
+              </div>
+
+              {/* Drivmedel */}
+              <div className="p-4 sm:p-5">
+                <p className="text-[14px] font-semibold text-slate-800 mb-2">
+                  Drivmedel <span className="font-normal text-slate-400 text-[13px]">Frivilligt</span>
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {TRADE_FUEL_TYPES.map(f => (
+                    <button
+                      key={f.value}
+                      type="button"
+                      onClick={() => setTradeIn(t => ({ ...t, fuelType: t.fuelType === f.value ? '' : f.value }))}
+                      className={`px-3 h-8 rounded-full text-[13px] font-medium transition-all ${
+                        tradeIn.fuelType === f.value
+                          ? 'bg-[#0e6efe] text-white'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Betalning */}
+              <div className="p-4 sm:p-5">
+                <p className="text-[14px] font-semibold text-slate-800 mb-2">Hur vill du betala?</p>
+                <div className="flex gap-2">
+                  {TRADE_PAYMENT_TYPES.map(p => (
+                    <button
+                      key={p.value}
+                      type="button"
+                      onClick={() => setTradeIn(t => ({ ...t, paymentType: p.value }))}
+                      className={`flex-1 h-10 rounded-xl text-[14px] font-semibold border-2 transition-all ${
+                        tradeIn.paymentType === p.value
+                          ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
+                          : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
