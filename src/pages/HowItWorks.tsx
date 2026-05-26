@@ -383,21 +383,19 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </form>
-                  <div className="mt-3 flex items-center gap-3">
-                    <div className="flex-1 h-px bg-slate-100" />
-                    <span className="text-[11px] text-slate-400 font-medium">eller</span>
-                    <div className="flex-1 h-px bg-slate-100" />
+                  <div className="mt-3 flex items-center justify-center gap-3">
+                    <span className="text-[13px] text-slate-500">eller låt oss hjälpa dig</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.history.pushState({}, '', '/kop-bil?quiz=start');
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }}
+                      className="px-4 py-1.5 rounded-xl border-2 border-slate-800 text-slate-800 text-[13px] font-bold hover:bg-slate-800 hover:text-white active:scale-[0.98] transition-all whitespace-nowrap"
+                    >
+                      Hitta en bil
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      window.history.pushState({}, '', '/kop-bil?quiz=start');
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }}
-                    className="mt-3 w-full h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-600 font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
-                  >
-                    Låt oss hjälpa dig hitta en bil
-                  </button>
                 </>
               ) : (
                 <div ref={carSearchRef} className="relative">
@@ -547,21 +545,19 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </form>
-                  <div className="mt-3 flex items-center gap-3">
-                    <div className="flex-1 h-px bg-slate-100" />
-                    <span className="text-[11px] text-slate-400 font-medium">eller</span>
-                    <div className="flex-1 h-px bg-slate-100" />
+                  <div className="mt-3 flex items-center justify-center gap-3">
+                    <span className="text-[13px] text-slate-500">eller låt oss hjälpa dig</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.history.pushState({}, '', '/kop-bil?quiz=start');
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }}
+                      className="px-4 py-1.5 rounded-xl border-2 border-slate-800 text-slate-800 text-[13px] font-bold hover:bg-slate-800 hover:text-white active:scale-[0.98] transition-all whitespace-nowrap"
+                    >
+                      Hitta en bil
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      window.history.pushState({}, '', '/kop-bil?quiz=start');
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }}
-                    className="mt-3 w-full h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-600 font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
-                  >
-                    Låt oss hjälpa dig hitta en bil
-                  </button>
                 </>
               ) : (
                 <div ref={carSearchRef} className="relative">
