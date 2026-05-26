@@ -7,7 +7,8 @@ import CarEquipmentStep from '../components/forms/CarEquipmentStep';
 import CustomerForm from '../components/forms/CustomerForm';
 import ImageUploadForm from '../components/forms/ImageUploadForm';
 import ConfirmationForm from '../components/forms/ConfirmationForm';
-import TradeWishStep, { TradeWishData, EMPTY_TRADE_WISH } from '../components/forms/TradeWishStep';
+import BuyTrackStep, { BuyTrack } from '../components/forms/BuyTrackStep';
+import BuyDetailsStep, { BuyDetailsData } from '../components/forms/BuyDetailsStep';
 import { supabase } from '../lib/supabase';
 
 interface SellCarPageProps {
@@ -18,7 +19,7 @@ interface SellCarPageProps {
   onNavigateTrade?: (regnummer: string, miltal: number) => void;
 }
 
-export type FormStep = 'condition' | 'trade' | 'equipment' | 'images' | 'contact' | 'confirm';
+export type FormStep = 'condition' | 'trade' | 'trade-details' | 'equipment' | 'images' | 'contact' | 'confirm';
 
 export interface CustomerData {
   namn: string;
@@ -69,7 +70,8 @@ export default function SellCarPage({
     mejl: '',
   });
   const [images, setImages] = useState<ImageFile[]>([]);
-  const [tradeWish, setTradeWish] = useState<TradeWishData>(EMPTY_TRADE_WISH);
+  const [tradeTrack, setTradeTrack] = useState<BuyTrack | null>(null);
+  const [tradeDetails, setTradeDetails] = useState<BuyDetailsData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [guidanceOpen, setGuidanceOpen] = useState(false);
   const [guidanceName, setGuidanceName] = useState('');
@@ -121,9 +123,9 @@ export default function SellCarPage({
     setGuidanceDone(true);
   };
 
-  const includeTradeStep = tradeWish.mode !== null || step === 'trade';
+  const includeTradeStep = tradeTrack !== null || step === 'trade' || step === 'trade-details';
   const stepFlow: FormStep[] = includeTradeStep
-    ? ['condition', 'trade', 'equipment', 'images', 'contact', 'confirm']
+    ? ['condition', 'trade', 'trade-details', 'equipment', 'images', 'contact', 'confirm']
     : ['condition', 'equipment', 'images', 'contact', 'confirm'];
 
   const currentIndex = stepFlow.indexOf(step);
@@ -133,6 +135,7 @@ export default function SellCarPage({
   const titles: Record<FormStep, string> = {
     condition: 'Om din bil',
     trade: 'Din nästa bil',
+    'trade-details': 'Din nästa bil',
     equipment: 'Utrustning och tillval',
     images: 'Bilder av bilen',
     contact: 'Dina uppgifter',
@@ -147,7 +150,11 @@ export default function SellCarPage({
       return;
     }
     if (step === 'trade') {
-      setTradeWish(EMPTY_TRADE_WISH);
+      setTradeTrack(null);
+      setTradeDetails(null);
+    }
+    if (step === 'trade-details') {
+      setTradeDetails(null);
     }
     setStep(prev);
   };
@@ -261,11 +268,28 @@ export default function SellCarPage({
           )}
 
           {step === 'trade' && (
-            <TradeWishStep
-              sellCarLabel={[car.marke, car.modell, car.ar ? String(car.ar) : ''].filter(Boolean).join(' ') || car.regnummer}
-              initialData={tradeWish}
+            <BuyTrackStep
+              onChoose={(track) => {
+                setTradeTrack(track);
+                setStep('trade-details');
+                setError(null);
+              }}
+              onGuidance={() => setGuidanceOpen(true)}
+            />
+          )}
+
+          {step === 'trade-details' && tradeTrack && (
+            <BuyDetailsStep
+              track={tradeTrack}
+              initialData={tradeDetails ?? {
+                linkOrSeller: '', carModel: '', carBrand: '', paymentType: '',
+                buyingStage: '', fuelType: '', regnummer: car.regnummer,
+                miltal: String(car.miltal || ''), targetCar: '', desiredMonthlyCost: '',
+                additionalRequests: '', carPrice: '', yearFrom: '', yearTo: '',
+                maxMiltal: '', hasQuote: null,
+              }}
               onNext={(data) => {
-                setTradeWish(data);
+                setTradeDetails(data);
                 setStep('equipment');
                 setError(null);
               }}
@@ -312,7 +336,8 @@ export default function SellCarPage({
               car={car}
               images={images}
               salesType={salesType}
-              tradeWish={tradeWish.mode ? tradeWish : undefined}
+              tradeDetails={tradeDetails ?? undefined}
+              tradeTrack={tradeTrack ?? undefined}
               onSubmit={async () => {}}
               loading={false}
               onError={setError}

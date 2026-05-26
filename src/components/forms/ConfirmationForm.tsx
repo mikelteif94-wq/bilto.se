@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home, Repeat } from 'lucide-react';
 import { CustomerData, CarData, ImageFile } from '../../pages/SellCarPage';
-import { TradeWishData } from './TradeWishStep';
+import type { BuyDetailsData } from './BuyDetailsStep';
+import type { BuyTrack } from './BuyTrackStep';
 import { supabase } from '../../lib/supabase';
 
 interface ConfirmationFormProps {
@@ -9,7 +10,8 @@ interface ConfirmationFormProps {
   car: CarData;
   images: ImageFile[];
   salesType?: 'auction';
-  tradeWish?: TradeWishData;
+  tradeDetails?: BuyDetailsData;
+  tradeTrack?: BuyTrack;
   onSubmit: () => Promise<void>;
   loading: boolean;
   onError: (error: string) => void;
@@ -31,7 +33,8 @@ export default function ConfirmationForm({
   car,
   images,
   salesType = 'auction',
-  tradeWish,
+  tradeDetails,
+  tradeTrack,
   onError,
   onGoHome,
 }: ConfirmationFormProps) {
@@ -75,18 +78,15 @@ export default function ConfirmationForm({
     const carId = crypto.randomUUID();
 
     let tradeNote = '';
-    if (tradeWish && tradeWish.mode) {
-      const parts: string[] = ['[BYTBIL]'];
-      if (tradeWish.mode === 'know') {
-        parts.push(`Söker: ${[tradeWish.carBrand, tradeWish.carModel].filter(Boolean).join(' ') || '(ej angett)'}`);
-      } else {
-        parts.push(`Behöver hjälp att hitta bil`);
-        if (tradeWish.targetCar) parts.push(`Typ: ${tradeWish.targetCar}`);
-      }
-      if (tradeWish.carPrice) parts.push(`Budget: ${tradeWish.carPrice} kr`);
-      if (tradeWish.fuelType) parts.push(`Drivmedel: ${tradeWish.fuelType}`);
-      if (tradeWish.paymentType) parts.push(`Betalning: ${tradeWish.paymentType}`);
-      if (tradeWish.additionalRequests) parts.push(tradeWish.additionalRequests);
+    if (tradeDetails && tradeTrack) {
+      const parts: string[] = [`[BYTBIL — spår: ${tradeTrack}]`];
+      if (tradeDetails.carBrand) parts.push(`Söker: ${[tradeDetails.carBrand, tradeDetails.carModel].filter(Boolean).join(' ')}`);
+      if (tradeDetails.targetCar) parts.push(`Typ: ${tradeDetails.targetCar}`);
+      if (tradeDetails.carPrice) parts.push(`Budget: ${tradeDetails.carPrice} kr`);
+      if (tradeDetails.fuelType) parts.push(`Drivmedel: ${tradeDetails.fuelType}`);
+      if (tradeDetails.paymentType) parts.push(`Betalning: ${tradeDetails.paymentType}`);
+      if (tradeDetails.buyingStage) parts.push(`Process: ${tradeDetails.buyingStage}`);
+      if (tradeDetails.additionalRequests) parts.push(tradeDetails.additionalRequests);
       tradeNote = parts.join(' | ');
     }
 
@@ -440,36 +440,36 @@ export default function ConfirmationForm({
           </div>
         </div>
 
-        {tradeWish && tradeWish.mode && (
+        {tradeDetails && tradeTrack && (
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 sm:p-5 space-y-3">
             <h3 className="text-xs font-semibold text-amber-600 uppercase tracking-wide flex items-center gap-1.5">
               <Repeat className="w-3.5 h-3.5" />
               Bytbil
             </h3>
-            {tradeWish.mode === 'know' && (tradeWish.carBrand || tradeWish.carModel) && (
+            {(tradeDetails.carBrand || tradeDetails.carModel) && (
               <div className="flex justify-between text-sm gap-3">
                 <span className="text-slate-500">Söker</span>
                 <span className="font-semibold text-slate-900 text-right">
-                  {[tradeWish.carBrand, tradeWish.carModel].filter(Boolean).join(' ')}
+                  {[tradeDetails.carBrand, tradeDetails.carModel].filter(Boolean).join(' ')}
                 </span>
               </div>
             )}
-            {tradeWish.mode === 'help' && (
+            {tradeDetails.targetCar && !tradeDetails.carBrand && (
               <div className="flex justify-between text-sm gap-3">
                 <span className="text-slate-500">Typ</span>
-                <span className="font-semibold text-slate-900">{tradeWish.targetCar || 'Behöver hjälp att välja'}</span>
+                <span className="font-semibold text-slate-900">{tradeDetails.targetCar}</span>
               </div>
             )}
-            {tradeWish.carPrice && (
+            {tradeDetails.carPrice && (
               <div className="flex justify-between text-sm gap-3">
                 <span className="text-slate-500">Max budget</span>
-                <span className="font-semibold text-slate-900">{tradeWish.carPrice} kr</span>
+                <span className="font-semibold text-slate-900">{tradeDetails.carPrice} kr</span>
               </div>
             )}
-            {tradeWish.paymentType && (
+            {tradeDetails.paymentType && (
               <div className="flex justify-between text-sm gap-3">
                 <span className="text-slate-500">Betalning</span>
-                <span className="font-semibold text-slate-900">{tradeWish.paymentType === 'cash' ? 'Kontant' : 'Finansiering'}</span>
+                <span className="font-semibold text-slate-900">{tradeDetails.paymentType === 'cash' ? 'Kontant' : 'Finansiering'}</span>
               </div>
             )}
           </div>
