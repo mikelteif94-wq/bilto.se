@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 import FieldError from './FieldError';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 import RegInput from '../RegInput';
+import { useVehicleLookup } from '../../lib/useVehicleLookup';
 
 const SKICK_OPTIONS = [
   { value: 'mycket_bra', label: 'Mycket bra', desc: 'Inga synliga defekter' },
@@ -76,7 +78,22 @@ export default function CarConditionStep({
   const [skick, setSkick] = useState(initialSkick);
   const [skickKommentar, setSkickKommentar] = useState(initialSkickKommentar);
   const [errors, setErrors] = useState<{ reg?: string; marke?: string; modell?: string; ar?: string; miltal?: string; mejl?: string; skick?: string }>({});
+  const [autoFilled, setAutoFilled] = useState(false);
   const editableReg = !regnummer;
+
+  const lookupReg = editableReg ? reg : '';
+  const lookup = useVehicleLookup(lookupReg);
+
+  useEffect(() => {
+    if (lookup.status !== 'found') return;
+    const { data } = lookup;
+    if (data.marke) setMarke(data.marke);
+    if (data.modell) setModell(data.modell);
+    if (data.ar) setAr(String(data.ar));
+    if (data.miltal && data.miltal > 0) setMiltalInterval(intervalForMiltal(data.miltal));
+    setAutoFilled(true);
+    setErrors((prev) => ({ ...prev, marke: undefined, modell: undefined, ar: undefined }));
+  }, [lookup.status]);
 
   const modelOptions = useMemo(() => CAR_BRANDS[marke] ?? [], [marke]);
 
@@ -133,7 +150,40 @@ export default function CarConditionStep({
         </label>
         {editableReg ? (
           <div className="w-full sm:max-w-xs">
-            <RegInput value={reg} onChange={(v) => { setReg(v); setErrors((prev) => ({ ...prev, reg: undefined })); }} error={!!errors.reg} />
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <RegInput
+                  value={reg}
+                  onChange={(v) => {
+                    setReg(v);
+                    setAutoFilled(false);
+                    setErrors((prev) => ({ ...prev, reg: undefined }));
+                  }}
+                  error={!!errors.reg}
+                />
+              </div>
+              {lookup.status === 'loading' && (
+                <Loader2 className="w-5 h-5 text-[#0e6efe] animate-spin shrink-0" />
+              )}
+            </div>
+            {lookup.status === 'found' && autoFilled && (
+              <div className="mt-2 flex items-center gap-1.5 text-emerald-600 text-[13px] font-medium">
+                <CheckCircle className="w-4 h-4 shrink-0" />
+                Fordonsuppgifter hämtade automatiskt
+              </div>
+            )}
+            {lookup.status === 'not_found' && (
+              <div className="mt-2 flex items-center gap-1.5 text-amber-600 text-[13px]">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                Bilen hittades inte — fyll i uppgifterna manuellt
+              </div>
+            )}
+            {lookup.status === 'error' && (
+              <div className="mt-2 flex items-center gap-1.5 text-slate-500 text-[13px]">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                Kunde inte hämta uppgifter — fyll i manuellt
+              </div>
+            )}
             <FieldError message={errors.reg} />
           </div>
         ) : (
@@ -153,12 +203,13 @@ export default function CarConditionStep({
             <span className="block text-[13px] font-semibold text-slate-600 mb-1.5">Märke</span>
             <select
               value={marke}
+              disabled={lookup.status === 'loading'}
               onChange={(e) => {
                 setMarke(e.target.value);
                 setModell('');
                 setErrors((prev) => ({ ...prev, marke: undefined, modell: undefined }));
               }}
-              className={`form-control ${errors.marke ? 'form-control-error' : ''}`}
+              className={`form-control ${errors.marke ? 'form-control-error' : ''} disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed`}
             >
               <option value="">Välj märke</option>
               {POPULAR_BRANDS.map((b) => (
@@ -179,7 +230,7 @@ export default function CarConditionStep({
                 setModell(e.target.value);
                 setErrors((prev) => ({ ...prev, modell: undefined }));
               }}
-              disabled={!marke}
+              disabled={!marke || lookup.status === 'loading'}
               placeholder={marke ? 'T.ex. 530, XC60, A4...' : 'Välj märke först'}
               autoComplete="off"
               className={`form-control ${errors.modell ? 'form-control-error' : ''} disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed`}
@@ -234,11 +285,12 @@ export default function CarConditionStep({
         <div className="w-full sm:max-w-xs">
           <select
             value={ar}
+            disabled={lookup.status === 'loading'}
             onChange={(e) => {
               setAr(e.target.value);
               setErrors((prev) => ({ ...prev, ar: undefined }));
             }}
-            className={`form-control ${errors.ar ? 'form-control-error' : ''}`}
+            className={`form-control ${errors.ar ? 'form-control-error' : ''} disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed`}
           >
             <option value="">Välj årsmodell</option>
             {YEAR_OPTIONS.map((y) => (
