@@ -149,15 +149,17 @@ export function useCarCatalogLookup(make: string, model: string): {
 
     supabase
       .from('car_catalog')
-      .select('make, model, slug, betyg_totalt, betyg_korning, betyg_komfort, betyg_praktiskt, betyg_varde, pris_ny_fran, pris_ny_till, pris_begagnat, manadskostnad_begagnad, manadskostnad_beg_min, manadskostnad_beg_max, kaross, drivmedel, drivlina_kort, drivetrain_type, bagage_liter, generation_fran_ar, generation_till_ar, expert_text, meta_description, styrkor, svagheter, passar_for, segment, image_url, cleaned_image_url, is_active, seats')
+      .select('make, model, slug, betyg_totalt, betyg_korning, betyg_komfort, betyg_praktiskt, betyg_varde, pris_ny_fran, pris_ny_till, pris_begagnat, manadskostnad_begagnad, manadskostnad_beg_min, manadskostnad_beg_max, kaross, drivmedel, drivlina_kort, drivetrain_type, bagage_liter, generation_fran_ar, generation_till_ar, expert_text, meta_description, styrkor, svagheter, passar_for, segment, image_url, cleaned_image_url, is_active, seats, ncap_stars')
       .ilike('make', make)
       .ilike('model', model)
       .maybeSingle()
-      .then(({ data: row }) => {
-        if (cancelled || !row) { setLoading(false); return; }
+      .then(({ data: row, error }) => {
+        if (cancelled) return;
+        if (!row || error) { setLoading(false); return; }
         setData(dbRowToComparisonCar(row as DbRow));
         setLoading(false);
-      });
+      })
+      .catch(() => { if (!cancelled) setLoading(false); });
 
     return () => { cancelled = true; };
   }, [make, model]);

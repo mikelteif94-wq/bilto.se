@@ -163,7 +163,7 @@ function MonthlyCostBlock({
 export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAnswers }: CarDetailSheetProps) {
   const isOpen = open !== undefined ? open : !!car;
 
-  const { data: comparisonData } = useCarCatalogLookup(car?.make ?? '', car?.model ?? '');
+  const { data: comparisonData, loading } = useCarCatalogLookup(car?.make ?? '', car?.model ?? '');
 
   const persona = useMemo(() => {
     if (!quizAnswers) return null;
@@ -179,7 +179,9 @@ export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAn
       <div className="px-4 sm:px-5 pb-8">
         {/* Hero */}
         <div className="relative mb-5">
-          {heroImage && (
+          {loading ? (
+            <div className="w-full rounded-xl bg-slate-100 animate-pulse" style={{ height: '180px' }} />
+          ) : heroImage ? (
             <div className="w-full bg-white rounded-xl overflow-hidden flex items-center justify-center" style={{ height: '180px' }}>
               <img
                 src={heroImage}
@@ -188,7 +190,7 @@ export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAn
                 style={{ display: 'block' }}
               />
             </div>
-          )}
+          ) : null}
           <div className="mt-3 sm:mt-4">
             <h2 className="text-[20px] sm:text-2xl font-bold text-slate-900 leading-tight">{car.make} {car.model}</h2>
             {comparisonData?.generation && (
@@ -217,7 +219,15 @@ export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAn
           </div>
         </div>
 
-        {comparisonData ? (
+        {loading ? (
+          <div className="space-y-4 animate-pulse">
+            <div className="h-24 rounded-xl bg-slate-100" />
+            <div className="h-10 rounded-full bg-slate-100" />
+            <div className="h-4 rounded bg-slate-100 w-3/4" />
+            <div className="h-4 rounded bg-slate-100 w-1/2" />
+            <div className="h-32 rounded-xl bg-slate-100" />
+          </div>
+        ) : comparisonData ? (
           <ComparisonContent data={comparisonData} persona={persona?.type ?? null} onSelect={onSelect} onFitQuiz={onFitQuiz} carName={`${car.make} ${car.model}`} />
         ) : (
           <BasicContent car={car} onSelect={onSelect} onFitQuiz={onFitQuiz} />
