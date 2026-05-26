@@ -8,6 +8,7 @@ import CustomerForm from '../components/forms/CustomerForm';
 import ImageUploadForm from '../components/forms/ImageUploadForm';
 import ConfirmationForm from '../components/forms/ConfirmationForm';
 import TrackChoiceStep from '../components/forms/TrackChoiceStep';
+import TradeInStep from '../components/forms/TradeInStep';
 import { supabase } from '../lib/supabase';
 
 interface SellCarPageProps {
@@ -18,7 +19,7 @@ interface SellCarPageProps {
   onNavigateTrade?: (regnummer: string, miltal: number) => void;
 }
 
-export type FormStep = 'track' | 'condition' | 'equipment' | 'images' | 'contact' | 'confirm';
+export type FormStep = 'track' | 'condition' | 'equipment' | 'images' | 'contact' | 'trade' | 'confirm';
 
 export interface CustomerData {
   namn: string;
@@ -120,7 +121,7 @@ export default function SellCarPage({
     setGuidanceDone(true);
   };
 
-  const stepFlow: FormStep[] = ['track', 'condition', 'equipment', 'images', 'contact', 'confirm'];
+  const stepFlow: FormStep[] = ['track', 'condition', 'equipment', 'images', 'contact', 'trade', 'confirm'];
 
   const currentIndex = stepFlow.indexOf(step);
   const totalSteps = stepFlow.length;
@@ -132,6 +133,7 @@ export default function SellCarPage({
     equipment: 'Utrustning och tillval',
     images: 'Bilder av bilen',
     contact: 'Dina uppgifter',
+    trade: 'Letar du efter en ny bil?',
     confirm: 'Bekräfta',
   };
 
@@ -293,6 +295,22 @@ export default function SellCarPage({
               requirePassword={false}
               onNext={(data) => {
                 setCustomer(data);
+                goNext();
+                setError(null);
+              }}
+            />
+          )}
+
+          {step === 'trade' && (
+            <TradeInStep
+              onYes={() => {
+                if (onNavigateTrade) {
+                  onNavigateTrade(car.regnummer || '', car.miltal || 0);
+                } else {
+                  goNext();
+                }
+              }}
+              onNo={() => {
                 goNext();
                 setError(null);
               }}
