@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,6 +8,7 @@ const corsHeaders = {
 };
 
 const REG_REGEX = /^[A-Z]{3}\d{2}[A-Z0-9]$/;
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -27,9 +29,27 @@ Deno.serve(async (req: Request) => {
       return jsonResp({ error: "Ogiltigt regnummerformat" }, 400);
     }
 
-    const apiKey = Deno.env.get("BILUPPGIFTER_API_KEY") ?? "ozMv_omy5skrUSmrLhD4rNZkkjgfW86S3e0Q3XAyScI";
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
 
-    // Use the detailed vehicle endpoint (includes meter/mileage from latest inspection)
+    // Check cache
+    const { data: cached } = await supabase
+      .from("vehicle_lookup_cache")
+      .select("payload, cached_at")
+      .eq("regnummer", regnummer)
+      .maybeSingle();
+
+    if (cached) {
+      const age = Date.now() - new Date(cached.cached_at).getTime();
+      if (age < CACHE_TTL_MS) {
+        return jsonResp(cached.payload, 200);
+      }
+    }
+
+    // Cache miss or stale — fetch from external API
+    const apiKey = Deno.env.get("BILUPPGIFTER_API_KEY") ?? "ozMv_omy5skrUSmrLhD4rNZkkjgfW86S3e0Q3XAyScI";
     const apiUrl = `https://data.biluppgifter.se/api/v1/vehicle/regno/${encodeURIComponent(regnummer.toLowerCase())}`;
 
     const apiResp = await fetch(apiUrl, {
@@ -40,7 +60,9 @@ Deno.serve(async (req: Request) => {
     });
 
     if (apiResp.status === 404) {
-      return jsonResp({ found: false }, 200);
+      const notFound = { found: false };
+      await upsertCache(supabase, regnummer, notFound);
+      return jsonResp(notFound, 200);
     }
 
     if (!apiResp.ok) {
@@ -59,9 +81,10 @@ Deno.serve(async (req: Request) => {
       ar: toYear(v.model_year ?? v.vehicle_year ?? v.manufactured ?? ""),
       farg: capitalize(v.color ?? v.exterior_color ?? ""),
       fordonstyp: capitalize(v.type ?? ""),
-      // meter is km from latest inspection — convert to Swedish mil (1 mil = 10 km)
       miltal: v.meter != null ? Math.round(v.meter / 10) : null,
     };
+
+    await upsertCache(supabase, regnummer, result);
 
     return jsonResp(result, 200);
   } catch (err) {
@@ -70,9 +93,18 @@ Deno.serve(async (req: Request) => {
   }
 });
 
+async function upsertCache(
+  supabase: ReturnType<typeof createClient>,
+  regnummer: string,
+  payload: unknown,
+) {
+  await supabase
+    .from("vehicle_lookup_cache")
+    .upsert({ regnummer, payload, cached_at: new Date().toISOString() }, { onConflict: "regnummer" });
+}
+
 function capitalize(val: unknown): string {
   if (!val) return "";
-  // Keep original casing (e.g. "XC40", "GLC") — just trim whitespace
   return String(val).trim();
 }
 
