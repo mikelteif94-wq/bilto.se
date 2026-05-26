@@ -244,7 +244,7 @@ export default function SellCarPage({
                 setGuidanceDone(false);
                 setGuidanceError(null);
               }}
-              onNavigateTrade={onNavigateTrade ? () => onNavigateTrade(car.regnummer || '', car.miltal || 0) : undefined}
+              onNavigateTrade={onNavigateTrade ? (chosenMiltal) => onNavigateTrade(car.regnummer || '', chosenMiltal || car.miltal || 0) : undefined}
             />
           )}
 
