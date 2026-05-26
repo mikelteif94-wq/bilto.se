@@ -731,16 +731,21 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
           <p className="text-[13px] text-slate-400 italic">Pris ej tillgängligt</p>
         )}
         {carPrice && usedPrice && (
-          <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#0047B3]/10">
-            <div>
-              <p className="text-[10px] text-slate-400">Ny från</p>
-              <p className="text-[13px] font-bold text-slate-700 tabular-nums">{formatSEK(carPrice)} kr</p>
+          <div className="mt-3 pt-3 border-t border-[#0047B3]/10">
+            <div className="flex items-center gap-4">
+              <div>
+                <p className="text-[10px] text-slate-400">Ny från</p>
+                <p className="text-[13px] font-bold text-slate-700 tabular-nums">{formatSEK(carPrice)} kr</p>
+              </div>
+              <div className="w-px h-8 bg-slate-200" />
+              <div>
+                <p className="text-[10px] text-slate-400">Begagnad från</p>
+                <p className="text-[13px] font-bold text-slate-700 tabular-nums">{formatSEK(usedPrice)} kr</p>
+              </div>
             </div>
-            <div className="w-px h-8 bg-slate-200" />
-            <div>
-              <p className="text-[10px] text-slate-400">Begagnad från</p>
-              <p className="text-[13px] font-bold text-slate-700 tabular-nums">{formatSEK(usedPrice)} kr</p>
-            </div>
+            <p className="text-[10.5px] text-slate-400 mt-2 leading-snug">
+              Cirka-priser — varierar beroende på årsmodell, miltal och utrustning
+            </p>
           </div>
         )}
         {data.meta_description && (
