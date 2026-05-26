@@ -7,7 +7,6 @@ import CarEquipmentStep from '../components/forms/CarEquipmentStep';
 import CustomerForm from '../components/forms/CustomerForm';
 import ImageUploadForm from '../components/forms/ImageUploadForm';
 import ConfirmationForm from '../components/forms/ConfirmationForm';
-import BuyTrackStep, { BuyTrack } from '../components/forms/BuyTrackStep';
 import BuyDetailsStep, { BuyDetailsData } from '../components/forms/BuyDetailsStep';
 import { supabase } from '../lib/supabase';
 
@@ -19,7 +18,7 @@ interface SellCarPageProps {
   onNavigateTrade?: (regnummer: string, miltal: number) => void;
 }
 
-export type FormStep = 'condition' | 'trade' | 'trade-details' | 'equipment' | 'images' | 'contact' | 'confirm';
+export type FormStep = 'condition' | 'trade' | 'equipment' | 'images' | 'contact' | 'confirm';
 
 export interface CustomerData {
   namn: string;
@@ -70,7 +69,6 @@ export default function SellCarPage({
     mejl: '',
   });
   const [images, setImages] = useState<ImageFile[]>([]);
-  const [tradeTrack, setTradeTrack] = useState<BuyTrack | null>(null);
   const [tradeDetails, setTradeDetails] = useState<BuyDetailsData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [guidanceOpen, setGuidanceOpen] = useState(false);
@@ -123,9 +121,9 @@ export default function SellCarPage({
     setGuidanceDone(true);
   };
 
-  const includeTradeStep = tradeTrack !== null || step === 'trade' || step === 'trade-details';
+  const includeTradeStep = tradeDetails !== null || step === 'trade';
   const stepFlow: FormStep[] = includeTradeStep
-    ? ['condition', 'trade', 'trade-details', 'equipment', 'images', 'contact', 'confirm']
+    ? ['condition', 'trade', 'equipment', 'images', 'contact', 'confirm']
     : ['condition', 'equipment', 'images', 'contact', 'confirm'];
 
   const currentIndex = stepFlow.indexOf(step);
@@ -135,7 +133,6 @@ export default function SellCarPage({
   const titles: Record<FormStep, string> = {
     condition: 'Om din bil',
     trade: 'Din nästa bil',
-    'trade-details': 'Din nästa bil',
     equipment: 'Utrustning och tillval',
     images: 'Bilder av bilen',
     contact: 'Dina uppgifter',
@@ -150,10 +147,6 @@ export default function SellCarPage({
       return;
     }
     if (step === 'trade') {
-      setTradeTrack(null);
-      setTradeDetails(null);
-    }
-    if (step === 'trade-details') {
       setTradeDetails(null);
     }
     setStep(prev);
@@ -268,19 +261,8 @@ export default function SellCarPage({
           )}
 
           {step === 'trade' && (
-            <BuyTrackStep
-              onChoose={(track) => {
-                setTradeTrack(track);
-                setStep('trade-details');
-                setError(null);
-              }}
-              onGuidance={() => setGuidanceOpen(true)}
-            />
-          )}
-
-          {step === 'trade-details' && tradeTrack && (
             <BuyDetailsStep
-              track={tradeTrack}
+              track="trade"
               initialData={tradeDetails ?? {
                 linkOrSeller: '', carModel: '', carBrand: '', paymentType: '',
                 buyingStage: '', fuelType: '', regnummer: car.regnummer,
@@ -290,7 +272,7 @@ export default function SellCarPage({
               }}
               onNext={(data) => {
                 setTradeDetails(data);
-                setStep('equipment');
+                goNext();
                 setError(null);
               }}
             />
@@ -337,7 +319,7 @@ export default function SellCarPage({
               images={images}
               salesType={salesType}
               tradeDetails={tradeDetails ?? undefined}
-              tradeTrack={tradeTrack ?? undefined}
+              tradeTrack={tradeDetails ? 'trade' : undefined}
               onSubmit={async () => {}}
               loading={false}
               onError={setError}

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home, Repeat } from 'lucide-react';
 import { CustomerData, CarData, ImageFile } from '../../pages/SellCarPage';
 import type { BuyDetailsData } from './BuyDetailsStep';
-import type { BuyTrack } from './BuyTrackStep';
 import { supabase } from '../../lib/supabase';
 
 interface ConfirmationFormProps {
@@ -11,7 +10,7 @@ interface ConfirmationFormProps {
   images: ImageFile[];
   salesType?: 'auction';
   tradeDetails?: BuyDetailsData;
-  tradeTrack?: BuyTrack;
+  tradeTrack?: string;
   onSubmit: () => Promise<void>;
   loading: boolean;
   onError: (error: string) => void;
