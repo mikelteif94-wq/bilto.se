@@ -29,7 +29,8 @@ Deno.serve(async (req: Request) => {
 
     const apiKey = Deno.env.get("BILUPPGIFTER_API_KEY") ?? "ozMv_omy5skrUSmrLhD4rNZkkjgfW86S3e0Q3XAyScI";
 
-    const apiUrl = `https://data.biluppgifter.se/api/v1/lookup/vehicle/regno/${encodeURIComponent(regnummer)}`;
+    // Use the detailed vehicle endpoint (includes meter/mileage from latest inspection)
+    const apiUrl = `https://data.biluppgifter.se/api/v1/vehicle/regno/${encodeURIComponent(regnummer.toLowerCase())}`;
 
     const apiResp = await fetch(apiUrl, {
       headers: {
@@ -51,15 +52,15 @@ Deno.serve(async (req: Request) => {
     const data = await apiResp.json();
     const v = data?.vehicle ?? {};
 
-    const ar = toYear(v.model_year ?? v.vehicle_year ?? v.manufactured ?? "");
-
     const result = {
       found: true,
       marke: capitalize(v.make ?? ""),
       modell: capitalize(v.model ?? v.market_name ?? ""),
-      ar,
+      ar: toYear(v.model_year ?? v.vehicle_year ?? v.manufactured ?? ""),
       farg: capitalize(v.color ?? v.exterior_color ?? ""),
       fordonstyp: capitalize(v.type ?? ""),
+      // meter is km from latest inspection — convert to Swedish mil (1 mil = 10 km)
+      miltal: v.meter != null ? Math.round(v.meter / 10) : null,
     };
 
     return jsonResp(result, 200);
@@ -71,8 +72,8 @@ Deno.serve(async (req: Request) => {
 
 function capitalize(val: unknown): string {
   if (!val) return "";
-  const s = String(val).trim();
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  // Keep original casing (e.g. "XC40", "GLC") — just trim whitespace
+  return String(val).trim();
 }
 
 function toYear(val: unknown): number | null {
