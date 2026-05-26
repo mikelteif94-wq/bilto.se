@@ -86,7 +86,7 @@ function VehicleFoundCard({ regnummer, data }: VehicleFoundCardProps) {
           {/* Car name */}
           <div className="flex items-baseline gap-2 mb-3">
             <h3 className="text-[19px] font-bold text-slate-900 leading-tight">
-              {data.fullname || [data.marke, data.modell].filter(Boolean).join(' ')}
+              {[data.marke, data.modell, data.variant].filter(Boolean).join(' ')}
             </h3>
             {data.ar && (
               <span className="text-[14px] text-slate-500 font-medium">{data.ar}</span>

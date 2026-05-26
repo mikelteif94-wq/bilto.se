@@ -630,7 +630,7 @@ function TradeCarLookupSection({
 
   const carInfo = lookup.status === 'found' ? lookup.data : null;
   const carLabel = carInfo
-    ? [(carInfo.fullname || [carInfo.marke, carInfo.modell].filter(Boolean).join(' ')), carInfo.ar ? String(carInfo.ar) : ''].filter(Boolean).join(' ')
+    ? [[carInfo.marke, carInfo.modell, carInfo.variant].filter(Boolean).join(' '), carInfo.ar ? String(carInfo.ar) : ''].filter(Boolean).join(' ')
     : '';
 
   return (
