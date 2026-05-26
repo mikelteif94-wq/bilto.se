@@ -1,11 +1,12 @@
-import { useState, useMemo } from 'react';
-import { ChevronDown, Sparkles, Search, CheckCircle, XCircle } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { ChevronDown, Sparkles, Search, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import type { BuyTrack } from './BuyTrackStep';
 import FieldError from './FieldError';
 import RegInput from '../RegInput';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 import { findComparisonCarByMakeModel } from '../../lib/comparison/lookup';
 import { useCarImages } from '../../hooks/useCarImages';
+import { useVehicleLookup } from '../../lib/useVehicleLookup';
 
 const BUYING_STAGES = [
   { value: 'just_started', label: 'Precis börjat kolla' },
@@ -606,6 +607,77 @@ function parseInitialBil(bil: string | undefined): { brand: string; model: strin
   return { brand: '', model: bil };
 }
 
+function TradeCarLookupSection({
+  regnummer,
+  miltal,
+  regnummerError,
+  onRegnummerChange,
+  onMiltalChange,
+}: {
+  regnummer: string;
+  miltal: string;
+  regnummerError?: string;
+  onRegnummerChange: (v: string) => void;
+  onMiltalChange: (v: string) => void;
+}) {
+  const lookup = useVehicleLookup(regnummer);
+
+  useEffect(() => {
+    if (lookup.status === 'found' && lookup.data.miltal != null && lookup.data.miltal > 0) {
+      if (!miltal) onMiltalChange(String(lookup.data.miltal));
+    }
+  }, [lookup.status]);
+
+  const carInfo = lookup.status === 'found' ? lookup.data : null;
+  const carLabel = carInfo
+    ? [carInfo.marke, carInfo.modell, carInfo.ar ? String(carInfo.ar) : ''].filter(Boolean).join(' ')
+    : '';
+
+  return (
+    <div className="pb-6 sm:pb-7">
+      <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+        Regnummer p&aring; din nuvarande bil
+      </label>
+      <p className="text-sm text-slate-500 mb-3">Bilen du vill byta in.</p>
+      <div className="w-full sm:max-w-xs">
+        <RegInput value={regnummer} onChange={onRegnummerChange} error={!!regnummerError} />
+        <FieldError message={regnummerError} />
+
+        {lookup.status === 'loading' && (
+          <div className="mt-2 flex items-center gap-2 text-[13px] text-slate-500">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            <span>H&auml;mtar biluppgifter...</span>
+          </div>
+        )}
+        {lookup.status === 'found' && carLabel && (
+          <div className="mt-2 inline-flex items-center gap-2 px-3 py-2 bg-[#0e6efe]/[0.07] border border-[#0e6efe]/20 rounded-lg flex-wrap">
+            <span className="text-[13px] font-bold text-[#0e6efe] tracking-widest">{regnummer.toUpperCase()}</span>
+            <span className="text-[#0e6efe]/30">&middot;</span>
+            <span className="text-[13px] font-semibold text-slate-800">{carLabel}</span>
+          </div>
+        )}
+        {lookup.status === 'not_found' && (
+          <p className="mt-2 text-[13px] text-amber-600">Bilen hittades inte i registret.</p>
+        )}
+      </div>
+
+      <div className="mt-5">
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Miltal</label>
+        <div className="w-full sm:max-w-xs">
+          <input
+            type="text"
+            inputMode="numeric"
+            value={miltal}
+            onChange={e => onMiltalChange(e.target.value)}
+            placeholder="T.ex. 4500"
+            className="form-control"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, knownFuelTypes, onNext, onExplore, onQuiz }: BuyDetailsStepProps) {
   const autoFuel = knownFuelTypes ? inferFuelType(knownFuelTypes) : '';
   const hideFuel = !!autoFuel && autoFuel !== '';
@@ -1024,30 +1096,13 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       {/* ── TRADE track ── */}
       {track === 'trade' && (
         <>
-          <div className="pb-6 sm:pb-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-              Regnummer på din nuvarande bil
-            </label>
-            <p className="text-sm text-slate-500 mb-3">Bilen du vill byta in.</p>
-            <div className="w-full sm:max-w-xs">
-              <RegInput value={d.regnummer} onChange={v => set('regnummer', v)} error={!!errors.regnummer} />
-              <FieldError message={errors.regnummer} />
-            </div>
-          </div>
-
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Miltal</label>
-            <div className="w-full sm:max-w-xs">
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.miltal}
-                onChange={e => set('miltal', e.target.value)}
-                placeholder="T.ex. 4500"
-                className="form-control"
-              />
-            </div>
-          </div>
+          <TradeCarLookupSection
+            regnummer={d.regnummer}
+            miltal={d.miltal}
+            regnummerError={errors.regnummer}
+            onRegnummerChange={v => set('regnummer', v)}
+            onMiltalChange={v => set('miltal', v)}
+          />
 
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
