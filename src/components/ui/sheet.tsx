@@ -12,12 +12,14 @@ interface SheetProps {
 
 export function Sheet({ open, onClose, children, className }: SheetProps) {
   const contentRef = useRef<HTMLDivElement>(null);
-  // Defer rendering children until slide-up animation completes to avoid reflow jank
   const [contentReady, setContentReady] = useState(false);
 
   useEffect(() => {
     if (!open) {
       setContentReady(false);
+    } else {
+      const t = setTimeout(() => setContentReady(true), 350);
+      return () => clearTimeout(t);
     }
   }, [open]);
 
@@ -56,9 +58,7 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'tween', ease: [0.32, 0.72, 0, 1], duration: 0.32 }}
-            onAnimationComplete={(def) => {
-              if (def === 'animate') setContentReady(true);
-            }}
+
             className={cn(
               'relative w-full sm:max-w-[460px] max-h-[92vh] bg-white rounded-t-2xl sm:rounded-b-none flex flex-col shadow-2xl',
               className

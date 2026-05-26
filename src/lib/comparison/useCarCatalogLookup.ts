@@ -152,6 +152,10 @@ export function useCarCatalogLookup(make: string, model: string): {
     setData(null);
     setLoading(true);
 
+    const timeout = setTimeout(() => {
+      if (!cancelled) setLoading(false);
+    }, 4000);
+
     const run = async () => {
       try {
         const { data: row, error } = await supabase
@@ -168,12 +172,13 @@ export function useCarCatalogLookup(make: string, model: string): {
       } catch {
         // ignore
       } finally {
+        clearTimeout(timeout);
         if (!cancelled) setLoading(false);
       }
     };
 
     run();
-    return () => { cancelled = true; };
+    return () => { cancelled = true; clearTimeout(timeout); };
   }, [make, model]);
 
   return { data, loading };
