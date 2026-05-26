@@ -1,13 +1,38 @@
 import { ArrowRight, Repeat, X } from 'lucide-react';
 
 interface TradeInStepProps {
+  regnummer: string;
+  marke: string;
+  modell: string;
+  ar: number | null;
+  miltal: number;
   onYes: () => void;
   onNo: () => void;
 }
 
-export default function TradeInStep({ onYes, onNo }: TradeInStepProps) {
+export default function TradeInStep({ regnummer, marke, modell, ar, miltal, onYes, onNo }: TradeInStepProps) {
+  const carLabel = [marke, modell, ar ? String(ar) : ''].filter(Boolean).join(' ');
+
   return (
     <div className="space-y-4">
+      {/* Car summary */}
+      <div className="bg-[#0e6efe]/[0.06] border border-[#0e6efe]/20 rounded-xl px-4 py-3.5 flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+          {carLabel && (
+            <p className="text-[14px] font-semibold text-slate-900 leading-tight truncate">{carLabel}</p>
+          )}
+          <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+            <span className="text-[13px] font-semibold text-[#0e6efe] tracking-widest">{regnummer.toUpperCase()}</span>
+            {miltal > 0 && (
+              <>
+                <span className="text-slate-300">&middot;</span>
+                <span className="text-[13px] text-slate-500">{miltal.toLocaleString('sv-SE')} mil</span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
       <p className="text-[15px] text-slate-600 leading-[1.6]">
         Nu när du säljer — letar du efter en ny bil? Vi kan förhandla både köp och försäljning åt dig på samma gång.
       </p>

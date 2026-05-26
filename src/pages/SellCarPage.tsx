@@ -303,6 +303,11 @@ export default function SellCarPage({
 
           {step === 'trade' && (
             <TradeInStep
+              regnummer={car.regnummer}
+              marke={car.marke}
+              modell={car.modell}
+              ar={car.ar}
+              miltal={car.miltal}
               onYes={() => {
                 if (onNavigateTrade) {
                   onNavigateTrade(car.regnummer || '', car.miltal || 0);
