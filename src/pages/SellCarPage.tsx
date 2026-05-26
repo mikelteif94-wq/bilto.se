@@ -7,8 +7,6 @@ import CarEquipmentStep from '../components/forms/CarEquipmentStep';
 import CustomerForm from '../components/forms/CustomerForm';
 import ImageUploadForm from '../components/forms/ImageUploadForm';
 import ConfirmationForm from '../components/forms/ConfirmationForm';
-import TrackChoiceStep from '../components/forms/TrackChoiceStep';
-import TradeInStep from '../components/forms/TradeInStep';
 import { supabase } from '../lib/supabase';
 
 interface SellCarPageProps {
@@ -19,7 +17,7 @@ interface SellCarPageProps {
   onNavigateTrade?: (regnummer: string, miltal: number) => void;
 }
 
-export type FormStep = 'track' | 'condition' | 'equipment' | 'images' | 'contact' | 'trade' | 'confirm';
+export type FormStep = 'condition' | 'equipment' | 'images' | 'contact' | 'confirm';
 
 export interface CustomerData {
   namn: string;
@@ -52,8 +50,8 @@ export default function SellCarPage({
   onBack,
   onNavigateTrade,
 }: SellCarPageProps) {
-  const [salesType, setSalesType] = useState<'auction'>('auction');
-  const [step, setStep] = useState<FormStep>('track');
+  const [salesType] = useState<'auction'>('auction');
+  const [step, setStep] = useState<FormStep>('condition');
   const [car, setCar] = useState<CarData>({
     regnummer: initialRegnummer,
     marke: '',
@@ -121,19 +119,17 @@ export default function SellCarPage({
     setGuidanceDone(true);
   };
 
-  const stepFlow: FormStep[] = ['track', 'condition', 'equipment', 'images', 'contact', 'trade', 'confirm'];
+  const stepFlow: FormStep[] = ['condition', 'equipment', 'images', 'contact', 'confirm'];
 
   const currentIndex = stepFlow.indexOf(step);
   const totalSteps = stepFlow.length;
   const currentStepNum = currentIndex + 1;
 
   const titles: Record<FormStep, string> = {
-    track: 'Hur vill du sälja din bil?',
     condition: 'Om din bil',
     equipment: 'Utrustning och tillval',
     images: 'Bilder av bilen',
     contact: 'Dina uppgifter',
-    trade: 'Letar du efter en ny bil?',
     confirm: 'Bekräfta',
   };
 
@@ -221,33 +217,6 @@ export default function SellCarPage({
 
           <ErrorBanner message={error} className="mb-6" />
 
-          {step === 'track' && (
-            <TrackChoiceStep
-              regnummer={car.regnummer}
-              miltal={car.miltal}
-              onVehicleFound={(data) => {
-                setCar((c) => ({
-                  ...c,
-                  marke: data.marke || c.marke,
-                  modell: data.modell || c.modell,
-                  ar: data.ar ?? c.ar,
-                  miltal: (data.miltal != null && data.miltal > 0) ? data.miltal : c.miltal,
-                }));
-              }}
-              onChoose={(t) => {
-                setSalesType(t);
-                setStep('condition');
-                setError(null);
-              }}
-              onGuidance={() => {
-                setGuidanceOpen(true);
-                setGuidanceDone(false);
-                setGuidanceError(null);
-              }}
-              onNavigateTrade={onNavigateTrade ? (chosenMiltal) => onNavigateTrade(car.regnummer || '', chosenMiltal || car.miltal || 0) : undefined}
-            />
-          )}
-
           {step === 'condition' && (
             <CarConditionStep
               regnummer={car.regnummer}
@@ -258,7 +227,9 @@ export default function SellCarPage({
               initialSkick={car.skick}
               initialSkickKommentar={car.skickKommentar}
               initialMejl={customer.mejl}
-              onNext={(miltal, skick, regnummer, mejl, skickKommentar, marke, modell, ar) => {
+              showTradeIn={!!onNavigateTrade}
+              onNext={(miltal, skick, regnummer, mejl, skickKommentar, marke, modell, ar, wantsTradeIn) => {
+                const updatedReg = regnummer || car.regnummer;
                 setCar((c) => ({
                   ...c,
                   miltal,
@@ -267,11 +238,15 @@ export default function SellCarPage({
                   marke,
                   modell,
                   ar,
-                  regnummer: regnummer || c.regnummer,
+                  regnummer: updatedReg,
                 }));
                 setCustomer((c) => ({ ...c, mejl }));
-                goNext();
                 setError(null);
+                if (wantsTradeIn && onNavigateTrade) {
+                  onNavigateTrade(updatedReg, miltal);
+                } else {
+                  goNext();
+                }
               }}
             />
           )}
@@ -304,27 +279,6 @@ export default function SellCarPage({
               requirePassword={false}
               onNext={(data) => {
                 setCustomer(data);
-                goNext();
-                setError(null);
-              }}
-            />
-          )}
-
-          {step === 'trade' && (
-            <TradeInStep
-              regnummer={car.regnummer}
-              marke={car.marke}
-              modell={car.modell}
-              ar={car.ar}
-              miltal={car.miltal}
-              onYes={() => {
-                if (onNavigateTrade) {
-                  onNavigateTrade(car.regnummer || '', car.miltal || 0);
-                } else {
-                  goNext();
-                }
-              }}
-              onNo={() => {
                 goNext();
                 setError(null);
               }}

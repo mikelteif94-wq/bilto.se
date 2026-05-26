@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+import { CheckCircle, Loader2, AlertCircle, Repeat, Check } from 'lucide-react';
 import FieldError from './FieldError';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 import RegInput from '../RegInput';
@@ -39,6 +39,7 @@ interface CarConditionStepProps {
   initialSkick: string;
   initialSkickKommentar?: string;
   initialMejl?: string;
+  showTradeIn?: boolean;
   onNext: (
     miltal: number,
     skick: string,
@@ -48,6 +49,7 @@ interface CarConditionStepProps {
     marke: string,
     modell: string,
     ar: number,
+    wantsTradeIn?: boolean,
   ) => void;
 }
 
@@ -67,6 +69,7 @@ export default function CarConditionStep({
   initialSkick,
   initialSkickKommentar = '',
   initialMejl = '',
+  showTradeIn = false,
   onNext,
 }: CarConditionStepProps) {
   const [reg, setReg] = useState(regnummer.trim().toUpperCase().replace(/\s/g, ''));
@@ -77,6 +80,7 @@ export default function CarConditionStep({
   const [mejl, setMejl] = useState(initialMejl);
   const [skick, setSkick] = useState(initialSkick);
   const [skickKommentar, setSkickKommentar] = useState(initialSkickKommentar);
+  const [wantsTradeIn, setWantsTradeIn] = useState(false);
   const [errors, setErrors] = useState<{ reg?: string; marke?: string; modell?: string; ar?: string; miltal?: string; mejl?: string; skick?: string }>({});
   const [autoFilled, setAutoFilled] = useState(false);
   const editableReg = !regnummer;
@@ -110,12 +114,8 @@ export default function CarConditionStep({
       newErrors.miltal = 'Välj ett miltalsintervall';
     }
 
-    if (!marke) {
-      newErrors.marke = 'Välj märke';
-    }
-    if (!modell) {
-      newErrors.modell = 'Välj modell';
-    }
+    if (!marke) newErrors.marke = 'Välj märke';
+    if (!modell) newErrors.modell = 'Välj modell';
 
     const arNum = parseInt(ar, 10);
     if (!ar || Number.isNaN(arNum) || arNum < 1980 || arNum > CURRENT_YEAR) {
@@ -128,16 +128,14 @@ export default function CarConditionStep({
       newErrors.mejl = 'Ogiltig e-postadress';
     }
 
-    if (!skick) {
-      newErrors.skick = 'Välj ett skick';
-    }
+    if (!skick) newErrors.skick = 'Välj ett skick';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    onNext(chosen!.mid, skick, regClean, mejl.trim(), skickKommentar.trim(), marke, modell, arNum);
+    onNext(chosen!.mid, skick, regClean, mejl.trim(), skickKommentar.trim(), marke, modell, arNum, showTradeIn ? wantsTradeIn : undefined);
   };
 
   return (
@@ -212,9 +210,7 @@ export default function CarConditionStep({
             >
               <option value="">Välj märke</option>
               {POPULAR_BRANDS.map((b) => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
+                <option key={b} value={b}>{b}</option>
               ))}
             </select>
             <FieldError message={errors.marke} />
@@ -236,14 +232,12 @@ export default function CarConditionStep({
             />
             {marke && (
               <datalist id={`models-${marke}`}>
-                {modelOptions.map((m) => (
-                  <option key={m} value={m} />
-                ))}
+                {modelOptions.map((m) => <option key={m} value={m} />)}
               </datalist>
             )}
             {marke && !errors.modell && (
               <p className="mt-1.5 text-[12px] text-slate-500">
-                Hittar du inte din modell? Skriv den själv (t.ex. 520d, 320i).
+                Hittar du inte din modell? Skriv den själv.
               </p>
             )}
             <FieldError message={errors.modell} />
@@ -267,9 +261,7 @@ export default function CarConditionStep({
           >
             <option value="">Välj miltal</option>
             {MILTAL_INTERVALS.map((i) => (
-              <option key={i.value} value={i.value}>
-                {i.label}
-              </option>
+              <option key={i.value} value={i.value}>{i.label}</option>
             ))}
           </select>
         </div>
@@ -293,14 +285,46 @@ export default function CarConditionStep({
           >
             <option value="">Välj årsmodell</option>
             {YEAR_OPTIONS.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
+              <option key={y} value={y}>{y}</option>
             ))}
           </select>
         </div>
         <FieldError message={errors.ar} />
       </div>
+
+      {/* Byta bil — checkbox */}
+      {showTradeIn && (
+        <div className="py-6 sm:py-7">
+          <button
+            type="button"
+            onClick={() => setWantsTradeIn(v => !v)}
+            className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-150 text-left ${
+              wantsTradeIn
+                ? 'border-[#0e6efe] bg-[#0e6efe]/[0.04]'
+                : 'border-slate-200 bg-white hover:border-slate-300'
+            }`}
+          >
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+              wantsTradeIn ? 'bg-[#0e6efe]' : 'bg-slate-100'
+            }`}>
+              <Repeat className={`w-5 h-5 ${wantsTradeIn ? 'text-white' : 'text-slate-400'}`} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className={`text-[15px] font-semibold ${wantsTradeIn ? 'text-slate-900' : 'text-slate-700'}`}>
+                Jag vill också byta bil
+              </p>
+              <p className="text-[12.5px] text-slate-500 mt-0.5">
+                Vi hjälper dig hitta nästa bil och förhandlar köp
+              </p>
+            </div>
+            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+              wantsTradeIn ? 'bg-[#0e6efe] border-[#0e6efe]' : 'border-slate-300'
+            }`}>
+              {wantsTradeIn && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
+            </div>
+          </button>
+        </div>
+      )}
 
       {/* E-post */}
       <div className="py-6 sm:py-7">
@@ -368,12 +392,12 @@ export default function CarConditionStep({
           Vill du beskriva skicket närmare?
         </label>
         <p className="text-sm text-slate-500 mb-3">
-          Frivilligt – berätta t.ex. om servicehistorik, skador eller något unikt med bilen.
+          Frivilligt — berätta t.ex. om servicehistorik, skador eller något unikt.
         </p>
         <textarea
           value={skickKommentar}
           onChange={(e) => setSkickKommentar(e.target.value)}
-          placeholder="Lägg till ytterligare information om skicket, utrustningen eller prisförväntningar"
+          placeholder="Lägg till information om skicket, utrustning eller prisförväntningar"
           rows={4}
           maxLength={1000}
           className="form-control"
