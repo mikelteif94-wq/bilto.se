@@ -377,9 +377,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     )}
                     <button
                       type="submit"
-                      className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[14px] tracking-wide transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
+                      className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[18px] tracking-wide transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
                     >
-                      Värdera bilen gratis
+                      Värdera bilen
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </form>
@@ -539,9 +539,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     )}
                     <button
                       type="submit"
-                      className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[14px] transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
+                      className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[18px] transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
                     >
-                      Värdera bilen gratis
+                      Värdera bilen
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </form>

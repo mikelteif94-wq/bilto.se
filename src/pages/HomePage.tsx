@@ -370,9 +370,9 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                         <button
                           type="submit"
                           disabled={submitting}
-                          className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[15px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]"
+                          className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-500 text-white font-bold text-[18px] transition shadow-[0_4px_20px_rgba(14,110,254,0.45)]"
                         >
-                          {submitting ? '...' : 'Värdera bilen gratis'}
+                          {submitting ? '...' : 'Värdera bilen'}
                         </button>
                       </div>
                       {error && (
