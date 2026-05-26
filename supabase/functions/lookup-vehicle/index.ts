@@ -27,12 +27,9 @@ Deno.serve(async (req: Request) => {
       return jsonResp({ error: "Ogiltigt regnummerformat" }, 400);
     }
 
-    const apiKey = Deno.env.get("BILUPPGIFTER_API_KEY");
-    if (!apiKey) {
-      return jsonResp({ error: "API-nyckel saknas" }, 500);
-    }
+    const apiKey = Deno.env.get("BILUPPGIFTER_API_KEY") ?? "ozMv_omy5skrUSmrLhD4rNZkkjgfW86S3e0Q3XAyScI";
 
-    const apiUrl = `https://data.biluppgifter.se/v2/${encodeURIComponent(regnummer)}`;
+    const apiUrl = `https://data.biluppgifter.se/api/v1/lookup/vehicle/regno/${encodeURIComponent(regnummer)}`;
 
     const apiResp = await fetch(apiUrl, {
       headers: {
@@ -51,20 +48,18 @@ Deno.serve(async (req: Request) => {
       return jsonResp({ error: "Kunde inte hämta fordonsdata" }, 502);
     }
 
-    const raw_data = await apiResp.json();
+    const data = await apiResp.json();
+    const v = data?.vehicle ?? {};
 
-    // Normalize fields from biluppgifter.se response format
-    const vehicle = raw_data?.data ?? raw_data ?? {};
+    const ar = toYear(v.model_year ?? v.vehicle_year ?? v.manufactured ?? "");
 
     const result = {
       found: true,
-      marke: normalize(vehicle.make ?? vehicle.marke ?? vehicle.brand ?? ""),
-      modell: normalize(vehicle.model ?? vehicle.modell ?? ""),
-      ar: toYear(vehicle.model_year ?? vehicle.year ?? vehicle.ar ?? vehicle.arsmodell ?? vehicle.first_registered ?? ""),
-      bransle: normalize(vehicle.fuel ?? vehicle.fuel_type ?? vehicle.bransle ?? vehicle.drivmedel ?? ""),
-      farg: normalize(vehicle.color ?? vehicle.colour ?? vehicle.farg ?? vehicle.color_name ?? ""),
-      fordonstyp: normalize(vehicle.vehicle_type ?? vehicle.fordonstyp ?? vehicle.body_type ?? ""),
-      miltal: toMiltal(vehicle.mileage ?? vehicle.miltal ?? vehicle.odometer ?? null),
+      marke: capitalize(v.make ?? ""),
+      modell: capitalize(v.model ?? v.market_name ?? ""),
+      ar,
+      farg: capitalize(v.color ?? v.exterior_color ?? ""),
+      fordonstyp: capitalize(v.type ?? ""),
     };
 
     return jsonResp(result, 200);
@@ -74,31 +69,23 @@ Deno.serve(async (req: Request) => {
   }
 });
 
-function normalize(val: unknown): string {
+function capitalize(val: unknown): string {
   if (!val) return "";
-  return String(val).trim();
+  const s = String(val).trim();
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
 function toYear(val: unknown): number | null {
   if (!val) return null;
   const str = String(val);
-  // Handle ISO date strings like "2019-03-01"
-  const yearMatch = str.match(/^(\d{4})/);
-  if (yearMatch) {
-    const y = parseInt(yearMatch[1], 10);
+  const m = str.match(/^(\d{4})/);
+  if (m) {
+    const y = parseInt(m[1], 10);
     if (y >= 1980 && y <= new Date().getFullYear() + 1) return y;
   }
   const num = parseInt(str, 10);
   if (!isNaN(num) && num >= 1980 && num <= new Date().getFullYear() + 1) return num;
   return null;
-}
-
-function toMiltal(val: unknown): number | null {
-  if (val === null || val === undefined) return null;
-  const num = Number(val);
-  if (isNaN(num) || num < 0) return null;
-  // biluppgifter.se returns km — convert to Swedish mil (1 mil = 10 km)
-  return Math.round(num / 10);
 }
 
 function jsonResp(data: unknown, status: number): Response {
