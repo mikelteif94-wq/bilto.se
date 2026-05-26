@@ -377,7 +377,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     )}
                     <button
                       type="submit"
-                      className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[18px] tracking-wide transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
+                      className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[16px] tracking-wide transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
                     >
                       Värdera bilen
                       <ArrowRight className="w-4 h-4" />
@@ -539,7 +539,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     )}
                     <button
                       type="submit"
-                      className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[18px] transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
+                      className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[16px] transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
                     >
                       Värdera bilen
                       <ArrowRight className="w-4 h-4" />
@@ -1397,7 +1397,7 @@ function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] 
             </div>
             {/* Text below image */}
             <div className="px-1 pt-4 pb-2">
-              <h3 className="text-[18px] font-bold text-slate-900 leading-tight tracking-tight mb-1.5">
+              <h3 className="text-[16px] font-bold text-slate-900 leading-tight tracking-tight mb-1.5">
                 {step.title}
               </h3>
               <p className="text-[14px] text-slate-600 leading-[1.6]">{step.text}</p>
