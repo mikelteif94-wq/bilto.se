@@ -7,6 +7,7 @@ import CarEquipmentStep from '../components/forms/CarEquipmentStep';
 import CustomerForm from '../components/forms/CustomerForm';
 import ImageUploadForm from '../components/forms/ImageUploadForm';
 import ConfirmationForm from '../components/forms/ConfirmationForm';
+import TradeWishStep, { TradeWishData, EMPTY_TRADE_WISH } from '../components/forms/TradeWishStep';
 import { supabase } from '../lib/supabase';
 
 interface SellCarPageProps {
@@ -17,7 +18,7 @@ interface SellCarPageProps {
   onNavigateTrade?: (regnummer: string, miltal: number) => void;
 }
 
-export type FormStep = 'condition' | 'equipment' | 'images' | 'contact' | 'confirm';
+export type FormStep = 'condition' | 'trade' | 'equipment' | 'images' | 'contact' | 'confirm';
 
 export interface CustomerData {
   namn: string;
@@ -68,6 +69,7 @@ export default function SellCarPage({
     mejl: '',
   });
   const [images, setImages] = useState<ImageFile[]>([]);
+  const [tradeWish, setTradeWish] = useState<TradeWishData>(EMPTY_TRADE_WISH);
   const [error, setError] = useState<string | null>(null);
   const [guidanceOpen, setGuidanceOpen] = useState(false);
   const [guidanceName, setGuidanceName] = useState('');
@@ -119,7 +121,10 @@ export default function SellCarPage({
     setGuidanceDone(true);
   };
 
-  const stepFlow: FormStep[] = ['condition', 'equipment', 'images', 'contact', 'confirm'];
+  const includeTradeStep = tradeWish.mode !== null || step === 'trade';
+  const stepFlow: FormStep[] = includeTradeStep
+    ? ['condition', 'trade', 'equipment', 'images', 'contact', 'confirm']
+    : ['condition', 'equipment', 'images', 'contact', 'confirm'];
 
   const currentIndex = stepFlow.indexOf(step);
   const totalSteps = stepFlow.length;
@@ -127,6 +132,7 @@ export default function SellCarPage({
 
   const titles: Record<FormStep, string> = {
     condition: 'Om din bil',
+    trade: 'Din nästa bil',
     equipment: 'Utrustning och tillval',
     images: 'Bilder av bilen',
     contact: 'Dina uppgifter',
@@ -139,6 +145,9 @@ export default function SellCarPage({
     if (!prev) {
       onBack();
       return;
+    }
+    if (step === 'trade') {
+      setTradeWish(EMPTY_TRADE_WISH);
     }
     setStep(prev);
   };
@@ -242,11 +251,23 @@ export default function SellCarPage({
                 }));
                 setCustomer((c) => ({ ...c, mejl }));
                 setError(null);
-                if (wantsTradeIn && onNavigateTrade) {
-                  onNavigateTrade(updatedReg, miltal);
+                if (wantsTradeIn) {
+                  setStep('trade');
                 } else {
                   goNext();
                 }
+              }}
+            />
+          )}
+
+          {step === 'trade' && (
+            <TradeWishStep
+              sellCarLabel={[car.marke, car.modell, car.ar ? String(car.ar) : ''].filter(Boolean).join(' ') || car.regnummer}
+              initialData={tradeWish}
+              onNext={(data) => {
+                setTradeWish(data);
+                setStep('equipment');
+                setError(null);
               }}
             />
           )}
@@ -291,6 +312,7 @@ export default function SellCarPage({
               car={car}
               images={images}
               salesType={salesType}
+              tradeWish={tradeWish.mode ? tradeWish : undefined}
               onSubmit={async () => {}}
               loading={false}
               onError={setError}

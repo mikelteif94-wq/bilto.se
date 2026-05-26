@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home } from 'lucide-react';
+import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home, Repeat } from 'lucide-react';
 import { CustomerData, CarData, ImageFile } from '../../pages/SellCarPage';
+import { TradeWishData } from './TradeWishStep';
 import { supabase } from '../../lib/supabase';
 
 interface ConfirmationFormProps {
@@ -8,6 +9,7 @@ interface ConfirmationFormProps {
   car: CarData;
   images: ImageFile[];
   salesType?: 'auction';
+  tradeWish?: TradeWishData;
   onSubmit: () => Promise<void>;
   loading: boolean;
   onError: (error: string) => void;
@@ -29,6 +31,7 @@ export default function ConfirmationForm({
   car,
   images,
   salesType = 'auction',
+  tradeWish,
   onError,
   onGoHome,
 }: ConfirmationFormProps) {
@@ -70,6 +73,25 @@ export default function ConfirmationForm({
     setStage('car');
     const accessToken = generateToken();
     const carId = crypto.randomUUID();
+
+    let tradeNote = '';
+    if (tradeWish && tradeWish.mode) {
+      const parts: string[] = ['[BYTBIL]'];
+      if (tradeWish.mode === 'know') {
+        parts.push(`Söker: ${[tradeWish.carBrand, tradeWish.carModel].filter(Boolean).join(' ') || '(ej angett)'}`);
+      } else {
+        parts.push(`Behöver hjälp att hitta bil`);
+        if (tradeWish.targetCar) parts.push(`Typ: ${tradeWish.targetCar}`);
+      }
+      if (tradeWish.carPrice) parts.push(`Budget: ${tradeWish.carPrice} kr`);
+      if (tradeWish.fuelType) parts.push(`Drivmedel: ${tradeWish.fuelType}`);
+      if (tradeWish.paymentType) parts.push(`Betalning: ${tradeWish.paymentType}`);
+      if (tradeWish.additionalRequests) parts.push(tradeWish.additionalRequests);
+      tradeNote = parts.join(' | ');
+    }
+
+    const fullNote = [car.skickKommentar, tradeNote].filter(Boolean).join('\n\n');
+
     const { error: carError } = await supabase
       .from('cars')
       .insert([{
@@ -80,7 +102,7 @@ export default function ConfirmationForm({
         ar: car.ar ?? new Date().getFullYear(),
         miltal: car.miltal,
         skick: car.skick,
-        skick_kommentar: car.skickKommentar,
+        skick_kommentar: fullNote,
         utrustning: car.utrustning,
         customer_id: customerRow.id,
         access_token: accessToken,
@@ -417,6 +439,41 @@ export default function ConfirmationForm({
             <span className="font-semibold text-slate-900">{images.length} st</span>
           </div>
         </div>
+
+        {tradeWish && tradeWish.mode && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 sm:p-5 space-y-3">
+            <h3 className="text-xs font-semibold text-amber-600 uppercase tracking-wide flex items-center gap-1.5">
+              <Repeat className="w-3.5 h-3.5" />
+              Bytbil
+            </h3>
+            {tradeWish.mode === 'know' && (tradeWish.carBrand || tradeWish.carModel) && (
+              <div className="flex justify-between text-sm gap-3">
+                <span className="text-slate-500">Söker</span>
+                <span className="font-semibold text-slate-900 text-right">
+                  {[tradeWish.carBrand, tradeWish.carModel].filter(Boolean).join(' ')}
+                </span>
+              </div>
+            )}
+            {tradeWish.mode === 'help' && (
+              <div className="flex justify-between text-sm gap-3">
+                <span className="text-slate-500">Typ</span>
+                <span className="font-semibold text-slate-900">{tradeWish.targetCar || 'Behöver hjälp att välja'}</span>
+              </div>
+            )}
+            {tradeWish.carPrice && (
+              <div className="flex justify-between text-sm gap-3">
+                <span className="text-slate-500">Max budget</span>
+                <span className="font-semibold text-slate-900">{tradeWish.carPrice} kr</span>
+              </div>
+            )}
+            {tradeWish.paymentType && (
+              <div className="flex justify-between text-sm gap-3">
+                <span className="text-slate-500">Betalning</span>
+                <span className="font-semibold text-slate-900">{tradeWish.paymentType === 'cash' ? 'Kontant' : 'Finansiering'}</span>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl p-4 sm:p-5 space-y-3">
           <h3 className="text-xs font-semibold text-[#0e6efe] uppercase tracking-wide">
