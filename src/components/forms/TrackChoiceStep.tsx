@@ -53,7 +53,9 @@ export default function TrackChoiceStep({ regnummer, miltal, onChoose, onGuidanc
   }, [lookup.status, miltal]);
 
   const carInfo = lookup.status === 'found' ? lookup.data : null;
-  const carLabel = carInfo ? [carInfo.marke, carInfo.modell, carInfo.ar ? String(carInfo.ar) : ''].filter(Boolean).join(' ') : '';
+  const carLabel = carInfo
+    ? [(carInfo.fullname || [carInfo.marke, carInfo.modell].filter(Boolean).join(' ')), carInfo.ar ? String(carInfo.ar) : ''].filter(Boolean).join(' ')
+    : '';
 
   return (
     <div className="space-y-4">
