@@ -63,6 +63,7 @@ export default function BuyCarPage({
     telefon: '',
     mejl: '',
     preferredTime: '',
+    dealReadiness: '',
   });
 
   const [guidanceOpen, setGuidanceOpen] = useState(false);
@@ -188,6 +189,7 @@ export default function BuyCarPage({
         email: contactData.mejl,
         phone: contactData.telefon,
         preferred_time: contactData.preferredTime,
+        deal_readiness: contactData.dealReadiness || '',
         status: 'new',
       }).select('id').maybeSingle();
 

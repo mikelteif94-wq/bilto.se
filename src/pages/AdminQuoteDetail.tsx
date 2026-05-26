@@ -83,6 +83,7 @@ interface QuoteRequest {
   access_token: string | null;
   email_verified: boolean;
   email_verified_at: string | null;
+  deal_readiness: string;
 }
 
 interface SuggestionRow {
@@ -526,6 +527,24 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
                     {quote.monthly_payment && <DetailRow label="Manadskostnad" value={quote.monthly_payment.includes('kr') ? quote.monthly_payment : `${quote.monthly_payment} kr/man`} />}
                   </>
                 )}
+                {quote.deal_readiness && (() => {
+                  const READINESS: Record<string, { label: string; color: string }> = {
+                    ready_now:    { label: 'Redo att göra affär nu',    color: 'bg-emerald-100 text-emerald-800 ring-emerald-200' },
+                    within_month: { label: 'Inom en månad',             color: 'bg-blue-100 text-blue-800 ring-blue-200' },
+                    just_looking: { label: 'Precis börjat kolla',       color: 'bg-slate-100 text-slate-600 ring-slate-200' },
+                  };
+                  const info = READINESS[quote.deal_readiness];
+                  return (
+                    <div className="col-span-2 flex items-center gap-3 pt-1">
+                      <dt className="text-xs font-semibold text-slate-500 shrink-0">Affärsberedskap</dt>
+                      <dd>
+                        <span className={`inline-flex items-center text-[12px] font-semibold px-2.5 py-0.5 rounded-full ring-1 ${info?.color ?? 'bg-slate-100 text-slate-700 ring-slate-200'}`}>
+                          {info?.label ?? quote.deal_readiness}
+                        </span>
+                      </dd>
+                    </div>
+                  );
+                })()}
               </dl>
               {quote.additional_requests && (
                 <div className="mt-4 pt-4 border-t border-slate-100">

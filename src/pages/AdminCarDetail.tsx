@@ -555,9 +555,9 @@ export default function AdminCarDetail({
               </div>
 
               <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
-                <div className="flex items-center gap-2 mb-3">
+                <div className="flex items-center gap-2 mb-4">
                   <Repeat className="w-5 h-5 text-slate-500" />
-                  <h2 className="text-lg font-bold text-slate-900">Inbyte</h2>
+                  <h2 className="text-lg font-bold text-slate-900">Inbyte / Bytbil</h2>
                   {car.trade_in_interest && (
                     <span className="ml-auto inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 ring-1 ring-amber-200 uppercase tracking-wider">
                       Lead
@@ -565,8 +565,85 @@ export default function AdminCarDetail({
                   )}
                 </div>
 
-                {editingTradeIn ? (
-                  <div className="space-y-3">
+                {(() => {
+                  const c = car as unknown as {
+                    trade_in_interest?: boolean;
+                    trade_target_brand?: string;
+                    trade_target_model?: string;
+                    trade_target_free?: string;
+                    trade_target_budget?: number | null;
+                    trade_target_fuel?: string;
+                    trade_target_payment?: string;
+                    deal_readiness?: string;
+                  };
+
+                  const FUEL_LABELS: Record<string, string> = {
+                    petrol: 'Bensin', diesel: 'Diesel', hybrid: 'Hybrid/Laddhybrid',
+                    electric: 'El', no_pref: 'Spelar ingen roll',
+                  };
+                  const PAYMENT_LABELS: Record<string, string> = { cash: 'Kontant', finance: 'Finansiering' };
+                  const READINESS_LABELS: Record<string, string> = {
+                    ready_now: 'Redo nu',
+                    within_month: 'Inom en månad',
+                    just_looking: 'Precis börjat kolla',
+                  };
+
+                  if (!c.trade_in_interest) {
+                    return (
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm text-slate-400">Kunden vill inte byta bil</p>
+                        <button
+                          onClick={() => { setTradeInInterestDraft(true); setTradeInWantsInput(''); setEditingTradeIn(true); }}
+                          className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                          Markera inbyte
+                        </button>
+                      </div>
+                    );
+                  }
+
+                  const rows: { label: string; value: string }[] = [];
+                  const brand = [c.trade_target_brand, c.trade_target_model].filter(Boolean).join(' ');
+                  if (brand) rows.push({ label: 'Söker märke/modell', value: brand });
+                  if (c.trade_target_free) rows.push({ label: 'Önskemål', value: c.trade_target_free });
+                  if (c.trade_target_budget) rows.push({ label: 'Max budget', value: `${c.trade_target_budget.toLocaleString('sv-SE')} kr` });
+                  if (c.trade_target_fuel) rows.push({ label: 'Drivmedel', value: FUEL_LABELS[c.trade_target_fuel] ?? c.trade_target_fuel });
+                  if (c.trade_target_payment) rows.push({ label: 'Betalning', value: PAYMENT_LABELS[c.trade_target_payment] ?? c.trade_target_payment });
+
+                  return (
+                    <div className="space-y-3">
+                      {rows.length > 0 ? (
+                        <dl className="divide-y divide-slate-100 text-sm rounded-lg border border-slate-100 overflow-hidden">
+                          {rows.map(r => (
+                            <div key={r.label} className="flex justify-between gap-3 px-4 py-2.5">
+                              <dt className="text-slate-500 shrink-0">{r.label}</dt>
+                              <dd className="font-semibold text-slate-900 text-right">{r.value}</dd>
+                            </div>
+                          ))}
+                        </dl>
+                      ) : (
+                        <p className="text-sm text-slate-500 italic">Kunden vill byta bil men har inte angett önskemål.</p>
+                      )}
+                      {c.deal_readiness && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-slate-500">Redo att göra affär:</span>
+                          <span className="font-semibold text-slate-900">{READINESS_LABELS[c.deal_readiness] ?? c.deal_readiness}</span>
+                        </div>
+                      )}
+                      <button
+                        onClick={() => { setTradeInInterestDraft(true); setTradeInWantsInput(car.trade_in_wants ?? ''); setEditingTradeIn(true); }}
+                        className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                        Ändra
+                      </button>
+                    </div>
+                  );
+                })()}
+
+                {editingTradeIn && (
+                  <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
                     <label className="flex items-start gap-3 cursor-pointer">
                       <input
                         type="checkbox"
@@ -574,16 +651,14 @@ export default function AdminCarDetail({
                         onChange={(e) => setTradeInInterestDraft(e.target.checked)}
                         className="w-4 h-4 mt-0.5 accent-[#0e6efe]"
                       />
-                      <span className="text-sm font-medium text-slate-800">
-                        Kunden vill byta till annan bil
-                      </span>
+                      <span className="text-sm font-medium text-slate-800">Kunden vill byta till annan bil</span>
                     </label>
                     {tradeInInterestDraft && (
                       <textarea
                         rows={3}
                         value={tradeInWantsInput}
                         onChange={(e) => setTradeInWantsInput(e.target.value)}
-                        placeholder="T.ex. Volvo XC60 hybrid, max 30 000 mil, budget 350 000 kr"
+                        placeholder="T.ex. Volvo XC60 hybrid, budget 350 000 kr"
                         className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 outline-none text-sm"
                       />
                     )}
@@ -593,11 +668,7 @@ export default function AdminCarDetail({
                         disabled={savingTradeIn}
                         className="flex-1 inline-flex items-center justify-center gap-1.5 h-9 px-3 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold transition disabled:opacity-60"
                       >
-                        {savingTradeIn ? (
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        ) : (
-                          <Check className="w-3.5 h-3.5" />
-                        )}
+                        {savingTradeIn ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                         Spara
                       </button>
                       <button
@@ -609,42 +680,31 @@ export default function AdminCarDetail({
                       </button>
                     </div>
                   </div>
-                ) : car.trade_in_interest ? (
-                  <div className="space-y-3">
-                    <p className="text-sm text-slate-800 whitespace-pre-wrap">
-                      {car.trade_in_wants || (
-                        <span className="text-slate-400 italic">Ingen önskebil angiven.</span>
-                      )}
-                    </p>
-                    <button
-                      onClick={() => {
-                        setTradeInInterestDraft(true);
-                        setTradeInWantsInput(car.trade_in_wants ?? '');
-                        setEditingTradeIn(true);
-                      }}
-                      className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition"
-                    >
-                      <Pencil className="w-3.5 h-3.5" />
-                      Ändra
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm text-slate-400">Inget inbyte registrerat</p>
-                    <button
-                      onClick={() => {
-                        setTradeInInterestDraft(true);
-                        setTradeInWantsInput('');
-                        setEditingTradeIn(true);
-                      }}
-                      className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition"
-                    >
-                      <Pencil className="w-3.5 h-3.5" />
-                      Lägg till
-                    </button>
-                  </div>
                 )}
               </div>
+
+              {/* Deal readiness */}
+              {(() => {
+                const readiness = (car as unknown as { deal_readiness?: string }).deal_readiness;
+                if (!readiness) return null;
+                const READINESS_LABELS: Record<string, { label: string; color: string }> = {
+                  ready_now:    { label: 'Redo att göra affär nu',      color: 'bg-emerald-100 text-emerald-800 ring-emerald-200' },
+                  within_month: { label: 'Inom en månad',               color: 'bg-blue-100 text-blue-800 ring-blue-200' },
+                  just_looking: { label: 'Precis börjat kolla',         color: 'bg-slate-100 text-slate-600 ring-slate-200' },
+                };
+                const info = READINESS_LABELS[readiness];
+                return (
+                  <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6 flex items-center gap-3">
+                    <Send className="w-5 h-5 text-slate-400 shrink-0" />
+                    <div>
+                      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Affärsberedskap</p>
+                      <span className={`inline-flex items-center text-[13px] font-semibold px-3 py-1 rounded-full ring-1 ${info?.color ?? 'bg-slate-100 text-slate-700 ring-slate-200'}`}>
+                        {info?.label ?? readiness}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })()}
 
               <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
                 <h2 className="text-lg font-bold text-slate-900 mb-4">Synlighet</h2>

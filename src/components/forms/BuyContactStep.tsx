@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { CalendarClock } from 'lucide-react';
 import FieldError from './FieldError';
 import { validateSwedishPhone } from '../../lib/utils';
 import EmailOtpStep from './EmailOtpStep';
@@ -9,11 +10,18 @@ const TIMES = [
   { value: 'afternoon', label: 'Eftermiddag' },
 ];
 
+const DEAL_READINESS_OPTIONS = [
+  { value: 'ready_now',    label: 'Redo att köpa nu',          desc: 'Jag vill genomföra affären så snart som möjligt' },
+  { value: 'within_month', label: 'Inom en månad',             desc: 'Jag är nästan klar och behöver lite tid' },
+  { value: 'just_looking', label: 'Jag har precis börjat kolla', desc: 'Utforskar alternativ just nu' },
+] as const;
+
 export interface BuyContactData {
   namn: string;
   telefon: string;
   mejl: string;
   preferredTime: string;
+  dealReadiness: string;
 }
 
 interface BuyContactStepProps {
@@ -23,7 +31,7 @@ interface BuyContactStepProps {
 }
 
 export default function BuyContactStep({ initialData, onNext, submitting = false }: BuyContactStepProps) {
-  const [d, setD] = useState<BuyContactData>(initialData);
+  const [d, setD] = useState<BuyContactData>({ dealReadiness: '', ...initialData });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showOtp, setShowOtp] = useState(false);
   const [verifiedMejl, setVerifiedMejl] = useState('');
@@ -132,6 +140,40 @@ export default function BuyContactStep({ initialData, onNext, submitting = false
               }`}
             >
               {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* När kan du göra affär? */}
+      <div className="border border-slate-200 rounded-xl p-4 sm:p-5">
+        <div className="flex items-center gap-2 mb-3">
+          <CalendarClock className="w-4 h-4 text-[#0e6efe] shrink-0" />
+          <p className="text-[14px] font-semibold text-slate-800">När kan du tänka dig att köpa?</p>
+        </div>
+        <div className="space-y-2">
+          {DEAL_READINESS_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setD(prev => ({ ...prev, dealReadiness: prev.dealReadiness === opt.value ? '' : opt.value }))}
+              className={`w-full text-left flex items-start gap-3 px-4 py-3 rounded-xl border-2 transition-all ${
+                d.dealReadiness === opt.value
+                  ? 'border-[#0e6efe] bg-[#0e6efe]/[0.04]'
+                  : 'border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              <div className={`w-4 h-4 mt-0.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                d.dealReadiness === opt.value ? 'border-[#0e6efe] bg-[#0e6efe]' : 'border-slate-300'
+              }`}>
+                {d.dealReadiness === opt.value && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+              </div>
+              <div>
+                <p className={`text-[13.5px] font-semibold leading-snug ${d.dealReadiness === opt.value ? 'text-slate-900' : 'text-slate-700'}`}>
+                  {opt.label}
+                </p>
+                <p className="text-[12px] text-slate-500 mt-0.5">{opt.desc}</p>
+              </div>
             </button>
           ))}
         </div>

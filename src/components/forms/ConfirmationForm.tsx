@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home, Repeat } from 'lucide-react';
+import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home, Repeat, CalendarClock } from 'lucide-react';
 import { CustomerData, CarData, ImageFile } from '../../pages/SellCarPage';
 import type { TradeInData } from './CarConditionStep';
 import { supabase } from '../../lib/supabase';
@@ -24,6 +24,14 @@ const SKICK_LABELS: Record<string, string> = {
   skadat: 'Skadat',
 };
 
+const DEAL_READINESS_OPTIONS = [
+  { value: 'ready_now',     label: 'Redo att göra affär nu',       desc: 'Jag vill genomföra affären så snart som möjligt' },
+  { value: 'within_month',  label: 'Inom en månad',                desc: 'Jag är nästan klar och behöver lite tid' },
+  { value: 'just_looking',  label: 'Jag har precis börjat kolla',  desc: 'Utforskar alternativ just nu' },
+] as const;
+
+type DealReadiness = typeof DEAL_READINESS_OPTIONS[number]['value'] | '';
+
 type UploadStage = 'idle' | 'customer' | 'car' | 'images' | 'done';
 
 export default function ConfirmationForm({
@@ -38,6 +46,7 @@ export default function ConfirmationForm({
   const [stage, setStage] = useState<UploadStage>('idle');
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [savedToken, setSavedToken] = useState<string>('');
+  const [dealReadiness, setDealReadiness] = useState<DealReadiness>('');
 
   const submitting = stage !== 'idle' && stage !== 'done';
   const submitted = stage === 'done';
@@ -74,19 +83,6 @@ export default function ConfirmationForm({
     const accessToken = generateToken();
     const carId = crypto.randomUUID();
 
-    let tradeNote = '';
-    if (tradeDetails) {
-      const parts: string[] = ['[BYTBIL]'];
-      if (tradeDetails.carBrand) parts.push(`Söker: ${[tradeDetails.carBrand, tradeDetails.carModel].filter(Boolean).join(' ')}`);
-      if (tradeDetails.targetCar) parts.push(`Typ: ${tradeDetails.targetCar}`);
-      if (tradeDetails.carPrice) parts.push(`Budget: ${tradeDetails.carPrice} kr`);
-      if (tradeDetails.fuelType) parts.push(`Drivmedel: ${tradeDetails.fuelType}`);
-      if (tradeDetails.paymentType) parts.push(`Betalning: ${tradeDetails.paymentType}`);
-      tradeNote = parts.join(' | ');
-    }
-
-    const fullNote = [car.skickKommentar, tradeNote].filter(Boolean).join('\n\n');
-
     const { error: carError } = await supabase
       .from('cars')
       .insert([{
@@ -97,13 +93,23 @@ export default function ConfirmationForm({
         ar: car.ar ?? new Date().getFullYear(),
         miltal: car.miltal,
         skick: car.skick,
-        skick_kommentar: fullNote,
+        skick_kommentar: car.skickKommentar || '',
         utrustning: car.utrustning,
         customer_id: customerRow.id,
         access_token: accessToken,
         sales_type: salesType,
         status: 'ny',
-      }]);
+        // structured trade-in fields
+        trade_in_interest: !!tradeDetails,
+        trade_target_brand: tradeDetails?.carBrand ?? '',
+        trade_target_model: tradeDetails?.carModel ?? '',
+        trade_target_free: tradeDetails?.targetCar ?? '',
+        trade_target_budget: tradeDetails?.carPrice ? (parseInt(tradeDetails.carPrice.replace(/\D/g, ''), 10) || null) : null,
+        trade_target_fuel: tradeDetails?.fuelType ?? '',
+        trade_target_payment: tradeDetails?.paymentType ?? '',
+        // deal readiness
+        deal_readiness: dealReadiness || '',
+      } as never]);
 
     if (carError) {
       setStage('idle');
@@ -486,6 +492,40 @@ export default function ConfirmationForm({
             <span className="text-slate-500 shrink-0">E-post</span>
             <span className="font-semibold text-slate-900 break-all text-right">{customer.mejl}</span>
           </div>
+        </div>
+      </div>
+
+      {/* När kan du göra affär? */}
+      <div className="border border-slate-200 rounded-xl p-4 sm:p-5">
+        <div className="flex items-center gap-2 mb-3">
+          <CalendarClock className="w-4 h-4 text-[#0e6efe] shrink-0" />
+          <p className="text-[14px] font-semibold text-slate-800">När kan du tänka dig att göra affär?</p>
+        </div>
+        <div className="space-y-2">
+          {DEAL_READINESS_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setDealReadiness(opt.value)}
+              className={`w-full text-left flex items-start gap-3 px-4 py-3 rounded-xl border-2 transition-all ${
+                dealReadiness === opt.value
+                  ? 'border-[#0e6efe] bg-[#0e6efe]/[0.04]'
+                  : 'border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              <div className={`w-4 h-4 mt-0.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                dealReadiness === opt.value ? 'border-[#0e6efe] bg-[#0e6efe]' : 'border-slate-300'
+              }`}>
+                {dealReadiness === opt.value && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+              </div>
+              <div>
+                <p className={`text-[13.5px] font-semibold leading-snug ${dealReadiness === opt.value ? 'text-slate-900' : 'text-slate-700'}`}>
+                  {opt.label}
+                </p>
+                <p className="text-[12px] text-slate-500 mt-0.5">{opt.desc}</p>
+              </div>
+            </button>
+          ))}
         </div>
       </div>
 
