@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wallet, TrendingDown, ChevronRight, X, Info } from 'lucide-react';
+import { Wallet, TrendingDown, ChevronRight, Info } from 'lucide-react';
 import { EquityQuiz, type EquityData } from './EquityQuiz';
-import { EquityResults } from './EquityResults';
+import { SignupGate } from '../SignupGate';
 
-type FlowState = 'teaser' | 'quiz' | 'results';
+type FlowState = 'teaser' | 'quiz' | 'signup';
 
 interface EquityFlowProps {
   onNegotiate: (carLabel: string, equitySummary: string) => void;
-  /** If provided, shows as a trigger card inline rather than teaser */
   compact?: boolean;
 }
 
@@ -53,7 +52,7 @@ function TeaserCard({ onStart }: { onStart: () => void }) {
             >
               <div className="mt-3 space-y-2 text-[12px] text-slate-400 leading-relaxed bg-white/5 rounded-xl px-4 py-3">
                 <p>
-                  <strong className="text-slate-300">Insats</strong> (inte "kapital") är pengarna du kan
+                  <strong className="text-slate-300">Insats</strong> är pengarna du kan
                   använda när du köper nästa bil — antingen från din nuvarande bils nettovärde,
                   sparpengar, eller båda.
                 </p>
@@ -63,14 +62,13 @@ function TeaserCard({ onStart }: { onStart: () => void }) {
                 </p>
                 <p>
                   Väljer du en billigare bil kan du dessutom <strong className="text-slate-300">
-                  få pengar tillbaka</strong> och sänka månadskostnaden på köpet.
+                  få pengar tillbaka</strong> och sänka månadskostnaden.
                 </p>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Benefits */}
         <div className="mt-4 grid grid-cols-3 gap-2">
           {[
             { icon: TrendingDown, label: 'Sänk månadskostnaden' },
@@ -99,13 +97,13 @@ function TeaserCard({ onStart }: { onStart: () => void }) {
   );
 }
 
-export function EquityFlow({ onNegotiate, compact }: EquityFlowProps) {
+export function EquityFlow({ onNegotiate: _onNegotiate, compact }: EquityFlowProps) {
   const [state, setState] = useState<FlowState>('teaser');
   const [equityData, setEquityData] = useState<EquityData | null>(null);
 
   const handleQuizComplete = (data: EquityData) => {
     setEquityData(data);
-    setState('results');
+    setState('signup');
   };
 
   if (compact && state === 'teaser') {
@@ -151,32 +149,41 @@ export function EquityFlow({ onNegotiate, compact }: EquityFlowProps) {
         </motion.div>
       )}
 
-      {state === 'results' && equityData && (
+      {state === 'signup' && equityData && (
         <motion.div
-          key="results"
+          key="signup"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
         >
-          {/* Header with summary */}
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-[14px] font-bold text-slate-800">Din insats: {formatSEK(equityData.equity)} kr</p>
-              <p className="text-[12px] text-slate-400">Bilar matchade mot {formatSEK(equityData.desiredMonthly)} kr/mån</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setState('teaser')}
-              className="flex items-center gap-1 text-[12px] text-slate-400 hover:text-slate-600 transition-colors"
-            >
-              <X className="w-3.5 h-3.5" /> Stäng
-            </button>
+          <div className="mb-3 px-1">
+            <p className="text-[13px] font-semibold text-slate-700">
+              Din insats: <span className="text-[#0e6efe]">{formatSEK(equityData.equity)} kr</span>
+              {equityData.regnummer && (
+                <span className="ml-2 font-mono text-slate-400 text-[12px]">· {equityData.regnummer}</span>
+              )}
+            </p>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Matchade bilar väntar på dig i portalen
+            </p>
           </div>
-          <EquityResults
-            equity={equityData}
-            onReset={() => setState('quiz')}
-            onNegotiate={onNegotiate}
+          <SignupGate
+            headline="Dina matchade bilar är klara"
+            subtext="Logga in för att se rekommendationerna"
+            bullets={[
+              `Insats: ${formatSEK(equityData.equity)} kr`,
+              `Önskad månadsbudget: ${formatSEK(equityData.desiredMonthly)} kr/mån`,
+              'Bilar matchade mot din ekonomi',
+            ]}
+            onSent={() => {}}
           />
+          <button
+            type="button"
+            onClick={() => setState('quiz')}
+            className="mt-3 w-full text-[13px] text-slate-400 hover:text-slate-600 transition-colors text-center"
+          >
+            Räkna om
+          </button>
         </motion.div>
       )}
     </AnimatePresence>

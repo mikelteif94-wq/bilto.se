@@ -1,9 +1,11 @@
 import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Car, Wallet, TrendingDown, ArrowRight, Info, X } from 'lucide-react';
+import RegInput from '../RegInput';
 
 export interface EquityData {
   hasCurrentCar: boolean;
+  regnummer?: string;
   carValue: number;
   carDebt: number;
   cashSavings: number;
@@ -121,6 +123,7 @@ function SliderStep({
 export function EquityQuiz({ onComplete, onClose }: EquityQuizProps) {
   const [step, setStep] = useState(0);
   const [hasCurrentCar, setHasCurrentCar] = useState<boolean | null>(null);
+  const [regnummer, setRegnummer] = useState('');
   const [carValue, setCarValue] = useState(100000);
   const [carDebt, setCarDebt] = useState(0);
   const [cashSavings, setCashSavings] = useState(0);
@@ -155,6 +158,7 @@ export function EquityQuiz({ onComplete, onClose }: EquityQuizProps) {
   const finish = () => {
     onComplete({
       hasCurrentCar: hasCurrentCar ?? false,
+      regnummer: regnummer || undefined,
       carValue: hasCurrentCar ? carValue : 0,
       carDebt: hasCurrentCar ? carDebt : 0,
       cashSavings,
@@ -246,6 +250,27 @@ export function EquityQuiz({ onComplete, onClose }: EquityQuizProps) {
                     </button>
                   ))}
                 </div>
+                {/* Reg-input visas när kunden valt "Ja" */}
+                <AnimatePresence>
+                  {hasCurrentCar === true && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-1">
+                        <p className="text-[12px] font-semibold text-slate-600 mb-2">
+                          Registreringsnummer <span className="font-normal text-slate-400">(valfritt)</span>
+                        </p>
+                        <RegInput value={regnummer} onChange={setRegnummer} size="sm" />
+                        <p className="text-[11px] text-slate-400 mt-1.5">
+                          Vi sparar bilen till din portal — inga svar visas här
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
 
