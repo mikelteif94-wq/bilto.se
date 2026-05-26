@@ -51,8 +51,8 @@ export default function BuyCarPage({
   });
 
   const [tradeIn, setTradeIn] = useState<BuyTradeInData>({
-    hasTradeIn: null,
-    tradeInReg: '',
+    hasTradeIn: initialTyp === 'trade' && !!initialReg ? true : null,
+    tradeInReg: initialTyp === 'trade' ? initialReg : '',
     hasLoan: null,
     loanAmount: '',
     interestRate: '',

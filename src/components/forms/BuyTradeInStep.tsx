@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 import FieldError from './FieldError';
 import RegInput from '../RegInput';
+import { useVehicleLookup } from '../../lib/useVehicleLookup';
 
 export interface BuyTradeInData {
   hasTradeIn: boolean | null;
@@ -13,6 +15,49 @@ export interface BuyTradeInData {
 interface BuyTradeInStepProps {
   initialData: BuyTradeInData;
   onNext: (data: BuyTradeInData) => void;
+}
+
+function TradeInCarInfo({ regnummer }: { regnummer: string }) {
+  const lookup = useVehicleLookup(regnummer);
+
+  if (lookup.status === 'loading') {
+    return (
+      <div className="mt-3 flex items-center gap-2 text-[13px] text-slate-500">
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+        <span>Hämtar biluppgifter...</span>
+      </div>
+    );
+  }
+
+  if (lookup.status === 'found') {
+    const { marke, modell, ar, miltal } = lookup.data;
+    const label = [marke, modell, ar ? String(ar) : ''].filter(Boolean).join(' ');
+    return (
+      <div className="mt-3 inline-flex items-center gap-2 px-3 py-2 bg-[#0e6efe]/[0.07] border border-[#0e6efe]/20 rounded-lg flex-wrap">
+        <span className="text-[13px] font-bold text-[#0e6efe] tracking-widest">{regnummer.toUpperCase()}</span>
+        {label && (
+          <>
+            <span className="text-[#0e6efe]/30">&middot;</span>
+            <span className="text-[13px] font-semibold text-slate-800">{label}</span>
+          </>
+        )}
+        {miltal != null && miltal > 0 && (
+          <>
+            <span className="text-[#0e6efe]/30">&middot;</span>
+            <span className="text-[13px] text-slate-500">{miltal.toLocaleString('sv-SE')} mil</span>
+          </>
+        )}
+      </div>
+    );
+  }
+
+  if (lookup.status === 'not_found') {
+    return (
+      <p className="mt-2 text-[13px] text-amber-600">Bilen hittades inte i registret.</p>
+    );
+  }
+
+  return null;
 }
 
 export default function BuyTradeInStep({ initialData, onNext }: BuyTradeInStepProps) {
@@ -92,6 +137,7 @@ export default function BuyTradeInStep({ initialData, onNext }: BuyTradeInStepPr
                 error={!!errors.tradeInReg}
               />
               <FieldError message={errors.tradeInReg} />
+              <TradeInCarInfo regnummer={d.tradeInReg} />
             </div>
           </div>
 
