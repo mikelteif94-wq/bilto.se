@@ -335,17 +335,17 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                           ))}
                         </div>
                       </div>
-                      <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-center gap-3">
-                        <span className="text-white/70 text-[16px] font-normal">eller låt oss hjälpa dig</span>
+                      <div className="mt-5 flex flex-col items-center gap-3">
+                        <span className="text-white/50 text-[14px] font-normal">eller</span>
                         <button
                           type="button"
                           onClick={() => {
                             window.history.pushState({}, '', '/kop-bil/bestall');
                             window.dispatchEvent(new PopStateEvent('popstate'));
                           }}
-                          className="px-5 py-2.5 rounded-xl border-[3px] border-white text-white text-[16px] font-extrabold hover:bg-white hover:text-[#0e2254] transition-all"
+                          className="w-full py-4 rounded-xl border-2 border-white/30 hover:border-white/70 bg-white/5 hover:bg-white/10 text-white text-[16px] font-bold text-center transition-all"
                         >
-                          Hitta en bil
+                          Låt oss hjälpa dig hitta en bil
                         </button>
                       </div>
                     </div>
