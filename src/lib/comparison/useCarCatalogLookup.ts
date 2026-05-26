@@ -33,7 +33,7 @@ type DbRow = {
   image_url: string | null;
   cleaned_image_url: string | null;
   is_active: boolean;
-  ncap_stars: number | null;
+  ncap_stars?: never;
   seats: number | null;
 };
 
@@ -122,7 +122,7 @@ export function dbRowToComparisonCar(row: DbRow): ComparisonCar {
       trunk_liters: row.bagage_liter ?? undefined,
     },
     safety: {
-      euro_ncap_stars: row.ncap_stars ?? undefined,
+      euro_ncap_stars: undefined,
     },
     pros: row.styrkor ?? [],
     cons: row.svagheter ?? [],
@@ -149,7 +149,7 @@ export function useCarCatalogLookup(make: string, model: string): {
 
     supabase
       .from('car_catalog')
-      .select('make, model, slug, betyg_totalt, betyg_korning, betyg_komfort, betyg_praktiskt, betyg_varde, pris_ny_fran, pris_ny_till, pris_begagnat, manadskostnad_begagnad, manadskostnad_beg_min, manadskostnad_beg_max, kaross, drivmedel, drivlina_kort, drivetrain_type, bagage_liter, generation_fran_ar, generation_till_ar, expert_text, meta_description, styrkor, svagheter, passar_for, segment, image_url, cleaned_image_url, is_active, seats, ncap_stars')
+      .select('make, model, slug, betyg_totalt, betyg_korning, betyg_komfort, betyg_praktiskt, betyg_varde, pris_ny_fran, pris_ny_till, pris_begagnat, manadskostnad_begagnad, manadskostnad_beg_min, manadskostnad_beg_max, kaross, drivmedel, drivlina_kort, drivetrain_type, bagage_liter, generation_fran_ar, generation_till_ar, expert_text, meta_description, styrkor, svagheter, passar_for, segment, image_url, cleaned_image_url, is_active, seats')
       .ilike('make', make)
       .ilike('model', model)
       .maybeSingle()
