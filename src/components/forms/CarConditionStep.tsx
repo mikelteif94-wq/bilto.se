@@ -69,7 +69,7 @@ export default function CarConditionStep({
   initialMejl = '',
   onNext,
 }: CarConditionStepProps) {
-  const [reg, setReg] = useState(regnummer);
+  const [reg, setReg] = useState(regnummer.trim().toUpperCase().replace(/\s/g, ''));
   const [marke, setMarke] = useState(initialMarke);
   const [modell, setModell] = useState(initialModell);
   const [ar, setAr] = useState<string>(initialAr ? String(initialAr) : '');
@@ -81,8 +81,7 @@ export default function CarConditionStep({
   const [autoFilled, setAutoFilled] = useState(false);
   const editableReg = !regnummer;
 
-  const lookupReg = editableReg ? reg : '';
-  const lookup = useVehicleLookup(lookupReg);
+  const lookup = useVehicleLookup(reg);
 
   useEffect(() => {
     if (lookup.status !== 'found') return;
