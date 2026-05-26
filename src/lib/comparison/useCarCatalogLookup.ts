@@ -139,28 +139,40 @@ export function useCarCatalogLookup(make: string, model: string): {
   loading: boolean;
 } {
   const [data, setData] = useState<ComparisonCar | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!(make && model));
 
   useEffect(() => {
-    if (!make || !model) { setLoading(false); return; }
+    if (!make || !model) {
+      setData(null);
+      setLoading(false);
+      return;
+    }
 
     let cancelled = false;
+    setData(null);
     setLoading(true);
 
-    supabase
-      .from('car_catalog')
-      .select('make, model, slug, betyg_totalt, betyg_korning, betyg_komfort, betyg_praktiskt, betyg_varde, pris_ny_fran, pris_ny_till, pris_begagnat, manadskostnad_begagnad, manadskostnad_beg_min, manadskostnad_beg_max, kaross, drivmedel, drivlina_kort, drivetrain_type, bagage_liter, generation_fran_ar, generation_till_ar, expert_text, meta_description, styrkor, svagheter, passar_for, segment, image_url, cleaned_image_url, is_active, seats')
-      .ilike('make', make)
-      .ilike('model', model)
-      .maybeSingle()
-      .then(({ data: row, error }) => {
-        if (cancelled) return;
-        if (!row || error) { setLoading(false); return; }
-        setData(dbRowToComparisonCar(row as DbRow));
-        setLoading(false);
-      })
-      .catch(() => { if (!cancelled) setLoading(false); });
+    const run = async () => {
+      try {
+        const { data: row, error } = await supabase
+          .from('car_catalog')
+          .select('make, model, slug, betyg_totalt, betyg_korning, betyg_komfort, betyg_praktiskt, betyg_varde, pris_ny_fran, pris_ny_till, pris_begagnat, manadskostnad_begagnad, manadskostnad_beg_min, manadskostnad_beg_max, kaross, drivmedel, drivlina_kort, drivetrain_type, bagage_liter, generation_fran_ar, generation_till_ar, expert_text, meta_description, styrkor, svagheter, passar_for, segment, image_url, cleaned_image_url, is_active, seats')
+          .ilike('make', make)
+          .ilike('model', model)
+          .maybeSingle();
 
+        if (cancelled) return;
+        if (row && !error) {
+          setData(dbRowToComparisonCar(row as DbRow));
+        }
+      } catch {
+        // ignore
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    run();
     return () => { cancelled = true; };
   }, [make, model]);
 
