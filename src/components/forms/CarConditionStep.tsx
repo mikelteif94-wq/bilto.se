@@ -131,13 +131,11 @@ interface CarConditionStepProps {
   initialMiltal: number;
   initialSkick: string;
   initialSkickKommentar?: string;
-  initialMejl?: string;
   showTradeIn?: boolean;
   onNext: (
     miltal: number,
     skick: string,
     regnummer: string | undefined,
-    mejl: string,
     skickKommentar: string,
     marke: string,
     modell: string,
@@ -161,7 +159,6 @@ export default function CarConditionStep({
   initialMiltal,
   initialSkick,
   initialSkickKommentar = '',
-  initialMejl = '',
   showTradeIn = false,
   onNext,
 }: CarConditionStepProps) {
@@ -170,11 +167,10 @@ export default function CarConditionStep({
   const [modell, setModell] = useState(initialModell);
   const [ar, setAr] = useState<string>(initialAr ? String(initialAr) : '');
   const [miltalInterval, setMiltalInterval] = useState(intervalForMiltal(initialMiltal));
-  const [mejl, setMejl] = useState(initialMejl);
   const [skick, setSkick] = useState(initialSkick);
   const [skickKommentar, setSkickKommentar] = useState(initialSkickKommentar);
   const [wantsTradeIn, setWantsTradeIn] = useState(false);
-  const [errors, setErrors] = useState<{ reg?: string; marke?: string; modell?: string; ar?: string; miltal?: string; mejl?: string; skick?: string }>({});
+  const [errors, setErrors] = useState<{ reg?: string; marke?: string; modell?: string; ar?: string; miltal?: string; skick?: string }>({});
   const [foundData, setFoundData] = useState<VehicleData | null>(null);
   const prevReg = useRef('');
   const editableReg = !regnummer;
@@ -219,12 +215,6 @@ export default function CarConditionStep({
       newErrors.ar = 'Välj årsmodell';
     }
 
-    if (!mejl.trim()) {
-      newErrors.mejl = 'Ange e-postadress';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mejl.trim())) {
-      newErrors.mejl = 'Ogiltig e-postadress';
-    }
-
     if (!skick) newErrors.skick = 'Välj ett skick';
 
     if (Object.keys(newErrors).length > 0) {
@@ -232,7 +222,7 @@ export default function CarConditionStep({
       return;
     }
 
-    onNext(chosen!.mid, skick, regClean, mejl.trim(), skickKommentar.trim(), marke, modell, arNum, showTradeIn ? wantsTradeIn : undefined);
+    onNext(chosen!.mid, skick, regClean, skickKommentar.trim(), marke, modell, arNum, showTradeIn ? wantsTradeIn : undefined);
   };
 
   return (
@@ -433,28 +423,6 @@ export default function CarConditionStep({
           </button>
         </div>
       )}
-
-      {/* E-post */}
-      <div className="py-6 sm:py-7">
-        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
-          E-postadress
-        </label>
-        <div className="w-full sm:max-w-xs">
-          <input
-            type="text"
-            inputMode="email"
-            autoComplete="email"
-            value={mejl}
-            onChange={(e) => {
-              setMejl(e.target.value);
-              setErrors((prev) => ({ ...prev, mejl: undefined }));
-            }}
-            placeholder="din@mejl.se"
-            className={`form-control ${errors.mejl ? 'form-control-error' : ''}`}
-          />
-        </div>
-        <FieldError message={errors.mejl} />
-      </div>
 
       {/* Skick */}
       <div className="py-6 sm:py-7">

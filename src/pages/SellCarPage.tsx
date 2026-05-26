@@ -235,9 +235,8 @@ export default function SellCarPage({
               initialMiltal={car.miltal}
               initialSkick={car.skick}
               initialSkickKommentar={car.skickKommentar}
-              initialMejl={customer.mejl}
               showTradeIn={!!onNavigateTrade}
-              onNext={(miltal, skick, regnummer, mejl, skickKommentar, marke, modell, ar, wantsTradeIn) => {
+              onNext={(miltal, skick, regnummer, skickKommentar, marke, modell, ar, wantsTradeIn) => {
                 const updatedReg = regnummer || car.regnummer;
                 setCar((c) => ({
                   ...c,
@@ -249,7 +248,6 @@ export default function SellCarPage({
                   ar,
                   regnummer: updatedReg,
                 }));
-                setCustomer((c) => ({ ...c, mejl }));
                 setError(null);
                 if (wantsTradeIn) {
                   setStep('trade');
