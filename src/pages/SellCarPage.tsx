@@ -225,6 +225,15 @@ export default function SellCarPage({
             <TrackChoiceStep
               regnummer={car.regnummer}
               miltal={car.miltal}
+              onVehicleFound={(data) => {
+                setCar((c) => ({
+                  ...c,
+                  marke: data.marke || c.marke,
+                  modell: data.modell || c.modell,
+                  ar: data.ar ?? c.ar,
+                  miltal: (data.miltal != null && data.miltal > 0) ? data.miltal : c.miltal,
+                }));
+              }}
               onChoose={(t) => {
                 setSalesType(t);
                 setStep('condition');

@@ -1,4 +1,6 @@
-import { Phone, ArrowRight, Repeat } from 'lucide-react';
+import { useEffect } from 'react';
+import { Phone, ArrowRight, Repeat, Loader2 } from 'lucide-react';
+import { useVehicleLookup, VehicleData } from '../../lib/useVehicleLookup';
 
 interface TrackChoiceStepProps {
   regnummer: string;
@@ -6,9 +8,26 @@ interface TrackChoiceStepProps {
   onChoose: (track: 'auction') => void;
   onGuidance: () => void;
   onNavigateTrade?: () => void;
+  onVehicleFound?: (data: VehicleData) => void;
 }
 
-export default function TrackChoiceStep({ regnummer, miltal, onChoose, onGuidance, onNavigateTrade }: TrackChoiceStepProps) {
+export default function TrackChoiceStep({ regnummer, miltal, onChoose, onGuidance, onNavigateTrade, onVehicleFound }: TrackChoiceStepProps) {
+  const lookup = useVehicleLookup(regnummer);
+
+  useEffect(() => {
+    if (lookup.status === 'found' && onVehicleFound) {
+      onVehicleFound(lookup.data);
+    }
+  }, [lookup.status]);
+
+  const carLabel = lookup.status === 'found'
+    ? [lookup.data.marke, lookup.data.modell, lookup.data.ar ? String(lookup.data.ar) : ''].filter(Boolean).join(' ')
+    : '';
+
+  const displayMiltal = lookup.status === 'found' && lookup.data.miltal != null && lookup.data.miltal > 0
+    ? lookup.data.miltal
+    : miltal > 0 ? miltal : null;
+
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-5">
@@ -16,12 +35,21 @@ export default function TrackChoiceStep({ regnummer, miltal, onChoose, onGuidanc
           <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
             Din bil
           </label>
-          <div className="inline-flex items-center h-10 px-4 bg-[#0e6efe]/10 text-[#0e6efe] font-semibold text-[14px] rounded-md">
+          <div className="inline-flex items-center h-10 px-4 bg-[#0e6efe]/10 text-[#0e6efe] font-semibold text-[14px] rounded-md gap-2">
             <span className="tracking-widest">{regnummer}</span>
-            {miltal > 0 && (
+            {lookup.status === 'loading' && (
+              <Loader2 className="w-3.5 h-3.5 animate-spin opacity-60" />
+            )}
+            {carLabel && (
               <>
-                <span className="mx-2 text-[#0e6efe]/40">&middot;</span>
-                <span>{miltal.toLocaleString('sv-SE')} mil</span>
+                <span className="text-[#0e6efe]/40">&middot;</span>
+                <span className="font-medium">{carLabel}</span>
+              </>
+            )}
+            {displayMiltal != null && (
+              <>
+                <span className="text-[#0e6efe]/40">&middot;</span>
+                <span className="font-medium">{displayMiltal.toLocaleString('sv-SE')} mil</span>
               </>
             )}
           </div>
