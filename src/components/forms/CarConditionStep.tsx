@@ -54,7 +54,6 @@ function VehicleFoundCard({ regnummer, data }: VehicleFoundCardProps) {
   }, []);
 
   const chips: { icon: React.ReactNode; label: string }[] = [
-    data.ar ? { icon: <Car className="w-3.5 h-3.5" />, label: String(data.ar) } : null,
     data.bransle ? { icon: <Fuel className="w-3.5 h-3.5" />, label: fuelLabel(data.bransle) } : null,
     data.farg ? { icon: <Palette className="w-3.5 h-3.5" />, label: data.farg } : null,
     data.miltal && data.miltal > 0 ? { icon: null, label: `${data.miltal.toLocaleString('sv-SE')} mil` } : null,
@@ -93,9 +92,6 @@ function VehicleFoundCard({ regnummer, data }: VehicleFoundCardProps) {
               <span className="text-[14px] text-slate-500 font-medium">{data.ar}</span>
             )}
           </div>
-          {data.variant && (
-            <p className="text-[12px] text-slate-400 -mt-2 mb-2">{data.variant}</p>
-          )}
 
           {/* Chips */}
           {chips.length > 0 && (
