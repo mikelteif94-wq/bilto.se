@@ -575,7 +575,7 @@ type QuizStep = 'idle' | 'active' | 'analyzing' | 'signup' | 'results';
 
 /* ───────────── nav ───────────── */
 
-const NAV_ITEMS = ['Så funkar det', 'Köp bil'] as const;
+const NAV_ITEMS = ['Sälj bil', 'Köp bil med hjälp'] as const;
 
 interface CompareCarsPageProps {
   onBackHome: () => void;
@@ -837,8 +837,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   };
 
   const handleNavSelect = (item: string) => {
-    if (item === 'Så funkar det') {
-      document.getElementById('sa-funkar-det')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (item === 'Sälj bil') {
+      onBackHome();
     }
   };
 
@@ -939,11 +939,24 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            {NAV_ITEMS.map((item) => (
-              <button key={item} type="button" onClick={() => handleNavSelect(item)} className={`text-[15px] transition ${item === 'Köp bil' ? 'text-white font-semibold' : 'text-white/80 hover:text-white'}`}>
-                {item}
-              </button>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              if (item === 'Köp bil med hjälp') {
+                return (
+                  <button key={item} type="button" onClick={() => handleNavSelect(item)}
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/20 border border-white/40 text-white text-[14px] font-semibold hover:bg-white/30 transition backdrop-blur-sm"
+                  >
+                    {item}
+                  </button>
+                );
+              }
+              return (
+                <button key={item} type="button" onClick={() => handleNavSelect(item)}
+                  className="text-[15px] text-white/80 hover:text-white transition font-medium"
+                >
+                  {item}
+                </button>
+              );
+            })}
           </nav>
           <div className="flex items-center ml-auto">
             <a href="/logga-in" className="inline-flex items-center gap-2 bg-white text-[#0e6efe] text-[14px] font-semibold px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap">
