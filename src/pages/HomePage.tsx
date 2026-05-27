@@ -160,7 +160,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     onNavigate(regTrim, telTrim);
   };
 
-  const navItems = ['Hitta bil', 'Sälj bil'];
+  const navItems = ['Köp bil med hjälp', 'Sälj bil'];
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-slate-900">
@@ -190,33 +190,46 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             />
           </a>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            {navItems.map((item) => (
-              <a
-                key={item}
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (item === 'Sälj bil') {
-                    setHeroTab('salj');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    return;
-                  }
-                  if (item === 'Hitta bil') {
-                    window.history.pushState({}, '', '/kop-bil');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                    return;
-                  }
-                  if (item === 'Så funkar det') {
-                    window.history.pushState({}, '', '/sa-funkar-det');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                    return;
-                  }
-                }}
-                className="text-[15px] font-semibold text-slate-900 hover:text-[#0e6efe] transition"
-              >
-                {item}
-              </a>
-            ))}
+            {navItems.map((item) => {
+              if (item === 'Köp bil med hjälp') {
+                return (
+                  <a
+                    key={item}
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.history.pushState({}, '', '/kop-bil');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#0e6efe]/15 border border-[#0e6efe]/30 text-[#0e6efe] text-[14px] font-semibold hover:bg-[#0e6efe]/25 transition backdrop-blur-sm"
+                  >
+                    {item}
+                  </a>
+                );
+              }
+              return (
+                <a
+                  key={item}
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (item === 'Sälj bil') {
+                      setHeroTab('salj');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      return;
+                    }
+                    if (item === 'Så funkar det') {
+                      window.history.pushState({}, '', '/sa-funkar-det');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                      return;
+                    }
+                  }}
+                  className="text-[15px] font-semibold text-slate-900 hover:text-[#0e6efe] transition"
+                >
+                  {item}
+                </a>
+              );
+            })}
           </nav>
           <div className="flex items-center ml-auto">
 <a

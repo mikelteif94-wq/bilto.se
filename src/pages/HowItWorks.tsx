@@ -222,7 +222,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     if (item === 'Så funkar det') return;
-    if (item === 'Köp bil') {
+    if (item === 'Köp bil' || item === 'Köp bil med hjälp') {
       window.history.pushState({}, '', '/kop-bil');
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
@@ -250,7 +250,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   };
 
   const steps = DIRECT_STEPS;
-  const navItems = ['Sälj bil', 'Köp bil'];
+  const navItems = ['Sälj bil', 'Köp bil med hjälp'];
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-slate-900">
@@ -280,31 +280,39 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            {navItems.map((item) => (
-              <button
-                key={item}
-                type="button"
-                onClick={() => {
-                  if (item === 'Sälj bil') {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    return;
-                  }
-                  if (item === 'Köp bil') {
-                    window.history.pushState({}, '', '/kop-bil');
-                    window.dispatchEvent(new PopStateEvent('popstate'));
-                    return;
-                  }
-                  onBackHome();
-                }}
-                className={`text-[15px] transition ${
-                  item === 'Sälj bil'
-                    ? 'text-white font-semibold'
-                    : 'text-white/80 hover:text-white'
-                }`}
-              >
-                {item}
-              </button>
-            ))}
+            {navItems.map((item) => {
+              if (item === 'Köp bil med hjälp') {
+                return (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/kop-bil');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/15 border border-white/30 text-white text-[14px] font-semibold hover:bg-white/25 transition backdrop-blur-sm"
+                  >
+                    {item}
+                  </button>
+                );
+              }
+              return (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => {
+                    if (item === 'Sälj bil') {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      return;
+                    }
+                    onBackHome();
+                  }}
+                  className="text-[15px] text-white font-semibold transition hover:text-white/80"
+                >
+                  {item}
+                </button>
+              );
+            })}
           </nav>
           <div className="flex items-center ml-auto">
             <a
