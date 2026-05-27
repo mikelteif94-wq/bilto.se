@@ -5,6 +5,7 @@ export type MobileMenuItem =
   | 'Sälj bil'
   | 'Förmedling'
   | 'Hitta bil'
+  | 'Köp bil'
   | 'Om oss'
   | 'Så funkar det';
 
@@ -17,6 +18,7 @@ interface MobileMenuProps {
 
 const ITEMS: MobileMenuItem[] = [
   'Hitta bil',
+  'Köp bil',
   'Sälj bil',
   'Om oss',
 ];
@@ -88,6 +90,12 @@ export default function MobileMenu({ open, onClose, active, onSelect }: MobileMe
                   }
                   if (item === 'Hitta bil') {
                     window.history.pushState({}, '', '/kop-bil');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                    onClose();
+                    return;
+                  }
+                  if (item === 'Köp bil') {
+                    window.history.pushState({}, '', '/kop-bil-hjalp');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                     onClose();
                     return;

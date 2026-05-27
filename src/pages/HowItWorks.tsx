@@ -250,7 +250,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   };
 
   const steps = DIRECT_STEPS;
-  const navItems = ['Sälj bil', 'Köp bil'];
+  const navItems = ['Sälj bil', 'Hitta bil', 'Köp bil med hjälp'];
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-slate-900">
@@ -289,8 +289,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                   }
-                  if (item === 'Köp bil') {
+                  if (item === 'Hitta bil') {
                     window.history.pushState({}, '', '/kop-bil');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                    return;
+                  }
+                  if (item === 'Köp bil med hjälp') {
+                    window.history.pushState({}, '', '/kop-bil-hjalp');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                     return;
                   }
@@ -299,6 +304,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 className={`text-[15px] transition ${
                   item === 'Sälj bil'
                     ? 'text-white font-semibold'
+                    : item === 'Köp bil med hjälp'
+                    ? 'bg-white/20 hover:bg-white/30 text-white font-semibold px-4 py-1.5 rounded-full'
                     : 'text-white/80 hover:text-white'
                 }`}
               >
@@ -469,6 +476,17 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   >
                     Vet inte vad du vill ha? Vi hjälper dig.
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/kop-bil-hjalp');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="mt-2 w-full h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
+                  >
+                    Låt en expert köpa bilen åt dig
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               )}
             </div>
@@ -631,6 +649,17 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   >
                     Vet inte vad du vill ha? Vi hjälper dig.
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/kop-bil-hjalp');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="mt-2 w-full h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-semibold text-[13px] transition-all inline-flex items-center justify-center gap-1.5"
+                  >
+                    Låt en expert köpa bilen åt dig
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               )}
             </div>
@@ -694,17 +723,17 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 Din personliga bilmäklare
               </span>
               <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
-                Ska du köpa eller byta bil?
+                Din personliga bilköpare — gratis
               </h2>
               <p className="text-[15px] text-slate-600 mt-4 leading-[1.6] max-w-lg">
-                Din personliga bilmäklare hjälper dig hela vägen — oavsett om du letar efter en ny bil, redan hittat en eller vill byta in din nuvarande.
+                Vill du köpa bil utan att behöva förhandla, ringa handlare eller oroa dig för att betala för mycket? Vi tar hela jobbet — du berättar bara vad du söker.
               </p>
               <ul className="mt-6 space-y-2">
                 {[
-                  'En personlig bilmäklare på din sida',
-                  'Vi granskar pris, villkor och avtal',
-                  'Betala bara om affären blir av',
-                  'Fungerar vid köp, byte och leasing',
+                  'Söker i hela marknaden åt dig',
+                  'Förhandlar pris, ränta och tillval',
+                  'Granskar historik och skick',
+                  'Gratis — utan förpliktelse',
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2.5">
                     <span className="w-4 h-4 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0">
@@ -720,15 +749,12 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 <button
                   type="button"
                   onClick={() => {
-                    window.history.pushState({}, '', '/kop-bil');
+                    window.history.pushState({}, '', '/kop-bil-hjalp');
                     window.dispatchEvent(new PopStateEvent('popstate'));
-                    setTimeout(() => {
-                      document.getElementById('sa-fungerar-det')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
                   }}
                   className="h-12 px-7 rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
                 >
-                  Läs mer om hur det fungerar
+                  Se hur det fungerar
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
                 </button>
               </div>
