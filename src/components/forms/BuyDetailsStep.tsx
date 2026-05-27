@@ -261,8 +261,8 @@ function LinkField({
   );
 }
 
-function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void }) {
-  const [d, setD] = useState<BuyDetailsData>({ ...initialData });
+function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void; hideFuel?: boolean; autoFuel?: string }) {
+  const [d, setD] = useState<BuyDetailsData>({ ...initialData, fuelType: autoFuel || initialData.fuelType || '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = (key: keyof BuyDetailsData, value: string) => {
@@ -321,28 +321,30 @@ function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData;
         </div>
       </div>
 
-      <div className="py-6 sm:py-7">
-        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
-          Drivmedel
-          <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {FUEL_TYPES.map(f => (
-            <button
-              key={f.value}
-              type="button"
-              onClick={() => set('fuelType', d.fuelType === f.value ? '' : f.value)}
-              className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all ${
-                d.fuelType === f.value
-                  ? 'bg-[#0e6efe] text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+      {!hideFuel && (
+        <div className="py-6 sm:py-7">
+          <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+            Drivmedel
+            <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {FUEL_TYPES.map(f => (
+              <button
+                key={f.value}
+                type="button"
+                onClick={() => set('fuelType', d.fuelType === f.value ? '' : f.value)}
+                className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all ${
+                  d.fuelType === f.value
+                    ? 'bg-[#0e6efe] text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
@@ -404,8 +406,8 @@ function KnowDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData;
   );
 }
 
-function ExploreDetailsStep({ initialData, onNext }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void }) {
-  const [d, setD] = useState<BuyDetailsData>({ ...initialData });
+function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void; hideFuel?: boolean; autoFuel?: string }) {
+  const [d, setD] = useState<BuyDetailsData>({ ...initialData, fuelType: autoFuel || initialData.fuelType || '' });
   const [mustHaves, setMustHaves] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -698,8 +700,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} />;
-  if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} />;
+  if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} />;
+  if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} />;
 
   const set = (key: keyof BuyDetailsData, value: string) => {
     setD(prev => {
