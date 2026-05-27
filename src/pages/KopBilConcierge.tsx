@@ -150,24 +150,20 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            {['Sälj bil', 'Köp bil', 'Så funkar det'].map((item) => (
-              <button
-                key={item}
-                type="button"
-                onClick={() => {
-                  if (item === 'Sälj bil') onBack();
-                  else if (item === 'Köp bil') onNavigateBuy();
-                  else onNavigateHowItWorks();
-                }}
-                className={`text-[15px] transition ${
-                  item === 'Köp bil'
-                    ? 'text-white font-semibold'
-                    : 'text-white/80 hover:text-white'
-                }`}
-              >
-                {item}
-              </button>
-            ))}
+            <button
+              type="button"
+              onClick={onBack}
+              className="text-[15px] text-white/80 hover:text-white transition font-medium"
+            >
+              Sälj bil
+            </button>
+            <button
+              type="button"
+              onClick={onNavigateBuy}
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/20 border border-white/40 text-white text-[14px] font-semibold hover:bg-white/30 transition backdrop-blur-sm"
+            >
+              Köp bil med hjälp
+            </button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
