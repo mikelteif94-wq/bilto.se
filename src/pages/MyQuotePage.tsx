@@ -13,6 +13,8 @@ import {
   ArrowLeftRight,
   CalendarDays,
   CircleDollarSign,
+  ShieldCheck,
+  Star,
 } from 'lucide-react';
 import CustomerOfferCard from '../components/CustomerOfferCard';
 
@@ -363,6 +365,9 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
           </div>
         )}
 
+        {/* Expert card */}
+        <ExpertCard />
+
         {/* Contact */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
@@ -484,6 +489,49 @@ function SummaryItem({ icon: Icon, label, value }: { icon: typeof Car; label: st
       <div className="min-w-0">
         <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{label}</p>
         <p className="text-sm font-semibold text-slate-800 leading-snug truncate">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function ExpertCard() {
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-100">
+        <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">Din tilldelade expert</h2>
+      </div>
+      <div className="p-5 sm:p-6 flex items-center gap-5">
+        <div className="relative shrink-0">
+          <img
+            src="/Man_in_car_showroom_portrait.png"
+            alt="Marcus Holm"
+            className="w-16 h-16 rounded-full object-cover object-top border-2 border-slate-200"
+          />
+          <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-base font-bold text-slate-900">Marcus Holm</p>
+          <p className="text-sm text-[#0e6efe] font-medium">Seniorförhandlare · 12 år i branschen</p>
+          <div className="flex items-center gap-1 mt-1.5">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+            ))}
+            <span className="text-[11px] text-slate-400 ml-1">5.0</span>
+          </div>
+        </div>
+        <a
+          href="tel:+46855550200"
+          className="shrink-0 inline-flex items-center gap-2 h-10 px-4 rounded-full bg-[#0e6efe] text-white text-sm font-semibold hover:bg-[#0a57cc] transition"
+        >
+          <Phone className="w-3.5 h-3.5" />
+          Ring
+        </a>
+      </div>
+      <div className="px-5 sm:px-6 pb-5 flex items-start gap-3">
+        <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+        <p className="text-[13px] text-slate-600 leading-relaxed">
+          Marcus arbetar <span className="font-semibold">uteslutande för dig</span> — inte för handlaren. Hans mål är att du ska betala rätt pris och inte ett öre mer.
+        </p>
       </div>
     </div>
   );

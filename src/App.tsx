@@ -37,6 +37,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import BlogPage from './pages/BlogPage';
 import AboutPage from './pages/AboutPage';
 import CompareCarsPage from './pages/CompareCarsPage';
+import KopBilConcierge from './pages/KopBilConcierge';
 import { supabase } from './lib/supabase';
 import type { Session } from '@supabase/supabase-js';
 
@@ -536,6 +537,28 @@ function App() {
         onNavigate={adminNavigate}
         onNavigateBulkUpload={() => navigate('/admin/uppladdning')}
         onNavigateCatalog={() => navigate('/admin/katalog')}
+      />
+    );
+  }
+
+  if (path === '/kop-bil-hjalp') {
+    return (
+      <KopBilConcierge
+        onBack={() => {
+          window.history.pushState({}, '', '/');
+          setPath('/');
+        }}
+        onNavigateBuy={(bil) => {
+          const params = new URLSearchParams();
+          if (bil) params.set('bil', bil);
+          params.set('source', 'Köp-hjälp-sida');
+          window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
+          setPath('/kop-bil/bestall');
+        }}
+        onNavigateHowItWorks={() => {
+          window.history.pushState({}, '', '/sa-funkar-det');
+          setPath('/sa-funkar-det');
+        }}
       />
     );
   }

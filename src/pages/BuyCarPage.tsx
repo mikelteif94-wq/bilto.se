@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, Phone, Check, X, User } from 'lucide-react';
+import { ChevronLeft, Phone, Check, X, User, Star, ShieldCheck } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
 import { validateSwedishPhone } from '../lib/utils';
 import BuyTrackStep, { type BuyTrack } from '../components/forms/BuyTrackStep';
@@ -334,24 +334,61 @@ export default function BuyCarPage({
           )}
 
           {step === 'done' && (
-            <div className="text-center pt-16 sm:pt-20 pb-10">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-5">
-                <Check className="w-8 h-8 text-emerald-600" />
-              </div>
-              <h1 className="text-[24px] sm:text-[28px] font-bold text-slate-900 mb-3">
-                Tack, {contact.namn.split(' ')[0]}!
-              </h1>
-              <p className="text-[15px] text-slate-600 leading-relaxed max-w-sm mx-auto mb-6">
-                Din förfrågan är skickad. En av våra bilexperter hör av sig och tar det därifrån — du behöver inte göra ett dugg mer.
-              </p>
-
-              <div className="max-w-sm mx-auto bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-8 flex items-start gap-2.5 text-left">
-                <span className="text-amber-500 text-[16px] shrink-0 mt-px">✉</span>
-                <p className="text-[13px] text-amber-800 leading-relaxed">
-                  Vi har skickat en bekräftelse till din mejl. Hamnar den inte i inkorgen? Kolla skräpposten — den kan ha hamnat där.
+            <div className="pt-12 sm:pt-16 pb-10">
+              {/* Success badge */}
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-5">
+                  <Check className="w-8 h-8 text-emerald-600" />
+                </div>
+                <h1 className="text-[24px] sm:text-[28px] font-bold text-slate-900 mb-3">
+                  Tack, {contact.namn.split(' ')[0]}!
+                </h1>
+                <p className="text-[15px] text-slate-600 leading-relaxed max-w-sm mx-auto">
+                  Din förfrågan är mottagen. En expert tar vid och hör av sig — du behöver inte göra ett dugg mer.
                 </p>
               </div>
 
+              {/* Expert handoff card */}
+              <div className="max-w-sm mx-auto mb-7 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                <div className="bg-[#0e6efe]/5 px-5 py-3 border-b border-slate-100">
+                  <p className="text-[12px] font-bold text-[#0e6efe] uppercase tracking-wider">Din tilldelade expert</p>
+                </div>
+                <div className="p-5 flex items-center gap-4">
+                  <div className="relative shrink-0">
+                    <img
+                      src="/Man_in_car_showroom_portrait.png"
+                      alt="Marcus Holm"
+                      className="w-14 h-14 rounded-full object-cover object-top border-2 border-slate-200"
+                    />
+                    <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[15px] font-bold text-slate-900">Marcus Holm</p>
+                    <p className="text-[12px] text-[#0e6efe] font-medium">Seniorförhandlare · 12 år</p>
+                    <div className="flex items-center gap-0.5 mt-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="px-5 pb-5 flex items-start gap-2.5">
+                  <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <p className="text-[12.5px] text-slate-600 leading-relaxed">
+                    Marcus jobbar <span className="font-semibold">uteslutande för dig</span> — aldrig för handlaren.
+                  </p>
+                </div>
+              </div>
+
+              {/* Email notice */}
+              <div className="max-w-sm mx-auto bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-7 flex items-start gap-2.5 text-left">
+                <span className="text-amber-500 text-[16px] shrink-0 mt-px">✉</span>
+                <p className="text-[13px] text-amber-800 leading-relaxed">
+                  Vi har skickat en bekräftelse till din mejl. Hamnar den inte i inkorgen? Kolla skräpposten.
+                </p>
+              </div>
+
+              {/* Steps */}
               <div className="max-w-sm mx-auto space-y-3 text-left mb-10">
                 <div className="flex items-start gap-3 px-4 py-3 bg-slate-50 rounded-xl">
                   <div className="w-6 h-6 rounded-full bg-[#0e6efe] flex items-center justify-center shrink-0 mt-0.5">
@@ -367,7 +404,7 @@ export default function BuyCarPage({
                     <span className="text-[11px] font-bold text-slate-500">2</span>
                   </div>
                   <div>
-                    <p className="text-[14px] font-semibold text-slate-900">Vi hör av oss</p>
+                    <p className="text-[14px] font-semibold text-slate-900">Experten hör av sig</p>
                     <p className="text-[13px] text-slate-500">
                       {contact.preferredTime === 'morning' ? 'Förmiddag' : contact.preferredTime === 'afternoon' ? 'Eftermiddag' : 'Inom en arbetsdag'}
                     </p>
@@ -384,13 +421,15 @@ export default function BuyCarPage({
                 </div>
               </div>
 
-              <a
-                href="tel:+46855550200"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-100 text-slate-700 text-[14px] font-medium hover:bg-slate-200 transition"
-              >
-                <Phone className="w-4 h-4" />
-                Ring oss direkt: 08-5555 0200
-              </a>
+              <div className="text-center">
+                <a
+                  href="tel:+46855550200"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-100 text-slate-700 text-[14px] font-medium hover:bg-slate-200 transition"
+                >
+                  <Phone className="w-4 h-4" />
+                  Ring oss direkt: 08-5555 0200
+                </a>
+              </div>
             </div>
           )}
         </div>
