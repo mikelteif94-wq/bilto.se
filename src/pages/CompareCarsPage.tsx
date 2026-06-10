@@ -970,13 +970,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
-        active="Köp bil"
-        onSelect={(item) => {
-          setMenuOpen(false);
-          if (item === 'Så funkar det') {
-            setTimeout(() => document.getElementById('sa-funkar-det')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-          } else onBackHome();
-        }}
+        active="Köp bil med hjälp"
+        onSelect={() => { setMenuOpen(false); }}
       />
 
       {/* Hero */}
