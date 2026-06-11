@@ -17,6 +17,8 @@ import {
   AlertTriangle,
   CheckCircle2,
   Clock,
+  Trash2,
+  Ban,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
@@ -46,6 +48,8 @@ interface DealerInvoice {
   car?: { marke: string; modell: string; ar: number | null; regnummer: string } | null;
 }
 
+type ConfirmAction = 'reject' | 'revoke' | 'delete' | null;
+
 const INVOICE_STATUS: Record<string, { label: string; cls: string }> = {
   pending:   { label: 'Väntar',     cls: 'bg-amber-50 text-amber-700 ring-amber-200' },
   invoiced:  { label: 'Fakturerad', cls: 'bg-blue-50 text-blue-700 ring-blue-200' },
@@ -55,11 +59,44 @@ const INVOICE_STATUS: Record<string, { label: string; cls: string }> = {
 };
 
 const STATUS_TRANSITIONS: Record<string, { next: string; label: string; cls: string }[]> = {
-  pending:  [{ next: 'invoiced', label: 'Markera fakturerad', cls: 'bg-blue-600 hover:bg-blue-700 text-white' }, { next: 'overdue', label: 'Markera förfallen', cls: 'bg-red-600 hover:bg-red-700 text-white' }, { next: 'cancelled', label: 'Avbryt', cls: 'bg-slate-200 hover:bg-slate-300 text-slate-700' }],
-  invoiced: [{ next: 'paid', label: 'Markera betald', cls: 'bg-emerald-600 hover:bg-emerald-700 text-white' }, { next: 'overdue', label: 'Markera förfallen', cls: 'bg-red-600 hover:bg-red-700 text-white' }],
-  overdue:  [{ next: 'paid', label: 'Markera betald', cls: 'bg-emerald-600 hover:bg-emerald-700 text-white' }, { next: 'invoiced', label: 'Återställ till fakturerad', cls: 'bg-blue-600 hover:bg-blue-700 text-white' }],
-  paid:     [],
+  pending:  [
+    { next: 'invoiced', label: 'Markera fakturerad', cls: 'bg-blue-600 hover:bg-blue-700 text-white' },
+    { next: 'overdue', label: 'Markera förfallen', cls: 'bg-red-600 hover:bg-red-700 text-white' },
+    { next: 'cancelled', label: 'Avbryt', cls: 'bg-slate-200 hover:bg-slate-300 text-slate-700' },
+  ],
+  invoiced: [
+    { next: 'paid', label: 'Markera betald', cls: 'bg-emerald-600 hover:bg-emerald-700 text-white' },
+    { next: 'overdue', label: 'Markera förfallen', cls: 'bg-red-600 hover:bg-red-700 text-white' },
+  ],
+  overdue: [
+    { next: 'paid', label: 'Markera betald', cls: 'bg-emerald-600 hover:bg-emerald-700 text-white' },
+    { next: 'invoiced', label: 'Återställ till fakturerad', cls: 'bg-blue-600 hover:bg-blue-700 text-white' },
+  ],
+  paid: [],
   cancelled: [],
+};
+
+const CONFIRM_CONFIG: Record<NonNullable<ConfirmAction>, {
+  title: string; body: string; cta: string; ctaCls: string;
+}> = {
+  reject: {
+    title: 'Neka ansökan',
+    body: 'Handlaren nekas och kan inte logga in. Du kan alltid godkänna dem igen senare.',
+    cta: 'Neka ansökan',
+    ctaCls: 'bg-red-600 hover:bg-red-700 text-white',
+  },
+  revoke: {
+    title: 'Återkalla godkännande',
+    body: 'Handlaren förlorar sin åtkomst och hamnar under "Väntar". Du kan godkänna dem igen.',
+    cta: 'Återkalla',
+    ctaCls: 'bg-amber-600 hover:bg-amber-700 text-white',
+  },
+  delete: {
+    title: 'Ta bort handlare',
+    body: 'Handlaren och all tillhörande data raderas permanent. Det går inte att ångra.',
+    cta: 'Ta bort permanent',
+    ctaCls: 'bg-red-700 hover:bg-red-800 text-white',
+  },
 };
 
 function formatDate(iso: string) {
@@ -83,6 +120,9 @@ export default function AdminDealerDetail({
   const [approving, setApproving] = useState(false);
   const [approvedJustNow, setApprovedJustNow] = useState(false);
   const [emailWarning, setEmailWarning] = useState<string | null>(null);
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
+  const [actioning, setActioning] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const [invoices, setInvoices] = useState<DealerInvoice[]>([]);
   const [loadingInvoices, setLoadingInvoices] = useState(false);
@@ -169,7 +209,11 @@ export default function AdminDealerDetail({
       setInvoiceError(insertErr.message);
     } else {
       setShowAddInvoice(false);
-      setAddForm({ commission_type: 'standard', description: '', due_date: new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10) });
+      setAddForm({
+        commission_type: 'standard',
+        description: '',
+        due_date: new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10),
+      });
       await loadInvoices();
     }
     setSavingInvoice(false);
@@ -187,7 +231,7 @@ export default function AdminDealerDetail({
 
     const { data: updated, error: updateError } = await supabase
       .from('dealers')
-      .update({ godkand: true })
+      .update({ godkand: true, rejected: false })
       .eq('id', dealer.id)
       .select('*')
       .maybeSingle();
@@ -224,8 +268,46 @@ export default function AdminDealerDetail({
     setApproving(false);
   };
 
+  const handleConfirmAction = async () => {
+    if (!confirmAction || !dealer) return;
+    setActioning(true);
+    setActionError(null);
+
+    if (confirmAction === 'reject') {
+      const { error: err } = await supabase
+        .from('dealers')
+        .update({ rejected: true, godkand: false })
+        .eq('id', dealer.id);
+      if (err) { setActionError(err.message); setActioning(false); return; }
+      setDealer(prev => prev ? { ...prev, rejected: true, godkand: false } : prev);
+    } else if (confirmAction === 'revoke') {
+      const { error: err } = await supabase
+        .from('dealers')
+        .update({ godkand: false })
+        .eq('id', dealer.id);
+      if (err) { setActionError(err.message); setActioning(false); return; }
+      setDealer(prev => prev ? { ...prev, godkand: false } : prev);
+    } else if (confirmAction === 'delete') {
+      const { error: err } = await supabase
+        .from('dealers')
+        .delete()
+        .eq('id', dealer.id);
+      if (err) { setActionError(err.message); setActioning(false); return; }
+      setActioning(false);
+      setConfirmAction(null);
+      onBack();
+      return;
+    }
+
+    setActioning(false);
+    setConfirmAction(null);
+  };
+
   const breadcrumbEl = (
-    <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] text-slate-500 hover:text-slate-900 transition font-medium">
+    <button
+      onClick={onBack}
+      className="flex items-center gap-1.5 text-[13px] text-slate-500 hover:text-slate-900 transition font-medium"
+    >
       <ChevronLeft className="w-4 h-4" />
       Tillbaka till handlare
     </button>
@@ -259,6 +341,13 @@ export default function AdminDealerDetail({
     .reduce((s, i) => s + (i.total_kr || i.belopp), 0);
   const overdueInvoices = invoices.filter(i => i.status === 'overdue');
 
+  const statusLabel = dealer.godkand ? 'Godkänd' : dealer.rejected ? 'Nekad' : 'Väntar';
+  const statusCls = dealer.godkand
+    ? 'bg-green-600 text-white ring-green-600'
+    : dealer.rejected
+    ? 'bg-red-100 text-red-700 ring-red-200'
+    : 'bg-amber-50 text-amber-700 ring-amber-200';
+
   return (
     <PortalLayout navItems={[]} identity="Admin" identityRole="Bilto" onLogout={handleLogout} breadcrumb={breadcrumbEl}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-7">
@@ -271,70 +360,132 @@ export default function AdminDealerDetail({
               <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 break-words">{dealer.foretagsnamn}</h1>
               <p className="text-slate-500 mt-1 font-mono text-sm">{dealer.orgnr}</p>
             </div>
-            <span className={`inline-flex items-center text-xs font-semibold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full ring-1 ring-inset shrink-0 ${
-              dealer.godkand ? 'bg-green-600 text-white ring-green-600' : 'bg-amber-50 text-amber-700 ring-amber-200'
-            }`}>
-              {dealer.godkand ? 'Godkänd' : 'Väntar'}
+            <span className={`inline-flex items-center text-xs font-semibold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full ring-1 ring-inset shrink-0 ${statusCls}`}>
+              {statusLabel}
             </span>
           </div>
 
           {/* Dealer info */}
           <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-8 shadow-sm space-y-5 sm:space-y-6">
             <InfoRow icon={<Building2 className="w-4 h-4" />} label="Företag" value={dealer.foretagsnamn} />
-            <InfoRow icon={<Hash className="w-4 h-4" />} label="Moderbolag org.nr" value={dealer.moderbolag || dealer.orgnr} mono />
+            <InfoRow icon={<Hash className="w-4 h-4" />} label="Org.nr" value={dealer.moderbolag || dealer.orgnr} mono />
             {Array.isArray(dealer.organisationsnummer) && dealer.organisationsnummer.length > 0 && (
               <InfoRow icon={<Hash className="w-4 h-4" />} label="Alla organisationsnummer" value={
-                <ul className="space-y-0.5">{dealer.organisationsnummer.map((o, i) => <li key={i} className="font-mono text-slate-900">{o}</li>)}</ul>
+                <ul className="space-y-0.5">
+                  {dealer.organisationsnummer.map((o, i) => <li key={i} className="font-mono text-slate-900">{o}</li>)}
+                </ul>
               } />
             )}
             {Array.isArray(dealer.adresser) && dealer.adresser.length > 0 && (
               <InfoRow icon={<MapPin className="w-4 h-4" />} label="Inköpsadresser" value={
-                <ul className="space-y-0.5">{dealer.adresser.map((a, i) => <li key={i} className="text-slate-900">{a}</li>)}</ul>
+                <ul className="space-y-0.5">
+                  {dealer.adresser.map((a, i) => <li key={i} className="text-slate-900">{a}</li>)}
+                </ul>
               } />
             )}
             <InfoRow icon={<User className="w-4 h-4" />} label="Kontaktperson" value={[dealer.fornamn, dealer.efternamn].filter(Boolean).join(' ') || dealer.kontaktperson} />
             <InfoRow icon={<Phone className="w-4 h-4" />} label="Telefon" value={dealer.telefon ? <a href={`tel:${dealer.telefon}`} className="text-slate-900 hover:text-slate-700">{dealer.telefon}</a> : '—'} />
-            <InfoRow icon={<Mail className="w-4 h-4" />} label="Mejl (inloggning)" value={dealer.mejl ? <a href={`mailto:${dealer.mejl}`} className="text-slate-900 hover:text-slate-700">{dealer.mejl}</a> : '—'} />
+            <InfoRow icon={<Mail className="w-4 h-4" />} label="E-post" value={dealer.mejl ? <a href={`mailto:${dealer.mejl}`} className="text-slate-900 hover:text-slate-700">{dealer.mejl}</a> : '—'} />
             {dealer.faktura_epost && (
               <InfoRow icon={<Receipt className="w-4 h-4" />} label="Faktura-e-post" value={<a href={`mailto:${dealer.faktura_epost}`} className="text-slate-900 hover:text-slate-700">{dealer.faktura_epost}</a>} />
             )}
             <InfoRow icon={<Calendar className="w-4 h-4" />} label="Ansökan inkom" value={formatDate(dealer.created_at)} />
           </div>
 
-          {/* Approval */}
-          <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-8 shadow-sm">
+          {/* Approval actions */}
+          <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-8 shadow-sm space-y-4">
             {dealer.godkand ? (
-              <div className="flex items-start gap-3 text-slate-700">
-                <Check className="w-5 h-5 text-green-600 mt-0.5" />
-                <div>
-                  <p className="font-semibold text-slate-900">Handlaren är godkänd</p>
-                  <p className="text-sm text-slate-500 mt-1">
-                    {approvedJustNow ? 'Välkomstmejl har skickats med inloggningslänk.' : 'Handlaren kan logga in och lägga bud.'}
-                  </p>
-                  {emailWarning && (
-                    <p className="mt-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">{emailWarning}</p>
-                  )}
+              <>
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                    <Check className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">Handlaren är godkänd</p>
+                    <p className="text-sm text-slate-500 mt-1">
+                      {approvedJustNow
+                        ? 'Välkomstmejl har skickats med inloggningslänk.'
+                        : 'Handlaren kan logga in och lägga bud.'}
+                    </p>
+                    {emailWarning && (
+                      <p className="mt-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                        {emailWarning}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div>
-                <h2 className="text-lg font-bold text-slate-900 mb-1">Godkänn handlare</h2>
-                <p className="text-sm text-slate-500 mb-5">Handlaren får tillgång till att lägga bud och ett välkomstmejl med inloggningslänk.</p>
+                <button
+                  onClick={() => setConfirmAction('revoke')}
+                  className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-slate-300 text-slate-700 text-sm font-semibold hover:border-slate-400 hover:bg-slate-50 transition"
+                >
+                  Återkalla godkännande
+                </button>
+              </>
+            ) : dealer.rejected ? (
+              <>
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                    <Ban className="w-4 h-4 text-red-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">Ansökan nekad</p>
+                    <p className="text-sm text-slate-500 mt-1">
+                      Handlaren har nekats tillgång. Du kan godkänna dem om du ändrar dig.
+                    </p>
+                  </div>
+                </div>
                 <button
                   onClick={handleApprove}
                   disabled={approving}
-                  className="inline-flex items-center gap-2 h-11 bg-black hover:bg-slate-800 disabled:bg-slate-400 text-white font-semibold text-[14px] rounded-full px-5 transition"
+                  className="inline-flex items-center gap-2 h-9 px-4 rounded-full bg-black hover:bg-slate-800 disabled:bg-slate-400 text-white text-sm font-semibold transition"
                 >
-                  {approving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-                  {approving ? 'Godkänner…' : 'Godkänn handlare'}
+                  {approving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                  Godkänn ändå
                 </button>
-              </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <p className="font-semibold text-slate-900 mb-1">Godkänn handlare</p>
+                  <p className="text-sm text-slate-500">
+                    Handlaren får tillgång och ett välkomstmejl med inloggningslänk skickas.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={handleApprove}
+                    disabled={approving}
+                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full bg-black hover:bg-slate-800 disabled:bg-slate-400 text-white text-sm font-semibold transition"
+                  >
+                    {approving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                    {approving ? 'Godkänner…' : 'Godkänn'}
+                  </button>
+                  <button
+                    onClick={() => setConfirmAction('reject')}
+                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 transition"
+                  >
+                    <Ban className="w-3.5 h-3.5" />
+                    Neka ansökan
+                  </button>
+                </div>
+              </>
             )}
           </div>
 
-          {/* ── Förmedlingsavgifter ── */}
+          {/* Danger zone */}
+          <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6 shadow-sm">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Farlig zon</p>
+            <button
+              onClick={() => setConfirmAction('delete')}
+              className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 transition"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Ta bort handlare
+            </button>
+          </div>
+
+          {/* Förmedlingsavgifter */}
           <div className="bg-white rounded-md border border-slate-200 shadow-sm overflow-hidden">
-            {/* Section header */}
             <div className="flex items-center justify-between px-5 sm:px-8 py-4 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center">
@@ -359,7 +510,6 @@ export default function AdminDealerDetail({
               </button>
             </div>
 
-            {/* Overdue alert */}
             {overdueInvoices.length > 0 && (
               <div className="flex items-center gap-3 px-5 sm:px-8 py-3 bg-red-50 border-b border-red-100">
                 <AlertTriangle className="w-4 h-4 text-red-500 shrink-0" />
@@ -369,11 +519,9 @@ export default function AdminDealerDetail({
               </div>
             )}
 
-            {/* Add invoice form */}
             {showAddInvoice && (
               <div className="px-5 sm:px-8 py-5 bg-slate-50 border-b border-slate-100 space-y-4">
                 <h3 className="text-sm font-semibold text-slate-800">Ny manuell faktura</h3>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-600 mb-1.5">Typ</label>
@@ -393,12 +541,13 @@ export default function AdminDealerDetail({
                           }`}
                         >
                           <div className="font-semibold">{opt.label}</div>
-                          <div className={`text-[11px] mt-0.5 ${addForm.commission_type === opt.value ? 'text-slate-300' : 'text-slate-400'}`}>{opt.sub}</div>
+                          <div className={`text-[11px] mt-0.5 ${addForm.commission_type === opt.value ? 'text-slate-300' : 'text-slate-400'}`}>
+                            {opt.sub}
+                          </div>
                         </button>
                       ))}
                     </div>
                   </div>
-
                   <div>
                     <label className="block text-xs font-semibold text-slate-600 mb-1.5">Förfallodatum</label>
                     <input
@@ -409,7 +558,6 @@ export default function AdminDealerDetail({
                     />
                   </div>
                 </div>
-
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1.5">Beskrivning (valfritt)</label>
                   <input
@@ -420,10 +568,11 @@ export default function AdminDealerDetail({
                     className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm text-slate-900 focus:outline-none focus:border-slate-400"
                   />
                 </div>
-
                 <div className="flex items-center gap-3 pt-1">
                   <div className="text-sm text-slate-600">
-                    Belopp: <span className="font-bold text-slate-900">{(addForm.commission_type === 'trade_in' ? 7500 : 3750).toLocaleString('sv-SE')} kr</span> inkl. moms
+                    Belopp: <span className="font-bold text-slate-900">
+                      {(addForm.commission_type === 'trade_in' ? 7500 : 3750).toLocaleString('sv-SE')} kr
+                    </span> inkl. moms
                   </div>
                   <button
                     onClick={handleAddInvoice}
@@ -438,7 +587,6 @@ export default function AdminDealerDetail({
               </div>
             )}
 
-            {/* Invoice list */}
             {loadingInvoices ? (
               <div className="flex justify-center py-10">
                 <Loader2 className="w-5 h-5 animate-spin text-slate-300" />
@@ -448,14 +596,19 @@ export default function AdminDealerDetail({
                 <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center">
                   <Receipt className="w-4 h-4 text-slate-300" />
                 </div>
-                <p className="text-sm text-slate-400">Inga fakturor ännu. Fakturor skapas automatiskt när handlaren vinner en auktion.</p>
+                <p className="text-sm text-slate-400">
+                  Inga fakturor ännu. Fakturor skapas automatiskt när handlaren vinner en auktion.
+                </p>
               </div>
             ) : (
               <div className="divide-y divide-slate-100">
                 {invoices.map((inv) => {
                   const s = INVOICE_STATUS[inv.status] ?? INVOICE_STATUS.pending;
                   const transitions = STATUS_TRANSITIONS[inv.status] ?? [];
-                  const isOverdue = inv.due_date && new Date(inv.due_date) < new Date() && inv.status !== 'paid' && inv.status !== 'cancelled';
+                  const isOverdue = inv.due_date
+                    && new Date(inv.due_date) < new Date()
+                    && inv.status !== 'paid'
+                    && inv.status !== 'cancelled';
 
                   return (
                     <div key={inv.id} className={`px-5 sm:px-8 py-4 ${isOverdue ? 'bg-red-50/30' : ''}`}>
@@ -467,10 +620,8 @@ export default function AdminDealerDetail({
                             ? <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                             : isOverdue
                             ? <AlertTriangle className="w-4 h-4 text-red-500" />
-                            : <Clock className="w-4 h-4 text-slate-400" />
-                          }
+                            : <Clock className="w-4 h-4 text-slate-400" />}
                         </div>
-
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             {inv.invoice_number && (
@@ -479,15 +630,19 @@ export default function AdminDealerDetail({
                             <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${s.cls}`}>
                               {s.label}
                             </span>
-                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${inv.commission_type === 'trade_in' ? 'bg-sky-50 text-sky-700 ring-sky-200' : 'bg-slate-100 text-slate-500 ring-slate-200'}`}>
+                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${
+                              inv.commission_type === 'trade_in'
+                                ? 'bg-sky-50 text-sky-700 ring-sky-200'
+                                : 'bg-slate-100 text-slate-500 ring-slate-200'
+                            }`}>
                               {inv.commission_type === 'trade_in' ? 'Inbyte' : 'Standard'}
                             </span>
                           </div>
-
                           <p className="text-xs text-slate-500 mt-1 truncate">
-                            {inv.description || (inv.car ? `${inv.car.marke} ${inv.car.modell} ${inv.car.ar ?? ''} · ${inv.car.regnummer}` : '—')}
+                            {inv.description || (inv.car
+                              ? `${inv.car.marke} ${inv.car.modell} ${inv.car.ar ?? ''} · ${inv.car.regnummer}`
+                              : '—')}
                           </p>
-
                           <div className="flex items-center gap-3 mt-1 text-[11px] text-slate-400 flex-wrap">
                             {inv.invoice_date && <span>Fakturadatum: {formatDateShort(inv.invoice_date)}</span>}
                             {inv.due_date && (
@@ -497,8 +652,6 @@ export default function AdminDealerDetail({
                             )}
                             <span>Skapad: {formatDateShort(inv.created_at)}</span>
                           </div>
-
-                          {/* Status transition buttons */}
                           {transitions.length > 0 && (
                             <div className="flex flex-wrap gap-2 mt-3">
                               {transitions.map(tr => (
@@ -508,17 +661,14 @@ export default function AdminDealerDetail({
                                   disabled={updatingInvoiceId === inv.id}
                                   className={`inline-flex items-center gap-1.5 h-7 px-3 rounded-full text-[11px] font-semibold transition disabled:opacity-50 ${tr.cls}`}
                                 >
-                                  {updatingInvoiceId === inv.id ? (
-                                    <Loader2 className="w-3 h-3 animate-spin" />
-                                  ) : (
-                                    tr.label
-                                  )}
+                                  {updatingInvoiceId === inv.id
+                                    ? <Loader2 className="w-3 h-3 animate-spin" />
+                                    : tr.label}
                                 </button>
                               ))}
                             </div>
                           )}
                         </div>
-
                         <div className="shrink-0 text-right">
                           <div className="text-base font-bold text-slate-900 tabular-nums">
                             {(inv.total_kr || inv.belopp).toLocaleString('sv-SE')} kr
@@ -537,11 +687,52 @@ export default function AdminDealerDetail({
 
         </div>
       </div>
+
+      {/* Confirmation modal */}
+      {confirmAction && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => { setConfirmAction(null); setActionError(null); }}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4">
+            <h2 className="text-lg font-bold text-slate-900">{CONFIRM_CONFIG[confirmAction].title}</h2>
+            <p className="text-sm text-slate-600 leading-relaxed">{CONFIRM_CONFIG[confirmAction].body}</p>
+            {actionError && (
+              <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{actionError}</p>
+            )}
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={() => { setConfirmAction(null); setActionError(null); }}
+                className="flex-1 h-10 rounded-full border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition"
+              >
+                Avbryt
+              </button>
+              <button
+                onClick={handleConfirmAction}
+                disabled={actioning}
+                className={`flex-1 h-10 rounded-full text-sm font-semibold transition disabled:opacity-50 inline-flex items-center justify-center gap-2 ${CONFIRM_CONFIG[confirmAction].ctaCls}`}
+              >
+                {actioning
+                  ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  : CONFIRM_CONFIG[confirmAction].cta}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </PortalLayout>
   );
 }
 
-function InfoRow({ icon, label, value, mono }: { icon: React.ReactNode; label: string; value: React.ReactNode; mono?: boolean }) {
+function InfoRow({
+  icon, label, value, mono,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: React.ReactNode;
+  mono?: boolean;
+}) {
   return (
     <div className="flex items-start gap-4">
       <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center flex-shrink-0">

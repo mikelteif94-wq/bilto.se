@@ -207,6 +207,7 @@ export type Database = {
           telefon: string;
           mejl: string;
           godkand: boolean;
+          rejected: boolean;
           user_id: string | null;
           created_at: string;
           fornamn: string;
@@ -240,6 +241,7 @@ export type Database = {
           telefon?: string;
           mejl?: string;
           godkand?: boolean;
+          rejected?: boolean;
           user_id?: string | null;
           created_at?: string;
           fornamn?: string;
@@ -272,6 +274,7 @@ export type Database = {
           telefon?: string;
           mejl?: string;
           godkand?: boolean;
+          rejected?: boolean;
           user_id?: string | null;
           created_at?: string;
           fornamn?: string;
