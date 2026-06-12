@@ -214,6 +214,9 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
   const [imgSearchLoading, setImgSearchLoading] = useState(false);
   const [imgSearchQuery, setImgSearchQuery] = useState('');
 
+  const [imgUploading, setImgUploading] = useState(false);
+  const imgUploadInputRef = useRef<HTMLInputElement>(null);
+
   const load = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase
@@ -362,6 +365,25 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
     setEditState({ ...editState, image_url: url });
     setImgSearchId(null);
     setImgSearchResults([]);
+  };
+
+  const handleImgFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editId || !editState) return;
+    e.target.value = '';
+    setImgUploading(true);
+    try {
+      const ext = file.name.split('.').pop() ?? 'jpg';
+      const path = `${editId}/${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from('catalog-images').upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data } = supabase.storage.from('catalog-images').getPublicUrl(path);
+      setEditState({ ...editState, image_url: data.publicUrl });
+    } catch (err) {
+      console.error('Image upload failed:', err);
+    } finally {
+      setImgUploading(false);
+    }
   };
 
   const handleCsvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -781,6 +803,24 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                               placeholder="Klistra in bild-URL (https://…) eller sök nedan"
                               className="flex-1 h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition placeholder:text-slate-400"
                             />
+                            {/* File upload */}
+                            <input
+                              ref={imgUploadInputRef}
+                              type="file"
+                              accept="image/*"
+                              onChange={handleImgFileUpload}
+                              className="hidden"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => imgUploadInputRef.current?.click()}
+                              disabled={imgUploading}
+                              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold border bg-white text-slate-600 border-slate-200 hover:border-emerald-400 hover:text-emerald-600 transition disabled:opacity-50"
+                              title="Ladda upp bild från din dator"
+                            >
+                              {imgUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                              {imgUploading ? 'Laddar…' : 'Ladda upp'}
+                            </button>
                             <button
                               type="button"
                               onClick={() => {
