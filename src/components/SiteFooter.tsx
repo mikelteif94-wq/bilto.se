@@ -89,6 +89,7 @@ export function SiteFooter() {
                 { label: 'Användarvillkor', href: '/anvandarvillkor' },
                 { label: 'Integritetspolicy', href: '/integritetspolicy' },
                 { label: 'Cookies', href: '/integritetspolicy' },
+                { label: 'Webbplatskarta', href: '/webbplatskarta' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <a href={href} className="text-[13.5px] text-slate-500 hover:text-white transition-colors duration-200 hover:pl-1 inline-block transition-all">{label}</a>

@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { supabase } from './lib/supabase';
 import type { Session } from '@supabase/supabase-js';
+import { slugToCity, slugToBrand } from './lib/seo-pages';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
@@ -41,6 +42,8 @@ const BlogPage = lazy(() => import('./pages/BlogPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CompareCarsPage = lazy(() => import('./pages/CompareCarsPage'));
 const KopBilConcierge = lazy(() => import('./pages/KopBilConcierge'));
+const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
+const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -456,6 +459,50 @@ function App() {
     window.history.replaceState({}, '', '/kop-bil');
     setPath('/kop-bil');
     return null;
+  }
+
+  if (path === '/webbplatskarta') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <WebbplatskartaPage
+          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  const cityMatch = path.match(/^\/salj-din-bil-i-([a-z0-9-]+)\/?$/);
+  if (cityMatch) {
+    const citySlug = cityMatch[1];
+    const city = slugToCity(citySlug);
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <SeoLandingPage
+          type="city"
+          city={city}
+          onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
+          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  const brandMatch = path.match(/^\/salj-din-([a-z0-9-]+)\/?$/);
+  if (brandMatch && brandMatch[1] !== 'bil') {
+    const brandSlug = brandMatch[1];
+    const brand = slugToBrand(brandSlug);
+    if (brand) {
+      return (
+        <Suspense fallback={<PageLoader />}>
+          <SeoLandingPage
+            type="brand"
+            brand={brand}
+            onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
+            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+          />
+        </Suspense>
+      );
+    }
   }
 
   if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
