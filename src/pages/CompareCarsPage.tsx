@@ -41,6 +41,28 @@ const FUEL_LABELS: Record<string, string> = {
 
 const MAX_COMPARE = 4;
 
+const EVERYDAY_BRANDS = new Set([
+  'volvo', 'tesla', 'kia', 'toyota', 'volkswagen', 'vw', 'hyundai', 'skoda',
+  'polestar', 'ford', 'renault', 'peugeot', 'seat', 'cupra', 'honda', 'mazda',
+  'subaru', 'mg', 'opel', 'nissan', 'suzuki', 'mitsubishi', 'dacia',
+]);
+
+const EXCLUDED_FROM_TOP = new Set([
+  'bmw 7-serie', 'bmw m3', 'bmw m4', 'bmw m5', 'bmw m2', 'bmw m240i', 'bmw m3 touring', 'bmw m8',
+  'porsche cayenne', 'porsche macan', 'porsche 911', 'porsche panamera', 'porsche taycan',
+  'maserati', 'ferrari', 'lamborghini', 'rolls-royce', 'bentley', 'aston martin',
+  'mercedes amg gle 63', 'mercedes amg gt', 'mercedes s-klass', 'mercedes sl',
+  'audi rs6', 'audi rs3', 'audi r8', 'land rover range rover', 'land rover defender',
+]);
+
+function expertPriority(car: CatalogCarFull): number {
+  const key = `${car.make} ${car.model}`.toLowerCase();
+  const make = car.make.toLowerCase();
+  if (EXCLUDED_FROM_TOP.has(key) || make === 'porsche' || make === 'maserati') return 2;
+  if (EVERYDAY_BRANDS.has(make)) return 0;
+  return 1;
+}
+
 function getExpertComment(car: ComparisonCar): string {
   const n = `${car.brand_display} ${car.model_display}`.toLowerCase();
   if (n.includes('tesla model y')) return 'Sveriges mest sålda bil – snabb, rymlig och billig i drift.';
@@ -676,6 +698,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
     return filtered.slice().sort((a, b) => {
       if (q) return `${a.make} ${a.model}`.localeCompare(`${b.make} ${b.model}`, 'sv');
+      if (activeCategory === 'alla') {
+        const pDiff = expertPriority(a) - expertPriority(b);
+        if (pDiff !== 0) return pDiff;
+      }
       const rDiff = (b.rating_overall ?? 0) - (a.rating_overall ?? 0);
       if (rDiff !== 0) return rDiff;
       return `${a.make} ${a.model}`.localeCompare(`${b.make} ${b.model}`, 'sv');
