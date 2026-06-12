@@ -60,7 +60,7 @@ export function useCatalogCars() {
           return;
         }
 
-        setCars((data || []) as unknown as CatalogCarFull[]);
+        setCars((data || []).filter((c: { image_url: string | null; cleaned_image_url: string | null }) => c.image_url || c.cleaned_image_url) as unknown as CatalogCarFull[]);
       } catch (err) {
         console.error('useCatalogCars failed:', err);
       } finally {
