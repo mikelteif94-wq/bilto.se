@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { ArrowLeft, Upload, CheckCircle, XCircle, AlertCircle, FileJson, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Upload, CheckCircle, XCircle, AlertCircle, FileJson, RefreshCw, FileText } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface Props {
@@ -58,6 +58,7 @@ interface CarRow {
   meta_description: string | null;
   persona_familjetest: string | null;
   persona_kordynamik: string | null;
+  seats: number | null;
   // Engelska kolumner som redan finns i tabellen — uppdateras parallellt
   body_type: string | null;
   fuel_types: string[] | null;
@@ -103,6 +104,133 @@ const DRIVMEDEL_MAP: Record<string, string[]> = {
   'Mildhybrid bensin': ['bensin', 'hybrid'],
   'Mildhybrid diesel': ['diesel', 'hybrid'],
 };
+
+function parseCsvRows(text: string): CarRow[] {
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) return [];
+
+  // Parse a CSV line respecting quoted fields
+  const parseLine = (line: string): string[] => {
+    const fields: string[] = [];
+    let cur = '';
+    let inQuote = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQuote && line[i + 1] === '"') { cur += '"'; i++; }
+        else inQuote = !inQuote;
+      } else if (ch === ',' && !inQuote) {
+        fields.push(cur); cur = '';
+      } else {
+        cur += ch;
+      }
+    }
+    fields.push(cur);
+    return fields;
+  };
+
+  const headers = parseLine(lines[0]).map(h => h.trim().toLowerCase()
+    .replace(/ä/g, 'a').replace(/å/g, 'a').replace(/ö/g, 'o')
+    .replace(/\s+/g, '_'));
+
+  const idx = (name: string) => headers.indexOf(name);
+  const get = (cols: string[], row: string[]) => {
+    for (const c of cols) {
+      const i = idx(c);
+      if (i >= 0 && row[i]?.trim()) return row[i].trim();
+    }
+    return '';
+  };
+  const list = (val: string): string[] =>
+    val ? val.split(';').map(s => s.trim()).filter(Boolean) : [];
+
+  const rows: CarRow[] = [];
+  for (let r = 1; r < lines.length; r++) {
+    const cols = parseLine(lines[r]);
+    const make = get(['marke', 'make'], cols);
+    const model = get(['modell', 'model'], cols);
+    if (!make || !model) continue;
+
+    const karossRaw = get(['kaross'], cols);
+    const drivmedelRaw = get(['drivmedel'], cols);
+    const drivlinaRaw = get(['drivlina'], cols);
+    const beskrivning = get(['beskrivning', 'description', 'expert_text'], cols);
+    const styrkorRaw = get(['styrkor'], cols);
+    const svagheterRaw = get(['svagheter', 'svaghet'], cols);
+    const passarRaw = get(['passar_for', 'passar for'], cols);
+    const seatsRaw = get(['sittplatser', 'seats'], cols);
+
+    const slug = `${make.toLowerCase().replace(/\s+/g, '-')}-${model.toLowerCase().replace(/[\s/]+/g, '-').replace(/[^a-z0-9-]/g, '')}`;
+
+    const body_type = (() => {
+      const mapped = KAROSS_MAP[karossRaw] ?? karossRaw.toLowerCase();
+      return VALID_BODY_TYPES.has(mapped) ? mapped : null;
+    })();
+
+    // Map Swedish drivmedel list (semicolon-separated) to fuel_types array
+    const fuel_types_raw = list(drivmedelRaw);
+    const fuel_types = fuel_types_raw.length > 0
+      ? fuel_types_raw.map(f => {
+          const fl = f.toLowerCase();
+          if (fl === 'el') return 'el';
+          if (fl === 'bensin') return 'bensin';
+          if (fl === 'diesel') return 'diesel';
+          if (fl.includes('laddhybrid')) return 'laddhybrid';
+          if (fl.includes('mildhybrid')) return 'mildhybrid';
+          if (fl.includes('hybrid')) return 'hybrid';
+          return f.toLowerCase();
+        })
+      : null;
+
+    // Map Swedish drivetrain to drivetrain_type
+    const drivlinaList = list(drivlinaRaw).map(d => d.toLowerCase());
+    let drivetrain_type: string | null = null;
+    if (drivlinaList.some(d => d.includes('fyr') || d.includes('awd'))) {
+      drivetrain_type = drivlinaList.some(d => d.includes('tv') || d.includes('fram') || d.includes('fwd'))
+        ? 'Tvåhjulsdrift; Fyrhjulsdrift'
+        : 'Fyrhjulsdrift';
+    } else if (drivlinaList.some(d => d.includes('tv') || d.includes('fram') || d.includes('fwd'))) {
+      drivetrain_type = 'Tvåhjulsdrift';
+    } else if (drivlinaList.some(d => d.includes('bak') || d.includes('rwd'))) {
+      drivetrain_type = 'Bakhjulsdrift';
+    }
+
+    rows.push({
+      make,
+      model,
+      slug,
+      pris_ny_fran: null, pris_ny_till: null, pris_begagnat: null,
+      pris_begagnat_spann_min: null, pris_begagnat_spann_max: null,
+      pris_billigast: null, pris_rekommenderat: null,
+      manadskostnad_ny: null, manadskostnad_ny_min: null, manadskostnad_ny_max: null,
+      manadskostnad_begagnad: null, manadskostnad_beg_min: null, manadskostnad_beg_max: null,
+      kaross: karossRaw || null,
+      drivmedel: drivmedelRaw || null,
+      drivlina: drivlinaRaw || null,
+      drivlina_kort: drivetrain_type,
+      bagage_liter: null,
+      betyg_skala: null, betyg_totalt: null, betyg_korning: null,
+      betyg_komfort: null, betyg_praktiskt: null, betyg_varde: null,
+      vardeminskning_betyg: null, vardeminskning_text: null,
+      generation_namn: null, generation_fran_ar: null, generation_till_ar: null,
+      passar_for: list(passarRaw).length > 0 ? list(passarRaw) : null,
+      styrkor: list(styrkorRaw).length > 0 ? list(styrkorRaw) : null,
+      svagheter: list(svagheterRaw).length > 0 ? list(svagheterRaw) : null,
+      cta_sv: null,
+      expert_text: beskrivning || null,
+      meta_description: null,
+      persona_familjetest: null, persona_kordynamik: null,
+      body_type,
+      fuel_types,
+      rating_overall: null,
+      price_used_from: null,
+      monthly_cost_new: null,
+      monthly_cost_used: null,
+      seats: seatsRaw ? parseInt(seatsRaw) || null : null,
+    } as CarRow & { seats: number | null });
+  }
+  return rows;
+}
 
 function parseCarJson(raw: unknown): CarRow | null {
   if (!raw || typeof raw !== 'object') return null;
@@ -269,12 +397,19 @@ export default function AdminCatalogImport({ onBack }: Props) {
   const handleFile = useCallback((file: File) => {
     setParseError(null);
     setStatus('parsing');
+    const isCsv = file.name.toLowerCase().endsWith('.csv') || file.type === 'text/csv';
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const json = JSON.parse(e.target?.result as string);
-        const arr = Array.isArray(json) ? json : [json];
-        const parsed = arr.map(parseCarJson).filter(Boolean) as CarRow[];
+        const text = e.target?.result as string;
+        let parsed: CarRow[];
+        if (isCsv) {
+          parsed = parseCsvRows(text);
+        } else {
+          const json = JSON.parse(text);
+          const arr = Array.isArray(json) ? json : [json];
+          parsed = arr.map(parseCarJson).filter(Boolean) as CarRow[];
+        }
         if (parsed.length === 0) {
           setParseError('Ingen giltig bildata hittades i filen.');
           setStatus('idle');
@@ -283,11 +418,11 @@ export default function AdminCatalogImport({ onBack }: Props) {
         setRows(parsed);
         setStatus('previewing');
       } catch {
-        setParseError('Kunde inte läsa JSON-filen. Kontrollera att formatet är korrekt.');
+        setParseError('Kunde inte läsa filen. Kontrollera att formatet är korrekt.');
         setStatus('idle');
       }
     };
-    reader.readAsText(file);
+    reader.readAsText(file, 'utf-8');
   }, []);
 
   const onDrop = useCallback((e: React.DragEvent) => {
@@ -331,7 +466,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
       'passar_for', 'styrkor', 'svagheter', 'cta_sv',
       'expert_text', 'meta_description', 'persona_familjetest', 'persona_kordynamik',
       'body_type', 'fuel_types', 'rating_overall', 'price_used_from',
-      'monthly_cost_new', 'monthly_cost_used',
+      'monthly_cost_new', 'monthly_cost_used', 'seats',
     ];
 
     // Send in batches of 50 to avoid huge payloads
@@ -406,17 +541,18 @@ export default function AdminCatalogImport({ onBack }: Props) {
             Tillbaka
           </button>
           <span className="text-slate-300">/</span>
-          <h1 className="text-lg font-semibold text-slate-900">Importera bilkatalog via JSON</h1>
+          <h1 className="text-lg font-semibold text-slate-900">Importera bilkatalog (CSV / JSON)</h1>
         </div>
 
         {/* Idle / drop zone */}
         {(status === 'idle' || status === 'parsing') && (
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-8">
             <div className="mb-6">
-              <h2 className="text-base font-semibold text-slate-900 mb-1">Ladda upp JSON-fil</h2>
+              <h2 className="text-base font-semibold text-slate-900 mb-1">Ladda upp CSV eller JSON</h2>
               <p className="text-sm text-slate-500">
-                Filen ska innehålla en array av bilobjekt i formatet från <code className="bg-slate-100 px-1 rounded text-xs">bilar_berikad.json</code>.
-                Varje bil matchas mot katalogen på <strong>make + model</strong> och uppdateras med ny data.
+                Ladda upp <strong>bilradgivare.csv</strong> (kolumner: Märke, Modell, Kaross, Drivmedel, Drivlina, Sittplatser, Styrkor, Svagheter, Passar för)
+                eller en <code className="bg-slate-100 px-1 rounded text-xs">bilar_berikad.json</code>-fil.
+                Varje bil matchas mot katalogen på <strong>make + model</strong> och uppdateras.
               </p>
             </div>
 
@@ -431,13 +567,13 @@ export default function AdminCatalogImport({ onBack }: Props) {
             >
               <FileJson className={`w-12 h-12 mb-4 ${dragging ? 'text-blue-400' : 'text-slate-300'}`} />
               <p className="text-sm font-medium text-slate-700 mb-1">
-                {status === 'parsing' ? 'Läser fil...' : 'Dra och släpp JSON-fil här'}
+                {status === 'parsing' ? 'Läser fil...' : 'Dra och släpp CSV eller JSON här'}
               </p>
-              <p className="text-xs text-slate-400">eller klicka för att välja fil</p>
+              <p className="text-xs text-slate-400">eller klicka för att välja fil (.csv / .json)</p>
               <input
                 ref={fileRef}
                 type="file"
-                accept=".json,application/json"
+                accept=".csv,.json,text/csv,application/json"
                 className="hidden"
                 onChange={onFileChange}
               />
@@ -450,24 +586,38 @@ export default function AdminCatalogImport({ onBack }: Props) {
               </div>
             )}
 
-            {/* Format guide */}
-            <div className="mt-6 bg-slate-50 rounded-lg p-4 border border-slate-100">
-              <p className="text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wide">Förväntat format</p>
-              <pre className="text-xs text-slate-500 overflow-x-auto whitespace-pre-wrap">{`[
-  {
-    "marke": "Volvo",
-    "modell": "XC60",
-    "slug": "volvo-xc60",
-    "pris": { "begagnat_fran": 320000, "ny_fran": 550000, ... },
-    "manadskostnad": { "ny": 12000, "ny_spann": [10000, 13000], ... },
-    "specifikationer": { "kaross": "SUV", "drivmedel": "El", ... },
-    "betyg": { "totalt": 4.2, "korning": 4.0, ... },
-    "vardeminskning_3ar": { "betyg": "B", "beskrivning": "..." },
-    "styrkor": ["..."], "svagheter": ["..."], "passar_for": ["..."],
-    "meta_description": "...",
-    "experternas_bedomning": { "text": "..." }
-  }
-]`}</pre>
+            {/* Format guides */}
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="w-4 h-4 text-slate-400" />
+                  <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">CSV-format (bilradgivare.csv)</p>
+                </div>
+                <pre className="text-xs text-slate-500 overflow-x-auto whitespace-pre-wrap">{`"Märke","Modell","Kaross","Beskrivning",
+"Drivmedel","Drivlina","Sittplatser",
+"Styrkor","Svagheter","Passar för","Bättre alternativ"
+
+"Volvo","XC60","SUV","Expert-text...",
+"Bensin; Mildhybrid; Laddhybrid",
+"Tvåhjulsdrift; Fyrhjulsdrift","5",
+"Hög säkerhet; Bekväm","Hög kostnad",
+"Familjependlaren","for_X: BMW X3"`}</pre>
+              </div>
+              <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileJson className="w-4 h-4 text-slate-400" />
+                  <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">JSON-format</p>
+                </div>
+                <pre className="text-xs text-slate-500 overflow-x-auto whitespace-pre-wrap">{`[{
+  "marke": "Volvo", "modell": "XC60",
+  "pris": { "begagnat_fran": 320000 },
+  "manadskostnad": { "ny": 12000 },
+  "specifikationer": { "kaross": "SUV" },
+  "betyg": { "totalt": 7.7 },
+  "styrkor": ["Säkerhet"],
+  "svagheter": ["Dyr"]
+}]`}</pre>
+              </div>
             </div>
           </div>
         )}

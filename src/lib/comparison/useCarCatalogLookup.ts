@@ -54,24 +54,27 @@ function mapBodyType(kaross: string | null): ComparisonCar['specs']['body_type']
 function mapFuelTypes(drivmedel: string | null): ComparisonCar['specs']['fuel_types'] {
   const s = (drivmedel ?? '').toLowerCase();
   const types: ComparisonCar['specs']['fuel_types'] = [];
-  if (s.includes('el') && !s.includes('laddhybrid') && !s.includes('bensin') && !s.includes('diesel')) types.push('el');
-  if (s.includes('bensin') && !s.includes('laddhybrid') && !s.includes('hybrid')) types.push('bensin');
+  if (s.includes('bensin') && !s.includes('laddhybrid') && !s.includes('mildhybrid')) types.push('bensin');
+  else if (s.includes('bensin')) types.push('bensin');
   if (s.includes('diesel')) types.push('diesel');
-  if (s.includes('laddhybrid') || (s.includes('el') && (s.includes('bensin') || s.includes('diesel')))) types.push('laddhybrid');
-  else if (s.includes('hybrid')) types.push('hybrid');
+  if (s.includes('mildhybrid')) types.push('mildhybrid');
+  if (s.includes('laddhybrid')) types.push('laddhybrid');
+  else if (s.includes('hybrid') && !s.includes('mildhybrid')) types.push('hybrid');
+  if (s.includes('el') && !s.includes('laddhybrid') && !s.includes('bensin') && !s.includes('diesel')) types.push('el');
   return types.length > 0 ? types : ['bensin'];
 }
 
 function mapDrivetrain(drivetrain_type: string | null, drivlina: string | null): ComparisonCar['specs']['drivetrain'] {
-  // Prefer the dedicated drivetrain_type column
   const dt = (drivetrain_type ?? '').toLowerCase();
-  if (dt.includes('fyrhjul') || dt.includes('awd')) return ['awd'];
-  if (dt.includes('bakhjul') || dt.includes('rwd')) return ['rwd'];
-  if (dt.includes('framhjul') || dt.includes('fwd')) return ['fwd'];
-  // Fall back to drivlina_kort
   const s = (drivlina ?? '').toLowerCase();
-  if (s.includes('fyrhjuls') || s.includes('awd')) return ['awd'];
-  if (s.includes('bak') || s.includes('rwd')) return ['rwd'];
+  const combined = dt || s;
+  const hasFwd = combined.includes('tv') || combined.includes('fram') || combined.includes('fwd');
+  const hasAwd = combined.includes('fyr') || combined.includes('awd');
+  const hasRwd = combined.includes('bak') || combined.includes('rwd');
+  if (hasAwd && hasFwd) return ['fwd', 'awd'];
+  if (hasAwd) return ['awd'];
+  if (hasRwd) return ['rwd'];
+  if (hasFwd) return ['fwd'];
   return ['fwd'];
 }
 
@@ -126,6 +129,7 @@ export function dbRowToComparisonCar(row: DbRow): ComparisonCar {
     },
     pros: row.styrkor ?? [],
     cons: row.svagheter ?? [],
+    fits: row.passar_for && row.passar_for.length > 0 ? row.passar_for : undefined,
     meta_description: row.expert_text ?? row.meta_description ?? undefined,
     segment: mapSegment(row.segment),
     competitors: [],
