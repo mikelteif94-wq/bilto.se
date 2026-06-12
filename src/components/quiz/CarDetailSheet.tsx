@@ -66,13 +66,6 @@ function getFuelIcon(fuelTypes: string[]) {
   return Fuel;
 }
 
-function getFuelLabel(fuelTypes: string[]): string {
-  const labels: Record<string, string> = {
-    bensin: 'Bensin', diesel: 'Diesel', hybrid: 'Hybrid', laddhybrid: 'Laddhybrid', el: 'El',
-  };
-  return fuelTypes.map(f => labels[f] || f).join(', ');
-}
-
 function getBodyLabel(bodyType: string): string {
   const labels: Record<string, string> = {
     sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', coupe: 'Coupé',
@@ -83,7 +76,17 @@ function getBodyLabel(bodyType: string): string {
 
 function getDrivetrainLabel(drivetrain: string[]): string {
   const labels: Record<string, string> = { fwd: 'Framhjul', rwd: 'Bakhjul', awd: 'Fyrhjul' };
+  if (drivetrain.length > 1) return '2- eller 4-hjul';
   return drivetrain.map(d => labels[d] || d).join(', ');
+}
+
+function getFuelLabel(fuelTypes: string[]): string {
+  const labels: Record<string, string> = {
+    bensin: 'Bensin', diesel: 'Diesel', hybrid: 'Mildhybrid',
+    laddhybrid: 'Laddhybrid', el: 'El',
+  };
+  if (fuelTypes.length > 2) return fuelTypes.slice(0, 2).map(f => labels[f] || f).join(', ') + '…';
+  return fuelTypes.map(f => labels[f] || f).join(', ');
 }
 
 // ─── Rating bar ───────────────────────────────────────────────────────────────
