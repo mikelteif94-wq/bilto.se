@@ -1,4 +1,4 @@
-import { Star, Car, Check, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { Star, Check, ChevronRight, SlidersHorizontal } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
 
 interface CompactCarCardProps {
@@ -72,9 +72,10 @@ export default function CompactCarCard({
             <img
               src={imageUrl} alt={name}
               className="w-full h-full object-contain p-3 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+              onError={(e) => { e.currentTarget.src = '/car-placeholder.svg'; e.currentTarget.className = 'w-full h-full object-contain p-6 opacity-50'; }}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center"><Car className="w-10 h-10 text-slate-200" /></div>
+            <img src="/car-placeholder.svg" alt={name} className="w-full h-full object-contain p-6 opacity-50" />
           )}
           <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
 

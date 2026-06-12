@@ -1810,7 +1810,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                 onClick={scrollToQuiz}
                 className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <Car className="w-3.5 h-3.5" />
                 Hitta nästa bil – bilmatch
               </button>
               <button

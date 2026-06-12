@@ -1,4 +1,4 @@
-import { Star, Car, ChevronRight, Check, SlidersHorizontal } from 'lucide-react';
+import { Star, ChevronRight, Check, SlidersHorizontal } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
 
 interface DarkCarCardProps {
@@ -58,9 +58,10 @@ export default function DarkCarCard({
             <img
               src={imageUrl} alt={name}
               className="w-full h-full object-contain p-4"
+              onError={(e) => { e.currentTarget.src = '/car-placeholder.svg'; e.currentTarget.className = 'w-full h-full object-contain p-6 opacity-50'; }}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center"><Car className="w-16 h-16 text-slate-200" /></div>
+            <img src="/car-placeholder.svg" alt={name} className="w-full h-full object-contain p-6 opacity-50" />
           )}
           <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
           {topBadge && (
