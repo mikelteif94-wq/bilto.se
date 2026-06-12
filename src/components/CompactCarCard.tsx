@@ -1,5 +1,10 @@
-import { Star, Check, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { Star, Check, ChevronRight, SlidersHorizontal, Users } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
+
+const BODY_LABELS: Record<string, string> = {
+  sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
+  coupe: 'Coupé', cab: 'Cab', mpv: 'MPV',
+};
 
 interface CompactCarCardProps {
   name: string;
@@ -8,6 +13,10 @@ interface CompactCarCardProps {
   topBadge?: boolean;
   expertComment?: string;
   fuelLabel?: string;
+  bodyType?: string;
+  drivetrain?: string[];
+  seats?: number;
+  pros?: string[];
   carPrice?: number;
   usedPrice?: number;
   monthlySaving?: number;
@@ -52,11 +61,13 @@ function ScoreBadge({ value }: { value: number }) {
 
 export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
-  fuelLabel, carPrice, usedPrice, monthlySaving, equityFreed,
+  fuelLabel, bodyType, drivetrain, seats, pros,
+  carPrice, usedPrice, monthlySaving, equityFreed,
   isSelected, isCompared,
   onSelect, onCompare, onNegotiate, onDetail,
 }: CompactCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
+  const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
 
   const handleCardClick = () => {
     if (onSelect) { onSelect(); return; }
@@ -90,10 +101,8 @@ export default function CompactCarCard({
             <img src="/car-placeholder.svg" alt={name} loading="lazy" decoding="async" className="w-full h-full object-contain p-6 opacity-35" />
           )}
 
-          {/* Gradient overlay bottom */}
           <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/70 to-transparent pointer-events-none" />
 
-          {/* Top-left badge: Toppval (gold) or select circle */}
           {topBadge && !isSelected && !isCompared && (
             <div className="absolute top-2.5 left-2.5">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-gold"
@@ -117,7 +126,6 @@ export default function CompactCarCard({
             </div>
           )}
 
-          {/* Savings badges */}
           {monthlySaving != null && monthlySaving > 0 && (
             <div className="absolute top-2.5 right-2.5 text-white px-2 py-0.5 rounded-lg text-[10px] font-bold"
               style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', boxShadow: '0 2px 8px rgba(16,185,129,0.35)' }}>
@@ -139,11 +147,31 @@ export default function CompactCarCard({
           <h3 className="text-[13.5px] sm:text-[14px] font-bold text-slate-900 leading-snug truncate transition-colors duration-200 group-hover:text-bilto-600">
             {name}
           </h3>
-          {fuelLabel && (
-            <p className="mt-0.5 text-[10px] font-medium text-slate-400 uppercase tracking-wide truncate">{fuelLabel}</p>
-          )}
-          {expertComment && (
-            <p className="hidden sm:block mt-1 text-[11px] text-slate-400 leading-snug line-clamp-1 italic">{expertComment}</p>
+
+          {/* Meta row: fuel / body / drivetrain / seats */}
+          <div className="mt-1 flex flex-wrap items-center gap-1">
+            {fuelLabel && (
+              <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">{fuelLabel}</span>
+            )}
+            {bodyType && BODY_LABELS[bodyType] && (
+              <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-500">
+                {BODY_LABELS[bodyType]}
+              </span>
+            )}
+            {drivetrain && drivetrain.includes('awd') && (
+              <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-semibold bg-blue-50 text-blue-600">
+                AWD
+              </span>
+            )}
+            {seats != null && seats > 0 && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-500">
+                <Users className="w-2.5 h-2.5" />{seats}
+              </span>
+            )}
+          </div>
+
+          {displayComment && (
+            <p className="hidden sm:block mt-1 text-[11px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
           {range && (
             <div className="mt-2 flex items-baseline gap-1 min-w-0">

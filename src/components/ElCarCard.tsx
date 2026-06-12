@@ -1,5 +1,10 @@
-import { Zap, Star, Check, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { Zap, Star, Check, ChevronRight, SlidersHorizontal, Users } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
+
+const BODY_LABELS: Record<string, string> = {
+  sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
+  coupe: 'Coupé', cab: 'Cab', mpv: 'MPV',
+};
 
 interface ElCarCardProps {
   name: string;
@@ -10,6 +15,10 @@ interface ElCarCardProps {
   carPrice?: number;
   usedPrice?: number;
   fuelLabel?: string;
+  bodyType?: string;
+  drivetrain?: string[];
+  seats?: number;
+  pros?: string[];
   isCompared?: boolean;
   topBadge?: boolean;
   onNegotiate: () => void;
@@ -44,10 +53,12 @@ function ScoreBadge({ value }: { value: number }) {
 
 export default function ElCarCard({
   name, imageUrl, rating, expertComment, rangeKm,
-  carPrice, usedPrice, fuelLabel, isCompared, topBadge,
+  carPrice, usedPrice, fuelLabel, bodyType, drivetrain, seats, pros,
+  isCompared, topBadge,
   onNegotiate, onDetail, onCompare,
 }: ElCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
+  const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
 
   return (
     <div
@@ -112,9 +123,31 @@ export default function ElCarCard({
           <h3 className="text-[13.5px] sm:text-[14px] font-bold text-slate-900 leading-snug truncate transition-colors duration-200 group-hover:text-bilto-600">
             {name}
           </h3>
-          {fuelLabel && <p className="mt-0.5 text-[10px] font-medium text-slate-400 uppercase tracking-wide truncate">{fuelLabel}</p>}
-          {expertComment && (
-            <p className="hidden sm:block mt-1 text-[11px] text-slate-400 leading-snug line-clamp-1 italic">{expertComment}</p>
+
+          {/* Meta row: fuel / body / drivetrain / seats */}
+          <div className="mt-1 flex flex-wrap items-center gap-1">
+            {fuelLabel && (
+              <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">{fuelLabel}</span>
+            )}
+            {bodyType && BODY_LABELS[bodyType] && (
+              <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-500">
+                {BODY_LABELS[bodyType]}
+              </span>
+            )}
+            {drivetrain && drivetrain.includes('awd') && (
+              <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-semibold bg-blue-50 text-blue-600">
+                AWD
+              </span>
+            )}
+            {seats != null && seats > 0 && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-500">
+                <Users className="w-2.5 h-2.5" />{seats}
+              </span>
+            )}
+          </div>
+
+          {displayComment && (
+            <p className="hidden sm:block mt-1 text-[11px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
           {range && (
             <div className="mt-2 flex items-baseline gap-1 min-w-0">

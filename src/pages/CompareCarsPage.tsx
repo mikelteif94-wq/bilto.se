@@ -1089,7 +1089,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                             name={`${car.brand_display} ${car.model_display}`}
                             imageUrl={imgUrl}
                             rating={car.ratings.overall}
-                            expertComment={getExpertComment(car)}
+                            pros={car.pros}
+                            bodyType={car.specs.body_type}
+                            drivetrain={car.specs.drivetrain}
+                            seats={car.specs.seats}
                             carPrice={car.pricing.new_from_sek ?? undefined}
                             usedPrice={car.pricing.used_from_sek ?? undefined}
                             isCompared={selectedIds.has(car.id)}
@@ -1107,6 +1110,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                           imageUrl={imgUrl}
                           rating={car.ratings.overall}
                           fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                          bodyType={car.specs.body_type}
+                          drivetrain={car.specs.drivetrain}
+                          seats={car.specs.seats}
+                          pros={car.pros}
                           carPrice={car.pricing.new_from_sek ?? undefined}
                           usedPrice={car.pricing.used_from_sek ?? undefined}
                           onNegotiate={() => openContactForCar(car)}
@@ -1322,7 +1329,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                                 imageUrl={car.image_url || car.cleaned_image_url}
                                 rating={car.rating}
                                 topBadge={i === 0 && !isMobile}
-                                expertComment={car.matchReasons.join(' · ') || undefined}
+                                pros={compData?.pros}
+                                bodyType={compData?.specs.body_type}
+                                drivetrain={compData?.specs.drivetrain}
+                                seats={compData?.specs.seats}
                                 carPrice={car.carPrice}
                                 usedPrice={car.usedPrice}
                                 onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, compData?.specs.fuel_types)}
@@ -1336,6 +1346,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                                 topBadge={i === 0 && !isMobile}
                                 expertComment={car.matchReasons.join(' · ') || undefined}
                                 fuelLabel={car.fuelLabel}
+                                bodyType={compData?.specs.body_type}
+                                drivetrain={compData?.specs.drivetrain}
+                                seats={compData?.specs.seats}
+                                pros={compData?.pros}
                                 carPrice={car.carPrice}
                                 usedPrice={car.usedPrice}
                                 isSelected={isSelected}
@@ -1922,7 +1936,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                                     name={`${car.brand_display} ${car.model_display}`}
                                     imageUrl={imgUrl}
                                     rating={car.ratings.overall}
-                                    expertComment={getExpertComment(car)}
+                                    pros={car.pros}
+                                    bodyType={car.specs.body_type}
+                                    drivetrain={car.specs.drivetrain}
+                                    seats={car.specs.seats}
                                     carPrice={car.pricing.new_from_sek ?? undefined}
                                     usedPrice={car.pricing.used_from_sek ?? undefined}
                                     isCompared={selectedIds.has(car.id)}
@@ -1938,8 +1955,11 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                                   name={`${car.brand_display} ${car.model_display}`}
                                   imageUrl={imgUrl}
                                   rating={car.ratings.overall}
-                                  expertComment={getExpertComment(car)}
                                   fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                                  bodyType={car.specs.body_type}
+                                  drivetrain={car.specs.drivetrain}
+                                  seats={car.specs.seats}
+                                  pros={car.pros}
                                   onNegotiate={() => openContactForCar(car)}
                                   onDetail={() => setDetailCar(car)}
                                   onCompare={() => toggleSelect(car.id)}
