@@ -3,13 +3,21 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+      },
       keyframes: {
         shimmer: {
           '100%': { transform: 'translateX(200%)' },
         },
+        fadeInUp: {
+          from: { opacity: '0', transform: 'translateY(24px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         shimmer: 'shimmer 1.6s infinite',
+        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
       },
       colors: {
         cream: {
