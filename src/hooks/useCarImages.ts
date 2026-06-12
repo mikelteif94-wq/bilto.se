@@ -117,14 +117,6 @@ export function useCarImages() {
       if (carImages.has(strippedKey)) return carImages.get(strippedKey);
     }
 
-    for (const [key, url] of carImages.entries()) {
-      if (key.startsWith(brandNorm + '-') && key.includes(simpleModel)) return url;
-    }
-
-    for (const [key, url] of carImages.entries()) {
-      if (key.startsWith(brandNorm + '-')) return url;
-    }
-
     return undefined;
   };
 

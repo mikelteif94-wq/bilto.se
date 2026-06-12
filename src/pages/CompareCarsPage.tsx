@@ -108,23 +108,8 @@ const BUDGET_BRACKETS = [
 /* ───────────── curated data ───────────── */
 
 const LOCAL_IMAGES: Record<string, string> = {
-  skoda_enyaq: '/getImage.webp',
-  tesla_model_3: '/getImage_(1).webp',
-  skoda_octavia: '/getImage_(2).webp',
-  toyota_corolla: '/getImage_(3).webp',
   hyundai_ioniq5: '/getImage_ioniq5.webp',
   polestar_2: '/getImage_polestar2.webp',
-  bmw_ix1: '/getImage_(6).webp',
-  mercedes_eqc: '/getImage_(7).webp',
-  bmw_2_series: '/getImage_(8).webp',
-  skoda_superb: '/getImage_(9).webp',
-  volvo_xc90: '/getImage_(11).webp',
-  volvo_v60: '/getImage_(15).webp',
-  volvo_v40: '/getImage_(17).webp',
-  volvo_v40_cross_country: '/getImage_(17).webp',
-  volvo_xc70: '/getImage_(18).webp',
-  volvo_v60_cross_country: '/getImage_(20).webp',
-  volvo_v90_cross_country: '/getImage_(21).webp',
 };
 
 const CURATED_IDS = [
