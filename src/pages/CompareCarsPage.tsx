@@ -702,7 +702,9 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
         const pDiff = expertPriority(a) - expertPriority(b);
         if (pDiff !== 0) return pDiff;
       }
-      const rDiff = (b.rating_overall ?? 0) - (a.rating_overall ?? 0);
+      const rA = a.rating_overall ?? findComparisonCarByMakeModel(a.make, a.model)?.ratings.overall ?? 0;
+      const rB = b.rating_overall ?? findComparisonCarByMakeModel(b.make, b.model)?.ratings.overall ?? 0;
+      const rDiff = rB - rA;
       if (rDiff !== 0) return rDiff;
       return `${a.make} ${a.model}`.localeCompare(`${b.make} ${b.model}`, 'sv');
     });
@@ -711,7 +713,26 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const visibleCars = useMemo((): CatalogCarFull[] => {
     if (carSearchQuery.trim()) return allCategoryCars;
     if (activeCategory === 'el') return allCategoryCars;
-    return showAllCars ? allCategoryCars : allCategoryCars.slice(0, expertShowCount);
+    const base = showAllCars ? allCategoryCars : allCategoryCars.slice(0, expertShowCount);
+    // For default "alla" view, diversify body types so the first rows aren't all SUVs
+    if (activeCategory === 'alla' && !showAllCars) {
+      const BODY_ORDER = ['hatchback', 'sedan', 'kombi', 'suv', 'mpv', 'coupe', 'cab'];
+      const compCar = (c: CatalogCarFull) => findComparisonCarByMakeModel(c.make, c.model);
+      const bodyOf = (c: CatalogCarFull): string => compCar(c)?.specs.body_type ?? c.body_type ?? 'suv';
+      // Split into slots: pick 1 of each body type in BODY_ORDER first, fill rest from remaining
+      const used = new Set<string>();
+      const slots: CatalogCarFull[] = [];
+      for (const bt of BODY_ORDER) {
+        const pick = allCategoryCars.find(c => !used.has(c.id) && bodyOf(c) === bt);
+        if (pick) { slots.push(pick); used.add(pick.id); }
+      }
+      // Fill remaining slots from sorted list
+      for (const c of allCategoryCars) {
+        if (!used.has(c.id)) slots.push(c);
+      }
+      return slots.slice(0, expertShowCount);
+    }
+    return base;
   }, [allCategoryCars, showAllCars, carSearchQuery, expertShowCount, activeCategory]);
 
   // Selection helpers
@@ -1575,13 +1596,14 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                   ? car.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')
                   : undefined;
                 const compCar = findComparisonCarByMakeModel(car.make, car.model);
+                const rating = car.rating_overall ?? compCar?.ratings.overall ?? undefined;
                 if (isEl) {
                   return (
                     <ElCarCard
                       key={car.id}
                       name={`${car.make} ${car.model}`}
                       imageUrl={imgUrl}
-                      rating={car.rating_overall ?? undefined}
+                      rating={rating}
                       topBadge={i < 3}
                       expertComment={car.expert_comment ?? undefined}
                       carPrice={car.price_new_from ?? undefined}
@@ -1604,7 +1626,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     key={car.id}
                     name={`${car.make} ${car.model}`}
                     imageUrl={imgUrl}
-                    rating={car.rating_overall ?? undefined}
+                    rating={rating}
                     topBadge={i < 3 && activeCategory === 'popular'}
                     expertComment={car.expert_comment ?? undefined}
                     fuelLabel={fuelLabel}
