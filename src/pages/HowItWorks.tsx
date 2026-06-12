@@ -648,10 +648,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section id="sa-fungerar-det" className="bg-[#0e6efe] py-16 sm:py-24 sm:overflow-hidden px-5 sm:px-6">
+      <section id="sa-fungerar-det" className="bg-slate-50 py-16 sm:py-24 sm:overflow-hidden px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-16">
-            <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-white tracking-[-0.02em]">
+            <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
               Så enkelt är det
             </h2>
           </div>
@@ -676,17 +676,17 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     </div>
                   )}
                   {!img && (
-                    <div className="mb-5 flex items-center justify-center w-[42px] h-[42px] rounded-full bg-white/20 ring-4 ring-white/10">
+                    <div className="mb-5 flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#0e6efe] shadow-[0_8px_18px_-6px_rgba(14,110,254,0.5)] ring-4 ring-[#0e6efe]/10">
                       <Icon className="w-[18px] h-[18px] text-white" strokeWidth={2.4} />
                     </div>
                   )}
                   <div className="flex items-baseline gap-2.5 mb-2">
-                    <span className="text-[13px] font-bold text-white/60 tabular-nums">0{i + 1}</span>
-                    <h3 className="text-[20px] sm:text-[22px] font-semibold text-white leading-tight tracking-[-0.01em]">
+                    <span className="text-[13px] font-bold text-[#0e6efe] tabular-nums">0{i + 1}</span>
+                    <h3 className="text-[20px] sm:text-[22px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
                       {step.title}
                     </h3>
                   </div>
-                  <p className="text-white/80 text-[15px] leading-[1.6]">
+                  <p className="text-slate-600 text-[15px] leading-[1.6]">
                     {step.text}
                   </p>
                 </li>
@@ -1393,10 +1393,10 @@ function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] 
             </div>
             {/* Text below image */}
             <div className="px-1 pt-4 pb-2">
-              <h3 className="text-[16px] font-bold text-white leading-tight tracking-tight mb-1.5">
+              <h3 className="text-[16px] font-bold text-slate-900 leading-tight tracking-tight mb-1.5">
                 {step.title}
               </h3>
-              <p className="text-[14px] text-white/80 leading-[1.6]">{step.text}</p>
+              <p className="text-[14px] text-slate-600 leading-[1.6]">{step.text}</p>
             </div>
           </div>
         ))}
@@ -1407,7 +1407,7 @@ function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] 
         {steps.map((_, i) => (
           <div
             key={i}
-            className={`transition-all duration-300 rounded-full ${i === active ? 'w-6 h-2 bg-white' : 'w-2 h-2 bg-white/30'}`}
+            className={`transition-all duration-300 rounded-full ${i === active ? 'w-6 h-2 bg-[#0e6efe]' : 'w-2 h-2 bg-slate-300'}`}
           />
         ))}
       </div>
