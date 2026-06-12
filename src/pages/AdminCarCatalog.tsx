@@ -45,6 +45,15 @@ interface CatalogEntry {
   seats: number | null;
   is_active: boolean;
   updated_at: string | null;
+  // CSV fields
+  kaross: string | null;
+  drivmedel: string | null;
+  drivlina_kort: string | null;
+  styrkor: string[] | null;
+  svagheter: string[] | null;
+  passar_for: string[] | null;
+  expert_text: string | null;
+  betyg_totalt: number | null;
 }
 
 type SortKey = 'make' | 'enriched' | 'active';
@@ -52,6 +61,14 @@ type SortKey = 'make' | 'enriched' | 'active';
 interface CsvRow {
   make: string;
   model: string;
+  kaross?: string;
+  drivmedel?: string;
+  drivlina?: string;
+  sittplatser?: number;
+  styrkor?: string[];
+  svagheter?: string[];
+  passar_for?: string[];
+  beskrivning?: string;
   bagage_liter?: number;
   drivetrain_options?: string;
 }
@@ -63,56 +80,98 @@ interface CsvResult {
 }
 
 function parseCsv(text: string): CsvRow[] {
-  // Strip BOM
   const clean = text.replace(/^\uFEFF/, '').trim();
   const lines = clean.split(/\r?\n/).filter(l => l.trim().length > 0);
   if (lines.length < 2) return [];
 
-  // Auto-detect separator: semicolon or comma
-  const sep = lines[0].includes(';') ? ';' : ',';
-
-  function splitLine(line: string): string[] {
+  const splitLine = (line: string): string[] => {
     const result: string[] = [];
     let cur = '';
     let inQuote = false;
     for (let i = 0; i < line.length; i++) {
       const ch = line[i];
       if (ch === '"') {
-        inQuote = !inQuote;
-      } else if (ch === sep && !inQuote) {
-        result.push(cur.trim());
-        cur = '';
-      } else {
-        cur += ch;
-      }
+        if (inQuote && line[i + 1] === '"') { cur += '"'; i++; }
+        else inQuote = !inQuote;
+      } else if (ch === ',' && !inQuote) {
+        result.push(cur.trim()); cur = '';
+      } else { cur += ch; }
     }
     result.push(cur.trim());
     return result;
-  }
+  };
 
-  const headers = splitLine(lines[0]).map(h => h.toLowerCase().replace(/['"]/g, '').trim());
+  const rawHeaders = splitLine(lines[0]);
+  const headers = rawHeaders.map(h => h.replace(/^["']|["']$/g, '').trim().toLowerCase()
+    .replace(/ä/g, 'a').replace(/å/g, 'a').replace(/ö/g, 'o')
+    .replace(/\s+/g, '_'));
+
+  const idx = (names: string[]) => {
+    for (const n of names) { const i = headers.indexOf(n); if (i >= 0) return i; }
+    return -1;
+  };
+  const get = (cols: string[], row: string[]) => {
+    const i = idx(cols);
+    return i >= 0 ? row[i]?.replace(/^["']|["']$/g, '').trim() ?? '' : '';
+  };
+  const list = (val: string) => val ? val.split(';').map(s => s.trim()).filter(Boolean) : [];
 
   return lines.slice(1).map(line => {
     const cols = splitLine(line);
-    const row: Record<string, string> = {};
-    headers.forEach((h, i) => { row[h] = (cols[i] ?? '').replace(/^["']|["']$/g, '').trim(); });
-    const make = row['make'] || row['marke'] || row['märke'] || row['brand'] || '';
-    const model = row['model'] || row['modell'] || '';
+    const make = get(['marke', 'make'], cols);
+    const model = get(['modell', 'model'], cols);
+    if (!make || !model) return null;
+
     const out: CsvRow = { make, model };
-    const bagKey = Object.keys(row).find(k => k.includes('bagage') || k.includes('baggage') || k.includes('trunk'));
-    if (bagKey && row[bagKey]) {
-      const n = parseInt(row[bagKey]);
-      if (!isNaN(n)) out.bagage_liter = n;
-    }
-    const dtKey = Object.keys(row).find(k => k.includes('drivetrain') || k.includes('drivlina'));
-    if (dtKey && row[dtKey]) out.drivetrain_options = row[dtKey];
+
+    const kaross = get(['kaross'], cols);
+    if (kaross) out.kaross = kaross;
+
+    const drivmedel = get(['drivmedel'], cols);
+    if (drivmedel) out.drivmedel = drivmedel;
+
+    const drivlina = get(['drivlina'], cols);
+    if (drivlina) out.drivlina = drivlina;
+
+    const sittplatserRaw = get(['sittplatser', 'seats'], cols);
+    if (sittplatserRaw) { const n = parseInt(sittplatserRaw); if (!isNaN(n)) out.sittplatser = n; }
+
+    const styrkorRaw = get(['styrkor'], cols);
+    const styrkorList = list(styrkorRaw);
+    if (styrkorList.length) out.styrkor = styrkorList;
+
+    const svagheterRaw = get(['svagheter', 'svaghet'], cols);
+    const svagheterList = list(svagheterRaw);
+    if (svagheterList.length) out.svagheter = svagheterList;
+
+    const passarRaw = get(['passar_for', 'passar_for', 'passar for'], cols);
+    const passarList = list(passarRaw);
+    if (passarList.length) out.passar_for = passarList;
+
+    const beskrivning = get(['beskrivning', 'description', 'expert_text'], cols);
+    if (beskrivning) out.beskrivning = beskrivning;
+
+    const bagKey = headers.findIndex(h => h.includes('bagage') || h.includes('baggage') || h.includes('trunk'));
+    if (bagKey >= 0 && cols[bagKey]) { const n = parseInt(cols[bagKey]); if (!isNaN(n)) out.bagage_liter = n; }
+
+    const dtKey = headers.findIndex(h => h.includes('drivetrain') && h !== 'drivlina');
+    if (dtKey >= 0 && cols[dtKey]) out.drivetrain_options = cols[dtKey];
+
     return out;
-  }).filter(r => r.make && r.model);
+  }).filter(Boolean) as CsvRow[];
 }
+
+const KAROSS_TO_BODY: Record<string, string> = {
+  'SUV': 'suv', 'Sedan': 'sedan', 'Halvkombi': 'hatchback',
+  'Halvkombi/Sedan': 'hatchback', 'Sedan/Kombi': 'kombi', 'Kombi': 'kombi',
+  'Coupé': 'coupe', 'Coupé/Cab': 'cab', 'Cab': 'cab', 'Cabriolet': 'cab',
+  'Pickup': 'pickup', 'Skåp/MPV': 'mpv', 'MPV': 'mpv', 'Minibuss': 'mpv',
+};
 
 const FUEL_OPTIONS = [
   { value: 'bensin', label: 'Bensin' },
   { value: 'diesel', label: 'Diesel' },
+  { value: 'mildhybrid', label: 'Mildhybrid' },
   { value: 'hybrid', label: 'Hybrid' },
   { value: 'laddhybrid', label: 'Laddhybrid' },
   { value: 'el', label: 'El' },
@@ -142,6 +201,7 @@ const SEGMENT_OPTIONS = [
 const FUEL_COLORS: Record<string, string> = {
   bensin: 'bg-orange-100 text-orange-700',
   diesel: 'bg-slate-100 text-slate-600',
+  mildhybrid: 'bg-yellow-100 text-yellow-700',
   hybrid: 'bg-teal-100 text-teal-700',
   laddhybrid: 'bg-blue-100 text-blue-700',
   el: 'bg-emerald-100 text-emerald-700',
@@ -150,6 +210,7 @@ const FUEL_COLORS: Record<string, string> = {
 const FUEL_LABELS: Record<string, string> = {
   bensin: 'Bensin',
   diesel: 'Diesel',
+  mildhybrid: 'Mildhybrid',
   hybrid: 'Hybrid',
   laddhybrid: 'Laddhybrid',
   el: 'El',
@@ -175,17 +236,30 @@ interface EditState {
   expert_comment: string;
   seats: string;
   image_url: string;
+  kaross: string;
+  drivlina: string;
+  styrkor: string;
+  svagheter: string;
+  passar_for: string;
+  expert_text: string;
 }
 
 function emptyEdit(entry: CatalogEntry): EditState {
+  const toStr = (arr: string[] | null | undefined) => (arr ?? []).join('; ');
   return {
     fuel_types: entry.fuel_types ?? [],
     body_type: entry.body_type ?? '',
     segment: entry.segment ?? '',
-    rating_overall: entry.rating_overall != null ? String(entry.rating_overall) : '',
+    rating_overall: (entry.betyg_totalt ?? entry.rating_overall) != null ? String(entry.betyg_totalt ?? entry.rating_overall) : '',
     expert_comment: entry.expert_comment ?? '',
     seats: entry.seats != null ? String(entry.seats) : '',
     image_url: entry.cleaned_image_url ?? entry.image_url ?? '',
+    kaross: entry.kaross ?? '',
+    drivlina: entry.drivlina_kort ?? '',
+    styrkor: toStr(entry.styrkor),
+    svagheter: toStr(entry.svagheter),
+    passar_for: toStr(entry.passar_for),
+    expert_text: entry.expert_text ?? entry.expert_comment ?? '',
   };
 }
 
@@ -221,7 +295,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
     setLoading(true);
     const { data } = await supabase
       .from('car_catalog')
-      .select('id, make, model, image_url, cleaned_image_url, fuel_types, body_type, segment, rating_overall, expert_comment, seats, is_active, updated_at')
+      .select('id, make, model, image_url, cleaned_image_url, fuel_types, body_type, segment, rating_overall, expert_comment, seats, is_active, updated_at, kaross, drivmedel, drivlina_kort, styrkor, svagheter, passar_for, expert_text, betyg_totalt')
       .order('make', { ascending: true })
       .order('model', { ascending: true });
     setEntries((data as CatalogEntry[]) ?? []);
@@ -296,14 +370,23 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
   const handleSave = async () => {
     if (!editId || !editState) return;
     setSaving(true);
+    const splitList = (s: string) => s.split(';').map(x => x.trim()).filter(Boolean);
     const payload = {
       fuel_types: editState.fuel_types.length > 0 ? editState.fuel_types : null,
       body_type: editState.body_type || null,
       segment: editState.segment || null,
       rating_overall: editState.rating_overall ? parseFloat(editState.rating_overall) : null,
+      betyg_totalt: editState.rating_overall ? parseFloat(editState.rating_overall) : null,
       expert_comment: editState.expert_comment || null,
       seats: editState.seats ? parseInt(editState.seats) : null,
       cleaned_image_url: editState.image_url.trim() || null,
+      kaross: editState.kaross || null,
+      drivlina_kort: editState.drivlina || null,
+      drivetrain_type: editState.drivlina || null,
+      styrkor: splitList(editState.styrkor).length > 0 ? splitList(editState.styrkor) : null,
+      svagheter: splitList(editState.svagheter).length > 0 ? splitList(editState.svagheter) : null,
+      passar_for: splitList(editState.passar_for).length > 0 ? splitList(editState.passar_for) : null,
+      expert_text: editState.expert_text || null,
       updated_at: new Date().toISOString(),
     };
     await supabase.from('car_catalog').update(payload).eq('id', editId);
@@ -413,6 +496,14 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (row.bagage_liter != null) payload.bagage_liter = row.bagage_liter;
       if (row.drivetrain_options) payload.drivetrain_options = row.drivetrain_options;
+      if (row.kaross) { payload.kaross = row.kaross; payload.body_type = KAROSS_TO_BODY[row.kaross] ?? row.kaross.toLowerCase(); }
+      if (row.drivmedel) payload.drivmedel = row.drivmedel;
+      if (row.drivlina) { payload.drivlina_kort = row.drivlina; payload.drivetrain_type = row.drivlina; }
+      if (row.sittplatser != null) payload.seats = row.sittplatser;
+      if (row.styrkor?.length) payload.styrkor = row.styrkor;
+      if (row.svagheter?.length) payload.svagheter = row.svagheter;
+      if (row.passar_for?.length) payload.passar_for = row.passar_for;
+      if (row.beskrivning) payload.expert_text = row.beskrivning;
 
       if (Object.keys(payload).length <= 1) { skipped++; continue; }
 
@@ -502,7 +593,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                 </ul>
               )}
               <p className="mt-1 text-xs text-slate-500">
-                Förväntat CSV-format: <code className="font-mono bg-white/60 px-1 rounded">make,model,bagage_liter,drivetrain_options</code>
+                Förväntat CSV-format: <code className="font-mono bg-white/60 px-1 rounded">Märke,Modell,Kaross,Beskrivning,Drivmedel,Drivlina,Sittplatser,Styrkor,Svagheter,Passar för</code>
               </p>
             </div>
             <button onClick={() => setCsvResult(null)} className="shrink-0 text-slate-400 hover:text-slate-600">
@@ -788,8 +879,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                       <tr className="bg-blue-50/40 border-b border-blue-100">
                         <td colSpan={8} className="px-4 pb-4 pt-0">
                           {/* Image URL row */}
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="w-16 h-11 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
+                          <div className="flex items-center gap-3 mb-3">                            <div className="w-16 h-11 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
                               {editState.image_url ? (
                                 <img src={editState.image_url} alt="preview" className="w-full h-full object-contain p-1" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                               ) : (
@@ -850,6 +940,73 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                                 <X className="w-3.5 h-3.5" />
                               </button>
                             )}
+                          </div>
+
+                          {/* Extra fields grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 mt-1">
+                            <div>
+                              <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Kaross</label>
+                              <select
+                                value={editState?.kaross ?? ''}
+                                onChange={e => editState && setEditState({ ...editState, kaross: e.target.value })}
+                                className={inputCls}
+                              >
+                                <option value="">Välj kaross</option>
+                                {['SUV','Sedan','Halvkombi','Kombi','Coupé','Cab','Cabriolet','MPV','Pickup'].map(k => (
+                                  <option key={k} value={k}>{k}</option>
+                                ))}
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Drivlina</label>
+                              <input
+                                type="text"
+                                value={editState?.drivlina ?? ''}
+                                onChange={e => editState && setEditState({ ...editState, drivlina: e.target.value })}
+                                placeholder="T.ex. Tvåhjulsdrift; Fyrhjulsdrift"
+                                className={inputCls}
+                              />
+                            </div>
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Styrkor (separera med semikolon)</label>
+                              <input
+                                type="text"
+                                value={editState?.styrkor ?? ''}
+                                onChange={e => editState && setEditState({ ...editState, styrkor: e.target.value })}
+                                placeholder="T.ex. Hög säkerhet; Bekväm; Bra räckvidd"
+                                className={inputCls}
+                              />
+                            </div>
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Svagheter (separera med semikolon)</label>
+                              <input
+                                type="text"
+                                value={editState?.svagheter ?? ''}
+                                onChange={e => editState && setEditState({ ...editState, svagheter: e.target.value })}
+                                placeholder="T.ex. Dyr service; Begränsat servicenät"
+                                className={inputCls}
+                              />
+                            </div>
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Passar för (separera med semikolon)</label>
+                              <input
+                                type="text"
+                                value={editState?.passar_for ?? ''}
+                                onChange={e => editState && setEditState({ ...editState, passar_for: e.target.value })}
+                                placeholder="T.ex. Familjependlaren; Tjänstebilsföraren"
+                                className={inputCls}
+                              />
+                            </div>
+                            <div className="sm:col-span-2">
+                              <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Expertbeskrivning</label>
+                              <textarea
+                                rows={3}
+                                value={editState?.expert_text ?? ''}
+                                onChange={e => editState && setEditState({ ...editState, expert_text: e.target.value })}
+                                placeholder="Bilens karaktär och expertens sammanfattning…"
+                                className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition resize-none placeholder:text-slate-400"
+                              />
+                            </div>
                           </div>
 
                           {/* Image search panel */}
