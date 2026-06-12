@@ -1202,7 +1202,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                 <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
                   {/* Left: text content */}
                   <div className="text-center lg:text-left lg:flex-1 w-full">
-                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0e6efe]/10 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-5">
+                    <span className="inline-flex lg:hidden items-center gap-2 px-3 py-1.5 rounded-full bg-[#0e6efe]/10 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-5">
                       <Sparkles className="w-3.5 h-3.5" />
                       Bilmatch
                     </span>
