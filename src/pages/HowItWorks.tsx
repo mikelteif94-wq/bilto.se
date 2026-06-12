@@ -33,6 +33,7 @@ import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import { CarFitQuiz } from '../components/CarFitQuiz';
 import { getAllComparisonCars, type ComparisonCar } from '../lib/comparison';
 import { useCarImages } from '../hooks/useCarImages';
+import { useCatalogCars } from '../hooks/useCatalogCars';
 import RegInput from '../components/RegInput';
 
 interface HowItWorksProps {
@@ -129,7 +130,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
     setBuyDrawerCar(carLabel);
   };
 
-  const { getCarImage } = useCarImages();
+  const { cars: dbCars } = useCatalogCars();
+  const { getCarImage } = useCarImages(dbCars);
   const allCars = getAllComparisonCars();
   const TRADE_IN_IDS = ['volvo_xc60', 'bmw_x3', 'tesla_model_y'];
   const tradeInCars = TRADE_IN_IDS
