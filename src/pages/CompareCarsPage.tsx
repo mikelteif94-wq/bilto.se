@@ -1560,6 +1560,11 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       expertComment={car.expert_comment ?? undefined}
                       carPrice={car.price_new_from ?? undefined}
                       usedPrice={car.price_used_from ?? undefined}
+                      fuelLabel={fuelLabel}
+                      bodyType={compCar?.specs.body_type}
+                      drivetrain={compCar?.specs.drivetrain}
+                      seats={compCar?.specs.seats}
+                      pros={compCar?.pros}
                       isCompared={selectedIds.has(car.id)}
                       onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
                       onDetail={() => { if (compCar) setDetailCar(compCar); }}
@@ -1577,6 +1582,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     topBadge={i < 3 && activeCategory === 'popular'}
                     expertComment={car.expert_comment ?? undefined}
                     fuelLabel={fuelLabel}
+                    bodyType={compCar?.specs.body_type}
+                    drivetrain={compCar?.specs.drivetrain}
+                    seats={compCar?.specs.seats}
+                    pros={compCar?.pros}
                     carPrice={car.price_new_from ?? undefined}
                     usedPrice={car.price_used_from ?? undefined}
                     onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
