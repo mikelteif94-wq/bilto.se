@@ -26,6 +26,7 @@ import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import SeoCarsSection from '../components/SeoCarsSection';
 import ReviewsSection from '../components/ReviewsSection';
 import CompactCarCard from '../components/CompactCarCard';
+import ElCarCard from '../components/ElCarCard';
 import CompareDrawer from '../components/CompareDrawer';
 import BuyDrawer from '../components/BuyDrawer';
 import { EquityFlow } from '../components/equity/EquityFlow';
@@ -832,6 +833,30 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   {visibleCars.map((car, i) => {
                     const imageUrl = getCarImage(car.brand_display, car.model_display);
                     const fuelLabelStr = car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ');
+                    const isEl = car.specs.fuel_types.includes('el');
+                    if (isEl) {
+                      return (
+                        <ElCarCard
+                          key={car.id}
+                          name={`${car.brand_display} ${car.model_display}`}
+                          imageUrl={imageUrl}
+                          rating={car.ratings.overall}
+                          topBadge={i === 0 && activeBudgetPill === null}
+                          pros={car.pros}
+                          fuelLabel={fuelLabelStr}
+                          bodyType={car.specs.body_type}
+                          drivetrain={car.specs.drivetrain}
+                          seats={car.specs.seats}
+                          carPrice={car.pricing.new_from_sek ?? undefined}
+                          usedPrice={car.pricing.used_from_sek ?? undefined}
+                          onNegotiate={() => openDrawer(`${car.brand_display} ${car.model_display}`)}
+                          onDetail={() => setDetailCar(car)}
+                          onCompare={() => toggleCompare(car.id)}
+                          onFitQuiz={() => setFitQuizCar(car)}
+                          isCompared={selectedCompareIds.has(car.id)}
+                        />
+                      );
+                    }
                     return (
                       <CompactCarCard
                         key={car.id}
