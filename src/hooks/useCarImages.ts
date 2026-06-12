@@ -22,7 +22,7 @@ export interface CatalogCar {
   is_active: boolean;
 }
 
-export function useCarImages(cars: CatalogCarFull[]) {
+export function useCarImages(cars: CatalogCarFull[] = []) {
   const carImages = useMemo(() => {
     const imageMap = new Map<string, string>();
     const sorted = [...cars].sort((a, b) => b.model.length - a.model.length);
