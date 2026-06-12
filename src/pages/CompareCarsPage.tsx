@@ -12,7 +12,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getAllComparisonCars } from '../lib/comparison';
 import { findComparisonCarByMakeModel } from '../lib/comparison';
 import type { ComparisonCar } from '../lib/comparison/types';
-import { useCarImages, type CatalogCar } from '../hooks/useCarImages';
+import { useCarImages } from '../hooks/useCarImages';
+import { useCatalogCars, type CatalogCarFull } from '../hooks/useCatalogCars';
 import MobileMenu from '../components/MobileMenu';
 import CompactCarCard from '../components/CompactCarCard';
 import ElCarCard from '../components/ElCarCard';
@@ -127,34 +128,15 @@ const LOCAL_IMAGES: Record<string, string> = {
   volvo_v90_cross_country: '/getImage_(21).webp',
 };
 
-const CURATED_IDS = [
-  'tesla_model_y', 'volvo_xc60', 'kia_ev6', 'vw_golf', 'toyota_rav4',
-  'volvo_xc40', 'volvo_ex30', 'hyundai_ioniq5', 'toyota_corolla',
-  'kia_sportage', 'vw_id4', 'skoda_enyaq', 'bmw_x3',
-  'tesla_model_3', 'polestar_2', 'toyota_yaris_cross',
-  'volvo_v60', 'honda_crv', 'bmw_ix1', 'mercedes_eqc',
-  'bmw_2_series', 'skoda_superb',
-  // Volvo-utökning
-  'volvo_xc90', 'volvo_ex40', 'volvo_ex90',
-  'volvo_ec40', 'volvo_xc40_recharge', 'volvo_ex60', 'volvo_es90',
-  'volvo_ex30_cross_country', 'volvo_v60_cross_country', 'volvo_v90_cross_country',
-  'volvo_s60', 'volvo_s90', 'volvo_v90', 'volvo_v70',
-  'volvo_v40', 'volvo_v40_cross_country', 'volvo_xc70',
-  // Ford Focus-varianter
-  'ford_focus', 'ford_focus_kombi', 'ford_focus_st', 'ford_focus_st_kombi',
-  'ford_focus_rs', 'ford_focus_vignale', 'ford_focus_vignale_kombi', 'ford_focus_active',
-  'ford_puma', 'ford_kuga', 'ford_mustang_mach_e', 'ford_explorer', 'ford_mustang',
-];
-
 type CategoryKey = 'alla' | 'popular' | 'el' | 'suv' | 'hybrid' | 'sedan';
 
-const CATEGORY_IDS: Record<CategoryKey, string[] | null> = {
-  alla: null,
-  popular: ['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'vw_golf', 'toyota_rav4', 'bmw_x3', 'audi_q5', 'mercedes_c_class', 'volvo_ex60', 'volvo_xc40_recharge', 'volvo_es90'],
-  el: ['tesla_model_y', 'volvo_ex30', 'volvo_ex40', 'volvo_ex60', 'volvo_xc40_recharge', 'volvo_ec40', 'kia_ev6', 'hyundai_ioniq5', 'vw_id4', 'polestar_2', 'tesla_model_3', 'skoda_enyaq', 'bmw_ix3', 'bmw_i4', 'audi_q4_etron', 'audi_a6_e_tron', 'mercedes_eqc', 'mercedes_eqa', 'mercedes_eqb'],
-  suv: ['tesla_model_y', 'volvo_xc60', 'volvo_xc40', 'volvo_ex60', 'toyota_rav4', 'kia_sportage', 'bmw_x3', 'bmw_x5', 'bmw_x1', 'audi_q5', 'audi_q3', 'audi_q6_etron', 'mercedes_glc', 'mercedes_gle', 'mercedes_gla', 'hyundai_ioniq5', 'honda_crv'],
-  hybrid: ['toyota_rav4', 'toyota_corolla', 'volvo_xc60', 'kia_sportage', 'toyota_yaris_cross', 'kia_niro', 'honda_crv', 'bmw_3_series', 'bmw_5_series', 'audi_a3', 'audi_q5', 'mercedes_c_class', 'mercedes_e_class'],
-  sedan: ['vw_golf', 'tesla_model_3', 'volvo_es90', 'toyota_corolla', 'audi_a3', 'audi_a4', 'audi_a6', 'bmw_1_series', 'bmw_3_series', 'bmw_5_series', 'mercedes_a_class', 'mercedes_c_class', 'mercedes_e_class', 'honda_civic', 'volvo_v60', 'polestar_2'],
+const CATEGORY_FILTERS: Record<CategoryKey, (car: CatalogCarFull) => boolean> = {
+  alla: () => true,
+  popular: car => (car.rating_overall ?? 0) >= 8,
+  el: car => !!(car.fuel_types?.includes('el')),
+  suv: car => car.body_type === 'suv',
+  hybrid: car => !!(car.fuel_types?.some(f => f === 'hybrid' || f === 'laddhybrid')),
+  sedan: car => car.body_type === 'sedan' || car.body_type === 'hatchback' || car.body_type === 'kombi',
 };
 
 const CATEGORIES: { key: CategoryKey; label: string; icon: typeof Car }[] = [
@@ -586,7 +568,8 @@ interface CompareCarsPageProps {
 
 export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const allCarsRaw = useMemo(() => getAllComparisonCars(), []);
-  const { getCarImage, catalogCars } = useCarImages();
+  const { cars: dbCars, loading: carsLoading } = useCatalogCars();
+  const { getCarImage } = useCarImages(dbCars);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640);
@@ -682,58 +665,24 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
     return map;
   }, [allCarsRaw]);
 
-  const getCuratedList = useCallback((ids: string[]) =>
-    ids.map(id => allCarsMap.get(id)).filter((c): c is ComparisonCar => !!c),
-  [allCarsMap]);
-
   const [carSearchQuery, setCarSearchQuery] = useState('');
 
-  // Normalized key set of comparison cars to filter duplicates from catalog search
-  const comparisonKeySet = useMemo(() => {
-    const set = new Set<string>();
-    allCarsRaw.forEach(c => set.add(`${c.brand_display} ${c.model_display}`.toLowerCase().replace(/\s+/g, ' ')));
-    return set;
-  }, [allCarsRaw]);
+  // All cars from DB, filtered by category and sorted by rating desc
+  const allCategoryCars = useMemo((): CatalogCarFull[] => {
+    const q = carSearchQuery.trim().toLowerCase();
+    const filtered = q
+      ? dbCars.filter(c => `${c.make} ${c.model}`.toLowerCase().includes(q))
+      : dbCars.filter(CATEGORY_FILTERS[activeCategory]);
 
-  // Catalog-only cars that don't exist in comparison data and are active
-  const catalogOnlyCars = useMemo((): CatalogCar[] => {
-    return catalogCars.filter(c => {
-      if (!c.is_active) return false;
-      const key = `${c.make} ${c.model}`.toLowerCase().replace(/\s+/g, ' ');
-      return !comparisonKeySet.has(key);
+    return filtered.slice().sort((a, b) => {
+      if (q) return `${a.make} ${a.model}`.localeCompare(`${b.make} ${b.model}`, 'sv');
+      const rDiff = (b.rating_overall ?? 0) - (a.rating_overall ?? 0);
+      if (rDiff !== 0) return rDiff;
+      return `${a.make} ${a.model}`.localeCompare(`${b.make} ${b.model}`, 'sv');
     });
-  }, [catalogCars, comparisonKeySet]);
+  }, [dbCars, activeCategory, carSearchQuery]);
 
-  const allCategoryCars = useMemo(() => {
-    const q = carSearchQuery.trim().toLowerCase();
-    if (q) {
-      return allCarsRaw.filter(c =>
-        `${c.brand_display} ${c.model_display}`.toLowerCase().includes(q)
-      );
-    }
-    const ids = CATEGORY_IDS[activeCategory];
-    if (ids === null) {
-      // "Alla" — visa alla aktiva bilar sorterade: kurerade först, sedan resten alfabetiskt
-      const curatedSet = new Set(CURATED_IDS);
-      const curated = getCuratedList(CURATED_IDS);
-      const rest = allCarsRaw
-        .filter(c => !curatedSet.has(c.id))
-        .sort((a, b) => `${a.brand_display} ${a.model_display}`.localeCompare(`${b.brand_display} ${b.model_display}`, 'sv'));
-      return [...curated, ...rest];
-    }
-    return getCuratedList(ids);
-  }, [activeCategory, getCuratedList, carSearchQuery, allCarsRaw]);
-
-  // Catalog-only results that match the search query
-  const catalogSearchResults = useMemo((): CatalogCar[] => {
-    const q = carSearchQuery.trim().toLowerCase();
-    if (!q) return [];
-    return catalogOnlyCars.filter(c =>
-      `${c.make} ${c.model}`.toLowerCase().includes(q)
-    );
-  }, [carSearchQuery, catalogOnlyCars]);
-
-  const visibleCars = useMemo(() => {
+  const visibleCars = useMemo((): CatalogCarFull[] => {
     if (carSearchQuery.trim()) return allCategoryCars;
     if (activeCategory === 'el') return allCategoryCars;
     return showAllCars ? allCategoryCars : allCategoryCars.slice(0, expertShowCount);
@@ -1580,76 +1529,48 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
               className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
             >
               {visibleCars.map((car, i) => {
-                const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
-                if (activeCategory === 'el') {
+                const imgUrl = car.image_url || car.cleaned_image_url || getCarImage(car.make, car.model);
+                const isEl = car.fuel_types?.includes('el') ?? false;
+                const fuelLabel = car.fuel_types?.length
+                  ? car.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')
+                  : undefined;
+                const compCar = findComparisonCarByMakeModel(car.make, car.model);
+                if (isEl) {
                   return (
                     <ElCarCard
                       key={car.id}
-                      name={`${car.brand_display} ${car.model_display}`}
+                      name={`${car.make} ${car.model}`}
                       imageUrl={imgUrl}
-                      rating={car.ratings.overall}
+                      rating={car.rating_overall ?? undefined}
                       topBadge={i < 3}
-                      expertComment={getExpertComment(car)}
-                      carPrice={car.pricing.new_from_sek ?? undefined}
-                      usedPrice={car.pricing.used_from_sek ?? undefined}
+                      expertComment={car.expert_comment ?? undefined}
+                      carPrice={car.price_new_from ?? undefined}
+                      usedPrice={car.price_used_from ?? undefined}
                       isCompared={selectedIds.has(car.id)}
-                      onNegotiate={() => openContactForCar(car)}
-                      onDetail={() => setDetailCar(car)}
+                      onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
+                      onDetail={() => { if (compCar) setDetailCar(compCar); }}
                       onCompare={() => toggleSelect(car.id)}
-                      onFitQuiz={() => setFitQuizCar(car)}
+                      onFitQuiz={() => { if (compCar) setFitQuizCar(compCar); }}
                     />
                   );
                 }
                 return (
                   <CompactCarCard
                     key={car.id}
-                    name={`${car.brand_display} ${car.model_display}`}
-                    imageUrl={imgUrl}
-                    rating={car.ratings.overall}
-                    topBadge={i < 3 && activeCategory === 'popular'}
-                    expertComment={getExpertComment(car)}
-                    fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                    carPrice={car.pricing.new_from_sek ?? undefined}
-                    usedPrice={car.pricing.used_from_sek ?? undefined}
-                    onNegotiate={() => openContactForCar(car)}
-                    onDetail={() => setDetailCar(car)}
-                    onCompare={() => toggleSelect(car.id)}
-                    onFitQuiz={() => setFitQuizCar(car)}
-                    isCompared={selectedIds.has(car.id)}
-                    index={i}
-                    disableMotion={isMobile}
-                  />
-                );
-              })}
-
-              {/* Catalog-only cars — shown only when searching, uses enrichment data if available */}
-              {catalogSearchResults.map((car) => {
-                const key = `catalog-${car.make}-${car.model}`;
-                const imgUrl = car.image_url || getCarImage(car.make, car.model);
-                const fuelLabel = car.fuel_types?.length
-                  ? car.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')
-                  : undefined;
-                if (activeCategory === 'el') {
-                  return (
-                    <ElCarCard
-                      key={key}
-                      name={`${car.make} ${car.model}`}
-                      imageUrl={imgUrl}
-                      rating={car.rating_overall ?? undefined}
-                      expertComment={car.expert_comment ?? undefined}
-                      onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
-                    />
-                  );
-                }
-                return (
-                  <CompactCarCard
-                    key={key}
                     name={`${car.make} ${car.model}`}
                     imageUrl={imgUrl}
                     rating={car.rating_overall ?? undefined}
+                    topBadge={i < 3 && activeCategory === 'popular'}
                     expertComment={car.expert_comment ?? undefined}
                     fuelLabel={fuelLabel}
+                    carPrice={car.price_new_from ?? undefined}
+                    usedPrice={car.price_used_from ?? undefined}
                     onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
+                    onDetail={() => { if (compCar) setDetailCar(compCar); }}
+                    onCompare={() => toggleSelect(car.id)}
+                    onFitQuiz={() => { if (compCar) setFitQuizCar(compCar); }}
+                    isCompared={selectedIds.has(car.id)}
+                    index={i}
                     disableMotion={isMobile}
                   />
                 );

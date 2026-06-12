@@ -70,12 +70,12 @@ export default function CompactCarCard({
         <div className="relative aspect-[4/3] sm:aspect-[16/9] bg-white overflow-hidden rounded-t-2xl" style={{ minHeight: 150 }}>
           {imageUrl ? (
             <img
-              src={imageUrl} alt={name}
-              className="w-full h-full object-contain p-3 group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+              src={imageUrl} alt={name} loading="lazy" decoding="async"
+              className="w-full h-full object-contain p-3 group-hover:scale-[1.03] transition-transform duration-300 ease-out"
               onError={(e) => { e.currentTarget.src = '/car-placeholder.svg'; e.currentTarget.className = 'w-full h-full object-contain p-6 opacity-50'; }}
             />
           ) : (
-            <img src="/car-placeholder.svg" alt={name} className="w-full h-full object-contain p-6 opacity-50" />
+            <img src="/car-placeholder.svg" alt={name} loading="lazy" decoding="async" className="w-full h-full object-contain p-6 opacity-50" />
           )}
           <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
 
