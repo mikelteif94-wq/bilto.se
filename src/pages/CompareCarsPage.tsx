@@ -1199,20 +1199,21 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           <AnimatePresence mode="wait">
             {quizStep === 'idle' && (
               <motion.div key="quiz-idle" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }}>
-                <div className="flex flex-col lg:items-center">
-                  <div className="text-center lg:flex-1 w-full">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
+                  {/* Left: text content */}
+                  <div className="text-center lg:text-left lg:flex-1 w-full">
                     <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0e6efe]/10 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-5">
                       <Sparkles className="w-3.5 h-3.5" />
                       Bilmatch
                     </span>
-                    <h2 className="text-[34px] sm:text-[42px] lg:text-[54px] font-extrabold text-slate-900 tracking-tight leading-[1.05] mb-4">
+                    <h2 className="text-[34px] sm:text-[42px] lg:text-[52px] font-extrabold text-slate-900 tracking-tight leading-[1.05] mb-4">
                       Hitta din<br className="sm:hidden" />{' '}
                       <span className="text-[#0e6efe]">bilmatch</span>
                     </h2>
-                    <p className="text-slate-500 text-[15px] sm:text-[16px] lg:text-[17px] leading-relaxed mb-7 max-w-md mx-auto">
+                    <p className="text-slate-500 text-[15px] sm:text-[16px] lg:text-[17px] leading-relaxed mb-7 max-w-md mx-auto lg:mx-0">
                       Svara på 5 korta frågor om hur du kör, vad du prioriterar och din budget — vi matchar dig med de bilar som passar dig bäst.
                     </p>
-                    <ul className="flex flex-col gap-2.5 mb-8 max-w-xs mx-auto items-start text-left">
+                    <ul className="flex flex-col gap-2.5 mb-8 max-w-xs mx-auto lg:mx-0 items-start text-left">
                       {[
                         'Personlig rekommendation på under 60 sekunder',
                         'Jämför matchade bilar sida vid sida',
@@ -1229,22 +1230,24 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     <button
                       type="button"
                       onClick={() => setQuizStep('active')}
-                      className="w-full max-w-[320px] mx-auto h-[54px] rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[16px] flex items-center justify-center gap-2.5 group transition-all duration-200 shadow-lg shadow-[#0e6efe]/30 hover:shadow-xl hover:shadow-[#0e6efe]/35 hover:-translate-y-0.5 active:scale-[0.98]"
+                      className="w-full max-w-[320px] mx-auto lg:mx-0 h-[54px] rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[16px] flex items-center justify-center gap-2.5 group transition-all duration-200 shadow-lg shadow-[#0e6efe]/30 hover:shadow-xl hover:shadow-[#0e6efe]/35 hover:-translate-y-0.5 active:scale-[0.98]"
                     >
                       Hitta din bilmatch
                       <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
                     </button>
-                    <p className="text-[12.5px] text-slate-400 mt-2.5 text-center">Tar 60 sekunder · Helt gratis</p>
+                    <p className="text-[12.5px] text-slate-400 mt-2.5 text-center lg:text-left">Tar 60 sekunder · Helt gratis</p>
 
                     {/* Equity quiz CTA */}
-                    <div className="mt-4 max-w-[320px] mx-auto">
+                    <div className="mt-4 max-w-[320px] mx-auto lg:mx-0">
                       <EquityFlow
                         compact
                         onNegotiate={(carLabel, equitySummary) => openBuyDrawer(carLabel, undefined, false, equitySummary)}
                       />
                     </div>
                   </div>
-                  <div className="hidden lg:grid-cols-2 lg:gap-4 lg:w-[380px] lg:shrink-0">
+
+                  {/* Right: car image grid — desktop only */}
+                  <div className="hidden lg:grid grid-cols-2 gap-4 w-[420px] shrink-0">
                     {['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'hyundai_ioniq5'].map((cid, i) => {
                       const car = allCarsRaw.find(c => c.id === cid);
                       if (!car) return null;
@@ -1262,6 +1265,8 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       );
                     })}
                   </div>
+
+                  {/* Mobile: small car strip */}
                   <div className="flex lg:hidden items-center justify-center gap-3 mt-8">
                     {['tesla_model_y', 'volvo_xc60', 'kia_ev6'].map((cid) => {
                       const car = allCarsRaw.find(c => c.id === cid);
