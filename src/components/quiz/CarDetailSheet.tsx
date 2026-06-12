@@ -165,13 +165,13 @@ function MonthlyCostBlock({
 // ─── Spec pill ────────────────────────────────────────────────────────────────
 function SpecPill({ icon: Icon, label, value, highlight }: { icon: typeof Car; label: string; value: string; highlight?: boolean }) {
   return (
-    <div className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border ${highlight ? 'bg-blue-50 border-blue-100' : 'bg-slate-50 border-slate-100'}`}>
-      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${highlight ? 'bg-blue-100' : 'bg-white border border-slate-200'}`}>
-        <Icon className={`w-3.5 h-3.5 ${highlight ? 'text-[#0047B3]' : 'text-slate-400'}`} />
+    <div className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border ${highlight ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-50 border-slate-100'}`}>
+      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${highlight ? 'bg-emerald-100' : 'bg-white border border-slate-200'}`}>
+        <Icon className={`w-3.5 h-3.5 ${highlight ? 'text-emerald-700' : 'text-slate-400'}`} />
       </div>
       <div className="min-w-0">
         <p className="text-[10px] text-slate-400 leading-none mb-0.5">{label}</p>
-        <p className={`text-[12px] font-semibold leading-tight truncate ${highlight ? 'text-[#0047B3]' : 'text-slate-800'}`}>{value}</p>
+        <p className={`text-[12px] font-semibold leading-tight truncate ${highlight ? 'text-emerald-700' : 'text-slate-800'}`}>{value}</p>
       </div>
     </div>
   );
