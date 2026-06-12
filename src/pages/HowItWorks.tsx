@@ -651,7 +651,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <section id="sa-fungerar-det" className="bg-[#f5f8fc] py-16 sm:py-24 sm:overflow-hidden px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-16">
-            <span className="section-label mb-3 block">Så funkar det</span>
             <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
               Så enkelt är det
             </h2>
@@ -701,9 +700,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         <div className="max-w-6xl mx-auto px-6 py-16 sm:py-24">
           <div className="grid md:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="md:col-span-6 order-1 md:order-1">
-              <span className="section-label mb-4 block">
-                Din personliga bilmäklare
-              </span>
               <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
                 Ska du köpa eller byta bil?
               </h2>
@@ -737,7 +733,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       document.getElementById('sa-fungerar-det')?.scrollIntoView({ behavior: 'smooth' });
                     }, 100);
                   }}
-                  className="btn-primary h-12 px-7 text-[15px] group"
+                  className="h-11 px-6 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all group"
                 >
                   Läs mer om hur det fungerar
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
@@ -775,9 +771,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <section id="experternas-val" className="bg-white py-14 sm:py-20 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
-            <span className="section-label mb-3 block">Experternas val</span>
             <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
-              Bilar vi rekommenderar
+              Populära bilar
             </h2>
             <p className="mt-3 text-slate-500 text-[15px] max-w-lg mx-auto leading-[1.6]">
               Hitta din nästa bil bland de mest eftertraktade modellerna. Vi förhandlar priset åt dig.
@@ -881,12 +876,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="btn-primary h-12 px-8 text-[15px]"
-              onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(14,110,254,0.42)')}
-              onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.boxShadow = '')}
+              className="h-11 px-7 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
             >
               Utforska alla bilar
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -896,9 +889,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         <div className="max-w-6xl mx-auto px-6 py-14 sm:py-20">
           <div className="grid md:grid-cols-12 gap-10 items-center">
             <div className="md:col-span-5">
-              <span className="section-label mb-4 block">
-                Personlig rådgivare
-              </span>
               <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
                 Din personliga rådgivare
               </h2>
@@ -961,9 +951,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               />
             </div>
             <div className="order-1 md:order-2">
-              <span className="section-label mb-4 block">
-                Hämtning i hela Sverige
-              </span>
               <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
                 Vi gör det enkelt att sälja bilen, oavsett var du bor
               </h2>
@@ -994,9 +981,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <section className="bg-white">
         <div className="max-w-6xl mx-auto px-6 py-16 sm:py-24">
           <div className="mb-12 sm:mb-16 max-w-2xl">
-            <span className="section-label mb-4 block">
-              Varför Bilto
-            </span>
             <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
               Din partner för en trygg och smart bilaffär.
             </h2>
@@ -1007,24 +991,18 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               {
                 icon: ShieldCheck,
                 title: 'Granskade handlare',
-                color: '#0e6efe',
-                bg: 'rgba(14,110,254,0.08)',
                 text:
                   'Endast auktoriserade bilhandlare med dokumenterad historik deltar. Vi granskar företag, omdömen och tidigare affärer innan någon får lägga ett bud på din bil — så du alltid vet att köparen är seriös.',
               },
               {
                 icon: Clock,
                 title: 'Snabb utbetalning',
-                color: '#059669',
-                bg: 'rgba(5,150,105,0.08)',
                 text:
                   'Pengarna landar på ditt konto innan du lämnar över bilen, beroende på vilken bank du har. Vid förmedling betalas slutpriset ut inom 1–3 bankdagar. Inga dolda kostnader – bara en transparent affär.',
               },
               {
                 icon: Check,
                 title: 'Ingen förpliktelse',
-                color: '#f59e0b',
-                bg: 'rgba(245,158,11,0.08)',
                 text:
                   'Du är aldrig bunden att sälja. Tacka nej till budet om du inte är nöjd – det kostar dig ingenting att avstå. Du bestämmer alltid själv om affären ska gå vidare.',
               },
@@ -1032,9 +1010,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               const Icon = b.icon;
               return (
                 <div key={b.title} className="bg-white p-8 sm:p-10 flex flex-col">
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-6 shrink-0"
-                    style={{ background: b.bg }}>
-                    <Icon className="w-5 h-5" style={{ color: b.color }} strokeWidth={2} />
+                  <div className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center mb-6 shrink-0">
+                    <Icon className="w-4.5 h-4.5 text-slate-600" strokeWidth={2} />
                   </div>
                   <h3 className="text-[16px] font-bold text-slate-900 mb-3 tracking-[-0.01em]">
                     {b.title}
@@ -1096,12 +1073,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
                     </span>
                     <div>
-                      <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.12em]">
+                      <p className="text-[13px] font-semibold text-slate-900 leading-tight">
                         Ring våra bilexperter
                       </p>
-                      <p className="mt-0.5 text-[14px] font-semibold text-slate-900 leading-tight">
-                        Vi finns här för att guida dig
-                      </p>
+                      <p className="mt-0.5 text-[12px] text-slate-500">Vi finns här för att guida dig</p>
                     </div>
                   </div>
                   <div className="mt-3 flex items-center gap-2 md:border-t md:border-slate-100 pt-3">
@@ -1125,26 +1100,22 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         <div className="max-w-6xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
           <div className="grid md:grid-cols-12 gap-10 items-center">
             <div className="md:col-span-5 order-1">
-              <span className="section-label mb-4 block">
-                Kundcase
-              </span>
               <h2 className="text-[28px] sm:text-[38px] font-semibold leading-[1.08] text-slate-900 tracking-[-0.02em]">
                 "Jag visste ingenting om bilar — Bilto skötte allt och jag fick mer än jag vågat hoppas på."
               </h2>
               <p className="text-slate-600 mt-4 text-[15px] leading-[1.6] max-w-md">
                 Josefin hade hittat en Volvo XC40 men kände sig osäker. Annonsen visade elstolar som inte fanns — Bilto fick 15 000 kr i ersättning för det, förhandlade ner räntan 2 %, fick med dubbdäck och 2 års garanti, och pressade upp inbytesvärdet med 7 000 kr.
               </p>
-              <dl className="mt-6 grid grid-cols-2 gap-3">
+              <dl className="mt-6 grid grid-cols-2 gap-y-4 gap-x-6">
                 {[
-                  { label: 'Ränta', value: '−2 %', color: '#0e6efe', bg: 'rgba(14,110,254,0.07)' },
-                  { label: 'Inbyte', value: '+7 000 kr', color: '#059669', bg: 'rgba(5,150,105,0.07)' },
-                  { label: 'Felaktig annons', value: '15 000 kr', color: '#0e6efe', bg: 'rgba(14,110,254,0.07)' },
-                  { label: 'Dubbdäck + garanti', value: 'ingår', color: '#f59e0b', bg: 'rgba(245,158,11,0.07)' },
+                  { label: 'Ränta förhandlad', value: '−2 %' },
+                  { label: 'Inbytesvärde uppgraderat', value: '+7 000 kr' },
+                  { label: 'Kompensation felaktig annons', value: '15 000 kr' },
+                  { label: 'Dubbdäck + 2 års garanti', value: 'förhandlades in' },
                 ].map((item) => (
-                  <div key={item.label} className="rounded-xl px-4 py-3 ring-1"
-                    style={{ background: item.bg, ringColor: item.color + '20' }}>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.1em]" style={{ color: item.color + 'bb' }}>{item.label}</p>
-                    <p className="text-[17px] font-extrabold mt-0.5" style={{ color: item.color }}>{item.value}</p>
+                  <div key={item.label}>
+                    <dt className="text-[12px] text-slate-500 leading-tight">{item.label}</dt>
+                    <dd className="text-[16px] font-bold text-slate-900 mt-0.5">{item.value}</dd>
                   </div>
                 ))}
               </dl>
@@ -1171,9 +1142,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <section className="bg-slate-50 py-14 sm:py-20 px-6">
         <div className="max-w-3xl mx-auto">
           <div className="mb-10 sm:mb-14">
-            <span className="section-label mb-4 block">
-              Vanliga frågor
-            </span>
             <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
               Fler frågor? Vi har svaren.
             </h2>
