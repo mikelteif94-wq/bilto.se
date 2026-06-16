@@ -358,7 +358,7 @@ export default function DealerCarDetail({
                 { key: 'infotainment', label: 'Infotainment' }, { key: 'ac', label: 'AC / klimat' }, { key: 'lukt', label: 'Lukt' },
               ]},
             ];
-            const historik = cr.historik as Record<string, unknown> | undefined;
+            const historik = cr.historik as Record<string, string | number | null | undefined> | undefined;
             const kommentarer = cr.kommentarer as Record<string, string> | undefined;
             const hasAny = sections.some(s => {
               const data = cr[s.key] as Record<string, string> | undefined;

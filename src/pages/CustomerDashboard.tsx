@@ -1,23 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  ArrowRight,
-  Copy,
-  Check,
-  Loader2,
-  Car as CarIcon,
-  Gift,
-  Clock,
-  CheckCircle2,
-  ChevronRight,
-  Phone,
-  Gavel,
-  TrendingUp,
-  Trophy,
-  LayoutDashboard,
-  ExternalLink,
-  AlertCircle,
-  Search,
-} from 'lucide-react';
+import { ArrowRight, Copy, Check, Loader as Loader2, Car as CarIcon, Gift, Clock, CircleCheck as CheckCircle2, ChevronRight, Phone, Gavel, TrendingUp, Trophy, LayoutDashboard, ExternalLink, CircleAlert as AlertCircle, Search } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import CustomerOfferCard from '../components/CustomerOfferCard';
 import PortalLayout from '../components/PortalLayout';
@@ -160,7 +142,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
           .order('belopp', { ascending: false });
 
         const grouped: Record<string, BidRow[]> = {};
-        for (const b of (bids ?? []) as (Omit<BidRow, 'foretagsnamn'> & { dealers: { foretagsnamn: string } | null })[]) {
+        for (const b of (bids ?? []) as unknown as (Omit<BidRow, 'foretagsnamn'> & { dealers: { foretagsnamn: string } | null })[]) {
           (grouped[b.car_id] = grouped[b.car_id] ?? []).push({
             id: b.id,
             car_id: b.car_id,
