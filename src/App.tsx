@@ -93,7 +93,6 @@ function getInitialScreen(): Screen {
   const params = new URLSearchParams(window.location.search);
 
   if (path === '/sa-funkar-det') return { name: 'how-it-works' };
-  if (path === '/kop-bil') return { name: 'kop-bil-concierge' };
   if (path === '/jamfor') return { name: 'compare' };
   if (path === '/om-oss') return { name: 'about' };
   if (path === '/blogg') return { name: 'blog' };
@@ -115,13 +114,20 @@ function getInitialScreen(): Screen {
     const token = path.replace('/min-offert/', '');
     if (token) return { name: 'my-quote', token };
   }
-  if (path.startsWith('/salja/')) {
+  if (path === '/salja' || path.startsWith('/salja/') || path === '/salj') {
     const regnummer = params.get('reg') ?? undefined;
     return { name: 'sell', regnummer };
   }
-  if (path === '/salja') {
-    return { name: 'sell' };
+
+  // /kop-bil/bestall?bil=X or /kop-bil?bil=X — go straight to buy flow
+  if (path.startsWith('/kop-bil/bestall') || (path === '/kop-bil' && params.has('bil'))) {
+    const bil = params.get('bil') ?? undefined;
+    const typ = params.get('typ') as BuyTrack | undefined;
+    const reg = params.get('reg') ?? undefined;
+    const source = params.get('source') ?? undefined;
+    return { name: 'buy', bil, typ, reg, source };
   }
+  if (path === '/kop-bil') return { name: 'kop-bil-concierge' };
 
   const carToken = params.get('car');
   const quoteToken = params.get('quote');
@@ -135,7 +141,9 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>(getInitialScreen);
 
   useEffect(() => {
-    window.history.pushState({}, '', '/');
+    const handler = () => setScreen(getInitialScreen());
+    window.addEventListener('popstate', handler);
+    return () => window.removeEventListener('popstate', handler);
   }, []);
 
   function goHome() {
