@@ -1,5 +1,26 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ChevronLeft, Check, FileText, Link2, Loader as Loader2, Mail, Phone, Clock, Search, Car as CarIcon, Repeat, Save, CircleArrowRight as ArrowRightCircle, Send, Plus, Trash2, Image, ShieldCheck, ShieldAlert } from 'lucide-react';
+import {
+  ArrowLeft,
+  ChevronLeft,
+  Check,
+  FileText,
+  Link2,
+  Loader2,
+  Mail,
+  Phone,
+  Clock,
+  Search,
+  Car as CarIcon,
+  Repeat,
+  Save,
+  ArrowRightCircle,
+  Send,
+  Plus,
+  Trash2,
+  Image,
+  ShieldCheck,
+  ShieldAlert,
+} from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
 import DealerDispatchPanel from '../components/DealerDispatchPanel';
@@ -63,10 +84,6 @@ interface QuoteRequest {
   email_verified: boolean;
   email_verified_at: string | null;
   deal_readiness: string;
-  has_trade_in?: boolean | null;
-  trade_in_reg?: string | null;
-  current_loan?: number | null;
-  current_interest_rate?: number | null;
 }
 
 interface SuggestionRow {
@@ -461,10 +478,10 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
                       <DetailRow label="Inbytesbil" value={quote.trade_in_reg ? quote.trade_in_reg.toUpperCase() : 'Ja'} />
                     )}
                     {quote.has_trade_in && quote.current_loan && (
-                      <DetailRow label="Befintligt lan" value={String(quote.current_loan).includes('kr') ? String(quote.current_loan) : `${quote.current_loan} kr`} />
+                      <DetailRow label="Befintligt lan" value={quote.current_loan.includes('kr') ? quote.current_loan : `${quote.current_loan} kr`} />
                     )}
                     {quote.has_trade_in && quote.current_interest_rate && (
-                      <DetailRow label="Nuvarande ranta" value={String(quote.current_interest_rate).includes('%') ? String(quote.current_interest_rate) : `${quote.current_interest_rate}%`} />
+                      <DetailRow label="Nuvarande ranta" value={quote.current_interest_rate.includes('%') ? quote.current_interest_rate : `${quote.current_interest_rate}%`} />
                     )}
                   </>
                 )}

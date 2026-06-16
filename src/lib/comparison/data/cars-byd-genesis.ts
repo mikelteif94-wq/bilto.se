@@ -1,4 +1,4 @@
-import type { ComparisonCar } from '../types';
+import { ComparisonCar } from '../types';
 
 export const CARS_BYD_GENESIS: ComparisonCar[] = [
   {

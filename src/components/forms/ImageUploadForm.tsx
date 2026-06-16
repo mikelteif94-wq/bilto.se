@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import { Camera, ImagePlus, X, Loader as Loader2, Circle as XCircle, PhoneCall } from 'lucide-react';
+import { Camera, ImagePlus, X, Loader2, XCircle, PhoneCall } from 'lucide-react';
 import imageCompression from 'browser-image-compression';
-import type { ImageFile } from '../../pages/SellCarPage';
+import { ImageFile } from '../../pages/SellCarPage';
 
 interface ImageUploadFormProps {
   initialImages: ImageFile[];

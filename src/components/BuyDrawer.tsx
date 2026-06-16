@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, ChevronLeft, Check, Phone, Search, ArrowLeftRight, CircleCheck as CheckCircle } from 'lucide-react';
+import { X, ChevronLeft, Check, Phone, Search, ArrowLeftRight, CheckCircle } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ErrorBanner from './ErrorBanner';
 import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
@@ -53,7 +53,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
     yearFrom: '',
     yearTo: '',
     maxMiltal: '',
-    hasQuote: null,
   });
 
   const [tradeIn, setTradeIn] = useState<BuyTradeInData>({
@@ -69,7 +68,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
     telefon: '',
     mejl: '',
     preferredTime: '',
-    dealReadiness: '',
   });
 
   const [guidanceOpen, setGuidanceOpen] = useState(false);
@@ -129,7 +127,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
         yearFrom: '',
         yearTo: '',
         maxMiltal: '',
-        hasQuote: null,
       });
       const resolvedReg = initialReg || '';
       setTradeIn({
@@ -139,7 +136,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
         loanAmount: '',
         interestRate: '',
       });
-      setContact({ namn: '', telefon: '', mejl: '', preferredTime: '', dealReadiness: '' });
+      setContact({ namn: '', telefon: '', mejl: '', preferredTime: '' });
     }
   }, [car]);
 

@@ -1,4 +1,4 @@
-import type { ComparisonCar } from '../types';
+import { ComparisonCar } from '../types';
 import { CARS_ALFA_AUDI } from './cars-alfa-audi';
 import { CARS_BMW } from './cars-bmw';
 import { CARS_BYD_GENESIS } from './cars-byd-genesis';

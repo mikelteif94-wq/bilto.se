@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, TriangleAlert as AlertTriangle, OctagonAlert as AlertOctagon, ChevronDown, ChevronUp } from 'lucide-react';
+import { Check, AlertTriangle, AlertOctagon, ChevronDown, ChevronUp } from 'lucide-react';
 
 export type ItemStatus = 'ok' | 'anmark' | 'allvarligt' | '';
 
@@ -372,7 +372,7 @@ function NumberField({
 export function isConditionReportFilled(r: ConditionReport | null | undefined): boolean {
   if (!r) return false;
   const sections = [r.mekaniskt, r.kosmetiskt, r.inredning];
-  const anyStatus = sections.some((sec) => sec && Object.values(sec).some((v) => v && (v as string) !== ''));
+  const anyStatus = sections.some((sec) => sec && Object.values(sec).some((v) => v && v !== ''));
   const anyHistory =
     !!r.historik &&
     (r.historik.servicehistorik !== '' ||

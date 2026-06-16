@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Send, CircleCheck as CheckCircle2, Eye, MessageSquare, Circle as XCircle, Clock, ChevronDown, Loader as Loader2, Users, Bell, Search, Zap, Radio } from 'lucide-react';
+import {
+  Send, CheckCircle2, Eye, MessageSquare, XCircle,
+  Clock, ChevronDown, Loader2, Users, Bell, Search, Zap, Radio,
+} from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface DealerDispatchPanelProps {
@@ -32,7 +35,7 @@ interface Dispatch {
   created_at: string;
   reply_text: string | null;
   offered_amount: number | null;
-  dealers: { foretagsnamn: string; kontaktperson: string } | { foretagsnamn: string; kontaktperson: string }[] | null;
+  dealers: { foretagsnamn: string; kontaktperson: string } | null;
 }
 
 const STATUS_CONFIG: Record<string, { label: string; icon: React.ReactNode; cls: string }> = {

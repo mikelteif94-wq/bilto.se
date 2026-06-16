@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { ArrowLeft, Upload, CircleCheck as CheckCircle, Circle as XCircle, CircleAlert as AlertCircle, File as FileJson, RefreshCw, FileText } from 'lucide-react';
+import { ArrowLeft, Upload, CheckCircle, XCircle, AlertCircle, FileJson, RefreshCw, FileText } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface Props {
@@ -361,7 +361,6 @@ function parseCarJson(raw: unknown): CarRow | null {
     meta_description: (c.meta_description) as string | null ?? null,
     persona_familjetest: personaFamilj,
     persona_kordynamik: personaKor,
-    seats: numOrNull((c as Record<string, unknown>).seats ?? null),
     // Befintliga engelska kolumner — uppdateras parallellt för bakåtkompatibilitet
     body_type: (() => {
       const mapped = karossRaw ? (KAROSS_MAP[karossRaw] ?? karossRaw.toLowerCase()) : null;

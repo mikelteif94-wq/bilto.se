@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, Building2, Clock, Loader as Loader2, Lock, Menu, User } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Building2, Clock, Loader2, Lock, Menu, User } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import MobileMenu, { type MobileMenuItem } from '../components/MobileMenu';
+import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
 import ErrorBanner from '../components/ErrorBanner';
 

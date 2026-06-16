@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { type QuizAnswers, QUIZ_QUESTIONS, type QuizOption, MONTHLY_BUDGET_OPTIONS, CASH_BUDGET_OPTIONS, BRAND_CATEGORIES } from './QuizTypes';
+import { QuizAnswers, QUIZ_QUESTIONS, QuizOption, MONTHLY_BUDGET_OPTIONS, CASH_BUDGET_OPTIONS, BRAND_CATEGORIES } from './QuizTypes';
 
 interface QuizFlowProps {
   onComplete: (answers: QuizAnswers) => void;

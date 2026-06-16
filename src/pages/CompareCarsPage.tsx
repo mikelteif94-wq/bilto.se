@@ -1,6 +1,12 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { calcCarMonthly } from '../lib/utils';
-import { Search, ArrowRight, Car, Menu, User, Check, Sparkles, Zap, Truck, Leaf, CarFront, Send, Loader as Loader2, RotateCcw, Info, GitCompareArrows, X, ArrowDown, Phone, Handshake, ShieldCheck, Megaphone, CircleCheck as CheckCircle, ArrowLeftRight, ChevronDown } from 'lucide-react';
+import {
+  Search, ArrowRight, Car, Menu, User, Check,
+  Sparkles, Zap, Truck, Leaf, CarFront,
+  Send, Loader2, RotateCcw, Info,
+  GitCompareArrows, X, ArrowDown, Phone, Handshake,
+  ShieldCheck, Megaphone, CheckCircle, ArrowLeftRight, ChevronDown,
+} from 'lucide-react';
 import ReviewsSection from '../components/ReviewsSection';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAllComparisonCars } from '../lib/comparison';
@@ -424,7 +430,6 @@ interface QuizRecommendation {
   fuelLabel?: string;
   trunkLiters?: number;
   carPrice?: number;
-  usedPrice?: number;
 }
 
 function detectBodyType(model: string): string | null {

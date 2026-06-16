@@ -1,4 +1,4 @@
-import type { ComparisonCar } from '../types';
+import { ComparisonCar } from '../types';
 
 export const CARS_LANDROVER_MERCEDES: ComparisonCar[] = [
   {

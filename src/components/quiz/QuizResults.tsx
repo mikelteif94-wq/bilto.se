@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Car, Loader as Loader2 } from 'lucide-react';
+import { Car, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import { type QuizAnswers, BRAND_CATEGORIES, BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS, PRIORITY_TRAITS } from './QuizTypes';
+import { QuizAnswers, BRAND_CATEGORIES, BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS, PRIORITY_TRAITS } from './QuizTypes';
 import { findComparisonCarByMakeModel } from '@/lib/comparison';
 import DarkCarCard from '@/components/DarkCarCard';
 

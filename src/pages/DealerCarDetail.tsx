@@ -1,5 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ChevronLeft, Loader as Loader2, Clock, Image as ImageIcon, Check, Lock, X, TriangleAlert as AlertTriangle, OctagonAlert as AlertOctagon, Receipt, Wrench, ListChecks, Shield, Eye } from 'lucide-react';
+import {
+  ChevronLeft,
+  Loader2,
+  Clock,
+  Image as ImageIcon,
+  Check,
+  Lock,
+  X,
+  AlertTriangle,
+  AlertOctagon,
+  Receipt,
+  Wrench,
+  ListChecks,
+  Shield,
+  Eye,
+} from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
 import ErrorBanner from '../components/ErrorBanner';
@@ -328,7 +343,7 @@ export default function DealerCarDetail({
             )}
           </div>
 
-          {!!(car as unknown as Record<string, unknown>).momsbil && (
+          {(car as Record<string, unknown>).momsbil && (
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-md px-4 py-3">
               <Receipt className="w-4 h-4 text-emerald-600 shrink-0" />
               <span className="text-sm font-semibold text-emerald-800">Momsbil -- moms avdragsgill</span>
@@ -336,7 +351,7 @@ export default function DealerCarDetail({
           )}
 
           {(() => {
-            const cr = (car as unknown as Record<string, unknown>).condition_report as Record<string, unknown> | null;
+            const cr = (car as Record<string, unknown>).condition_report as Record<string, unknown> | null;
             if (!cr) return null;
             const STATUS_ICON: Record<string, React.ReactNode> = {
               ok: <Check className="w-3.5 h-3.5 text-emerald-500" />,
@@ -358,7 +373,7 @@ export default function DealerCarDetail({
                 { key: 'infotainment', label: 'Infotainment' }, { key: 'ac', label: 'AC / klimat' }, { key: 'lukt', label: 'Lukt' },
               ]},
             ];
-            const historik = cr.historik as Record<string, string | number | null | undefined> | undefined;
+            const historik = cr.historik as Record<string, unknown> | undefined;
             const kommentarer = cr.kommentarer as Record<string, string> | undefined;
             const hasAny = sections.some(s => {
               const data = cr[s.key] as Record<string, string> | undefined;
@@ -428,7 +443,7 @@ export default function DealerCarDetail({
           })()}
 
           {(() => {
-            const utrustning = (car as unknown as Record<string, unknown>).utrustning as string[] | null;
+            const utrustning = (car as Record<string, unknown>).utrustning as string[] | null;
             if (!utrustning || utrustning.length === 0) return null;
             return (
               <div className="bg-white rounded-md border border-slate-200 p-6 shadow-sm">
@@ -446,13 +461,13 @@ export default function DealerCarDetail({
             );
           })()}
 
-          {!!(car as unknown as Record<string, unknown>).skick_kommentar && (
+          {(car as Record<string, unknown>).skick_kommentar && (
             <div className="bg-white rounded-md border border-slate-200 p-6 shadow-sm">
               <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-2">
                 Skickkommentar
               </h2>
               <p className="text-sm text-slate-700 whitespace-pre-wrap">
-                {String((car as unknown as Record<string, unknown>).skick_kommentar)}
+                {String((car as Record<string, unknown>).skick_kommentar)}
               </p>
             </div>
           )}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ArrowRight, Check, Loader as Loader2, Gavel, Phone, Clock, Mail, Hop as Home, Repeat, CalendarClock } from 'lucide-react';
-import type { CustomerData, CarData, ImageFile } from '../../pages/SellCarPage';
+import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home, Repeat, CalendarClock } from 'lucide-react';
+import { CustomerData, CarData, ImageFile } from '../../pages/SellCarPage';
 import type { TradeInData } from './CarConditionStep';
 import { supabase } from '../../lib/supabase';
 

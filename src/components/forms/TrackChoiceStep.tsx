@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Phone, ArrowRight, Repeat, Loader as Loader2, ChevronDown } from 'lucide-react';
-import { useVehicleLookup, type VehicleData } from '../../lib/useVehicleLookup';
+import { Phone, ArrowRight, Repeat, Loader2, ChevronDown } from 'lucide-react';
+import { useVehicleLookup, VehicleData } from '../../lib/useVehicleLookup';
 
 interface TrackChoiceStepProps {
   regnummer: string;

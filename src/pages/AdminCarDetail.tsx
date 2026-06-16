@@ -1,5 +1,24 @@
 import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronDown, Loader as Loader2, Mail, Phone, User, X, EyeOff, Eye, Trash2, Gavel, Check, Pencil, Repeat, Send, Clock, ShieldCheck, ShieldAlert } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronDown,
+  Loader2,
+  Mail,
+  Phone,
+  User,
+  X,
+  EyeOff,
+  Eye,
+  Trash2,
+  Gavel,
+  Check,
+  Pencil,
+  Repeat,
+  Send,
+  Clock,
+  ShieldCheck,
+  ShieldAlert,
+} from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
 import PortalLayout from '../components/PortalLayout';
@@ -367,9 +386,9 @@ export default function AdminCarDetail({
                 const report: ConditionReport = {
                   ...EMPTY_CONDITION_REPORT,
                   ...raw,
-                  mekaniskt: (raw.mekaniskt as Record<string, unknown>) as ConditionReport['mekaniskt'] ?? {},
-                  kosmetiskt: (raw.kosmetiskt as Record<string, unknown>) as ConditionReport['kosmetiskt'] ?? {},
-                  inredning: (raw.inredning as Record<string, unknown>) as ConditionReport['inredning'] ?? {},
+                  mekaniskt: (raw.mekaniskt as Record<string, string>) ?? {},
+                  kosmetiskt: (raw.kosmetiskt as Record<string, string>) ?? {},
+                  inredning: (raw.inredning as Record<string, string>) ?? {},
                   historik: { ...EMPTY_CONDITION_REPORT.historik, ...(raw.historik as object ?? {}) },
                   kommentarer: { ...EMPTY_CONDITION_REPORT.kommentarer, ...(raw.kommentarer as object ?? {}) },
                 };

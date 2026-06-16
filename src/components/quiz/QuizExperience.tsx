@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, Loader as Loader2, X } from 'lucide-react';
-import { QUIZ_QUESTIONS, type QuizAnswers, type QuizOption } from './QuizTypes';
+import { ArrowLeft, ArrowRight, Check, Loader2, X } from 'lucide-react';
+import { QUIZ_QUESTIONS, QuizAnswers, QuizOption } from './QuizTypes';
 import { cn } from '@/lib/utils';
 
 interface QuizExperienceProps {

@@ -1,4 +1,4 @@
-import type { ComparisonCar } from '../types';
+import { ComparisonCar } from '../types';
 
 export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
   {
@@ -257,12 +257,14 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     id: 'tesla_model_y', brand_id: 'tesla', brand_display: 'Tesla', model_display: 'Model Y',
     generation: '2020-present', slug: 'tesla-model-y',
     meta_description: 'Tesla Model Y är en av världens mest sålda elbilar. Med enorm lastkapacitet, lång räckvidd och snabb laddning passar den såväl barnfamiljen som pendlaren. Begagnad är ofta det klokaste köpet — priset sjunker snabbt de första åren.',
+  meta_description: 'Tesla Model Y är en av världens mest sålda elbilar. Med enorm lastkapacitet, lång räckvidd och snabb laddning passar den såväl barnfamiljen som pendlaren. Begagnad är ofta det klokaste köpet — priset sjunker snabbt de första åren.',
     ratings: { overall: 9, driving: 8, comfort: 8, practicality: 9, value: 8 },
     pricing: { new_from_sek: 587900, new_to_sek: 867900, used_from_sek: 218400 },
     specs: { body_type: 'suv', fuel_types: ['el'], drivetrain: ['rwd', 'awd'], seats: 5, trunk_liters: 854, trunk_liters_max: 2158 },
     safety: { euro_ncap_stars: 5, euro_ncap_year: 2022 },
     pros: ['Enormt bagageutrymme', 'Bra räckvidd', 'Snabb laddning', 'Låga driftskostnader'],
     cons: ['Stötigt chassi', 'Varierande byggkvalitet', 'Spartansk interiör', 'Inget traditionellt instrument'],
+    meta_description: 'Tesla Model Y är en av världens mest sålda elbilar. Med enorm lastkapacitet, lång räckvidd och snabb laddning passar den såväl barnfamiljen som pendlaren. Begagnad är ofta det klokaste köpet — priset sjunker snabbt de första åren.',
     segment: 'premium', competitors: ['volvo_c40', 'bmw_ix3', 'audi_q4_etron'],
     is_active: true, updated_at: '2026-05-24',
   },
@@ -799,7 +801,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     generation: '2017-present', slug: 'volvo-xc60',
     ratings: { overall: 7.7, driving: 7.9, comfort: 8.5, practicality: 9.1, value: 5.4 },
     pricing: { new_from_sek: 570000, new_to_sek: 899900, used_from_sek: 329000 },
-    specs: { body_type: 'suv', fuel_types: ['bensin', 'hybrid', 'laddhybrid'], drivetrain: ['fwd', 'awd'], seats: 5, trunk_liters: 483, trunk_liters_max: 1410 },
+    specs: { body_type: 'suv', fuel_types: ['bensin', 'mildhybrid', 'laddhybrid'], drivetrain: ['fwd', 'awd'], seats: 5, trunk_liters: 483, trunk_liters_max: 1410 },
     safety: { euro_ncap_stars: 5, euro_ncap_year: 2017 },
     pros: ['Hög säkerhet', 'Bekväm', 'Bra svenska väder-egenskaper'],
     cons: ['Mindre rolig än BMW X3', 'Hög inköpskostnad'],

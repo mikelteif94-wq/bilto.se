@@ -1,16 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Loader as Loader2, CircleCheck as CheckCircle2, Circle as XCircle, Building2, Send, Search } from 'lucide-react';
+import {
+  ArrowLeft,
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Building2,
+  Send,
+  Search,
+} from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
 import AdminUserLabel from '../components/AdminUserLabel';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../lib/carBrands';
 import ConditionReportForm, {
-  type ConditionReport,
+  ConditionReport,
   EMPTY_CONDITION_REPORT,
   isConditionReportFilled,
 } from '../components/forms/ConditionReportForm';
 import CarImageUploader, {
-  type PendingImage,
+  PendingImage,
   uploadCarImages,
 } from '../components/forms/CarImageUploader';
 
@@ -213,7 +221,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
       }
 
       if (images.length > 0) {
-        const up = await uploadCarImages(supabase as any, carRow.id, images);
+        const up = await uploadCarImages(supabase, carRow.id, images);
         if (!up.ok) {
           setError(up.error ?? 'Bilen är skapad men bilderna kunde inte laddas upp.');
           setSubmitting(false);

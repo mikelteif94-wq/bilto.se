@@ -1,777 +1,886 @@
-import { useState, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
 import { supabase } from './lib/supabase';
-import type { AdminPage } from './hooks/useAdminNav';
-import type { BuyTrack } from './components/forms/BuyTrackStep';
-import type { SeoCity, SeoBrand } from './lib/seo-pages';
+import type { Session } from '@supabase/supabase-js';
+import { slugToCity, slugToBrand } from './lib/seo-pages';
 
-import HomePage from './pages/HomePage';
-import QuotePage from './pages/QuotePage';
-import SellCarPage from './pages/SellCarPage';
-import BuyCarPage from './pages/BuyCarPage';
-import MyCarPage from './pages/MyCarPage';
-import MyQuotePage from './pages/MyQuotePage';
-import CustomerDashboard from './pages/CustomerDashboard';
-import CustomerLogin from './pages/CustomerLogin';
-import HowItWorks from './pages/HowItWorks';
-import KopBilConcierge from './pages/KopBilConcierge';
-import CompareCarsPage from './pages/CompareCarsPage';
-import AboutPage from './pages/AboutPage';
-import BlogPage from './pages/BlogPage';
-import PortalCallbackPage from './pages/PortalCallbackPage';
-import SetPasswordPage from './pages/SetPasswordPage';
-import SeoLandingPage from './pages/SeoLandingPage';
-import PrivacyPage from './pages/PrivacyPage';
-import TermsPage from './pages/TermsPage';
-import WebbplatskartaPage from './pages/WebbplatskartaPage';
-import DealerRegister from './pages/DealerRegister';
-import DealerLogin from './pages/DealerLogin';
-import DealerOverview from './pages/DealerOverview';
-import DealerCarsList from './pages/DealerCarsList';
-import DealerCarDetail from './pages/DealerCarDetail';
-import DealerAddCar from './pages/DealerAddCar';
-import DealerSettings from './pages/DealerSettings';
-import DealerInventorySync from './pages/DealerInventorySync';
-import AdminLogin from './pages/AdminLogin';
-import AdminOverview from './pages/AdminOverview';
-import AdminCars from './pages/AdminCars';
-import AdminCarDetail from './pages/AdminCarDetail';
-import AdminAddCar from './pages/AdminAddCar';
-import AdminQuoteRequests from './pages/AdminQuoteRequests';
-import AdminQuoteDetail from './pages/AdminQuoteDetail';
-import AdminDealers from './pages/AdminDealers';
-import AdminDealerDetail from './pages/AdminDealerDetail';
-import AdminLeadCommandCenter from './pages/AdminLeadCommandCenter';
-import AdminQuizSubmissions from './pages/AdminQuizSubmissions';
-import AdminOfferEditor from './pages/AdminOfferEditor';
-import AdminDealerProposalEditor from './pages/AdminDealerProposalEditor';
-import AdminBulkUpload from './pages/AdminBulkUpload';
-import AdminCarCatalog from './pages/AdminCarCatalog';
-import AdminCatalogImport from './pages/AdminCatalogImport';
+const HowItWorks = lazy(() => import('./pages/HowItWorks'));
+const SellCarPage = lazy(() => import('./pages/SellCarPage'));
+const BuyCarPage = lazy(() => import('./pages/BuyCarPage'));
+const DealerRegister = lazy(() => import('./pages/DealerRegister'));
+const DealerLogin = lazy(() => import('./pages/DealerLogin'));
+const DealerCarsList = lazy(() => import('./pages/DealerCarsList'));
+const DealerOverview = lazy(() => import('./pages/DealerOverview'));
+const DealerCarDetail = lazy(() => import('./pages/DealerCarDetail'));
+const DealerAddCar = lazy(() => import('./pages/DealerAddCar'));
+const DealerSettings = lazy(() => import('./pages/DealerSettings'));
+const DealerInventorySync = lazy(() => import('./pages/DealerInventorySync'));
+const AdminLogin = lazy(() => import('./pages/AdminLogin'));
+const AdminOverview = lazy(() => import('./pages/AdminOverview'));
+const AdminCars = lazy(() => import('./pages/AdminCars'));
+const AdminCarDetail = lazy(() => import('./pages/AdminCarDetail'));
+const AdminAddCar = lazy(() => import('./pages/AdminAddCar'));
+const AdminDealers = lazy(() => import('./pages/AdminDealers'));
+const AdminDealerDetail = lazy(() => import('./pages/AdminDealerDetail'));
+const AdminQuoteDetail = lazy(() => import('./pages/AdminQuoteDetail'));
+const AdminOfferEditor = lazy(() => import('./pages/AdminOfferEditor'));
+const AdminDealerProposalEditor = lazy(() => import('./pages/AdminDealerProposalEditor'));
+const AdminBulkUpload = lazy(() => import('./pages/AdminBulkUpload'));
+const AdminQuizSubmissions = lazy(() => import('./pages/AdminQuizSubmissions'));
+const AdminLeadCommandCenter = lazy(() => import('./pages/AdminLeadCommandCenter'));
+const AdminCarCatalog = lazy(() => import('./pages/AdminCarCatalog'));
+const AdminCatalogImport = lazy(() => import('./pages/AdminCatalogImport'));
+const MyCarPage = lazy(() => import('./pages/MyCarPage'));
+const MyQuotePage = lazy(() => import('./pages/MyQuotePage'));
+const SetPasswordPage = lazy(() => import('./pages/SetPasswordPage'));
+const CustomerLogin = lazy(() => import('./pages/CustomerLogin'));
+const CustomerDashboard = lazy(() => import('./pages/CustomerDashboard'));
+const PortalCallbackPage = lazy(() => import('./pages/PortalCallbackPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const CompareCarsPage = lazy(() => import('./pages/CompareCarsPage'));
+const KopBilConcierge = lazy(() => import('./pages/KopBilConcierge'));
+const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
+const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 
-type Screen =
-  | { name: 'home' }
-  | { name: 'quote'; regnummer: string; telefon: string }
-  | { name: 'sell'; regnummer?: string; telefon?: string; miltal?: number }
-  | { name: 'buy'; bil?: string; typ?: BuyTrack; reg?: string; source?: string }
-  | { name: 'my-car'; token: string }
-  | { name: 'my-quote'; token: string }
-  | { name: 'customer-login'; initialEmail?: string }
-  | { name: 'customer-dashboard'; userId: string }
-  | { name: 'how-it-works' }
-  | { name: 'kop-bil-concierge' }
-  | { name: 'compare' }
-  | { name: 'about' }
-  | { name: 'blog' }
-  | { name: 'portal-callback' }
-  | { name: 'set-password' }
-  | { name: 'seo-landing'; type: 'city' | 'brand'; city?: SeoCity; brand?: SeoBrand }
-  | { name: 'privacy' }
-  | { name: 'terms' }
-  | { name: 'webbplatskarta' }
-  | { name: 'dealer-register'; mode?: 'landing' | 'form' }
-  | { name: 'dealer-login' }
-  | { name: 'dealer-overview'; dealerId: string; foretagsnamn: string }
-  | { name: 'dealer-cars'; dealerId: string; foretagsnamn: string }
-  | { name: 'dealer-car-detail'; dealerId: string; foretagsnamn: string; carId: string }
-  | { name: 'dealer-add-car'; dealerId: string; foretagsnamn: string }
-  | { name: 'dealer-settings'; dealerId: string; foretagsnamn: string; isOwner: boolean }
-  | { name: 'dealer-inventory'; dealerId: string; foretagsnamn: string }
-  | { name: 'admin-login' }
-  | { name: 'admin-overview'; adminUserId: string; adminName: string; adminPage: AdminPage }
-  | { name: 'admin-car-detail'; adminUserId: string; adminName: string; carId: string }
-  | { name: 'admin-add-car'; adminUserId: string; adminName: string }
-  | { name: 'admin-quote-detail'; adminUserId: string; adminName: string; quoteId: string }
-  | { name: 'admin-dealer-detail'; adminUserId: string; adminName: string; dealerId: string }
-  | { name: 'admin-offer-editor'; adminUserId: string; adminName: string; offerId?: string; quoteRequestId?: string }
-  | { name: 'admin-proposal-editor'; adminUserId: string; adminName: string; carId: string }
-  | { name: 'admin-bulk-upload'; adminUserId: string; adminName: string }
-  | { name: 'admin-catalog'; adminUserId: string; adminName: string }
-  | { name: 'admin-catalog-import'; adminUserId: string; adminName: string };
+const PageLoader = () => (
+  <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
+    <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+  </div>
+);
 
-function getInitialScreen(): Screen {
-  const path = window.location.pathname;
-  const params = new URLSearchParams(window.location.search);
+type PublicRoute =
+  | { page: 'home' }
+  | { page: 'sell'; regnummer: string; telefon?: string; miltal?: number }
+;
 
-  if (path === '/sa-funkar-det') return { name: 'how-it-works' };
-  if (path === '/jamfor') return { name: 'compare' };
-  if (path === '/om-oss') return { name: 'about' };
-  if (path === '/blogg') return { name: 'blog' };
-  if (path === '/integritetspolicy') return { name: 'privacy' };
-  if (path === '/villkor') return { name: 'terms' };
-  if (path === '/webbplatskarta') return { name: 'webbplatskarta' };
-  if (path === '/logga-in') return { name: 'customer-login' };
-  if (path === '/handlare') return { name: 'dealer-register', mode: 'landing' };
-  if (path === '/handlare/registrera') return { name: 'dealer-register', mode: 'form' };
-  if (path === '/handlare/logga-in') return { name: 'dealer-login' };
-  if (path === '/admin') return { name: 'admin-login' };
-  if (path.startsWith('/portal-callback')) return { name: 'portal-callback' };
-  if (path.startsWith('/set-password')) return { name: 'set-password' };
-  if (path.startsWith('/min-bil/')) {
-    const token = path.replace('/min-bil/', '');
-    if (token) return { name: 'my-car', token };
-  }
-  if (path.startsWith('/min-offert/')) {
-    const token = path.replace('/min-offert/', '');
-    if (token) return { name: 'my-quote', token };
-  }
-  if (path === '/salja' || path.startsWith('/salja/') || path === '/salj') {
-    const regnummer = params.get('reg') ?? undefined;
-    return { name: 'sell', regnummer };
-  }
+const _initParams = new URLSearchParams(window.location.search);
+const _initEmail = _initParams.get('mejl') ?? '';
 
-  // /kop-bil/bestall?bil=X or /kop-bil?bil=X — go straight to buy flow
-  if (path.startsWith('/kop-bil/bestall') || (path === '/kop-bil' && params.has('bil'))) {
-    const bil = params.get('bil') ?? undefined;
-    const typ = params.get('typ') as BuyTrack | undefined;
-    const reg = params.get('reg') ?? undefined;
-    const source = params.get('source') ?? undefined;
-    return { name: 'buy', bil, typ, reg, source };
-  }
-  if (path === '/kop-bil') return { name: 'kop-bil-concierge' };
-
-  const carToken = params.get('car');
-  const quoteToken = params.get('quote');
-  if (carToken) return { name: 'my-car', token: carToken };
-  if (quoteToken) return { name: 'my-quote', token: quoteToken };
-
-  return { name: 'home' };
+function navigate(path: string) {
+  window.history.pushState({}, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
-export default function App() {
-  const [screen, setScreen] = useState<Screen>(getInitialScreen);
+function matchAdminCarDetail(path: string): string | null {
+  const m = path.match(/^\/admin\/bilar\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchAdminDealerDetail(path: string): string | null {
+  const m = path.match(/^\/admin\/handlare\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchAdminQuoteDetail(path: string): string | null {
+  const m = path.match(/^\/admin\/forfragningar\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchAdminProposalNew(path: string): string | null {
+  const m = path.match(/^\/admin\/bilar\/([^/]+)\/forslag\/nytt\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchAdminOfferEdit(path: string): string | null {
+  const m = path.match(/^\/admin\/erbjudanden\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchAdminOfferNew(path: string): string | null {
+  const m = path.match(/^\/admin\/erbjudanden\/nytt\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchDealerCarDetail(path: string): string | null {
+  const m = path.match(/^\/handlare\/bilar\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchMyCar(path: string): string | null {
+  const m = path.match(/^\/min-bil\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchMyQuote(path: string): string | null {
+  const m = path.match(/^\/min-forfragan\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function detectRecovery(): boolean {
+  const hash = window.location.hash || '';
+  const search = window.location.search || '';
+  if (hash.includes('type=recovery') || search.includes('type=recovery')) return true;
+  if (window.location.pathname === '/handlare/valj-losenord') return true;
+  if (window.location.pathname === '/valj-losenord') return true;
+  return false;
+}
+
+function App() {
+  const [publicRoute, setPublicRoute] = useState<PublicRoute>({ page: 'home' });
+  const [path, setPath] = useState(window.location.pathname);
+  const [session, setSession] = useState<Session | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [recoveryMode, setRecoveryMode] = useState<boolean>(detectRecovery());
+  const [recoveryTarget, setRecoveryTarget] = useState<string>('/handlare/oversikt');
+  const [adminVerified, setAdminVerified] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const handler = () => setScreen(getInitialScreen());
-    window.addEventListener('popstate', handler);
-    return () => window.removeEventListener('popstate', handler);
+    const onPop = () => setPath(window.location.pathname);
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
   }, []);
 
-  function goHome() {
-    setScreen({ name: 'home' });
-  }
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [path]);
 
-  // ── PUBLIC PAGES ────────────────────────────────────────────────────────────
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      setAuthLoading(false);
+    });
 
-  if (screen.name === 'home') {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, newSession) => {
+      setSession(newSession);
+      setAuthLoading(false);
+      if (event === 'PASSWORD_RECOVERY') {
+        const isCustomer = sessionStorage.getItem('bilto_portal') === 'customer';
+        const recoveryPath = isCustomer ? '/valj-losenord' : '/handlare/valj-losenord';
+        setRecoveryTarget(isCustomer ? '/mina-bilar' : '/handlare/oversikt');
+        setRecoveryMode(true);
+        if (window.location.pathname !== recoveryPath) {
+          window.history.replaceState({}, '', recoveryPath);
+          setPath(recoveryPath);
+        }
+      }
+      if (event === 'SIGNED_IN' && newSession && !sessionStorage.getItem('bilto_portal')) {
+        const p = window.location.pathname;
+        const isDealerPath = p.startsWith('/handlare') || p.startsWith('/admin');
+        if (!isDealerPath) {
+          sessionStorage.setItem('bilto_portal', 'customer');
+        }
+      }
+    });
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  const onAdminRouteBool = path.startsWith('/admin');
+  useEffect(() => {
+    if (!session || !onAdminRouteBool) {
+      setAdminVerified(null);
+      return;
+    }
+    let cancelled = false;
+    supabase
+      .rpc('get_is_admin')
+      .then(({ data }) => {
+        if (!cancelled) setAdminVerified(!!data);
+      });
+    return () => { cancelled = true; };
+  }, [session?.user?.id, onAdminRouteBool]);
+
+  if (recoveryMode) {
     return (
-      <HomePage
-        onNavigate={(regnummer, telefon) =>
-          setScreen({ name: 'quote', regnummer, telefon })
-        }
-      />
-    );
-  }
-
-  if (screen.name === 'quote') {
-    return (
-      <QuotePage
-        onBackHome={goHome}
-        onNavigateCalculator={() => setScreen({ name: 'sell', regnummer: screen.regnummer })}
-        onNavigateHowItWorks={() => setScreen({ name: 'how-it-works' })}
-      />
-    );
-  }
-
-  if (screen.name === 'sell') {
-    return (
-      <SellCarPage
-        initialRegnummer={screen.regnummer}
-        initialTelefon={screen.telefon}
-        initialMiltal={screen.miltal}
-        onBack={goHome}
-        onNavigateTrade={(regnummer, miltal) =>
-          setScreen({ name: 'sell', regnummer, miltal })
-        }
-      />
-    );
-  }
-
-  if (screen.name === 'buy') {
-    return (
-      <BuyCarPage
-        initialBil={screen.bil}
-        initialTyp={screen.typ}
-        initialReg={screen.reg}
-        source={screen.source}
-        onBack={goHome}
-      />
-    );
-  }
-
-  if (screen.name === 'how-it-works') {
-    return (
-      <HowItWorks
-        onBackHome={goHome}
-        onQuickLead={(regnummer, telefon) =>
-          setScreen({ name: 'quote', regnummer, telefon })
-        }
-        onSell={(regnummer) => setScreen({ name: 'sell', regnummer })}
-      />
-    );
-  }
-
-  if (screen.name === 'kop-bil-concierge') {
-    return (
-      <KopBilConcierge
-        onBack={goHome}
-        onNavigateBuy={(bil) => setScreen({ name: 'buy', bil })}
-        onNavigateHowItWorks={() => setScreen({ name: 'how-it-works' })}
-      />
-    );
-  }
-
-  if (screen.name === 'compare') {
-    return <CompareCarsPage onBackHome={goHome} />;
-  }
-
-  if (screen.name === 'about') {
-    return <AboutPage onBackHome={goHome} />;
-  }
-
-  if (screen.name === 'blog') {
-    return <BlogPage onBackHome={goHome} />;
-  }
-
-  if (screen.name === 'privacy') {
-    return <PrivacyPage onBackHome={goHome} />;
-  }
-
-  if (screen.name === 'terms') {
-    return <TermsPage onBackHome={goHome} />;
-  }
-
-  if (screen.name === 'webbplatskarta') {
-    return <WebbplatskartaPage onBack={goHome} />;
-  }
-
-  if (screen.name === 'seo-landing') {
-    return (
-      <SeoLandingPage
-        type={screen.type}
-        city={screen.city}
-        brand={screen.brand}
-        onSell={(regnummer) => setScreen({ name: 'sell', regnummer })}
-        onBack={goHome}
-      />
-    );
-  }
-
-  // ── AUTH / CUSTOMER ─────────────────────────────────────────────────────────
-
-  if (screen.name === 'my-car') {
-    return (
-      <MyCarPage
-        token={screen.token}
-        onBack={goHome}
-      />
-    );
-  }
-
-  if (screen.name === 'my-quote') {
-    return (
-      <MyQuotePage
-        token={screen.token}
-        onBack={goHome}
-      />
-    );
-  }
-
-  if (screen.name === 'portal-callback') {
-    return (
-      <PortalCallbackPage
-        onSuccess={async () => {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) setScreen({ name: 'customer-dashboard', userId: user.id });
-          else goHome();
-        }}
-        onBack={goHome}
-      />
-    );
-  }
-
-  if (screen.name === 'set-password') {
-    return (
-      <SetPasswordPage
-        onDone={async () => {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) setScreen({ name: 'customer-dashboard', userId: user.id });
-          else goHome();
-        }}
-      />
-    );
-  }
-
-  if (screen.name === 'customer-login') {
-    return (
-      <CustomerLogin
-        initialEmail={screen.initialEmail}
-        onBack={goHome}
-      />
-    );
-  }
-
-  if (screen.name === 'customer-dashboard') {
-    return (
-      <CustomerDashboard
-        userId={screen.userId}
-        onLoggedOut={goHome}
-        onOpenCar={(token) => setScreen({ name: 'my-car', token })}
-      />
-    );
-  }
-
-  // ── DEALER PORTAL ───────────────────────────────────────────────────────────
-
-  if (screen.name === 'dealer-register') {
-    return (
-      <DealerRegister
-        onBack={goHome}
-        mode={screen.mode ?? 'landing'}
-        onNavigateApply={() => setScreen({ name: 'dealer-register', mode: 'form' })}
-      />
-    );
-  }
-
-  if (screen.name === 'dealer-login') {
-    return (
-      <DealerLogin
-        onLoggedIn={async () => {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (!user) return;
-          const { data: dealer } = await (supabase as any)
-            .from('dealers')
-            .select('id, foretagsnamn')
-            .eq('user_id', user.id)
-            .maybeSingle();
-          if (dealer) {
-            setScreen({
-              name: 'dealer-overview',
-              dealerId: dealer.id,
-              foretagsnamn: dealer.foretagsnamn,
-            });
-          }
-        }}
-        onNavigateRegister={() => setScreen({ name: 'dealer-register', mode: 'form' })}
-        onBack={goHome}
-      />
-    );
-  }
-
-  if (screen.name === 'dealer-overview') {
-    return (
-      <DealerOverview
-        dealerId={screen.dealerId}
-        foretagsnamn={screen.foretagsnamn}
-        onLoggedOut={goHome}
-        onOpenCar={(carId) =>
-          setScreen({
-            name: 'dealer-car-detail',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-            carId,
-          })
-        }
-        onAddCar={() =>
-          setScreen({
-            name: 'dealer-add-car',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onNavigateCars={() =>
-          setScreen({
-            name: 'dealer-cars',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onNavigateSettings={() =>
-          setScreen({
-            name: 'dealer-settings',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-            isOwner: true,
-          })
-        }
-        onNavigateInventory={() =>
-          setScreen({
-            name: 'dealer-inventory',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-      />
-    );
-  }
-
-  if (screen.name === 'dealer-cars') {
-    return (
-      <DealerCarsList
-        dealerId={screen.dealerId}
-        foretagsnamn={screen.foretagsnamn}
-        onLoggedOut={goHome}
-        onOpenCar={(carId) =>
-          setScreen({
-            name: 'dealer-car-detail',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-            carId,
-          })
-        }
-        onAddCar={() =>
-          setScreen({
-            name: 'dealer-add-car',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onNavigateOverview={() =>
-          setScreen({
-            name: 'dealer-overview',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onNavigateSettings={() =>
-          setScreen({
-            name: 'dealer-settings',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-            isOwner: true,
-          })
-        }
-        onNavigateInventory={() =>
-          setScreen({
-            name: 'dealer-inventory',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-      />
-    );
-  }
-
-  if (screen.name === 'dealer-car-detail') {
-    return (
-      <DealerCarDetail
-        dealerId={screen.dealerId}
-        foretagsnamn={screen.foretagsnamn}
-        carId={screen.carId}
-        onBack={() =>
-          setScreen({
-            name: 'dealer-cars',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onLoggedOut={goHome}
-      />
-    );
-  }
-
-  if (screen.name === 'dealer-add-car') {
-    return (
-      <DealerAddCar
-        dealerId={screen.dealerId}
-        foretagsnamn={screen.foretagsnamn}
-        onBack={() =>
-          setScreen({
-            name: 'dealer-cars',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onCreated={(carId) =>
-          setScreen({
-            name: 'dealer-car-detail',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-            carId,
-          })
-        }
-      />
-    );
-  }
-
-  if (screen.name === 'dealer-settings') {
-    return (
-      <DealerSettings
-        dealerId={screen.dealerId}
-        foretagsnamn={screen.foretagsnamn}
-        isOwner={screen.isOwner}
-        onBack={() =>
-          setScreen({
-            name: 'dealer-overview',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onNavigateOverview={() =>
-          setScreen({
-            name: 'dealer-overview',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onNavigateCars={() =>
-          setScreen({
-            name: 'dealer-cars',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onLogout={goHome}
-      />
-    );
-  }
-
-  if (screen.name === 'dealer-inventory') {
-    return (
-      <DealerInventorySync
-        dealerId={screen.dealerId}
-        foretagsnamn={screen.foretagsnamn}
-        onBack={() =>
-          setScreen({
-            name: 'dealer-overview',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onLoggedOut={goHome}
-        onNavigateOverview={() =>
-          setScreen({
-            name: 'dealer-overview',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onNavigateCars={() =>
-          setScreen({
-            name: 'dealer-cars',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-          })
-        }
-        onNavigateSettings={() =>
-          setScreen({
-            name: 'dealer-settings',
-            dealerId: screen.dealerId,
-            foretagsnamn: screen.foretagsnamn,
-            isOwner: true,
-          })
-        }
-      />
-    );
-  }
-
-  // ── ADMIN PORTAL ────────────────────────────────────────────────────────────
-
-  if (screen.name === 'admin-login') {
-    return (
-      <AdminLogin
-        onLoggedIn={async () => {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (!user) return;
-          setScreen({
-            name: 'admin-overview',
-            adminUserId: user.id,
-            adminName: user.email ?? 'Admin',
-            adminPage: 'overview',
-          });
-        }}
-        onBack={goHome}
-      />
-    );
-  }
-
-  if (screen.name === 'admin-overview') {
-    const { adminUserId, adminName, adminPage } = screen;
-    if (adminPage === 'leads') {
-      return (
-        <AdminLeadCommandCenter
-          adminUserId={adminUserId}
-          adminName={adminName}
-          onLoggedOut={goHome}
-          onOpenCar={(carId) =>
-            setScreen({ name: 'admin-car-detail', adminUserId, adminName, carId })
-          }
-          onOpenQuote={(quoteId) =>
-            setScreen({ name: 'admin-quote-detail', adminUserId, adminName, quoteId })
-          }
-          onNavigate={(page) =>
-            setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: page })
-          }
+      <Suspense fallback={<PageLoader />}>
+        <SetPasswordPage
+          onDone={() => {
+            setRecoveryMode(false);
+            navigate(recoveryTarget);
+          }}
         />
+      </Suspense>
+    );
+  }
+
+  const onCustomerLogin = path === '/logga-in';
+  const onCustomerDashboard = path === '/mina-bilar';
+  const onAdminRoute = path.startsWith('/admin');
+  const onDealerRegister = path === '/handlare/registrera';
+  const onDealerApply = path === '/handlare/ansok';
+  const onDealerLogin = path === '/handlare/logga-in';
+  const onDealerApp =
+    path === '/handlare/oversikt' ||
+    path === '/handlare/installningar' ||
+    path === '/handlare/bilar' ||
+    path === '/handlare/bilar/ny' ||
+    path === '/handlare/lager' ||
+    matchDealerCarDetail(path) !== null;
+
+  const myCarToken = matchMyCar(path);
+  if (myCarToken) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <MyCarPage token={myCarToken} onBack={() => navigate('/')} />
+      </Suspense>
+    );
+  }
+
+  const myQuoteToken = matchMyQuote(path);
+  if (myQuoteToken) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <MyQuotePage token={myQuoteToken} onBack={() => navigate('/')} />
+      </Suspense>
+    );
+  }
+
+  if (path === '/portal') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <PortalCallbackPage
+          onSuccess={() => navigate('/mina-bilar')}
+          onBack={() => navigate('/logga-in')}
+        />
+      </Suspense>
+    );
+  }
+
+  if (onCustomerLogin) {
+    if (authLoading) return <PageLoader />;
+    if (session && sessionStorage.getItem('bilto_portal') === 'customer') {
+      navigate('/mina-bilar');
+      return null;
+    }
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <CustomerLogin onBack={() => navigate('/')} initialEmail={_initEmail} />
+      </Suspense>
+    );
+  }
+
+  if (onCustomerDashboard) {
+    if (authLoading) return <PageLoader />;
+    if (!session) { navigate('/logga-in'); return null; }
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <CustomerDashboard
+          userId={session.user.id}
+          onLoggedOut={() => { sessionStorage.removeItem('bilto_portal'); navigate('/logga-in'); }}
+          onOpenCar={(token) => navigate(`/min-bil/${token}`)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (onDealerRegister) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <DealerRegister mode="landing" onBack={() => navigate('/')} onNavigateApply={() => navigate('/handlare/ansok')} />
+      </Suspense>
+    );
+  }
+
+  if (onDealerApply) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <DealerRegister mode="form" onBack={() => navigate('/handlare/registrera')} />
+      </Suspense>
+    );
+  }
+
+  if (onDealerLogin) {
+    if (authLoading) return <PageLoader />;
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <DealerLogin
+          onLoggedIn={() => navigate('/handlare/oversikt')}
+          onNavigateRegister={() => navigate('/handlare/registrera')}
+          onBack={() => navigate('/')}
+        />
+      </Suspense>
+    );
+  }
+
+  if (onDealerApp) {
+    if (authLoading) return <PageLoader />;
+    if (!session) { navigate('/handlare/logga-in'); return null; }
+    if (sessionStorage.getItem('bilto_portal') === 'customer') { navigate('/mina-bilar'); return null; }
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <DealerArea
+          userId={session.user.id}
+          path={path}
+          onLoggedOut={() => { sessionStorage.removeItem('bilto_portal'); navigate('/handlare/logga-in'); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (onAdminRoute) {
+    if (authLoading) return <PageLoader />;
+    if (!session) {
+      return (
+        <Suspense fallback={<PageLoader />}>
+          <AdminLogin onLoggedIn={() => navigate('/admin/oversikt')} onBack={() => navigate('/')} />
+        </Suspense>
       );
     }
-    if (adminPage === 'handlare') {
+    if (adminVerified === null) return <PageLoader />;
+    if (adminVerified === false) {
       return (
-        <AdminDealers
-          onLoggedOut={goHome}
-          onOpenDealer={(dealerId) =>
-            setScreen({ name: 'admin-dealer-detail', adminUserId, adminName, dealerId })
-          }
-          onNavigate={(page) =>
-            setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: page })
-          }
-        />
+        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
+          <div className="bg-white rounded-md shadow-sm border border-slate-200 p-8 max-w-md text-center">
+            <h1 className="text-xl font-bold text-slate-900 mb-2">Ingen behörighet</h1>
+            <p className="text-sm text-slate-500 mb-6">Ditt konto har inte administratörsrättigheter.</p>
+            <button
+              onClick={async () => { await supabase.auth.signOut(); navigate('/admin'); }}
+              className="h-10 px-6 bg-black hover:bg-slate-800 text-white font-semibold text-sm rounded-full transition"
+            >
+              Logga ut
+            </button>
+          </div>
+        </div>
       );
     }
-    if (adminPage === 'katalog') {
-      return (
-        <AdminCarCatalog
-          onBack={() =>
-            setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: 'overview' })
-          }
-          onImport={() =>
-            setScreen({ name: 'admin-catalog-import', adminUserId, adminName })
-          }
+
+    const adminNavigate = (page: import('./hooks/useAdminNav').AdminPage) => {
+      if (page === 'overview') navigate('/admin/oversikt');
+      else if (page === 'leads') navigate('/admin/leads');
+      else if (page === 'handlare') navigate('/admin/handlare');
+      else if (page === 'katalog') navigate('/admin/katalog');
+    };
+
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <AdminRoutes
+          path={path}
+          setPath={setPath}
+          session={session}
+          adminNavigate={adminNavigate}
+          navigate={navigate}
         />
+      </Suspense>
+    );
+  }
+
+  if (path === '/kop-bil-hjalp') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <KopBilConcierge
+          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
+          onNavigateBuy={(bil) => {
+            const params = new URLSearchParams();
+            if (bil) params.set('bil', bil);
+            params.set('source', 'Köp-hjälp-sida');
+            window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
+            setPath('/kop-bil/bestall');
+          }}
+          onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/kop-bil/bestall') {
+    const buyParams = new URLSearchParams(window.location.search);
+    const buyBil = buyParams.get('bil') || '';
+    const buyTyp = buyParams.get('typ');
+    const buyReg = buyParams.get('reg') || '';
+    const buySource = buyParams.get('source') || '';
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <BuyCarPage
+          initialBil={buyBil}
+          initialTyp={buyTyp === 'found' || buyTyp === 'searching' || buyTyp === 'trade' ? buyTyp : undefined}
+          initialReg={buyReg}
+          source={buySource}
+          onBack={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/kop-bil') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <CompareCarsPage
+          onBackHome={() => {
+            window.history.pushState({}, '', '/');
+            setPath('/');
+            setPublicRoute({ page: 'home' });
+          }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/hitta-bil' || path === '/jamfor-bilar') {
+    window.history.replaceState({}, '', '/kop-bil');
+    setPath('/kop-bil');
+    return null;
+  }
+
+  if (path === '/blogg' || path === '/blogg/salja-begagnad-bil') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <BlogPage
+          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/om-oss') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <AboutPage
+          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/integritetspolicy') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <PrivacyPage
+          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/anvandarvillkor') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <TermsPage
+          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/forhandling') {
+    window.history.replaceState({}, '', '/kop-bil');
+    setPath('/kop-bil');
+    return null;
+  }
+
+  if (path === '/webbplatskarta') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <WebbplatskartaPage
+          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  const cityMatch = path.match(/^\/salj-din-bil-i-([a-z0-9-]+)\/?$/);
+  if (cityMatch) {
+    const citySlug = cityMatch[1];
+    const city = slugToCity(citySlug);
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <SeoLandingPage
+          type="city"
+          city={city}
+          onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
+          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  const brandMatch = path.match(/^\/salj-din-([a-z0-9-]+)\/?$/);
+  if (brandMatch && brandMatch[1] !== 'bil') {
+    const brandSlug = brandMatch[1];
+    const brand = slugToBrand(brandSlug);
+    if (brand) {
+      return (
+        <Suspense fallback={<PageLoader />}>
+          <SeoLandingPage
+            type="brand"
+            brand={brand}
+            onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
+            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+          />
+        </Suspense>
       );
     }
+  }
+
+  if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <HowItWorks
+          showSeo={path === '/salj-din-bil'}
+          pageTitle={path === '/salj-din-bil' ? 'Sälj din bil | Bilto' : undefined}
+          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+          onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/formedlingskalkylator' || path === '/formedla') {
+    navigate('/');
+    return null;
+  }
+
+  if (path === '/salj' && publicRoute.page !== 'sell') {
+    navigate('/kop-bil');
+    return null;
+  }
+
+  if (path === '/handlare') {
+    navigate('/handlare/logga-in');
+    return null;
+  }
+
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <>
+        {publicRoute.page === 'home' && (
+          <HowItWorks
+            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSell={(reg) => setPublicRoute({ page: 'sell', regnummer: reg })}
+          />
+        )}
+        {publicRoute.page === 'sell' && (
+          <SellCarPage
+            initialRegnummer={publicRoute.regnummer}
+            initialTelefon={publicRoute.telefon}
+            initialMiltal={publicRoute.miltal}
+            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onNavigateTrade={(reg, mil) => {
+              const params = new URLSearchParams({ typ: 'trade' });
+              if (reg) params.set('reg', reg);
+              if (mil) params.set('mil', mil.toString());
+              window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
+              setPath('/kop-bil/bestall');
+              setPublicRoute({ page: 'home' });
+            }}
+          />
+        )}
+      </>
+    </Suspense>
+  );
+}
+
+interface AdminRoutesProps {
+  path: string;
+  setPath: (p: string) => void;
+  session: Session;
+  adminNavigate: (page: import('./hooks/useAdminNav').AdminPage) => void;
+  navigate: (path: string) => void;
+}
+
+function AdminRoutes({ path, setPath, session, adminNavigate }: AdminRoutesProps) {
+  if (path === '/admin' || path === '/admin/oversikt') {
     return (
       <AdminOverview
-        onLoggedOut={goHome}
-        onOpenCar={(carId) =>
-          setScreen({ name: 'admin-car-detail', adminUserId, adminName, carId })
-        }
-        onNavigate={(page) =>
-          setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: page })
-        }
+        onLoggedOut={() => navigate('/admin')}
+        onOpenCar={(id) => navigate(`/admin/bilar/${id}`)}
+        onNavigate={adminNavigate}
       />
     );
   }
 
-  if (screen.name === 'admin-car-detail') {
-    const { adminUserId, adminName, carId } = screen;
-    return (
-      <AdminCarDetail
-        carId={carId}
-        onBack={() =>
-          setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: 'overview' })
-        }
-        onLoggedOut={goHome}
-        onCreateProposal={(cid) =>
-          setScreen({ name: 'admin-proposal-editor', adminUserId, adminName, carId: cid })
-        }
-      />
-    );
-  }
+  if (path === '/admin/uppladdning') return <AdminBulkUpload onBack={() => navigate('/admin/bilar')} />;
 
-  if (screen.name === 'admin-add-car') {
-    const { adminUserId, adminName } = screen;
+  if (path === '/admin/bilar/ny') {
     return (
       <AdminAddCar
-        adminUserId={adminUserId}
-        adminName={adminName}
-        onBack={() =>
-          setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: 'overview' })
-        }
-        onCreated={(carId) =>
-          setScreen({ name: 'admin-car-detail', adminUserId, adminName, carId })
-        }
+        adminUserId={session.user.id}
+        adminName={session.user.email ?? 'Admin'}
+        onBack={() => navigate('/admin/bilar')}
+        onCreated={(id) => navigate(`/admin/bilar/${id}`)}
       />
     );
   }
 
-  if (screen.name === 'admin-quote-detail') {
-    const { adminUserId, adminName, quoteId } = screen;
-    return (
-      <AdminQuoteDetail
-        quoteId={quoteId}
-        onBack={() =>
-          setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: 'leads' })
-        }
-        onConvertToCar={() =>
-          setScreen({ name: 'admin-add-car', adminUserId, adminName })
-        }
-        onCreateOffer={(qid) =>
-          setScreen({ name: 'admin-offer-editor', adminUserId, adminName, quoteRequestId: qid })
-        }
-      />
-    );
-  }
-
-  if (screen.name === 'admin-dealer-detail') {
-    const { adminUserId, adminName, dealerId } = screen;
-    return (
-      <AdminDealerDetail
-        dealerId={dealerId}
-        onBack={() =>
-          setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: 'handlare' })
-        }
-        onLoggedOut={goHome}
-      />
-    );
-  }
-
-  if (screen.name === 'admin-offer-editor') {
-    const { adminUserId, adminName, offerId, quoteRequestId } = screen;
-    return (
-      <AdminOfferEditor
-        offerId={offerId}
-        quoteRequestId={quoteRequestId}
-        onBack={() =>
-          setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: 'leads' })
-        }
-        onSaved={() =>
-          setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: 'leads' })
-        }
-      />
-    );
-  }
-
-  if (screen.name === 'admin-proposal-editor') {
-    const { adminUserId, adminName, carId } = screen;
+  const proposalNewCarId = matchAdminProposalNew(path);
+  if (proposalNewCarId) {
     return (
       <AdminDealerProposalEditor
-        carId={carId}
-        onBack={() =>
-          setScreen({ name: 'admin-car-detail', adminUserId, adminName, carId })
-        }
-        onLoggedOut={goHome}
-        onSent={() =>
-          setScreen({ name: 'admin-car-detail', adminUserId, adminName, carId })
-        }
+        carId={proposalNewCarId}
+        onBack={() => navigate(`/admin/bilar/${proposalNewCarId}`)}
+        onLoggedOut={() => navigate('/admin')}
+        onSent={() => navigate(`/admin/bilar/${proposalNewCarId}`)}
       />
     );
   }
 
-  if (screen.name === 'admin-bulk-upload') {
-    const { adminUserId, adminName } = screen;
+  const carDetailId = matchAdminCarDetail(path);
+  if (carDetailId) {
     return (
-      <AdminBulkUpload
-        onBack={() =>
-          setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: 'overview' })
-        }
+      <AdminCarDetail
+        carId={carDetailId}
+        onBack={() => navigate('/admin/bilar')}
+        onLoggedOut={() => navigate('/admin')}
+        onCreateProposal={(id) => navigate(`/admin/bilar/${id}/forslag/nytt`)}
       />
     );
   }
 
-  if (screen.name === 'admin-catalog') {
-    const { adminUserId, adminName } = screen;
+  const offerEditId = matchAdminOfferEdit(path);
+  if (offerEditId) {
+    return (
+      <AdminOfferEditor
+        offerId={offerEditId}
+        onBack={() => navigate('/admin/forfragningar')}
+        onSaved={() => navigate('/admin/forfragningar')}
+      />
+    );
+  }
+
+  const offerNewQuoteId = matchAdminOfferNew(path);
+  if (offerNewQuoteId) {
+    return (
+      <AdminOfferEditor
+        quoteRequestId={offerNewQuoteId}
+        onBack={() => navigate(`/admin/forfragningar/${offerNewQuoteId}`)}
+        onSaved={(id) => navigate(`/admin/erbjudanden/${id}`)}
+      />
+    );
+  }
+
+  const quoteDetailId = matchAdminQuoteDetail(path);
+  if (quoteDetailId) {
+    return (
+      <AdminQuoteDetail
+        quoteId={quoteDetailId}
+        onBack={() => navigate('/admin/forfragningar')}
+        onConvertToCar={async (data) => {
+          await supabase
+            .from('quote_requests')
+            .update({ status: 'converted' })
+            .eq('id', data.quoteId);
+          window.history.pushState({ fromQuote: data }, '', '/admin/bilar/ny');
+          setPath('/admin/bilar/ny');
+        }}
+        onCreateOffer={(quoteId) => navigate(`/admin/erbjudanden/nytt/${quoteId}`)}
+      />
+    );
+  }
+
+  if (path === '/admin/forfragningar') {
+    navigate('/admin/leads');
+    return null;
+  }
+
+  if (path === '/admin/leads') {
+    return (
+      <AdminLeadCommandCenter
+        adminUserId={session.user.id}
+        adminName={session.user.email ?? 'Admin'}
+        onLoggedOut={() => navigate('/admin')}
+        onOpenCar={(id) => navigate(`/admin/bilar/${id}`)}
+        onOpenQuote={(id) => navigate(`/admin/forfragningar/${id}`)}
+        onNavigate={adminNavigate}
+      />
+    );
+  }
+
+  if (path === '/admin/quiz') {
+    return <AdminQuizSubmissions onLoggedOut={() => navigate('/admin')} onNavigate={adminNavigate} />;
+  }
+
+  const dealerDetailId = matchAdminDealerDetail(path);
+  if (dealerDetailId) {
+    return (
+      <AdminDealerDetail
+        dealerId={dealerDetailId}
+        onBack={() => navigate('/admin/handlare')}
+        onLoggedOut={() => navigate('/admin')}
+      />
+    );
+  }
+
+  if (path === '/admin/handlare') {
+    return (
+      <AdminDealers
+        onLoggedOut={() => navigate('/admin')}
+        onOpenDealer={(id) => navigate(`/admin/handlare/${id}`)}
+        onNavigate={adminNavigate}
+      />
+    );
+  }
+
+  if (path === '/admin/katalog') {
     return (
       <AdminCarCatalog
-        onBack={() =>
-          setScreen({ name: 'admin-overview', adminUserId, adminName, adminPage: 'katalog' })
-        }
-        onImport={() =>
-          setScreen({ name: 'admin-catalog-import', adminUserId, adminName })
-        }
+        onBack={() => navigate('/admin/bilar')}
+        onImport={() => navigate('/admin/katalog/importera')}
       />
     );
   }
 
-  if (screen.name === 'admin-catalog-import') {
-    const { adminUserId, adminName } = screen;
-    return (
-      <AdminCatalogImport
-        onBack={() =>
-          setScreen({ name: 'admin-catalog', adminUserId, adminName })
-        }
-      />
-    );
+  if (path === '/admin/katalog/importera') {
+    return <AdminCatalogImport onBack={() => navigate('/admin/katalog')} />;
   }
 
-  return <HomePage onNavigate={(r, t) => setScreen({ name: 'quote', regnummer: r, telefon: t })} />;
+  if (path !== '/admin/bilar') {
+    navigate('/admin/bilar');
+    return null;
+  }
+
+  return (
+    <AdminCars
+      onLoggedOut={() => navigate('/admin')}
+      onOpenCar={(id) => navigate(`/admin/bilar/${id}`)}
+      onAddCar={() => navigate('/admin/bilar/ny')}
+      onNavigate={adminNavigate}
+      onNavigateBulkUpload={() => navigate('/admin/uppladdning')}
+      onNavigateCatalog={() => navigate('/admin/katalog')}
+    />
+  );
 }
+
+interface DealerAreaProps {
+  userId: string;
+  path: string;
+  onLoggedOut: () => void;
+}
+
+function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
+  const [loading, setLoading] = useState(true);
+  const [dealer, setDealer] = useState<{
+    id: string;
+    foretagsnamn: string;
+    godkand: boolean;
+    isOwner: boolean;
+  } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      const { data: ownerData, error: ownerError } = await supabase
+        .from('dealers')
+        .select('id, foretagsnamn, godkand')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (ownerError) { setError('Kunde inte hämta handlarprofil.'); setLoading(false); return; }
+      if (ownerData) { setDealer({ ...ownerData, isOwner: true }); setLoading(false); return; }
+      const { data: memberData, error: memberError } = await supabase
+        .from('dealer_members')
+        .select('dealer_id, dealers(id, foretagsnamn, godkand)')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (memberError) { setError('Kunde inte hämta handlarprofil.'); setLoading(false); return; }
+      if (memberData && memberData.dealers) {
+        const d = memberData.dealers as { id: string; foretagsnamn: string; godkand: boolean };
+        setDealer({ id: d.id, foretagsnamn: d.foretagsnamn, godkand: d.godkand, isOwner: false });
+      }
+      setLoading(false);
+    })();
+  }, [userId]);
+
+  if (loading) return <PageLoader />;
+
+  if (error || !dealer) {
+    return (
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-white rounded-xl border border-slate-200 p-8 text-center">
+          <p className="text-slate-700 mb-6">{error ?? 'Ingen handlarprofil hittades för detta konto.'}</p>
+          <button onClick={async () => { await supabase.auth.signOut(); onLoggedOut(); }} className="text-slate-600 hover:text-slate-900 font-medium">
+            Logga ut
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!dealer.godkand) {
+    return (
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-white rounded-md border border-slate-200 p-10 text-center shadow-sm">
+          <h1 className="text-xl font-bold text-slate-900 mb-2">Ditt konto väntar på godkännande</h1>
+          <p className="text-slate-500 mb-6">Vi granskar din ansökan och hör av oss inom 24 timmar.</p>
+          <button onClick={async () => { await supabase.auth.signOut(); onLoggedOut(); }} className="text-slate-600 hover:text-slate-900 font-medium">
+            Logga ut
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (path === '/handlare/lager') {
+    return (
+      <DealerInventorySync
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onBack={() => navigate('/handlare/oversikt')}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+        onNavigateOverview={() => navigate('/handlare/oversikt')}
+        onNavigateCars={() => navigate('/handlare/bilar')}
+        onNavigateSettings={() => navigate('/handlare/installningar')}
+      />
+    );
+  }
+
+  if (path === '/handlare/installningar') {
+    return (
+      <DealerSettings
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        isOwner={dealer.isOwner}
+        onBack={() => navigate('/handlare/oversikt')}
+        onNavigateOverview={() => navigate('/handlare/oversikt')}
+        onNavigateCars={() => navigate('/handlare/bilar')}
+        onLogout={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/oversikt') {
+    return (
+      <DealerOverview
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+        onOpenCar={(id) => navigate(`/handlare/bilar/${id}`)}
+        onAddCar={() => navigate('/handlare/bilar/ny')}
+        onNavigateCars={() => navigate('/handlare/bilar')}
+        onNavigateSettings={() => navigate('/handlare/installningar')}
+        onNavigateInventory={() => navigate('/handlare/lager')}
+      />
+    );
+  }
+
+  if (path === '/handlare/bilar/ny') {
+    return (
+      <DealerAddCar
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onBack={() => navigate('/handlare/bilar')}
+        onCreated={() => navigate('/handlare/bilar')}
+      />
+    );
+  }
+
+  const carDetailId = matchDealerCarDetail(path);
+  if (carDetailId) {
+    return (
+      <DealerCarDetail
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        carId={carDetailId}
+        onBack={() => navigate('/handlare/bilar')}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  return (
+    <DealerCarsList
+      dealerId={dealer.id}
+      foretagsnamn={dealer.foretagsnamn}
+      onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      onOpenCar={(id) => navigate(`/handlare/bilar/${id}`)}
+      onAddCar={() => navigate('/handlare/bilar/ny')}
+      onNavigateOverview={() => navigate('/handlare/oversikt')}
+      onNavigateSettings={() => navigate('/handlare/installningar')}
+      onNavigateInventory={() => navigate('/handlare/lager')}
+    />
+  );
+}
+
+export default App;
