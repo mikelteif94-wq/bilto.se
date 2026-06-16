@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Lock, Eye, BarChart3 } from 'lucide-react';
-import { CustomerData } from '../../pages/SellCarPage';
+import { Lock, Eye, ChartBar as BarChart3 } from 'lucide-react';
+import type { CustomerData } from '../../pages/SellCarPage';
 import FieldError from './FieldError';
 import { validateSwedishPhone } from '../../lib/utils';
 
@@ -55,7 +55,7 @@ export default function CustomerForm({ initialData, onNext, requirePassword = tr
         value={data[key]}
         onChange={(e) => {
           setData({ ...data, [key]: e.target.value });
-          setErrors((prev) => ({ ...prev, [key]: undefined }));
+          setErrors((prev) => ({ ...prev, [key]: undefined } as Record<string, string>));
         }}
         placeholder={placeholder}
         className={`form-control ${errors[key] ? 'form-control-error' : ''}`}
@@ -100,7 +100,7 @@ export default function CustomerForm({ initialData, onNext, requirePassword = tr
               value={data.losenord}
               onChange={(e) => {
                 setData({ ...data, losenord: e.target.value });
-                setErrors((prev) => ({ ...prev, losenord: undefined }));
+                setErrors((prev) => ({ ...prev, losenord: undefined } as unknown as Record<string, string>));
               }}
               placeholder="Minst 6 tecken"
               className={`form-control ${errors.losenord ? 'form-control-error' : ''}`}

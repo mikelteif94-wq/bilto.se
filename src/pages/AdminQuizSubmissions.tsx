@@ -1,12 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Loader2,
-  ChevronDown,
-  Phone,
-  Mail,
-  Calendar,
-  X,
-} from 'lucide-react';
+import { Loader as Loader2, ChevronDown, Phone, Mail, Calendar, X, Car as CarIcon } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
 import { useAdminNav, type AdminPage } from '../hooks/useAdminNav';

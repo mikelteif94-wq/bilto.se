@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CarData } from '../../pages/SellCarPage';
+import type { CarData } from '../../pages/SellCarPage';
 import FieldError from './FieldError';
 
 interface CarDetailsFormProps {
@@ -17,7 +17,7 @@ export default function CarDetailsForm({ initialData, onNext }: CarDetailsFormPr
     if (!data.regnummer.trim()) newErrors.regnummer = 'Registreringsnummer är obligatoriskt';
     if (!data.marke.trim()) newErrors.marke = 'Märke är obligatoriskt';
     if (!data.modell.trim()) newErrors.modell = 'Modell är obligatorisk';
-    if (data.ar < 1900 || data.ar > new Date().getFullYear()) {
+    if ((data.ar ?? 0) < 1900 || (data.ar ?? 0) > new Date().getFullYear()) {
       newErrors.ar = 'Årgång är ogiltig';
     }
     if (data.miltal < 0) newErrors.miltal = 'Miltal kan inte vara negativt';
@@ -47,7 +47,7 @@ export default function CarDetailsForm({ initialData, onNext }: CarDetailsFormPr
             errors.regnummer ? 'border-red-300' : 'border-slate-300'
           }`}
           placeholder="ABC 123"
-          maxLength="10"
+          maxLength={10}
         />
         <FieldError message={errors.regnummer} />
       </div>
@@ -93,8 +93,8 @@ export default function CarDetailsForm({ initialData, onNext }: CarDetailsFormPr
           </label>
           <input
             type="number"
-            value={data.ar}
-            onChange={(e) => setData({ ...data, ar: parseInt(e.target.value) })}
+            value={data.ar ?? ''}
+            onChange={(e) => setData({ ...data, ar: parseInt(e.target.value) || 0 })}
             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 ${
               errors.ar ? 'border-red-300' : 'border-slate-300'
             }`}

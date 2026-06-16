@@ -1,35 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  ChevronLeft,
-  Loader2,
-  Save,
-  CheckCircle2,
-  Lock,
-  User as UserIcon,
-  Building2,
-  Mail,
-  Phone,
-  Bell,
-  Users,
-  UserPlus,
-  Trash2,
-  Crown,
-  LayoutDashboard,
-  Car as CarIcon,
-  Settings as SettingsIcon,
-  Star,
-  Award,
-  TrendingUp,
-  Clock,
-  Target,
-  Zap,
-  CreditCard,
-  ShoppingCart,
-  X,
-  Plus,
-  MapPin,
-  Gauge,
-} from 'lucide-react';
+import { ChevronLeft, Loader as Loader2, Save, CircleCheck as CheckCircle2, Lock, User as UserIcon, Building2, Mail, Phone, Bell, Users, UserPlus, Trash2, Crown, LayoutDashboard, Car as CarIcon, Settings as SettingsIcon, Star, Award, TrendingUp, Clock, Target, Zap, CreditCard, ShoppingCart, X, Plus, MapPin, Gauge } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ErrorBanner from '../components/ErrorBanner';
 import PortalLayout from '../components/PortalLayout';
@@ -422,15 +392,16 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
       .eq('dealer_id', dealerId)
       .maybeSingle();
     if (data) {
+      const d = data as any;
       setBuyPrefs({
-        marken: data.marken ?? [],
-        segment: data.segment ?? [],
-        regions: data.regions ?? [],
-        max_miltal: data.max_miltal != null ? String(data.max_miltal) : '',
-        min_ar: data.min_ar != null ? String(data.min_ar) : '',
-        max_ar: data.max_ar != null ? String(data.max_ar) : '',
-        min_pris: data.min_pris != null ? String(data.min_pris) : '',
-        max_pris: data.max_pris != null ? String(data.max_pris) : '',
+        marken: d.marken ?? [],
+        segment: d.segment ?? [],
+        regions: d.regions ?? [],
+        max_miltal: d.max_miltal != null ? String(d.max_miltal) : '',
+        min_ar: d.min_ar != null ? String(d.min_ar) : '',
+        max_ar: d.max_ar != null ? String(d.max_ar) : '',
+        min_pris: d.min_pris != null ? String(d.min_pris) : '',
+        max_pris: d.max_pris != null ? String(d.max_pris) : '',
       });
     }
     setBuyPrefsLoading(false);
@@ -452,7 +423,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
     };
     await supabase
       .from('dealer_buy_preferences')
-      .upsert(payload, { onConflict: 'dealer_id' });
+      .upsert(payload as any, { onConflict: 'dealer_id' });
     setBuyPrefsSaving(false);
     setBuyPrefsSaved(true);
     setTimeout(() => setBuyPrefsSaved(false), 2000);
@@ -510,7 +481,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
         telefon: info.telefon.trim(),
         mejl: newMejl,
         faktura_epost: info.faktura_epost.trim(),
-      })
+      } as any)
       .eq('id', dealerId);
     setSaving(false);
     if (err) {

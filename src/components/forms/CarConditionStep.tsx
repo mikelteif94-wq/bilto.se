@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AlertCircle, Car, Check, ChevronDown, Fuel, Loader2, Palette, Repeat, Sparkles } from 'lucide-react';
+import { CircleAlert as AlertCircle, Car, Check, ChevronDown, Fuel, Loader as Loader2, Palette, Repeat, Sparkles } from 'lucide-react';
 import FieldError from './FieldError';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 import RegInput from '../RegInput';
-import { useVehicleLookup, VehicleData } from '../../lib/useVehicleLookup';
+import { useVehicleLookup, type VehicleData } from '../../lib/useVehicleLookup';
 
 export interface TradeInData {
   carBrand: string;

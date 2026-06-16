@@ -1,11 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import {
-  User, Menu, Search, Phone, XCircle, Car, Sparkles, Handshake,
-  Mail, ChevronRight, Shield, Clock, TrendingUp, Star, ArrowRight, CheckCircle,
-} from 'lucide-react';
+import { User, Menu, Search, Phone, Circle as XCircle, Car, Sparkles, Handshake, Mail, Shield, Clock, TrendingUp, Star, ArrowRight, CircleCheck as CheckCircle } from 'lucide-react';
 import { validateSwedishPhone } from '../lib/utils';
 import { supabase } from '../lib/supabase';
-import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
+import MobileMenu, { type MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
 import SeoCarsSection from '../components/SeoCarsSection';
 import RegInput from '../components/RegInput';
@@ -179,7 +176,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     setError('');
     setSubmitting(true);
     const emailTrim = email.trim();
-    await supabase.from('leads').insert({ regnummer: regTrim, telefon: telTrim, email: emailTrim });
+    await supabase.from('leads').insert({ regnummer: regTrim, telefon: telTrim, email: emailTrim } as any);
     try {
       const notifyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-new-lead`;
       await fetch(notifyUrl, {

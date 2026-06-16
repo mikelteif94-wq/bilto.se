@@ -1,4 +1,4 @@
-import { ComparisonCar } from './types';
+import type { ComparisonCar } from './types';
 import { ALL_COMPARISON_CARS } from './data/all-cars';
 
 function normalize(str: string): string {

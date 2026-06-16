@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Loader2, Check, Menu, User, ArrowRight, Plus, Trash2, Ligature as FileSignature, Send, Phone, Handshake, Mail, Clock } from 'lucide-react';
+import { ArrowLeft, Loader as Loader2, Check, Menu, User, ArrowRight, Plus, Trash2, Ligature as FileSignature, Send, Phone, Handshake, Mail, Clock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
+import MobileMenu, { type MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
 import ErrorBanner from '../components/ErrorBanner';
 

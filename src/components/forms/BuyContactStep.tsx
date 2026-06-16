@@ -31,7 +31,7 @@ interface BuyContactStepProps {
 }
 
 export default function BuyContactStep({ initialData, onNext, submitting = false }: BuyContactStepProps) {
-  const [d, setD] = useState<BuyContactData>({ dealReadiness: '', ...initialData });
+  const [d, setD] = useState<BuyContactData>({ ...initialData, dealReadiness: initialData.dealReadiness ?? '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showOtp, setShowOtp] = useState(false);
   const [verifiedMejl, setVerifiedMejl] = useState('');

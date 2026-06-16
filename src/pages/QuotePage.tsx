@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import {
-  Menu, User, Check, Phone, Handshake, ShieldCheck, Megaphone, Search, Sparkles, Gavel,
+  Menu, User, Check, Phone, Handshake, ShieldCheck, Megaphone, Search, Sparkles,
   ArrowRight, TrendingDown, Lock,
 } from 'lucide-react';
-import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
+import MobileMenu, { type MobileMenuItem } from '../components/MobileMenu';
 import ReviewsSection from '../components/ReviewsSection';
-import CompactCarCard from '../components/CompactCarCard';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import { SiteFooter } from '../components/SiteFooter';
 import { getAllComparisonCars, type ComparisonCar } from '../lib/comparison';
@@ -19,18 +18,14 @@ interface QuotePageProps {
 
 export default function QuotePage({
   onBackHome,
-  onNavigateCalculator,
+  onNavigateCalculator: _onNavigateCalculator,
   onNavigateHowItWorks,
 }: QuotePageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [detailCar, setDetailCar] = useState<ComparisonCar | null>(null);
   const { getCarImage } = useCarImages();
-  const allCars = getAllComparisonCars();
-  const TRADE_IN_IDS = ['volvo_xc60', 'bmw_x3', 'tesla_model_y'];
-  const tradeInCars = TRADE_IN_IDS
-    .map(id => allCars.find(c => c.id === id))
-    .filter(Boolean);
+  void undefined; // formerly TRADE_IN_IDS
 
   const navigateToBuy = (carLabel?: string) => {
     const params = new URLSearchParams();

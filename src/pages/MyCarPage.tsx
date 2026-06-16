@@ -1,28 +1,13 @@
 import { useEffect, useState } from 'react';
-import {
-  ArrowLeft,
-  Check,
-  ClipboardCheck,
-  Clock,
-  Eye,
-  Gavel,
-  ImagePlus,
-  Loader2,
-  PhoneCall,
-  Sparkles,
-  ThumbsDown,
-  ThumbsUp,
-  MessageSquare,
-  UserPlus,
-} from 'lucide-react';
+import { ArrowLeft, Check, ClipboardCheck, Clock, Gavel, ImagePlus, Loader as Loader2, Lock as LockIcon, PhoneCall, Sparkles, ThumbsDown, ThumbsUp, MessageSquare, UserPlus } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
 import ConditionReportForm, {
-  ConditionReport,
+  type ConditionReport,
   EMPTY_CONDITION_REPORT,
   isConditionReportFilled,
 } from '../components/forms/ConditionReportForm';
 import CarImageUploader, {
-  PendingImage,
+  type PendingImage,
 } from '../components/forms/CarImageUploader';
 import { supabase } from '../lib/supabase';
 import DealerProposalCard from '../components/DealerProposalCard';
@@ -166,14 +151,14 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
       .in('status', ['sent', 'viewed'])
       .order('created_at', { ascending: false });
     if (data && data.length > 0) {
-      setProposals(data as DealerProposal[]);
+      setProposals(data as unknown as DealerProposal[]);
       // Mark as viewed
-      for (const p of data) {
-        if (p.status === 'sent') {
+      for (const p of data as unknown as DealerProposal[]) {
+        if ((p as any).status === 'sent') {
           void supabase
             .from('dealer_proposals')
-            .update({ status: 'viewed', viewed_at: new Date().toISOString() })
-            .eq('id', p.id);
+            .update({ status: 'viewed', viewed_at: new Date().toISOString() } as any)
+            .eq('id', (p as any).id);
         }
       }
     }
@@ -1081,7 +1066,7 @@ function LoginOrCreateCard({ token: _token, prefillEmail = '' }: { token: string
     <div className="bg-white border border-[#0e6efe]/20 rounded-2xl p-5 sm:p-6">
       <div className="flex items-start gap-3 mb-5">
         <div className="w-10 h-10 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
-          <Lock className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
+          <LockIcon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
         </div>
         <div>
           <p className="text-[13px] font-bold text-slate-900">Logga in för att fortsätta</p>

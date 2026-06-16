@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Loader2, ArrowRight, Shield, Zap, TrendingDown, Car } from 'lucide-react';
-import { QuizAnswers } from './QuizTypes';
+import { Search, Loader as Loader2, ArrowRight, Shield, Zap, TrendingDown, Car } from 'lucide-react';
+import type { QuizAnswers } from './QuizTypes';
 
 interface QuizCompleteProps {
   answers: QuizAnswers;

@@ -1,29 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
-import {
-  ArrowLeft,
-  Search,
-  Car,
-  Check,
-  Loader2,
-  AlertTriangle,
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  EyeOff,
-  Pencil,
-  X,
-  Save,
-  SlidersHorizontal,
-  Zap,
-  Fuel,
-  Star,
-  Upload,
-  FileUp,
-  CheckCircle2,
-  XCircle,
-  Images,
-  RefreshCw,
-} from 'lucide-react';
+import { ArrowLeft, Search, Car, Check, Loader as Loader2, TriangleAlert as AlertTriangle, ChevronDown, ChevronUp, Eye, EyeOff, Pencil, X, Save, SlidersHorizontal, Zap, Fuel, Star, Upload, FileUp, CircleCheck as CheckCircle2, Circle as XCircle, Images, RefreshCw } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface AdminCarCatalogProps {
@@ -512,7 +488,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
         .update(payload)
         .eq('make', row.make)
         .eq('model', row.model)
-        .select('id', { count: 'exact', head: true });
+        .select('id');
 
       if (error) {
         errors.push(`${row.make} ${row.model}: ${error.message}`);

@@ -1,14 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Loader2,
-  ChevronRight,
-  Car as CarIcon,
-  Search,
-  Repeat,
-  Phone,
-  ShieldCheck,
-  ShieldAlert,
-} from 'lucide-react';
+import { Loader as Loader2, ChevronRight, Car as CarIcon, Search, Repeat, Phone, ShieldCheck, ShieldAlert } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
 import { useAdminNav, type AdminPage } from '../hooks/useAdminNav';
@@ -85,7 +76,7 @@ export default function AdminQuoteRequests({
   onNavigate,
   initialFilter,
 }: AdminQuoteRequestsProps) {
-  const activePage: AdminPage = initialFilter === 'found' ? 'hittat-bil' : initialFilter === 'searching' ? 'letar-bil' : initialFilter === 'trade' ? 'inbyte' : 'hittat-bil';
+  const activePage: AdminPage = (initialFilter === 'found' ? 'hittat-bil' : initialFilter === 'searching' ? 'letar-bil' : initialFilter === 'trade' ? 'inbyte' : 'hittat-bil') as unknown as AdminPage;
   const navItems = useAdminNav({ activePage, onNavigate });
   const [quotes, setQuotes] = useState<QuoteRequest[]>([]);
   const [loading, setLoading] = useState(true);

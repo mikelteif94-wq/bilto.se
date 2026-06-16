@@ -1,19 +1,16 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import {
-  TrendingDown, Wallet, ArrowRight, Car, Loader2,
-  ChevronRight, RotateCcw, GitCompareArrows, Check, Plus,
-} from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { calcCarMonthly } from '@/lib/utils';
+import { TrendingDown, Wallet, ArrowRight, Car, Loader as Loader2, ChevronRight, RotateCcw, GitCompareArrows, Check, Plus } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { calcCarMonthly } from '../../lib/utils';
 import {
   BRAND_CATEGORIES, BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS,
-} from '@/components/quiz/QuizTypes';
-import { findComparisonCarByMakeModel } from '@/lib/comparison';
+} from '../quiz/QuizTypes';
+import { findComparisonCarByMakeModel } from '../../lib/comparison';
 import type { EquityData } from './EquityQuiz';
-import CompareDrawer from '@/components/CompareDrawer';
-import type { ComparisonCar } from '@/lib/comparison/types';
-import { useCarImages } from '@/hooks/useCarImages';
+import CompareDrawer from '../CompareDrawer';
+import type { ComparisonCar } from '../../lib/comparison/types';
+import { useCarImages } from '../../hooks/useCarImages';
 
 interface EquityResultsProps {
   equity: EquityData;
@@ -549,7 +546,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
         }}
         onNegotiate={(car) => {
           setCompareOpen(false);
-          onNegotiate(`${car.brand_display} ${car.model_display}`);
+          onNegotiate(`${car.brand_display} ${car.model_display}`, '');
         }}
         getImageUrl={(car) => getCarImage(car.brand_display, car.model_display) || undefined}
       />

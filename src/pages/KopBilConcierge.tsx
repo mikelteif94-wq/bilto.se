@@ -15,7 +15,7 @@ import {
   Quote,
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
-import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
+import MobileMenu, { type MobileMenuItem } from '../components/MobileMenu';
 
 interface KopBilConciergProps {
   onBack: () => void;
@@ -159,7 +159,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             </button>
             <button
               type="button"
-              onClick={onNavigateBuy}
+              onClick={() => onNavigateBuy()}
               className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/20 border border-white/40 text-white text-[14px] font-semibold hover:bg-white/30 transition backdrop-blur-sm"
             >
               Köp bil med hjälp

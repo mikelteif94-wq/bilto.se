@@ -17,7 +17,7 @@ export interface CarPricing {
 
 export interface CarSpecs {
   body_type: 'sedan' | 'kombi' | 'suv' | 'coupe' | 'hatchback' | 'cab' | 'mpv';
-  fuel_types: ('bensin' | 'diesel' | 'hybrid' | 'laddhybrid' | 'el')[];
+  fuel_types: ('bensin' | 'diesel' | 'hybrid' | 'mildhybrid' | 'laddhybrid' | 'el')[];
   drivetrain: ('fwd' | 'rwd' | 'awd')[];
   seats: number;
   trunk_liters?: number;
@@ -46,6 +46,7 @@ export interface ComparisonCar {
   meta_description?: string;
   segment: 'compact' | 'midsize' | 'fullsize' | 'premium' | 'luxury' | 'sports';
   competitors: string[];
+  fits?: string[];
   is_active: boolean;
   updated_at: string;
 }

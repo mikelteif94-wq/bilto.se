@@ -1,28 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useRef } from 'react';
-import {
-  Menu,
-  User,
-  ArrowRight,
-  Search,
-  Gavel,
-  Phone,
-  Handshake,
-  Camera,
-  Check,
-  ShieldCheck,
-  Clock,
-  ChevronDown,
-  Plus,
-  MessageCircle,
-  X,
-  XCircle,
-  Car as CarIcon,
-} from 'lucide-react';
+import { Menu, User, ArrowRight, Search, Gavel, Phone, Handshake, Check, ShieldCheck, Clock, ChevronDown, Plus, MessageCircle, X, Circle as XCircle, Car as CarIcon } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { calcCarMonthly } from '../lib/utils';
 import { SiteFooter } from '../components/SiteFooter';
-import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
+import MobileMenu, { type MobileMenuItem } from '../components/MobileMenu';
 import SeoCarsSection from '../components/SeoCarsSection';
 import ReviewsSection from '../components/ReviewsSection';
 import CompactCarCard from '../components/CompactCarCard';
@@ -46,6 +28,7 @@ interface HowItWorksProps {
 }
 
 type Mode = 'direct';
+void (null as unknown as Mode);
 
 interface Step {
   icon: typeof Search;
@@ -135,9 +118,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   const { getCarImage } = useCarImages(dbCars);
   const allCars = getAllComparisonCars();
   const TRADE_IN_IDS = ['volvo_xc60', 'bmw_x3', 'tesla_model_y'];
-  const tradeInCars = TRADE_IN_IDS
-    .map(id => allCars.find(c => c.id === id))
-    .filter(Boolean);
+  void TRADE_IN_IDS;
 
   const POPULAR_IDS = ['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'toyota_rav4', 'volvo_xc40', 'vw_golf'];
   const popularCars = POPULAR_IDS

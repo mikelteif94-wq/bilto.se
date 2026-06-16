@@ -1,4 +1,4 @@
-import { ComparisonCar } from '../types';
+import type { ComparisonCar } from '../types';
 
 export const CARS_FORD: ComparisonCar[] = [
   {
@@ -54,7 +54,7 @@ export const CARS_FORD: ComparisonCar[] = [
     generation: '2019-present', slug: 'ford-focus-st',
     ratings: { overall: 8, driving: 9, comfort: 7, practicality: 7, value: 8 },
     pricing: { new_from_sek: 430000, new_to_sek: 499900, used_from_sek: 60000 },
-    specs: { body_type: 'halvkombi', fuel_types: ['bensin'], drivetrain: ['fwd'], seats: 5, trunk_liters: 375, trunk_liters_max: 1100 },
+    specs: { body_type: 'hatchback', fuel_types: ['bensin'], drivetrain: ['fwd'], seats: 5, trunk_liters: 375, trunk_liters_max: 1100 },
     safety: { euro_ncap_stars: 5, euro_ncap_year: 2019 },
     pros: ['280 hk turbomotor', 'Fantastisk körkänsla', 'Quaife-differentialspärr', 'Hot hatch-kung'],
     cons: ['Hög förbrukning', 'Hård fjädring', 'Utgående modell', 'Bara FWD'],
@@ -78,7 +78,7 @@ export const CARS_FORD: ComparisonCar[] = [
     generation: '2016-2018', slug: 'ford-focus-rs',
     ratings: { overall: 8, driving: 10, comfort: 6, practicality: 7, value: 8 },
     pricing: { new_from_sek: 0, new_to_sek: 0, used_from_sek: 199900 },
-    specs: { body_type: 'halvkombi', fuel_types: ['bensin'], drivetrain: ['awd'], seats: 5, trunk_liters: 375, trunk_liters_max: 1100 },
+    specs: { body_type: 'hatchback', fuel_types: ['bensin'], drivetrain: ['awd'], seats: 5, trunk_liters: 375, trunk_liters_max: 1100 },
     safety: { euro_ncap_stars: 5, euro_ncap_year: 2019 },
     pros: ['350 hk AWD', 'Drift-läge', 'Ikonisk hot hatch', 'Extremt rolig'],
     cons: ['Utgått ur produktion', 'Hård fjädring', 'Hög förbrukning', 'Begränsad praktikalitet'],
@@ -90,7 +90,7 @@ export const CARS_FORD: ComparisonCar[] = [
     generation: '2018-present', slug: 'ford-focus-vignale',
     ratings: { overall: 7, driving: 8, comfort: 8, practicality: 7, value: 7 },
     pricing: { new_from_sek: 370000, new_to_sek: 450000, used_from_sek: 99900 },
-    specs: { body_type: 'halvkombi', fuel_types: ['bensin', 'diesel'], drivetrain: ['fwd'], seats: 5, trunk_liters: 375, trunk_liters_max: 1100 },
+    specs: { body_type: 'hatchback', fuel_types: ['bensin', 'diesel'], drivetrain: ['fwd'], seats: 5, trunk_liters: 375, trunk_liters_max: 1100 },
     safety: { euro_ncap_stars: 5, euro_ncap_year: 2019 },
     pros: ['Läderstoppning ingår', 'Mer lyxig interiör', 'Bra utrustningsnivå', 'Unik look'],
     cons: ['Dyrare än standard', 'Inte lika sportig som ST', 'Utgående', 'Begränsad marknadsandel'],
