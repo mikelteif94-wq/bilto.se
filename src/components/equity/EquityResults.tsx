@@ -15,6 +15,7 @@ import type { EquityData } from './EquityQuiz';
 import CompareDrawer from '@/components/CompareDrawer';
 import type { ComparisonCar } from '@/lib/comparison/types';
 import { useCarImages } from '@/hooks/useCarImages';
+import SaveToPortalBanner from '@/components/SaveToPortalBanner';
 
 interface EquityResultsProps {
   equity: EquityData;
@@ -550,6 +551,12 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
           </button>
         </div>
       )}
+
+      <SaveToPortalBanner
+        quizAnswers={equity as unknown as Record<string, unknown>}
+        source="equity-calculator"
+        carLabel={cars[0] ? `${cars[0].make} ${cars[0].model}` : undefined}
+      />
 
       {/* How it works */}
       <div className="bg-blue-50 rounded-2xl px-5 py-4 space-y-3">

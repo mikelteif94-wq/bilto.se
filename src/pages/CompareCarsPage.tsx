@@ -27,6 +27,7 @@ import { CarFitQuiz } from '../components/CarFitQuiz';
 import QuizFlow from '../components/quiz/QuizFlow';
 import { QuizComplete } from '../components/quiz/QuizComplete';
 import type { QuizAnswers } from '../components/quiz/QuizTypes';
+import SaveToPortalBanner from '../components/SaveToPortalBanner';
 import {
   BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS, BRAND_CATEGORIES, PRIORITY_TRAITS,
 } from '../components/quiz/QuizTypes';
@@ -1452,7 +1453,16 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     </button>
                   </div>
                 )}
-                <div className="mt-6 flex items-center justify-center">
+                {quizAnswers && (
+                  <div className="mt-6">
+                    <SaveToPortalBanner
+                      quizAnswers={quizAnswers as unknown as Record<string, unknown>}
+                      source="bilmatch-quiz"
+                      carLabel={quizResults[0] ? `${quizResults[0].make} ${quizResults[0].model}` : undefined}
+                    />
+                  </div>
+                )}
+                <div className="mt-4 flex items-center justify-center">
                   <button
                     type="button"
                     onClick={handleQuizReset}

@@ -17,6 +17,9 @@ import {
   ExternalLink,
   AlertCircle,
   Search,
+  BookmarkPlus,
+  Wallet,
+  CreditCard,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import CustomerOfferCard from '../components/CustomerOfferCard';
@@ -88,13 +91,25 @@ interface OfferRow {
   sent_at: string | null;
 }
 
+interface QuoteRequestRow {
+  id: string;
+  created_at: string;
+  source: string;
+  car_model: string;
+  target_car: string;
+  status: string;
+  firstname: string;
+  lastname: string;
+  quiz_answers: Record<string, unknown> | null;
+}
+
 export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: CustomerDashboardProps) {
   const [loading, setLoading] = useState(true);
   const [cars, setCars] = useState<CarRow[]>([]);
   const [offers, setOffers] = useState<OfferRow[]>([]);
   const [bidsByCar, setBidsByCar] = useState<Record<string, BidRow[]>>({});
+  const [quoteRequests, setQuoteRequests] = useState<QuoteRequestRow[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-
   const handleCopyLink = async (carId: string, token: string) => {
     const url = `${window.location.origin}/min-bil/${token}`;
     try {
@@ -117,6 +132,14 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
         .order('sent_at', { ascending: false });
       const offerList = (offerRows ?? []) as unknown as OfferRow[];
       setOffers(offerList);
+
+      // Fetch quiz/equity requests saved by this user (matched by user_id or email via RLS)
+      const { data: qrRows } = await supabase
+        .from('quote_requests')
+        .select('id, created_at, source, car_model, target_car, status, firstname, lastname, quiz_answers')
+        .in('source', ['bilmatch-quiz', 'equity-calculator'])
+        .order('created_at', { ascending: false });
+      setQuoteRequests((qrRows ?? []) as QuoteRequestRow[]);
 
       if (offerList.length > 0) {
         const unviewed = offerList.filter((o) => o.status === 'sent');
@@ -258,6 +281,22 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                 <div className="space-y-4">
                   {offers.map((offer) => (
                     <CustomerOfferCard key={offer.id} offer={offer} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Quiz / equity searches saved by this user */}
+            {quoteRequests.length > 0 && (
+              <div>
+                <SectionLabel
+                  text="Dina bilsökningar"
+                  icon={<Search className="w-3.5 h-3.5 text-[#0e6efe]" />}
+                  badge={quoteRequests.length}
+                />
+                <div className="space-y-3">
+                  {quoteRequests.map((qr) => (
+                    <QuoteRequestCard key={qr.id} qr={qr} />
                   ))}
                 </div>
               </div>
@@ -558,6 +597,82 @@ function EmptyState() {
             <p className="text-[13px] text-slate-500 leading-relaxed">
               Beskriv vad du letar efter — vi hittar och förhandlar fram bästa pris från verifierade handlare.
             </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function QuoteRequestCard({ qr }: { qr: QuoteRequestRow }) {
+  const isEquity = qr.source === 'equity-calculator';
+  const label = qr.car_model || qr.target_car || (isEquity ? 'Insatskalkyl' : 'Bilmatch');
+  const date = new Date(qr.created_at).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  const equityAnswers = qr.quiz_answers as { equity?: number; desiredMonthly?: number; hasCurrentCar?: boolean } | null;
+  const quizAnswers = qr.quiz_answers as { budget?: string; body_type?: string[]; fuel_type?: string[] } | null;
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="h-0.5 w-full bg-[#0e6efe]" />
+      <div className="px-5 py-4 flex items-start gap-3">
+        <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${isEquity ? 'bg-emerald-50' : 'bg-[#0e6efe]/10'}`}>
+          {isEquity
+            ? <Wallet className="w-4 h-4 text-emerald-600" />
+            : <BookmarkPlus className="w-4 h-4 text-[#0e6efe]" />
+          }
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <p className="text-[13px] font-bold text-slate-900 truncate">{label}</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                {isEquity ? 'Insatskalkyl' : 'Bilmatch'} · {date}
+              </p>
+            </div>
+            <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-sky-50 border border-sky-200 text-sky-700">
+              {qr.status === 'new' ? 'Ny' : qr.status === 'contacted' ? 'Kontaktad' : qr.status}
+            </span>
+          </div>
+
+          {isEquity && equityAnswers && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {equityAnswers.equity != null && (
+                <span className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
+                  Insats: {new Intl.NumberFormat('sv-SE').format(equityAnswers.equity)} kr
+                </span>
+              )}
+              {equityAnswers.desiredMonthly != null && (
+                <span className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
+                  {new Intl.NumberFormat('sv-SE').format(equityAnswers.desiredMonthly)} kr/mån
+                </span>
+              )}
+            </div>
+          )}
+
+          {!isEquity && quizAnswers && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {quizAnswers.budget && (
+                <span className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
+                  Budget: {quizAnswers.budget}
+                </span>
+              )}
+              {quizAnswers.fuel_type?.map(ft => (
+                <span key={ft} className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
+                  {ft === 'electric' ? 'El' : ft === 'hybrid' ? 'Hybrid' : ft === 'petrol' ? 'Bensin' : 'Diesel'}
+                </span>
+              ))}
+              {quizAnswers.body_type?.slice(0, 2).map(bt => (
+                <span key={bt} className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600 capitalize">
+                  {bt}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-3 flex items-center gap-1.5 text-[11px] text-slate-400">
+            <CreditCard className="w-3 h-3" />
+            <span>En rådgivare kontaktar dig inom kort med matchande bilar</span>
           </div>
         </div>
       </div>
