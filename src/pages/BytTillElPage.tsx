@@ -42,7 +42,6 @@ function CostCalc() {
           <p className="text-[13px] text-slate-500">Bensin vs el — per år</p>
         </div>
       </div>
-
       <div className="space-y-5">
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -54,7 +53,6 @@ function CostCalc() {
             className="w-full accent-[#0e6efe]" />
           <div className="flex justify-between text-[11px] text-slate-400 mt-0.5"><span>500</span><span>5 000</span></div>
         </div>
-
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-[13px] font-semibold text-slate-600 block mb-1.5">Elpris (kr/kWh)</label>
@@ -69,7 +67,6 @@ function CostCalc() {
               className="w-full h-11 px-3 rounded-xl border border-slate-200 text-[14px] font-bold text-slate-900 focus:outline-none focus:border-[#0e6efe]" />
           </div>
         </div>
-
         <div className="grid grid-cols-3 gap-3 pt-1">
           {[
             { label: 'Bensinkostnad', value: formatSEK(Math.round(bensinKostnad)) + ' kr', bg: 'bg-red-50 border-red-100', text: 'text-red-700', sub: 'text-red-400' },
@@ -83,7 +80,6 @@ function CostCalc() {
             </div>
           ))}
         </div>
-
         {besparing > 0 && (
           <p className="text-[13px] text-slate-500 text-center leading-relaxed">
             Med elbil sparar du ungefär <span className="font-bold text-emerald-600">{formatSEK(Math.round(besparing))} kr/år</span> i driftkostnad.
@@ -183,31 +179,27 @@ function LeadForm() {
           ))}
         </div>
       </div>
-
       {error && (
         <div className="flex items-start gap-2.5 p-4 bg-red-50 border border-red-100 rounded-xl">
           <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
           <p className="text-[13px] text-red-700">{error}</p>
         </div>
       )}
-
       <button type="submit" disabled={loading || !telefon.trim()}
-        className="w-full h-14 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold text-[16px] flex items-center justify-center gap-2 transition shadow-sm">
-        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><span>Boka gratis rådgivning</span> <ArrowRight className="w-5 h-5" /></>}
+        className="w-full h-[46px] rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold text-[15px] flex items-center justify-center gap-2 transition shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)] active:scale-[0.98]">
+        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><span>Boka gratis rådgivning</span> <ArrowRight className="w-4 h-4" /></>}
       </button>
-      <p className="text-[12px] text-slate-400 text-center">
-        Kostnadsfri rådgivning · Ingen bindning · Vi ringer inom 24 timmar
-      </p>
+      <p className="text-[12px] text-slate-400 text-center">Kostnadsfri rådgivning · Ingen bindning · Vi ringer inom 24 timmar</p>
     </form>
   );
 }
 
-// ─── FAQ item ─────────────────────────────────────────────────────────────────
+// ─── FAQ ──────────────────────────────────────────────────────────────────────
 const FAQS = [
   { q: 'Behöver jag ha garage för att ha elbil?', a: 'Nej, men det underlättar. Vi hjälper dig även med laddstolpe i bostadsrätt eller utomhus. Många BRF:er kan söka stöd för gemensam laddning.' },
   { q: 'Räcker räckvidden för min vardag?', a: 'De flesta elbilar har idag 300–600 km räckvidd. Medelbilisten kör ca 40 km/dag — de allra flesta behöver aldrig använda snabbladdare i vardagen.' },
   { q: 'Vad händer med min nuvarande bil?', a: 'Vi värderar din bil och sköter hela inbytet. Värdet kan användas som kontantinsats på ditt nya elfordon.' },
-  { q: 'Är laddhybrid ett bra mellanalternativ?', a: 'Ja, om du kör korta sträckor dagligen (30–50 km) och ibland längre resor. Du kör på el hemma och bensin på längre sträckor.' },
+  { q: 'Är laddhybrid ett bra mellanalternativ?', a: 'Ja, om du kör korta sträckor dagligen (30–50 km) men ibland längre resor. Du kör på el hemma och bensin på längre sträckor.' },
   { q: 'Vad kostar Biltos tjänst?', a: 'Grundrådgivning är kostnadsfri. Vid köphjälp tar vi en fast avgift på 1 995 kr — och du sparar i snitt 15 000–40 000 kr på bilaffären.' },
 ];
 
@@ -220,7 +212,7 @@ function ElBilCard({ name, imageUrl, carPrice, usedPrice, rating, pros, onClick 
   return (
     <div onClick={onClick}
       className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-pointer overflow-hidden">
-      <div className="relative aspect-[16/9] bg-[#f5f8fc] overflow-hidden">
+      <div className="relative aspect-[16/9] bg-[#faf8f5] overflow-hidden">
         {imageUrl ? (
           <img src={imageUrl} alt={name} loading="lazy"
             className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-[1.04]"
@@ -276,7 +268,7 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.6);
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.8);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -285,7 +277,7 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
   const scrollToForm = () => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
@@ -293,32 +285,23 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
       />
 
       {/* ── Nav ─────────────────────────────────────────────────────────────── */}
-      <header
-        className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${
-          scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]'
-        }`}
-      >
+      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]/40 backdrop-blur-md'}`}>
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button type="button" aria-label="Meny" onClick={() => setMenuOpen(true)}
             className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white">
             <Menu className="w-6 h-6" strokeWidth={2} />
           </button>
-          <button onClick={onBack} className="shrink-0 flex items-center">
+          <button onClick={onBack} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center">
             <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto"
               className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             <button type="button" onClick={onBack}
-              className="text-[15px] text-white/80 hover:text-white transition font-medium">
-              Sälj bil
-            </button>
+              className="text-[15px] text-white font-semibold transition hover:text-white/80">Sälj bil</button>
             <button type="button" onClick={() => navigate('/kop-bil')}
-              className="text-[15px] text-white/80 hover:text-white transition font-medium">
-              Köp bil
-            </button>
-            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/20 border border-white/40 text-white text-[14px] font-semibold">
-              <Zap className="w-4 h-4 fill-white" />
-              Byt till el
+              className="text-[15px] text-white font-semibold transition hover:text-white/80">Köp bil</button>
+            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/15 border border-white/30 text-white text-[14px] font-semibold backdrop-blur-sm">
+              <Zap className="w-4 h-4 fill-white" /> Byt till el
             </span>
           </nav>
           <div className="flex items-center ml-auto">
@@ -331,89 +314,80 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
         </div>
       </header>
 
-      {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section className="relative bg-[#0e6efe] pt-28 pb-0 overflow-hidden">
-        <div className="absolute -left-60 -top-40 w-[800px] h-[800px] rounded-full bg-[#1a7cff] opacity-50 pointer-events-none" />
-        <div className="absolute right-0 bottom-0 w-[500px] h-[500px] rounded-full bg-[#0a57cc] opacity-40 pointer-events-none" />
+      {/* ── Hero mobile ───────────────────────────────────────────────────────── */}
+      <section className="lg:hidden pt-16 relative bg-[#0e6efe] overflow-hidden">
+        <div className="absolute -left-24 -top-6 w-[280px] h-[280px] rounded-full bg-[#3d8cff] opacity-50 pointer-events-none" />
+        <div className="absolute -right-20 top-80 w-[240px] h-[240px] rounded-full bg-[#0a57cc] opacity-50 pointer-events-none" />
 
-        <div className="relative max-w-[1200px] mx-auto px-6 lg:px-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-end">
-            {/* Left copy */}
-            <div className="pb-14 lg:pb-20">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-[13px] font-semibold mb-8">
-                <ShieldCheck className="w-4 h-4" />
-                Komplett tjänst — inbyte, laddning och finansiering
-              </div>
-              <h1 className="text-white text-[40px] sm:text-[56px] lg:text-[64px] font-bold leading-[1.0] tracking-tight">
-                Byt till elbil —<br />
-                <span className="text-white/85">vi sköter allt</span>
-              </h1>
-              <p className="mt-6 text-white/85 text-[17px] sm:text-[20px] leading-[1.6] max-w-[480px]">
-                Från inbyte av din nuvarande bil till laddbox hemma och finansiering. En kontakt — hela övergången till el.
-              </p>
+        <div className="relative px-6 pt-6 pb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 text-white text-[12px] font-semibold mb-5">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            Inbyte · Laddbox · Finansiering
+          </div>
+          <h1 className="text-white text-[30px] font-semibold leading-[1.1] tracking-tight">
+            Byt till elbil —<br />vi sköter allt
+          </h1>
+          <p className="mt-4 text-white/85 text-[15px] leading-[1.6]">
+            Från inbyte av din bil till laddbox hemma och finansiering. En kontakt, hela övergången.
+          </p>
 
-              <ul className="mt-8 space-y-3">
-                {[
-                  'Vi värderar och säljer din nuvarande bil',
-                  'Laddbox installerad hemma, vi koordinerar allt',
-                  'Vi förhandlar bästa elpris och finansiering',
-                  'Gratis rådgivning — ingen bindning',
-                ].map((point) => (
-                  <li key={point} className="flex items-center gap-3 text-white text-[15px] font-medium">
-                    <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                    </div>
-                    {point}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-10 flex flex-col sm:flex-row gap-3">
-                <button type="button" onClick={scrollToForm}
-                  className="h-14 px-8 rounded-full bg-white text-[#0e6efe] font-bold text-[16px] hover:bg-slate-50 transition shadow-lg inline-flex items-center gap-2 group justify-center">
-                  Kom igång gratis
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
-                </button>
-                <a href="tel:+46855550200"
-                  className="h-14 px-7 rounded-full border-2 border-white/30 text-white font-semibold text-[15px] hover:border-white/60 transition inline-flex items-center gap-2 justify-center">
-                  <Phone className="w-4 h-4" />
-                  Ring oss: 08-5555 0200
-                </a>
-              </div>
-              <p className="mt-4 text-white/60 text-[13px]">Vi hör av oss inom en arbetsdag.</p>
-            </div>
-
-            {/* Right: what's included cards */}
-            <div className="hidden lg:flex flex-col gap-4 pb-10 justify-end">
-              {[
-                { icon: Car, title: 'Inbyte av din bil', desc: 'Vi värderar och säljer till bästa pris — kapitalet används som insats.' },
-                { icon: Plug, title: 'Laddbox hemma', desc: 'Vi koordinerar installation hos villa, radhus eller BRF.' },
-                { icon: CreditCard, title: 'Finansiering & köp', desc: 'Vi förhandlar pris och ordnar bästa ränta. Du godkänner.' },
-              ].map((item) => (
-                <div key={item.title}
-                  className="flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-5 py-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
-                    <item.icon className="w-6 h-6 text-white" strokeWidth={1.8} />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-white font-bold text-[15px] leading-tight">{item.title}</p>
-                    <p className="text-white/70 text-[13px] mt-0.5 leading-snug">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-              <div className="flex items-center gap-3 px-5 py-3 bg-emerald-500/20 border border-emerald-400/30 rounded-2xl">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                <p className="text-emerald-200 text-[13px] font-medium">En expert är tillgänglig nu</p>
-              </div>
+          <div className="mt-6 bg-white rounded-2xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden">
+            <div className="px-5 py-5">
+              <p className="text-[15px] font-bold text-slate-900 mb-1">Boka gratis rådgivning</p>
+              <p className="text-[12px] text-slate-500 mb-4">Vi ringer dig inom 24 timmar.</p>
+              <button type="button" onClick={scrollToForm}
+                className="h-11 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]">
+                Kom igång gratis <ArrowRight className="w-4 h-4" />
+              </button>
+              <a href="tel:+46855550200"
+                className="mt-3 h-10 w-full rounded-xl border border-slate-200 text-slate-600 font-semibold text-[13px] transition hover:bg-slate-50 inline-flex items-center justify-center gap-2">
+                <Phone className="w-3.5 h-3.5" /> 08-5555 0200
+              </a>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Wave */}
-        <div className="relative h-16 mt-0">
-          <svg viewBox="0 0 1440 64" className="absolute bottom-0 w-full" preserveAspectRatio="none" fill="white">
-            <path d="M0,32 C360,80 1080,-16 1440,32 L1440,64 L0,64 Z" />
-          </svg>
+      {/* ── Hero desktop ──────────────────────────────────────────────────────── */}
+      <section className="hidden lg:block relative bg-[#0e6efe] pt-28 pb-32 overflow-hidden">
+        <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60 pointer-events-none" />
+        <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50 pointer-events-none" />
+        <img src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png" alt="" aria-hidden="true"
+          className="absolute left-1/2 -translate-x-1/2 top-0 w-[780px] h-[780px] object-contain pointer-events-none select-none opacity-30" />
+
+        <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-[13px] font-semibold mb-8">
+              <ShieldCheck className="w-4 h-4" />
+              Inbyte · Laddbox · Finansiering — allt i ett
+            </div>
+            <h1 className="text-white text-[56px] font-semibold leading-[1.05] tracking-tight">
+              Byt till elbil —<br />vi sköter allt
+            </h1>
+            <ul className="mt-8 space-y-4 text-[19px] font-medium text-white">
+              {[
+                'Vi värderar och säljer din nuvarande bil',
+                'Laddbox installerad hemma, vi koordinerar',
+                'Vi förhandlar pris, ränta och finansiering',
+              ].map(p => (
+                <li key={p} className="flex items-center gap-3">
+                  <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* White card */}
+          <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden max-w-[440px] w-full justify-self-end">
+            <div className="px-7 pt-6 pb-2">
+              <p className="text-[18px] font-bold text-slate-900">Boka gratis rådgivning</p>
+              <p className="text-[13px] text-slate-500 mt-1 mb-5">En expert ringer dig inom 24 timmar.</p>
+            </div>
+            <div className="px-7 pb-7">
+              <LeadForm />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -436,25 +410,24 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
         </div>
       </section>
 
-      {/* ── Processen ─────────────────────────────────────────────────────────── */}
-      <section className="bg-white py-20 sm:py-28 px-5 sm:px-6">
+      {/* ── Hur det fungerar ─────────────────────────────────────────────────── */}
+      <section className="bg-slate-50 py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
+          <div className="mb-10 sm:mb-16">
             <span className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">Processen</span>
-            <h2 className="text-[32px] sm:text-[48px] font-bold leading-[1.05] text-slate-900 tracking-tight">
+            <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
               Fem steg — du gör nästan ingenting
             </h2>
           </div>
-
           <div className="relative">
             <div className="hidden lg:block absolute top-10 left-[10%] right-[10%] h-px bg-slate-200" />
             <div className="grid lg:grid-cols-5 gap-8 lg:gap-4">
               {[
-                { n: '01', icon: BarChart2, title: 'Behovsanalys', body: 'Vi kartlägger dina körvanor och laddmöjligheter. El, laddhybrid — eller en kombination?' },
-                { n: '02', icon: Car, title: 'Inbyte värderas', body: 'Din bil värderas av flera handlare. Vi ser till att du får marknadspris.' },
-                { n: '03', icon: Zap, title: 'Bilval & förhandling', body: 'Vi hittar rätt elbil och förhandlar pris, ränta och tillval åt dig.' },
+                { n: '01', icon: BarChart2, title: 'Behovsanalys', body: 'Vi kartlägger dina körvanor och laddmöjligheter.' },
+                { n: '02', icon: Car, title: 'Inbyte värderas', body: 'Din bil värderas av flera handlare — du får marknadspris.' },
+                { n: '03', icon: Zap, title: 'Bilval & förhandling', body: 'Vi hittar rätt elbil och förhandlar pris och ränta åt dig.' },
                 { n: '04', icon: Plug, title: 'Laddbox hemma', body: 'Vi koordinerar installation — du behöver inte lyfta ett finger.' },
-                { n: '05', icon: CreditCard, title: 'Finansiering klar', body: 'Vi sköter finansieringen med lägsta möjliga månadskostand. Klart.' },
+                { n: '05', icon: CreditCard, title: 'Finansiering klar', body: 'Vi sköter finansieringen med lägsta möjliga månadskostnad.' },
               ].map(step => {
                 const Icon = step.icon;
                 return (
@@ -470,7 +443,6 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
               })}
             </div>
           </div>
-
           <div className="mt-14 text-center">
             <button type="button" onClick={scrollToForm}
               className="h-14 px-10 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-sm inline-flex items-center gap-2 group">
@@ -482,8 +454,8 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
         </div>
       </section>
 
-      {/* ── Elbil vs laddhybrid ────────────────────────────────────────────────── */}
-      <section className="bg-[#f5f8fc] py-20 sm:py-28 px-5 sm:px-6">
+      {/* ── Elbil vs laddhybrid ───────────────────────────────────────────────── */}
+      <section className="bg-white py-20 sm:py-28 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">Vilket passar dig?</span>
@@ -499,20 +471,20 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
               {
                 icon: Zap,
                 title: 'Elbil passar dig som...',
-                color: 'text-[#0e6efe]',
-                bg: 'bg-white border-slate-200',
+                accent: 'text-[#0e6efe]',
+                bg: 'bg-[#f5f8fc]',
                 points: [
                   'Kör mestadels lokalt (upp till 60 km/dag)',
                   'Kan ladda hemma eller på jobbet',
                   'Vill ha lägsta möjliga driftkostnad',
-                  'Är miljömedveten och vill köra fossilfritt',
+                  'Vill köra 100 % fossilfritt',
                 ],
               },
               {
                 icon: Leaf,
                 title: 'Laddhybrid passar dig som...',
-                color: 'text-emerald-600',
-                bg: 'bg-white border-slate-200',
+                accent: 'text-emerald-600',
+                bg: 'bg-[#f5f8fc]',
                 points: [
                   'Kör varierat — kort vardag, långa resor ibland',
                   'Inte har enkel tillgång till laddning',
@@ -520,17 +492,17 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
                   'Vill ta ett första steg mot elektrifiering',
                 ],
               },
-            ].map(({ icon: Icon, title, color, bg, points }) => (
-              <div key={title} className={`rounded-2xl border p-7 sm:p-8 shadow-sm ${bg}`}>
+            ].map(({ icon: Icon, title, accent, bg, points }) => (
+              <div key={title} className={`rounded-2xl border border-slate-200 p-7 sm:p-8 shadow-sm ${bg}`}>
                 <div className="flex items-center gap-3 mb-5">
-                  <Icon className={`w-7 h-7 ${color}`} strokeWidth={1.8} />
+                  <Icon className={`w-7 h-7 ${accent}`} strokeWidth={1.8} />
                   <h3 className="text-[17px] font-bold text-slate-900">{title}</h3>
                 </div>
                 <ul className="space-y-3">
                   {points.map(p => (
                     <li key={p} className="flex items-start gap-3 text-[14.5px] text-slate-600 leading-snug">
-                      <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${color === 'text-[#0e6efe]' ? 'bg-[#0e6efe]/10' : 'bg-emerald-50'}`}>
-                        <Check className={`w-3 h-3 ${color}`} strokeWidth={3} />
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${accent === 'text-[#0e6efe]' ? 'bg-[#0e6efe]/10' : 'bg-emerald-50'}`}>
+                        <Check className={`w-3 h-3 ${accent}`} strokeWidth={3} />
                       </div>
                       {p}
                     </li>
@@ -542,8 +514,8 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
         </div>
       </section>
 
-      {/* ── Driftkostnadskalkylator ─────────────────────────────────────────────── */}
-      <section className="bg-white py-20 sm:py-28 px-5 sm:px-6">
+      {/* ── Driftkostnadskalkylator ────────────────────────────────────────────── */}
+      <section className="bg-slate-50 py-20 sm:py-28 px-5 sm:px-6">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">Räkna själv</span>
@@ -555,8 +527,8 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
         </div>
       </section>
 
-      {/* ── Populära elbilar ─────────────────────────────────────────────────────── */}
-      <section className="bg-[#f5f8fc] py-20 sm:py-28 px-5 sm:px-6">
+      {/* ── Populära elbilar ─────────────────────────────────────────────────── */}
+      <section className="bg-white py-20 sm:py-28 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">Experternas val</span>
@@ -567,18 +539,16 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
               Vi hjälper dig hitta och förhandla fram bästa pris på rätt bil.
             </p>
           </div>
-
           {carsLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="rounded-2xl bg-white border border-slate-100 animate-pulse aspect-[4/3]" />
+                <div key={i} className="rounded-2xl bg-slate-100 animate-pulse aspect-[4/3]" />
               ))}
             </div>
           ) : elCars.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
               {elCars.map(car => (
-                <ElBilCard
-                  key={car.id}
+                <ElBilCard key={car.id}
                   name={`${car.make} ${car.model}`}
                   imageUrl={getCarImage(car.make, car.model)}
                   carPrice={car.price_new_from ?? undefined}
@@ -590,7 +560,6 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
               ))}
             </div>
           ) : null}
-
           <div className="mt-10 text-center">
             <button type="button" onClick={() => navigate('/kop-bil')}
               className="h-12 px-8 rounded-full border-2 border-slate-300 text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe] font-semibold text-[15px] inline-flex items-center gap-2 transition">
@@ -600,7 +569,7 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
         </div>
       </section>
 
-      {/* ── Vad ingår ───────────────────────────────────────────────────────────── */}
+      {/* ── Vad ingår ─────────────────────────────────────────────────────────── */}
       <section className="bg-[#0e6efe] py-20 sm:py-28 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
@@ -611,7 +580,6 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
               Allt du behöver för att gå från bensinbil till elbil — utan att du behöver göra jobbet.
             </p>
           </div>
-
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               { title: 'Inbytesförhandling', desc: 'Vi hämtar konkurrerande bud på din nuvarande bil och maximerar värdet.' },
@@ -633,18 +601,16 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
               </div>
             ))}
           </div>
-
           <div className="mt-12 text-center">
             <button type="button" onClick={scrollToForm}
               className="h-14 px-10 rounded-full bg-white text-[#0e6efe] font-bold text-[16px] hover:bg-slate-50 transition shadow-lg inline-flex items-center gap-2 group">
-              Kom igång nu
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
+              Kom igång nu <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
           </div>
         </div>
       </section>
 
-      {/* ── Laddning ────────────────────────────────────────────────────────────── */}
+      {/* ── Laddning ─────────────────────────────────────────────────────────── */}
       <section className="bg-white py-20 sm:py-28 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
@@ -656,8 +622,8 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
           <div className="grid sm:grid-cols-3 gap-6">
             {[
               { icon: Home, title: 'Hemmaladdning', badge: '~40 km/h', desc: '7 kW laddbox ger ca 40 km räckvidd per timme. Perfekt för nattladdning. Vi koordinerar installation och ROT-avdrag.' },
-              { icon: Zap, title: 'Snabbladdning', badge: '50–350 kW', desc: 'DC-snabbladdare finns längs motorvägar och i städer. Från 10 % till 80 % på 20–45 minuter.' },
-              { icon: Leaf, title: 'BRF & bostadsrätt', badge: 'Bidrag finns', desc: 'Vi hjälper med ansökan till BRF om gemensam laddinfrastruktur. Energimyndigheten ger stöd för gemensam installation.' },
+              { icon: Zap, title: 'Snabbladdning', badge: '50–350 kW', desc: 'DC-snabbladdare finns längs motorvägar och i städer. Från 10% till 80% på 20–45 minuter.' },
+              { icon: Leaf, title: 'BRF & bostadsrätt', badge: 'Bidrag finns', desc: 'Vi hjälper med ansökan till BRF om gemensam laddinfrastruktur. Energimyndigheten ger stöd för installation.' },
             ].map(({ icon: Icon, title, badge, desc }) => (
               <div key={title} className="bg-[#f5f8fc] rounded-2xl border border-slate-200 p-6">
                 <div className="flex items-center gap-3 mb-4">
@@ -674,7 +640,7 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
         </div>
       </section>
 
-      {/* ── FAQ ──────────────────────────────────────────────────────────────────── */}
+      {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
       <section className="bg-white py-20 sm:py-28 px-5 sm:px-6">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">
@@ -702,23 +668,31 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
         </div>
       </section>
 
-      {/* ── Lead form (final CTA) ─────────────────────────────────────────────── */}
+      {/* ── Final CTA (mobile form + all) ────────────────────────────────────── */}
       <section ref={formRef} className="bg-[#f5f8fc] py-20 sm:py-28 px-5 sm:px-6">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-[32px] sm:text-[52px] font-bold text-slate-900 leading-[1.05] tracking-tight">
-              Redo att byta till el?
-            </h2>
-            <p className="text-slate-600 mt-5 text-[16px] sm:text-[18px] leading-[1.6] max-w-xl mx-auto">
-              Fyll i formuläret så ringer en av våra experter dig inom 24 timmar — kostnadsfritt.
-            </p>
-          </div>
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-7 sm:p-10">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-[32px] sm:text-[52px] font-bold text-slate-900 leading-[1.05] tracking-tight">
+            Redo att byta till el?
+          </h2>
+          <p className="text-slate-600 mt-5 text-[16px] sm:text-[18px] leading-[1.6] max-w-xl mx-auto">
+            Fyll i formuläret så ringer en av våra experter dig inom 24 timmar — kostnadsfritt.
+          </p>
+          <div className="mt-10 bg-white rounded-2xl border border-slate-200 shadow-sm p-7 sm:p-10 text-left">
             <LeadForm />
           </div>
-          <p className="mt-6 text-[13px] text-slate-400 text-center">
-            Gratis · Utan förpliktelse · Vi hör av oss inom en arbetsdag
-          </p>
+          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+            <button type="button" onClick={scrollToForm}
+              className="h-14 px-10 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-sm inline-flex items-center justify-center gap-2 group">
+              Skicka en förfrågan
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
+            </button>
+            <a href="tel:+46855550200"
+              className="h-14 px-8 rounded-full border-2 border-slate-300 text-slate-700 font-semibold text-[15px] hover:border-slate-400 transition inline-flex items-center justify-center gap-2">
+              <Phone className="w-4 h-4" />
+              Ring oss direkt
+            </a>
+          </div>
+          <p className="mt-5 text-[13px] text-slate-400">Gratis · Utan förpliktelse · Vi hör av oss inom en arbetsdag</p>
         </div>
       </section>
 
