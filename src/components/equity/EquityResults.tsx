@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import {
   TrendingDown, Wallet, ArrowRight, Car, Loader2,
   ChevronRight, RotateCcw, GitCompareArrows, Check, Plus,
+  Phone, CreditCard,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { calcCarMonthly } from '@/lib/utils';
@@ -214,6 +215,86 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
     );
   }
 
+  // Zero equity path — no car, no savings
+  if (!hasEquity) {
+    return (
+      <div className="space-y-4">
+        {/* Summary */}
+        <div className="bg-slate-900 rounded-2xl px-5 py-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
+            <Wallet className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <p className="text-[11px] text-slate-400 uppercase tracking-wide font-semibold">Din insats</p>
+            <p className="text-[18px] font-bold text-white">Ingen insats just nu</p>
+          </div>
+        </div>
+
+        {/* Privatlån card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm"
+        >
+          <div className="bg-gradient-to-r from-[#0e6efe] to-[#2a7fff] px-5 py-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+              <CreditCard className="w-4.5 h-4.5 text-white" />
+            </div>
+            <div>
+              <p className="text-white font-bold text-[14px] leading-snug">Behöver du privatlån?</p>
+              <p className="text-white/75 text-[12px] mt-0.5">Vi hjälper dig hitta rätt finansiering</p>
+            </div>
+          </div>
+
+          <div className="px-5 py-4 space-y-3">
+            <p className="text-[13px] text-slate-600 leading-relaxed">
+              Utan kontantinsats finns det fortfarande vägar framåt. Med ett privatlån kan du finansiera hela köpet — och vi förhandlar räntan och villkoren åt dig.
+            </p>
+
+            <div className="space-y-2">
+              {[
+                'Vi jämför räntor från flera banker åt dig',
+                'Ingen bindning — du bestämmer om du vill gå vidare',
+                'Vi förhandlar pris och ränta samtidigt',
+              ].map((point) => (
+                <div key={point} className="flex items-start gap-2">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" strokeWidth={2.5} />
+                  <p className="text-[12.5px] text-slate-600">{point}</p>
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => onNegotiate('Privatlån', '[Privatlån] Kunden har ingen insats och vill ha hjälp med finansiering')}
+              className="w-full h-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[14px] font-bold transition-all flex items-center justify-center gap-2"
+            >
+              Ja, jag vill ha hjälp
+              <ChevronRight className="w-4 h-4" />
+            </button>
+            <a
+              href="tel:+46855550200"
+              className="w-full h-10 rounded-xl border border-slate-200 text-slate-600 text-[13px] font-semibold hover:bg-slate-50 transition flex items-center justify-center gap-2"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              Ring oss: 08-5555 0200
+            </a>
+          </div>
+        </motion.div>
+
+        <button
+          type="button"
+          onClick={onReset}
+          className="w-full text-[13px] text-slate-400 hover:text-slate-600 transition-colors text-center flex items-center justify-center gap-1.5"
+        >
+          <RotateCcw className="w-3.5 h-3.5" />
+          Räkna om
+        </button>
+      </div>
+    );
+  }
+
   // Only show savings when customer has a current monthly cost AND equity
   const bestSaving = monthlySavingPossible && hasEquity
     ? cars.reduce((best, c) => Math.max(best, Math.max(0, equity.currentMonthly - c.estimatedMonthly)), 0)
@@ -251,14 +332,6 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
             <p className="text-[13px] text-emerald-300 font-semibold">
               Du kan sänka din månadskostnad med upp till{' '}
               <span className="text-white">{formatSEK(bestSaving)} kr/mån</span>
-            </p>
-          </div>
-        )}
-        {!hasEquity && (
-          <div className="w-full flex items-center gap-2 bg-amber-500/15 rounded-xl px-3 py-2.5">
-            <Wallet className="w-4 h-4 text-amber-400 shrink-0" />
-            <p className="text-[13px] text-amber-300 font-semibold">
-              Du har ingen insats just nu — vi visar bilar med låg kontantinsats
             </p>
           </div>
         )}
