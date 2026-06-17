@@ -2,17 +2,13 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wallet, TrendingDown, ChevronRight, Info } from 'lucide-react';
 import { EquityQuiz, type EquityData } from './EquityQuiz';
-import { SignupGate } from '../SignupGate';
+import { EquityResults } from './EquityResults';
 
-type FlowState = 'teaser' | 'quiz' | 'signup';
+type FlowState = 'teaser' | 'quiz' | 'results';
 
 interface EquityFlowProps {
   onNegotiate: (carLabel: string, equitySummary: string) => void;
   compact?: boolean;
-}
-
-function formatSEK(n: number) {
-  return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
 }
 
 function TeaserCard({ onStart }: { onStart: () => void }) {
@@ -103,7 +99,7 @@ export function EquityFlow({ onNegotiate: _onNegotiate, compact }: EquityFlowPro
 
   const handleQuizComplete = (data: EquityData) => {
     setEquityData(data);
-    setState('signup');
+    setState('results');
   };
 
   if (compact && state === 'teaser') {
@@ -149,41 +145,18 @@ export function EquityFlow({ onNegotiate: _onNegotiate, compact }: EquityFlowPro
         </motion.div>
       )}
 
-      {state === 'signup' && equityData && (
+      {state === 'results' && equityData && (
         <motion.div
-          key="signup"
+          key="results"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
         >
-          <div className="mb-3 px-1">
-            <p className="text-[13px] font-semibold text-slate-700">
-              Din insats: <span className="text-[#0e6efe]">{formatSEK(equityData.equity)} kr</span>
-              {equityData.regnummer && (
-                <span className="ml-2 font-mono text-slate-400 text-[12px]">· {equityData.regnummer}</span>
-              )}
-            </p>
-            <p className="text-[11px] text-slate-400 mt-0.5">
-              Matchade bilar väntar på dig i portalen
-            </p>
-          </div>
-          <SignupGate
-            headline="Dina matchade bilar är klara"
-            subtext="Logga in för att se rekommendationerna"
-            bullets={[
-              `Insats: ${formatSEK(equityData.equity)} kr`,
-              `Önskad månadsbudget: ${formatSEK(equityData.desiredMonthly)} kr/mån`,
-              'Bilar matchade mot din ekonomi',
-            ]}
-            onSent={() => {}}
+          <EquityResults
+            equity={equityData}
+            onReset={() => setState('quiz')}
+            onNegotiate={(carLabel, equitySummary) => _onNegotiate(carLabel, equitySummary ?? '')}
           />
-          <button
-            type="button"
-            onClick={() => setState('quiz')}
-            className="mt-3 w-full text-[13px] text-slate-400 hover:text-slate-600 transition-colors text-center"
-          >
-            Räkna om
-          </button>
         </motion.div>
       )}
     </AnimatePresence>

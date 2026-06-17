@@ -26,7 +26,6 @@ import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import { CarFitQuiz } from '../components/CarFitQuiz';
 import QuizFlow from '../components/quiz/QuizFlow';
 import { QuizComplete } from '../components/quiz/QuizComplete';
-import { SignupGate } from '../components/SignupGate';
 import type { QuizAnswers } from '../components/quiz/QuizTypes';
 import {
   BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS, BRAND_CATEGORIES, PRIORITY_TRAITS,
@@ -575,7 +574,7 @@ interface ChatMessage {
   reformulations?: string[];
 }
 
-type QuizStep = 'idle' | 'active' | 'analyzing' | 'signup' | 'results';
+type QuizStep = 'idle' | 'active' | 'analyzing' | 'results';
 
 /* ───────────── nav ───────────── */
 
@@ -848,7 +847,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   };
 
   const handleQuizShowResults = () => {
-    setQuizStep('signup');
+    setQuizStep('results');
     setTimeout(() => quizSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   };
 
@@ -1293,27 +1292,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             {quizStep === 'analyzing' && quizAnswers && (
               <motion.div key="quiz-analyzing-top" initial={isMobile ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="max-w-sm mx-auto">
                 <QuizComplete answers={quizAnswers} isAnalysisReady={analysisReady} onShowResults={handleQuizShowResults} />
-              </motion.div>
-            )}
-            {quizStep === 'signup' && (
-              <motion.div key="quiz-signup-top" initial={isMobile ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="max-w-sm mx-auto">
-                <SignupGate
-                  headline="Dina bilrekommendationer är klara"
-                  subtext="Logga in för att se dina matchade bilar"
-                  bullets={[
-                    'Personliga rekommendationer baserade på dina svar',
-                    'Spara och jämför bilar i din portal',
-                    'Direkt kontakt med förhandlare',
-                  ]}
-                  onSent={() => {}}
-                />
-                <button
-                  type="button"
-                  onClick={handleQuizReset}
-                  className="mt-3 w-full text-[13px] text-slate-400 hover:text-slate-600 transition-colors text-center"
-                >
-                  Gör om quizen
-                </button>
               </motion.div>
             )}
             {quizStep === 'results' && (
