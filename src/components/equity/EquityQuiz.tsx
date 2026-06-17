@@ -307,8 +307,8 @@ export function EquityQuiz({ onComplete, onClose }: EquityQuizProps) {
             {/* Step 3: Kontantbesparing */}
             {step === 3 && (
               <SliderStep
-                label="Har du extra kontanter till insatsen?"
-                sublabel="Pengar utöver din nuvarande bil — helt valfritt"
+                label={hasCurrentCar ? "Har du extra kontanter till insatsen?" : "Hur mycket har du sparat?"}
+                sublabel={hasCurrentCar ? "Pengar utöver din nuvarande bil — helt valfritt" : "Sparpengar du kan använda som kontantinsats"}
                 value={cashSavings}
                 min={0}
                 max={500000}
