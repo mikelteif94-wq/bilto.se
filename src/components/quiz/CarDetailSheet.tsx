@@ -609,12 +609,12 @@ export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAn
                   <p className="text-[12px] text-slate-400 mt-0.5 font-medium">{comparisonData.generation}</p>
                 )}
               </div>
-              {comparisonData && (
+              {(comparisonData || car.rating != null) && (
                 <div className="shrink-0 mt-1">
-                  <ScoreRing value={comparisonData.ratings.overall} size={52} />
+                  <ScoreRing value={car.rating ?? comparisonData!.ratings.overall} size={52} />
                 </div>
               )}
-              {loading && (
+              {loading && car.rating == null && (
                 <div className="relative w-12 h-12 rounded-full bg-slate-100 overflow-hidden shrink-0 mt-1">
                   <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
                 </div>
