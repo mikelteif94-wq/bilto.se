@@ -487,15 +487,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section className="hidden lg:block relative bg-[#0e6efe] pt-28 pb-32 overflow-hidden">
-        <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60" />
-        <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50" />
+      <section className="hidden lg:block relative bg-slate-900 pt-28 pb-32 overflow-hidden">
         <img
-          src="/9e88d67e-f888-4b7f-b55b-60dea75193a3.png"
+          src="/files_2615643-2026-06-18T07-40-24-450Z-b858d9c8-9893-488f-8103-98fee9292c16.webp"
           alt=""
           aria-hidden="true"
-          className="absolute left-1/2 -translate-x-1/2 top-0 w-[780px] h-[780px] object-contain pointer-events-none select-none opacity-40"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none opacity-50"
         />
+        <div className="absolute inset-0 bg-[#0e6efe]/70" />
 
         <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
           <div>
