@@ -916,7 +916,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <button
               type="button"
               onClick={() => {
-                window.history.pushState({}, '', '/kop-bil');
+                window.history.pushState({}, '', '/utforska');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
               className="h-11 px-7 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
