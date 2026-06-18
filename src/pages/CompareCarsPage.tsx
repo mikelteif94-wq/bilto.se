@@ -1605,10 +1605,10 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       drivetrain={compCar?.specs.drivetrain}
                       seats={compCar?.specs.seats}
                       pros={compCar?.pros}
-                      isCompared={selectedIds.has(car.id)}
+                      isCompared={!!(compCar && selectedIds.has(compCar.id))}
                       onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
                       onDetail={() => { if (compCar) setDetailCar(compCar); }}
-                      onCompare={() => toggleSelect(car.id)}
+                      onCompare={compCar ? () => toggleSelect(compCar.id) : undefined}
                       onFitQuiz={() => { if (compCar) setFitQuizCar(compCar); }}
                     />
                   );
@@ -1630,9 +1630,9 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     usedPrice={car.price_used_from ?? undefined}
                     onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
                     onDetail={() => { if (compCar) setDetailCar(compCar); }}
-                    onCompare={() => toggleSelect(car.id)}
+                    onCompare={compCar ? () => toggleSelect(compCar.id) : undefined}
                     onFitQuiz={() => { if (compCar) setFitQuizCar(compCar); }}
-                    isCompared={selectedIds.has(car.id)}
+                    isCompared={!!(compCar && selectedIds.has(compCar.id))}
                     index={i}
                     disableMotion={isMobile}
                   />
