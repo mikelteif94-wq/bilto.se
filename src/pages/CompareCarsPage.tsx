@@ -967,21 +967,16 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <button key="kop-bil" type="button" onClick={() => {
-              window.history.pushState({}, '', '/kop-bil');
-              window.dispatchEvent(new PopStateEvent('popstate'));
-            }}
-              className="text-[15px] text-white font-semibold"
-            >
+            <span className="text-[15px] text-white font-bold underline underline-offset-4 decoration-white/50">
               Köp bil
-            </button>
+            </span>
             <button key="salj-bil" type="button" onClick={() => handleNavSelect('Sälj bil')}
-              className="text-[15px] text-white/80 hover:text-white transition font-medium"
+              className="text-[15px] text-white/70 hover:text-white transition font-medium"
             >
               Sälj bil
             </button>
             <a href="/sa-funkar-det"
-              className="text-[15px] text-white/80 hover:text-white transition font-medium"
+              className="text-[15px] text-white/70 hover:text-white transition font-medium"
             >
               Så funkar det
             </a>

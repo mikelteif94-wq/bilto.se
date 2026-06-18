@@ -290,24 +290,20 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="text-[15px] text-white font-semibold transition hover:text-white/80"
+              className="text-[15px] text-white/70 font-medium transition hover:text-white"
             >
               Köp bil
             </button>
             <button
               type="button"
               onClick={onBackHome}
-              className="text-[15px] text-white/80 font-medium transition hover:text-white"
+              className="text-[15px] text-white/70 font-medium transition hover:text-white"
             >
               Sälj bil
             </button>
-            <button
-              type="button"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="text-[15px] text-white/80 font-medium transition hover:text-white"
-            >
+            <span className="text-[15px] text-white font-bold underline underline-offset-4 decoration-white/50">
               Så funkar det
-            </button>
+            </span>
           </nav>
           <div className="flex items-center ml-auto">
             <a
