@@ -45,6 +45,7 @@ const SaljBilMedHjalp = lazy(() => import('./pages/SaljBilMedHjalp'));
 const KopBilConcierge = lazy(() => import('./pages/KopBilConcierge'));
 const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
+const ExploreCarsPage = lazy(() => import('./pages/ExploreCarsPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -406,6 +407,25 @@ function App() {
             setPublicRoute({ page: 'home' });
           }}
           pageSlug="kop-bil"
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/utforska') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ExploreCarsPage
+          onBackHome={() => {
+            window.history.pushState({}, '', '/');
+            setPath('/');
+            setPublicRoute({ page: 'home' });
+          }}
+          onBuyCar={(make, model) => {
+            const bil = encodeURIComponent(`${make} ${model}`);
+            window.history.pushState({}, '', `/kop-bil/bestall?bil=${bil}&typ=found`);
+            setPath('/kop-bil/bestall');
+          }}
         />
       </Suspense>
     );
