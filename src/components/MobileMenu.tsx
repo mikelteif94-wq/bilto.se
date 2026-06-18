@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { X, User, ChevronRight, Zap } from 'lucide-react';
+import { X, User, ChevronRight } from 'lucide-react';
 
 export type MobileMenuItem =
   | 'Sälj bil'
@@ -115,24 +115,6 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
 
           <div className="mx-2 my-2 border-t border-slate-100" />
 
-          {/* Byt till elbil */}
-          <button
-            type="button"
-            onClick={() => {
-              window.history.pushState({}, '', '/salj-bil-hjalp');
-              window.dispatchEvent(new PopStateEvent('popstate'));
-              onClose();
-            }}
-            className={`w-full text-left px-4 py-4 rounded-lg text-[20px] tracking-tight transition font-medium flex items-center gap-3 ${
-              active === 'Sälj bil' && window.location.pathname === '/salj-bil-hjalp'
-                ? 'bg-slate-100 text-slate-900 font-semibold'
-                : 'text-slate-800 hover:bg-slate-50'
-            }`}
-          >
-            <Zap className="w-5 h-5 text-[#0e6efe] shrink-0" />
-            Byt till elbil
-          </button>
-
           {/* Sälj bil */}
           <button
             type="button"
@@ -146,6 +128,21 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
             }`}
           >
             Sälj bil
+          </button>
+
+          {/* Så funkar det */}
+          <button
+            type="button"
+            onClick={() => {
+              window.history.pushState({}, '', '/sa-funkar-det');
+              window.dispatchEvent(new PopStateEvent('popstate'));
+              onClose();
+            }}
+            className={`w-full text-left px-4 py-4 rounded-lg text-[20px] tracking-tight transition font-medium ${
+              active === 'Så funkar det' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-slate-50'
+            }`}
+          >
+            Så funkar det
           </button>
 
           {/* Om oss */}

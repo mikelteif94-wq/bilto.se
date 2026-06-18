@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Car, Loader2 } from 'lucide-react';
+import { Car, Loader2, ArrowRight, Phone } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { QuizAnswers, BRAND_CATEGORIES, BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS, PRIORITY_TRAITS } from './QuizTypes';
 import { findComparisonCarByMakeModel } from '@/lib/comparison';
@@ -243,6 +243,35 @@ export function QuizResults({ answers, onBack, onSelectCar }: QuizResultsProps) 
           />
         ))}
       </div>
+
+      {recommendations.length > 0 && (
+        <div className="pt-2 space-y-3">
+          <button
+            type="button"
+            onClick={() => {
+              const top = recommendations[0];
+              const params = new URLSearchParams();
+              params.set('bil', `${top.make} ${top.model}`);
+              params.set('source', 'Quiz resultat');
+              window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
+              window.dispatchEvent(new PopStateEvent('popstate'));
+              window.scrollTo({ top: 0, behavior: 'auto' });
+            }}
+            className="w-full h-14 rounded-2xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] flex items-center justify-center gap-2.5 shadow-lg shadow-[#0e6efe]/30 active:scale-[0.99] transition-all"
+          >
+            Hjälp mig köpa en av dessa bilar
+            <ArrowRight className="w-5 h-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => navigateToBuy('')}
+            className="w-full flex items-center justify-center gap-2 py-3 text-[14px] text-slate-400 hover:text-white transition-colors"
+          >
+            <Phone className="w-4 h-4" strokeWidth={2} />
+            <span>Eller <span className="underline underline-offset-2 font-semibold">bläddra bland alla bilar</span></span>
+          </button>
+        </div>
+      )}
 
       {recommendations.length === 0 && (
         <div className="text-center py-16">

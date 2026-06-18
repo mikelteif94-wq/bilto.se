@@ -967,27 +967,24 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+            <button key="kop-bil" type="button" onClick={() => {
+              window.history.pushState({}, '', '/kop-bil');
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            }}
+              className="text-[15px] text-white font-semibold"
+            >
+              Köp bil
+            </button>
             <button key="salj-bil" type="button" onClick={() => handleNavSelect('Sälj bil')}
               className="text-[15px] text-white/80 hover:text-white transition font-medium"
             >
               Sälj bil
             </button>
-            <button key="kop-bil" type="button" onClick={() => {
-              window.history.pushState({}, '', '/kop-bil');
-              window.dispatchEvent(new PopStateEvent('popstate'));
-            }}
+            <a href="/sa-funkar-det"
               className="text-[15px] text-white/80 hover:text-white transition font-medium"
             >
-              Köp bil med hjälp
-            </button>
-            <button key="salj-bil-hjalp" type="button" onClick={() => {
-              window.history.pushState({}, '', '/salj-bil-hjalp');
-              window.dispatchEvent(new PopStateEvent('popstate'));
-            }}
-              className="text-[15px] text-white/80 hover:text-white transition font-medium"
-            >
-              Byt till el bil
-            </button>
+              Så funkar det
+            </a>
           </nav>
           <div className="flex items-center ml-auto">
             <a href="/logga-in" className="inline-flex items-center gap-2 bg-white text-[#0e6efe] text-[14px] font-semibold px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap">
