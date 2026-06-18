@@ -108,6 +108,7 @@ export const CARS_HONDA_KIA: ComparisonCar[] = [
     cons: ['Polariserande design', 'Några plastytor', 'Laddare-anslutning bak', 'Inte bäst räckvidd'],
     segment: 'premium', competitors: ['kia_ev6', 'tesla_model_y', 'vw_id4'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 77.4, range_wltp_km: 507, range_winter_km: 406, charge_kw_max: 350, charge_time_10_80_min: 18, consumption_wh_km: 16 },
   },
   {
     id: 'hyundai_ioniq6', brand_id: 'hyundai', brand_display: 'Hyundai', model_display: 'IONIQ 6',
@@ -120,6 +121,7 @@ export const CARS_HONDA_KIA: ComparisonCar[] = [
     cons: ['Litet bagageutrymme', 'Trång i baksätet', 'Begränsad sikt', 'Polariserande design'],
     segment: 'premium', competitors: ['tesla_model_3', 'polestar_2', 'bmw_i4'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 77.4, range_wltp_km: 614, range_winter_km: 491, charge_kw_max: 350, charge_time_10_80_min: 18, consumption_wh_km: 13 },
   },
   {
     id: 'hyundai_kona', brand_id: 'hyundai', brand_display: 'Hyundai', model_display: 'Kona',
@@ -168,6 +170,7 @@ export const CARS_HONDA_KIA: ComparisonCar[] = [
     cons: ['Föråldrad teknik', 'Kort räckvidd', 'Långsam laddning', 'Osäker framtid för märket'],
     segment: 'premium', competitors: ['tesla_model_y', 'audi_e_tron', 'mercedes_eqc'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 90, range_wltp_km: 470, range_winter_km: 376, charge_kw_max: 100, charge_time_10_80_min: 40, consumption_wh_km: 20 },
   },
   {
     id: 'jeep_avenger', brand_id: 'jeep', brand_display: 'Jeep', model_display: 'Avenger',
@@ -180,6 +183,7 @@ export const CARS_HONDA_KIA: ComparisonCar[] = [
     cons: ['Bara framhjulsdrift', 'Inte riktig Jeep', 'Liten bagage', 'Stellantis-teknik'],
     segment: 'compact', competitors: ['hyundai_kona', 'toyota_yaris_cross', 'peugeot_2008'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 54, range_wltp_km: 400, range_winter_km: 320, charge_kw_max: 100, charge_time_10_80_min: 30, consumption_wh_km: 14 },
   },
   {
     id: 'kia_ceed', brand_id: 'kia', brand_display: 'Kia', model_display: 'Ceed',
@@ -204,6 +208,7 @@ export const CARS_HONDA_KIA: ComparisonCar[] = [
     cons: ['Lite backkamera-beroende', 'Sämre synlighet bakåt', 'Dyr GT-version', 'Plastigt här och var'],
     segment: 'premium', competitors: ['hyundai_ioniq5', 'tesla_model_3', 'polestar_2'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 77.4, range_wltp_km: 528, range_winter_km: 422, charge_kw_max: 350, charge_time_10_80_min: 18, consumption_wh_km: 15 },
   },
   {
     id: 'kia_ev9', brand_id: 'kia', brand_display: 'Kia', model_display: 'EV9',
@@ -216,6 +221,7 @@ export const CARS_HONDA_KIA: ComparisonCar[] = [
     cons: ['Stor och tung', 'Dyr', 'Liten bagage med 7 säten', 'Ny - okänd pålitlighet'],
     segment: 'luxury', competitors: ['tesla_model_x', 'bmw_ix', 'mercedes_eqs_suv'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 99.8, range_wltp_km: 563, range_winter_km: 450, charge_kw_max: 233, charge_time_10_80_min: 24, consumption_wh_km: 19 },
   },
   {
     id: 'kia_niro', brand_id: 'kia', brand_display: 'Kia', model_display: 'Niro',
@@ -228,6 +234,7 @@ export const CARS_HONDA_KIA: ComparisonCar[] = [
     cons: ['Bara framhjulsdrift', 'Inte sportigt', 'Design lite tråkig', 'Inte premium'],
     segment: 'compact', competitors: ['toyota_c_hr', 'hyundai_kona', 'vw_id3'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 64.8, range_wltp_km: 463, range_winter_km: 370, charge_kw_max: 100, charge_time_10_80_min: 43, consumption_wh_km: 15 },
   },
   {
     id: 'kia_picanto', brand_id: 'kia', brand_display: 'Kia', model_display: 'Picanto',

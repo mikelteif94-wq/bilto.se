@@ -12,6 +12,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Okänt varumärke', 'Osäkert andrahandsvärde', 'Plastigt interiör', 'Litet bagageutrymme'],
     segment: 'compact', competitors: ['vw_id3', 'cupra_born', 'renault_megane_e'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 64, range_wltp_km: 450, range_winter_km: 360, charge_kw_max: 140, charge_time_10_80_min: 27, consumption_wh_km: 15 },
   },
   {
     id: 'mg_zs_ev', brand_id: 'mg', brand_display: 'MG', model_display: 'ZS EV',
@@ -24,6 +25,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Billig känsla', 'Kort räckvidd', 'Långsam laddning', 'Osäkert andrahandsvärde'],
     segment: 'compact', competitors: ['hyundai_kona', 'kia_niro', 'byd_atto3'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 72.6, range_wltp_km: 440, range_winter_km: 352, charge_kw_max: 94, charge_time_10_80_min: 42, consumption_wh_km: 17 },
   },
   {
     id: 'mini_cooper', brand_id: 'mini', brand_display: 'MINI', model_display: 'Cooper',
@@ -36,6 +38,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Trångt baksäte', 'Litet bagageutrymme', 'Hård fjädring', 'Dyra tillval'],
     segment: 'compact', competitors: ['audi_a1', 'mazda_mx5'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 54.2, range_wltp_km: 402, range_winter_km: 322, charge_kw_max: 95, charge_time_10_80_min: 30, consumption_wh_km: 15 },
   },
   {
     id: 'mini_cooper_se', brand_id: 'mini', brand_display: 'MINI', model_display: 'Cooper SE',
@@ -48,6 +51,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Liten och opraktisk', 'Dyr för storleken', 'Kort räckvidd', 'Liten bagage'],
     segment: 'compact', competitors: ['fiat_500e', 'honda_e', 'peugeot_e_208'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 28.9, range_wltp_km: 234, range_winter_km: 187, charge_kw_max: 50, charge_time_10_80_min: 35, consumption_wh_km: 14 },
   },
   {
     id: 'mini_countryman', brand_id: 'mini', brand_display: 'MINI', model_display: 'Countryman',
@@ -60,6 +64,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Dyr', 'Inte så rymlig', 'BMW-priser på tillval', 'Inte sportigast'],
     segment: 'premium', competitors: ['bmw_x1', 'volvo_xc40', 'audi_q3'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 66.5, range_wltp_km: 462, range_winter_km: 370, charge_kw_max: 130, charge_time_10_80_min: 30, consumption_wh_km: 16 },
   },
   {
     id: 'nio_el6', brand_id: 'nio', brand_display: 'NIO', model_display: 'EL6',
@@ -72,6 +77,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Okänt märke', 'Begränsat bytesnätverk', 'Osäkert andrahandsvärde', 'Service osäker'],
     segment: 'premium', competitors: ['bmw_ix3', 'audi_q4_etron', 'tesla_model_y'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 100, range_wltp_km: 513, range_winter_km: 410, charge_kw_max: 140, charge_time_10_80_min: 20, consumption_wh_km: 21 },
   },
   {
     id: 'nissan_ariya', brand_id: 'nissan', brand_display: 'Nissan', model_display: 'Ariya',
@@ -84,6 +90,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Långsam laddning', 'Inte sportigt', 'Begränsat servicenät', 'Okänd i Sverige'],
     segment: 'premium', competitors: ['tesla_model_y', 'vw_id4', 'hyundai_ioniq5'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 87, range_wltp_km: 533, range_winter_km: 426, charge_kw_max: 130, charge_time_10_80_min: 35, consumption_wh_km: 17 },
   },
   {
     id: 'nissan_juke', brand_id: 'nissan', brand_display: 'Nissan', model_display: 'Juke',
@@ -108,6 +115,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['CHAdeMO-laddning', 'Begränsad räckvidd', 'Daterad design', 'Långsam laddning'],
     segment: 'compact', competitors: ['vw_id3', 'renault_zoe', 'hyundai_kona_ev'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 62, range_wltp_km: 385, range_winter_km: 308, charge_kw_max: 50, charge_time_10_80_min: 40, consumption_wh_km: 17 },
   },
   {
     id: 'nissan_qashqai', brand_id: 'nissan', brand_display: 'Nissan', model_display: 'Qashqai',
@@ -180,6 +188,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Liten bagage', 'Inte 5 stjärnor NCAP', 'Begränsad räckvidd', 'Stellantis-teknik'],
     segment: 'compact', competitors: ['peugeot_e_2008', 'hyundai_kona', 'kia_niro'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 54, range_wltp_km: 338, range_winter_km: 270, charge_kw_max: 100, charge_time_10_80_min: 30, consumption_wh_km: 17 },
   },
   {
     id: 'peugeot_2008', brand_id: 'peugeot', brand_display: 'Peugeot', model_display: '2008',
@@ -252,6 +261,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Liten bagage', 'Trångt bak', 'Inte 5 stjärnor NCAP', 'i-Cockpit inte för alla'],
     segment: 'compact', competitors: ['renault_zoe', 'fiat_500e', 'mini_electric'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 55.4, range_wltp_km: 400, range_winter_km: 320, charge_kw_max: 100, charge_time_10_80_min: 30, consumption_wh_km: 14 },
   },
   {
     id: 'peugeot_e_308', brand_id: 'peugeot', brand_display: 'Peugeot', model_display: 'e-308',
@@ -264,6 +274,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Begränsad räckvidd', 'Bara framhjulsdrift', 'Inte premium', 'Långsam laddning'],
     segment: 'compact', competitors: ['vw_id3', 'mg_mg4', 'cupra_born'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 55.4, range_wltp_km: 450, range_winter_km: 360, charge_kw_max: 100, charge_time_10_80_min: 29, consumption_wh_km: 14 },
   },
   {
     id: 'polestar_2', brand_id: 'polestar', brand_display: 'Polestar', model_display: '2',
@@ -276,6 +287,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Begränsat bagageutrymme', 'Inte bäst räckvidd', 'Sämre laddnätverk än Tesla', 'Höga tillvalspriser'],
     segment: 'premium', competitors: ['tesla_model_3', 'bmw_i4', 'volvo_c40'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 655, range_winter_km: 524, charge_kw_max: 205, charge_time_10_80_min: 28, consumption_wh_km: 14 },
   },
   {
     id: 'porsche_718_boxster', brand_id: 'porsche', brand_display: 'Porsche', model_display: '718 Boxster',
@@ -348,6 +360,7 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Dyr för kompakt-SUV', 'Trång i baksätet', 'Dyra tillval', 'Höga driftskostnader'],
     segment: 'premium', competitors: ['bmw_x3', 'mercedes_glc', 'audi_q5'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 100, range_wltp_km: 641, range_winter_km: 513, charge_kw_max: 270, charge_time_10_80_min: 21, consumption_wh_km: 16 },
   },
   {
     id: 'porsche_panamera', brand_id: 'porsche', brand_display: 'Porsche', model_display: 'Panamera',
@@ -372,5 +385,6 @@ export const CARS_MG_PORSCHE: ComparisonCar[] = [
     cons: ['Extremt dyr', 'Mindre räckvidd än Tesla', 'Trång baksäte', 'Dyra tillval'],
     segment: 'luxury', competitors: ['tesla_model_s', 'mercedes_eqs', 'bmw_i7'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 93.4, range_wltp_km: 504, range_winter_km: 403, charge_kw_max: 320, charge_time_10_80_min: 23, consumption_wh_km: 19 },
   },
 ];

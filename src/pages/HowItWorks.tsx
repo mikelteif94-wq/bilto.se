@@ -849,6 +849,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                           seats={car.specs.seats}
                           carPrice={car.pricing.new_from_sek ?? undefined}
                           usedPrice={car.pricing.used_from_sek ?? undefined}
+                          evSpecs={car.ev_specs}
                           onNegotiate={() => openDrawer(`${car.brand_display} ${car.model_display}`)}
                           onDetail={() => setDetailCar(car)}
                           onCompare={() => toggleCompare(car.id)}

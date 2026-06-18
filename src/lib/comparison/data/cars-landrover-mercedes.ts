@@ -132,6 +132,7 @@ export const CARS_LANDROVER_MERCEDES: ComparisonCar[] = [
     cons: ['Kort räckvidd (200 km)', 'Freestyle-dörrar opraktiska', 'Liten bagage', 'Dyrt för räckvidden'],
     segment: 'compact', competitors: ['mini_electric', 'honda_e', 'fiat_500e'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 35.5, range_wltp_km: 200, range_winter_km: 160, charge_kw_max: 50, charge_time_10_80_min: 36, consumption_wh_km: 18 },
   },
   {
     id: 'mazda_mx5', brand_id: 'mazda', brand_display: 'Mazda', model_display: 'MX-5',
@@ -228,6 +229,7 @@ export const CARS_LANDROVER_MERCEDES: ComparisonCar[] = [
     cons: ['Liten bagageutrymme', 'Kort räckvidd jämfört med konkurrenter', 'Dyr', 'Tung'],
     segment: 'compact', competitors: ['bmw_ix1', 'volvo_ex40'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 70.5, range_wltp_km: 466, range_winter_km: 373, charge_kw_max: 100, charge_time_10_80_min: 31, consumption_wh_km: 16 },
   },
   {
     id: 'mercedes_eqc', brand_id: 'mercedes', brand_display: 'Mercedes-Benz', model_display: 'EQC',
@@ -240,6 +242,7 @@ export const CARS_LANDROVER_MERCEDES: ComparisonCar[] = [
     cons: ['Begränsad räckvidd', 'Långsam laddning', 'Hög vikt', 'Utgående modell'],
     segment: 'premium', competitors: ['bmw_ix3', 'audi_e_tron', 'tesla_model_y'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 80, range_wltp_km: 402, range_winter_km: 322, charge_kw_max: 110, charge_time_10_80_min: 40, consumption_wh_km: 21 },
   },
   {
     id: 'mercedes_eqb', brand_id: 'mercedes', brand_display: 'Mercedes-Benz', model_display: 'EQB',
@@ -252,6 +255,7 @@ export const CARS_LANDROVER_MERCEDES: ComparisonCar[] = [
     cons: ['Kort räckvidd', 'Trångt på rad 3', 'Inte sportig', 'Dyr'],
     segment: 'compact', competitors: ['tesla_model_y'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 70.5, range_wltp_km: 419, range_winter_km: 335, charge_kw_max: 100, charge_time_10_80_min: 32, consumption_wh_km: 18 },
   },
   {
     id: 'mercedes_eqe', brand_id: 'mercedes', brand_display: 'Mercedes-Benz', model_display: 'EQE',
@@ -264,6 +268,7 @@ export const CARS_LANDROVER_MERCEDES: ComparisonCar[] = [
     cons: ['Dyr', 'Tråkig design', 'Liten bagage', 'Komplex teknik'],
     segment: 'luxury', competitors: ['bmw_i4', 'tesla_model_s', 'porsche_taycan'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 90.6, range_wltp_km: 654, range_winter_km: 523, charge_kw_max: 170, charge_time_10_80_min: 32, consumption_wh_km: 15 },
   },
   {
     id: 'mercedes_eqs', brand_id: 'mercedes', brand_display: 'Mercedes-Benz', model_display: 'EQS',
@@ -276,6 +281,7 @@ export const CARS_LANDROVER_MERCEDES: ComparisonCar[] = [
     cons: ['Polariserande tvål-form', 'Mycket dyr', 'Snabb värdeminskning', 'Stor'],
     segment: 'luxury', competitors: ['bmw_i7', 'tesla_model_s'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 107.8, range_wltp_km: 780, range_winter_km: 624, charge_kw_max: 200, charge_time_10_80_min: 31, consumption_wh_km: 14 },
   },
   {
     id: 'mercedes_eqs_suv', brand_id: 'mercedes', brand_display: 'Mercedes-Benz', model_display: 'EQS SUV',
@@ -288,6 +294,7 @@ export const CARS_LANDROVER_MERCEDES: ComparisonCar[] = [
     cons: ['Extrem prislapp', 'Stor och tung', 'Komplex', 'Dyra tillval'],
     segment: 'luxury', competitors: ['bmw_ix', 'tesla_model_x', 'audi_e_tron'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 107.8, range_wltp_km: 676, range_winter_km: 541, charge_kw_max: 200, charge_time_10_80_min: 32, consumption_wh_km: 17 },
   },
   {
     id: 'mercedes_gla', brand_id: 'mercedes', brand_display: 'Mercedes-Benz', model_display: 'GLA',
@@ -372,5 +379,6 @@ export const CARS_LANDROVER_MERCEDES: ComparisonCar[] = [
     cons: ['Stor och otymplig', 'Hög förbrukning', 'Dyr', 'Inte sportig'],
     segment: 'fullsize', competitors: ['vw_multivan'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 90, range_wltp_km: 400, range_winter_km: 320, charge_kw_max: 120, charge_time_10_80_min: 30, consumption_wh_km: 20 },
   },
 ];

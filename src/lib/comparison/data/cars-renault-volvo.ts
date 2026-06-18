@@ -48,6 +48,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Begränsad räckvidd', 'Trångt bak', 'Liten bagage', 'Okänt andrahandsvärde'],
     segment: 'compact', competitors: ['vw_id3', 'cupra_born', 'peugeot_e_208'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 60, range_wltp_km: 450, range_winter_km: 360, charge_kw_max: 130, charge_time_10_80_min: 30, consumption_wh_km: 14 },
   },
   {
     id: 'renault_scenic_e', brand_id: 'renault', brand_display: 'Renault', model_display: 'Scenic E-Tech',
@@ -60,6 +61,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Bara framhjulsdrift', 'Ny modell - okänd pålitlighet', 'Inte premium', 'Begränsat servicenät'],
     segment: 'midsize', competitors: ['vw_id4', 'skoda_enyaq', 'tesla_model_y'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 87, range_wltp_km: 625, range_winter_km: 500, charge_kw_max: 150, charge_time_10_80_min: 34, consumption_wh_km: 14 },
   },
   {
     id: 'seat_arona', brand_id: 'seat', brand_display: 'Seat', model_display: 'Arona',
@@ -120,6 +122,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Inte premium-känsla', 'VW-mjukvaruproblem', 'Inte så sportig', 'Plastigt här och var'],
     segment: 'midsize', competitors: ['vw_id4', 'tesla_model_y', 'hyundai_ioniq5'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 545, range_winter_km: 436, charge_kw_max: 135, charge_time_10_80_min: 29, consumption_wh_km: 16 },
   },
   {
     id: 'skoda_fabia', brand_id: 'skoda', brand_display: 'Skoda', model_display: 'Fabia',
@@ -192,6 +195,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Geely-plattform', 'Okänt som SUV-märke', 'Begränsat servicenät', 'Osäkert andrahandsvärde'],
     segment: 'compact', competitors: ['volvo_ex30', 'mini_countryman', 'byd_atto3'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 66, range_wltp_km: 440, range_winter_km: 352, charge_kw_max: 150, charge_time_10_80_min: 27, consumption_wh_km: 16 },
   },
   {
     id: 'suzuki_swift', brand_id: 'suzuki', brand_display: 'Suzuki', model_display: 'Swift',
@@ -228,6 +232,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Minimalistisk interiör', 'Kvalitetsproblem rapporteras', 'Inget CarPlay/Android Auto', 'Service kan vara svårt'],
     segment: 'premium', competitors: ['polestar_2', 'bmw_i4', 'mercedes_eqe'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 629, range_winter_km: 503, charge_kw_max: 250, charge_time_10_80_min: 25, consumption_wh_km: 13 },
   },
   {
     id: 'tesla_model_s', brand_id: 'tesla', brand_display: 'Tesla', model_display: 'Model S',
@@ -240,6 +245,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Extremt dyr', 'Obekvämt yoke-ratt', 'Kvalitetsklagomål', 'Service-tillgänglighet'],
     segment: 'luxury', competitors: ['porsche_taycan', 'mercedes_eqs', 'bmw_i7'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 100, range_wltp_km: 634, range_winter_km: 507, charge_kw_max: 250, charge_time_10_80_min: 20, consumption_wh_km: 14 },
   },
   {
     id: 'tesla_model_x', brand_id: 'tesla', brand_display: 'Tesla', model_display: 'Model X',
@@ -252,6 +258,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Mycket dyr', 'Snabb värdeminskning', 'Kvalitetsproblem rapporterade', 'Komplext interiör'],
     segment: 'luxury', competitors: ['bmw_ix', 'mercedes_eqs_suv'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 100, range_wltp_km: 571, range_winter_km: 457, charge_kw_max: 250, charge_time_10_80_min: 27, consumption_wh_km: 19 },
   },
   {
     id: 'tesla_model_y', brand_id: 'tesla', brand_display: 'Tesla', model_display: 'Model Y',
@@ -267,6 +274,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     meta_description: 'Tesla Model Y är en av världens mest sålda elbilar. Med enorm lastkapacitet, lång räckvidd och snabb laddning passar den såväl barnfamiljen som pendlaren. Begagnad är ofta det klokaste köpet — priset sjunker snabbt de första åren.',
     segment: 'premium', competitors: ['volvo_c40', 'bmw_ix3', 'audi_q4_etron'],
     is_active: true, updated_at: '2026-05-24',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 600, range_winter_km: 480, charge_kw_max: 250, charge_time_10_80_min: 25, consumption_wh_km: 14 },
   },
   {
     id: 'toyota_aygo_x', brand_id: 'toyota', brand_display: 'Toyota', model_display: 'Aygo X',
@@ -291,6 +299,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Långsam laddning', 'Inte sportig', 'Design tråkig', 'Sen till elbilsfesten'],
     segment: 'midsize', competitors: ['vw_id4', 'skoda_enyaq', 'hyundai_ioniq5'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 71.4, range_wltp_km: 516, range_winter_km: 413, charge_kw_max: 150, charge_time_10_80_min: 30, consumption_wh_km: 15 },
   },
   {
     id: 'toyota_c_hr', brand_id: 'toyota', brand_display: 'Toyota', model_display: 'C-HR',
@@ -447,6 +456,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Begränsad räckvidd (~400 km)', 'Stor och svårparkerad', 'Långsam laddning', 'Dyr för kategorin'],
     segment: 'fullsize', competitors: ['mercedes_v_class'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 111, range_wltp_km: 700, range_winter_km: 560, charge_kw_max: 250, charge_time_10_80_min: 30, consumption_wh_km: 17 },
   },
   {
     id: 'vw_id3', brand_id: 'volkswagen', brand_display: 'Volkswagen', model_display: 'ID.3',
@@ -459,6 +469,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Mjukvaran har problem', 'Plastig interiör', 'Inte inspirerande design', 'Svag standardmotor'],
     segment: 'compact', competitors: ['cupra_born', 'renault_megane_e', 'mg_mg4'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 545, range_winter_km: 436, charge_kw_max: 135, charge_time_10_80_min: 29, consumption_wh_km: 16 },
   },
   {
     id: 'vw_id4', brand_id: 'volkswagen', brand_display: 'Volkswagen', model_display: 'ID.4',
@@ -471,6 +482,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Infotainment laggar', 'Plastigt interiör', 'Inte så rolig att köra', 'Laddning kunde vara snabbare'],
     segment: 'midsize', competitors: ['tesla_model_y', 'skoda_enyaq', 'hyundai_ioniq5'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 575, range_winter_km: 460, charge_kw_max: 200, charge_time_10_80_min: 27, consumption_wh_km: 15 },
   },
   {
     id: 'vw_id7', brand_id: 'volkswagen', brand_display: 'Volkswagen', model_display: 'ID.7',
@@ -483,6 +495,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Tråkig design', 'Touchkontroller frustrerande', 'Mjukvarubuggar', 'Långsam laddning vs konkurrenter'],
     segment: 'midsize', competitors: ['tesla_model_3', 'bmw_i5'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 575, range_winter_km: 460, charge_kw_max: 200, charge_time_10_80_min: 27, consumption_wh_km: 15 },
   },
   {
     id: 'vw_passat', brand_id: 'volkswagen', brand_display: 'Volkswagen', model_display: 'Passat',
@@ -579,6 +592,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Dyr för segmentet', 'Begränsat bagage p.g.a. coupé-tak', 'Oklar modellnamnsstrategi', 'Inte bäst räckvidd'],
     segment: 'premium', competitors: ['volvo_ex40', 'polestar_2', 'bmw_ix1'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 575, range_winter_km: 460, charge_kw_max: 200, charge_time_10_80_min: 27, consumption_wh_km: 15 },
   },
   {
     id: 'volvo_xc40_recharge', brand_id: 'volvo', brand_display: 'Volvo', model_display: 'XC40 Recharge',
@@ -591,6 +605,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Begränsad räckvidd jämfört med nyare elbil', 'Dyr', 'Trångt baksäte', 'Höga servicekostnader'],
     segment: 'premium', competitors: ['volvo_ex40', 'bmw_ix1', 'mercedes_eqa'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 575, range_winter_km: 460, charge_kw_max: 200, charge_time_10_80_min: 27, consumption_wh_km: 15 },
   },
   {
     id: 'volvo_ex60', brand_id: 'volvo', brand_display: 'Volvo', model_display: 'EX60',
@@ -603,6 +618,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Ny modell – okänd pålitlighet', 'Dyr', 'Konkurrensen hård i segmentet', 'Begränsat med begagnade'],
     segment: 'premium', competitors: ['volvo_xc60', 'bmw_ix3', 'audi_q6_etron'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 100, range_wltp_km: 680, range_winter_km: 544, charge_kw_max: 250, charge_time_10_80_min: 28, consumption_wh_km: 15 },
   },
   {
     id: 'volvo_es90', brand_id: 'volvo', brand_display: 'Volvo', model_display: 'ES90',
@@ -615,6 +631,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Extremt dyr', 'Ny modell – okänd pålitlighet', 'Sedan har lägre praktikalitet', 'Liten begagnatmarknad'],
     segment: 'luxury', competitors: ['bmw_i7', 'mercedes_eqs', 'tesla_model_s'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 111, range_wltp_km: 700, range_winter_km: 560, charge_kw_max: 250, charge_time_10_80_min: 30, consumption_wh_km: 17 },
   },
   {
     id: 'volvo_ex30_cross_country', brand_id: 'volvo', brand_display: 'Volvo', model_display: 'EX30 Cross Country',
@@ -627,6 +644,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Begränsat bagageutrymme', 'Liten interiör', 'Inga fysiska knappar', 'Premie vs standard EX30'],
     segment: 'compact', competitors: ['volvo_ex30', 'mini_countryman', 'hyundai_kona'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 69, range_wltp_km: 460, range_winter_km: 368, charge_kw_max: 153, charge_time_10_80_min: 26, consumption_wh_km: 16 },
   },
   {
     id: 'volvo_v60_cross_country', brand_id: 'volvo', brand_display: 'Volvo', model_display: 'V60 Cross Country',
@@ -687,6 +705,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Liten', 'Begränsad bagage', 'Inga fysiska knappar', 'Made in China'],
     segment: 'compact', competitors: ['mini_countryman', 'smart_1', 'volvo_xc40'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 69, range_wltp_km: 480, range_winter_km: 384, charge_kw_max: 153, charge_time_10_80_min: 26, consumption_wh_km: 15 },
   },
   {
     id: 'volvo_ex40', brand_id: 'volvo', brand_display: 'Volvo', model_display: 'EX40',
@@ -699,6 +718,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Kort räckvidd jämfört med konkurrenter', 'Trångt baksäte', 'Hög förbrukning vintertid', 'Dyr'],
     segment: 'compact', competitors: ['bmw_ix1', 'mercedes_eqa'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 575, range_winter_km: 460, charge_kw_max: 200, charge_time_10_80_min: 27, consumption_wh_km: 15 },
   },
   {
     id: 'volvo_ex90', brand_id: 'volvo', brand_display: 'Volvo', model_display: 'EX90',
@@ -711,6 +731,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Extremt dyr', 'Ny teknik - okänd pålitlighet', 'Mjukvaruproblem rapporterade', 'Stor och tung'],
     segment: 'luxury', competitors: ['bmw_ix', 'mercedes_eqs_suv', 'tesla_model_x'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 111, range_wltp_km: 700, range_winter_km: 560, charge_kw_max: 250, charge_time_10_80_min: 30, consumption_wh_km: 17 },
   },
   {
     id: 'volvo_s60', brand_id: 'volvo', brand_display: 'Volvo', model_display: 'S60',
@@ -795,6 +816,7 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Begränsat benutrymme bak', 'Inte billigaste i klassen', 'Litet bagageutrymme', 'Höga tillvalskostnader'],
     segment: 'premium', competitors: ['bmw_x1', 'audi_q3', 'mercedes_gla'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 575, range_winter_km: 460, charge_kw_max: 200, charge_time_10_80_min: 27, consumption_wh_km: 15 },
   },
   {
     id: 'volvo_xc60', brand_id: 'volvo', brand_display: 'Volvo', model_display: 'XC60',
@@ -833,5 +855,6 @@ export const CARS_RENAULT_VOLVO: ComparisonCar[] = [
     cons: ['Okänt märke', 'Begränsat servicenät', 'Osäkert andrahandsvärde', 'Ny - okänd pålitlighet'],
     segment: 'premium', competitors: ['tesla_model_y', 'byd_seal', 'nio_el6'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 575, range_winter_km: 460, charge_kw_max: 200, charge_time_10_80_min: 27, consumption_wh_km: 15 },
   },
 ];

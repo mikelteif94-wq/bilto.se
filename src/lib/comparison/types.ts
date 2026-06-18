@@ -24,6 +24,15 @@ export interface CarSpecs {
   trunk_liters_max?: number;
 }
 
+export interface EvSpecs {
+  battery_kwh: number;
+  range_wltp_km: number;
+  range_winter_km: number;
+  charge_kw_max: number;
+  charge_time_10_80_min: number;
+  consumption_wh_km: number;
+}
+
 export interface CarSafety {
   euro_ncap_stars?: number;
   euro_ncap_year?: number;
@@ -48,4 +57,5 @@ export interface ComparisonCar {
   competitors: string[];
   is_active: boolean;
   updated_at: string;
+  ev_specs?: EvSpecs;
 }

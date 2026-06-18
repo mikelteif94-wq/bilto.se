@@ -84,6 +84,7 @@ export const CARS_ALFA_AUDI: ComparisonCar[] = [
     cons: ['Dyr', 'Komplex teknik', 'Tung', 'Begränsat utbud i basversion'],
     segment: 'premium', competitors: ['bmw_i5', 'mercedes_eqe'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 100, range_wltp_km: 756, range_winter_km: 605, charge_kw_max: 270, charge_time_10_80_min: 21, consumption_wh_km: 14 },
   },
   {
     id: 'audi_a7', brand_id: 'audi', brand_display: 'Audi', model_display: 'A7',
@@ -120,6 +121,7 @@ export const CARS_ALFA_AUDI: ComparisonCar[] = [
     cons: ['Liten bagageutrymme', 'Trångt bak', 'Dyr', 'Kortare räckvidd än Taycan'],
     segment: 'sports', competitors: ['porsche_taycan', 'tesla_model_s'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 93.4, range_wltp_km: 504, range_winter_km: 403, charge_kw_max: 320, charge_time_10_80_min: 23, consumption_wh_km: 19 },
   },
   {
     id: 'audi_q2', brand_id: 'audi', brand_display: 'Audi', model_display: 'Q2',
@@ -156,6 +158,7 @@ export const CARS_ALFA_AUDI: ComparisonCar[] = [
     cons: ['VW-mjukvaruproblem', 'Inte så sportig', 'Inte bäst räckvidd', 'Dyr'],
     segment: 'premium', competitors: ['vw_id4', 'skoda_enyaq', 'tesla_model_y'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 541, range_winter_km: 433, charge_kw_max: 135, charge_time_10_80_min: 28, consumption_wh_km: 17 },
   },
   {
     id: 'audi_q5', brand_id: 'audi', brand_display: 'Audi', model_display: 'Q5',
@@ -180,6 +183,7 @@ export const CARS_ALFA_AUDI: ComparisonCar[] = [
     cons: ['Dyr', 'Komplex infotainment', 'Tung', 'Hård fjädring i S-Line'],
     segment: 'premium', competitors: ['bmw_ix3', 'mercedes_eqe_suv'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 100, range_wltp_km: 641, range_winter_km: 513, charge_kw_max: 270, charge_time_10_80_min: 21, consumption_wh_km: 16 },
   },
   {
     id: 'audi_q7', brand_id: 'audi', brand_display: 'Audi', model_display: 'Q7',
@@ -216,5 +220,6 @@ export const CARS_ALFA_AUDI: ComparisonCar[] = [
     cons: ['Hög inköpskostnad', 'Tung bil', 'Inte supersportig', 'Börjar datera sig'],
     segment: 'luxury', competitors: ['bmw_ix', 'mercedes_eqe_suv', 'tesla_model_x'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 114, range_wltp_km: 582, range_winter_km: 466, charge_kw_max: 170, charge_time_10_80_min: 31, consumption_wh_km: 20 },
   },
 ];

@@ -12,6 +12,7 @@ export const CARS_BYD_GENESIS: ComparisonCar[] = [
     cons: ['Okänt varumärke i Sverige', 'Osäkert andrahandsvärde', 'Kvick design', 'Begränsat servicenätverk'],
     segment: 'compact', competitors: ['mg_zs_ev', 'vw_id4', 'hyundai_kona'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 60.5, range_wltp_km: 420, range_winter_km: 336, charge_kw_max: 80, charge_time_10_80_min: 46, consumption_wh_km: 15 },
   },
   {
     id: 'byd_seal', brand_id: 'byd', brand_display: 'BYD', model_display: 'Seal',
@@ -24,6 +25,7 @@ export const CARS_BYD_GENESIS: ComparisonCar[] = [
     cons: ['Okänt märke', 'Osäker återförsäljare', 'Lågt andrahandsvärde?', 'Begränsad service'],
     segment: 'premium', competitors: ['tesla_model_3', 'polestar_2', 'hyundai_ioniq6'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82.5, range_wltp_km: 570, range_winter_km: 456, charge_kw_max: 150, charge_time_10_80_min: 26, consumption_wh_km: 15 },
   },
   {
     id: 'citroen_c5_aircross', brand_id: 'citroen', brand_display: 'Citroën', model_display: 'C5 Aircross',
@@ -48,6 +50,7 @@ export const CARS_BYD_GENESIS: ComparisonCar[] = [
     cons: ['Inte 5 stjärnor NCAP', 'Begränsad räckvidd', 'Inte sportig', 'Polariserande design'],
     segment: 'compact', competitors: ['peugeot_e_208', 'renault_megane_e', 'vw_id3'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 54, range_wltp_km: 420, range_winter_km: 336, charge_kw_max: 100, charge_time_10_80_min: 30, consumption_wh_km: 14 },
   },
   {
     id: 'cupra_born', brand_id: 'cupra', brand_display: 'Cupra', model_display: 'Born',
@@ -60,6 +63,7 @@ export const CARS_BYD_GENESIS: ComparisonCar[] = [
     cons: ['VW-mjukvaruproblem', 'Plastigt interiör', 'Liten bagage', 'Bara bakhjulsdrift'],
     segment: 'compact', competitors: ['vw_id3', 'mg_mg4', 'renault_megane_e'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 82, range_wltp_km: 570, range_winter_km: 456, charge_kw_max: 135, charge_time_10_80_min: 31, consumption_wh_km: 15 },
   },
   {
     id: 'cupra_formentor', brand_id: 'cupra', brand_display: 'Cupra', model_display: 'Formentor',
@@ -120,6 +124,7 @@ export const CARS_BYD_GENESIS: ComparisonCar[] = [
     cons: ['1 stjärna NCAP', 'Långsam', 'Kort räckvidd', 'Billig känsla'],
     segment: 'compact', competitors: ['fiat_500e', 'smart_eq', 'renault_zoe'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 26.8, range_wltp_km: 220, range_winter_km: 176, charge_kw_max: 30, charge_time_10_80_min: 55, consumption_wh_km: 14 },
   },
   {
     id: 'ds_ds7', brand_id: 'ds', brand_display: 'DS', model_display: '7',
@@ -156,6 +161,7 @@ export const CARS_BYD_GENESIS: ComparisonCar[] = [
     cons: ['Minimal bagage', 'Bara 4 sittplatser', 'Kort räckvidd', 'Inte för långa resor'],
     segment: 'compact', competitors: ['mini_electric', 'honda_e', 'smart_eq'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 42, range_wltp_km: 320, range_winter_km: 256, charge_kw_max: 85, charge_time_10_80_min: 35, consumption_wh_km: 14 },
   },
   {
     id: 'fiat_panda', brand_id: 'fiat', brand_display: 'Fiat', model_display: 'Panda',
@@ -180,6 +186,7 @@ export const CARS_BYD_GENESIS: ComparisonCar[] = [
     cons: ['Okänt märke', 'Begränsat servicenät', 'Osäkert andrahandsvärde', 'Lite bagage'],
     segment: 'luxury', competitors: ['bmw_ix3', 'audi_q4_etron', 'tesla_model_y'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 77.4, range_wltp_km: 470, range_winter_km: 376, charge_kw_max: 350, charge_time_10_80_min: 18, consumption_wh_km: 18 },
   },
   {
     id: 'genesis_gv70', brand_id: 'genesis', brand_display: 'Genesis', model_display: 'GV70',
@@ -192,5 +199,6 @@ export const CARS_BYD_GENESIS: ComparisonCar[] = [
     cons: ['Okänt varumärke', 'Begränsat servicenät', 'Osäkert andrahandsvärde', 'Inte sportigast'],
     segment: 'luxury', competitors: ['bmw_x3', 'mercedes_glc', 'audi_q5'],
     is_active: false, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 77.4, range_wltp_km: 451, range_winter_km: 361, charge_kw_max: 350, charge_time_10_80_min: 18, consumption_wh_km: 18 },
   },
 ];

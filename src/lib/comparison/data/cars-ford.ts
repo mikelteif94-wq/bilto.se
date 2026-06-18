@@ -132,6 +132,7 @@ export const CARS_FORD: ComparisonCar[] = [
     cons: ['Inte en riktig Mustang', 'Kvalitetsproblem rapporterade', 'Inte bäst att köra', 'Sjunkande andrahandsvärde'],
     segment: 'premium', competitors: ['tesla_model_y', 'vw_id4', 'hyundai_ioniq5'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 98.7, range_wltp_km: 610, range_winter_km: 488, charge_kw_max: 150, charge_time_10_80_min: 38, consumption_wh_km: 17 },
   },
   {
     id: 'ford_explorer', brand_id: 'ford', brand_display: 'Ford', model_display: 'Explorer',
@@ -144,6 +145,7 @@ export const CARS_FORD: ComparisonCar[] = [
     cons: ['VW-teknik under', 'Inte sportig', 'Inte 5 stjärnor NCAP', 'Inte premium'],
     segment: 'midsize', competitors: ['vw_id4', 'skoda_enyaq', 'hyundai_ioniq5'],
     is_active: true, updated_at: '2025-01-15',
+    ev_specs: { battery_kwh: 77, range_wltp_km: 567, range_winter_km: 454, charge_kw_max: 135, charge_time_10_80_min: 28, consumption_wh_km: 14 },
   },
   {
     id: 'ford_mustang', brand_id: 'ford', brand_display: 'Ford', model_display: 'Mustang',
