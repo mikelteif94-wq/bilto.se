@@ -1391,6 +1391,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                                 seats={compData?.specs.seats}
                                 carPrice={car.carPrice}
                                 usedPrice={car.usedPrice}
+                                isSelected={isSelected}
+                                onSelect={() => toggleQuizCarSelection(key)}
                                 onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, compData?.specs.fuel_types)}
                                 onDetail={() => { if (compData) setDetailCar(compData); }}
                               />

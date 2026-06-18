@@ -20,10 +20,12 @@ interface ElCarCardProps {
   seats?: number;
   pros?: string[];
   isCompared?: boolean;
+  isSelected?: boolean;
   topBadge?: boolean;
   onNegotiate: () => void;
   onDetail?: () => void;
   onCompare?: () => void;
+  onSelect?: () => void;
   onFitQuiz?: () => void;
 }
 
@@ -54,8 +56,8 @@ function ScoreBadge({ value }: { value: number }) {
 export default function ElCarCard({
   name, imageUrl, rating, expertComment, rangeKm,
   carPrice, usedPrice, fuelLabel, bodyType, drivetrain, seats, pros,
-  isCompared, topBadge,
-  onNegotiate, onDetail, onCompare,
+  isCompared, isSelected, topBadge,
+  onNegotiate, onDetail, onCompare, onSelect,
 }: ElCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
@@ -63,7 +65,9 @@ export default function ElCarCard({
   return (
     <div
       className={`group relative bg-white rounded-2xl transition-all duration-300 ${
-        isCompared
+        isSelected
+          ? 'ring-2 ring-[#0e6efe] shadow-[0_0_0_4px_rgba(14,110,254,0.12)]'
+          : isCompared
           ? 'ring-2 ring-emerald-400 shadow-[0_0_0_4px_rgba(16,185,129,0.10)]'
           : 'ring-1 ring-slate-100/80 shadow-card hover:-translate-y-0.5 hover:shadow-card-hover hover:ring-slate-200'
       }`}
@@ -95,7 +99,7 @@ export default function ElCarCard({
             </span>
           </div>
 
-          {topBadge && !isCompared && (
+          {topBadge && !isCompared && !isSelected && (
             <div className="absolute top-2.5 right-2.5">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold"
                 style={{
@@ -116,7 +120,14 @@ export default function ElCarCard({
               </div>
             </div>
           )}
-          {rating != null && !isCompared && !topBadge && <ScoreBadge value={rating} />}
+          {isSelected && !isCompared && (
+            <div className="absolute top-2.5 right-2.5">
+              <div className="w-7 h-7 rounded-full flex items-center justify-center shadow-md bg-[#0e6efe]">
+                <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
+              </div>
+            </div>
+          )}
+          {rating != null && !isCompared && !isSelected && !topBadge && <ScoreBadge value={rating} />}
         </div>
 
         <div className="px-3.5 pt-3 pb-2">
@@ -174,6 +185,20 @@ export default function ElCarCard({
         >
           Få hjälp att köpa <ChevronRight className="w-3.5 h-3.5 opacity-80" />
         </button>
+        {onSelect && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onSelect(); }}
+            className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-semibold transition-all duration-200 active:scale-[0.97] ${
+              isSelected
+                ? 'bg-[#0e6efe]/10 border-[#0e6efe]/40 text-[#0e6efe]'
+                : 'border-slate-200 bg-white text-slate-400 hover:border-[#0e6efe]/30 hover:text-[#0e6efe] hover:bg-[#0e6efe]/5'
+            }`}
+          >
+            {isSelected ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
+            {isSelected ? 'Vald' : 'Välj'}
+          </button>
+        )}
         {onCompare && (
           <button
             type="button"
