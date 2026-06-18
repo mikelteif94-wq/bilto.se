@@ -50,6 +50,8 @@ export function useCarImages(cars: CatalogCarFull[] = []) {
     const brandNorm = normalize(brand);
     const modelNorm = normalize(model);
 
+    if (!modelNorm) return undefined;
+
     const exactKey = `${brandNorm}-${modelNorm}`;
     if (carImages.has(exactKey)) return carImages.get(exactKey);
 
@@ -65,10 +67,6 @@ export function useCarImages(cars: CatalogCarFull[] = []) {
 
     for (const [key, url] of carImages.entries()) {
       if (key.startsWith(brandNorm + '-') && key.includes(simpleModel)) return url;
-    }
-
-    for (const [key, url] of carImages.entries()) {
-      if (key.startsWith(brandNorm + '-')) return url;
     }
 
     return undefined;
