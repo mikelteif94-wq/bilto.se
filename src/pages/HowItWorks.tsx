@@ -149,12 +149,12 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   };
 
   const BUDGET_PILLS = [
-    { label: 'Under 3 000 kr/mån', max: 3000 },
-    { label: 'Under 5 000 kr/mån', max: 5000 },
-    { label: 'Under 8 000 kr/mån', max: 8000 },
-    { label: 'Öppen budget', max: 0 },
+    { label: 'Under 3 000 kr/mån', min: 0, max: 3000 },
+    { label: '3 000–5 000 kr/mån', min: 3001, max: 5000 },
+    { label: '5 000–8 000 kr/mån', min: 5001, max: 8000 },
+    { label: 'Öppen budget', min: 0, max: 0 },
   ];
-  const [activeBudgetPill, setActiveBudgetPill] = useState<number | null>(null);
+  const [activeBudgetPill, setActiveBudgetPill] = useState<string | null>(null);
   const [showAllCars, setShowAllCars] = useState(false);
   const [selectedCompareIds, setSelectedCompareIds] = useState<Set<string>>(new Set());
   const [compareOpen, setCompareOpen] = useState(false);
@@ -782,12 +782,12 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
           <div className="flex items-center justify-center gap-2 flex-wrap mb-5">
             {BUDGET_PILLS.map((pill) => {
-              const isActive = activeBudgetPill === pill.max;
+              const isActive = activeBudgetPill === pill.label;
               return (
                 <button
                   key={pill.label}
                   type="button"
-                  onClick={() => { setActiveBudgetPill(isActive ? null : pill.max); setShowAllCars(false); }}
+                  onClick={() => { setActiveBudgetPill(isActive ? null : pill.label); setShowAllCars(false); }}
                   className={`px-4 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                     isActive
                       ? 'text-white shadow-md'
@@ -815,11 +815,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           {(() => {
             let carsToShow = popularCars;
             if (activeBudgetPill !== null) {
+              const pill = BUDGET_PILLS.find(p => p.label === activeBudgetPill);
               carsToShow = allCars
                 .filter(car => {
-                  if (!car.pricing.new_from_sek) return false;
+                  if (!car.pricing.new_from_sek || !pill) return false;
                   const monthly = calcCarMonthly(car.pricing.new_from_sek, 0.55);
-                  return activeBudgetPill === 0 ? true : monthly <= activeBudgetPill;
+                  if (pill.min === 0 && pill.max === 0) return true; // Öppen budget
+                  if (pill.max === 0) return monthly >= pill.min;
+                  if (pill.min === 0) return monthly <= pill.max;
+                  return monthly >= pill.min && monthly <= pill.max;
                 })
                 .sort((a, b) => (a.pricing.new_from_sek || 0) - (b.pricing.new_from_sek || 0))
                 .slice(0, 12);

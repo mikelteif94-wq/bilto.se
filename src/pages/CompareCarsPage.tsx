@@ -120,12 +120,12 @@ function formatSEK(n: number): string {
 }
 
 const BUDGET_BRACKETS = [
-  { label: 'Under 3 000 kr/mån', maxMonthly: 3000, carId: 'skoda_octavia' },
-  { label: 'Under 4 000 kr/mån', maxMonthly: 4000, carId: 'kia_niro' },
-  { label: 'Under 5 000 kr/mån', maxMonthly: 5000, carId: 'toyota_rav4' },
-  { label: 'Under 6 000 kr/mån', maxMonthly: 6000, carId: 'volvo_xc40' },
-  { label: 'Under 8 000 kr/mån', maxMonthly: 8000, carId: 'tesla_model_y' },
-  { label: 'Öppen budget', maxMonthly: 0, carId: 'bmw_x3' },
+  { label: 'Under 3 000 kr/mån', minMonthly: 0, maxMonthly: 3000, carId: 'skoda_octavia' },
+  { label: '3 000–5 000 kr/mån', minMonthly: 3001, maxMonthly: 5000, carId: 'kia_niro' },
+  { label: '5 000–8 000 kr/mån', minMonthly: 5001, maxMonthly: 8000, carId: 'toyota_rav4' },
+  { label: '8 000–12 000 kr/mån', minMonthly: 8001, maxMonthly: 12000, carId: 'volvo_xc60' },
+  { label: 'Över 12 000 kr/mån', minMonthly: 12001, maxMonthly: 0, carId: 'bmw_x3' },
+  { label: 'Öppen budget', minMonthly: 0, maxMonthly: 0, carId: 'tesla_model_y' },
 ] as const;
 
 /* ───────────── curated data ───────────── */
@@ -651,7 +651,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
   const [bilbyteRegError, setBilbyteRegError] = useState(false);
 
   // Budget filter state
-  const [activeBudget, setActiveBudget] = useState<number | null>(null);
+  const [activeBudget, setActiveBudget] = useState<string | null>(null);
   const [budgetShowCount, setBudgetShowCount] = useState(6);
   const budgetGridRef = useRef<HTMLDivElement>(null);
   const [expertShowCount, setExpertShowCount] = useState(6);
@@ -757,14 +757,19 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
 
   const budgetFilteredCars = useMemo(() => {
     if (activeBudget === null) return [];
+    const bracket = BUDGET_BRACKETS.find(b => b.label === activeBudget);
+    if (!bracket) return [];
     return allCarsRaw
       .filter(car => {
         if (!car.pricing.new_from_sek) return false;
         const monthly = calcCarMonthly(car.pricing.new_from_sek, 0.55);
-        return activeBudget === 0 ? true : monthly <= activeBudget;
+        if (bracket.minMonthly === 0 && bracket.maxMonthly === 0) return true; // Öppen budget = alla
+        if (bracket.maxMonthly === 0) return monthly >= bracket.minMonthly; // Över X
+        if (bracket.minMonthly === 0) return monthly <= bracket.maxMonthly; // Under X
+        return monthly >= bracket.minMonthly && monthly <= bracket.maxMonthly;
       })
       .sort((a, b) => (a.pricing.new_from_sek || 0) - (b.pricing.new_from_sek || 0));
-  }, [activeBudget, allCarsRaw, getCarImage]);
+  }, [activeBudget, allCarsRaw]);
 
   // Chat
   const handleChatSubmit = (overrideInput?: string) => {
@@ -1041,7 +1046,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
             {BUDGET_BRACKETS.map((bracket, i) => {
               const car = allCarsRaw.find(c => c.id === bracket.carId);
               const img = car ? resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage) : undefined;
-              const isActive = activeBudget === bracket.maxMonthly;
+              const isActive = activeBudget === bracket.label;
               return (
                 <motion.button
                   key={bracket.label}
@@ -1053,7 +1058,7 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     if (isActive) {
                       setActiveBudget(null);
                     } else {
-                      setActiveBudget(bracket.maxMonthly);
+                      setActiveBudget(bracket.label);
                       setBudgetShowCount(6);
                       setTimeout(() => budgetGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
                     }
@@ -1102,13 +1107,13 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="text-[17px] sm:text-[20px] font-extrabold text-slate-900">
-                          {activeBudget === 0 ? 'Alla bilar' : `Bilar under ${activeBudget.toLocaleString('sv-SE')} kr/mån`}
+                          {activeBudget === 'Öppen budget' ? 'Alla bilar' : `Bilar: ${activeBudget}`}
                         </h3>
                         <span className="px-2 py-0.5 rounded-full bg-[#0e6efe] text-white text-[11px] font-bold">
                           {budgetFilteredCars.length} st
                         </span>
                       </div>
-                      {activeBudget > 0 && (
+                      {activeBudget !== null && (
                         <p className="text-[12px] text-slate-500 mt-1">
                           Månadskostnad beräknad på finansiering 60 månader · Alla bilar passar din budget
                         </p>
