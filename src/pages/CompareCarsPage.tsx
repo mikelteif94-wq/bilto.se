@@ -767,6 +767,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
     if (!bracket) return [];
     return allCarsRaw
       .filter(car => {
+        if (isEvPage && !car.specs.fuel_types.includes('el')) return false;
         if (!car.pricing.new_from_sek) return false;
         const monthly = calcCarMonthly(car.pricing.new_from_sek, 0.55);
         if (bracket.minMonthly === 0 && bracket.maxMonthly === 0) return true; // Öppen budget = alla
@@ -775,7 +776,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         return monthly >= bracket.minMonthly && monthly <= bracket.maxMonthly;
       })
       .sort((a, b) => (a.pricing.new_from_sek || 0) - (b.pricing.new_from_sek || 0));
-  }, [activeBudget, allCarsRaw]);
+  }, [activeBudget, allCarsRaw, isEvPage]);
 
   // Chat
   const handleChatSubmit = (overrideInput?: string) => {
