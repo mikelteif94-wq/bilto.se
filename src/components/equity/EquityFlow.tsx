@@ -115,10 +115,10 @@ export function EquityFlow({ onNegotiate: _onNegotiate, compact, isEv }: EquityF
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[13px] font-bold text-white">
-            {isEv ? 'Beräkna vad din insats ger dig på elbil' : 'Beräkna vad din insats ger dig'}
+            {isEv ? 'Beräkna vad din insats ger dig' : 'Beräkna vad din insats ger dig'}
           </p>
           <p className="text-[11px] text-white/75">
-            {isEv ? 'Sänk månadskostnaden · Lägre driftkostnad med el' : 'Sänk månadskostnaden · Frigör kapital'}
+            {isEv ? 'Sänk kostnaden · Byt till elbil' : 'Sänk månadskostnaden · Frigör kapital'}
           </p>
         </div>
         <ChevronRight className="w-4 h-4 text-white/75 group-hover:text-white transition-colors" />
