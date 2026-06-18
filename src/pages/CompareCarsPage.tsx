@@ -719,7 +719,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
 
   const visibleCars = useMemo((): CatalogCarFull[] => {
     if (carSearchQuery.trim()) return allCategoryCars;
-    if (activeCategory === 'el') return allCategoryCars;
     const base = showAllCars ? allCategoryCars : allCategoryCars.slice(0, expertShowCount);
     // For default "alla" view, diversify body types so the first rows aren't all SUVs
     if (activeCategory === 'alla' && !showAllCars) {
