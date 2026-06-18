@@ -263,7 +263,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         active="Sälj bil"
         onSelect={handleMenuSelect}
       />
-      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]/40 backdrop-blur-md'}`}>
+      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 bg-[#0e6efe] ${!scrolled ? 'backdrop-blur-md' : ''}`}>
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
@@ -329,14 +329,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </header>
 
-      <section className="lg:hidden pt-16 relative bg-slate-900 overflow-hidden">
+      <section className="lg:hidden pt-16 relative bg-[#0e6efe] overflow-hidden">
         <img
-          src="/files_2615643-2026-06-18T07-40-24-450Z-b858d9c8-9893-488f-8103-98fee9292c16.webp"
+          src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none select-none"
+          className="absolute -left-24 -top-6 w-[280px] h-[280px] object-contain pointer-events-none select-none opacity-30"
         />
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute -right-20 top-80 w-[240px] h-[240px] rounded-full bg-[#3d8cff] opacity-50" />
 
         <div className="relative px-6 pt-4 pb-10">
           <div className="flex items-center justify-center mb-3">
@@ -487,14 +487,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section className="hidden lg:block relative bg-slate-900 pt-36 pb-48 overflow-hidden">
+      <section className="hidden lg:block relative bg-[#0e6efe] pt-28 pb-32 overflow-hidden">
+        <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60" />
+        <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50" />
         <img
-          src="/files_2615643-2026-06-18T07-40-24-450Z-b858d9c8-9893-488f-8103-98fee9292c16.webp"
+          src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none select-none"
+          className="absolute left-1/2 -translate-x-1/2 top-0 w-[780px] h-[780px] object-contain pointer-events-none select-none opacity-40"
         />
-        <div className="absolute inset-0 bg-black/40" />
 
         <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
           <div>
