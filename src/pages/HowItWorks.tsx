@@ -255,7 +255,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   };
 
   const steps = DIRECT_STEPS;
-  const navItems = ['Sälj bil', 'Köp bil med hjälp', 'Byt till el bil'];
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-slate-900">
@@ -285,54 +284,30 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            {navItems.map((item) => {
-              if (item === 'Köp bil med hjälp') {
-                return (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => {
-                      window.history.pushState({}, '', '/kop-bil');
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }}
-                    className="text-[15px] text-white font-semibold transition hover:text-white/80"
-                  >
-                    {item}
-                  </button>
-                );
-              }
-              if (item === 'Byt till el bil') {
-                return (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => {
-                      window.history.pushState({}, '', '/salj-bil-hjalp');
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }}
-                    className="text-[15px] text-white font-semibold transition hover:text-white/80"
-                  >
-                    {item}
-                  </button>
-                );
-              }
-              return (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => {
-                    if (item === 'Sälj bil') {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                      return;
-                    }
-                    onBackHome();
-                  }}
-                  className="text-[15px] text-white font-semibold transition hover:text-white/80"
-                >
-                  {item}
-                </button>
-              );
-            })}
+            <button
+              type="button"
+              onClick={() => {
+                window.history.pushState({}, '', '/kop-bil');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }}
+              className="text-[15px] text-white font-semibold transition hover:text-white/80"
+            >
+              Köp bil
+            </button>
+            <button
+              type="button"
+              onClick={onBackHome}
+              className="text-[15px] text-white/80 font-medium transition hover:text-white"
+            >
+              Sälj bil
+            </button>
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="text-[15px] text-white/80 font-medium transition hover:text-white"
+            >
+              Så funkar det
+            </button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
