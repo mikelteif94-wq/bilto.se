@@ -574,8 +574,9 @@ function App() {
     <Suspense fallback={<PageLoader />}>
       <>
         {publicRoute.page === 'home' && (
-          <HomePage
-            onNavigate={(reg, tel) => setPublicRoute({ page: 'sell', regnummer: reg, telefon: tel })}
+          <HowItWorks
+            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSell={(reg) => setPublicRoute({ page: 'sell', regnummer: reg })}
           />
         )}
         {publicRoute.page === 'sell' && (
