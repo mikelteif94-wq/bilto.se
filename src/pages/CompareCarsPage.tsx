@@ -1637,7 +1637,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       isCompared={!!(compCar && selectedIds.has(compCar.id))}
                       onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
                       onDetail={() => { if (compCar) setDetailCar(compCar); }}
-                      onCompare={compCar ? () => toggleSelect(compCar.id) : undefined}
+                      onCompare={compCar ? () => toggleSelect(compCar.id) : () => {}}
                       onFitQuiz={() => { if (compCar) setFitQuizCar(compCar); }}
                     />
                   );
@@ -1659,7 +1659,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     usedPrice={car.price_used_from ?? undefined}
                     onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
                     onDetail={() => { if (compCar) setDetailCar(compCar); }}
-                    onCompare={compCar ? () => toggleSelect(compCar.id) : undefined}
+                    onCompare={compCar ? () => toggleSelect(compCar.id) : () => {}}
                     onFitQuiz={() => { if (compCar) setFitQuizCar(compCar); }}
                     isCompared={!!(compCar && selectedIds.has(compCar.id))}
                     index={i}
