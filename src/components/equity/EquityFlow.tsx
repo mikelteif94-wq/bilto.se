@@ -9,6 +9,7 @@ type FlowState = 'teaser' | 'quiz' | 'results';
 interface EquityFlowProps {
   onNegotiate: (carLabel: string, equitySummary: string) => void;
   compact?: boolean;
+  isEv?: boolean;
 }
 
 function TeaserCard({ onStart }: { onStart: () => void }) {
@@ -93,7 +94,7 @@ function TeaserCard({ onStart }: { onStart: () => void }) {
   );
 }
 
-export function EquityFlow({ onNegotiate: _onNegotiate, compact }: EquityFlowProps) {
+export function EquityFlow({ onNegotiate: _onNegotiate, compact, isEv }: EquityFlowProps) {
   const [state, setState] = useState<FlowState>('teaser');
   const [equityData, setEquityData] = useState<EquityData | null>(null);
 
@@ -114,9 +115,11 @@ export function EquityFlow({ onNegotiate: _onNegotiate, compact }: EquityFlowPro
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[13px] font-bold text-white">
-            Beräkna vad din insats ger dig
+            {isEv ? 'Beräkna vad din insats ger dig på elbil' : 'Beräkna vad din insats ger dig'}
           </p>
-          <p className="text-[11px] text-white/75">Sänk månadskostnaden · Frigör kapital</p>
+          <p className="text-[11px] text-white/75">
+            {isEv ? 'Sänk månadskostnaden · Lägre driftkostnad med el' : 'Sänk månadskostnaden · Frigör kapital'}
+          </p>
         </div>
         <ChevronRight className="w-4 h-4 text-white/75 group-hover:text-white transition-colors" />
       </button>
