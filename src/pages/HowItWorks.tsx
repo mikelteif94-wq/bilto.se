@@ -572,16 +572,16 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     </button>
                   </form>
                   <div className="mt-3 flex items-center justify-center gap-3">
-                    <span className="text-[13px] text-slate-500">eller låt oss hjälpa dig</span>
+                    <span className="text-[13px] text-slate-500">eller byt in din bil</span>
                     <button
                       type="button"
                       onClick={() => {
-                        window.history.pushState({}, '', '/kop-bil');
+                        window.history.pushState({}, '', '/kop-bil/bestall?typ=trade');
                         window.dispatchEvent(new PopStateEvent('popstate'));
                       }}
                       className="px-4 py-1.5 rounded-xl border-2 border-slate-800 text-slate-800 text-[13px] font-bold hover:bg-slate-800 hover:text-white active:scale-[0.98] transition-all whitespace-nowrap"
                     >
-                      Hitta en bil
+                      Byta bil
                     </button>
                   </div>
                 </>
