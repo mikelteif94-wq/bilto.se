@@ -204,7 +204,7 @@ export default function CompactCarCard({
             onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 5px 18px rgba(14,110,254,0.42)')}
             onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 3px 12px rgba(14,110,254,0.30)')}
           >
-            Få hjälp att köpa <ChevronRight className="w-3.5 h-3.5 opacity-80" />
+            Få prishjälp <ChevronRight className="w-3.5 h-3.5 opacity-80" />
           </button>
 
           {onCompare && (
