@@ -664,10 +664,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section id="sa-fungerar-det" className="bg-slate-50 py-16 sm:py-24 sm:overflow-hidden px-5 sm:px-6">
+      <section id="sa-fungerar-det" className="bg-white py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-16">
-            <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0e6efe]" />
+              <span className="text-[13px] font-medium text-slate-500 tracking-wide uppercase">Hur det fungerar</span>
+            </div>
+            <h2 className="text-[32px] sm:text-[46px] font-bold leading-[1.05] text-slate-900 tracking-[-0.03em] max-w-lg">
               Så enkelt är det
             </h2>
           </div>
@@ -676,35 +680,46 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           <DirectStepsMobile steps={steps} images={DIRECT_STEP_IMAGES} />
 
           {/* DESKTOP */}
-          <ol className="hidden sm:grid lg:gap-10 sm:grid-cols-3 gap-8">
+          <ol className="hidden sm:flex flex-col gap-5">
             {steps.map((step, i) => {
               const Icon = step.icon;
               const img = DIRECT_STEP_IMAGES[i];
+              const accentPhrases = [
+                'personlig rådgivare',
+                'bästa budet',
+                'hämtar eller lämnar',
+              ];
               return (
-                <li key={step.title} className="group">
+                <li key={step.title} className="group bg-[#f7f7f5] rounded-2xl overflow-hidden flex flex-col sm:flex-row items-stretch">
+                  <div className="flex-1 p-7 sm:p-8 flex flex-col justify-center">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0">
+                        <Icon className="w-5 h-5" strokeWidth={2} />
+                      </div>
+                      <span className="text-[12px] font-bold text-slate-400 tabular-nums tracking-widest">0{i + 1}</span>
+                    </div>
+                    <h3 className="text-[22px] sm:text-[26px] font-bold text-slate-900 leading-tight tracking-[-0.02em] mb-3">
+                      {step.title.split(accentPhrases[i]).map((part, pi) =>
+                        pi === 0 ? (
+                          <span key={pi}>{part}<span className="text-[#0e6efe]">{accentPhrases[i]}</span></span>
+                        ) : (
+                          <span key={pi}>{part}</span>
+                        )
+                      )}
+                    </h3>
+                    <p className="text-[15px] text-slate-500 leading-[1.65] max-w-sm">
+                      {step.text}
+                    </p>
+                  </div>
                   {img && (
-                    <div className="rounded-2xl overflow-hidden aspect-[16/10] mb-5 shadow-md">
+                    <div className="sm:w-[280px] lg:w-[340px] shrink-0 overflow-hidden">
                       <img
                         src={img}
                         alt={step.title}
-                        className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                        className="w-full h-48 sm:h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                       />
                     </div>
                   )}
-                  {!img && (
-                    <div className="mb-5 flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#0e6efe] shadow-[0_8px_18px_-6px_rgba(14,110,254,0.5)] ring-4 ring-[#0e6efe]/10">
-                      <Icon className="w-[18px] h-[18px] text-white" strokeWidth={2.4} />
-                    </div>
-                  )}
-                  <div className="flex items-baseline gap-2.5 mb-2">
-                    <span className="text-[13px] font-bold text-[#0e6efe] tabular-nums">0{i + 1}</span>
-                    <h3 className="text-[20px] sm:text-[22px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
-                      {step.title}
-                    </h3>
-                  </div>
-                  <p className="text-slate-600 text-[15px] leading-[1.6]">
-                    {step.text}
-                  </p>
                 </li>
               );
             })}
@@ -712,28 +727,32 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section className="bg-white">
+      <section className="bg-[#f7f7f5]">
         <div className="max-w-6xl mx-auto px-6 py-16 sm:py-24">
           <div className="grid md:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="md:col-span-6 order-1 md:order-1">
-              <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
-                Ska du köpa eller byta bil?
+              <div className="flex items-center gap-2 mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0e6efe]" />
+                <span className="text-[13px] font-medium text-slate-500 tracking-wide uppercase">Din bilmäklare</span>
+              </div>
+              <h2 className="text-[32px] sm:text-[44px] font-bold text-slate-900 tracking-[-0.03em] leading-[1.05]">
+                Ska du köpa eller<br className="hidden sm:block" /> <span className="text-[#0e6efe]">byta bil?</span>
               </h2>
-              <p className="text-[15px] text-slate-600 mt-4 leading-[1.6] max-w-lg">
+              <p className="text-[15px] text-slate-500 mt-5 leading-[1.65] max-w-lg">
                 Din personliga bilmäklare hjälper dig hela vägen — oavsett om du letar efter en ny bil, redan hittat en eller vill byta in din nuvarande.
               </p>
-              <ul className="mt-6 space-y-2">
+              <ul className="mt-8 space-y-3">
                 {[
                   'En personlig bilmäklare på din sida',
                   'Vi granskar pris, villkor och avtal',
                   'Betala bara om affären blir av',
                   'Fungerar vid köp, byte och leasing',
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2.5">
-                    <span className="w-4 h-4 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0">
-                      <Check className="w-2.5 h-2.5" strokeWidth={3} />
-                    </span>
-                    <span className="text-[14px] text-slate-700 leading-[1.5]">
+                  <li key={item} className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-lg bg-slate-900 text-white flex items-center justify-center shrink-0">
+                      <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
+                    </div>
+                    <span className="text-[14px] text-slate-700 font-medium leading-[1.5]">
                       {item}
                     </span>
                   </li>
@@ -749,7 +768,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       document.getElementById('sa-fungerar-det')?.scrollIntoView({ behavior: 'smooth' });
                     }, 100);
                   }}
-                  className="h-11 px-6 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all group"
+                  className="h-12 px-7 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[14px] inline-flex items-center gap-2 transition-all group"
                 >
                   Läs mer om hur det fungerar
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
@@ -763,17 +782,17 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   alt="Personlig mäklare hjälper bilsäljare"
                   className="w-full h-[220px] sm:h-[380px] md:h-[540px] object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-                <div className="hidden sm:block absolute left-4 bottom-4 right-4 sm:left-6 sm:bottom-6 sm:right-auto bg-white rounded-xl p-4 sm:p-5 shadow-lg sm:max-w-xs">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                <div className="hidden sm:block absolute left-4 bottom-4 right-4 sm:left-6 sm:bottom-6 sm:right-auto bg-white rounded-xl p-4 sm:p-5 shadow-xl sm:max-w-xs">
                   <div className="flex items-center gap-3 mb-1.5">
-                    <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
+                    <div className="w-9 h-9 rounded-lg bg-slate-900 text-white flex items-center justify-center shrink-0">
                       <Handshake className="w-5 h-5" strokeWidth={2} />
                     </div>
-                    <div className="text-[14px] font-semibold text-slate-900">
+                    <div className="text-[14px] font-bold text-slate-900">
                       Vi förhandlar åt dig
                     </div>
                   </div>
-                  <p className="text-[13.5px] text-slate-600 leading-[1.55]">
+                  <p className="text-[13.5px] text-slate-500 leading-[1.55]">
                     Oavsett om du köper, byter eller leasar — vi ser till att du får bästa villkor.
                   </p>
                 </div>
