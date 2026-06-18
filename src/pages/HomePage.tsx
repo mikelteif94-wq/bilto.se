@@ -20,7 +20,7 @@ const HERO_IMAGE = '/d158d2d6-7209-4239-986d-842219ae491d.jpg';
 
 const STATS = [
   { value: '12 000+', label: 'Bilar sålda' },
-  { value: '48h', label: 'Genomsnittlig säljtid' },
+  { value: '48h', label: 'Snitt säljtid' },
   { value: '500+', label: 'Certifierade handlare' },
   { value: '4.9 / 5', label: 'Kundbetyg' },
 ];
@@ -88,7 +88,6 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Intersection observer for fade-in animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -98,7 +97,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
           }
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.10 }
     );
     document.querySelectorAll('[data-animate]').forEach((el) => observer.observe(el));
     return () => observer.disconnect();
@@ -199,7 +198,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
   const isVisible = (id: string) => visibleSections.has(id);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 antialiased">
+    <div className="min-h-screen bg-[#0a0f1a] text-white antialiased">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
@@ -209,56 +208,55 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
       {/* ── NAV ── */}
       <header
-        className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 transition-all duration-300 ${
+        className={`fixed top-0 inset-x-0 z-30 h-16 transition-all duration-300 ${
           scrolled
-            ? 'bg-white ring-slate-200 shadow-xl'
-            : 'bg-white/85 backdrop-blur-md ring-white/30 shadow-md'
+            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100'
+            : 'bg-transparent'
         }`}
       >
-        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
+        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-10">
           <button
             type="button"
             aria-label="Meny"
             onClick={() => setMenuOpen(true)}
-            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-slate-900"
+            className={`lg:hidden -ml-2 w-11 h-11 flex items-center justify-center ${scrolled ? 'text-slate-900' : 'text-white'}`}
           >
             <Menu className="w-6 h-6" strokeWidth={2} />
           </button>
-          <a href="/" className="shrink-0 lg:mr-10 -ml-1 lg:-ml-3 flex items-center">
+          <a href="/" className="shrink-0 lg:mr-10 flex items-center">
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
               fetchPriority="high"
               decoding="async"
-              className="hidden lg:block h-16 lg:h-32 w-auto object-contain"
+              className="hidden lg:block h-24 w-auto object-contain"
+              style={{ filter: scrolled ? 'none' : 'brightness(0) invert(1)' }}
             />
           </a>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
+            <button
+              type="button"
+              onClick={() => {
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#0e6efe]/12 border border-[#0e6efe]/25 text-[#0e6efe] text-[14px] font-semibold hover:bg-[#0e6efe]/22 transition"
+              className={`text-[15px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
             >
-              Köp bil med hjälp
-            </a>
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
+              Köp bil
+            </button>
+            <button
+              type="button"
+              onClick={() => {
                 setHeroTab('salj');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="text-[15px] font-semibold text-slate-800 hover:text-[#0e6efe] transition"
+              className={`text-[15px] font-semibold transition ${scrolled ? 'text-slate-900' : 'text-white'}`}
             >
               Sälj bil
-            </a>
+            </button>
             <a
               href="/sa-funkar-det"
-              className="text-[15px] font-semibold text-slate-800 hover:text-[#0e6efe] transition"
+              className={`text-[15px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
             >
               Så funkar det
             </a>
@@ -266,14 +264,18 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
           <div className="ml-auto flex items-center gap-3">
             <a
               href="/logga-in"
-              className="hidden lg:inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-slate-900 transition"
+              className={`hidden lg:inline-flex items-center gap-2 text-[14px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
             >
               <User className="w-4 h-4" strokeWidth={2} />
               Logga in
             </a>
             <a
               href="/logga-in"
-              className="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-[#0e6efe] text-white text-[13px] font-bold uppercase tracking-[0.07em] shadow hover:bg-[#0a57cc] active:scale-[0.98] transition"
+              className={`inline-flex items-center justify-center px-5 py-2 rounded-full text-[13px] font-semibold transition ${
+                scrolled
+                  ? 'bg-slate-900 text-white hover:bg-slate-700'
+                  : 'bg-white text-slate-900 hover:bg-white/90'
+              }`}
             >
               Mina erbjudanden
             </a>
@@ -282,67 +284,73 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       </header>
 
       {/* ── HERO ── */}
-      <section className="relative" style={{ backgroundColor: '#0b1220' }}>
-        <div className="relative w-full overflow-hidden flex flex-col" style={{ minHeight: '100svh' }}>
-          <img
-            src={HERO_IMAGE}
-            alt=""
-            fetchPriority="high"
-            decoding="async"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: 'center 55%' }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/70" />
+      <section className="relative bg-[#0a0f1a]" style={{ minHeight: '100svh' }}>
+        <img
+          src={HERO_IMAGE}
+          alt=""
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          style={{ objectPosition: 'center 55%' }}
+        />
+        {/* gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1a]/20 via-transparent to-[#0a0f1a]" />
 
-          {/* Headline area */}
-          <div className="relative z-10 flex flex-col items-center text-center px-5 pt-28 sm:pt-32 lg:pt-40 pb-8 flex-1">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 border border-white/25 text-white text-[12px] sm:text-[13px] font-semibold backdrop-blur-sm mb-6 sm:mb-8">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-              Sveriges snabbaste bilmäklare
+        <div className="relative z-10 flex flex-col items-center justify-center text-center px-5 pt-24 pb-0" style={{ minHeight: '100svh' }}>
+          {/* Social proof pill */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/15 bg-white/8 backdrop-blur-md text-[13px] font-medium text-white/80 mb-8">
+            <div className="flex gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+              ))}
             </div>
-            <h1 className="text-white font-black leading-[0.92] text-[42px] sm:text-[60px] lg:text-[80px] tracking-[-0.025em] drop-shadow-[0_4px_32px_rgba(0,0,0,0.5)] max-w-3xl">
-              {heroTab === 'hitta'
-                ? <>Hitta din<br />drömvagn.</>
-                : <>Sälj bilen<br />på 48 timmar.</>
-              }
-            </h1>
-            <p className="text-white/80 mt-4 sm:mt-6 text-[16px] sm:text-[18px] lg:text-[20px] font-normal max-w-lg leading-relaxed">
-              {heroTab === 'hitta'
-                ? 'Låt våra experter hitta exakt rätt bil för dig — utan stress.'
-                : 'Jämför bud från hundratals handlare och få bästa pris.'
-              }
-            </p>
+            <span>4.9 — Över 2 400 nöjda kunder</span>
           </div>
 
-          {/* White action panel pinned to bottom */}
-          <div className="relative z-10 w-full max-w-3xl lg:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-white rounded-t-2xl sm:rounded-t-3xl shadow-[0_-16px_60px_rgba(0,0,0,0.35)]">
+          {/* Main headline */}
+          <h1 className="font-black leading-[0.9] tracking-[-0.03em] text-white mb-6"
+            style={{ fontSize: 'clamp(3rem, 8vw, 6.5rem)' }}>
+            {heroTab === 'hitta'
+              ? <>Hitta din<br />drömvagn.</>
+              : <>Sälj bilen.<br />Bästa pris.</>
+            }
+          </h1>
+
+          <p className="text-white/55 text-[17px] sm:text-[20px] font-normal max-w-md leading-relaxed mb-12">
+            {heroTab === 'hitta'
+              ? 'Låt våra experter hitta exakt rätt bil — utan stress och krångel.'
+              : 'Jämför bud från hundratals certifierade handlare på 48 timmar.'
+            }
+          </p>
+
+          {/* Action card */}
+          <div className="w-full max-w-xl">
+            <div className="bg-white rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
               {/* Tabs */}
               <div className="flex border-b border-slate-100 px-2 pt-1">
-                {(['hitta', 'salj'] as const).map((t) => (
+                {(['salj', 'hitta'] as const).map((t) => (
                   <button
                     key={t}
                     type="button"
                     onClick={() => setHeroTab(t)}
-                    className={`px-5 sm:px-7 py-3.5 sm:py-4 text-[14px] sm:text-[15px] font-bold relative transition-colors duration-150 ${
+                    className={`px-5 sm:px-6 py-3.5 text-[14px] sm:text-[15px] font-semibold relative transition-colors duration-150 ${
                       heroTab === t ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'
                     }`}
                   >
                     {t === 'hitta' ? 'Köp bil' : 'Sälj bil'}
                     {heroTab === t && (
-                      <span className="absolute bottom-0 left-4 right-4 h-[3px] bg-[#0e6efe] rounded-t-full" />
+                      <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-slate-900 rounded-t-full" />
                     )}
                   </button>
                 ))}
               </div>
 
-              <div className="p-4 sm:p-6">
+              <div className="p-4 sm:p-5">
                 {heroTab === 'hitta' ? (
                   <div ref={carSearchRef} className="relative">
-                    {/* Search input */}
-                    <div className="flex items-center h-12 sm:h-14 rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-[#0e6efe] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#0e6efe]/10 transition-all">
-                      <span className="flex items-center justify-center w-12 sm:w-14 shrink-0">
-                        <Search className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
+                    <div className="flex items-center h-13 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
+                      <span className="flex items-center justify-center w-12 shrink-0">
+                        <Search className="w-4.5 h-4.5 text-slate-400" />
                       </span>
                       <input
                         type="text"
@@ -350,24 +358,23 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                         onChange={(e) => handleCarQueryChange(e.target.value)}
                         onFocus={() => carQuery.trim() && setShowSuggestions(true)}
                         onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
-                        placeholder="Sök på märke, modell, etc..."
-                        className="flex-1 min-w-0 w-0 h-full text-[15px] sm:text-[16px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
+                        placeholder="Sök märke, modell..."
+                        className="flex-1 min-w-0 w-0 h-full text-[15px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
                       />
                       <button
                         type="button"
                         onClick={handleCarSearch}
-                        className="h-9 sm:h-10 mx-1.5 sm:mx-2 w-9 sm:w-10 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-95 transition rounded-lg sm:rounded-xl text-white shrink-0"
+                        className="m-1.5 h-10 px-5 flex items-center gap-2 bg-slate-900 hover:bg-slate-700 active:scale-95 transition rounded-lg text-white text-[14px] font-semibold shrink-0"
                       >
                         {carSearchLoading
                           ? <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                          : <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={2.5} />
+                          : <>Sök <ArrowRight className="w-4 h-4" strokeWidth={2.5} /></>
                         }
                       </button>
                     </div>
 
-                    {/* Dropdown */}
                     {showSuggestions && !carSearchLoading && (
-                      <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50">
+                      <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50">
                         {carSuggestions.length === 0 ? (
                           <div className="flex items-center gap-3 px-4 py-4 text-[14px] text-slate-400">
                             <Search className="w-4 h-4 shrink-0" />
@@ -383,16 +390,16 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                                 key={i}
                                 type="button"
                                 onClick={() => handleCarSelect(s.make, s.model)}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#0e6efe]/[0.05] active:bg-[#0e6efe]/10 transition group border-t border-slate-100 first:border-0"
+                                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group border-t border-slate-100 first:border-0"
                               >
-                                <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition">
-                                  <Car className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#0e6efe] transition" />
+                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                                  <Car className="w-3.5 h-3.5 text-slate-500" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <span className="font-semibold text-slate-800 text-[14px]">{s.make} </span>
-                                  <span className="text-slate-600 text-[14px]">{s.model}</span>
+                                  <span className="text-slate-500 text-[14px]">{s.model}</span>
                                 </div>
-                                <ArrowRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-[#0e6efe] shrink-0 transition group-hover:translate-x-0.5" />
+                                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 shrink-0 transition" />
                               </button>
                             ))}
                           </>
@@ -400,46 +407,34 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       </div>
                     )}
 
-                    {/* Quick filters */}
-                    <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-1.5 sm:gap-2">
-                      <span className="text-[11px] sm:text-[12px] text-slate-400 font-medium mr-1 hidden sm:inline">Snabbfilter:</span>
+                    <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       {['Elbilar', 'SUV', 'Hybrid', 'Familjebil'].map((f) => (
                         <button
                           key={f}
                           type="button"
                           onClick={() => handleCarQueryChange(f)}
-                          className="text-[12px] sm:text-[13px] text-slate-600 hover:text-[#0e6efe] border border-slate-200 hover:border-[#0e6efe]/40 hover:bg-[#0e6efe]/5 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 transition font-medium"
+                          className="text-[12px] text-slate-500 hover:text-slate-800 border border-slate-200 hover:border-slate-400 rounded-full px-3 py-1 transition font-medium"
                         >
                           {f}
                         </button>
                       ))}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          window.history.pushState({}, '', '/kop-bil/bestall');
-                          window.dispatchEvent(new PopStateEvent('popstate'));
-                        }}
-                        className="ml-auto text-[12px] sm:text-[13px] text-slate-400 hover:text-[#0e6efe] transition"
-                      >
-                        Vet inte? <span className="font-semibold underline underline-offset-2">Vi hjälper dig.</span>
-                      </button>
                     </div>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit}>
-                    <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <div className="flex-1">
                         <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
                       </div>
-                      <div className="flex items-center flex-1 h-12 sm:h-14 rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-[#0e6efe] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#0e6efe]/10 transition-all">
-                        <span className="flex items-center justify-center w-11 sm:w-12 shrink-0">
+                      <div className="flex items-center flex-1 h-13 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
+                        <span className="flex items-center justify-center w-11 shrink-0">
                           <Phone className="w-4 h-4 text-slate-400" />
                         </span>
                         <input
                           type="tel"
                           value={telefon}
                           onChange={(e) => { setTelefon(e.target.value); setError(''); }}
-                          placeholder="Telefonnummer"
+                          placeholder="Telefon"
                           autoComplete="tel"
                           disabled={submitting}
                           className="flex-1 min-w-0 w-0 h-full text-[15px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
@@ -448,7 +443,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       <button
                         type="submit"
                         disabled={submitting}
-                        className="h-12 sm:h-14 px-6 sm:px-7 rounded-xl sm:rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-bold text-[15px] transition shadow-[0_4px_20px_rgba(14,110,254,0.35)] active:scale-[0.99] whitespace-nowrap"
+                        className="h-13 px-6 rounded-xl bg-slate-900 hover:bg-slate-700 disabled:bg-slate-400 text-white font-semibold text-[15px] transition active:scale-[0.99] whitespace-nowrap"
                       >
                         {submitting
                           ? <span className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Skickar…</span>
@@ -457,29 +452,35 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       </button>
                     </div>
                     {error && (
-                      <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-50 border border-red-200 text-red-600 text-[13px] font-medium px-3.5 py-2.5">
+                      <div className="mt-2.5 flex items-center gap-2 rounded-xl bg-red-50 border border-red-200 text-red-600 text-[13px] font-medium px-3.5 py-2.5">
                         <XCircle className="w-4 h-4 shrink-0" strokeWidth={2.5} />
                         <span>{error}</span>
                       </div>
                     )}
-                    <p className="mt-2.5 text-slate-400 text-[11px] sm:text-[12px]">Gratis och utan bindning &middot; Svar inom 24h</p>
+                    <p className="mt-2 text-slate-400 text-[12px]">Gratis och utan bindning · Svar inom 24h</p>
                   </form>
                 )}
               </div>
             </div>
           </div>
+
+          {/* Scroll hint */}
+          <div className="mt-10 mb-6 flex flex-col items-center gap-2 opacity-40">
+            <div className="w-px h-8 bg-white/40" />
+            <span className="text-[11px] text-white/60 uppercase tracking-widest font-medium">Scrolla</span>
+          </div>
         </div>
       </section>
 
-      {/* ── STATS BAR ── */}
-      <section className="bg-[#0e6efe]">
-        <div className="max-w-5xl mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+      {/* ── STATS ── */}
+      <section className="bg-[#0a0f1a] border-t border-white/8">
+        <div className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
           {STATS.map((s) => (
             <div key={s.label} className="flex flex-col items-center text-center">
-              <span className="text-white text-[28px] sm:text-[32px] font-black tracking-tight leading-none">
+              <span className="text-white text-[36px] sm:text-[44px] font-black tracking-tight leading-none tabular-nums">
                 {s.value}
               </span>
-              <span className="text-white/70 text-[13px] mt-1.5 font-medium">{s.label}</span>
+              <span className="text-white/40 text-[13px] mt-2 font-medium tracking-wide">{s.label}</span>
             </div>
           ))}
         </div>
@@ -489,62 +490,60 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="how-it-works"
         data-animate
-        className={`bg-white py-20 sm:py-28 px-6 transition-all duration-700 ${isVisible('how-it-works') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        className={`bg-white py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('how-it-works') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
-              Processen
-            </span>
-            <h2 className="text-[32px] sm:text-[40px] font-bold text-slate-900 tracking-tight">
-              Sälj din bil på tre steg
+          <div className="mb-16">
+            <p className="text-[12px] font-semibold text-slate-400 uppercase tracking-[0.2em] mb-4">Processen</p>
+            <h2 className="text-[36px] sm:text-[48px] font-black text-slate-900 tracking-[-0.02em] leading-[1.05] max-w-lg">
+              Sälj din bil på tre steg.
             </h2>
           </div>
-          <div className="relative flex flex-col md:flex-row md:items-start gap-12 md:gap-6">
-            {/* connecting line */}
-            <div className="hidden md:block absolute top-6 left-[calc(16.67%)] right-[calc(16.67%)] h-px bg-slate-200" />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                step: 1,
+                step: '01',
                 title: 'Registrera din bil',
-                text: 'Fyll i regnummer, miltal, skick och några bilder. Tar under fem minuter.',
+                text: 'Fyll i regnummer, miltal och skick. Tar under fem minuter.',
                 icon: Car,
               },
               {
-                step: 2,
+                step: '02',
                 title: 'Handlare lägger bud',
                 text: 'Utvalda bilhandlare lämnar sina bästa bud i en sluten auktion under 48 timmar.',
                 icon: TrendingUp,
               },
               {
-                step: 3,
-                title: 'Du väljer själv',
-                text: 'Vi presenterar det högsta budet. Du bestämmer om du accepterar — utan press.',
+                step: '03',
+                title: 'Du väljer',
+                text: 'Vi presenterar det högsta budet. Du bestämmer — utan press.',
                 icon: Handshake,
               },
             ].map((c) => {
               const Icon = c.icon;
               return (
-                <div key={c.step} className="flex flex-col items-center text-center flex-1 relative">
-                  <div className="w-12 h-12 rounded-full bg-[#0e6efe] flex items-center justify-center mb-5 shadow-[0_4px_16px_rgba(14,110,254,0.35)] relative z-10">
-                    <Icon className="w-5 h-5 text-white" strokeWidth={2} />
+                <div key={c.step} className="group bg-slate-50 hover:bg-slate-900 rounded-2xl p-8 transition-all duration-300 cursor-default">
+                  <div className="flex items-start justify-between mb-8">
+                    <span className="text-[13px] font-bold text-slate-300 group-hover:text-white/30 tabular-nums tracking-wider transition-colors">{c.step}</span>
+                    <div className="w-10 h-10 rounded-xl bg-white group-hover:bg-white/10 flex items-center justify-center transition-colors shadow-sm">
+                      <Icon className="w-5 h-5 text-slate-700 group-hover:text-white transition-colors" strokeWidth={1.8} />
+                    </div>
                   </div>
-                  <span className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-widest mb-2">
-                    Steg {c.step}
-                  </span>
-                  <h3 className="text-[19px] font-bold text-slate-900 mb-3">{c.title}</h3>
-                  <p className="text-slate-500 text-[15px] leading-relaxed max-w-xs">{c.text}</p>
+                  <h3 className="text-[20px] font-bold text-slate-900 group-hover:text-white mb-3 transition-colors">{c.title}</h3>
+                  <p className="text-slate-500 group-hover:text-white/55 text-[15px] leading-relaxed transition-colors">{c.text}</p>
                 </div>
               );
             })}
           </div>
-          <div className="mt-12 flex justify-center">
+
+          <div className="mt-10">
             <button
               onClick={() => {
                 setHeroTab('salj');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="inline-flex items-center gap-2 h-12 px-8 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-[15px] transition group"
+              className="inline-flex items-center gap-2.5 h-12 px-8 rounded-full bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[15px] transition group"
             >
               Värdera min bil
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
@@ -553,26 +552,24 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
         </div>
       </section>
 
-      {/* ── PERSONLIG SERVICE ── */}
+      {/* ── SERVICE ── */}
       <section
         id="service-section"
         data-animate
-        className={`bg-slate-50 py-20 sm:py-28 px-6 transition-all duration-700 delay-100 ${isVisible('service-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        className={`bg-[#0a0f1a] py-24 sm:py-32 px-6 transition-all duration-700 delay-100 ${isVisible('service-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-6xl mx-auto">
           <div className="max-w-2xl mb-16">
-            <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
-              Personlig service
-            </span>
-            <h2 className="text-[32px] sm:text-[42px] font-bold leading-[1.1] text-slate-900 tracking-tight">
-              Vi mäklar — oavsett hur du vill sälja.
+            <p className="text-[12px] font-semibold text-white/35 uppercase tracking-[0.2em] mb-4">Personlig service</p>
+            <h2 className="text-[36px] sm:text-[48px] font-black text-white tracking-[-0.02em] leading-[1.05] mb-5">
+              Vi mäklar.<br />Oavsett hur du vill sälja.
             </h2>
-            <p className="text-slate-500 mt-4 text-[17px] leading-[1.65]">
+            <p className="text-white/45 text-[17px] leading-relaxed">
               En personlig bilmäklare sköter affären — du får rätt pris utan krångel.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               {
                 icon: Car,
@@ -592,12 +589,12 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             ].map((c) => {
               const Icon = c.icon;
               return (
-                <div key={c.title} className="bg-white rounded-2xl p-7 shadow-sm ring-1 ring-slate-100 hover:shadow-md hover:ring-slate-200 transition-all duration-300 group">
-                  <div className="w-12 h-12 rounded-xl bg-[#0e6efe]/8 flex items-center justify-center mb-5 group-hover:bg-[#0e6efe]/15 transition-colors">
-                    <Icon className="w-6 h-6 text-[#0e6efe]" strokeWidth={1.8} />
+                <div key={c.title} className="rounded-2xl border border-white/8 bg-white/4 p-8 hover:bg-white/8 transition-all duration-300">
+                  <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-6">
+                    <Icon className="w-5 h-5 text-white" strokeWidth={1.8} />
                   </div>
-                  <h3 className="text-[18px] font-bold mb-2.5 text-slate-900">{c.title}</h3>
-                  <p className="text-slate-500 text-[15px] leading-[1.65]">{c.text}</p>
+                  <h3 className="text-[18px] font-bold mb-3 text-white">{c.title}</h3>
+                  <p className="text-white/45 text-[15px] leading-relaxed">{c.text}</p>
                 </div>
               );
             })}
@@ -609,13 +606,13 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="inline-flex items-center gap-2 h-12 px-8 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] transition group shadow-[0_4px_20px_rgba(14,110,254,0.3)]"
+              className="inline-flex items-center gap-2.5 h-12 px-8 rounded-full bg-white text-slate-900 hover:bg-white/90 font-semibold text-[15px] transition group"
             >
               Prata med en mäklare
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
             </button>
-            <p className="text-slate-400 text-[14px] flex items-center gap-1.5">
-              <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" strokeWidth={2} />
+            <p className="text-white/35 text-[14px] flex items-center gap-1.5">
+              <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" strokeWidth={2} />
               Personlig rådgivning — gratis och utan bindning
             </p>
           </div>
@@ -626,70 +623,51 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="benefits-section"
         data-animate
-        className={`bg-white py-20 sm:py-28 px-6 transition-all duration-700 ${isVisible('benefits-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        className={`bg-white py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('benefits-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
-              Varför Bilto
-            </span>
-            <h2 className="text-[32px] sm:text-[40px] font-bold text-slate-900 tracking-tight">
-              Fördelar med Bilto
+          <div className="mb-16">
+            <p className="text-[12px] font-semibold text-slate-400 uppercase tracking-[0.2em] mb-4">Varför Bilto</p>
+            <h2 className="text-[36px] sm:text-[48px] font-black text-slate-900 tracking-[-0.02em] leading-[1.05]">
+              Enkelt. Tryggt. Lönsamt.
             </h2>
           </div>
-          <div className="flex flex-col gap-16 sm:gap-20">
+
+          <div className="flex flex-col divide-y divide-slate-100">
             {[
               {
+                label: '01',
                 title: 'Snabbt och enkelt',
                 text: 'Vi frågar bara om det som påverkar bilens värde, så att du får ett riktigt bud på några minuter.',
-                img: '/benefit3.d9e1ec2e_(1).svg',
-                reverse: false,
                 perks: ['Tar under 5 minuter', 'Inga onödiga frågor', 'Svar inom 24h'],
               },
               {
+                label: '02',
                 title: 'Full transparens',
                 text: 'Se hur miltal, färg och utrustning påverkar värdet. Din mäklare förklarar hela värderingen.',
-                img: '/benefit1.f6fa1ca3.svg',
-                reverse: true,
-                perks: ['Tydlig prisuppdelning', 'Ingen dold avgift', 'Du ser alla bud'],
+                perks: ['Tydlig prisuppdelning', 'Inga dolda avgifter', 'Du ser alla bud'],
               },
               {
+                label: '03',
                 title: 'Tryggt betalt',
                 text: 'Du får betalt direkt av en certifierad bilhandlare — utan risk och krångel.',
-                img: '/benefit2.e5b8ac47.svg',
-                reverse: false,
                 perks: ['Certifierade handlare', 'Säker transaktion', 'Inga mellanhänder'],
               },
             ].map((b) => (
-              <div
-                key={b.title}
-                className={`grid md:grid-cols-2 gap-10 md:gap-16 items-center ${b.reverse ? 'md:[&>*:first-child]:order-2' : ''}`}
-              >
+              <div key={b.title} className="grid md:grid-cols-[1fr_2fr_1fr] gap-8 py-12 items-start">
+                <span className="text-[13px] font-bold text-slate-300 tabular-nums tracking-wider">{b.label}</span>
                 <div>
-                  <h3 className="text-[26px] sm:text-[32px] font-bold text-slate-900 mb-4 tracking-tight">
-                    {b.title}
-                  </h3>
-                  <p className="text-[17px] text-slate-500 leading-relaxed mb-6">
-                    {b.text}
-                  </p>
-                  <ul className="flex flex-col gap-2.5">
-                    {b.perks.map((p) => (
-                      <li key={p} className="flex items-center gap-2.5 text-[15px] text-slate-700 font-medium">
-                        <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" strokeWidth={2} />
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
+                  <h3 className="text-[22px] sm:text-[26px] font-bold text-slate-900 mb-3 tracking-tight">{b.title}</h3>
+                  <p className="text-[16px] text-slate-500 leading-relaxed">{b.text}</p>
                 </div>
-                <div className="flex justify-center">
-                  <img
-                    src={b.img}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full max-w-[280px] h-[200px] object-contain"
-                  />
-                </div>
+                <ul className="flex flex-col gap-2">
+                  {b.perks.map((p) => (
+                    <li key={p} className="flex items-center gap-2 text-[14px] text-slate-600 font-medium">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" strokeWidth={2} />
+                      {p}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
@@ -700,49 +678,50 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="reviews-section"
         data-animate
-        className={`bg-slate-50 py-20 sm:py-28 px-6 transition-all duration-700 ${isVisible('reviews-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        className={`bg-[#0a0f1a] py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('reviews-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
-              Kundrecensioner
-            </span>
-            <h2 className="text-[32px] sm:text-[40px] font-bold text-slate-900 tracking-tight mb-3">
-              Vad våra kunder säger
-            </h2>
-            <div className="flex items-center justify-center gap-1.5">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14">
+            <div>
+              <p className="text-[12px] font-semibold text-white/35 uppercase tracking-[0.2em] mb-4">Kundrecensioner</p>
+              <h2 className="text-[36px] sm:text-[48px] font-black text-white tracking-[-0.02em] leading-[1.05]">
+                Vad kunderna säger.
+              </h2>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" strokeWidth={1} />
               ))}
-              <span className="ml-2 text-[15px] font-semibold text-slate-700">4.9 av 5</span>
-              <span className="text-slate-400 text-[14px] ml-1">(2 400+ recensioner)</span>
+              <span className="ml-1 text-[15px] font-bold text-white">4.9</span>
+              <span className="text-white/35 text-[14px]">(2 400+)</span>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {REVIEWS.map((r) => (
               <div
                 key={r.name}
-                className="bg-white rounded-2xl p-6 sm:p-7 flex gap-5 shadow-sm ring-1 ring-slate-100 hover:shadow-md hover:ring-slate-200 transition-all duration-300"
+                className="rounded-2xl border border-white/8 bg-white/4 p-7 hover:bg-white/8 transition-all duration-300"
               >
-                <img
-                  src={r.img}
-                  alt={r.name}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-12 h-12 rounded-full object-cover flex-shrink-0 ring-2 ring-slate-100"
-                />
-                <div className="flex flex-col">
-                  <div className="flex gap-0.5 mb-2">
-                    {[...Array(r.stars)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" strokeWidth={1} />
-                    ))}
-                  </div>
-                  <p className="text-slate-700 text-[15px] leading-relaxed mb-3 flex-1">
-                    &ldquo;{r.text}&rdquo;
-                  </p>
+                <div className="flex gap-0.5 mb-5">
+                  {[...Array(r.stars)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" strokeWidth={1} />
+                  ))}
+                </div>
+                <p className="text-white/70 text-[16px] leading-relaxed mb-6">
+                  &ldquo;{r.text}&rdquo;
+                </p>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={r.img}
+                    alt={r.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-10 h-10 rounded-full object-cover shrink-0"
+                  />
                   <div>
-                    <p className="text-[14px] font-bold text-slate-900">{r.name}</p>
-                    <p className="text-[12px] text-slate-400">{r.role}</p>
+                    <p className="text-[14px] font-semibold text-white">{r.name}</p>
+                    <p className="text-[12px] text-white/35">{r.role}</p>
                   </div>
                 </div>
               </div>
@@ -755,94 +734,50 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="cta-section"
         data-animate
-        className={`bg-white py-20 sm:py-28 px-6 transition-all duration-700 ${isVisible('cta-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        className={`bg-white py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('cta-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
-                Redo att sälja?
-              </span>
-              <h3 className="text-[30px] sm:text-[38px] font-bold text-slate-900 leading-[1.1] tracking-tight mb-4">
-                Få ett skarpt bud på din bil
-              </h3>
-              <p className="text-[17px] text-slate-500 leading-relaxed mb-6">
-                Ange regnummer och telefon — vi tar hand om resten. Gratis och utan bindning.
-              </p>
-              <div className="flex flex-wrap gap-3 mb-8">
-                {[
-                  { icon: Clock, text: 'Svar inom 24h' },
-                  { icon: Shield, text: 'Tryggt och säkert' },
-                  { icon: TrendingUp, text: 'Bästa marknadspriset' },
-                ].map(({ icon: Icon, text }) => (
-                  <div key={text} className="flex items-center gap-2 text-[14px] font-medium text-slate-600">
-                    <Icon className="w-4 h-4 text-[#0e6efe]" strokeWidth={2} />
-                    {text}
-                  </div>
-                ))}
-              </div>
-              <img
-                src="https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=800"
-                alt="Bilförsäljning"
-                loading="lazy"
-                decoding="async"
-                className="w-full max-w-sm rounded-2xl object-cover h-52 shadow-md"
-              />
-            </div>
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-[12px] font-semibold text-slate-400 uppercase tracking-[0.2em] mb-6">Redo att sälja?</p>
+          <h3 className="text-[40px] sm:text-[56px] font-black text-slate-900 tracking-[-0.025em] leading-[1.0] mb-6">
+            Få ett skarpt bud<br />på din bil.
+          </h3>
+          <p className="text-[17px] text-slate-500 leading-relaxed mb-10 max-w-md mx-auto">
+            Ange regnummer — vi tar hand om resten. Gratis och utan bindning.
+          </p>
 
-            <div className="bg-white rounded-2xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.2)] ring-1 ring-slate-100 p-6 sm:p-8">
-              <h4 className="text-[20px] font-bold text-slate-900 mb-5">Värdera din bil</h4>
-              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-                <label className="relative flex items-center h-12 rounded-xl border border-slate-200 bg-white focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
-                  <span className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center pointer-events-none">
-                    <Phone className="w-4 h-4 text-slate-400" strokeWidth={2} />
-                  </span>
-                  <input
-                    type="tel"
-                    value={telefon}
-                    onChange={(e) => { setTelefon(e.target.value); setError(''); }}
-                    placeholder="Telefonnummer"
-                    autoComplete="tel"
-                    disabled={submitting}
-                    className="flex-1 min-w-0 w-0 h-full pl-12 pr-4 bg-transparent text-[15px] text-slate-900 focus:outline-none placeholder:text-slate-400"
-                  />
-                </label>
-                <label className="relative flex items-center h-12 rounded-xl border border-slate-200 bg-white focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/20 transition">
-                  <span className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center pointer-events-none">
-                    <Mail className="w-4 h-4 text-slate-400" strokeWidth={2} />
-                  </span>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => { setEmail(e.target.value); setError(''); }}
-                    placeholder="E-postadress (valfritt)"
-                    autoComplete="email"
-                    disabled={submitting}
-                    className="flex-1 min-w-0 w-0 h-full pl-12 pr-4 bg-transparent text-[15px] text-slate-900 focus:outline-none placeholder:text-slate-400"
-                  />
-                </label>
-                {error && (
-                  <div role="alert" className="flex items-start gap-2 rounded-xl bg-red-50 border border-red-200 text-red-700 text-[13px] font-medium px-3 py-2.5">
-                    <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-[1px]" strokeWidth={2.5} />
-                    <span>{error}</span>
-                  </div>
-                )}
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="mt-1 h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-bold text-[15px] transition shadow-[0_4px_20px_rgba(14,110,254,0.35)] hover:shadow-[0_6px_28px_rgba(14,110,254,0.45)] active:scale-[0.99] flex items-center justify-center gap-2"
-                >
-                  {submitting
-                    ? <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Skickar…</>
-                    : 'Värdera min bil'
-                  }
-                </button>
-                <p className="text-center text-slate-400 text-[12px] mt-1">
-                  Gratis &middot; Inga dolda avgifter &middot; Ingen bindning
-                </p>
-              </form>
-            </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
+            <button
+              onClick={() => {
+                setHeroTab('salj');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-full bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[16px] transition group"
+            >
+              Värdera min bil gratis
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
+            </button>
+            <button
+              onClick={() => {
+                window.history.pushState({}, '', '/kop-bil');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }}
+              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-full border border-slate-200 hover:border-slate-400 text-slate-700 font-semibold text-[16px] transition"
+            >
+              Köp bil med hjälp
+            </button>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+            {[
+              { icon: Clock, text: 'Svar inom 24h' },
+              { icon: Shield, text: 'Tryggt och säkert' },
+              { icon: TrendingUp, text: 'Bästa marknadspris' },
+            ].map(({ icon: Icon, text }) => (
+              <div key={text} className="flex items-center gap-2 text-[14px] text-slate-400">
+                <Icon className="w-4 h-4" strokeWidth={2} />
+                {text}
+              </div>
+            ))}
           </div>
         </div>
       </section>
