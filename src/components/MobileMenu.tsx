@@ -70,7 +70,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
         </div>
 
         <nav className="flex-1 px-2 py-4 overflow-y-auto">
-          {/* Köp bil med hjälp */}
+          {/* Köp bil */}
           <button
             type="button"
             onClick={() => {
@@ -82,7 +82,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
               isKopBilActive ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-slate-50'
             }`}
           >
-            Köp bil med hjälp
+            Köp bil
           </button>
 
           {/* Sub-links */}
