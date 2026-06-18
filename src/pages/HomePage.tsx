@@ -348,9 +348,9 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               <div className="p-4 sm:p-5">
                 {heroTab === 'hitta' ? (
                   <div ref={carSearchRef} className="relative">
-                    <div className="flex items-center h-13 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
+                    <div className="flex items-center h-14 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
                       <span className="flex items-center justify-center w-12 shrink-0">
-                        <Search className="w-4.5 h-4.5 text-slate-400" />
+                        <Search className="w-4 h-4 text-slate-400" />
                       </span>
                       <input
                         type="text"
@@ -426,7 +426,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       <div className="flex-1">
                         <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
                       </div>
-                      <div className="flex items-center flex-1 h-13 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
+                      <div className="flex items-center flex-1 h-14 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
                         <span className="flex items-center justify-center w-11 shrink-0">
                           <Phone className="w-4 h-4 text-slate-400" />
                         </span>
@@ -443,7 +443,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       <button
                         type="submit"
                         disabled={submitting}
-                        className="h-13 px-6 rounded-xl bg-slate-900 hover:bg-slate-700 disabled:bg-slate-400 text-white font-semibold text-[15px] transition active:scale-[0.99] whitespace-nowrap"
+                        className="h-14 px-6 rounded-xl bg-slate-900 hover:bg-slate-700 disabled:bg-slate-400 text-white font-semibold text-[15px] transition active:scale-[0.99] whitespace-nowrap"
                       >
                         {submitting
                           ? <span className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Skickar…</span>
@@ -751,7 +751,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 setHeroTab('salj');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-full bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[16px] transition group"
+              className="inline-flex items-center gap-2.5 h-14 px-8 rounded-full bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[16px] transition group"
             >
               Värdera min bil gratis
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
@@ -761,7 +761,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-full border border-slate-200 hover:border-slate-400 text-slate-700 font-semibold text-[16px] transition"
+              className="inline-flex items-center gap-2.5 h-14 px-8 rounded-full border border-slate-200 hover:border-slate-400 text-slate-700 font-semibold text-[16px] transition"
             >
               Köp bil med hjälp
             </button>
