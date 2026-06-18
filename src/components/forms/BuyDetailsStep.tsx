@@ -123,14 +123,12 @@ function CarImagePreview({ brand, model }: { brand: string; model: string }) {
 
   return (
     <div className="mt-3 flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
-      {imgUrl ? (
+      {imgUrl && (
         <img
           src={imgUrl}
           alt={`${brand} ${model}`}
           className="w-24 h-16 object-contain flex-shrink-0"
         />
-      ) : (
-        <div className="w-24 h-16 bg-slate-100 rounded-lg flex-shrink-0" />
       )}
       <div className="min-w-0">
         <p className="text-[13px] font-semibold text-slate-900 truncate">
@@ -138,7 +136,7 @@ function CarImagePreview({ brand, model }: { brand: string; model: string }) {
         </p>
         {compData && compData.specs.fuel_types.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
-            {compData.specs.fuel_types.slice(0, 2).map(f => (
+            {compData.specs.fuel_types.slice(0, 3).map(f => (
               <span key={f} className="text-[11px] px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-500 capitalize">{f}</span>
             ))}
           </div>
@@ -155,12 +153,14 @@ function BrandModelSelector({
   onBrandChange,
   onModelChange,
   brandError,
+  onQuiz,
 }: {
   brand: string;
   model: string;
   onBrandChange: (v: string) => void;
   onModelChange: (v: string) => void;
   brandError?: string;
+  onQuiz?: () => void;
 }) {
   const models = brand && brand !== 'Annan' ? (CAR_BRANDS[brand] ?? []) : [];
   const modelIsAnnan = model === 'Annan';
@@ -203,6 +203,30 @@ function BrandModelSelector({
           onChange={e => onModelChange(e.target.value || 'Annan')}
         />
       )}
+
+      <div className="flex flex-wrap gap-2 items-center">
+        <button
+          type="button"
+          onClick={() => { onBrandChange('Vet ej'); onModelChange('Vet ej'); }}
+          className={`inline-flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-medium transition-all border ${
+            brand === 'Vet ej'
+              ? 'bg-slate-900 text-white border-slate-900'
+              : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
+          }`}
+        >
+          Vet ej
+        </button>
+        {onQuiz && (
+          <button
+            type="button"
+            onClick={onQuiz}
+            className="inline-flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-semibold bg-[#0e6efe]/10 text-[#0e6efe] hover:bg-[#0e6efe]/18 transition-all"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            Hitta med bilmatch
+          </button>
+        )}
+      </div>
 
       <CarImagePreview brand={brand} model={model} />
     </div>
@@ -702,6 +726,17 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const compDataForFuel = useMemo(() => {
+    if (!d.carBrand || !d.carModel || d.carBrand === 'Vet ej') return null;
+    return findComparisonCarByMakeModel(d.carBrand, d.carModel);
+  }, [d.carBrand, d.carModel]);
+
+  const availableFuelValues = useMemo((): Set<string> | null => {
+    if (!compDataForFuel) return null;
+    const mapped = new Set(compDataForFuel.specs.fuel_types.map(f => FUEL_TYPE_MAP[f.toLowerCase()] ?? '').filter(Boolean));
+    return mapped.size > 0 ? mapped : null;
+  }, [compDataForFuel]);
+
   if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} />;
   if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} />;
 
@@ -740,22 +775,32 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
   const fuelTypeSelector = hideFuel ? null : (
     <div className="py-7">
-      <label className="block text-[15px] font-bold text-slate-900 mb-3">Drivmedel</label>
+      <label className="block text-[15px] font-bold text-slate-900 mb-1">Drivmedel</label>
+      {availableFuelValues && availableFuelValues.size <= 2 && (
+        <p className="text-[12.5px] text-slate-400 mb-2.5">Baserat på vald modell — välj om du vill.</p>
+      )}
       <div className="flex flex-wrap gap-2">
-        {FUEL_TYPES.map(f => (
-          <button
-            key={f.value}
-            type="button"
-            onClick={() => set('fuelType', d.fuelType === f.value ? '' : f.value)}
-            className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all active:scale-[0.97] ${
-              d.fuelType === f.value
-                ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            {f.label}
-          </button>
-        ))}
+        {FUEL_TYPES.map(f => {
+          const isCompatible = !availableFuelValues || f.value === 'no_pref' || availableFuelValues.has(f.value);
+          const isSelected = d.fuelType === f.value;
+          return (
+            <button
+              key={f.value}
+              type="button"
+              onClick={() => isCompatible && set('fuelType', isSelected ? '' : f.value)}
+              disabled={!isCompatible}
+              className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all active:scale-[0.97] ${
+                isSelected
+                  ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
+                  : isCompatible
+                  ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  : 'bg-slate-50 text-slate-300 line-through cursor-not-allowed'
+              }`}
+            >
+              {f.label}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -838,6 +883,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 model={d.carModel}
                 onBrandChange={v => set('carBrand', v)}
                 onModelChange={v => set('carModel', v)}
+                onQuiz={onQuiz}
               />
             </div>
           )}
@@ -1005,30 +1051,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               model={d.carModel}
               onBrandChange={v => set('carBrand', v)}
               onModelChange={v => set('carModel', v)}
+              onQuiz={onQuiz}
             />
-            <div className="flex flex-wrap gap-2 items-center mt-3">
-              <button
-                type="button"
-                onClick={() => { set('carBrand', 'Vet ej'); set('carModel', 'Vet ej'); }}
-                className={`inline-flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-medium transition-all border ${
-                  d.carBrand === 'Vet ej'
-                    ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
-                }`}
-              >
-                Vet ej
-              </button>
-              {onQuiz && (
-                <button
-                  type="button"
-                  onClick={onQuiz}
-                  className="inline-flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-semibold bg-[#0e6efe]/10 text-[#0e6efe] hover:bg-[#0e6efe]/18 transition-all"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Hitta med bilmatch
-                </button>
-              )}
-            </div>
           </div>
 
           <div className="py-7">
@@ -1124,6 +1148,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   model={d.carModel}
                   onBrandChange={v => set('carBrand', v)}
                   onModelChange={v => set('carModel', v)}
+                  onQuiz={onQuiz}
                 />
                 <input
                   type="text"
