@@ -1,4 +1,4 @@
-import { Zap, Star, Check, ChevronRight, SlidersHorizontal, Users, Battery, Gauge } from 'lucide-react';
+import { Zap, Star, Check, ChevronRight, SlidersHorizontal, Users } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
 import type { EvSpecs } from '../lib/comparison/types';
 
@@ -160,35 +160,7 @@ export default function ElCarCard({
               <span className="text-[10px] font-semibold text-bilto-400 shrink-0">kr/mån</span>
             </div>
           )}
-
-          {/* EV specs strip */}
-          {evSpecs ? (
-            <div className="mt-2.5 grid grid-cols-3 gap-1.5">
-              <div className="flex flex-col items-center gap-0.5 bg-sky-50 rounded-lg px-1.5 py-1.5 text-center">
-                <Zap className="w-3 h-3 text-sky-500 shrink-0" />
-                <span className="text-[11px] font-bold text-sky-700 tabular-nums leading-none">{evSpecs.range_wltp_km}</span>
-                <span className="text-[9px] text-sky-500 leading-none">km WLTP</span>
-              </div>
-              <div className="flex flex-col items-center gap-0.5 bg-slate-50 rounded-lg px-1.5 py-1.5 text-center">
-                <Battery className="w-3 h-3 text-slate-500 shrink-0" />
-                <span className="text-[11px] font-bold text-slate-700 tabular-nums leading-none">{evSpecs.battery_kwh}</span>
-                <span className="text-[9px] text-slate-400 leading-none">kWh</span>
-              </div>
-              <div className="flex flex-col items-center gap-0.5 bg-emerald-50 rounded-lg px-1.5 py-1.5 text-center">
-                <Gauge className="w-3 h-3 text-emerald-500 shrink-0" />
-                <span className="text-[11px] font-bold text-emerald-700 tabular-nums leading-none">{evSpecs.charge_kw_max}</span>
-                <span className="text-[9px] text-emerald-500 leading-none">kW DC</span>
-              </div>
-              <div className="col-span-3 flex items-center justify-between bg-slate-50 rounded-lg px-2.5 py-1.5">
-                <span className="text-[10px] text-slate-500">Laddning 10–80%</span>
-                <span className="text-[10px] font-bold text-slate-700 tabular-nums">{evSpecs.charge_time_10_80_min} min</span>
-              </div>
-              <div className="col-span-3 flex items-center justify-between px-1">
-                <span className="text-[10px] text-slate-400">Vinterräckvidd</span>
-                <span className="text-[10px] font-semibold text-slate-500 tabular-nums">~{evSpecs.range_winter_km} km</span>
-              </div>
-            </div>
-          ) : displayRange != null ? (
+          {displayRange != null && (
             <div className="mt-2 flex items-center gap-1.5">
               <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(14,165,233,0.12)' }}>
                 <div
@@ -201,7 +173,7 @@ export default function ElCarCard({
               </div>
               <span className="text-[10px] font-bold tabular-nums shrink-0" style={{ color: '#0ea5e9' }}>{displayRange} km</span>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
 
