@@ -492,9 +492,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           src="/files_2615643-2026-06-18T07-40-24-450Z-b858d9c8-9893-488f-8103-98fee9292c16.webp"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none opacity-50"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
         />
-        <div className="absolute inset-0 bg-[#0e6efe]/70" />
+        <div className="absolute inset-0 bg-black/40" />
 
         <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
           <div>
