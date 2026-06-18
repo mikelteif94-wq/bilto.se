@@ -760,7 +760,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
     return allCarsRaw
       .filter(car => {
         if (!car.pricing.new_from_sek) return false;
-        if (!resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage)) return false;
         const monthly = calcCarMonthly(car.pricing.new_from_sek, 0.55);
         return activeBudget === 0 ? true : monthly <= activeBudget;
       })

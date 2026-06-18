@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { ComparisonCar } from './types';
+import { findComparisonCarByMakeModel } from './lookup';
 
 type DbRow = {
   make: string;
@@ -171,7 +172,9 @@ export function useCarCatalogLookup(make: string, model: string): {
 
         if (cancelled) return;
         if (row && !error) {
-          setData(dbRowToComparisonCar(row as DbRow));
+          const mapped = dbRowToComparisonCar(row as DbRow);
+          const local = findComparisonCarByMakeModel(make, model);
+          setData(local?.ev_specs ? { ...mapped, ev_specs: local.ev_specs } : mapped);
         }
       } catch {
         // ignore

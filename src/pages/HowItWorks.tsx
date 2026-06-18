@@ -818,7 +818,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               carsToShow = allCars
                 .filter(car => {
                   if (!car.pricing.new_from_sek) return false;
-                  if (!getCarImage(car.brand_display, car.model_display)) return false;
                   const monthly = calcCarMonthly(car.pricing.new_from_sek, 0.55);
                   return activeBudgetPill === 0 ? true : monthly <= activeBudgetPill;
                 })
