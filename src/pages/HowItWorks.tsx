@@ -502,42 +502,39 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section className="hidden lg:block relative overflow-hidden" style={{ backgroundColor: '#0b1220' }}>
-        <div className="relative flex flex-col" style={{ minHeight: '100svh' }}>
-          <img
-            src="/d158d2d6-7209-4239-986d-842219ae491d.jpg"
-            alt=""
-            aria-hidden="true"
-            fetchPriority="high"
-            decoding="async"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: 'center 55%' }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/70" />
+      <section className="hidden lg:block relative bg-[#0e6efe] pt-28 pb-32 overflow-hidden">
+        <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60" />
+        <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50" />
+        <img
+          src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
+          alt=""
+          aria-hidden="true"
+          className="absolute left-1/2 -translate-x-1/2 top-0 w-[780px] h-[780px] object-contain pointer-events-none select-none opacity-40"
+        />
 
-          {/* Headline */}
-          <div className="relative z-10 flex flex-col items-center text-center px-6 pt-40 pb-8 flex-1">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 border border-white/25 text-white text-[13px] font-semibold backdrop-blur-sm mb-8">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-              Sveriges snabbaste bilmäklare
-            </div>
-            <h1 className="text-white font-black leading-[0.92] text-[72px] xl:text-[90px] tracking-[-0.025em] drop-shadow-[0_4px_32px_rgba(0,0,0,0.5)] max-w-3xl">
-              {heroTab === 'hitta'
-                ? <>Hitta din<br />drömvagn.</>
-                : <>Sälj bilen<br />på 48 timmar.</>
-              }
+        <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
+          <div>
+            <h1 className="text-white text-[56px] font-semibold leading-[1.05] tracking-tight">
+              Din bilaffär börjar här
             </h1>
-            <p className="text-white/80 mt-6 text-[20px] font-normal max-w-lg leading-relaxed">
-              {heroTab === 'hitta'
-                ? 'Låt våra experter hitta exakt rätt bil för dig — utan stress.'
-                : 'Jämför bud från hundratals handlare och få bästa pris.'
-              }
-            </p>
+
+            <ul className="mt-8 space-y-4 text-[19px] font-medium text-white">
+              <li className="flex items-center gap-3">
+                <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
+                Sälj din bil och få bästa budet
+              </li>
+              <li className="flex items-center gap-3">
+                <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
+                Köp bil och vi förhandlar priset åt dig
+              </li>
+              <li className="flex items-center gap-3">
+                <Check className="w-7 h-7 text-white shrink-0" strokeWidth={3} />
+                Byt bil och vi sköter allt från start till mål
+              </li>
+            </ul>
           </div>
 
-          {/* White action panel */}
-          <div className="relative z-10 w-full max-w-4xl mx-auto px-8">
-            <div className="bg-white rounded-t-3xl shadow-[0_-16px_60px_rgba(0,0,0,0.35)] overflow-hidden max-w-[440px] w-full justify-self-end ml-auto">
+          <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden max-w-[440px] w-full justify-self-end">
             {/* Tab strip */}
             <div className="flex border-b border-slate-100">
               {(['salj', 'hitta'] as const).map((t) => (
@@ -664,7 +661,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               )}
             </div>
           </div>
-        </div>
         </div>
       </section>
 
