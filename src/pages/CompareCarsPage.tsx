@@ -588,12 +588,13 @@ interface CompareCarsPageProps {
   heroSubtitle?: string;
   defaultCategory?: CategoryKey;
   ctaOptions?: Array<{ label: string; sub: string; track: 'found' | 'searching' | 'trade' }>;
+  defaultFuelTypes?: string[];
 }
 
 
 /* ═════════════ MAIN COMPONENT ═════════════ */
 
-export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', heroTitle, heroSubtitle, defaultCategory, ctaOptions }: CompareCarsPageProps) {
+export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', heroTitle, heroSubtitle, defaultCategory, ctaOptions, defaultFuelTypes }: CompareCarsPageProps) {
   const allCarsRaw = useMemo(() => getAllComparisonCars(), []);
   const { cars: dbCars, loading: carsLoading } = useCatalogCars();
   const { getCarImage } = useCarImages(dbCars);
@@ -1021,7 +1022,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               <button
                 key={label}
                 type="button"
-                onClick={() => openBuyDrawer('', track)}
+                onClick={() => openBuyDrawer('', track, false, '', defaultFuelTypes)}
                 className={`group w-full flex items-center gap-4 px-5 py-4 hover:bg-[#0e6efe]/[0.03] transition-all text-left ${i < arr.length - 1 ? 'border-b border-slate-100' : ''}`}
               >
                 <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/8 group-hover:bg-[#0e6efe]/15 flex items-center justify-center shrink-0 transition-colors">

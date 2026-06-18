@@ -31,6 +31,7 @@ export default function SaljBilMedHjalp({ onBackHome }: SaljBilMedHjalpProps) {
       heroSubtitle="Jämför elbilar, hitta rätt modell och låt oss förhandla fram bästa priset åt dig. Helt gratis och opartiskt."
       defaultCategory="el"
       ctaOptions={EL_CTA_OPTIONS}
+      defaultFuelTypes={['el']}
     />
   );
 }
