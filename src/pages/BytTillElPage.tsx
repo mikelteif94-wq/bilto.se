@@ -2,12 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import {
   ArrowRight, Check, ChevronDown, Phone, Zap, Car, Plug,
   CreditCard, BarChart2, Home, Leaf, Menu, User,
-  TrendingDown, ShieldCheck, AlertCircle, Loader2,
+  TrendingDown, ShieldCheck, AlertCircle, Loader2, CheckCircle2,
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu from '../components/MobileMenu';
 import { useCatalogCars } from '../hooks/useCatalogCars';
 import { useCarImages } from '../hooks/useCarImages';
+import { useVehicleLookup } from '../lib/useVehicleLookup';
 import { supabase } from '../lib/supabase';
 import { calcCarMonthlyRange } from '../lib/utils';
 
@@ -90,6 +91,40 @@ function CostCalc() {
   );
 }
 
+// ─── Vehicle lookup chip ──────────────────────────────────────────────────────
+function VehicleChip({ regnummer }: { regnummer: string }) {
+  const lookup = useVehicleLookup(regnummer);
+  if (lookup.status === 'loading') {
+    return (
+      <div className="flex items-center gap-2 mt-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200">
+        <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-400" />
+        <span className="text-[12px] text-slate-500">Hämtar bilinfo…</span>
+      </div>
+    );
+  }
+  if (lookup.status === 'found') {
+    const d = lookup.data;
+    return (
+      <div className="flex items-start gap-2.5 mt-2 px-3 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200">
+        <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+        <div>
+          <p className="text-[13px] font-bold text-emerald-800">{d.marke} {d.modell} {d.variant}</p>
+          <p className="text-[11px] text-emerald-700">{d.ar} · {d.bransle} · {d.farg}</p>
+        </div>
+      </div>
+    );
+  }
+  if (lookup.status === 'not_found') {
+    return (
+      <div className="flex items-center gap-2 mt-2 px-3 py-2 rounded-xl bg-amber-50 border border-amber-200">
+        <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
+        <span className="text-[12px] text-amber-700">Hittade ingen bil på det registreringsnumret.</span>
+      </div>
+    );
+  }
+  return null;
+}
+
 // ─── Lead form ────────────────────────────────────────────────────────────────
 function LeadForm() {
   const [name, setName] = useState('');
@@ -101,19 +136,52 @@ function LeadForm() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const lookup = useVehicleLookup(regnummer);
+  const vehicleInfo = lookup.status === 'found' ? lookup.data : null;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!telefon.trim()) return;
     setLoading(true);
     setError(null);
     try {
-      const { error: insertError } = await supabase.from('leads').insert({
-        regnummer: regnummer.trim().toUpperCase() || '',
+      const reg = regnummer.trim().toUpperCase();
+      const nameParts = name.trim().split(' ');
+      const firstname = nameParts[0] || '';
+      const lastname = nameParts.slice(1).join(' ') || '';
+
+      const vehicleNote = vehicleInfo
+        ? `Nuvarande bil: ${vehicleInfo.marke} ${vehicleInfo.modell} ${vehicleInfo.variant} (${vehicleInfo.ar}, ${vehicleInfo.bransle})`
+        : '';
+      const interesseLabel = intresse === 'el' ? 'Elbil' : intresse === 'laddhybrid' ? 'Laddhybrid' : 'Vet ej';
+      const notes = [vehicleNote, `Intresse: ${interesseLabel}`].filter(Boolean).join(' · ');
+
+      // Insert lead
+      const { error: leadErr } = await supabase.from('leads').insert({
+        regnummer: reg,
         telefon: telefon.trim(),
         email: email.trim(),
         guidance_requested: true,
       });
-      if (insertError) throw insertError;
+      if (leadErr) throw leadErr;
+
+      // Insert quote_request for admin visibility
+      const { error: quoteErr } = await supabase.from('quote_requests').insert({
+        search_option: 'Byt till el',
+        regnummer: reg,
+        firstname,
+        lastname,
+        email: email.trim(),
+        phone: telefon.trim(),
+        fuel_type: intresse,
+        has_trade_in: !!reg,
+        trade_in_reg: reg,
+        target_car: intresse === 'el' ? 'Elbil' : intresse === 'laddhybrid' ? 'Laddhybrid' : 'El eller laddhybrid',
+        notes,
+        status: 'new',
+      });
+      if (quoteErr) throw quoteErr;
+
       setDone(true);
     } catch {
       setError('Något gick fel. Försök igen eller ring oss direkt.');
@@ -158,8 +226,11 @@ function LeadForm() {
         </div>
         <div>
           <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Regnummer (nuvarande bil)</label>
-          <input type="text" placeholder="ABC123" value={regnummer} onChange={e => setRegnummer(e.target.value)}
-            className="w-full h-12 px-4 rounded-xl border border-slate-200 text-[14px] text-slate-900 placeholder:text-slate-300 focus:outline-none focus:border-[#0e6efe] transition uppercase" />
+          <input type="text" placeholder="ABC123" value={regnummer}
+            onChange={e => setRegnummer(e.target.value)}
+            className="w-full h-12 px-4 rounded-xl border border-slate-200 text-[14px] text-slate-900 placeholder:text-slate-300 focus:outline-none focus:border-[#0e6efe] transition uppercase"
+            maxLength={10} />
+          <VehicleChip regnummer={regnummer} />
         </div>
       </div>
       <div>
@@ -281,6 +352,7 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
+        active="Byt till el"
         onSelect={() => setMenuOpen(false)}
       />
 
@@ -378,7 +450,6 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
             </ul>
           </div>
 
-          {/* White card */}
           <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden max-w-[440px] w-full justify-self-end">
             <div className="px-7 pt-6 pb-2">
               <p className="text-[18px] font-bold text-slate-900">Boka gratis rådgivning</p>
@@ -668,7 +739,7 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
         </div>
       </section>
 
-      {/* ── Final CTA (mobile form + all) ────────────────────────────────────── */}
+      {/* ── Final CTA ────────────────────────────────────────────────────────── */}
       <section ref={formRef} className="bg-[#f5f8fc] py-20 sm:py-28 px-5 sm:px-6">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-[32px] sm:text-[52px] font-bold text-slate-900 leading-[1.05] tracking-tight">
@@ -681,11 +752,6 @@ export default function BytTillElPage({ onBack }: BytTillElPageProps) {
             <LeadForm />
           </div>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <button type="button" onClick={scrollToForm}
-              className="h-14 px-10 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-sm inline-flex items-center justify-center gap-2 group">
-              Skicka en förfrågan
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
-            </button>
             <a href="tel:+46855550200"
               className="h-14 px-8 rounded-full border-2 border-slate-300 text-slate-700 font-semibold text-[15px] hover:border-slate-400 transition inline-flex items-center justify-center gap-2">
               <Phone className="w-4 h-4" />

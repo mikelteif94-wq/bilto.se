@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { X, User, ChevronRight } from 'lucide-react';
+import { X, User, ChevronRight, Zap } from 'lucide-react';
 
 export type MobileMenuItem =
   | 'Sälj bil'
@@ -9,7 +9,8 @@ export type MobileMenuItem =
   | 'Köp bil med hjälp'
   | 'Om oss'
   | 'Så funkar det'
-  | 'Vi förhandlar åt dig';
+  | 'Vi förhandlar åt dig'
+  | 'Byt till el';
 
 interface MobileMenuProps {
   open: boolean;
@@ -143,6 +144,24 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
             }`}
           >
             Om oss
+          </button>
+
+          <div className="mx-2 my-2 border-t border-slate-100" />
+
+          {/* Byt till el */}
+          <button
+            type="button"
+            onClick={() => {
+              window.history.pushState({}, '', '/byt-till-el');
+              window.dispatchEvent(new PopStateEvent('popstate'));
+              onClose();
+            }}
+            className={`w-full text-left px-4 py-4 rounded-lg text-[20px] tracking-tight transition font-medium flex items-center gap-3 ${
+              active === 'Byt till el' ? 'bg-[#0e6efe]/8 text-[#0e6efe] font-semibold' : 'text-[#0e6efe] hover:bg-[#0e6efe]/5'
+            }`}
+          >
+            <Zap className="w-5 h-5 fill-[#0e6efe] text-[#0e6efe]" strokeWidth={0} />
+            Byt till el
           </button>
         </nav>
 

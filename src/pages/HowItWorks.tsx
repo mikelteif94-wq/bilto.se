@@ -253,7 +253,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   };
 
   const steps = DIRECT_STEPS;
-  const navItems = ['Sälj bil', 'Köp bil med hjälp'];
+  const navItems = ['Sälj bil', 'Köp bil med hjälp', 'Byt till el'];
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-slate-900">
@@ -284,6 +284,21 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {navItems.map((item) => {
+              if (item === 'Byt till el') {
+                return (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/byt-till-el');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="text-[15px] text-white font-semibold transition hover:text-white/80"
+                  >
+                    Byt till el
+                  </button>
+                );
+              }
               if (item === 'Köp bil med hjälp') {
                 return (
                   <button

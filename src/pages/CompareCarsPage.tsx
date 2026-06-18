@@ -579,7 +579,7 @@ type QuizStep = 'idle' | 'active' | 'analyzing' | 'results';
 
 /* ───────────── nav ───────────── */
 
-const NAV_ITEMS = ['Sälj bil', 'Köp bil med hjälp'] as const;
+const NAV_ITEMS = ['Sälj bil', 'Köp bil med hjälp', 'Byt till el'] as const;
 
 interface CompareCarsPageProps {
   onBackHome: () => void;
@@ -940,6 +940,18 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {NAV_ITEMS.map((item) => {
+              if (item === 'Byt till el') {
+                return (
+                  <button key={item} type="button" onClick={() => {
+                    window.history.pushState({}, '', '/byt-till-el');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                    className="text-[15px] text-white/80 hover:text-white transition font-medium"
+                  >
+                    {item}
+                  </button>
+                );
+              }
               if (item === 'Köp bil med hjälp') {
                 return (
                   <button key={item} type="button" onClick={() => handleNavSelect(item)}
