@@ -900,7 +900,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   <div className="mt-6 text-center">
                     <button
                       type="button"
-                      onClick={() => setShowAllCars(true)}
+                      onClick={() => { window.history.pushState({}, '', '/utforska'); window.dispatchEvent(new PopStateEvent('popstate')); }}
                       className="h-11 px-7 rounded-full border border-slate-300 hover:border-[#0e6efe] text-slate-700 hover:text-[#0e6efe] font-semibold text-[14px] inline-flex items-center gap-2 transition-all duration-200"
                     >
                       Se fler bilar
