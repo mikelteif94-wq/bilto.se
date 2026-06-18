@@ -491,7 +491,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60" />
         <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50" />
         <img
-          src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
+          src="/9e88d67e-f888-4b7f-b55b-60dea75193a3.png"
           alt=""
           aria-hidden="true"
           className="absolute left-1/2 -translate-x-1/2 top-0 w-[780px] h-[780px] object-contain pointer-events-none select-none opacity-40"
