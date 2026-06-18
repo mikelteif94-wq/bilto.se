@@ -1,6 +1,5 @@
 import { Zap, Star, Check, ChevronRight, SlidersHorizontal, Users } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
-import type { EvSpecs } from '../lib/comparison/types';
 
 const BODY_LABELS: Record<string, string> = {
   sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
@@ -20,7 +19,6 @@ interface ElCarCardProps {
   drivetrain?: string[];
   seats?: number;
   pros?: string[];
-  evSpecs?: EvSpecs;
   isCompared?: boolean;
   topBadge?: boolean;
   onNegotiate: () => void;
@@ -55,13 +53,12 @@ function ScoreBadge({ value }: { value: number }) {
 
 export default function ElCarCard({
   name, imageUrl, rating, expertComment, rangeKm,
-  carPrice, usedPrice, fuelLabel, bodyType, drivetrain, seats, pros, evSpecs,
+  carPrice, usedPrice, fuelLabel, bodyType, drivetrain, seats, pros,
   isCompared, topBadge,
   onNegotiate, onDetail, onCompare,
 }: ElCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
-  const displayRange = evSpecs?.range_wltp_km ?? rangeKm;
 
   return (
     <div
@@ -158,20 +155,6 @@ export default function ElCarCard({
                 {formatSEK(range.low)}–{formatSEK(range.high)}
               </span>
               <span className="text-[10px] font-semibold text-bilto-400 shrink-0">kr/mån</span>
-            </div>
-          )}
-          {displayRange != null && (
-            <div className="mt-2 flex items-center gap-1.5">
-              <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(14,165,233,0.12)' }}>
-                <div
-                  className="h-full rounded-full"
-                  style={{
-                    width: `${Math.min(100, (displayRange / 700) * 100)}%`,
-                    background: 'linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%)',
-                  }}
-                />
-              </div>
-              <span className="text-[10px] font-bold tabular-nums shrink-0" style={{ color: '#0ea5e9' }}>{displayRange} km</span>
             </div>
           )}
         </div>

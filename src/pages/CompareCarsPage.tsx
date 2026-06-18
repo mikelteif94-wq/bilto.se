@@ -1142,7 +1142,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                             seats={car.specs.seats}
                             carPrice={car.pricing.new_from_sek ?? undefined}
                             usedPrice={car.pricing.used_from_sek ?? undefined}
-                            evSpecs={car.ev_specs}
                             isCompared={selectedIds.has(car.id)}
                             onNegotiate={() => openContactForCar(car)}
                             onDetail={() => setDetailCar(car)}
@@ -1362,7 +1361,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                                 seats={compData?.specs.seats}
                                 carPrice={car.carPrice}
                                 usedPrice={car.usedPrice}
-                                evSpecs={compData?.ev_specs}
                                 onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, compData?.specs.fuel_types)}
                                 onDetail={() => { if (compData) setDetailCar(compData); }}
                               />
@@ -1603,7 +1601,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                       drivetrain={compCar?.specs.drivetrain}
                       seats={compCar?.specs.seats}
                       pros={compCar?.pros}
-                      evSpecs={compCar?.ev_specs}
                       isCompared={selectedIds.has(car.id)}
                       onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
                       onDetail={() => { if (compCar) setDetailCar(compCar); }}
@@ -1990,7 +1987,6 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
                                     seats={car.specs.seats}
                                     carPrice={car.pricing.new_from_sek ?? undefined}
                                     usedPrice={car.pricing.used_from_sek ?? undefined}
-                                    evSpecs={car.ev_specs}
                                     isCompared={selectedIds.has(car.id)}
                                     onNegotiate={() => openContactForCar(car)}
                                     onDetail={() => setDetailCar(car)}
