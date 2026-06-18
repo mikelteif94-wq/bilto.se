@@ -329,14 +329,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </header>
 
-      <section className="lg:hidden pt-16 relative bg-[#0e6efe] overflow-hidden">
+      <section className="lg:hidden pt-16 relative bg-slate-900 overflow-hidden">
         <img
-          src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
+          src="/files_2615643-2026-06-18T07-40-24-450Z-b858d9c8-9893-488f-8103-98fee9292c16.webp"
           alt=""
           aria-hidden="true"
-          className="absolute -left-24 -top-6 w-[280px] h-[280px] object-contain pointer-events-none select-none opacity-30"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
         />
-        <div className="absolute -right-20 top-80 w-[240px] h-[240px] rounded-full bg-[#3d8cff] opacity-50" />
+        <div className="absolute inset-0 bg-black/40" />
 
         <div className="relative px-6 pt-4 pb-10">
           <div className="flex items-center justify-center mb-3">
