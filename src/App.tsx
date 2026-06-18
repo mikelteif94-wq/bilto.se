@@ -41,6 +41,7 @@ const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CompareCarsPage = lazy(() => import('./pages/CompareCarsPage'));
+const SaljBilMedHjalp = lazy(() => import('./pages/SaljBilMedHjalp'));
 const KopBilConcierge = lazy(() => import('./pages/KopBilConcierge'));
 const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
@@ -399,6 +400,21 @@ function App() {
     return (
       <Suspense fallback={<PageLoader />}>
         <CompareCarsPage
+          onBackHome={() => {
+            window.history.pushState({}, '', '/');
+            setPath('/');
+            setPublicRoute({ page: 'home' });
+          }}
+          pageSlug="kop-bil"
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/salj-bil-hjalp') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <SaljBilMedHjalp
           onBackHome={() => {
             window.history.pushState({}, '', '/');
             setPath('/');

@@ -583,12 +583,13 @@ const NAV_ITEMS = ['Sälj bil', 'Köp bil med hjälp'] as const;
 
 interface CompareCarsPageProps {
   onBackHome: () => void;
+  pageSlug?: 'kop-bil' | 'salj-bil-hjalp';
 }
 
 
 /* ═════════════ MAIN COMPONENT ═════════════ */
 
-export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
+export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil' }: CompareCarsPageProps) {
   const allCarsRaw = useMemo(() => getAllComparisonCars(), []);
   const { cars: dbCars, loading: carsLoading } = useCatalogCars();
   const { getCarImage } = useCarImages(dbCars);
@@ -938,25 +939,28 @@ export default function CompareCarsPage({ onBackHome }: CompareCarsPageProps) {
           <button onClick={onBackHome} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center">
             <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
           </button>
-          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            {NAV_ITEMS.map((item) => {
-              if (item === 'Köp bil med hjälp') {
-                return (
-                  <button key={item} type="button" onClick={() => handleNavSelect(item)}
-                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/20 border border-white/40 text-white text-[14px] font-semibold hover:bg-white/30 transition backdrop-blur-sm"
-                  >
-                    {item}
-                  </button>
-                );
-              }
-              return (
-                <button key={item} type="button" onClick={() => handleNavSelect(item)}
-                  className="text-[15px] text-white/80 hover:text-white transition font-medium"
-                >
-                  {item}
-                </button>
-              );
-            })}
+          <nav className="hidden lg:flex items-center gap-3 absolute left-1/2 -translate-x-1/2">
+            <button key="salj-bil" type="button" onClick={() => handleNavSelect('Sälj bil')}
+              className="text-[15px] text-white/80 hover:text-white transition font-medium"
+            >
+              Sälj bil
+            </button>
+            <button key="kop-bil" type="button" onClick={() => {
+              window.history.pushState({}, '', '/kop-bil');
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            }}
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full border text-[14px] font-semibold transition backdrop-blur-sm ${pageSlug === 'kop-bil' ? 'bg-white/30 border-white/60 text-white' : 'bg-white/15 border-white/30 text-white hover:bg-white/25'}`}
+            >
+              Köp bil med hjälp
+            </button>
+            <button key="salj-bil-hjalp" type="button" onClick={() => {
+              window.history.pushState({}, '', '/salj-bil-hjalp');
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            }}
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full border text-[14px] font-semibold transition backdrop-blur-sm ${pageSlug === 'salj-bil-hjalp' ? 'bg-white/30 border-white/60 text-white' : 'bg-white/15 border-white/30 text-white hover:bg-white/25'}`}
+            >
+              Sälj bil med hjälp
+            </button>
           </nav>
           <div className="flex items-center ml-auto">
             <a href="/logga-in" className="inline-flex items-center gap-2 bg-white text-[#0e6efe] text-[14px] font-semibold px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap">

@@ -253,7 +253,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   };
 
   const steps = DIRECT_STEPS;
-  const navItems = ['Sälj bil', 'Köp bil med hjälp'];
+  const navItems = ['Sälj bil', 'Köp bil med hjälp', 'Sälj bil med hjälp'];
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-slate-900">
@@ -282,7 +282,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               decoding="async"
             />
           </button>
-          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+          <nav className="hidden lg:flex items-center gap-3 absolute left-1/2 -translate-x-1/2">
             {navItems.map((item) => {
               if (item === 'Köp bil med hjälp') {
                 return (
@@ -291,6 +291,21 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     type="button"
                     onClick={() => {
                       window.history.pushState({}, '', '/kop-bil');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/15 border border-white/30 text-white text-[14px] font-semibold hover:bg-white/25 transition backdrop-blur-sm"
+                  >
+                    {item}
+                  </button>
+                );
+              }
+              if (item === 'Sälj bil med hjälp') {
+                return (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => {
+                      window.history.pushState({}, '', '/salj-bil-hjalp');
                       window.dispatchEvent(new PopStateEvent('popstate'));
                     }}
                     className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/15 border border-white/30 text-white text-[14px] font-semibold hover:bg-white/25 transition backdrop-blur-sm"
