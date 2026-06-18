@@ -584,12 +584,16 @@ const NAV_ITEMS = ['Sälj bil', 'Köp bil med hjälp'] as const;
 interface CompareCarsPageProps {
   onBackHome: () => void;
   pageSlug?: 'kop-bil' | 'salj-bil-hjalp';
+  heroTitle?: string;
+  heroSubtitle?: string;
+  defaultCategory?: CategoryKey;
+  ctaOptions?: Array<{ label: string; sub: string; track: 'found' | 'searching' | 'trade' }>;
 }
 
 
 /* ═════════════ MAIN COMPONENT ═════════════ */
 
-export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil' }: CompareCarsPageProps) {
+export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', heroTitle, heroSubtitle, defaultCategory, ctaOptions }: CompareCarsPageProps) {
   const allCarsRaw = useMemo(() => getAllComparisonCars(), []);
   const { cars: dbCars, loading: carsLoading } = useCatalogCars();
   const { getCarImage } = useCarImages(dbCars);
@@ -604,7 +608,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil' }: Co
   }, []);
   const [detailCar, setDetailCar] = useState<ComparisonCar | null>(null);
   const [fitQuizCar, setFitQuizCar] = useState<ComparisonCar | null>(null);
-  const [activeCategory, setActiveCategory] = useState<CategoryKey>('alla');
+  const [activeCategory, setActiveCategory] = useState<CategoryKey>(defaultCategory ?? 'alla');
   const [showAllCars, setShowAllCars] = useState(false);
 
   // Selection state
@@ -984,14 +988,14 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil' }: Co
         <div className="absolute right-0 -bottom-32 w-[400px] h-[400px] rounded-full bg-[#3d8cff] opacity-30" />
         <div className="relative max-w-3xl mx-auto text-center">
           <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
-            Hitta din dr&ouml;mbil och f&ouml;rhandla priset
+            {heroTitle ?? 'Hitta din dr\u00f6mbil och f\u00f6rhandla priset'}
           </h1>
           <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto">
-            J&auml;mf&ouml;r bilar, hitta r&auml;tt modell och l&aring;t oss f&ouml;rhandla fram b&auml;sta priset &aring;t dig. Helt gratis och opartiskt.
+            {heroSubtitle ?? 'J\u00e4mf\u00f6r bilar, hitta r\u00e4tt modell och l\u00e5t oss f\u00f6rhandla fram b\u00e4sta priset \u00e5t dig. Helt gratis och opartiskt.'}
           </p>
 
           <div className="mt-8 bg-white rounded-2xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden max-w-md mx-auto text-left">
-            {[
+            {(ctaOptions ?? [
               {
                 icon: CheckCircle,
                 label: 'Jag har hittat en bil',
@@ -1010,12 +1014,15 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil' }: Co
                 sub: 'Vi hittar och förhandlar nästa bil åt dig',
                 track: 'trade' as const,
               },
-            ].map(({ icon: Icon, label, sub, track }, i) => (
+            ]).map(({ label, sub, track }, i, arr) => {
+              const icons = { found: CheckCircle, searching: Search, trade: ArrowLeftRight };
+              const Icon = icons[track];
+              return (
               <button
                 key={label}
                 type="button"
                 onClick={() => openBuyDrawer('', track)}
-                className={`group w-full flex items-center gap-4 px-5 py-4 hover:bg-[#0e6efe]/[0.03] transition-all text-left ${i < 2 ? 'border-b border-slate-100' : ''}`}
+                className={`group w-full flex items-center gap-4 px-5 py-4 hover:bg-[#0e6efe]/[0.03] transition-all text-left ${i < arr.length - 1 ? 'border-b border-slate-100' : ''}`}
               >
                 <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/8 group-hover:bg-[#0e6efe]/15 flex items-center justify-center shrink-0 transition-colors">
                   <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
@@ -1026,7 +1033,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil' }: Co
                 </div>
                 <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] group-hover:translate-x-0.5 transition-all shrink-0" />
               </button>
-            ))}
+            );
+            })}
           </div>
         </div>
       </section>
