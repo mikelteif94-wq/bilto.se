@@ -152,9 +152,30 @@ const LOCAL_IMAGES: Record<string, string> = {
 
 type CategoryKey = 'alla' | 'popular' | 'el' | 'suv' | 'hybrid' | 'sedan';
 
+const POPULAR_MODELS: Array<[string, string]> = [
+  ['Volvo', 'XC60'], ['Volvo', 'XC40'], ['Volvo', 'V60'], ['Volvo', 'XC90'], ['Volvo', 'EX30'], ['Volvo', 'EX40'],
+  ['Toyota', 'RAV4'], ['Toyota', 'Yaris'], ['Toyota', 'C-HR'], ['Toyota', 'Corolla Hybrid'], ['Toyota', 'Yaris Cross'],
+  ['Volkswagen', 'Golf'], ['Volkswagen', 'Tiguan'], ['Volkswagen', 'ID.4'], ['Volkswagen', 'ID.3'], ['Volkswagen', 'Passat Variant'],
+  ['Tesla', 'Model 3'], ['Tesla', 'Model Y'],
+  ['Kia', 'Sportage'], ['Kia', 'EV6'], ['Kia', 'Niro'], ['Kia', 'Ceed'],
+  ['Hyundai', 'IONIQ 5'], ['Hyundai', 'Tucson'], ['Hyundai', 'i30'],
+  ['Polestar', '2'], ['Polestar', '3'],
+  ['BMW', '3-serie'], ['BMW', 'X3'], ['BMW', 'i4'],
+  ['Skoda', 'Octavia'], ['Skoda', 'Karoq'], ['Skoda', 'Kodiaq'],
+  ['Ford', 'Puma'], ['Ford', 'Kuga'], ['Ford', 'Mustang Mach-E'],
+  ['Dacia', 'Sandero'], ['Dacia', 'Duster'],
+  ['MG', '4'], ['MG', 'ZS EV'],
+  ['Renault', 'Clio'], ['Renault', 'Captur'], ['Renault', '5 E-Tech'],
+  ['Audi', 'A4 Avant'], ['Audi', 'Q5'], ['Audi', 'Q4 e-tron'],
+  ['Mercedes-Benz', 'GLC'], ['Mercedes-Benz', 'C-Klass'],
+  ['Peugeot', '3008'], ['Peugeot', '208'],
+];
+
+const POPULAR_SET = new Set(POPULAR_MODELS.map(([m, mo]) => `${m.toLowerCase()}|${mo.toLowerCase()}`));
+
 const CATEGORY_FILTERS: Record<CategoryKey, (car: CatalogCarFull) => boolean> = {
   alla: () => true,
-  popular: car => (car.rating_overall ?? 0) >= 8,
+  popular: car => POPULAR_SET.has(`${car.make.toLowerCase()}|${car.model.toLowerCase()}`),
   el: car => !!(car.fuel_types?.includes('el')),
   suv: car => car.body_type === 'suv',
   hybrid: car => !!(car.fuel_types?.some(f => f === 'hybrid' || f === 'laddhybrid')),
