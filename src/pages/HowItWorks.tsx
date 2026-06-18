@@ -487,7 +487,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section className="hidden lg:block relative bg-slate-900 pt-28 pb-32 overflow-hidden">
+      <section className="hidden lg:block relative bg-slate-900 pt-36 pb-48 overflow-hidden">
         <img
           src="/files_2615643-2026-06-18T07-40-24-450Z-b858d9c8-9893-488f-8103-98fee9292c16.webp"
           alt=""
