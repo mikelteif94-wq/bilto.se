@@ -6,6 +6,7 @@ import RegInput from '../RegInput';
 import { CAR_BRANDS, POPULAR_BRANDS } from '../../lib/carBrands';
 import { findComparisonCarByMakeModel } from '../../lib/comparison/lookup';
 import { useCarImages } from '../../hooks/useCarImages';
+import { useCatalogCars } from '../../hooks/useCatalogCars';
 import { useVehicleLookup } from '../../lib/useVehicleLookup';
 
 const BUYING_STAGES = [
@@ -105,7 +106,8 @@ function getLinkStatus(val: string): 'empty' | 'valid_url' | 'text' {
 
 /* ── Car image preview component ── */
 function CarImagePreview({ brand, model }: { brand: string; model: string }) {
-  const { getCarImage } = useCarImages();
+  const { cars: dbCars } = useCatalogCars();
+  const { getCarImage } = useCarImages(dbCars);
   const compData = useMemo(() => {
     if (!brand || !model || model === 'Annan') return null;
     return findComparisonCarByMakeModel(brand, model);
