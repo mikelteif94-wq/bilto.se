@@ -1,4 +1,4 @@
-import { Star, Check, ChevronRight, SlidersHorizontal, Users } from 'lucide-react';
+import { Star, Check, ChevronRight, SlidersHorizontal, Users, PhoneCall } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
 
 const BODY_LABELS: Record<string, string> = {
@@ -206,6 +206,10 @@ export default function CompactCarCard({
           >
             Få hjälp att köpa <ChevronRight className="w-3.5 h-3.5 opacity-80" />
           </button>
+          <div className="flex items-center justify-center gap-1 pt-0.5">
+            <PhoneCall className="w-2.5 h-2.5 text-slate-400" />
+            <span className="text-[10px] text-slate-400">Börjar med en gratis konsultation</span>
+          </div>
           {onCompare && (
             <button
               type="button"

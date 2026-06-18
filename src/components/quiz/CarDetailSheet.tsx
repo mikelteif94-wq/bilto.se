@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star, Gauge, Armchair, Briefcase, TrendingDown, Shield,
   Fuel, Battery, Car, Check, X as XIcon, Info, Users, ArrowRight,
-  BarChart2, AlertTriangle, HelpCircle, X, Wallet, Zap,
+  BarChart2, AlertTriangle, HelpCircle, X, Wallet, Zap, PhoneCall, MessageSquare, BadgeCheck,
 } from 'lucide-react';
 import { Sheet } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
@@ -535,7 +535,36 @@ function CarEquityCalc({ carPrice, usedPrice, carName, bodyType }: { carPrice: n
   );
 }
 
-// ─── CTA helpers ──────────────────────────────────────────────────────────────
+// ─── How it works strip ───────────────────────────────────────────────────────
+function HowItWorksStrip() {
+  const steps = [
+    { icon: PhoneCall, label: 'Konsultation', desc: 'Vi lyssnar på dina behov — bilbyte eller enbart köp' },
+    { icon: MessageSquare, label: 'Vi förhandlar', desc: 'Bilto förhandlar priset mot handlaren åt dig' },
+    { icon: BadgeCheck, label: 'Klart!', desc: 'Du hämtar bilen på dina villkor, vi sköter pappren' },
+  ];
+  return (
+    <div className="rounded-2xl border border-slate-100 bg-slate-50 overflow-hidden">
+      <div className="px-4 pt-3.5 pb-1">
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Så fungerar det</p>
+      </div>
+      <div className="divide-y divide-slate-100">
+        {steps.map((s, i) => (
+          <div key={i} className="flex items-start gap-3 px-4 py-3">
+            <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 mt-0.5">
+              <s.icon className="w-3.5 h-3.5 text-[#0e6efe]" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[12px] font-semibold text-slate-800">{i + 1}. {s.label}</p>
+              <p className="text-[11px] text-slate-400 leading-snug mt-0.5">{s.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
 function getPersonaCTA(persona: Persona | null, brand: string, model: string): { headline: string; sub: string } {
   switch (persona) {
     case 'first_time_buyer': return { headline: 'Köp tryggt — vi guidar dig hela vägen', sub: `Rådgivare hjälper dig med ${brand} ${model} från provkörning till kontrakt` };
@@ -755,6 +784,9 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
           <p className="text-[12.5px] text-slate-600 leading-relaxed mt-3 pt-3 border-t border-[#0047B3]/10">{data.meta_description}</p>
         )}
       </section>
+
+      {/* ── How it works ── */}
+      <HowItWorksStrip />
 
       {/* ── CTAs ── */}
       <div className="space-y-2.5">
