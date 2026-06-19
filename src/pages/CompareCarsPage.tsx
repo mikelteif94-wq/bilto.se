@@ -2159,19 +2159,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               <p className="text-slate-600 mt-4 text-[14px] sm:text-[15px] leading-[1.65] max-w-md">
                 Johan ville köpa en Toyota RAV4 men hade varken tid eller lust att jaga annonser och förhandla. Bilto tog hand om hela affären — hittade rätt bil, förhandlade priset och såg till att allt gick smidigt. Johan sparade både pengar och en massa tid.
               </p>
-              <div className="mt-6 grid grid-cols-2 gap-2.5">
-                {[
-                  { label: 'Sparad tid', value: 'Flera dagar' },
-                  { label: 'Prisförhandling', value: '12 000 kr' },
-                  { label: 'Smidig affär', value: 'Start–mål' },
-                  { label: 'Nöjd kund', value: '100 %' },
-                ].map(({ label, value }) => (
-                  <div key={label} className="px-4 py-3 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl">
-                    <p className="text-[10px] font-bold text-[#0e6efe] uppercase tracking-[0.12em] mb-0.5">{label}</p>
-                    <p className="text-[16px] font-bold text-slate-900 leading-tight">{value}</p>
-                  </div>
-                ))}
-              </div>
               <p className="text-[13px] text-slate-500 mt-5">
                 Johan K. — Toyota RAV4, 2023
               </p>
