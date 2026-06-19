@@ -163,6 +163,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   }, []);
 
   useEffect(() => {
+    if (heroTab !== 'hitta') { setShowSuggestions(false); return; }
+    if (carQuery.trim()) { setShowSuggestions(true); return; }
+    supabase.from('car_catalog').select('make, model').limit(8).then(({ data }) => {
+      setCarSuggestions(data || []);
+      setShowSuggestions(true);
+    });
+  }, [heroTab]);
+
+  useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (carSearchRef.current && !carSearchRef.current.contains(e.target as Node)) {
         setShowSuggestions(false);
@@ -448,7 +457,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                           const [make, ...rest] = suggestion.split(' ');
                           handleCarSelect(make, rest.join(' '));
                         }}
-                        className="text-[11px] text-slate-500 hover:text-[#0e6efe] bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-[#0e6efe]/30 rounded-full px-2.5 py-1 transition"
+                        className="text-[11px] text-white font-semibold bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.97] rounded-full px-2.5 py-1 transition-all shadow-[0_2px_8px_-2px_rgba(14,110,254,0.4)]"
                       >
                         {suggestion}
                       </button>
