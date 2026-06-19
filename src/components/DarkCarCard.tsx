@@ -1,4 +1,4 @@
-import { Star, ChevronRight, Check, SlidersHorizontal } from 'lucide-react';
+import { Star, ChevronRight, Info } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
 
 interface DarkCarCardProps {
@@ -17,8 +17,6 @@ interface DarkCarCardProps {
   expertComment?: string;
   onNegotiate: () => void;
   onDetail?: () => void;
-  onCompare?: () => void;
-  isComparing?: boolean;
   onFitQuiz?: () => void;
   index?: number;
 }
@@ -42,7 +40,7 @@ function ScoreBadge({ value }: { value: number }) {
 export default function DarkCarCard({
   name, imageUrl, rating, topBadge, expertComment,
   carPrice, usedPrice,
-  onNegotiate, onDetail, onCompare, isComparing, index = 0,
+  onNegotiate, onDetail, index = 0,
 }: DarkCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
 
@@ -99,18 +97,14 @@ export default function DarkCarCard({
         >
           Få hjälp att köpa <ChevronRight className="w-4 h-4 opacity-80" />
         </button>
-        {onCompare && (
+        {onDetail && (
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); onCompare(); }}
-            className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-medium transition-all duration-150 active:scale-[0.98] ${
-              isComparing
-                ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                : 'border-slate-200 bg-white text-slate-400 hover:border-slate-300 hover:text-slate-600'
-            }`}
+            onClick={(e) => { e.stopPropagation(); onDetail(); }}
+            className="w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border border-slate-200 bg-white text-slate-500 text-[11px] font-medium transition-all duration-150 active:scale-[0.98] hover:border-slate-300 hover:text-slate-700"
           >
-            {isComparing ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
-            {isComparing ? 'Tillagd i jämförelse' : 'Jämför'}
+            <Info className="w-3.5 h-3.5" />
+            Läs mer
           </button>
         )}
       </div>

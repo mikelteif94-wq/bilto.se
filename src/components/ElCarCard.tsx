@@ -1,4 +1,4 @@
-import { Zap, Star, Check, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { Zap, Star, Check, ChevronRight, Info } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
 
 const BODY_LABELS: Record<string, string> = {
@@ -19,12 +19,10 @@ interface ElCarCardProps {
   drivetrain?: string[];
   seats?: number;
   pros?: string[];
-  isCompared?: boolean;
   isSelected?: boolean;
   topBadge?: boolean;
   onNegotiate: () => void;
   onDetail?: () => void;
-  onCompare?: () => void;
   onSelect?: () => void;
   onFitQuiz?: () => void;
 }
@@ -56,8 +54,8 @@ function ScoreBadge({ value }: { value: number }) {
 export default function ElCarCard({
   name, imageUrl, rating, expertComment,
   carPrice, usedPrice, fuelLabel, bodyType, drivetrain, pros,
-  isCompared, isSelected, topBadge,
-  onNegotiate, onDetail, onCompare,
+  isSelected, topBadge,
+  onNegotiate, onDetail,
 }: ElCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
@@ -65,8 +63,6 @@ export default function ElCarCard({
 
   const ringClass = isSelected
     ? 'ring-2 ring-[#0e6efe] shadow-[0_0_0_4px_rgba(14,110,254,0.12)]'
-    : isCompared
-    ? 'ring-2 ring-emerald-400 shadow-[0_0_0_4px_rgba(16,185,129,0.10)]'
     : 'ring-1 ring-slate-200 shadow-sm hover:shadow-md hover:ring-slate-300';
 
   return (
@@ -95,7 +91,7 @@ export default function ElCarCard({
               EL
             </span>
           </div>
-          {topBadge && !isCompared && !isSelected && (
+          {topBadge && !isSelected && (
             <div className="absolute top-1.5 left-1.5">
               <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[9px] font-bold"
                 style={{ background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', color: '#fff' }}>
@@ -104,11 +100,10 @@ export default function ElCarCard({
               </span>
             </div>
           )}
-          {rating != null && !isCompared && !isSelected && !topBadge && <ScoreBadge value={rating} />}
-          {(isCompared || isSelected) && (
+          {rating != null && !isSelected && !topBadge && <ScoreBadge value={rating} />}
+          {isSelected && (
             <div className="absolute top-1.5 right-1.5">
-              <div className="w-5 h-5 rounded-full flex items-center justify-center"
-                style={{ background: isCompared ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : '#0e6efe' }}>
+              <div className="w-5 h-5 rounded-full flex items-center justify-center bg-[#0e6efe]">
                 <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
               </div>
             </div>
@@ -143,15 +138,13 @@ export default function ElCarCard({
             >
               Få prishjälp <ChevronRight className="w-3 h-3 opacity-80" />
             </button>
-            {onCompare && (
+            {onDetail && (
               <button
                 type="button"
-                onClick={(e) => { e.stopPropagation(); onCompare(); }}
-                className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-all active:scale-[0.97] ${
-                  isCompared ? 'bg-emerald-50 border-emerald-300 text-emerald-600' : 'border-slate-200 text-slate-400'
-                }`}
+                onClick={(e) => { e.stopPropagation(); onDetail(); }}
+                className="w-8 h-8 rounded-lg border border-slate-200 text-slate-400 flex items-center justify-center transition-all active:scale-[0.97] hover:border-[#0e6efe]/40 hover:text-[#0e6efe]"
               >
-                {isCompared ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
+                <Info className="w-3 h-3" />
               </button>
             )}
           </div>
@@ -179,7 +172,7 @@ export default function ElCarCard({
                 Elbil
               </span>
             </div>
-            {topBadge && !isCompared && !isSelected && (
+            {topBadge && !isSelected && (
               <div className="absolute top-2.5 right-2.5">
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold"
                   style={{ background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', color: '#fff', boxShadow: '0 2px 8px rgba(245,158,11,0.35)' }}>
@@ -188,18 +181,12 @@ export default function ElCarCard({
                 </span>
               </div>
             )}
-            {isCompared && (
-              <div className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center shadow-md"
-                style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>
-                <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
-              </div>
-            )}
-            {isSelected && !isCompared && (
+            {isSelected && !topBadge && (
               <div className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center shadow-md bg-[#0e6efe]">
                 <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
               </div>
             )}
-            {rating != null && !isCompared && !isSelected && !topBadge && <ScoreBadge value={rating} />}
+            {rating != null && !isSelected && !topBadge && <ScoreBadge value={rating} />}
           </div>
 
           <div className="px-3.5 pt-3 pb-2">
@@ -238,18 +225,14 @@ export default function ElCarCard({
           >
             Få prishjälp <ChevronRight className="w-3.5 h-3.5 opacity-80" />
           </button>
-          {onCompare && (
+          {onDetail && (
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); onCompare(); }}
-              className={`w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-semibold transition-all active:scale-[0.97] ${
-                isCompared
-                  ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                  : 'border-slate-200 bg-white text-slate-400 hover:border-[#0e6efe]/30 hover:text-[#0e6efe] hover:bg-[#0e6efe]/5'
-              }`}
+              onClick={(e) => { e.stopPropagation(); onDetail(); }}
+              className="w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border border-slate-200 bg-white text-slate-500 text-[11px] font-semibold transition-all active:scale-[0.97] hover:border-[#0e6efe]/30 hover:text-[#0e6efe] hover:bg-[#0e6efe]/5"
             >
-              {isCompared ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <SlidersHorizontal className="w-3 h-3" />}
-              {isCompared ? 'Tillagd i jämförelse' : 'Jämför'}
+              <Info className="w-3 h-3" />
+              Läs mer
             </button>
           )}
         </div>

@@ -35,7 +35,6 @@ import { useCatalogCars } from '../hooks/useCatalogCars';
 import RegInput from '../components/RegInput';
 import { setPageMeta } from '../lib/pageMeta';
 
-const CompareDrawer = lazy(() => import('../components/CompareDrawer'));
 const BuyDrawer = lazy(() => import('../components/BuyDrawer'));
 const CarFitQuiz = lazy(() => import('../components/CarFitQuiz').then(m => ({ default: m.CarFitQuiz })));
 
@@ -188,8 +187,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   };
 
   const [showAllCars, setShowAllCars] = useState(false);
-  const [selectedCompareIds, setSelectedCompareIds] = useState<Set<string>>(new Set());
-  const [compareOpen, setCompareOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -263,16 +260,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
-  const allCarsMap = new Map(allCars.map(c => [c.id, c]));
-  const selectedCompareCars = Array.from(selectedCompareIds).map(id => allCarsMap.get(id)).filter((c): c is ComparisonCar => !!c);
-
-  const toggleCompare = (id: string) => {
-    setSelectedCompareIds(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) { next.delete(id); } else if (next.size < 4) { next.add(id); }
-      return next;
-    });
-  };
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     if (item === 'Så funkar det') return;
@@ -865,9 +852,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                           usedPrice={car.pricing.used_from_sek ?? undefined}
                           onNegotiate={() => openDrawer(`${car.brand_display} ${car.model_display}`)}
                           onDetail={() => setDetailCar(car)}
-                          onCompare={() => toggleCompare(car.id)}
                           onFitQuiz={() => setFitQuizCar(car)}
-                          isCompared={selectedCompareIds.has(car.id)}
                         />
                       );
                     }
@@ -884,9 +869,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         usedPrice={car.pricing.used_from_sek ?? undefined}
                         onNegotiate={() => openDrawer(`${car.brand_display} ${car.model_display}`)}
                         onDetail={() => setDetailCar(car)}
-                        onCompare={() => toggleCompare(car.id)}
                         onFitQuiz={() => setFitQuizCar(car)}
-                        isCompared={selectedCompareIds.has(car.id)}
                         index={i}
                       />
                     );
@@ -1309,58 +1292,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); }}
         />
       </Suspense>
-
-      <Suspense fallback={null}>
-        <CompareDrawer
-          cars={selectedCompareCars}
-          open={compareOpen}
-          onClose={() => setCompareOpen(false)}
-          onRemove={(id) => toggleCompare(id)}
-          onNegotiate={(car) => {
-            setCompareOpen(false);
-            openDrawer(`${car.brand_display} ${car.model_display}`);
-          }}
-          getImageUrl={(car) => getCarImage(car.brand_display, car.model_display) || undefined}
-        />
-      </Suspense>
-
-      {selectedCompareIds.size > 0 && !compareOpen && (
-        <div className="fixed bottom-0 inset-x-0 z-40 pb-[env(safe-area-inset-bottom)]">
-          <div className="mx-3 mb-3 sm:mx-6 sm:mb-4">
-            <div className="max-w-3xl mx-auto bg-slate-900 rounded-2xl shadow-2xl shadow-black/30 px-4 sm:px-5 py-3.5 flex items-center gap-3">
-              <div className="flex items-center -space-x-2 shrink-0">
-                {selectedCompareCars.map(car => {
-                  const img = getCarImage(car.brand_display, car.model_display);
-                  return (
-                    <div key={car.id} className="w-10 h-10 rounded-xl bg-slate-700 ring-2 ring-slate-900 overflow-hidden shrink-0">
-                      {img ? <img src={img} alt="" className="w-full h-full object-cover" /> : null}
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-white text-[14px] font-semibold">{selectedCompareIds.size} bil{selectedCompareIds.size > 1 ? 'ar' : ''} valda</p>
-                <p className="text-slate-400 text-[12px]">Jämför sida vid sida</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedCompareIds(new Set())}
-                className="text-slate-400 hover:text-white transition-colors p-1.5"
-                aria-label="Rensa val"
-              >
-                <X className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setCompareOpen(true)}
-                className="h-9 px-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold transition-colors shrink-0"
-              >
-                Jämför
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {detailCar && (
         <CarDetailSheet
