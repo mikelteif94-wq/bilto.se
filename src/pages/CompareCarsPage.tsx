@@ -982,8 +982,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             </a>
           </nav>
           <div className="flex items-center ml-auto">
-            <a href="/logga-in" className="inline-flex items-center gap-2 bg-white text-[#0e6efe] text-[14px] font-semibold px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap">
-              <User className="w-[18px] h-[18px]" strokeWidth={2.2} />
+            <a href="/logga-in" className="inline-flex items-center bg-white text-[#0e6efe] text-[12px] lg:text-[14px] font-semibold px-4 lg:px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap">
               Kostnadsfri konsultation
             </a>
           </div>
