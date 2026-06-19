@@ -141,7 +141,7 @@ export default function ElCarCard({
               className="flex-1 flex items-center justify-center gap-1 h-8 rounded-lg text-white text-[11px] font-bold transition-all active:scale-[0.97]"
               style={{ background: 'linear-gradient(135deg, #1a7fff 0%, #0e6efe 60%, #0a57cc 100%)', boxShadow: '0 2px 8px rgba(14,110,254,0.28)' }}
             >
-              Få hjälp <ChevronRight className="w-3 h-3 opacity-80" />
+              Få prishjälp <ChevronRight className="w-3 h-3 opacity-80" />
             </button>
             {onCompare && (
               <button
@@ -236,7 +236,7 @@ export default function ElCarCard({
             className="w-full flex items-center justify-center gap-1.5 h-10 rounded-xl text-white text-[12.5px] font-bold transition-all active:scale-[0.97]"
             style={{ background: 'linear-gradient(135deg, #1a7fff 0%, #0e6efe 60%, #0a57cc 100%)', boxShadow: '0 3px 12px rgba(14,110,254,0.30)' }}
           >
-            Få hjälp att köpa <ChevronRight className="w-3.5 h-3.5 opacity-80" />
+            Få prishjälp <ChevronRight className="w-3.5 h-3.5 opacity-80" />
           </button>
           {onCompare && (
             <button
