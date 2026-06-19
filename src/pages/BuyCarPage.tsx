@@ -249,35 +249,35 @@ export default function BuyCarPage({
         </div>
       </header>
 
-      <div className="flex-1 flex flex-col items-center px-4 pt-24 sm:pt-28 pb-6 sm:pb-8">
-        <div className="w-full max-w-lg">
+      <div className="flex-1 flex flex-col items-center px-4 pt-24 sm:pt-28 pb-10 bg-slate-950 sm:pb-12">
+        <div className="w-full max-w-md">
           {step !== 'done' && (
-            <div className="mb-6 sm:mb-8">
+            <div className="mb-7 sm:mb-9">
               <button
                 onClick={handleBack}
-                className="flex items-center gap-1 text-slate-500 hover:text-[#0e6efe] transition mb-4 sm:mb-5 text-sm"
+                className="flex items-center gap-1.5 text-slate-400 hover:text-white transition mb-5 text-sm font-medium"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Tillbaka
               </button>
 
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-5">
                 <div className="flex gap-1.5 flex-1">
                   {Array.from({ length: totalSteps }).map((_, i) => (
                     <div
                       key={i}
-                      className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                        i < currentStepNum ? 'bg-[#0e6efe]' : 'bg-slate-200'
+                      className={`h-[3px] flex-1 rounded-full transition-all duration-300 ${
+                        i < currentStepNum ? 'bg-[#0e6efe]' : 'bg-white/10'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-xs sm:text-sm text-slate-500 whitespace-nowrap font-medium">
+                <span className="text-xs text-slate-500 whitespace-nowrap font-medium tabular-nums">
                   {currentStepNum} / {totalSteps}
                 </span>
               </div>
 
-              <h1 className="text-[22px] sm:text-2xl font-bold text-slate-900 leading-tight">
+              <h1 className="text-[24px] sm:text-[28px] font-bold text-white leading-tight tracking-tight">
                 {titles[step]}
               </h1>
             </div>
