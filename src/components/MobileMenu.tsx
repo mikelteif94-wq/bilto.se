@@ -82,7 +82,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
               isKopBilActive ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-slate-50'
             }`}
           >
-            Köp bil
+            Bilköpshjälp
           </button>
 
           {/* Sub-links */}
