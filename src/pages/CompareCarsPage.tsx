@@ -32,6 +32,7 @@ import {
   BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS, BRAND_CATEGORIES, PRIORITY_TRAITS,
 } from '../components/quiz/QuizTypes';
 import { supabase } from '../lib/supabase';
+import { useVehicleLookup } from '../lib/useVehicleLookup';
 
 /* ───────────── constants ───────────── */
 
@@ -1843,6 +1844,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 {bilbyteRegError && (
                   <p className="mt-2 text-[12.5px] text-red-300 font-medium">Ange registreringsnumret på din nuvarande bil först.</p>
                 )}
+                <BilbyteVehicleInfo regnummer={bilbyteReg} />
               </div>
               <button
                 type="button"
@@ -2424,4 +2426,47 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       />
     </div>
   );
+}
+
+function BilbyteVehicleInfo({ regnummer }: { regnummer: string }) {
+  const lookup = useVehicleLookup(regnummer);
+
+  if (!regnummer.trim()) return null;
+
+  if (lookup.status === 'loading') {
+    return (
+      <div className="mt-2 flex items-center gap-2 text-[13px] text-white/60">
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+        <span>Hämtar biluppgifter...</span>
+      </div>
+    );
+  }
+
+  if (lookup.status === 'found') {
+    const { marke, modell, ar, miltal } = lookup.data;
+    const label = [marke, modell, ar ? String(ar) : ''].filter(Boolean).join(' ');
+    return (
+      <div className="mt-2 inline-flex flex-wrap items-center gap-x-2 gap-y-1 px-3 py-2 bg-white/15 border border-white/25 rounded-lg">
+        <span className="text-[13px] font-bold text-white tracking-widest">{regnummer.toUpperCase()}</span>
+        {label && (
+          <>
+            <span className="text-white/30">&middot;</span>
+            <span className="text-[13px] font-semibold text-white">{label}</span>
+          </>
+        )}
+        {miltal != null && miltal > 0 && (
+          <>
+            <span className="text-white/30">&middot;</span>
+            <span className="text-[13px] text-white/70">{miltal.toLocaleString('sv-SE')} mil</span>
+          </>
+        )}
+      </div>
+    );
+  }
+
+  if (lookup.status === 'not_found') {
+    return <p className="mt-2 text-[13px] text-amber-300">Bilen hittades inte i registret.</p>;
+  }
+
+  return null;
 }
