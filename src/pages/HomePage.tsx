@@ -271,13 +271,14 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             </a>
             <a
               href="/logga-in"
-              className={`inline-flex items-center justify-center px-5 py-2 rounded-full text-[13px] font-semibold transition ${
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-[13px] font-semibold transition ${
                 scrolled
                   ? 'bg-slate-900 text-white hover:bg-slate-700'
                   : 'bg-white text-slate-900 hover:bg-white/90'
               }`}
             >
-              Mina erbjudanden
+              <User className="w-[15px] h-[15px] shrink-0" strokeWidth={2.3} />
+              Kostnadsfri konsultation
             </a>
           </div>
         </div>

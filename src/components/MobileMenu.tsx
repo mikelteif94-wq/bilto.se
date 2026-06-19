@@ -160,6 +160,18 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
             Om oss
           </button>
 
+          <div className="mx-2 my-2 border-t border-slate-100" />
+
+          {/* Mina erbjudanden */}
+          <a
+            href="/logga-in"
+            onClick={onClose}
+            className="w-full text-left px-4 py-4 rounded-lg text-[20px] tracking-tight transition font-medium text-[#0e6efe] hover:bg-[#0e6efe]/5 flex items-center gap-3"
+          >
+            <User className="w-5 h-5 shrink-0" strokeWidth={2.2} />
+            Mina erbjudanden
+          </a>
+
         </nav>
 
         <div className="border-t border-slate-100 px-4 py-4">
