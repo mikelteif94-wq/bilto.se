@@ -1157,7 +1157,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   </div>
 
                   {/* Cards grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                     {budgetFilteredCars.slice(0, budgetShowCount).map((car, i) => {
                       const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
                       if (car.specs.fuel_types.includes('el')) {
@@ -1384,7 +1384,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                         ? 'Max 3 bilar valda — avmarkera för att byta'
                         : `${selectedQuizCars.size} av 3 bil${selectedQuizCars.size > 1 ? 'ar' : ''} vald${selectedQuizCars.size > 1 ? 'a' : ''}`}
                     </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                       {quizResults.map((car, i) => {
                         const key = `${car.make}-${car.model}`;
                         const isSelected = selectedQuizCars.has(key);
@@ -1621,7 +1621,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               animate={{ opacity: 1, y: 0 }}
               exit={isMobile ? undefined : { opacity: 0, y: -10 }}
               transition={{ duration: isMobile ? 0 : 0.2 }}
-              className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+              className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             >
               {visibleCars.map((car, i) => {
                 const imgUrl = car.image_url || car.cleaned_image_url || getCarImage(car.make, car.model);
@@ -2017,7 +2017,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                           {msg.text}
                         </div>
                         {msg.cars && msg.cars.length > 0 && (
-                          <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {msg.cars.map((car, ci) => {
                               const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
                               if (car.specs.fuel_types.includes('el')) {

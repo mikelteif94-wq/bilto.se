@@ -781,7 +781,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
-              Populära bilar
+              Vad våra kunder bytt till nyligen
             </h2>
             <p className="mt-3 text-slate-500 text-[15px] max-w-lg mx-auto leading-[1.6]">
               Hitta din nästa bil bland de mest eftertraktade modellerna. Oavsett om du vill byta in din bil eller köpa nytt — det börjar alltid med en <span className="font-semibold text-slate-700">gratis konsultation</span> där vi hjälper dig hela vägen.
