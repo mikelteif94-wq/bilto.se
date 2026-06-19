@@ -1061,65 +1061,104 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
       <section className="bg-white px-4 sm:px-6 py-12 sm:py-20">
         <div className="max-w-6xl mx-auto">
-          <div className="relative rounded-[28px] sm:rounded-[56px] bg-[#0e6efe] px-5 py-8 sm:px-14 sm:py-12 lg:px-20 lg:py-14">
-            <div className="relative grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-              <div className="text-white">
-                <h2 className="text-[28px] sm:text-[38px] font-semibold tracking-[-0.02em] leading-[1.08] text-white">
-                  Ring våra bilexperter
-                </h2>
-                <p className="mt-4 text-[15px] text-white leading-[1.6] max-w-md">
-                  Har du frågor om din bilaffär? Ring oss direkt så hjälper vår
-                  bilexpert dig. Kostnadsfritt och helt utan förpliktelse.
-                </p>
+          <div className="relative rounded-[28px] sm:rounded-[56px] bg-[#0e6efe] px-5 py-8 sm:px-14 sm:py-12 lg:px-20 lg:py-14 overflow-hidden">
+            {/* Background decorations */}
+            <div className="absolute -right-24 -top-24 w-[400px] h-[400px] rounded-full bg-white/5 pointer-events-none" />
+            <div className="absolute -left-16 -bottom-20 w-[300px] h-[300px] rounded-full bg-white/5 pointer-events-none" />
 
-                <a
-                  href="tel:+46855550200"
-                  className="mt-6 sm:mt-8 inline-flex items-center gap-2.5 bg-white hover:bg-slate-100 text-[#0e6efe] font-semibold text-[14px] sm:text-[15px] px-6 sm:px-7 h-[48px] sm:h-[52px] rounded-full shadow-[0_10px_30px_-10px_rgba(0,0,0,0.4)] transition hover:-translate-y-0.5"
-                >
-                  <Phone className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.5} />
-                  Ring 08-5555 0200
-                </a>
+            <div className="relative grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+              {/* Left: text + buttons */}
+              <div>
+                <h2 className="text-[32px] sm:text-[40px] lg:text-[44px] font-bold tracking-tight leading-[1.06] text-white">
+                  Vill du ha hjälp att få bästa affären?
+                </h2>
+
+                <ul className="mt-6 space-y-3">
+                  {[
+                    'En personlig bilexpert sköter förhandlingen',
+                    'Vi jämför bud från handlare åt dig',
+                    'Du får konkreta råd och sparar pengar',
+                  ].map((text) => (
+                    <li key={text} className="flex items-center gap-3">
+                      <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center"
+                        style={{ background: 'linear-gradient(135deg, #d4f542 0%, #b8e600 100%)' }}>
+                        <Check className="w-3.5 h-3.5 text-slate-900" strokeWidth={3} />
+                      </span>
+                      <span className="text-[15px] sm:text-[16px] text-white font-medium">{text}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                  <a
+                    href="/gratis-konsultation"
+                    className="inline-flex items-center justify-center h-[52px] px-8 rounded-full text-slate-900 text-[15px] font-bold transition-all hover:opacity-90 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)]"
+                    style={{ background: 'linear-gradient(135deg, #d4f542 0%, #b8e600 100%)' }}
+                  >
+                    Kostnadsfri konsultation
+                  </a>
+                  <a
+                    href="tel:+46855550200"
+                    className="inline-flex items-center justify-center h-[52px] px-8 rounded-full border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
+                  >
+                    <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
+                    Ring 08-5555 0200
+                  </a>
+                </div>
               </div>
 
+              {/* Right: image + floating widgets */}
               <div className="relative">
-                <div className="relative aspect-[5/4] sm:aspect-[5/4] rounded-[28px] sm:rounded-[36px] overflow-hidden max-h-[220px] sm:max-h-none">
+                {/* Main image */}
+                <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden aspect-[4/3]">
                   <img
                     src="/858c5bbb-bilto-hoodie.png"
                     alt="Bilexpert"
                     className="absolute inset-0 w-full h-full object-cover"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
 
-                <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#0e6efe] ring-[6px] ring-white text-white flex items-center justify-center">
-                  <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={2} />
+                {/* Chat bubble icon */}
+                <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-xl"
+                  style={{ background: 'linear-gradient(135deg, #3d8cff 0%, #0e6efe 100%)' }}>
+                  <MessageCircle className="w-6 h-6 text-white" strokeWidth={2} />
                 </div>
 
-                <div className="hidden sm:block absolute bottom-4 right-4 sm:-bottom-6 sm:-right-4 bg-white rounded-2xl shadow-xl p-4 w-[230px]">
+                {/* Phone chip */}
+                <div className="absolute top-4 left-4 sm:top-5 sm:left-5 bg-white rounded-2xl shadow-xl px-4 py-2.5 flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+                    <Phone className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-bold text-slate-900 leading-tight">Ring 08-5555 0200</p>
+                    <p className="text-[10px] text-slate-400 leading-tight">Kostnadsfritt</p>
+                  </div>
+                </div>
+
+                {/* Availability card */}
+                <div className="hidden sm:flex absolute -bottom-5 -right-4 bg-white rounded-2xl shadow-xl p-4 w-[220px] flex-col gap-2">
                   <div className="flex items-center gap-3">
                     <span className="relative shrink-0">
                       <span className="absolute -inset-1 rounded-full bg-[#0e6efe]/25 opacity-75 animate-ping" />
                       <img
                         src="https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop"
                         alt="Din expert"
-                        className="relative w-11 h-11 rounded-full object-cover ring-2 ring-white shadow"
+                        className="relative w-10 h-10 rounded-full object-cover ring-2 ring-white shadow"
                       />
                       <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
                     </span>
                     <div>
-                      <p className="text-[13px] font-semibold text-slate-900 leading-tight">
-                        Ring våra bilexperter
-                      </p>
-                      <p className="mt-0.5 text-[12px] text-slate-500">Vi finns här för att guida dig</p>
+                      <p className="text-[12px] font-bold text-slate-900 leading-tight">Din bilexpert</p>
+                      <p className="text-[11px] text-slate-500">Redo att hjälpa dig</p>
                     </div>
                   </div>
-                  <div className="mt-3 flex items-center gap-2 md:border-t md:border-slate-100 pt-3">
-                    <span className="relative flex w-2.5 h-2.5">
+                  <div className="border-t border-slate-100 pt-2 flex items-center gap-2">
+                    <span className="relative flex w-2.5 h-2.5 shrink-0">
                       <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
                       <span className="relative inline-flex w-2.5 h-2.5 rounded-full bg-emerald-500" />
                     </span>
-                    <span className="text-[12px] text-slate-600">
-                      Expert tillgänglig nu
-                    </span>
+                    <span className="text-[11px] text-slate-600">Expert tillgänglig nu</span>
                   </div>
                 </div>
               </div>
