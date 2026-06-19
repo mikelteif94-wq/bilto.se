@@ -777,7 +777,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       </section>
 
       {/* Popular cars + budget browser */}
-      <section id="experternas-val" className="bg-white py-14 sm:py-20 px-5 sm:px-6">
+      <section id="experternas-val" className="bg-[#f0f4fa] py-14 sm:py-20 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
@@ -840,7 +840,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             const hasMore = carsToShow.length > 6;
             return (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   {visibleCars.map((car, i) => {
                     const imageUrl = getCarImage(car.brand_display, car.model_display);
                     const fuelLabelStr = car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ');
