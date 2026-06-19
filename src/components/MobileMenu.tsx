@@ -175,7 +175,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
 
         <div className="border-t border-slate-100 px-4 py-4">
           <a
-            href="/logga-in"
+            href="/gratis-konsultation"
             className="inline-flex items-center justify-center gap-2 w-full px-4 h-12 rounded-full bg-[#0e6efe] text-white text-[15px] font-semibold hover:bg-[#0a57cc] transition"
           >
             <User className="w-5 h-5" strokeWidth={2.2} />

@@ -167,7 +167,7 @@ export default function SellCarPage({
             <button
               type="button"
               onClick={() => {
-                window.history.pushState({}, '', '/logga-in');
+                window.history.pushState({}, '', '/gratis-konsultation');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
               className="inline-flex items-center bg-white text-[#0e6efe] text-[12px] lg:text-[14px] font-semibold px-4 lg:px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap"

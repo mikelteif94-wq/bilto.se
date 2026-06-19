@@ -317,7 +317,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           </nav>
           <div className="flex items-center ml-auto">
             <a
-              href="/logga-in"
+              href="/gratis-konsultation"
               className="inline-flex items-center bg-white text-[#0e6efe] text-[12px] lg:text-[14px] font-semibold px-4 lg:px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
