@@ -8,7 +8,11 @@ import {
   Mail,
   Phone,
   User,
-  MessageSquare,
+  Search,
+  Tag,
+  RefreshCw,
+  CreditCard,
+  HelpCircle,
   Calendar,
   Menu,
 } from 'lucide-react';
@@ -22,14 +26,16 @@ interface FreeConsultationPageProps {
   onNavigateHowItWorks?: () => void;
 }
 
+import { Video as LucideIcon } from 'lucide-react';
+
 type Syfte = 'kop_bil' | 'salj_bil' | 'inbyte' | 'finansiering' | 'ovrig';
 
-const SYFTE_OPTIONS: { value: Syfte; label: string; desc: string }[] = [
-  { value: 'kop_bil', label: 'Kopa bil', desc: 'Jag vill ha hjälp att hitta rätt bil' },
-  { value: 'salj_bil', label: 'Salja bil', desc: 'Jag vill sälja min bil till bästa pris' },
-  { value: 'inbyte', label: 'Inbyte', desc: 'Jag vill byta in min bil mot en ny' },
-  { value: 'finansiering', label: 'Finansiering', desc: 'Jag har frågor om lån eller leasing' },
-  { value: 'ovrig', label: 'Annat', desc: 'Jag har en annan fråga' },
+const SYFTE_OPTIONS: { value: Syfte; label: string; desc: string; icon: LucideIcon }[] = [
+  { value: 'kop_bil', label: 'Köpa bil', desc: 'Jag vill ha hjälp att hitta rätt bil', icon: Search },
+  { value: 'salj_bil', label: 'Sälja bil', desc: 'Jag vill sälja min bil till bästa pris', icon: Tag },
+  { value: 'inbyte', label: 'Inbyte', desc: 'Jag vill byta in min bil mot en ny', icon: RefreshCw },
+  { value: 'finansiering', label: 'Finansiering', desc: 'Jag har frågor om lån eller leasing', icon: CreditCard },
+  { value: 'ovrig', label: 'Annat', desc: 'Jag har en annan fråga', icon: HelpCircle },
 ];
 
 type CallbackSlot = {
@@ -276,7 +282,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                     className="group flex items-center gap-4 w-full p-4 rounded-2xl border-2 border-slate-200 hover:border-[#0e6efe] hover:bg-blue-50/50 transition-all text-left"
                   >
                     <div className="w-10 h-10 rounded-xl bg-blue-50 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition">
-                      <MessageSquare className="w-5 h-5 text-[#0e6efe]" />
+                      <opt.icon className="w-5 h-5 text-[#0e6efe]" />
                     </div>
                     <div>
                       <div className="font-semibold text-slate-900 text-sm">{opt.label}</div>
