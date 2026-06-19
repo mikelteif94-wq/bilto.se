@@ -172,6 +172,16 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleCarFocus = async () => {
+    if (carQuery.trim()) { setShowSuggestions(true); return; }
+    const { data } = await supabase
+      .from('car_catalog')
+      .select('make, model')
+      .limit(8);
+    setCarSuggestions(data || []);
+    setShowSuggestions(true);
+  };
+
   const handleCarQueryChange = (q: string) => {
     setCarQuery(q);
     if (carSearchTimer.current) clearTimeout(carSearchTimer.current);
@@ -397,7 +407,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       type="text"
                       value={carQuery}
                       onChange={(e) => handleCarQueryChange(e.target.value)}
-                      onFocus={() => carQuery.trim() && setShowSuggestions(true)}
+                      onFocus={handleCarFocus}
                       onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
                       placeholder="Sök märke eller modell..."
                       className="flex-1 min-w-0 w-0 h-full pr-2 text-[13px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
@@ -564,7 +574,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         type="text"
                         value={carQuery}
                         onChange={(e) => handleCarQueryChange(e.target.value)}
-                        onFocus={() => carQuery.trim() && setShowSuggestions(true)}
+                        onFocus={handleCarFocus}
                         onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
                         placeholder="Sök märke eller modell..."
                         className="flex-1 min-w-0 w-0 h-full text-[14px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400 font-medium"
