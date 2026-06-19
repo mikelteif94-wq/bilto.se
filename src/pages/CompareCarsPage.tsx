@@ -1231,22 +1231,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
                   {/* Left: text content */}
                   <div className="flex flex-col items-center lg:items-start lg:flex-1 w-full">
-                    {/* Mobile: car strip above heading */}
-                    <div className="flex lg:hidden items-center justify-center gap-2.5 mb-6 w-full">
-                      {(isEvPage
-                        ? ['tesla_model_y', 'kia_ev6', 'polestar_2']
-                        : ['tesla_model_y', 'volvo_xc60', 'kia_ev6']
-                      ).map((cid) => {
-                        const car = allCarsRaw.find(c => c.id === cid);
-                        if (!car) return null;
-                        const img = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
-                        return (
-                          <div key={cid} className="flex-1 max-w-[110px] aspect-[4/3] rounded-2xl bg-white border border-slate-100 shadow-sm flex items-end justify-center overflow-hidden">
-                            {img && <img src={img} alt="" className="w-full h-auto object-contain" />}
-                          </div>
-                        );
-                      })}
-                    </div>
 
                     <h2 className="text-[36px] sm:text-[42px] lg:text-[52px] font-extrabold text-slate-900 tracking-tight leading-[1.05] mb-3 text-center lg:text-left">
                       Hitta din{' '}
