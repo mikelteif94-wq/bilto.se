@@ -11,7 +11,6 @@ import {
   Users,
   Handshake,
   Menu,
-  User,
   Quote,
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
@@ -93,7 +92,6 @@ const FAQS = [
 
 export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowItWorks }: KopBilConciergProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
@@ -102,15 +100,6 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       description: 'Låt Biltos experter hjälpa dig hitta, förhandla och köpa rätt bil. Vi sköter kontakten med handlare åt dig – gratis och utan krångel.',
       canonical: 'https://bilto.se/kop-bil-hjalp',
     });
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > window.innerHeight * 0.6);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const handleMenuSelect = (item: MobileMenuItem) => {
@@ -132,9 +121,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
       {/* Nav */}
       <header
-        className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${
-          scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]'
-        }`}
+        className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]"
       >
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button

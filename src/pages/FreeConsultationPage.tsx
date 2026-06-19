@@ -134,7 +134,6 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
   }, []);
   const [submitting, setSubmitting] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled] = useState(false);
 
   const slots = getCallbackSlots();
 
@@ -207,9 +206,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
 
       {/* Nav */}
       <header
-        className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${
-          scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]'
-        }`}
+        className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]"
       >
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
