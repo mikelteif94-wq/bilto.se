@@ -64,7 +64,7 @@ export default function SeoLandingPage({ type, city, brand, onSell, onBack }: Se
           </button>
           <div className="ml-auto">
             <a href="/logga-in" className="text-[13px] text-white/80 hover:text-white font-medium transition">
-              Mina erbjudanden
+              Kostnadsfri konsultation
             </a>
           </div>
         </div>
