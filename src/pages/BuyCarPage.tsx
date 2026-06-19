@@ -249,92 +249,107 @@ export default function BuyCarPage({
         </div>
       </header>
 
-      <div className="flex-1 flex flex-col items-center px-4 pt-24 sm:pt-28 pb-6 sm:pb-8">
-        <div className="w-full max-w-lg">
-          {step !== 'done' && (
-            <div className="mb-6 sm:mb-8">
+      {step !== 'done' ? (
+        <>
+          {/* Blue hero — back / progress / title */}
+          <div className="bg-[#0e6efe] pt-24 sm:pt-28 pb-12 relative">
+            <div className="max-w-lg mx-auto px-4 sm:px-6">
               <button
                 onClick={handleBack}
-                className="flex items-center gap-1 text-slate-500 hover:text-[#0e6efe] transition mb-4 sm:mb-5 text-sm"
+                className="flex items-center gap-1 text-white/75 hover:text-white transition mb-5 text-sm font-medium"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Tillbaka
               </button>
 
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-5">
                 <div className="flex gap-1.5 flex-1">
                   {Array.from({ length: totalSteps }).map((_, i) => (
                     <div
                       key={i}
-                      className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                        i < currentStepNum ? 'bg-[#0e6efe]' : 'bg-slate-200'
+                      className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                        i < currentStepNum ? 'bg-white' : 'bg-white/30'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-xs sm:text-sm text-slate-500 whitespace-nowrap font-medium">
+                <span className="text-xs text-white/70 whitespace-nowrap font-medium">
                   {currentStepNum} / {totalSteps}
                 </span>
               </div>
 
-              <h1 className="text-[22px] sm:text-2xl font-bold text-slate-900 leading-tight">
+              <h1 className="text-[22px] sm:text-[26px] font-bold text-white leading-tight">
                 {titles[step]}
               </h1>
             </div>
-          )}
 
-          <ErrorBanner message={error} className="mb-6" />
+            {/* Wave divider */}
+            <div className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none">
+              <svg viewBox="0 0 1440 40" className="w-full block" preserveAspectRatio="none" fill="white">
+                <path d="M0,20 C360,50 1080,-10 1440,20 L1440,40 L0,40 Z" />
+              </svg>
+            </div>
+          </div>
 
-          {step === 'track' && (
-            <BuyTrackStep
-              initialBil={initialBil}
-              onChoose={(t) => {
-                setTrack(t);
-                setStep('details');
-                setError(null);
-              }}
-              onGuidance={() => {
-                setGuidanceOpen(true);
-                setGuidanceDone(false);
-                setGuidanceError(null);
-              }}
-            />
-          )}
+          {/* Form content on white */}
+          <div className="flex-1 flex flex-col items-center px-4 pt-7 sm:pt-8 pb-8">
+            <div className="w-full max-w-lg">
+              <ErrorBanner message={error} className="mb-6" />
 
-          {step === 'details' && (
-            <BuyDetailsStep
-              track={track}
-              initialData={details}
-              initialBil={initialBil}
-              onNext={(data) => {
-                setDetails(data);
-                goNext();
-                setError(null);
-              }}
-            />
-          )}
+              {step === 'track' && (
+                <BuyTrackStep
+                  initialBil={initialBil}
+                  onChoose={(t) => {
+                    setTrack(t);
+                    setStep('details');
+                    setError(null);
+                  }}
+                  onGuidance={() => {
+                    setGuidanceOpen(true);
+                    setGuidanceDone(false);
+                    setGuidanceError(null);
+                  }}
+                />
+              )}
 
-          {step === 'tradeIn' && (
-            <BuyTradeInStep
-              initialData={tradeIn}
-              onNext={(data) => {
-                setTradeIn(data);
-                goNext();
-                setError(null);
-              }}
-            />
-          )}
+              {step === 'details' && (
+                <BuyDetailsStep
+                  track={track}
+                  initialData={details}
+                  initialBil={initialBil}
+                  onNext={(data) => {
+                    setDetails(data);
+                    goNext();
+                    setError(null);
+                  }}
+                />
+              )}
 
-          {step === 'contact' && (
-            <BuyContactStep
-              initialData={contact}
-              onNext={handleSubmit}
-              submitting={submitting}
-            />
-          )}
+              {step === 'tradeIn' && (
+                <BuyTradeInStep
+                  initialData={tradeIn}
+                  onNext={(data) => {
+                    setTradeIn(data);
+                    goNext();
+                    setError(null);
+                  }}
+                />
+              )}
 
-          {step === 'done' && (
-            <div className="pt-12 sm:pt-16 pb-10">
+              {step === 'contact' && (
+                <BuyContactStep
+                  initialData={contact}
+                  onNext={handleSubmit}
+                  submitting={submitting}
+                />
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="flex-1 flex flex-col items-center px-4 pt-24 sm:pt-28 pb-8">
+          <div className="w-full max-w-lg">
+          <div className="pt-12 sm:pt-4 pb-10">
               {/* Success badge */}
               <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-5">
@@ -431,9 +446,9 @@ export default function BuyCarPage({
                 </a>
               </div>
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       {guidanceOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4 py-6">
