@@ -1005,7 +1005,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
         />
-        <div className="absolute inset-0 bg-black/55" />
+        <div className="absolute inset-0 bg-black/35" />
         <div className="relative max-w-3xl mx-auto text-center">
           <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
             {heroTitle ?? 'Hitta din dr\u00f6mbil och f\u00f6rhandla priset'}
