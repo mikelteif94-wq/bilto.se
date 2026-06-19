@@ -1235,10 +1235,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
                   {/* Left: text content */}
                   <div className="text-center lg:text-left lg:flex-1 w-full">
-                    <span className="inline-flex lg:hidden items-center gap-2 px-3 py-1.5 rounded-full bg-[#0e6efe]/10 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-5">
-                      {isEvPage ? <Zap className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
-                      {isEvPage ? 'Elbilsmatch' : 'Bilmatch'}
-                    </span>
                     <h2 className="text-[34px] sm:text-[42px] lg:text-[52px] font-extrabold text-slate-900 tracking-tight leading-[1.05] mb-4">
                       Hitta din<br className="sm:hidden" />{' '}
                       <span className="text-[#0e6efe]">{isEvPage ? 'elbilsmatch' : 'bilmatch'}</span>
