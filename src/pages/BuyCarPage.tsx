@@ -307,6 +307,9 @@ export default function BuyCarPage({
               initialBil={initialBil}
               onNext={(data) => {
                 setDetails(data);
+                if (track === 'trade' && data.regnummer) {
+                  setTradeIn(prev => ({ ...prev, tradeInReg: data.regnummer, hasTradeIn: true }));
+                }
                 goNext();
                 setError(null);
               }}

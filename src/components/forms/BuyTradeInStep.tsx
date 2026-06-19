@@ -137,7 +137,9 @@ export default function BuyTradeInStep({ initialData, onNext }: BuyTradeInStepPr
                 error={!!errors.tradeInReg}
               />
               <FieldError message={errors.tradeInReg} />
-              <TradeInCarInfo regnummer={d.tradeInReg} />
+              <div className="min-h-[40px]">
+                <TradeInCarInfo regnummer={d.tradeInReg} />
+              </div>
             </div>
           </div>
 
