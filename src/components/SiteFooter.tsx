@@ -24,10 +24,10 @@ export function SiteFooter() {
               alt="Bilto"
               loading="lazy"
               decoding="async"
-              className="h-16 w-auto object-contain -ml-1 mb-4 brightness-0 invert opacity-85"
+              className="h-20 w-auto object-contain -ml-1 mb-4 brightness-0 invert opacity-85"
             />
             <p className="text-[13.5px] leading-relaxed text-slate-400 max-w-[210px] mb-5">
-              Din bilaffär, förenklad. Sälj tryggare — köp smartare.
+              Din bilaffär, förenklad. Sälj tryggare - köp smartare.
             </p>
             <div className="flex flex-col gap-2.5">
               <a href="tel:+46855550200" className="flex items-center gap-2 text-[13px] text-slate-500 hover:text-white transition-colors duration-200 group">
