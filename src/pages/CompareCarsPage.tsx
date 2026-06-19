@@ -1979,22 +1979,22 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       </section>
 
       {/* AI Smart Search */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-50">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-950">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-[13px] font-medium text-slate-600 mb-4">
-              <Search className="w-4 h-4 text-[#0e6efe]" />
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0e6efe]/20 text-[13px] font-medium text-[#60a5fa] mb-4">
+              <Search className="w-4 h-4 text-[#60a5fa]" />
               Smart bilsökning
             </div>
-            <h2 className="text-[22px] sm:text-[32px] font-bold text-slate-900 mb-2">
+            <h2 className="text-[22px] sm:text-[32px] font-bold text-white mb-2">
               Hittar du inte rätt bil?
             </h2>
-            <p className="text-slate-500 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
+            <p className="text-slate-400 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
               Beskriv vad du söker så hjälper vi dig hitta rätt bil.
             </p>
           </div>
 
-          <div className="bg-slate-50 rounded-2xl ring-1 ring-slate-200 overflow-hidden">
+          <div className="bg-slate-900 rounded-2xl ring-1 ring-white/10 overflow-hidden">
             {chatMessages.length > 0 && (
               <div className="max-h-[500px] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
                 <div className="p-4 sm:p-6 space-y-4">
@@ -2012,7 +2012,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                         <div className={`px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed ${
                           msg.role === 'user'
                             ? 'bg-[#0e6efe] text-white rounded-br-md'
-                            : 'bg-white text-slate-700 ring-1 ring-slate-200 rounded-bl-md shadow-sm'
+                            : 'bg-slate-800 text-slate-200 ring-1 ring-white/10 rounded-bl-md'
                         }`}>
                           {msg.text}
                         </div>
@@ -2068,7 +2068,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                               <button
                                 key={r}
                                 onClick={() => handleChatSubmit(r)}
-                                className="px-3 py-1.5 rounded-full bg-slate-100 text-[12px] text-slate-600 font-medium hover:bg-[#0e6efe] hover:text-white transition-all"
+                                className="px-3 py-1.5 rounded-full bg-slate-700 text-[12px] text-slate-200 font-medium hover:bg-[#0e6efe] hover:text-white transition-all"
                               >
                                 {r}
                               </button>
@@ -2083,7 +2083,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               </div>
             )}
 
-            <div className="p-3 sm:p-4 border-t border-slate-200 bg-white">
+            <div className="p-3 sm:p-4 border-t border-white/10 bg-slate-900">
               {chatMessages.length === 0 && (
                 <div className="mb-3 flex flex-wrap gap-2">
                   {[
@@ -2097,7 +2097,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     <button
                       key={label}
                       onClick={() => handleChatSubmit(query)}
-                      className="px-3 py-1.5 rounded-full bg-slate-100 text-[12px] text-slate-600 font-medium hover:bg-[#0e6efe] hover:text-white transition-all"
+                      className="px-3 py-1.5 rounded-full bg-white/10 text-[12px] text-white font-medium hover:bg-[#0e6efe] hover:text-white transition-all border border-white/15"
                     >
                       {label}
                     </button>
@@ -2110,7 +2110,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder='T.ex. "elbil för familj", "Toyota SUV" eller "bil med hund"...'
-                  className="flex-1 h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] transition placeholder:text-slate-400"
+                  className="flex-1 h-11 px-4 rounded-xl border border-white/15 bg-white/8 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition placeholder:text-slate-500"
                 />
                 <button type="submit" disabled={!chatInput.trim()} className="h-11 w-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:opacity-40 text-white flex items-center justify-center transition shrink-0">
                   <Send className="w-4 h-4" />
