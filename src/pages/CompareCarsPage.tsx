@@ -1265,22 +1265,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       <p className="text-[11px] text-white/50 text-center mt-2.5">Tar 60 sekunder · Helt gratis</p>
                     </div>
 
-                    {/* Car image strip */}
-                    <div className="flex gap-2 px-3 pb-0">
-                      {(isEvPage
-                        ? ['tesla_model_y', 'kia_ev6', 'hyundai_ioniq5']
-                        : ['tesla_model_y', 'volvo_xc60', 'kia_ev6']
-                      ).map((cid) => {
-                        const car = allCarsRaw.find(c => c.id === cid);
-                        if (!car) return null;
-                        const img = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
-                        return (
-                          <div key={cid} className="flex-1 bg-white/15 rounded-t-xl flex items-end justify-center overflow-hidden pt-3 px-1">
-                            {img && <img src={img} alt="" className="w-full h-auto object-contain drop-shadow-md" />}
-                          </div>
-                        );
-                      })}
-                    </div>
                   </div>
 
                   {/* EquityFlow below card */}
