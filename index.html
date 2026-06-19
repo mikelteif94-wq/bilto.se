@@ -7,26 +7,132 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#0e6efe" />
     <link rel="preload" as="image" href="/d158d2d6-7209-4239-986d-842219ae491d.jpg" fetchpriority="high" />
     <link rel="preload" as="image" href="/ChatGPT_Image_9_maj_2026_15_33_44.png" fetchpriority="high" />
     <link rel="preload" as="image" href="/module-4-img.ce21cba7.svg" />
+
     <title>Bilto – Sälj din bil snabbt och enkelt | Gratis värdering</title>
     <meta name="description" content="Bilto hjälper dig sälja eller köpa bil till bästa pris. Gratis värdering, fri upphämtning i hela Sverige och pengarna på kontot direkt." />
+    <meta name="keywords" content="sälja bil, köpa bil, bilförmedling, bilbyte, gratis värdering, sälj bil snabbt, Sverige" />
+    <meta name="author" content="Bilto" />
+    <meta name="geo.region" content="SE" />
+    <meta name="geo.placename" content="Sverige" />
+    <meta http-equiv="content-language" content="sv" />
+
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="sv_SE" />
     <meta property="og:title" content="Bilto – Sälj din bil snabbt och enkelt | Gratis värdering" />
     <meta property="og:description" content="Gratis värdering, fri upphämtning i hela Sverige. Pengarna på kontot direkt." />
     <meta property="og:url" content="https://bilto.se/" />
     <meta property="og:site_name" content="Bilto" />
-    <meta property="og:image" content="https://bilto.se/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png" />
+    <meta property="og:image" content="https://bilto.se/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:alt" content="Bilto – Sälj din bil" />
+    <meta property="og:image:alt" content="Bilto – Sälj din bil snabbt och enkelt" />
+
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@bilto_se" />
     <meta name="twitter:title" content="Bilto – Sälj din bil snabbt och enkelt | Gratis värdering" />
     <meta name="twitter:description" content="Gratis värdering, fri upphämtning i hela Sverige. Pengarna på kontot direkt." />
-    <meta name="twitter:image" content="https://bilto.se/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png" />
-    <meta name="robots" content="index, follow" />
+    <meta name="twitter:image" content="https://bilto.se/og-image.png" />
+
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://bilto.se/" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://bilto.se/#organization",
+          "name": "Bilto",
+          "url": "https://bilto.se",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://bilto.se/bilto_logo_transparent.svg",
+            "width": 200,
+            "height": 60
+          },
+          "description": "Bilto är Sveriges enklaste sätt att sälja eller köpa bil. Vi hjälper privatpersoner att sälja sin bil snabbt och till bästa pris via vår plattform med certifierade handlare.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "SE"
+          },
+          "sameAs": [
+            "https://bilto.se"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://bilto.se/#website",
+          "url": "https://bilto.se",
+          "name": "Bilto",
+          "description": "Sälj eller köpa bil till bästa pris – gratis värdering och fri upphämtning i hela Sverige",
+          "publisher": { "@id": "https://bilto.se/#organization" },
+          "inLanguage": "sv-SE",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://bilto.se/kop-bil?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Service",
+          "@id": "https://bilto.se/#service",
+          "name": "Bilförsäljning via Bilto",
+          "provider": { "@id": "https://bilto.se/#organization" },
+          "serviceType": "Bilförmedling",
+          "areaServed": {
+            "@type": "Country",
+            "name": "Sverige"
+          },
+          "description": "Vi hjälper dig sälja din begagnade bil snabbt och enkelt. Gratis värdering, upphämtning i hela Sverige.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "SEK",
+            "description": "Gratis värdering av din bil"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Vad kostar det att sälja bil via Bilto?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Det kostar ingenting för dig som privatperson att få din bil värderad och listad hos oss. Bilto finansieras av ett arvode från handlaren när affären är klar."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Hur snabbt kan jag sälja min bil?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "De flesta bilar säljs inom 48 timmar. Vi kontaktar dig med bud snabbt efter att du fyllt i formuläret."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Hämtar Bilto bilen hos mig?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ja, vi erbjuder fri upphämtning i hela Sverige. Du behöver inte köra till en handlare."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

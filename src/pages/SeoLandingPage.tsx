@@ -3,6 +3,7 @@ import { ArrowRight, Check, Phone, MapPin, Car as CarIcon, Shield, Clock, Star }
 import { SiteFooter } from '../components/SiteFooter';
 import RegInput from '../components/RegInput';
 import type { SeoCity, SeoBrand } from '../lib/seo-pages';
+import { setPageMeta } from '../lib/pageMeta';
 
 interface SeoLandingPageProps {
   type: 'city' | 'brand';
@@ -39,8 +40,15 @@ export default function SeoLandingPage({ type, city, brand, onSell, onBack }: Se
     : `Har du en ${entityName} att sälja? Bilto jämför bud från granskade handlare åt dig och ser till att du får rätt pris — snabbt och tryggt.`;
 
   useEffect(() => {
-    document.title = pageTitle;
-  }, [pageTitle]);
+    const slug = type === 'city' ? city?.slug : brand?.slug;
+    const canonical = type === 'city'
+      ? `https://bilto.se/salj-din-bil-i-${slug}`
+      : `https://bilto.se/salj-din-${slug}`;
+    const description = type === 'city'
+      ? `Sälj din bil i ${entityName} via Bilto. Gratis värdering, fri upphämtning och snabb betalning. ${entityDescription ?? ''}`
+      : `Sälj din ${entityName} via Bilto. Gratis värdering, fri upphämtning i hela Sverige. ${entityDescription ?? ''}`;
+    setPageMeta({ title: pageTitle, description, canonical });
+  }, [pageTitle, type, city, brand, entityName, entityDescription]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

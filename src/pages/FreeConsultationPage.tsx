@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -19,6 +19,7 @@ import {
 import { supabase } from '../lib/supabase';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
+import { setPageMeta } from '../lib/pageMeta';
 
 interface FreeConsultationPageProps {
   onBack: () => void;
@@ -123,6 +124,14 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
   const [step, setStep] = useState<Step>('syfte');
   const [form, setForm] = useState<FormData>(INITIAL);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+
+  useEffect(() => {
+    setPageMeta({
+      title: 'Gratis konsultation – Köp eller sälj bil med expertstöd | Bilto',
+      description: 'Boka en kostnadsfri konsultation med Biltos experter. Vi hjälper dig förhandla, värdera och genomföra din bilaffär – oavsett om du köper eller säljer.',
+      canonical: 'https://bilto.se/gratis-konsultation',
+    });
+  }, []);
   const [submitting, setSubmitting] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled] = useState(false);

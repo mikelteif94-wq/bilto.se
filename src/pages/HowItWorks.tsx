@@ -33,6 +33,7 @@ import type { ComparisonCar } from '../lib/comparison';
 import { useCarImages } from '../hooks/useCarImages';
 import { useCatalogCars } from '../hooks/useCatalogCars';
 import RegInput from '../components/RegInput';
+import { setPageMeta } from '../lib/pageMeta';
 
 const CompareDrawer = lazy(() => import('../components/CompareDrawer'));
 const BuyDrawer = lazy(() => import('../components/BuyDrawer'));
@@ -107,8 +108,22 @@ const FAQ = [
 
 export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTitle }: HowItWorksProps) {
   useEffect(() => {
-    if (pageTitle) document.title = pageTitle;
-  }, [pageTitle]);
+    if (showSeo) {
+      setPageMeta({
+        title: 'Sälj din bil snabbt och enkelt | Bilto',
+        description: 'Sälj din bil via Bilto – gratis värdering, fri upphämtning i hela Sverige och pengarna på kontot direkt. Certifierade handlare konkurrerar om din bil.',
+        canonical: 'https://bilto.se/salj-din-bil',
+      });
+    } else if (pageTitle) {
+      document.title = pageTitle;
+    } else {
+      setPageMeta({
+        title: 'Bilto – Sälj din bil snabbt och enkelt | Gratis värdering',
+        description: 'Bilto hjälper dig sälja eller köpa bil till bästa pris. Gratis värdering, fri upphämtning i hela Sverige och pengarna på kontot direkt.',
+        canonical: 'https://bilto.se/',
+      });
+    }
+  }, [showSeo, pageTitle]);
 
   // Preload likely next pages after idle so clicks feel instant
   useEffect(() => {

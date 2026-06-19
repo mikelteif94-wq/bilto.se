@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
+import { setPageMeta } from '../lib/pageMeta';
 
 interface KopBilConciergProps {
   onBack: () => void;
@@ -96,7 +97,11 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
-    document.title = 'Köp bil med hjälp av en expert | Bilto';
+    setPageMeta({
+      title: 'Köp bil med hjälp av en expert – Bilto Concierge',
+      description: 'Låt Biltos experter hjälpa dig hitta, förhandla och köpa rätt bil. Vi sköter kontakten med handlare åt dig – gratis och utan krångel.',
+      canonical: 'https://bilto.se/kop-bil-hjalp',
+    });
   }, []);
 
   useEffect(() => {

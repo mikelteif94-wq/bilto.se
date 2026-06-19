@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /handlare/
+Disallow: /mina-bilar
+Disallow: /logga-in
+Disallow: /portal
+
+Sitemap: https://bilto.se/sitemap.xml
