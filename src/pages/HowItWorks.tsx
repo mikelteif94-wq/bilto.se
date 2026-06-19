@@ -22,7 +22,6 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { calcCarMonthly } from '../lib/utils';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import SeoCarsSection from '../components/SeoCarsSection';
@@ -31,7 +30,6 @@ import CompactCarCard from '../components/CompactCarCard';
 import ElCarCard from '../components/ElCarCard';
 import CompareDrawer from '../components/CompareDrawer';
 import BuyDrawer from '../components/BuyDrawer';
-import { EquityFlow } from '../components/equity/EquityFlow';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import { CarFitQuiz } from '../components/CarFitQuiz';
 import { getAllComparisonCars, type ComparisonCar } from '../lib/comparison';
@@ -150,13 +148,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
     bensin: 'Bensin', diesel: 'Diesel', hybrid: 'Hybrid', laddhybrid: 'Laddhybrid', el: 'El',
   };
 
-  const BUDGET_PILLS = [
-    { label: 'Under 3 000 kr/mån', min: 0, max: 3000 },
-    { label: '3 000–5 000 kr/mån', min: 3001, max: 5000 },
-    { label: '5 000–8 000 kr/mån', min: 5001, max: 8000 },
-    { label: 'Öppen budget', min: 0, max: 0 },
-  ];
-  const [activeBudgetPill, setActiveBudgetPill] = useState<string | null>(null);
   const [showAllCars, setShowAllCars] = useState(false);
   const [selectedCompareIds, setSelectedCompareIds] = useState<Set<string>>(new Set());
   const [compareOpen, setCompareOpen] = useState(false);
@@ -788,54 +779,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-2 flex-wrap mb-5">
-            {BUDGET_PILLS.map((pill) => {
-              const isActive = activeBudgetPill === pill.label;
-              return (
-                <button
-                  key={pill.label}
-                  type="button"
-                  onClick={() => { setActiveBudgetPill(isActive ? null : pill.label); setShowAllCars(false); }}
-                  className={`px-4 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
-                    isActive
-                      ? 'text-white shadow-md'
-                      : 'bg-white border border-slate-200 text-slate-600 hover:border-bilto-300 hover:text-bilto-600 hover:bg-bilto-50'
-                  }`}
-                  style={isActive ? {
-                    background: 'linear-gradient(135deg, #1a7fff 0%, #0e6efe 60%, #0a57cc 100%)',
-                    boxShadow: '0 3px 10px rgba(14,110,254,0.30)',
-                  } : {}}
-                >
-                  {pill.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Equity flow — inline card below budget pills */}
-          <div className="mb-8 max-w-md mx-auto">
-            <EquityFlow
-              compact
-              onNegotiate={(carLabel, equitySummary) => openDrawer(carLabel, equitySummary)}
-            />
-          </div>
 
           {(() => {
-            let carsToShow = popularCars;
-            if (activeBudgetPill !== null) {
-              const pill = BUDGET_PILLS.find(p => p.label === activeBudgetPill);
-              carsToShow = allCars
-                .filter(car => {
-                  if (!car.pricing.new_from_sek || !pill) return false;
-                  const monthly = calcCarMonthly(car.pricing.new_from_sek, 0.55);
-                  if (pill.min === 0 && pill.max === 0) return true; // Öppen budget
-                  if (pill.max === 0) return monthly >= pill.min;
-                  if (pill.min === 0) return monthly <= pill.max;
-                  return monthly >= pill.min && monthly <= pill.max;
-                })
-                .sort((a, b) => (a.pricing.new_from_sek || 0) - (b.pricing.new_from_sek || 0))
-                .slice(0, 12);
-            }
+            const carsToShow = popularCars;
             const visibleCars = showAllCars ? carsToShow : carsToShow.slice(0, 6);
             const hasMore = carsToShow.length > 6;
             return (
@@ -852,8 +798,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                           name={`${car.brand_display} ${car.model_display}`}
                           imageUrl={imageUrl}
                           rating={car.ratings.overall}
-                          topBadge={i === 0 && activeBudgetPill === null}
-                          pros={car.pros}
+                          topBadge={i === 0}                          pros={car.pros}
                           fuelLabel={fuelLabelStr}
                           bodyType={car.specs.body_type}
                           drivetrain={car.specs.drivetrain}
