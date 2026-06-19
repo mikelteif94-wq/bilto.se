@@ -1057,10 +1057,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       <section className="py-10 sm:py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-7 sm:mb-10">
-            <span className="inline-flex items-center gap-2 text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">
-              <Zap className="w-3.5 h-3.5" />
-              Hitta rätt nivå
-            </span>
             <h2 className="text-[26px] sm:text-[32px] font-extrabold text-slate-900 tracking-tight">
               Sök efter budget
             </h2>
