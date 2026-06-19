@@ -1261,7 +1261,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       ))}
                     </ul>
 
-                    <div className="w-full max-w-sm mx-auto lg:mx-0 flex flex-col gap-3">
+                    <div className="w-full max-w-sm mx-auto lg:mx-0 flex flex-col gap-2">
                       <button
                         type="button"
                         onClick={() => setQuizStep('active')}
@@ -1271,8 +1271,10 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                         <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
                       </button>
                       <p className="text-[12px] text-slate-400 text-center">Tar 60 sekunder · Helt gratis</p>
+                    </div>
 
-                      {/* Equity quiz CTA */}
+                    {/* Equity quiz CTA */}
+                    <div className="w-full max-w-sm mx-auto lg:mx-0 mt-4 pt-4 border-t border-slate-100">
                       <EquityFlow
                         compact
                         isEv={isEvPage}
