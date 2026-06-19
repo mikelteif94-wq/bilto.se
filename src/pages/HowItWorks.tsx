@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useRef } from 'react';
 import {
   Menu,
@@ -28,14 +28,15 @@ import SeoCarsSection from '../components/SeoCarsSection';
 import ReviewsSection from '../components/ReviewsSection';
 import CompactCarCard from '../components/CompactCarCard';
 import ElCarCard from '../components/ElCarCard';
-import CompareDrawer from '../components/CompareDrawer';
-import BuyDrawer from '../components/BuyDrawer';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
-import { CarFitQuiz } from '../components/CarFitQuiz';
-import { getAllComparisonCars, type ComparisonCar } from '../lib/comparison';
+import type { ComparisonCar } from '../lib/comparison';
 import { useCarImages } from '../hooks/useCarImages';
 import { useCatalogCars } from '../hooks/useCatalogCars';
 import RegInput from '../components/RegInput';
+
+const CompareDrawer = lazy(() => import('../components/CompareDrawer'));
+const BuyDrawer = lazy(() => import('../components/BuyDrawer'));
+const CarFitQuiz = lazy(() => import('../components/CarFitQuiz').then(m => ({ default: m.CarFitQuiz })));
 
 interface HowItWorksProps {
   onBackHome: () => void;
@@ -108,6 +109,25 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   useEffect(() => {
     if (pageTitle) document.title = pageTitle;
   }, [pageTitle]);
+
+  // Preload likely next pages after idle so clicks feel instant
+  useEffect(() => {
+    const id = window.requestIdleCallback
+      ? window.requestIdleCallback(() => {
+          import('../pages/BuyCarPage');
+          import('../pages/FreeConsultationPage');
+          import('../pages/KopBilConcierge');
+        })
+      : window.setTimeout(() => {
+          import('../pages/BuyCarPage');
+          import('../pages/FreeConsultationPage');
+          import('../pages/KopBilConcierge');
+        }, 2000);
+    return () => {
+      if (window.requestIdleCallback) window.cancelIdleCallback(id as number);
+      else window.clearTimeout(id as number);
+    };
+  }, []);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [regnummer, setRegnummer] = useState('');
   const [formError, setFormError] = useState('');
@@ -133,7 +153,11 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
   const { cars: dbCars } = useCatalogCars();
   const { getCarImage } = useCarImages(dbCars);
-  const allCars = getAllComparisonCars();
+  const [allCars, setAllCars] = useState<ComparisonCar[]>([]);
+
+  useEffect(() => {
+    import('../lib/comparison').then(m => setAllCars(m.getAllComparisonCars()));
+  }, []);
   const TRADE_IN_IDS = ['volvo_xc60', 'bmw_x3', 'tesla_model_y'];
   const tradeInCars = TRADE_IN_IDS
     .map(id => allCars.find(c => c.id === id))
@@ -318,6 +342,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           <div className="flex items-center ml-auto">
             <a
               href="/gratis-konsultation"
+              onMouseEnter={() => { import('../pages/FreeConsultationPage'); import('../pages/KopBilConcierge'); }}
               className="inline-flex items-center bg-white text-[#0e6efe] text-[12px] lg:text-[14px] font-semibold px-4 lg:px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
@@ -1262,23 +1287,27 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </a>
       )}
 
-      <BuyDrawer
-        car={buyDrawerCar}
-        initialAdditionalRequests={buyDrawerEquity || undefined}
-        onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); }}
-      />
+      <Suspense fallback={null}>
+        <BuyDrawer
+          car={buyDrawerCar}
+          initialAdditionalRequests={buyDrawerEquity || undefined}
+          onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); }}
+        />
+      </Suspense>
 
-      <CompareDrawer
-        cars={selectedCompareCars}
-        open={compareOpen}
-        onClose={() => setCompareOpen(false)}
-        onRemove={(id) => toggleCompare(id)}
-        onNegotiate={(car) => {
-          setCompareOpen(false);
-          openDrawer(`${car.brand_display} ${car.model_display}`);
-        }}
-        getImageUrl={(car) => getCarImage(car.brand_display, car.model_display) || undefined}
-      />
+      <Suspense fallback={null}>
+        <CompareDrawer
+          cars={selectedCompareCars}
+          open={compareOpen}
+          onClose={() => setCompareOpen(false)}
+          onRemove={(id) => toggleCompare(id)}
+          onNegotiate={(car) => {
+            setCompareOpen(false);
+            openDrawer(`${car.brand_display} ${car.model_display}`);
+          }}
+          getImageUrl={(car) => getCarImage(car.brand_display, car.model_display) || undefined}
+        />
+      </Suspense>
 
       {selectedCompareIds.size > 0 && !compareOpen && (
         <div className="fixed bottom-0 inset-x-0 z-40 pb-[env(safe-area-inset-bottom)]">
@@ -1345,12 +1374,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         />
       )}
 
-      <CarFitQuiz
-        car={fitQuizCar!}
-        open={!!fitQuizCar}
-        onClose={() => setFitQuizCar(null)}
-        onNegotiate={() => { if (fitQuizCar) { openDrawer(`${fitQuizCar.brand_display} ${fitQuizCar.model_display}`); setFitQuizCar(null); } }}
-      />
+      <Suspense fallback={null}>
+        <CarFitQuiz
+          car={fitQuizCar!}
+          open={!!fitQuizCar}
+          onClose={() => setFitQuizCar(null)}
+          onNegotiate={() => { if (fitQuizCar) { openDrawer(`${fitQuizCar.brand_display} ${fitQuizCar.model_display}`); setFitQuizCar(null); } }}
+        />
+      </Suspense>
     </div>
   );
 }
