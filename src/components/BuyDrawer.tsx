@@ -339,6 +339,22 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
 
             {/* Header */}
             <div className="px-5 sm:px-6 pt-2 pb-4 border-b border-slate-100 shrink-0">
+              {step !== 'done' && (
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="relative shrink-0">
+                    <img
+                      src="/Man_in_car_showroom_portrait.png"
+                      alt="Bilto-expert"
+                      className="w-9 h-9 rounded-full object-cover object-top border-2 border-white shadow-sm"
+                    />
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-semibold text-slate-800 leading-tight">Bilto-expert tillgänglig</p>
+                    <p className="text-[11px] text-slate-400 leading-tight">Vi hör av oss inom en arbetsdag</p>
+                  </div>
+                </div>
+              )}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   {car && !hasSpecificCar && step !== 'done' && (

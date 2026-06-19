@@ -2121,43 +2121,43 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         </div>
       </section>
 
-      {/* Josefin testimonial */}
+      {/* Johan testimonial */}
       <section className="bg-white relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
-          <div className="grid md:grid-cols-12 gap-10 items-center">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-8 sm:py-12">
+          <div className="grid md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-5 order-1">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-4 block">
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-3 block">
                 Kundcase
               </span>
-              <h2 className="text-[24px] sm:text-[42px] font-semibold leading-[1.15] sm:leading-[1.08] text-slate-900 tracking-[-0.02em]">
-                "Jag visste ingenting om bilar — Bilto skötte allt och jag fick mer än jag vågat hoppas på."
+              <h2 className="text-[22px] sm:text-[34px] font-semibold leading-[1.15] sm:leading-[1.1] text-slate-900 tracking-[-0.02em]">
+                "Bilto löste allt från start till mål — jag behövde inte göra någonting själv."
               </h2>
-              <p className="text-slate-600 mt-5 text-[15px] sm:text-[16px] leading-[1.65] max-w-md">
-                Josefin hade hittat en Volvo XC40 men kände sig osäker. Annonsen visade elstolar som inte fanns — Bilto fick 15 000 kr i ersättning för det, förhandlade ner räntan 2 %, fick med dubbdäck och 2 års garanti, och pressade upp inbytesvärdet med 7 000 kr.
+              <p className="text-slate-600 mt-4 text-[14px] sm:text-[15px] leading-[1.65] max-w-md">
+                Johan ville köpa en Toyota RAV4 men hade varken tid eller lust att jaga annonser och förhandla. Bilto tog hand om hela affären — hittade rätt bil, förhandlade priset och såg till att allt gick smidigt. Johan sparade både pengar och en massa tid.
               </p>
-              <div className="mt-8 grid grid-cols-2 gap-3">
+              <div className="mt-6 grid grid-cols-2 gap-2.5">
                 {[
-                  { label: 'Ränta', value: '−2 %' },
-                  { label: 'Inbyte', value: '+7 000 kr' },
-                  { label: 'Felaktig annons', value: '15 000 kr' },
-                  { label: 'Dubbdäck + garanti', value: 'ingår' },
+                  { label: 'Sparad tid', value: 'Flera dagar' },
+                  { label: 'Prisförhandling', value: '12 000 kr' },
+                  { label: 'Smidig affär', value: 'Start–mål' },
+                  { label: 'Nöjd kund', value: '100 %' },
                 ].map(({ label, value }) => (
                   <div key={label} className="px-4 py-3 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl">
                     <p className="text-[10px] font-bold text-[#0e6efe] uppercase tracking-[0.12em] mb-0.5">{label}</p>
-                    <p className="text-[18px] font-bold text-slate-900 leading-tight">{value}</p>
+                    <p className="text-[16px] font-bold text-slate-900 leading-tight">{value}</p>
                   </div>
                 ))}
               </div>
-              <p className="text-[13px] text-slate-500 mt-6">
-                Josefin L. — Volvo XC40, 2022
+              <p className="text-[13px] text-slate-500 mt-5">
+                Johan K. — Toyota RAV4, 2023
               </p>
             </div>
             <div className="md:col-span-7 order-2">
               <div className="relative rounded-2xl overflow-hidden">
                 <img
                   src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(Instagram_Post_(45))_copy_copy_copy_copy_copy.jpg"
-                  alt="Josefin framför sin Volvo XC40"
-                  className="w-full h-[380px] sm:h-[580px] md:h-[680px] object-cover object-center"
+                  alt="Johan framför sin Toyota RAV4"
+                  className="w-full h-[300px] sm:h-[460px] md:h-[520px] object-cover object-center"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
               </div>
