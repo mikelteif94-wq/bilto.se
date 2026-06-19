@@ -5,7 +5,6 @@ import type { Session } from '@supabase/supabase-js';
 import { slugToCity, slugToBrand } from './lib/seo-pages';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
-const HomePage = lazy(() => import('./pages/HomePage'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
 const BuyCarPage = lazy(() => import('./pages/BuyCarPage'));
 const DealerRegister = lazy(() => import('./pages/DealerRegister'));
@@ -574,8 +573,9 @@ function App() {
     <Suspense fallback={<PageLoader />}>
       <>
         {publicRoute.page === 'home' && (
-          <HomePage
-            onNavigate={(reg, tel) => setPublicRoute({ page: 'sell', regnummer: reg, telefon: tel })}
+          <HowItWorks
+            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSell={(reg) => setPublicRoute({ page: 'sell', regnummer: reg })}
           />
         )}
         {publicRoute.page === 'sell' && (
