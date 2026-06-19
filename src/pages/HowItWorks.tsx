@@ -300,7 +300,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         active="Sälj bil"
         onSelect={handleMenuSelect}
       />
-      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 bg-[#0e6efe] ${!scrolled ? 'backdrop-blur-md' : ''}`}>
+      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 bg-[#0e6efe] ${!scrolled ? 'backdrop-blur-md' : ''}`}>
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
@@ -371,7 +371,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           aria-hidden="true"
           className="absolute -left-24 -top-6 w-[280px] h-[280px] object-contain pointer-events-none select-none opacity-30"
         />
-        <div className="absolute -right-20 top-80 w-[240px] h-[240px] rounded-full bg-[#3d8cff] opacity-50" />
+        <div className="absolute -right-20 top-80 w-[240px] h-[240px] rounded-full bg-[#3d8cff] opacity-50 pointer-events-none" />
 
         <div className="relative px-6 pt-4 pb-10">
           <div className="flex items-center justify-center mb-3">
@@ -523,8 +523,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       </section>
 
       <section className="hidden lg:block relative bg-[#0e6efe] pt-28 pb-32 overflow-hidden">
-        <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60" />
-        <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50" />
+        <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60 pointer-events-none" />
+        <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50 pointer-events-none" />
         <img
           src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
           alt=""
