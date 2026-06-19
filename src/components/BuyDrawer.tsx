@@ -320,7 +320,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-slate-900/50"
             onClick={onClose}
           />
 
@@ -329,7 +329,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+            transition={{ type: 'spring', damping: 32, stiffness: 380 }}
             className="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] flex flex-col bg-white rounded-t-3xl shadow-2xl overflow-hidden"
           >
             {/* Handle bar */}
@@ -633,7 +633,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
 
           {/* Guidance mini-modal */}
           {guidanceOpen && (
-            <div className="fixed inset-0 z-60 flex items-end sm:items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4 py-6">
+            <div className="fixed inset-0 z-60 flex items-end sm:items-center justify-center bg-slate-900/50 px-4 py-6">
               <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
                 <div className="flex items-center justify-between px-5 sm:px-6 pt-5 pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2.5">
