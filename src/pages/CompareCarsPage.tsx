@@ -1223,63 +1223,68 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
 
 
       {/* Bilmatch Section */}
-      <section id="quiz-section" ref={quizSectionRef} className="py-0 sm:py-20 lg:py-28 sm:px-6 bg-gradient-to-b from-slate-50 to-white sm:border-t sm:border-slate-100">
+      <section id="quiz-section" ref={quizSectionRef} className="py-0 sm:py-20 lg:py-28 sm:px-6 bg-[#faf8f5] sm:bg-gradient-to-b sm:from-slate-50 sm:to-white sm:border-t sm:border-slate-100">
         <div className="max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             {quizStep === 'idle' && (
               <motion.div key="quiz-idle" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }}>
-                {/* Mobile: full-bleed card inspired by bold CTA design */}
-                <div className="block sm:hidden bg-[#0e6efe] px-5 pt-10 pb-0 overflow-hidden">
-                  <h2 className="text-[34px] font-extrabold text-white tracking-tight leading-[1.08] mb-4">
-                    {isEvPage ? 'Hitta din elbilsmatch' : 'Hitta din\nbilmatch'}
-                  </h2>
-                  <ul className="flex flex-col gap-3 mb-7">
-                    {(isEvPage ? [
-                      'Personlig elbilsrekommendation på under 60 sek',
-                      'Jämför räckvidd, laddtid och kostnad sida vid sida',
-                      'Vi hjälper dig byta till bästa pris',
-                    ] : [
-                      'Personlig rekommendation på under 60 sek',
-                      'Jämför matchade bilar sida vid sida',
-                      'Vi hjälper dig köpa till bästa pris',
-                    ]).map(item => (
-                      <li key={item} className="flex items-center gap-3 text-[15px] text-white/90">
-                        <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                          <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                        </div>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    type="button"
-                    onClick={() => setQuizStep('active')}
-                    className="w-full h-[54px] rounded-2xl bg-white text-[#0e6efe] font-bold text-[16px] flex items-center justify-center gap-2.5 group transition-all duration-200 active:scale-[0.98] mb-3"
-                  >
-                    {isEvPage ? 'Hitta din elbilsmatch' : 'Hitta din bilmatch'}
-                    <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                  <p className="text-[12px] text-white/60 text-center mb-6">Tar 60 sekunder · Helt gratis</p>
+                {/* Mobile card */}
+                <div className="block sm:hidden px-4 py-6">
+                  <div className="rounded-3xl bg-[#0e6efe] overflow-hidden">
+                    {/* Content area */}
+                    <div className="px-5 pt-7 pb-5">
+                      <h2 className="text-[30px] font-extrabold text-white tracking-tight leading-[1.1] mb-5">
+                        {isEvPage ? 'Hitta din\nelbilsmatch' : 'Hitta din\nbilmatch'}
+                      </h2>
+                      <ul className="flex flex-col gap-2.5 mb-6">
+                        {(isEvPage ? [
+                          'Personlig rekommendation på 60 sek',
+                          'Jämför räckvidd och kostnad sida vid sida',
+                          'Vi hjälper dig byta till bästa pris',
+                        ] : [
+                          'Personlig rekommendation på 60 sek',
+                          'Jämför matchade bilar sida vid sida',
+                          'Vi hjälper dig köpa till bästa pris',
+                        ]).map(item => (
+                          <li key={item} className="flex items-center gap-2.5 text-[14px] text-white/90">
+                            <div className="w-[18px] h-[18px] rounded-full bg-white/25 flex items-center justify-center shrink-0">
+                              <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+                            </div>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                      <button
+                        type="button"
+                        onClick={() => setQuizStep('active')}
+                        className="w-full h-[52px] rounded-2xl bg-white text-[#0e6efe] font-bold text-[15px] flex items-center justify-center gap-2 group transition-all duration-200 active:scale-[0.98] shadow-lg shadow-black/10"
+                      >
+                        {isEvPage ? 'Hitta din elbilsmatch' : 'Hitta din bilmatch'}
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                      </button>
+                      <p className="text-[11px] text-white/50 text-center mt-2.5">Tar 60 sekunder · Helt gratis</p>
+                    </div>
 
-                  {/* Car image strip at bottom */}
-                  <div className="flex gap-3 justify-center">
-                    {(isEvPage
-                      ? ['tesla_model_y', 'kia_ev6', 'hyundai_ioniq5']
-                      : ['tesla_model_y', 'volvo_xc60', 'kia_ev6']
-                    ).map((cid) => {
-                      const car = allCarsRaw.find(c => c.id === cid);
-                      if (!car) return null;
-                      const img = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
-                      return (
-                        <div key={cid} className="flex-1 bg-white/10 rounded-t-2xl flex items-end justify-center overflow-hidden pt-3 px-2">
-                          {img && <img src={img} alt="" className="w-full h-auto object-contain" />}
-                        </div>
-                      );
-                    })}
+                    {/* Car image strip */}
+                    <div className="flex gap-2 px-3 pb-0">
+                      {(isEvPage
+                        ? ['tesla_model_y', 'kia_ev6', 'hyundai_ioniq5']
+                        : ['tesla_model_y', 'volvo_xc60', 'kia_ev6']
+                      ).map((cid) => {
+                        const car = allCarsRaw.find(c => c.id === cid);
+                        if (!car) return null;
+                        const img = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
+                        return (
+                          <div key={cid} className="flex-1 bg-white/15 rounded-t-xl flex items-end justify-center overflow-hidden pt-3 px-1">
+                            {img && <img src={img} alt="" className="w-full h-auto object-contain drop-shadow-md" />}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
 
-                  {/* EquityFlow below the card */}
-                  <div className="bg-white px-4 pt-4 pb-5">
+                  {/* EquityFlow below card */}
+                  <div className="mt-3">
                     <EquityFlow
                       compact
                       isEv={isEvPage}
