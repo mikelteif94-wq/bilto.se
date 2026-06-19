@@ -1223,24 +1223,42 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
 
 
       {/* Bilmatch Section */}
-      <section id="quiz-section" ref={quizSectionRef} className="py-14 sm:py-20 lg:py-28 px-4 sm:px-6 bg-gradient-to-b from-slate-50 to-white border-t border-slate-100">
+      <section id="quiz-section" ref={quizSectionRef} className="py-10 sm:py-20 lg:py-28 px-4 sm:px-6 bg-gradient-to-b from-slate-50 to-white border-t border-slate-100">
         <div className="max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             {quizStep === 'idle' && (
               <motion.div key="quiz-idle" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }}>
                 <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
                   {/* Left: text content */}
-                  <div className="text-center lg:text-left lg:flex-1 w-full">
-                    <h2 className="text-[34px] sm:text-[42px] lg:text-[52px] font-extrabold text-slate-900 tracking-tight leading-[1.05] mb-4">
-                      Hitta din<br className="sm:hidden" />{' '}
+                  <div className="flex flex-col items-center lg:items-start lg:flex-1 w-full">
+                    {/* Mobile: car strip above heading */}
+                    <div className="flex lg:hidden items-center justify-center gap-2.5 mb-6 w-full">
+                      {(isEvPage
+                        ? ['tesla_model_y', 'kia_ev6', 'polestar_2']
+                        : ['tesla_model_y', 'volvo_xc60', 'kia_ev6']
+                      ).map((cid) => {
+                        const car = allCarsRaw.find(c => c.id === cid);
+                        if (!car) return null;
+                        const img = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
+                        return (
+                          <div key={cid} className="flex-1 max-w-[110px] aspect-[4/3] rounded-2xl bg-white border border-slate-100 shadow-sm flex items-end justify-center overflow-hidden">
+                            {img && <img src={img} alt="" className="w-full h-auto object-contain" />}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <h2 className="text-[36px] sm:text-[42px] lg:text-[52px] font-extrabold text-slate-900 tracking-tight leading-[1.05] mb-3 text-center lg:text-left">
+                      Hitta din{' '}
                       <span className="text-[#0e6efe]">{isEvPage ? 'elbilsmatch' : 'bilmatch'}</span>
                     </h2>
-                    <p className="text-slate-500 text-[15px] sm:text-[16px] lg:text-[17px] leading-relaxed mb-7 max-w-md mx-auto lg:mx-0">
+                    <p className="text-slate-500 text-[15px] sm:text-[16px] lg:text-[17px] leading-relaxed mb-6 max-w-sm sm:max-w-md mx-auto lg:mx-0 text-center lg:text-left">
                       {isEvPage
                         ? 'Svara på 5 korta frågor om hur du kör, din räckviddsoro och budget — vi matchar dig med den elbil som passar dig bäst.'
                         : 'Svara på 5 korta frågor om hur du kör, vad du prioriterar och din budget — vi matchar dig med de bilar som passar dig bäst.'}
                     </p>
-                    <ul className="flex flex-col gap-2.5 mb-8 max-w-xs mx-auto lg:mx-0 items-start text-left">
+
+                    <ul className="flex flex-col gap-3 mb-7 w-full max-w-sm mx-auto lg:mx-0">
                       {(isEvPage ? [
                         'Personlig elbilsrekommendation på under 60 sekunder',
                         'Jämför räckvidd, laddtid och månadskostnad sida vid sida',
@@ -1258,18 +1276,19 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                         </li>
                       ))}
                     </ul>
-                    <button
-                      type="button"
-                      onClick={() => setQuizStep('active')}
-                      className="w-full max-w-[320px] mx-auto lg:mx-0 h-[54px] rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[16px] flex items-center justify-center gap-2.5 group transition-all duration-200 shadow-lg shadow-[#0e6efe]/30 hover:shadow-xl hover:shadow-[#0e6efe]/35 hover:-translate-y-0.5 active:scale-[0.98]"
-                    >
-                      {isEvPage ? 'Hitta din elbilsmatch' : 'Hitta din bilmatch'}
-                      <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                    <p className="text-[12.5px] text-slate-400 mt-2.5 text-center lg:text-left">Tar 60 sekunder · Helt gratis</p>
 
-                    {/* Equity quiz CTA */}
-                    <div className="mt-4 max-w-[320px] mx-auto lg:mx-0">
+                    <div className="w-full max-w-sm mx-auto lg:mx-0 flex flex-col gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setQuizStep('active')}
+                        className="w-full h-[54px] rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[16px] flex items-center justify-center gap-2.5 group transition-all duration-200 shadow-lg shadow-[#0e6efe]/30 hover:shadow-xl hover:shadow-[#0e6efe]/35 hover:-translate-y-0.5 active:scale-[0.98]"
+                      >
+                        {isEvPage ? 'Hitta din elbilsmatch' : 'Hitta din bilmatch'}
+                        <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                      <p className="text-[12px] text-slate-400 text-center">Tar 60 sekunder · Helt gratis</p>
+
+                      {/* Equity quiz CTA */}
                       <EquityFlow
                         compact
                         isEv={isEvPage}
@@ -1297,23 +1316,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                         >
                           {img && <img src={img} alt={`${car.brand_display} ${car.model_display}`} className="w-full h-auto object-contain" />}
                         </motion.div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Mobile: small car strip */}
-                  <div className="flex lg:hidden items-center justify-center gap-3 mt-8">
-                    {(isEvPage
-                      ? ['tesla_model_y', 'kia_ev6', 'polestar_2']
-                      : ['tesla_model_y', 'volvo_xc60', 'kia_ev6']
-                    ).map((cid) => {
-                      const car = allCarsRaw.find(c => c.id === cid);
-                      if (!car) return null;
-                      const img = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
-                      return (
-                        <div key={cid} className="w-[100px] sm:w-[130px] aspect-[4/3] rounded-xl bg-white border border-slate-100 flex items-end justify-center overflow-hidden">
-                          {img && <img src={img} alt="" className="w-full h-auto object-contain" />}
-                        </div>
                       );
                     })}
                   </div>
