@@ -1047,8 +1047,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 </a>
               </div>
 
-              <div className="relative max-w-[260px] sm:max-w-none mx-auto">
-                <div className="relative aspect-[5/4] rounded-[28px] sm:rounded-[36px] overflow-hidden">
+              <div className="relative">
+                <div className="relative aspect-[5/4] sm:aspect-[5/4] rounded-[28px] sm:rounded-[36px] overflow-hidden max-h-[220px] sm:max-h-none">
                   <img
                     src="/858c5bbb-bilto-hoodie.png"
                     alt="Bilexpert"
