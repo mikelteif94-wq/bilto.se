@@ -1025,51 +1025,39 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section className="bg-white px-4 sm:px-6 py-10 sm:py-20">
+      <section className="bg-white px-4 sm:px-6 py-12 sm:py-20">
         <div className="max-w-6xl mx-auto">
-          <div className="relative rounded-[24px] sm:rounded-[56px] bg-[#0e6efe] px-5 py-7 sm:px-14 sm:py-12 lg:px-20 lg:py-14">
-            {/* Mobile layout: text left, image right side-by-side */}
-            <div className="relative grid grid-cols-2 gap-4 sm:gap-0 lg:grid-cols-2 lg:gap-12 items-center">
-              {/* Text column */}
-              <div className="text-white col-span-1">
-                <h2 className="text-[20px] sm:text-[38px] font-semibold tracking-[-0.02em] leading-[1.1] text-white">
+          <div className="relative rounded-[28px] sm:rounded-[56px] bg-[#0e6efe] px-5 py-8 sm:px-14 sm:py-12 lg:px-20 lg:py-14">
+            <div className="relative grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              <div className="text-white">
+                <h2 className="text-[28px] sm:text-[38px] font-semibold tracking-[-0.02em] leading-[1.08] text-white">
                   Ring våra bilexperter
                 </h2>
-                <p className="mt-2 sm:mt-4 text-[12px] sm:text-[15px] text-white/90 leading-[1.5] sm:leading-[1.6] max-w-md">
-                  Har du frågor om din bilaffär? Ring oss direkt — kostnadsfritt och helt utan förpliktelse.
+                <p className="mt-4 text-[15px] text-white leading-[1.6] max-w-md">
+                  Har du frågor om din bilaffär? Ring oss direkt så hjälper vår
+                  bilexpert dig. Kostnadsfritt och helt utan förpliktelse.
                 </p>
 
                 <a
                   href="tel:+46855550200"
-                  className="mt-4 sm:mt-8 inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-[#0e6efe] font-semibold text-[12px] sm:text-[15px] px-4 sm:px-7 h-[40px] sm:h-[52px] rounded-full shadow-[0_10px_30px_-10px_rgba(0,0,0,0.4)] transition hover:-translate-y-0.5"
+                  className="mt-6 sm:mt-8 inline-flex items-center gap-2.5 bg-white hover:bg-slate-100 text-[#0e6efe] font-semibold text-[14px] sm:text-[15px] px-6 sm:px-7 h-[48px] sm:h-[52px] rounded-full shadow-[0_10px_30px_-10px_rgba(0,0,0,0.4)] transition hover:-translate-y-0.5"
                 >
-                  <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-[#0e6efe]" strokeWidth={2.5} />
-                  <span className="hidden sm:inline">Ring 08-5555 0200</span>
-                  <span className="sm:hidden">08-5555 0200</span>
+                  <Phone className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.5} />
+                  Ring 08-5555 0200
                 </a>
-
-                {/* Online indicator — mobile only */}
-                <div className="mt-3 flex items-center gap-1.5 sm:hidden">
-                  <span className="relative flex w-2 h-2">
-                    <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-                    <span className="relative inline-flex w-2 h-2 rounded-full bg-emerald-400" />
-                  </span>
-                  <span className="text-[11px] text-white/80">Expert tillgänglig nu</span>
-                </div>
               </div>
 
-              {/* Image column */}
-              <div className="relative col-span-1">
-                <div className="relative aspect-[4/5] sm:aspect-[5/4] rounded-[16px] sm:rounded-[36px] overflow-hidden">
+              <div className="relative">
+                <div className="relative aspect-[5/4] rounded-[28px] sm:rounded-[36px] overflow-hidden">
                   <img
                     src="/858c5bbb-bilto-hoodie.png"
                     alt="Bilexpert"
-                    className="absolute inset-0 w-full h-full object-cover object-top"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
 
-                <div className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-[#0e6efe] ring-[4px] sm:ring-[6px] ring-white text-white flex items-center justify-center">
-                  <MessageCircle className="w-4 h-4 sm:w-7 sm:h-7" strokeWidth={2} />
+                <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#0e6efe] ring-[6px] ring-white text-white flex items-center justify-center">
+                  <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={2} />
                 </div>
 
                 <div className="hidden sm:block absolute bottom-4 right-4 sm:-bottom-6 sm:-right-4 bg-white rounded-2xl shadow-xl p-4 w-[230px]">
@@ -1090,7 +1078,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       <p className="mt-0.5 text-[12px] text-slate-500">Vi finns här för att guida dig</p>
                     </div>
                   </div>
-                  <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+                  <div className="mt-3 flex items-center gap-2 md:border-t md:border-slate-100 pt-3">
                     <span className="relative flex w-2.5 h-2.5">
                       <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
                       <span className="relative inline-flex w-2.5 h-2.5 rounded-full bg-emerald-500" />
