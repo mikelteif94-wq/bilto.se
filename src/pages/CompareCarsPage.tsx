@@ -1660,30 +1660,32 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 );
               })}
 
-              {/* "Hittar du inte bilen?" card — always last in grid */}
-              <button
-                type="button"
-                onClick={() => openBuyDrawer(carSearchQuery.trim() || '', 'found')}
-                className={`group flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-2 border-dashed transition-all duration-200 min-h-[180px] text-center ${
-                  activeCategory === 'el'
-                    ? 'bg-white/5 border-white/15 hover:border-[#38bdf8]/50 hover:bg-[#38bdf8]/5'
-                    : 'bg-white border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/[0.03]'
-                }`}
-              >
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${activeCategory === 'el' ? 'bg-white/10 group-hover:bg-[#38bdf8]/15' : 'bg-slate-100 group-hover:bg-[#0e6efe]/10'}`}>
-                  <Search className={`w-5 h-5 transition-colors ${activeCategory === 'el' ? 'text-slate-500 group-hover:text-[#38bdf8]' : 'text-slate-400 group-hover:text-[#0e6efe]'}`} />
-                </div>
-                <div>
-                  <p className={`text-[13px] font-bold transition-colors leading-snug ${activeCategory === 'el' ? 'text-slate-300 group-hover:text-[#7dd3fc]' : 'text-slate-700 group-hover:text-[#0e6efe]'}`}>
-                    {carSearchQuery.trim() ? `Hitta en ${carSearchQuery.trim()}` : 'Hittar du inte bilen?'}
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-1 leading-snug">
-                    Vi hjälper dig hitta och köpa
-                  </p>
-                </div>
-              </button>
             </motion.div>
           </AnimatePresence>
+
+          {/* "Hittar du inte bilen?" — always visible banner below grid */}
+          <button
+            type="button"
+            onClick={() => openBuyDrawer(carSearchQuery.trim() || '', 'found')}
+            className={`group w-full mt-4 flex items-center gap-4 px-5 py-4 rounded-2xl border transition-all duration-200 text-left ${
+              activeCategory === 'el'
+                ? 'bg-white/5 border-white/15 hover:border-[#38bdf8]/50 hover:bg-[#38bdf8]/5'
+                : 'bg-white border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/[0.03]'
+            }`}
+          >
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${activeCategory === 'el' ? 'bg-white/10 group-hover:bg-[#38bdf8]/15' : 'bg-slate-100 group-hover:bg-[#0e6efe]/10'}`}>
+              <Search className={`w-5 h-5 transition-colors ${activeCategory === 'el' ? 'text-slate-500 group-hover:text-[#38bdf8]' : 'text-slate-400 group-hover:text-[#0e6efe]'}`} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className={`text-[14px] font-bold transition-colors ${activeCategory === 'el' ? 'text-slate-300 group-hover:text-[#7dd3fc]' : 'text-slate-700 group-hover:text-[#0e6efe]'}`}>
+                {carSearchQuery.trim() ? `Hitta en ${carSearchQuery.trim()}` : 'Hittar du inte bilen?'}
+              </p>
+              <p className="text-[12px] text-slate-400 mt-0.5">
+                Vi hjälper dig hitta och köpa
+              </p>
+            </div>
+            <ArrowRight className={`w-4 h-4 shrink-0 transition-all group-hover:translate-x-1 ${activeCategory === 'el' ? 'text-slate-500 group-hover:text-[#38bdf8]' : 'text-slate-400 group-hover:text-[#0e6efe]'}`} />
+          </button>
 
           {!carSearchQuery && !showAllCars && allCategoryCars.length > expertShowCount && (
             <div className="flex justify-center mt-6">
