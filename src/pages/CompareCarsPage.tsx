@@ -999,8 +999,15 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
 
       {/* Hero */}
       <section className="pt-28 sm:pt-36 pb-12 sm:pb-16 px-5 sm:px-6 bg-[#0e6efe] relative overflow-hidden">
-        <div className="absolute -left-32 top-16 w-[500px] h-[500px] rounded-full bg-[#3d8cff] opacity-40" />
-        <div className="absolute right-0 -bottom-32 w-[400px] h-[400px] rounded-full bg-[#3d8cff] opacity-30" />
+        <img
+          src="https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-20 pointer-events-none select-none"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0e6efe]/60 via-[#0e6efe]/40 to-[#0e6efe]/80 pointer-events-none" />
+        <div className="absolute -left-32 top-16 w-[500px] h-[500px] rounded-full bg-[#3d8cff] opacity-20" />
+        <div className="absolute right-0 -bottom-32 w-[400px] h-[400px] rounded-full bg-[#3d8cff] opacity-15" />
         <div className="relative max-w-3xl mx-auto text-center">
           <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
             {heroTitle ?? 'Hitta din dr\u00f6mbil och f\u00f6rhandla priset'}
