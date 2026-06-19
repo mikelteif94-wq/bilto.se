@@ -1586,35 +1586,31 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         className="py-10 sm:py-16 px-4 sm:px-6 bg-slate-50"
       >
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
             <div>
-              <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900">
+              <h2 className="text-[22px] sm:text-[30px] font-bold text-slate-900 tracking-tight">
                 {activeCategory === 'el' ? 'Elbilar' : 'Experternas val'}
               </h2>
-              <p className="text-[13px] mt-0.5 text-slate-400">
+              <p className="text-[13px] mt-1 text-slate-400 font-medium">
                 {activeCategory === 'el'
                   ? 'Alla bilar kör enbart på el — välj ett kort för att jämföra'
                   : 'Markera bilar för att jämföra dem sida vid sida'}
               </p>
             </div>
-            <div className="relative w-full sm:w-64">
-              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none transition-colors ${activeCategory === 'el' ? 'text-slate-500' : 'text-slate-400'}`} />
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none text-slate-400" />
               <input
                 type="text"
                 value={carSearchQuery}
                 onChange={e => { setCarSearchQuery(e.target.value); setActiveCategory('alla'); setShowAllCars(false); }}
                 placeholder="Sök märke eller modell…"
-                className={`w-full h-10 pl-9 pr-9 rounded-full ring-1 focus:ring-2 focus:ring-[#0e6efe] outline-none text-[13px] placeholder:text-slate-500 transition-all ${
-                  activeCategory === 'el'
-                    ? 'bg-white/8 ring-white/15 text-white'
-                    : 'bg-white ring-slate-200 text-slate-800 placeholder:text-slate-400'
-                }`}
+                className="w-full h-11 pl-10 pr-9 rounded-full bg-white ring-1 ring-slate-200 focus:ring-2 focus:ring-[#0e6efe] outline-none text-[13px] text-slate-800 placeholder:text-slate-400 shadow-sm transition-all"
               />
               {carSearchQuery && (
                 <button
                   type="button"
                   onClick={() => setCarSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
