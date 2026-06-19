@@ -1003,9 +1003,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           src="https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-center opacity-20 pointer-events-none select-none"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0e6efe]/60 via-[#0e6efe]/40 to-[#0e6efe]/80 pointer-events-none" />
         <div className="absolute -left-32 top-16 w-[500px] h-[500px] rounded-full bg-[#3d8cff] opacity-20" />
         <div className="absolute right-0 -bottom-32 w-[400px] h-[400px] rounded-full bg-[#3d8cff] opacity-15" />
         <div className="relative max-w-3xl mx-auto text-center">
