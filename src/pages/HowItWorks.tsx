@@ -337,9 +337,20 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             >
               Sälj bil
             </button>
-            <span className="text-[15px] text-white font-bold underline underline-offset-4 decoration-white/50">
+            <button
+              type="button"
+              onClick={() => {
+                window.history.pushState({}, '', '/sa-funkar-det');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }}
+              className={`text-[15px] font-medium transition hover:text-white ${
+                window.location.pathname === '/sa-funkar-det'
+                  ? 'text-white font-bold underline underline-offset-4 decoration-white/50'
+                  : 'text-white/70'
+              }`}
+            >
               Så funkar det
-            </span>
+            </button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
