@@ -225,34 +225,15 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               <p className="mt-4 text-white/60 text-[13px]">Vi hör av oss inom en arbetsdag.</p>
             </div>
 
-            {/* Right: expert cards teaser */}
-            <div className="hidden lg:flex flex-col gap-4 pb-10 justify-end">
-              {EXPERTS.map((e) => (
-                <div
-                  key={e.name}
-                  className="flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-5 py-4"
-                >
-                  <img
-                    src={e.avatar}
-                    alt={e.name}
-                    className="w-14 h-14 rounded-full object-cover object-top shrink-0 border-2 border-white/30"
-                  />
-                  <div className="min-w-0">
-                    <p className="text-white font-bold text-[15px] leading-tight">{e.name}</p>
-                    <p className="text-white/70 text-[13px]">{e.title} · {e.years}</p>
-                    <p className="text-white/60 text-[12px] mt-0.5">{e.spec}</p>
-                  </div>
-                  <div className="ml-auto shrink-0 flex items-center gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                </div>
-              ))}
-              <div className="flex items-center gap-3 px-5 py-3 bg-emerald-500/20 border border-emerald-400/30 rounded-2xl">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                <p className="text-emerald-200 text-[13px] font-medium">En expert är tillgänglig nu</p>
-              </div>
+            {/* Right: hero image */}
+            <div className="hidden lg:flex items-end justify-center pb-0">
+              <img
+                src="/ChatGPT_Image_8_maj_2026_09_33_53.png"
+                alt="Glad kund med ny bil"
+                className="w-full max-w-[520px] object-contain drop-shadow-2xl"
+                fetchPriority="high"
+                decoding="async"
+              />
             </div>
           </div>
         </div>
