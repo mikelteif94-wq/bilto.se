@@ -129,7 +129,7 @@ function CalendarWidget() {
             key={i}
             onClick={() => day && setSelected(day)}
             disabled={!day}
-            className={`h-7 w-full text-[11px] font-medium rounded-full transition-colors ${
+            className={`h-5 w-full text-[10px] font-medium rounded-full transition-colors ${
               !day ? '' :
               day === selected
                 ? 'bg-[#0e6efe] text-white'
@@ -1117,13 +1117,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
                   <a
                     href="/gratis-konsultation"
-                    className="inline-flex items-center justify-center h-[52px] px-8 rounded-full bg-white text-[#0e6efe] text-[15px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)]"
+                    className="flex-1 inline-flex items-center justify-center h-[52px] px-5 rounded-full bg-white text-[#0e6efe] text-[14px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)] text-center"
                   >
                     Kostnadsfri konsultation
                   </a>
                   <a
                     href="tel:+46855550200"
-                    className="inline-flex items-center justify-center h-[52px] px-8 rounded-full border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
+                    className="flex-1 inline-flex items-center justify-center h-[52px] px-5 rounded-full border-2 border-white/40 text-white text-[14px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
                   >
                     <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
                     Ring 08-5555 0200
@@ -1132,9 +1132,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               </div>
 
               {/* Right: image + floating calendar */}
-              <div className="relative h-[280px] sm:h-[340px] lg:h-[380px]">
-                {/* Main image — left-aligned, ~65% wide */}
-                <div className="absolute left-0 top-0 w-[65%] h-full rounded-[20px] sm:rounded-[28px] overflow-hidden">
+              <div className="relative h-[300px] sm:h-[360px] lg:h-[400px]">
+                {/* Main image — left-aligned, ~72% wide */}
+                <div className="absolute left-0 top-0 w-[72%] h-full rounded-[20px] sm:rounded-[28px] overflow-hidden">
                   <img
                     src="/858c5bbb-bilto-hoodie.png"
                     alt="Bilexpert"
@@ -1144,8 +1144,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 </div>
 
                 {/* Calendar widget — bottom-right, overlapping image */}
-                <div className="absolute bottom-0 right-0 bg-white rounded-2xl shadow-xl p-3 w-[170px] sm:w-[200px]">
-                  <p className="text-[11px] font-bold text-slate-900 text-center mb-2">Välj en tid</p>
+                <div className="absolute bottom-0 right-0 bg-white rounded-2xl shadow-xl p-2.5 w-[155px] sm:w-[178px]">
+                  <p className="text-[10px] font-bold text-slate-900 text-center mb-1.5">Välj en tid</p>
                   <CalendarWidget />
                 </div>
               </div>
