@@ -1132,7 +1132,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               </div>
 
               {/* Right: image + floating widgets */}
-              <div className="relative">
+              <div className="relative pb-16 sm:pb-20">
                 {/* Main image */}
                 <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden aspect-[4/3]">
                   <img
@@ -1144,9 +1144,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 </div>
 
                 {/* Calendar widget */}
-                <div className="hidden sm:block absolute -bottom-5 -right-4 bg-white rounded-2xl shadow-xl p-4 w-[230px]">
+                <div className="hidden sm:block absolute bottom-0 right-0 bg-white rounded-2xl shadow-xl p-4 w-[230px]">
                   <p className="text-[12px] font-bold text-slate-900 text-center mb-3">Välj en tid</p>
-                  <CalendarWidget /></div>
+                  <CalendarWidget />
+                </div>
               </div>
             </div>
           </div>
