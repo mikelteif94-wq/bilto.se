@@ -26,7 +26,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
     <div className="min-h-screen bg-[#faf8f5] text-slate-900">
       <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} onSelect={handleMenuSelect} />
 
-      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe] overflow-hidden">
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-4 sm:px-5 lg:px-8">
           <button
             type="button"
@@ -37,7 +37,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
             <Menu className="w-6 h-6 text-white" strokeWidth={2} />
           </button>
           <button onClick={onBackHome} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center">
-            <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-12 lg:h-14 w-auto object-contain" fetchPriority="high" decoding="async" />
+            <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {navItems.map((item) => (

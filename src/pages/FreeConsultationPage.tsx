@@ -206,7 +206,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
 
       {/* Nav */}
       <header
-        className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe] overflow-hidden"
+        className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]"
       >
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
@@ -221,7 +221,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
-              className="h-12 lg:h-14 w-auto object-contain"
+              className="h-20 lg:h-32 w-auto object-contain"
               fetchPriority="high"
               decoding="async"
             />

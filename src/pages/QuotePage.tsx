@@ -75,7 +75,7 @@ export default function QuotePage({
         onSelect={handleMenuSelect}
       />
       <header
-        className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 overflow-hidden ${
+        className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${
           scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]/40 backdrop-blur-md'
         }`}
       >
@@ -92,7 +92,7 @@ export default function QuotePage({
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
-              className="h-12 lg:h-14 w-auto object-contain"
+              className="h-20 lg:h-32 w-auto object-contain"
               fetchPriority="high"
               decoding="async"
             />
