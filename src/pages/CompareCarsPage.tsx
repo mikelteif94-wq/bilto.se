@@ -999,13 +999,14 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
 
       {/* Hero */}
       <section className="pt-28 sm:pt-36 pb-12 sm:pb-16 px-5 sm:px-6 bg-[#0e6efe] relative overflow-hidden">
+        <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60 pointer-events-none" />
+        <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50 pointer-events-none" />
         <img
-          src="/files_2615643-2026-06-20T00-26-02-459Z-header8 copy copy copy.jpg"
+          src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-[center_30%] sm:object-center pointer-events-none select-none"
+          className="absolute left-1/2 -translate-x-1/2 top-0 w-[600px] h-[600px] object-contain pointer-events-none select-none opacity-30"
         />
-        <div className="absolute inset-0 bg-black/35" />
         <div className="relative max-w-3xl mx-auto text-center">
           <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
             {heroTitle ?? 'Hitta din dr\u00f6mbil och f\u00f6rhandla priset'}
