@@ -105,6 +105,47 @@ const FAQ = [
   },
 ];
 
+function CalendarWidget() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const todayDate = today.getDate();
+  const [selected, setSelected] = useState<number | null>(todayDate);
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  const cells: (number | null)[] = Array(firstDay).fill(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+
+  return (
+    <div>
+      <div className="grid grid-cols-7 gap-y-0.5">
+        {dayNames.map((d) => (
+          <div key={d} className="text-center text-[9px] font-medium text-slate-400 pb-1">{d}</div>
+        ))}
+        {cells.map((day, i) => (
+          <button
+            key={i}
+            onClick={() => day && setSelected(day)}
+            disabled={!day}
+            className={`h-7 w-full text-[11px] font-medium rounded-full transition-colors ${
+              !day ? '' :
+              day === selected
+                ? 'bg-[#0e6efe] text-white'
+                : day === todayDate
+                ? 'ring-1 ring-[#0e6efe] text-[#0e6efe] hover:bg-[#0e6efe]/10'
+                : 'text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            {day || ''}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTitle }: HowItWorksProps) {
   useEffect(() => {
     if (showSeo) {
@@ -1046,7 +1087,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
       <section className="bg-white px-4 sm:px-6 py-12 sm:py-20">
         <div className="max-w-6xl mx-auto">
-          <div className="relative rounded-[28px] sm:rounded-[56px] bg-[#0f1f3d] px-5 py-8 sm:px-14 sm:py-12 lg:px-20 lg:py-14 overflow-hidden">
+          <div className="relative rounded-[28px] sm:rounded-[56px] bg-[#0e6efe] px-5 py-8 sm:px-14 sm:py-12 lg:px-20 lg:py-14 overflow-hidden">
             {/* Background decorations */}
             <div className="absolute -right-24 -top-24 w-[400px] h-[400px] rounded-full bg-white/5 pointer-events-none" />
             <div className="absolute -left-16 -bottom-20 w-[300px] h-[300px] rounded-full bg-white/5 pointer-events-none" />
@@ -1102,31 +1143,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
 
-                {/* Availability card */}
-                <div className="hidden sm:flex absolute -bottom-5 -right-4 bg-white rounded-2xl shadow-xl p-4 w-[220px] flex-col gap-2">
-                  <div className="flex items-center gap-3">
-                    <span className="relative shrink-0">
-                      <span className="absolute -inset-1 rounded-full bg-[#0e6efe]/25 opacity-75 animate-ping" />
-                      <img
-                        src="https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop"
-                        alt="Din expert"
-                        className="relative w-10 h-10 rounded-full object-cover shadow"
-                      />
-                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
-                    </span>
-                    <div>
-                      <p className="text-[12px] font-bold text-slate-900 leading-tight">Din bilexpert</p>
-                      <p className="text-[11px] text-slate-500">Redo att hjälpa dig</p>
-                    </div>
-                  </div>
-                  <div className="border-t border-slate-100 pt-2 flex items-center gap-2">
-                    <span className="relative flex w-2.5 h-2.5 shrink-0">
-                      <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-                      <span className="relative inline-flex w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                    </span>
-                    <span className="text-[11px] text-slate-600">Expert tillgänglig nu</span>
-                  </div>
-                </div>
+                {/* Calendar widget */}
+                <div className="hidden sm:block absolute -bottom-5 -right-4 bg-white rounded-2xl shadow-xl p-4 w-[230px]">
+                  <p className="text-[12px] font-bold text-slate-900 text-center mb-3">Välj en tid</p>
+                  <CalendarWidget /></div>
               </div>
             </div>
           </div>
