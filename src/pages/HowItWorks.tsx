@@ -14,7 +14,7 @@ import {
   Clock,
   ChevronDown,
   Plus,
-  MessageCircle,
+  MessageCircle as _MessageCircle,
   X,
   XCircle,
   Car as CarIcon,
@@ -1046,7 +1046,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
       <section className="bg-white px-4 sm:px-6 py-12 sm:py-20">
         <div className="max-w-6xl mx-auto">
-          <div className="relative rounded-[28px] sm:rounded-[56px] bg-[#0e6efe] px-5 py-8 sm:px-14 sm:py-12 lg:px-20 lg:py-14 overflow-hidden">
+          <div className="relative rounded-[28px] sm:rounded-[56px] bg-[#0f1f3d] px-5 py-8 sm:px-14 sm:py-12 lg:px-20 lg:py-14 overflow-hidden">
             {/* Background decorations */}
             <div className="absolute -right-24 -top-24 w-[400px] h-[400px] rounded-full bg-white/5 pointer-events-none" />
             <div className="absolute -left-16 -bottom-20 w-[300px] h-[300px] rounded-full bg-white/5 pointer-events-none" />
@@ -1065,9 +1065,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     'Du får konkreta råd och sparar pengar',
                   ].map((text) => (
                     <li key={text} className="flex items-center gap-3">
-                      <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center"
-                        style={{ background: 'linear-gradient(135deg, #d4f542 0%, #b8e600 100%)' }}>
-                        <Check className="w-3.5 h-3.5 text-slate-900" strokeWidth={3} />
+                      <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center bg-white/15">
+                        <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
                       </span>
                       <span className="text-[15px] sm:text-[16px] text-white font-medium">{text}</span>
                     </li>
@@ -1077,8 +1076,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
                   <a
                     href="/gratis-konsultation"
-                    className="inline-flex items-center justify-center h-[52px] px-8 rounded-full text-slate-900 text-[15px] font-bold transition-all hover:opacity-90 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)]"
-                    style={{ background: 'linear-gradient(135deg, #d4f542 0%, #b8e600 100%)' }}
+                    className="inline-flex items-center justify-center h-[52px] px-8 rounded-full bg-white text-[#0e6efe] text-[15px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)]"
                   >
                     Kostnadsfri konsultation
                   </a>
@@ -1104,12 +1102,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
 
-                {/* Chat bubble icon */}
-                <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-xl"
-                  style={{ background: 'linear-gradient(135deg, #3d8cff 0%, #0e6efe 100%)' }}>
-                  <MessageCircle className="w-6 h-6 text-white" strokeWidth={2} />
-                </div>
-
                 {/* Phone chip */}
                 <div className="absolute top-4 left-4 sm:top-5 sm:left-5 bg-white rounded-2xl shadow-xl px-4 py-2.5 flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
@@ -1129,7 +1121,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       <img
                         src="https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop"
                         alt="Din expert"
-                        className="relative w-10 h-10 rounded-full object-cover ring-2 ring-white shadow"
+                        className="relative w-10 h-10 rounded-full object-cover shadow"
                       />
                       <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
                     </span>
