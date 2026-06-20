@@ -1003,7 +1003,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           src="/files_2615643-2026-06-20T00-26-02-459Z-header8 copy copy copy.jpg"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
+          className="absolute inset-0 w-full h-full object-cover object-[center_30%] sm:object-center pointer-events-none select-none"
         />
         <div className="absolute inset-0 bg-black/35" />
         <div className="relative max-w-3xl mx-auto text-center">
