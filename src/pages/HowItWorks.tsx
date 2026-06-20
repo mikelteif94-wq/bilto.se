@@ -1299,9 +1299,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       {scrolled && (
         <a
           href="tel:+46855550200"
-          className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-center justify-center gap-2 h-14 rounded-full bg-[#0e6efe] hover:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_10px_30px_rgba(14,110,254,0.4)] transition animate-[slideUp_0.3s_ease-out]"
+          className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-center justify-center gap-2.5 h-14 rounded-full bg-[#0e6efe] hover:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_10px_30px_rgba(14,110,254,0.4)] transition animate-[slideUp_0.3s_ease-out]"
         >
-          <Phone className="w-5 h-5" fill="currentColor" />
+          <img src="/ChatGPT_Image_8_maj_2026_09_33_53.png" alt="Expert" className="w-8 h-8 rounded-full object-cover border-2 border-white/40 shrink-0" />
           <span>Ring expert &middot; bud direkt</span>
         </a>
       )}

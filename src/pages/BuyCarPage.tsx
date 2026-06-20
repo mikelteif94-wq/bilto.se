@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, Phone, Check, X, User, Star, ShieldCheck } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
 import { validateSwedishPhone } from '../lib/utils';
@@ -73,6 +73,14 @@ export default function BuyCarPage({
   const [guidanceSubmitting, setGuidanceSubmitting] = useState(false);
   const [guidanceDone, setGuidanceDone] = useState(false);
   const [guidanceError, setGuidanceError] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.5);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const submitGuidance = async () => {
     const namn = guidanceName.trim();
@@ -436,6 +444,16 @@ export default function BuyCarPage({
           )}
         </div>
       </div>
+
+      {scrolled && step !== 'done' && (
+        <a
+          href="tel:+46855550200"
+          className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-center justify-center gap-2.5 h-14 rounded-full bg-[#0e6efe] hover:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_10px_30px_rgba(14,110,254,0.4)] transition animate-[slideUp_0.3s_ease-out]"
+        >
+          <img src="/ChatGPT_Image_8_maj_2026_09_33_53.png" alt="Expert" className="w-8 h-8 rounded-full object-cover border-2 border-white/40 shrink-0" />
+          <span>Ring expert &middot; bud direkt</span>
+        </a>
+      )}
 
       {guidanceOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4 py-6">
