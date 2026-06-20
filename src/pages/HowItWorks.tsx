@@ -1162,22 +1162,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <h2 className="text-[28px] sm:text-[38px] font-semibold leading-[1.08] text-slate-900 tracking-[-0.02em]">
                 "Jag visste ingenting om bilar — Bilto skötte allt och jag fick mer än jag vågat hoppas på."
               </h2>
-              <p className="text-slate-600 mt-4 text-[15px] leading-[1.6] max-w-md">
-                Josefin hade hittat en Volvo XC40 men kände sig osäker. Annonsen visade elstolar som inte fanns — Bilto fick 15 000 kr i ersättning för det, förhandlade ner räntan 2 %, fick med dubbdäck och 2 års garanti, och pressade upp inbytesvärdet med 7 000 kr.
-              </p>
-              <dl className="mt-6 grid grid-cols-2 gap-y-4 gap-x-6">
-                {[
-                  { label: 'Ränta förhandlad', value: '−2 %' },
-                  { label: 'Inbytesvärde uppgraderat', value: '+7 000 kr' },
-                  { label: 'Kompensation felaktig annons', value: '15 000 kr' },
-                  { label: 'Dubbdäck + 2 års garanti', value: 'förhandlades in' },
-                ].map((item) => (
-                  <div key={item.label}>
-                    <dt className="text-[12px] text-slate-500 leading-tight">{item.label}</dt>
-                    <dd className="text-[16px] font-bold text-slate-900 mt-0.5">{item.value}</dd>
-                  </div>
-                ))}
-              </dl>
               <p className="text-[13px] text-slate-500 mt-6">
                 Josefin L. — Volvo XC40, 2022
               </p>
