@@ -221,7 +221,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
-              className="h-20 lg:h-32 w-auto object-contain"
+              className="h-12 lg:h-14 w-auto object-contain"
               fetchPriority="high"
               decoding="async"
             />
