@@ -8,7 +8,6 @@ export type MobileMenuItem =
   | 'Köp bil'
   | 'Köp bil med hjälp'
   | 'Om oss'
-  | 'Så funkar det'
   | 'Vi förhandlar åt dig';
 
 interface MobileMenuProps {
@@ -128,21 +127,6 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
             }`}
           >
             Sälj bil
-          </button>
-
-          {/* Så funkar det */}
-          <button
-            type="button"
-            onClick={() => {
-              window.history.pushState({}, '', '/sa-funkar-det');
-              window.dispatchEvent(new PopStateEvent('popstate'));
-              onClose();
-            }}
-            className={`w-full text-left px-4 py-4 rounded-lg text-[20px] tracking-tight transition font-medium ${
-              active === 'Så funkar det' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-slate-50'
-            }`}
-          >
-            Så funkar det
           </button>
 
           {/* Om oss */}
