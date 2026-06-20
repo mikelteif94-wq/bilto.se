@@ -1413,15 +1413,6 @@ function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] 
         ))}
       </div>
 
-      {/* Dot indicators */}
-      <div className="flex items-center justify-center gap-2 mt-5">
-        {steps.map((_, i) => (
-          <div
-            key={i}
-            className={`transition-all duration-300 rounded-full ${i === active ? 'w-6 h-2 bg-[#0e6efe]' : 'w-2 h-2 bg-slate-300'}`}
-          />
-        ))}
-      </div>
     </div>
   );
 }
