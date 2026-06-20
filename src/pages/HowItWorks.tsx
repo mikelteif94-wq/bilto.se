@@ -1131,21 +1131,21 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 </div>
               </div>
 
-              {/* Right: image + floating widgets */}
-              <div className="relative">
-                {/* Main image */}
-                <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden aspect-[4/3]">
+              {/* Right: image + floating calendar */}
+              <div className="relative h-[280px] sm:h-[340px] lg:h-[380px]">
+                {/* Main image — left-aligned, ~65% wide */}
+                <div className="absolute left-0 top-0 w-[65%] h-full rounded-[20px] sm:rounded-[28px] overflow-hidden">
                   <img
                     src="/858c5bbb-bilto-hoodie.png"
                     alt="Bilexpert"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover object-center"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
 
-                {/* Calendar widget — overlaps bottom-right of image */}
-                <div className="absolute bottom-4 right-2 sm:right-4 bg-white rounded-2xl shadow-xl p-3 sm:p-4 w-[190px] sm:w-[230px]">
-                  <p className="text-[11px] sm:text-[12px] font-bold text-slate-900 text-center mb-2 sm:mb-3">Välj en tid</p>
+                {/* Calendar widget — bottom-right, overlapping image */}
+                <div className="absolute bottom-0 right-0 bg-white rounded-2xl shadow-xl p-3 w-[170px] sm:w-[200px]">
+                  <p className="text-[11px] font-bold text-slate-900 text-center mb-2">Välj en tid</p>
                   <CalendarWidget />
                 </div>
               </div>
