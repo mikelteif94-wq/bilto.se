@@ -1114,16 +1114,16 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   ))}
                 </ul>
 
-                <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <div className="mt-8 flex flex-col gap-3">
                   <a
                     href="/gratis-konsultation"
-                    className="flex-1 inline-flex items-center justify-center h-[52px] px-5 rounded-full bg-white text-[#0e6efe] text-[14px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)] text-center"
+                    className="w-full inline-flex items-center justify-center h-[52px] px-8 rounded-full bg-white text-[#0e6efe] text-[15px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)]"
                   >
                     Kostnadsfri konsultation
                   </a>
                   <a
                     href="tel:+46855550200"
-                    className="flex-1 inline-flex items-center justify-center h-[52px] px-5 rounded-full border-2 border-white/40 text-white text-[14px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
+                    className="w-full inline-flex items-center justify-center h-[52px] px-8 rounded-full border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
                   >
                     <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
                     Ring 08-5555 0200
