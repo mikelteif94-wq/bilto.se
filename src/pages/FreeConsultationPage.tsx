@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
   Check,
   ChevronDown,
   Clock,
+  Lock,
   Mail,
   Phone,
   User,
@@ -39,38 +40,48 @@ const SYFTE_OPTIONS: { value: Syfte; label: string; desc: string; icon: LucideIc
   { value: 'ovrig', label: 'Annat', desc: 'Jag har en annan fråga', icon: HelpCircle },
 ];
 
-type CallbackSlot = {
-  label: string;
-  value: string;
-};
+const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
-function getCallbackSlots(): CallbackSlot[] {
-  const slots: CallbackSlot[] = [
-    { label: 'Så snart som möjligt', value: 'asap' },
-  ];
-  const today = new Date();
-  const dayNames = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
-  const timeWindows = [
-    { label: '09:00–11:00', start: 9 },
-    { label: '11:00–13:00', start: 11 },
-    { label: '13:00–16:00', start: 13 },
-    { label: '16:00–18:00', start: 16 },
-  ];
-  for (let d = 0; d < 5; d++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + d + 1);
-    const dow = date.getDay();
-    if (dow === 0 || dow === 6) continue;
-    const dayStr = d === 0 ? 'Imorgon' : dayNames[dow];
-    const dateStr = `${date.getDate()}/${date.getMonth() + 1}`;
-    for (const tw of timeWindows) {
-      slots.push({
-        label: `${dayStr} ${dateStr}, ${tw.label}`,
-        value: `${date.toISOString().split('T')[0]}_${tw.start}`,
-      });
-    }
+// Deterministic pseudo-random: seeded by date string so same day always shows same booked slots
+function seededRandom(seed: string): () => number {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) {
+    h = Math.imul(31, h) + seed.charCodeAt(i) | 0;
   }
-  return slots;
+  return () => {
+    h ^= h >>> 13;
+    h = Math.imul(h, 1540483477);
+    h ^= h >>> 15;
+    return ((h >>> 0) / 4294967296);
+  };
+}
+
+function getBookedSlots(dateStr: string): Set<string> {
+  const rng = seededRandom(dateStr);
+  // Book 3–5 random slots per day
+  const count = 3 + Math.floor(rng() * 3);
+  const shuffled = [...TIME_SLOTS].sort(() => rng() - 0.5);
+  return new Set(shuffled.slice(0, count));
+}
+
+function getAvailableDates(): { date: Date; dateStr: string; label: string }[] {
+  const days: { date: Date; dateStr: string; label: string }[] = [];
+  const dayNames = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
+  const monthNames = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+  let added = 0;
+  let offset = 1;
+  while (added < 4) {
+    const d = new Date();
+    d.setDate(d.getDate() + offset);
+    offset++;
+    const dow = d.getDay();
+    if (dow === 0 || dow === 6) continue; // skip weekends
+    const dateStr = d.toISOString().split('T')[0];
+    const label = `${dayNames[dow]} ${d.getDate()} ${monthNames[d.getMonth()]}`;
+    days.push({ date: d, dateStr, label });
+    added++;
+  }
+  return days;
 }
 
 type Step = 'syfte' | 'kontakt' | 'tid' | 'bekraftelse';
@@ -81,7 +92,8 @@ interface FormData {
   telefon: string;
   email: string;
   meddelande: string;
-  preferred_callback_time: string;
+  booking_date: string;
+  booking_time: string;
 }
 
 const INITIAL: FormData = {
@@ -90,7 +102,8 @@ const INITIAL: FormData = {
   telefon: '',
   email: '',
   meddelande: '',
-  preferred_callback_time: '',
+  booking_date: '',
+  booking_time: '',
 };
 
 function ProgressBar({ step }: { step: Step }) {
@@ -124,6 +137,15 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
   const [step, setStep] = useState<Step>('syfte');
   const [form, setForm] = useState<FormData>(INITIAL);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const availableDates = useMemo(() => getAvailableDates(), []);
+
+  const bookedSlots = useMemo(
+    () => form.booking_date ? getBookedSlots(form.booking_date) : new Set<string>(),
+    [form.booking_date]
+  );
 
   useEffect(() => {
     setPageMeta({
@@ -132,10 +154,6 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
       canonical: 'https://bilto.se/gratis-konsultation',
     });
   }, []);
-  const [submitting, setSubmitting] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const slots = getCallbackSlots();
 
   const validateKontakt = () => {
     const errs: Partial<Record<keyof FormData, string>> = {};
@@ -157,29 +175,44 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
     if (validateKontakt()) setStep('tid');
   };
 
+  const selectedDateLabel = availableDates.find(d => d.dateStr === form.booking_date)?.label ?? '';
+
   const handleSubmit = async () => {
-    if (!form.preferred_callback_time) {
-      setErrors({ preferred_callback_time: 'Välj ett alternativ' });
-      return;
-    }
+    const errs: Partial<Record<keyof FormData, string>> = {};
+    if (!form.booking_date) errs.booking_date = 'Välj ett datum';
+    if (!form.booking_time) errs.booking_time = 'Välj en tid';
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+
     setSubmitting(true);
     try {
-      const slotLabel = slots.find(s => s.value === form.preferred_callback_time)?.label ?? form.preferred_callback_time;
-      const { error } = await supabase.from('leads').insert({
+      const { error } = await supabase.from('consultation_bookings').insert({
+        booking_date: form.booking_date,
+        booking_time: form.booking_time,
+        syfte: form.syfte,
         namn: form.namn,
         telefon: form.telefon,
         email: form.email,
         meddelande: form.meddelande,
-        konsultation_syfte: form.syfte,
-        preferred_callback_time: slotLabel,
-        lead_source: 'konsultation',
-        regnummer: '',
-        kontaktad: false,
+        status: 'pending',
       });
       if (error) throw error;
+
+      // Fire-and-forget email notification
+      supabase.functions.invoke('notify-consultation-booking', {
+        body: {
+          namn: form.namn,
+          telefon: form.telefon,
+          email: form.email,
+          syfte: form.syfte,
+          booking_date: form.booking_date,
+          booking_time: form.booking_time,
+          meddelande: form.meddelande,
+        },
+      }).catch(() => {});
+
       setStep('bekraftelse');
     } catch {
-      setErrors({ preferred_callback_time: 'Något gick fel – försök igen.' });
+      setErrors({ booking_time: 'Något gick fel – försök igen.' });
     } finally {
       setSubmitting(false);
     }
@@ -204,10 +237,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
         onSelect={handleMenuSelect}
       />
 
-      {/* Nav */}
-      <header
-        className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]"
-      >
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
@@ -262,7 +292,6 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
         </div>
       </div>
 
-      {/* Wave */}
       <div className="bg-[#0e6efe] -mb-1">
         <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
           <path d="M0 48 C360 0 1080 0 1440 48 L1440 48 L0 48 Z" fill="white" />
@@ -315,7 +344,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 </button>
               )}
               <h2 className="text-xl font-bold text-slate-900 mb-1">Dina kontaktuppgifter</h2>
-              <p className="text-slate-500 text-sm mb-6">Vi ringer upp dig — lämna gärna en e-post så kan vi också skicka en bekräftelse.</p>
+              <p className="text-slate-500 text-sm mb-6">Vi ringer upp dig — lämna gärna en e-post så skickar vi en bokningsbekräftelse.</p>
 
               <div className="grid gap-4">
                 <div>
@@ -350,7 +379,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">
-                    E-post <span className="text-slate-400 normal-case font-normal">(valfritt)</span>
+                    E-post <span className="text-slate-400 normal-case font-normal">(valfritt – för bokningsbekräftelse)</span>
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
@@ -384,7 +413,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 onClick={handleKontaktNext}
                 className="mt-6 w-full bg-[#0e6efe] hover:bg-blue-600 text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition"
               >
-                Välj tid för uppringning
+                Välj datum och tid
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -401,48 +430,94 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Tillbaka
               </button>
-              <h2 className="text-xl font-bold text-slate-900 mb-1">När passar det dig?</h2>
-              <p className="text-slate-500 text-sm mb-6">Välj en tid som passar, så ringer vi upp precis då.</p>
+              <h2 className="text-xl font-bold text-slate-900 mb-1">Välj datum</h2>
+              <p className="text-slate-500 text-sm mb-4">Välj ett av de närmaste lediga dagarna.</p>
 
-              <div className="grid gap-2.5">
-                {slots.map(slot => {
-                  const isAsap = slot.value === 'asap';
-                  const selected = form.preferred_callback_time === slot.value;
+              {/* Date selector */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-7">
+                {availableDates.map(d => {
+                  const selected = form.booking_date === d.dateStr;
                   return (
                     <button
-                      key={slot.value}
+                      key={d.dateStr}
                       type="button"
                       onClick={() => {
-                        setForm(f => ({ ...f, preferred_callback_time: slot.value }));
-                        setErrors(e => ({ ...e, preferred_callback_time: undefined }));
+                        setForm(f => ({ ...f, booking_date: d.dateStr, booking_time: '' }));
+                        setErrors(e => ({ ...e, booking_date: undefined, booking_time: undefined }));
                       }}
-                      className={`flex items-center gap-3 w-full px-4 py-3.5 rounded-xl border-2 text-left transition-all ${
+                      className={`flex flex-col items-center gap-1 px-3 py-3.5 rounded-xl border-2 transition-all ${
                         selected
                           ? 'border-[#0e6efe] bg-blue-50 text-[#0e6efe]'
                           : 'border-slate-200 hover:border-slate-300 text-slate-700'
                       }`}
                     >
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${selected ? 'bg-[#0e6efe] text-white' : 'bg-slate-100 text-slate-400'}`}>
-                        {isAsap ? <Clock className="w-4 h-4" /> : <Calendar className="w-4 h-4" />}
-                      </div>
-                      <span className="text-sm font-medium">{slot.label}</span>
-                      {selected && <Check className="w-4 h-4 ml-auto" />}
+                      <Calendar className={`w-4 h-4 ${selected ? 'text-[#0e6efe]' : 'text-slate-400'}`} />
+                      <span className="text-[13px] font-semibold leading-tight text-center">{d.label}</span>
                     </button>
                   );
                 })}
               </div>
+              {errors.booking_date && <p className="text-red-500 text-xs -mt-4 mb-4">{errors.booking_date}</p>}
 
-              {errors.preferred_callback_time && (
-                <p className="text-red-500 text-xs mt-2">{errors.preferred_callback_time}</p>
+              {/* Time grid */}
+              {form.booking_date && (
+                <>
+                  <h3 className="text-sm font-semibold text-slate-700 mb-3">
+                    Välj tid — <span className="font-normal text-slate-500">{selectedDateLabel}</span>
+                  </h3>
+                  <div className="grid grid-cols-3 gap-2.5 mb-1">
+                    {TIME_SLOTS.map(t => {
+                      const booked = bookedSlots.has(t);
+                      const selected = form.booking_time === t;
+                      if (booked) {
+                        return (
+                          <div
+                            key={t}
+                            className="flex items-center justify-center gap-1.5 px-3 py-3 rounded-xl border-2 border-slate-100 bg-slate-50 text-slate-300 cursor-not-allowed select-none"
+                          >
+                            <Lock className="w-3 h-3 shrink-0" />
+                            <span className="text-[13px] font-medium">{t}</span>
+                          </div>
+                        );
+                      }
+                      return (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => {
+                            setForm(f => ({ ...f, booking_time: t }));
+                            setErrors(e => ({ ...e, booking_time: undefined }));
+                          }}
+                          className={`flex items-center justify-center gap-1.5 px-3 py-3 rounded-xl border-2 transition-all ${
+                            selected
+                              ? 'border-[#0e6efe] bg-blue-50 text-[#0e6efe]'
+                              : 'border-slate-200 hover:border-[#0e6efe]/50 text-slate-700'
+                          }`}
+                        >
+                          <Clock className={`w-3.5 h-3.5 shrink-0 ${selected ? 'text-[#0e6efe]' : 'text-slate-400'}`} />
+                          <span className="text-[13px] font-medium">{t}</span>
+                          {selected && <Check className="w-3 h-3 ml-auto" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="text-xs text-slate-400 mb-5 mt-2 flex items-center gap-1">
+                    <Lock className="w-3 h-3" /> = Redan bokad
+                  </p>
+                </>
+              )}
+
+              {errors.booking_time && (
+                <p className="text-red-500 text-xs mb-3">{errors.booking_time}</p>
               )}
 
               <button
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="mt-6 w-full bg-[#0e6efe] hover:bg-blue-600 disabled:opacity-60 text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition"
+                className="w-full bg-[#0e6efe] hover:bg-blue-600 disabled:opacity-60 text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition"
               >
-                {submitting ? 'Skickar...' : 'Boka konsultation'}
+                {submitting ? 'Bokar...' : 'Boka konsultation'}
                 {!submitting && <ArrowRight className="w-4 h-4" />}
               </button>
 
@@ -460,10 +535,10 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
               </div>
               <h2 className="text-2xl font-bold text-slate-900 mb-2">Tack, {form.namn.split(' ')[0]}!</h2>
               <p className="text-slate-600 text-base mb-1">
-                Vi har tagit emot din förfrågan och ringer upp dig
+                Din konsultation är bokad
               </p>
               <p className="font-semibold text-[#0e6efe] text-base mb-6">
-                {slots.find(s => s.value === form.preferred_callback_time)?.label ?? 'vid vald tid'}.
+                {selectedDateLabel} kl. {form.booking_time}
               </p>
 
               <div className="bg-slate-50 rounded-2xl p-5 text-left mb-8 border border-slate-100 max-w-sm mx-auto">
@@ -482,11 +557,21 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                     <span className="font-medium text-slate-800">{selectedSyfte?.label ?? ''}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Ring mig</span>
-                    <span className="font-medium text-slate-800">{slots.find(s => s.value === form.preferred_callback_time)?.label ?? ''}</span>
+                    <span className="text-slate-400">Datum</span>
+                    <span className="font-medium text-slate-800">{selectedDateLabel}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Tid</span>
+                    <span className="font-medium text-slate-800">kl. {form.booking_time}</span>
                   </div>
                 </div>
               </div>
+
+              {form.email && (
+                <p className="text-sm text-slate-500 mb-6">
+                  En bekräftelse har skickats till <span className="font-medium text-slate-700">{form.email}</span>
+                </p>
+              )}
 
               <button
                 type="button"
@@ -500,7 +585,6 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
         </div>
       </div>
 
-      {/* Why trust us strip */}
       {step !== 'bekraftelse' && (
         <div className="bg-slate-50 border-y border-slate-100 py-8 px-4 mt-4">
           <div className="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">

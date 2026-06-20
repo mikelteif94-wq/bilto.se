@@ -1,7 +1,7 @@
-import { LayoutDashboard, Building2, Users, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Building2, Users, BookOpen, CalendarDays } from 'lucide-react';
 import { useAdminBadges } from './useAdminBadges';
 
-export type AdminPage = 'overview' | 'leads' | 'handlare' | 'katalog';
+export type AdminPage = 'overview' | 'leads' | 'handlare' | 'katalog' | 'bokningar';
 
 interface AdminNavOptions {
   activePage: AdminPage;
@@ -37,6 +37,12 @@ export function useAdminNav({ activePage, onNavigate }: AdminNavOptions) {
       label: 'Katalog',
       active: activePage === 'katalog',
       onClick: activePage !== 'katalog' ? () => onNavigate('katalog') : undefined,
+    },
+    {
+      icon: <CalendarDays className="w-[18px] h-[18px]" />,
+      label: 'Bokningar',
+      active: activePage === 'bokningar',
+      onClick: activePage !== 'bokningar' ? () => onNavigate('bokningar') : undefined,
     },
   ];
 }

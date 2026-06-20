@@ -30,6 +30,7 @@ const AdminQuizSubmissions = lazy(() => import('./pages/AdminQuizSubmissions'));
 const AdminLeadCommandCenter = lazy(() => import('./pages/AdminLeadCommandCenter'));
 const AdminCarCatalog = lazy(() => import('./pages/AdminCarCatalog'));
 const AdminCatalogImport = lazy(() => import('./pages/AdminCatalogImport'));
+const AdminConsultationBookings = lazy(() => import('./pages/AdminConsultationBookings'));
 const MyCarPage = lazy(() => import('./pages/MyCarPage'));
 const MyQuotePage = lazy(() => import('./pages/MyQuotePage'));
 const SetPasswordPage = lazy(() => import('./pages/SetPasswordPage'));
@@ -346,6 +347,7 @@ function App() {
       else if (page === 'leads') navigate('/admin/leads');
       else if (page === 'handlare') navigate('/admin/handlare');
       else if (page === 'katalog') navigate('/admin/katalog');
+      else if (page === 'bokningar') navigate('/admin/bokningar');
     };
 
     return (
@@ -763,6 +765,10 @@ function AdminRoutes({ path, setPath, session, adminNavigate }: AdminRoutesProps
 
   if (path === '/admin/katalog/importera') {
     return <AdminCatalogImport onBack={() => navigate('/admin/katalog')} />;
+  }
+
+  if (path === '/admin/bokningar') {
+    return <AdminConsultationBookings onNavigate={adminNavigate} />;
   }
 
   if (path !== '/admin/bilar') {
