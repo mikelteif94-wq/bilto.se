@@ -1102,17 +1102,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
 
-                {/* Phone chip */}
-                <div className="absolute top-4 left-4 sm:top-5 sm:left-5 bg-white rounded-2xl shadow-xl px-4 py-2.5 flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
-                    <Phone className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <p className="text-[12px] font-bold text-slate-900 leading-tight">Ring 08-5555 0200</p>
-                    <p className="text-[10px] text-slate-400 leading-tight">Kostnadsfritt</p>
-                  </div>
-                </div>
-
                 {/* Availability card */}
                 <div className="hidden sm:flex absolute -bottom-5 -right-4 bg-white rounded-2xl shadow-xl p-4 w-[220px] flex-col gap-2">
                   <div className="flex items-center gap-3">
