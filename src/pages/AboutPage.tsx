@@ -124,7 +124,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
           </div>
 
           {/* Hero image */}
-          <div className="mt-8 sm:mt-12 relative">
+          <div className="mt-8 sm:mt-12 pb-10 sm:pb-16 relative">
             <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
               <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-[21/8] sm:aspect-[21/7] bg-slate-100">
                 <img
@@ -272,18 +272,18 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
             <p className="mt-4 sm:mt-5 text-white/80 text-[15px] sm:text-[17px] leading-[1.7] max-w-lg mx-auto">
               Få in bud från granskade handlare på några minuter. Du väljer — vi sköter resten.
             </p>
-            <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 type="button"
                 onClick={onBackHome}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-13 sm:h-14 px-8 rounded-full bg-white text-[#0e6efe] hover:bg-slate-50 font-bold text-[15px] sm:text-[16px] transition shadow-lg group"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-4 px-10 rounded-full bg-white text-[#0e6efe] hover:bg-slate-50 font-bold text-[16px] transition shadow-lg group"
               >
                 Värdera din bil gratis
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
               </button>
               <a
                 href="/gratis-konsultation"
-                className="w-full sm:w-auto inline-flex items-center justify-center h-13 sm:h-14 px-8 rounded-full border-2 border-white/40 text-white font-semibold text-[15px] sm:text-[16px] hover:border-white/70 transition"
+                className="w-full sm:w-auto inline-flex items-center justify-center py-4 px-10 rounded-full border-2 border-white/50 text-white font-semibold text-[16px] hover:border-white/80 hover:bg-white/10 transition"
               >
                 Boka konsultation
               </a>

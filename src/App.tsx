@@ -47,6 +47,7 @@ const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 const ExploreCarsPage = lazy(() => import('./pages/ExploreCarsPage'));
 const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
+const SaFunkarDetPage = lazy(() => import('./pages/SaFunkarDetPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -557,12 +558,19 @@ function App() {
   if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
     return (
       <Suspense fallback={<PageLoader />}>
-        <HowItWorks
-          showSeo={path === '/salj-din-bil'}
-          pageTitle={path === '/salj-din-bil' ? 'Sälj din bil | Bilto' : undefined}
-          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-          onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
-        />
+        {path === '/salj-din-bil' ? (
+          <HowItWorks
+            showSeo
+            pageTitle="Sälj din bil | Bilto"
+            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
+          />
+        ) : (
+          <SaFunkarDetPage
+            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSell={(reg, tel) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg, telefon: tel }); }}
+          />
+        )}
       </Suspense>
     );
   }

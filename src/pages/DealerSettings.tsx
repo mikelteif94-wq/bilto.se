@@ -29,6 +29,10 @@ import {
   Plus,
   MapPin,
   Gauge,
+  RefreshCw,
+  Eye,
+  EyeOff,
+  ExternalLink,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ErrorBanner from '../components/ErrorBanner';
@@ -386,11 +390,25 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
   const [brandInput, setBrandInput] = useState('');
   const [regionInput, setRegionInput] = useState('');
 
+  // Blocket integration state
+  const [blocketApiKey, setBlocketApiKey] = useState('');
+  const [blocketStoreId, setBlocketStoreId] = useState('');
+  const [blocketSyncEnabled, setBlocketSyncEnabled] = useState(false);
+  const [blocketLastSync, setBlocketLastSync] = useState<string | null>(null);
+  const [blocketLoading, setBlocketLoading] = useState(true);
+  const [blocketSaving, setBlocketSaving] = useState(false);
+  const [blocketSaved, setBlocketSaved] = useState(false);
+  const [blocketSyncing, setBlocketSyncing] = useState(false);
+  const [blocketSyncResult, setBlocketSyncResult] = useState<{ ok: number; skipped: number } | null>(null);
+  const [blocketError, setBlocketError] = useState<string | null>(null);
+  const [showApiKey, setShowApiKey] = useState(false);
+
   useEffect(() => {
     void load();
     void loadMembers();
     void loadScore();
     void loadBuyPrefs();
+    void loadBlocket();
   }, [dealerId]);
 
   const load = async () => {
@@ -460,6 +478,77 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
 
   const toggleArrayItem = (arr: string[], item: string): string[] =>
     arr.includes(item) ? arr.filter((x) => x !== item) : [...arr, item];
+
+  const loadBlocket = async () => {
+    setBlocketLoading(true);
+    const { data } = await supabase
+      .from('dealers')
+      .select('blocket_api_key, blocket_store_id, blocket_sync_enabled, blocket_last_sync')
+      .eq('id', dealerId)
+      .maybeSingle();
+    if (data) {
+      setBlocketApiKey(data.blocket_api_key ?? '');
+      setBlocketStoreId(data.blocket_store_id ?? '');
+      setBlocketSyncEnabled(data.blocket_sync_enabled ?? false);
+      setBlocketLastSync(data.blocket_last_sync ?? null);
+    }
+    setBlocketLoading(false);
+  };
+
+  const saveBlocket = async () => {
+    setBlocketError(null);
+    setBlocketSaving(true);
+    const { error: err } = await supabase
+      .from('dealers')
+      .update({
+        blocket_api_key: blocketApiKey.trim() || null,
+        blocket_store_id: blocketStoreId.trim() || null,
+        blocket_sync_enabled: blocketSyncEnabled,
+      })
+      .eq('id', dealerId);
+    setBlocketSaving(false);
+    if (err) {
+      setBlocketError('Kunde inte spara. Försök igen.');
+      return;
+    }
+    setBlocketSaved(true);
+    setTimeout(() => setBlocketSaved(false), 2000);
+  };
+
+  const runBlocketSync = async () => {
+    if (!blocketApiKey.trim()) {
+      setBlocketError('Ange en API-nyckel först.');
+      return;
+    }
+    setBlocketError(null);
+    setBlocketSyncing(true);
+    setBlocketSyncResult(null);
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`${supabaseUrl}/functions/v1/sync-blocket-inventory`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.access_token ?? anonKey}`,
+          Apikey: anonKey,
+        },
+        body: JSON.stringify({ dealer_id: dealerId }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setBlocketError(json.error ?? 'Synkronisering misslyckades.');
+      } else {
+        setBlocketSyncResult({ ok: json.imported ?? 0, skipped: json.skipped ?? 0 });
+        setBlocketLastSync(new Date().toISOString());
+        await supabase.from('dealers').update({ blocket_last_sync: new Date().toISOString() }).eq('id', dealerId);
+      }
+    } catch {
+      setBlocketError('Nätverksfel. Kontrollera API-nyckeln och försök igen.');
+    }
+    setBlocketSyncing(false);
+  };
 
   const loadScore = async () => {
     setScoreLoading(true);
@@ -1084,6 +1173,126 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                 fältet ovan och spara.
               </p>
             </section>
+
+            {/* Blocket integration */}
+            <div>
+              <h2 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                <RefreshCw className="w-3.5 h-3.5 text-[#0e6efe]" />
+                Blocket-integration
+              </h2>
+              <p className="text-xs text-slate-400 mb-3">
+                Koppla din Blocket-butik så att ditt lager hålls automatiskt uppdaterat.
+              </p>
+              {blocketLoading ? (
+                <div className="bg-white rounded-xl border border-slate-200 flex justify-center py-8">
+                  <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+                </div>
+              ) : (
+                <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6 space-y-5">
+                  {/* Info banner */}
+                  <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-50 border border-blue-100">
+                    <ExternalLink className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                    <div className="text-xs text-blue-700 leading-relaxed">
+                      <strong>Hitta din API-nyckel:</strong> Logga in på Blocket Företag &rarr; Inställningar &rarr; API &rarr; Skapa nyckel. Kopiera nyckeln och klistra in den nedan.
+                    </div>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <Field label="Blocket API-nyckel">
+                      <div className="relative">
+                        <input
+                          type={showApiKey ? 'text' : 'password'}
+                          value={blocketApiKey}
+                          onChange={(e) => setBlocketApiKey(e.target.value)}
+                          placeholder="Klistra in din API-nyckel"
+                          className="w-full h-11 px-3 pr-10 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none font-mono text-sm"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowApiKey((v) => !v)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition"
+                        >
+                          {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </Field>
+                    <Field label="Butik-ID (valfritt)">
+                      <input
+                        type="text"
+                        value={blocketStoreId}
+                        onChange={(e) => setBlocketStoreId(e.target.value)}
+                        placeholder="T.ex. 12345678"
+                        className="w-full h-11 px-3 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none text-sm"
+                      />
+                    </Field>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={blocketSyncEnabled}
+                      onClick={() => setBlocketSyncEnabled((v) => !v)}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${blocketSyncEnabled ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
+                    >
+                      <span className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${blocketSyncEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                    </button>
+                    <span className="text-sm text-slate-700 font-medium">Aktivera automatisk synkronisering</span>
+                  </div>
+
+                  {blocketError && (
+                    <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                      {blocketError}
+                    </div>
+                  )}
+
+                  {blocketSyncResult && (
+                    <div className="flex items-start gap-2 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">
+                      <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                      <span>
+                        Synkronisering klar! <strong>{blocketSyncResult.ok}</strong> bilar importerade
+                        {blocketSyncResult.skipped > 0 ? `, ${blocketSyncResult.skipped} hoppades över` : ''}.
+                      </span>
+                    </div>
+                  )}
+
+                  {blocketLastSync && (
+                    <p className="text-xs text-slate-400">
+                      Senast synkad: {new Date(blocketLastSync).toLocaleString('sv')}
+                    </p>
+                  )}
+
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={runBlocketSync}
+                      disabled={blocketSyncing || !blocketApiKey.trim()}
+                      className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-sm transition"
+                    >
+                      {blocketSyncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                      Synka nu
+                    </button>
+                    <div className="flex items-center gap-2 ml-auto">
+                      {blocketSaved && (
+                        <span className="inline-flex items-center gap-1.5 text-emerald-700 text-sm font-medium">
+                          <CheckCircle2 className="w-4 h-4" />
+                          Sparat
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={saveBlocket}
+                        disabled={blocketSaving}
+                        className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white font-semibold text-sm transition"
+                      >
+                        {blocketSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                        Spara
+                      </button>
+                    </div>
+                  </div>
+                </section>
+              )}
+            </div>
           </>
         )}
       </div>
