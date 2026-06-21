@@ -6,9 +6,7 @@ import {
   ChevronDown,
   Clock,
   Lock,
-  Mail,
   Phone,
-  User,
   Search,
   Tag,
   RefreshCw,
@@ -21,6 +19,8 @@ import { supabase } from '../lib/supabase';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { setPageMeta } from '../lib/pageMeta';
+import FieldError from '../components/forms/FieldError';
+import { validateSwedishPhone } from '../lib/utils';
 
 interface FreeConsultationPageProps {
   onBack: () => void;
@@ -152,11 +152,14 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
 
   const validateKontakt = () => {
     const errs: Partial<Record<keyof FormData, string>> = {};
-    if (!form.namn.trim()) errs.namn = 'Ange ditt namn';
-    if (!form.telefon.trim() || form.telefon.replace(/\D/g, '').length < 7)
-      errs.telefon = 'Ange ett giltigt telefonnummer';
-    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      errs.email = 'Ange en giltig e-postadress';
+    if (!form.namn.trim()) errs.namn = 'Namn är obligatoriskt';
+    const phoneErr = validateSwedishPhone(form.telefon);
+    if (phoneErr) errs.telefon = phoneErr;
+    if (!form.email.trim()) {
+      errs.email = 'E-post är obligatorisk';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      errs.email = 'Ogiltig e-postadress';
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -338,67 +341,60 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                   Ändra ämne
                 </button>
               )}
-              <h2 className="text-xl font-bold text-slate-900 mb-1">Dina kontaktuppgifter</h2>
-              <p className="text-slate-500 text-sm mb-6">Vi ringer upp dig — lämna gärna en e-post så skickar vi en bokningsbekräftelse.</p>
+              <h2 className="text-xl font-bold text-slate-900 mb-6">Dina uppgifter</h2>
 
-              <div className="grid gap-4">
+              <div className="space-y-5">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Namn *</label>
-                  <div className="relative">
-                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                    <input
-                      type="text"
-                      value={form.namn}
-                      onChange={e => setForm(f => ({ ...f, namn: e.target.value }))}
-                      placeholder="Förnamn Efternamn"
-                      className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] transition ${errors.namn ? 'border-red-400 bg-red-50' : 'border-slate-200'}`}
-                    />
-                  </div>
-                  {errors.namn && <p className="text-red-500 text-xs mt-1">{errors.namn}</p>}
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Fullständigt namn *</label>
+                  <input
+                    type="text"
+                    autoComplete="name"
+                    value={form.namn}
+                    onChange={e => { setForm(f => ({ ...f, namn: e.target.value })); setErrors(p => ({ ...p, namn: undefined })); }}
+                    placeholder="Johan Andersson"
+                    className={`form-control ${errors.namn ? 'form-control-error' : ''}`}
+                  />
+                  <FieldError message={errors.namn} />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Telefon *</label>
-                  <div className="relative">
-                    <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                    <input
-                      type="tel"
-                      value={form.telefon}
-                      onChange={e => setForm(f => ({ ...f, telefon: e.target.value }))}
-                      placeholder="07X XXX XX XX"
-                      className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] transition ${errors.telefon ? 'border-red-400 bg-red-50' : 'border-slate-200'}`}
-                    />
-                  </div>
-                  {errors.telefon && <p className="text-red-500 text-xs mt-1">{errors.telefon}</p>}
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Telefonnummer *</label>
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={form.telefon}
+                    onChange={e => { setForm(f => ({ ...f, telefon: e.target.value })); setErrors(p => ({ ...p, telefon: undefined })); }}
+                    placeholder="070-123 45 67"
+                    className={`form-control ${errors.telefon ? 'form-control-error' : ''}`}
+                  />
+                  <FieldError message={errors.telefon} />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">
-                    E-post <span className="text-slate-400 normal-case font-normal">(valfritt – för bokningsbekräftelse)</span>
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                    <input
-                      type="email"
-                      value={form.email}
-                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                      placeholder="din@epost.se"
-                      className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] transition ${errors.email ? 'border-red-400 bg-red-50' : 'border-slate-200'}`}
-                    />
-                  </div>
-                  {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">E-postadress *</label>
+                  <input
+                    type="text"
+                    inputMode="email"
+                    autoComplete="email"
+                    value={form.email}
+                    onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setErrors(p => ({ ...p, email: undefined })); }}
+                    placeholder="johan@example.com"
+                    className={`form-control ${errors.email ? 'form-control-error' : ''}`}
+                  />
+                  <FieldError message={errors.email} />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">
-                    Meddelande <span className="text-slate-400 normal-case font-normal">(valfritt)</span>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">
+                    Meddelande <span className="text-slate-400 font-normal">(valfritt)</span>
                   </label>
                   <textarea
                     value={form.meddelande}
                     onChange={e => setForm(f => ({ ...f, meddelande: e.target.value }))}
                     placeholder="Berätta gärna mer om vad du letar efter, din budget eller andra önskemål..."
                     rows={3}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] resize-none transition"
+                    className="form-control"
                   />
                 </div>
               </div>
