@@ -5,8 +5,8 @@ import {
   Wallet, CreditCard, RefreshCcw, TrendingUp, Receipt,
   MapPin, Navigation, Gauge, Shield, Armchair, Maximize,
   Wrench, TrendingDown, Home, Building2, ParkingCircle,
-  BatteryCharging, Car, AlertCircle, Coffee, Star, Crown,
-  ShieldCheck, PiggyBank, Shuffle, ArrowRight,
+  BatteryCharging, Car, AlertCircle, Coffee, Star,
+  ArrowRight, Route, Wifi, Clock,
 } from 'lucide-react';
 import type { ComparisonCar } from '../lib/comparison/types';
 import { PRIORITY_TRAITS } from './quiz/QuizTypes';
@@ -20,6 +20,8 @@ interface Answers {
   monthly_income?: 'under25k' | '25k40k' | '40k60k' | 'over60k';
   monthly_expenses?: 'none' | 'under3k' | '3k8k' | 'over8k';
   charging?: 'home' | 'work' | 'public' | 'none';
+  ev_daily_range?: 'under5' | '5to10' | '10to15' | 'over15';
+  ev_road_trips?: 'rarely' | 'sometimes' | 'often';
   fuel_pref?: 'ev' | 'hybrid' | 'petrol' | 'diesel';
   priorities?: string[];
 }
@@ -51,7 +53,8 @@ interface ScoreResult {
 // ─── Steps ────────────────────────────────────────────────────────────────────
 
 type StepId = 'daily_use' | 'annual_mileage' | 'financing_type'
-  | 'monthly_income' | 'monthly_expenses' | 'charging' | 'fuel_pref' | 'priorities';
+  | 'monthly_income' | 'monthly_expenses' | 'charging' | 'ev_daily_range'
+  | 'ev_road_trips' | 'fuel_pref' | 'priorities';
 
 interface Option { id: string; label: string; description?: string; icon: typeof Car; highlight?: boolean }
 interface Step { id: StepId; question: string; subtitle?: string; multi: boolean; maxSelect?: number; options: Option[] }
@@ -127,6 +130,29 @@ const STEPS: Record<string, Step> = {
       { id: 'none', label: 'Inte möjligt idag', description: 'Elbil blir opraktiskt utan laddning', icon: X },
     ],
   },
+  ev_daily_range: {
+    id: 'ev_daily_range',
+    question: 'Hur långt kör du en typisk dag?',
+    subtitle: 'Hjälper oss bedöma om räckvidden passar dig',
+    multi: false,
+    options: [
+      { id: 'under5', label: 'Under 5 mil', description: 'Korta pendlingar, stadsärenden', icon: MapPin, highlight: true },
+      { id: '5to10', label: '5 – 10 mil', description: 'Längre pendling eller kombinerad körning', icon: Navigation },
+      { id: '10to15', label: '10 – 15 mil', description: 'Lång dagspendling', icon: Route },
+      { id: 'over15', label: 'Över 15 mil per dag', description: 'Mycket körning — räckvidd är viktigt', icon: Gauge },
+    ],
+  },
+  ev_road_trips: {
+    id: 'ev_road_trips',
+    question: 'Hur ofta kör du längre sträckor?',
+    subtitle: 'T.ex. semesterresor, besök, mil eller mer',
+    multi: false,
+    options: [
+      { id: 'rarely', label: 'Sällan eller aldrig', description: 'Bilen används mest lokalt', icon: Home, highlight: true },
+      { id: 'sometimes', label: 'Ibland — ett par gånger per år', description: 'Då räcker snabbladdningsstopp', icon: Clock },
+      { id: 'often', label: 'Ofta — varje månad eller mer', description: 'Snabbladdning och bra räckvidd krävs', icon: Wifi },
+    ],
+  },
   fuel_pref: {
     id: 'fuel_pref',
     question: 'Vilken drivlina passar dig?',
@@ -168,10 +194,46 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
   const isDiesel = fuels.includes('diesel');
 
   if (isEv) {
-    if (a.charging === 'home') { score += 20; positives.push('Hemmaladdning är optimalt för elbil'); }
-    else if (a.charging === 'work') { score += 14; positives.push('Laddning på jobbet fungerar bra'); }
-    else if (a.charging === 'public') { score += 4; negatives.push('Enbart publika laddare begränsar flexibiliteten'); }
-    else if (a.charging === 'none') { score -= 18; negatives.push('Utan laddmöjlighet är elbil opraktiskt'); }
+    if (a.charging === 'home') { score += 18; positives.push('Hemmaladdning är optimalt för elbil'); }
+    else if (a.charging === 'work') { score += 12; positives.push('Laddning på jobbet fungerar bra'); }
+    else if (a.charging === 'public') { score += 2; negatives.push('Enbart publika laddare begränsar flexibiliteten'); }
+    else if (a.charging === 'none') { score -= 20; negatives.push('Utan laddmöjlighet är elbil opraktiskt'); }
+
+    // EV daily range vs car range
+    const rangeKm = car.ev_specs?.range_wltp_km ?? 0;
+    const winterKm = car.ev_specs?.range_winter_km ?? rangeKm * 0.7;
+    if (a.ev_daily_range) {
+      const dailyKmMap: Record<string, number> = { under5: 50, '5to10': 75, '10to15': 125, over15: 175 };
+      const dailyKm = dailyKmMap[a.ev_daily_range] ?? 75;
+      if (rangeKm > 0) {
+        if (winterKm >= dailyKm * 2.5) {
+          score += 12; positives.push(`Räckvidden räcker mer än väl för din dagskörning`);
+        } else if (winterKm >= dailyKm * 1.5) {
+          score += 8; positives.push('Räckvidden täcker din dagskörning bra');
+        } else if (winterKm >= dailyKm) {
+          score += 2;
+        } else {
+          score -= 10; negatives.push('Räckvidden kan vara knapp för din dagliga körsträcka');
+        }
+      } else if (a.ev_daily_range === 'under5' || a.ev_daily_range === '5to10') {
+        score += 8; positives.push('Kort dagskörning passar elbil perfekt');
+      }
+    }
+
+    // EV road trips vs fast charging
+    if (a.ev_road_trips) {
+      const fastChargeKw = car.ev_specs?.charge_kw_max ?? 0;
+      if (a.ev_road_trips === 'rarely') {
+        score += 8; positives.push('Du gör sällan långa resor — ideal för elbil');
+      } else if (a.ev_road_trips === 'sometimes') {
+        if (fastChargeKw >= 100) { score += 6; positives.push(`Snabbladdning upp till ${fastChargeKw} kW — långa resor funkar fint`); }
+        else { score += 2; }
+      } else if (a.ev_road_trips === 'often') {
+        if (fastChargeKw >= 150) { score += 4; positives.push(`${fastChargeKw} kW snabbladdning hanterar frekventa långresor`); }
+        else if (fastChargeKw >= 100) { score += 0; }
+        else { score -= 8; negatives.push('Låg snabbladdningshastighet kan göra frekventa långresor opraktiska'); }
+      }
+    }
   } else {
     if (a.fuel_pref) {
       const match = (a.fuel_pref === 'hybrid' && isHybrid) ||
@@ -642,7 +704,7 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
     !car?.specs?.fuel_types?.includes('diesel');
 
   const stepOrder = useMemo<StepId[]>(() => {
-    if (isEv) return ['daily_use', 'annual_mileage', 'financing_type', 'monthly_income', 'monthly_expenses', 'charging', 'priorities'];
+    if (isEv) return ['daily_use', 'annual_mileage', 'financing_type', 'monthly_income', 'monthly_expenses', 'charging', 'ev_daily_range', 'ev_road_trips', 'priorities'];
     return ['daily_use', 'annual_mileage', 'financing_type', 'monthly_income', 'monthly_expenses', 'fuel_pref', 'priorities'];
   }, [isEv]);
 
@@ -667,6 +729,8 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
     if (id === 'monthly_income') return answers.monthly_income ? [answers.monthly_income] : [];
     if (id === 'monthly_expenses') return answers.monthly_expenses ? [answers.monthly_expenses] : [];
     if (id === 'charging') return answers.charging ? [answers.charging] : [];
+    if (id === 'ev_daily_range') return answers.ev_daily_range ? [answers.ev_daily_range] : [];
+    if (id === 'ev_road_trips') return answers.ev_road_trips ? [answers.ev_road_trips] : [];
     if (id === 'fuel_pref') return answers.fuel_pref ? [answers.fuel_pref] : [];
     if (id === 'priorities') return answers.priorities || [];
     return [];
@@ -684,6 +748,8 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
       else if (id === 'monthly_income') update.monthly_income = optId as Answers['monthly_income'];
       else if (id === 'monthly_expenses') update.monthly_expenses = optId as Answers['monthly_expenses'];
       else if (id === 'charging') update.charging = optId as Answers['charging'];
+      else if (id === 'ev_daily_range') update.ev_daily_range = optId as Answers['ev_daily_range'];
+      else if (id === 'ev_road_trips') update.ev_road_trips = optId as Answers['ev_road_trips'];
       else if (id === 'fuel_pref') update.fuel_pref = optId as Answers['fuel_pref'];
       setAnswers(update);
       setTimeout(() => advance(update), 200);
@@ -720,7 +786,9 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
     financing_type: 'Finansiering',
     monthly_income: 'Inkomst',
     monthly_expenses: 'Befintliga lån',
-    charging: 'Laddning',
+    charging: 'Laddningsmöjlighet',
+    ev_daily_range: 'Daglig körsträcka',
+    ev_road_trips: 'Långresor',
     fuel_pref: 'Drivlina',
     priorities: 'Prioriteringar',
   };
