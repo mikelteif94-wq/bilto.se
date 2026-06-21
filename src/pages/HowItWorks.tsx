@@ -331,9 +331,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   };
 
   const steps = DIRECT_STEPS;
+  const activeBudgetPill = null;
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
+    <div className="min-h-screen bg-white text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
@@ -730,26 +731,25 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section id="sa-fungerar-det" className="bg-slate-50 py-16 sm:py-24 sm:overflow-hidden px-5 sm:px-6">
+      {/* ── Så enkelt är det ──────────────────────────────── */}
+      <section id="sa-fungerar-det" className="bg-white px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-10 sm:mb-16">
+          <div className="mb-10 sm:mb-14">
+            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Hur det fungerar</p>
             <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
               Så enkelt är det
             </h2>
           </div>
 
-          {/* MOBILE: image slider + step cards */}
           <DirectStepsMobile steps={steps} images={DIRECT_STEP_IMAGES} />
 
-          {/* DESKTOP */}
-          <ol className="hidden sm:grid lg:gap-10 sm:grid-cols-3 gap-8">
+          <ol className="hidden sm:grid sm:grid-cols-3 gap-8 lg:gap-12">
             {steps.map((step, i) => {
-              const Icon = step.icon;
               const img = DIRECT_STEP_IMAGES[i];
               return (
                 <li key={step.title} className="group">
                   {img && (
-                    <div className="rounded-2xl overflow-hidden aspect-[16/10] mb-5 shadow-md">
+                    <div className="rounded-2xl overflow-hidden aspect-[16/10] mb-6 shadow-sm">
                       <img
                         src={img}
                         alt={step.title}
@@ -757,20 +757,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       />
                     </div>
                   )}
-                  {!img && (
-                    <div className="mb-5 flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#0e6efe] shadow-[0_8px_18px_-6px_rgba(14,110,254,0.5)] ring-4 ring-[#0e6efe]/10">
-                      <Icon className="w-[18px] h-[18px] text-white" strokeWidth={2.4} />
-                    </div>
-                  )}
                   <div className="flex items-baseline gap-2.5 mb-2">
                     <span className="text-[13px] font-bold text-[#0e6efe] tabular-nums">0{i + 1}</span>
-                    <h3 className="text-[20px] sm:text-[22px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
+                    <h3 className="text-[19px] sm:text-[21px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
                       {step.title}
                     </h3>
                   </div>
-                  <p className="text-slate-600 text-[15px] leading-[1.6]">
-                    {step.text}
-                  </p>
+                  <p className="text-slate-500 text-[15px] leading-[1.65]">{step.text}</p>
                 </li>
               );
             })}
@@ -778,89 +771,82 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section className="bg-white">
-        <div className="max-w-6xl mx-auto px-6 py-16 sm:py-24">
-          <div className="grid md:grid-cols-12 gap-10 lg:gap-16 items-center">
-            <div className="md:col-span-6 order-1 md:order-1">
+      {/* ── Köpa / byta bil ───────────────────────────────── */}
+      <section className="bg-slate-50 px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
+            <div>
+              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Köp &amp; byte</p>
               <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
                 Ska du köpa eller byta bil?
               </h2>
-              <p className="text-[15px] text-slate-600 mt-4 leading-[1.6] max-w-lg">
+              <p className="text-[15px] text-slate-500 mt-4 leading-[1.65]">
                 Din personliga bilmäklare hjälper dig hela vägen — oavsett om du letar efter en ny bil, redan hittat en eller vill byta in din nuvarande.
               </p>
-              <ul className="mt-6 space-y-2">
+              <ul className="mt-6 space-y-3">
                 {[
                   'En personlig bilmäklare på din sida',
                   'Vi granskar pris, villkor och avtal',
                   'Betala bara om affären blir av',
                   'Fungerar vid köp, byte och leasing',
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2.5">
-                    <span className="w-4 h-4 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0">
-                      <Check className="w-2.5 h-2.5" strokeWidth={3} />
+                  <li key={item} className="flex items-start gap-3">
+                    <span className="w-5 h-5 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0 mt-0.5">
+                      <Check className="w-3 h-3" strokeWidth={3} />
                     </span>
-                    <span className="text-[14px] text-slate-700 leading-[1.5]">
-                      {item}
-                    </span>
+                    <span className="text-[14px] text-slate-700 leading-[1.55]">{item}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-10">
+              <div className="mt-8">
                 <button
                   type="button"
                   onClick={() => {
                     window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
-                    setTimeout(() => {
-                      document.getElementById('sa-fungerar-det')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
                   }}
-                  className="h-11 px-6 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all group"
+                  className="h-11 px-6 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
                 >
                   Läs mer om hur det fungerar
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
-            <div className="md:col-span-6 order-2 md:order-2">
-              <div className="relative rounded-2xl overflow-hidden">
-                <img
-                  src="/BSM_car_sale_key_woman_handover_101122.jpg"
-                  alt="Personlig mäklare hjälper bilsäljare"
-                  className="w-full h-[220px] sm:h-[380px] md:h-[540px] object-cover object-center"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-                <div className="hidden sm:block absolute left-4 bottom-4 right-4 sm:left-6 sm:bottom-6 sm:right-auto bg-white rounded-xl p-4 sm:p-5 shadow-lg sm:max-w-xs">
-                  <div className="flex items-center gap-3 mb-1.5">
-                    <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
-                      <Handshake className="w-5 h-5" strokeWidth={2} />
-                    </div>
-                    <div className="text-[14px] font-semibold text-slate-900">
-                      Vi förhandlar åt dig
-                    </div>
+            <div className="relative rounded-2xl overflow-hidden">
+              <img
+                src="/BSM_car_sale_key_woman_handover_101122.jpg"
+                alt="Personlig mäklare hjälper bilsäljare"
+                className="w-full h-[260px] sm:h-[400px] md:h-[500px] object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+              <div className="hidden sm:block absolute left-6 bottom-6 bg-white rounded-xl p-4 shadow-lg max-w-xs">
+                <div className="flex items-center gap-3 mb-1.5">
+                  <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
+                    <Handshake className="w-5 h-5" strokeWidth={2} />
                   </div>
-                  <p className="text-[13.5px] text-slate-600 leading-[1.55]">
-                    Oavsett om du köper, byter eller leasar — vi ser till att du får bästa villkor.
-                  </p>
+                  <div className="text-[14px] font-semibold text-slate-900">Vi förhandlar åt dig</div>
                 </div>
+                <p className="text-[13px] text-slate-500 leading-[1.55]">
+                  Oavsett om du köper, byter eller leasar — vi ser till att du får bästa villkor.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Popular cars + budget browser */}
-      <section id="experternas-val" className="bg-[#f0f4fa] py-14 sm:py-20 px-5 sm:px-6">
+      {/* ── Populära bilar ────────────────────────────────── */}
+      <section id="experternas-val" className="bg-white px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-8 sm:mb-12">
+          <div className="mb-10 sm:mb-14">
+            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Bilkatalogen</p>
             <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
               Vad våra kunder bytt till nyligen
             </h2>
-            <p className="mt-3 text-slate-500 text-[15px] max-w-lg mx-auto leading-[1.6]">
-              Hitta din nästa bil bland de mest eftertraktade modellerna. Oavsett om du vill byta in din bil eller köpa nytt — det börjar alltid med en <span className="font-semibold text-slate-700">gratis konsultation</span> där vi hjälper dig hela vägen.
+            <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
+              Hitta din nästa bil bland de mest eftertraktade modellerna. Vi hjälper dig hela vägen — från val till affär.
             </p>
           </div>
-
 
           {(() => {
             const carsToShow = popularCars;
@@ -868,7 +854,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             const hasMore = carsToShow.length > 6;
             return (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {visibleCars.map((car, i) => {
                     const imageUrl = getCarImage(car.brand_display, car.model_display);
                     const fuelLabelStr = car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ');
@@ -880,7 +866,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                           name={`${car.brand_display} ${car.model_display}`}
                           imageUrl={imageUrl}
                           rating={car.ratings.overall}
-                          topBadge={i === 0}                          pros={car.pros}
+                          topBadge={i === 0}
+                          pros={car.pros}
                           fuelLabel={fuelLabelStr}
                           bodyType={car.specs.body_type}
                           drivetrain={car.specs.drivetrain}
@@ -913,14 +900,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   })}
                 </div>
                 {hasMore && !showAllCars && (
-                  <div className="mt-6 text-center">
+                  <div className="mt-8 text-center">
                     <button
                       type="button"
                       onClick={() => { window.history.pushState({}, '', '/utforska'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                      className="h-11 px-7 rounded-full border border-slate-300 hover:border-[#0e6efe] text-slate-700 hover:text-[#0e6efe] font-semibold text-[14px] inline-flex items-center gap-2 transition-all duration-200"
+                      className="h-11 px-7 rounded-full border border-slate-200 hover:border-[#0e6efe] text-slate-600 hover:text-[#0e6efe] font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
                     >
                       Se fler bilar
-                      <ChevronDown className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
                 )}
@@ -931,10 +918,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           <div className="mt-8 text-center">
             <button
               type="button"
-              onClick={() => {
-                window.history.pushState({}, '', '/utforska');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-              }}
+              onClick={() => { window.history.pushState({}, '', '/utforska'); window.dispatchEvent(new PopStateEvent('popstate')); }}
               className="h-11 px-7 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
             >
               Utforska alla bilar
@@ -944,17 +928,17 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section className="bg-white">
-        <div className="max-w-6xl mx-auto px-6 py-14 sm:py-20">
-          <div className="grid md:grid-cols-12 gap-10 items-center">
-            <div className="md:col-span-5">
+      {/* ── Din personliga rådgivare ──────────────────────── */}
+      <section className="bg-slate-50 px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
+            <div>
+              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Personlig service</p>
               <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
                 Din personliga rådgivare
               </h2>
-              <p className="text-slate-600 mt-4 text-[15px] leading-[1.6]">
-                En dedikerad rådgivare jämför bud från utvalda bilhandlare och
-                presenterar det bästa erbjudandet — du slipper samtal och
-                förhandlingar.
+              <p className="text-slate-500 mt-4 text-[15px] leading-[1.65]">
+                En dedikerad rådgivare jämför bud från utvalda bilhandlare och presenterar det bästa erbjudandet — du slipper samtal och förhandlingar.
               </p>
               <ul className="mt-6 space-y-3">
                 {[
@@ -963,121 +947,109 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   'Vi sköter kontakten och förhandlingen åt dig',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[14px] text-slate-700">
-                    <Check className="w-4 h-4 mt-0.5 text-emerald-600 shrink-0" strokeWidth={2} />
+                    <Check className="w-4 h-4 mt-0.5 text-emerald-500 shrink-0" strokeWidth={2.5} />
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="md:col-span-7">
-              <div className="relative rounded-2xl overflow-hidden aspect-square max-w-[520px] mx-auto">
-                <img
-                  src="/13ccde8b-copy-copy.png"
-                  alt="Personlig rådgivare framför kund-bil"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                <div className="hidden md:block absolute md:left-auto md:right-5 md:bottom-5 md:max-w-sm bg-white rounded-xl p-5 shadow-lg">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-500 flex items-center justify-center">
-                      <Phone className="w-4 h-4" strokeWidth={2.25} />
-                    </div>
-                    <div className="text-[13px] font-semibold text-slate-900">
-                      En rådgivare återkommer till dig
-                    </div>
+            <div className="relative rounded-2xl overflow-hidden aspect-square max-w-[480px] mx-auto w-full">
+              <img
+                src="/13ccde8b-copy-copy.png"
+                alt="Personlig rådgivare framför kund-bil"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+              <div className="hidden md:block absolute right-5 bottom-5 max-w-[240px] bg-white rounded-xl p-4 shadow-lg">
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-500 flex items-center justify-center">
+                    <Phone className="w-4 h-4" strokeWidth={2.25} />
                   </div>
-                  <p className="text-[14px] text-slate-600 leading-[1.55]">
-                    Vi svarar alltid — en rådgivare finns här för att guida dig genom hela processen.
-                  </p>
+                  <div className="text-[13px] font-semibold text-slate-900">Alltid tillgänglig</div>
                 </div>
+                <p className="text-[13px] text-slate-500 leading-[1.5]">
+                  En rådgivare finns här för att guida dig genom hela processen.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-white">
-        <div className="max-w-6xl mx-auto px-6 py-14 sm:py-20">
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-            <div className="rounded-[32px] overflow-hidden bg-[#efe7dc] order-2 md:order-1">
+      {/* ── Upphämtning i hela Sverige ────────────────────── */}
+      <section className="bg-white px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
+            <div className="rounded-[28px] overflow-hidden bg-[#efe7dc] order-2 md:order-1">
               <img
                 src="/ee2543a0-987e-446d-9c5e-edb20859e84d.png"
                 alt="Karta över Sverige med upphämtningsorter"
                 className="w-full h-auto block"
                 loading="lazy"
                 decoding="async"
-                style={{ imageRendering: 'auto' }}
               />
             </div>
             <div className="order-1 md:order-2">
+              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Täcker hela Sverige</p>
               <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
-                Vi gör det enkelt att sälja bilen, oavsett var du bor
+                Vi hämtar bilen oavsett var du bor
               </h2>
-              <p className="text-slate-600 mt-4 text-[15px] leading-[1.6]">
-                När du accepterar ett bud bokar vi upphämtning på en plats som
-                passar dig. Du slipper stress, krångel och onödiga resor – bilen
-                hämtas tryggt och smidigt.
+              <p className="text-slate-500 mt-4 text-[15px] leading-[1.65]">
+                När du accepterar ett bud bokar vi upphämtning på en plats som passar dig. Bilen hämtas tryggt och smidigt — utan stress eller onödiga resor.
               </p>
-              <ul className="mt-8 space-y-3">
-                <li className="flex items-start gap-3 text-[14px] text-slate-800">
-                  <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
-                  Vi hämtar där det passar dig
-                </li>
-                <li className="flex items-start gap-3 text-[14px] text-slate-800">
-                  <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
-                  Trygg upphämtning utan krångel
-                </li>
-                <li className="flex items-start gap-3 text-[14px] text-slate-800">
-                  <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
-                  Ingen upphämtningsavgift
-                </li>
+              <ul className="mt-6 space-y-3">
+                {[
+                  'Vi hämtar där det passar dig',
+                  'Trygg upphämtning utan krångel',
+                  'Ingen upphämtningsavgift',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-[14px] text-slate-700">
+                    <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
+                    {item}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-slate-50">
-        <div className="max-w-6xl mx-auto px-6 py-16 sm:py-24">
-          <div className="mb-12 sm:mb-16 max-w-2xl">
+      {/* ── Trygghetsbadges ───────────────────────────────── */}
+      <section className="bg-slate-50 px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-10 sm:mb-14 max-w-2xl">
+            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Trygghet</p>
             <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
-              Din partner för en trygg och smart bilaffär.
+              Din partner för en trygg och smart bilaffär
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-px bg-slate-200 rounded-2xl overflow-hidden ring-1 ring-slate-200">
+          <div className="grid sm:grid-cols-3 gap-px bg-slate-200 rounded-2xl overflow-hidden ring-1 ring-slate-200">
             {[
               {
                 icon: ShieldCheck,
                 title: 'Granskade handlare',
-                text:
-                  'Endast auktoriserade bilhandlare med dokumenterad historik deltar. Vi granskar företag, omdömen och tidigare affärer innan någon får lägga ett bud på din bil — så du alltid vet att köparen är seriös.',
+                text: 'Endast auktoriserade bilhandlare med dokumenterad historik deltar. Vi granskar företag, omdömen och tidigare affärer innan någon får lägga ett bud.',
               },
               {
                 icon: Clock,
                 title: 'Snabb utbetalning',
-                text:
-                  'Pengarna landar på ditt konto innan du lämnar över bilen, beroende på vilken bank du har. Vid förmedling betalas slutpriset ut inom 1–3 bankdagar. Inga dolda kostnader – bara en transparent affär.',
+                text: 'Pengarna landar på ditt konto innan du lämnar över bilen. Vid förmedling betalas slutpriset ut inom 1–3 bankdagar. Inga dolda kostnader.',
               },
               {
                 icon: Check,
                 title: 'Ingen förpliktelse',
-                text:
-                  'Du är aldrig bunden att sälja. Tacka nej till budet om du inte är nöjd – det kostar dig ingenting att avstå. Du bestämmer alltid själv om affären ska gå vidare.',
+                text: 'Du är aldrig bunden att sälja. Tacka nej till budet om du inte är nöjd — det kostar dig ingenting att avstå.',
               },
             ].map((b) => {
               const Icon = b.icon;
               return (
-                <div key={b.title} className="bg-white p-8 sm:p-10 flex flex-col">
-                  <div className="w-10 h-10 rounded-full bg-[#0e6efe]/10 flex items-center justify-center mb-6 shrink-0">
-                    <Icon className="w-4.5 h-4.5 text-[#0e6efe]" strokeWidth={2} />
+                <div key={b.title} className="bg-white p-7 sm:p-9 flex flex-col">
+                  <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mb-5 shrink-0">
+                    <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
                   </div>
-                  <h3 className="text-[16px] font-bold text-slate-900 mb-3 tracking-[-0.01em]">
-                    {b.title}
-                  </h3>
-                  <p className="text-slate-600 leading-[1.6] text-[15px]">
-                    {b.text}
-                  </p>
+                  <h3 className="text-[16px] font-bold text-slate-900 mb-2 tracking-[-0.01em]">{b.title}</h3>
+                  <p className="text-slate-500 leading-[1.65] text-[14px]">{b.text}</p>
                 </div>
               );
             })}
@@ -1085,20 +1057,18 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      <section className="bg-white px-4 sm:px-6 py-12 sm:py-20">
+      {/* ── CTA-band ──────────────────────────────────────── */}
+      <section className="bg-white px-4 sm:px-6 py-12 sm:py-16">
         <div className="max-w-6xl mx-auto">
-          <div className="relative rounded-[28px] sm:rounded-[56px] bg-[#0e6efe] px-5 py-8 sm:px-14 sm:py-12 lg:px-20 lg:py-14 overflow-hidden">
-            {/* Background decorations */}
-            <div className="absolute -right-24 -top-24 w-[400px] h-[400px] rounded-full bg-white/5 pointer-events-none" />
-            <div className="absolute -left-16 -bottom-20 w-[300px] h-[300px] rounded-full bg-white/5 pointer-events-none" />
+          <div className="relative rounded-[24px] sm:rounded-[40px] bg-[#0e6efe] px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden">
+            <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-white/5 pointer-events-none" />
+            <div className="absolute -left-12 -bottom-16 w-[280px] h-[280px] rounded-full bg-white/5 pointer-events-none" />
 
             <div className="relative grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-              {/* Left: text + buttons */}
               <div>
-                <h2 className="text-[32px] sm:text-[40px] lg:text-[44px] font-bold tracking-tight leading-[1.06] text-white">
+                <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-bold tracking-tight leading-[1.06] text-white">
                   Vill du ha hjälp att få bästa affären?
                 </h2>
-
                 <ul className="mt-6 space-y-3">
                   {[
                     'En personlig bilexpert sköter förhandlingen',
@@ -1106,24 +1076,23 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     'Du får konkreta råd och sparar pengar',
                   ].map((text) => (
                     <li key={text} className="flex items-center gap-3">
-                      <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center bg-white/15">
-                        <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
+                      <span className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-white/20">
+                        <Check className="w-3 h-3 text-white" strokeWidth={3} />
                       </span>
-                      <span className="text-[15px] sm:text-[16px] text-white font-medium">{text}</span>
+                      <span className="text-[15px] text-white/90 font-medium">{text}</span>
                     </li>
                   ))}
                 </ul>
-
-                <div className="mt-8 flex flex-col gap-3">
+                <div className="mt-8 flex flex-col sm:flex-row gap-3">
                   <a
                     href="/gratis-konsultation"
-                    className="w-full inline-flex items-center justify-center h-[52px] px-8 rounded-full bg-white text-[#0e6efe] text-[15px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)]"
+                    className="inline-flex items-center justify-center h-12 px-7 rounded-full bg-white text-[#0e6efe] text-[15px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
                   >
                     Kostnadsfri konsultation
                   </a>
                   <a
                     href="tel:+46855550200"
-                    className="w-full inline-flex items-center justify-center h-[52px] px-8 rounded-full border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
+                    className="inline-flex items-center justify-center h-12 px-7 rounded-full border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
                   >
                     <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
                     Ring 08-5555 0200
@@ -1131,10 +1100,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 </div>
               </div>
 
-              {/* Right: image + floating calendar */}
-              <div className="relative h-[300px] sm:h-[360px] lg:h-[400px]">
-                {/* Main image — left-aligned, ~72% wide */}
-                <div className="absolute left-0 top-0 w-[72%] h-full rounded-[20px] sm:rounded-[28px] overflow-hidden">
+              <div className="relative h-[260px] sm:h-[320px] lg:h-[360px]">
+                <div className="absolute left-0 top-0 w-[72%] h-full rounded-[18px] sm:rounded-[24px] overflow-hidden">
                   <img
                     src="/858c5bbb-bilto-hoodie.png"
                     alt="Bilexpert"
@@ -1142,9 +1109,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
-
-                {/* Calendar widget — bottom-right, overlapping image */}
-                <div className="absolute bottom-0 right-0 bg-white rounded-2xl shadow-xl p-2.5 w-[155px] sm:w-[178px]">
+                <div className="absolute bottom-0 right-0 bg-white rounded-2xl shadow-xl p-2.5 w-[148px] sm:w-[168px]">
                   <p className="text-[10px] font-bold text-slate-900 text-center mb-1.5">Välj en tid</p>
                   <CalendarWidget />
                 </div>
@@ -1154,24 +1119,25 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      {/* Josefin testimonial */}
-      <section className="bg-white relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-14 sm:py-20">
-          <div className="grid md:grid-cols-12 gap-10 items-center">
-            <div className="md:col-span-5 order-1">
-              <h2 className="text-[28px] sm:text-[38px] font-semibold leading-[1.08] text-slate-900 tracking-[-0.02em]">
+      {/* ── Josefin testimonial ───────────────────────────── */}
+      <section className="bg-slate-50 px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-12 gap-8 sm:gap-12 items-center">
+            <div className="md:col-span-5">
+              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-4">Kundberättelse</p>
+              <h2 className="text-[24px] sm:text-[34px] font-semibold leading-[1.12] text-slate-900 tracking-[-0.02em]">
                 "Jag visste ingenting om bilar — Bilto skötte allt och jag fick mer än jag vågat hoppas på."
               </h2>
-              <p className="text-[13px] text-slate-500 mt-6">
+              <p className="text-[13px] text-slate-400 mt-5 font-medium">
                 Josefin L. — Volvo XC40, 2022
               </p>
             </div>
-            <div className="md:col-span-7 order-2">
+            <div className="md:col-span-7">
               <div className="relative rounded-2xl overflow-hidden">
                 <img
                   src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(1200_x_1400_px)_(2000_x_2000_px)_(1).png"
                   alt="Josefin framför sin Volvo XC40"
-                  className="w-full h-[380px] sm:h-[580px] md:h-[680px] object-cover object-top"
+                  className="w-full h-[280px] sm:h-[440px] md:h-[520px] object-cover object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
               </div>
@@ -1182,14 +1148,16 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
       <ReviewsSection variant="muted" />
 
-      <section className="bg-[#0e6efe] py-14 sm:py-20 px-6">
+      {/* ── FAQ ───────────────────────────────────────────── */}
+      <section className="bg-[#0e6efe] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-3xl mx-auto">
           <div className="mb-10 sm:mb-14">
+            <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3">Vanliga frågor</p>
             <h2 className="text-[28px] sm:text-[38px] font-bold text-white tracking-[-0.02em] leading-[1.08]">
               Fler frågor? Vi har svaren.
             </h2>
           </div>
-          <div className="divide-y divide-white/15 border-y border-white/15 rounded-md px-2">
+          <div className="divide-y divide-white/15 border-y border-white/15">
             {FAQ.map((item, idx) => {
               const open = openFaq === idx;
               return (
@@ -1197,30 +1165,24 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   key={item.q}
                   type="button"
                   onClick={() => setOpenFaq(open ? null : idx)}
-                  className="w-full text-left py-5 px-4 flex items-start gap-4 group"
+                  className="w-full text-left py-5 flex items-start gap-4 group"
                 >
                   <div className="flex-1">
-                    <h3 className="text-[16px] font-semibold text-white">
-                      {item.q}
-                    </h3>
+                    <h3 className="text-[16px] font-semibold text-white leading-snug">{item.q}</h3>
                     {open && (
-                      <p className="mt-3 text-[15px] text-white/80 leading-[1.6]">
-                        {item.a}
-                      </p>
+                      <p className="mt-3 text-[14px] text-white/75 leading-[1.65]">{item.a}</p>
                     )}
                   </div>
-                  {open ? (
-                    <ChevronDown className="w-5 h-5 text-white/70 mt-0.5 shrink-0" />
-                  ) : (
-                    <Plus className="w-5 h-5 text-white/50 mt-0.5 shrink-0" />
-                  )}
+                  {open
+                    ? <ChevronDown className="w-5 h-5 text-white/60 mt-0.5 shrink-0 rotate-180 transition-transform" />
+                    : <ChevronDown className="w-5 h-5 text-white/40 mt-0.5 shrink-0 transition-transform" />
+                  }
                 </button>
               );
             })}
           </div>
         </div>
       </section>
-
 
       {showSeo && <SeoCarsSection />}
 

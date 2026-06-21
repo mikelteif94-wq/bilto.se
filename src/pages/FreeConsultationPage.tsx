@@ -42,26 +42,21 @@ const SYFTE_OPTIONS: { value: Syfte; label: string; desc: string; icon: LucideIc
 
 const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
-// Deterministic pseudo-random: seeded by date string so same day always shows same booked slots
-function seededRandom(seed: string): () => number {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) {
-    h = Math.imul(31, h) + seed.charCodeAt(i) | 0;
-  }
-  return () => {
-    h ^= h >>> 13;
-    h = Math.imul(h, 1540483477);
-    h ^= h >>> 15;
-    return ((h >>> 0) / 4294967296);
-  };
-}
-
 function getBookedSlots(dateStr: string): Set<string> {
-  const rng = seededRandom(dateStr);
-  // Book 3–5 random slots per day
-  const count = 3 + Math.floor(rng() * 3);
-  const shuffled = [...TIME_SLOTS].sort(() => rng() - 0.5);
-  return new Set(shuffled.slice(0, count));
+  let seed = 0;
+  for (let i = 0; i < dateStr.length; i++) {
+    seed = ((seed * 31) + dateStr.charCodeAt(i)) >>> 0;
+  }
+  const booked = new Set<string>();
+  const available = [...TIME_SLOTS];
+  let s = seed;
+  while (booked.size < 4 && available.length > 0) {
+    s = ((s * 1664525) + 1013904223) >>> 0;
+    const idx = s % available.length;
+    booked.add(available[idx]);
+    available.splice(idx, 1);
+  }
+  return booked;
 }
 
 function getAvailableDates(): { date: Date; dateStr: string; label: string }[] {
