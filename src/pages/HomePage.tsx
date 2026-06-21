@@ -477,7 +477,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7.svg"
             alt=""
             aria-hidden="true"
-            className="w-full max-w-2xl opacity-20"
+            className="w-full max-w-3xl opacity-60"
             style={{ marginBottom: '-2px' }}
           />
         </div>
