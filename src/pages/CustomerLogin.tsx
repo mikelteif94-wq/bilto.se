@@ -55,7 +55,7 @@ export default function CustomerLogin({ onBack, initialEmail = '' }: CustomerLog
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-slate-900 flex flex-col">
-      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-30 h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-30 h-14 lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button onClick={onBack} className="shrink-0 flex items-center">
             <img

@@ -70,7 +70,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
       <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} onSelect={handleMenuSelect} />
 
       {/* Header */}
-      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-14 lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-4 sm:px-5 lg:px-8">
           <button
             type="button"
