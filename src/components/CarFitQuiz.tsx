@@ -4,7 +4,7 @@ import {
   X, ChevronRight, ChevronLeft, Check, Zap, Users, Briefcase, Compass,
   MapPin, Route, Globe, TrendingDown, Shield, Armchair, Timer, Maximize,
   MonitorSmartphone, Wrench, AlertCircle, Home, Building2, ParkingCircle,
-  BatteryCharging, Car, Banknote,
+  BatteryCharging, Car, Banknote, CreditCard, RefreshCcw, CalendarClock,
 } from 'lucide-react';
 import type { ComparisonCar } from '../lib/comparison/types';
 import { PRIORITY_TRAITS } from './quiz/QuizTypes';
@@ -16,12 +16,24 @@ interface Answers {
   annual_mileage?: 'low' | 'medium' | 'high';
   monthly_budget?: 'under4k' | '4k6k' | '6k9k' | 'over9k';
   priorities?: string[];
+  financing_type?: 'cash' | 'loan' | 'leasing';
+  own_period?: '1-2' | '3-4' | '5plus';
   // EV-specific
   charging?: 'home' | 'work' | 'public' | 'none';
   long_trips?: 'often' | 'sometimes' | 'rarely';
   // Non-EV
   fuel_ok?: string[];
   needs_space?: 'yes' | 'no' | 'sometimes';
+}
+
+interface TcoResult {
+  monthly_financing: number;
+  monthly_fuel: number;
+  monthly_insurance: number;
+  monthly_service: number;
+  total_monthly: number;
+  total_ownership: number;
+  ownership_months: number;
 }
 
 interface ScoreResult {
@@ -31,12 +43,14 @@ interface ScoreResult {
   positives: string[];
   negatives: string[];
   color: string;
+  tco?: TcoResult;
 }
 
 // ─── Step definitions ─────────────────────────────────────────────────────────
 
 type StepId = 'daily_use' | 'annual_mileage' | 'monthly_budget' | 'priorities'
-  | 'charging' | 'long_trips' | 'fuel_ok' | 'needs_space';
+  | 'charging' | 'long_trips' | 'fuel_ok' | 'needs_space'
+  | 'financing_type' | 'own_period';
 
 interface Step {
   id: StepId;
@@ -143,6 +157,30 @@ const STEP_SPACE: Step = {
     { id: 'yes', label: 'Mycket viktigt', description: 'Sport, barnvagn, husdjur' },
     { id: 'sometimes', label: 'Bra att ha', description: 'Flexibelt behov' },
     { id: 'no', label: 'Spelar mindre roll', description: 'Pendling i fokus' },
+  ],
+};
+
+const STEP_FINANCING: Step = {
+  id: 'financing_type',
+  question: 'Hur planerar du att finansiera bilen?',
+  subtitle: 'Påverkar din totala månadskostnad',
+  multi: false,
+  options: [
+    { id: 'loan', label: 'Billån', description: 'Lånefinansiering via bank eller återförsäljare' },
+    { id: 'leasing', label: 'Privatleasing', description: 'Fast månadsavgift, byt bil efter kontraktet' },
+    { id: 'cash', label: 'Kontant', description: 'Betalar hela beloppet direkt' },
+  ],
+};
+
+const STEP_OWNERSHIP: Step = {
+  id: 'own_period',
+  question: 'Hur länge planerar du behålla bilen?',
+  subtitle: 'Hjälper oss räkna på total ägandekostnad',
+  multi: false,
+  options: [
+    { id: '1-2', label: '1–2 år', description: 'Kortare ägande, byt ofta' },
+    { id: '3-4', label: '3–4 år', description: 'Mellanlång period' },
+    { id: '5plus', label: '5 år eller mer', description: 'Långsiktigt ägande' },
   ],
 };
 
@@ -339,7 +377,53 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
     description = `${car.brand_display} ${car.model_display} verkar inte vara det optimala valet utifrån dina svar. Vi hjälper dig hitta något bättre.`;
   }
 
-  return { score, title, description, positives: positives.slice(0, 3), negatives: negatives.slice(0, 2), color };
+  // ── TCO calculation ──
+  let tco: TcoResult | undefined;
+  if (a.financing_type && a.own_period && a.annual_mileage) {
+    const price = car.pricing.used_from_sek || car.pricing.new_from_sek || 300000;
+
+    // Financing
+    let monthly_financing = 0;
+    if (a.financing_type === 'loan') {
+      const loanAmount = price * 0.8;
+      const r = 0.079 / 12;
+      const n = 60;
+      monthly_financing = Math.round(loanAmount * r / (1 - Math.pow(1 + r, -n)));
+    } else if (a.financing_type === 'leasing') {
+      monthly_financing = Math.round(price * 0.0088);
+    }
+
+    // Fuel/energy (kr/mil, mils per year)
+    const milageMap: Record<string, number> = { low: 800, medium: 1500, high: 2500 };
+    const milsPerYear = milageMap[a.annual_mileage] ?? 1500;
+    const fuels = car.specs.fuel_types;
+    let krPerMil = 15;
+    if (fuels.includes('el')) krPerMil = 3;
+    else if (fuels.includes('laddhybrid')) krPerMil = 6;
+    else if (fuels.includes('hybrid')) krPerMil = 8;
+    else if (fuels.includes('diesel')) krPerMil = 11;
+    const monthly_fuel = Math.round((milsPerYear * krPerMil) / 12);
+
+    // Insurance
+    let monthly_insurance = 900;
+    if (price < 200000) monthly_insurance = 600;
+    else if (price < 400000) monthly_insurance = 900;
+    else if (price < 650000) monthly_insurance = 1200;
+    else monthly_insurance = 1500;
+
+    // Service
+    const monthly_service = fuels.includes('el') ? 125 : 250;
+
+    const total_monthly = monthly_financing + monthly_fuel + monthly_insurance + monthly_service;
+
+    const ownershipMonthsMap: Record<string, number> = { '1-2': 18, '3-4': 42, '5plus': 72 };
+    const ownership_months = ownershipMonthsMap[a.own_period] ?? 42;
+    const total_ownership = total_monthly * ownership_months + (a.financing_type === 'cash' ? price : 0);
+
+    tco = { monthly_financing, monthly_fuel, monthly_insurance, monthly_service, total_monthly, total_ownership, ownership_months };
+  }
+
+  return { score, title, description, positives: positives.slice(0, 3), negatives: negatives.slice(0, 2), color, tco };
 }
 
 // ─── Icons map ────────────────────────────────────────────────────────────────
@@ -354,6 +438,9 @@ const OPTION_ICONS: Record<string, React.FC<{ className?: string }>> = {
   rarely: MapPin, sometimes: Route, often: Globe,
   hybrid: BatteryCharging, petrol: Car, diesel: Car, electric: Zap,
   yes: Check, no: X, sometimes_space: Route,
+  // TCO options
+  loan: CreditCard, leasing: RefreshCcw, cash: Banknote,
+  '1-2': Timer, '3-4': CalendarClock, '5plus': Home,
 };
 
 // ─── Option button ────────────────────────────────────────────────────────────
@@ -399,6 +486,19 @@ function QuizOption({ id, label, description, selected, onClick, dark }: {
       </div>
       {selected && <Check className={`w-4 h-4 shrink-0 ${dark ? 'text-[#38bdf8]' : 'text-[#0e6efe]'}`} strokeWidth={2.5} />}
     </motion.button>
+  );
+}
+
+// ─── TCO row ──────────────────────────────────────────────────────────────────
+
+function TcoRow({ label, value, dark }: { label: string; value: number; dark: boolean }) {
+  return (
+    <div className="flex items-center justify-between">
+      <p className={`text-[12px] ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{label}</p>
+      <p className={`text-[12px] font-semibold tabular-nums ${dark ? 'text-slate-300' : 'text-slate-700'}`}>
+        {value.toLocaleString('sv-SE')} kr
+      </p>
+    </div>
   );
 }
 
@@ -461,9 +561,9 @@ export function CarFitQuiz({ car, open, onClose, dark = false, onNegotiate }: Ca
   // Build step list based on car type
   const steps = useMemo<Step[]>(() => {
     if (isEv) {
-      return [STEP_DAILY_USE, STEP_MILEAGE, STEP_CHARGING, STEP_LONG_TRIPS, STEP_BUDGET, STEP_PRIORITIES];
+      return [STEP_DAILY_USE, STEP_MILEAGE, STEP_CHARGING, STEP_LONG_TRIPS, STEP_BUDGET, STEP_FINANCING, STEP_OWNERSHIP, STEP_PRIORITIES];
     }
-    return [STEP_DAILY_USE, STEP_MILEAGE, STEP_FUEL, STEP_BUDGET, STEP_PRIORITIES, STEP_SPACE];
+    return [STEP_DAILY_USE, STEP_MILEAGE, STEP_FUEL, STEP_BUDGET, STEP_FINANCING, STEP_OWNERSHIP, STEP_PRIORITIES, STEP_SPACE];
   }, [isEv]);
 
   const [step, setStep] = useState(0);
@@ -488,6 +588,8 @@ export function CarFitQuiz({ car, open, onClose, dark = false, onNegotiate }: Ca
     if (id === 'charging') return answers.charging ? [answers.charging] : [];
     if (id === 'long_trips') return answers.long_trips ? [answers.long_trips] : [];
     if (id === 'needs_space') return answers.needs_space ? [answers.needs_space] : [];
+    if (id === 'financing_type') return answers.financing_type ? [answers.financing_type] : [];
+    if (id === 'own_period') return answers.own_period ? [answers.own_period] : [];
     return [];
   }
 
@@ -504,6 +606,8 @@ export function CarFitQuiz({ car, open, onClose, dark = false, onNegotiate }: Ca
       else if (id === 'charging') update.charging = optId as Answers['charging'];
       else if (id === 'long_trips') update.long_trips = optId as Answers['long_trips'];
       else if (id === 'needs_space') update.needs_space = optId as Answers['needs_space'];
+      else if (id === 'financing_type') update.financing_type = optId as Answers['financing_type'];
+      else if (id === 'own_period') update.own_period = optId as Answers['own_period'];
       setAnswers(update);
       setTimeout(() => advance(update), 200);
     } else {
@@ -705,6 +809,42 @@ export function CarFitQuiz({ car, open, onClose, dark = false, onNegotiate }: Ca
                           <p className={`text-[12px] font-medium leading-snug ${dark ? 'text-amber-300' : 'text-amber-700'}`}>{n}</p>
                         </div>
                       ))}
+                    </motion.div>
+                  )}
+
+                  {result.tco && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.75 }}
+                      className={`mb-5 rounded-2xl border p-4 ${dark ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-100'}`}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <p className={`text-[11px] font-bold uppercase tracking-wider ${dark ? 'text-slate-400' : 'text-slate-500'}`}>
+                          Beräknad ekonomi / mån
+                        </p>
+                        <p className={`text-[18px] font-black tabular-nums ${dark ? 'text-white' : 'text-slate-900'}`}>
+                          {result.tco.total_monthly.toLocaleString('sv-SE')} kr
+                        </p>
+                      </div>
+                      <div className="space-y-1.5">
+                        {result.tco.monthly_financing > 0 && (
+                          <TcoRow label="Finansiering" value={result.tco.monthly_financing} dark={dark} />
+                        )}
+                        <TcoRow label="Drivmedel" value={result.tco.monthly_fuel} dark={dark} />
+                        <TcoRow label="Försäkring" value={result.tco.monthly_insurance} dark={dark} />
+                        <TcoRow label="Service & underhåll" value={result.tco.monthly_service} dark={dark} />
+                      </div>
+                      <div className={`mt-3 pt-3 border-t flex items-center justify-between ${dark ? 'border-white/10' : 'border-slate-200'}`}>
+                        <p className={`text-[11px] ${dark ? 'text-slate-400' : 'text-slate-500'}`}>
+                          Total {Math.round(result.tco.ownership_months / 12)} år (ca)
+                        </p>
+                        <p className={`text-[13px] font-bold tabular-nums ${dark ? 'text-slate-300' : 'text-slate-700'}`}>
+                          {Math.round(result.tco.total_monthly * result.tco.ownership_months / 1000) * 1000 > 0
+                            ? `~${(Math.round(result.tco.total_monthly * result.tco.ownership_months / 10000) * 10).toLocaleString('sv-SE')} tkr`
+                            : '–'}
+                        </p>
+                      </div>
                     </motion.div>
                   )}
 
