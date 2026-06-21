@@ -5,7 +5,8 @@ import {
   Wallet, CreditCard, RefreshCcw, TrendingUp, Receipt,
   MapPin, Navigation, Gauge, Shield, Armchair, Maximize,
   Wrench, TrendingDown, Home, Building2, ParkingCircle,
-  BatteryCharging, Car, AlertCircle, Coffee, Star,
+  BatteryCharging, Car, AlertCircle, Coffee, Star, Crown,
+  ShieldCheck, PiggyBank, Shuffle, ArrowRight,
 } from 'lucide-react';
 import type { ComparisonCar } from '../lib/comparison/types';
 import { PRIORITY_TRAITS } from './quiz/QuizTypes';
@@ -52,101 +53,105 @@ interface ScoreResult {
 type StepId = 'daily_use' | 'annual_mileage' | 'financing_type'
   | 'monthly_income' | 'monthly_expenses' | 'charging' | 'fuel_pref' | 'priorities';
 
-interface Option { id: string; label: string; description?: string; icon: typeof Car }
+interface Option { id: string; label: string; description?: string; icon: typeof Car; highlight?: boolean }
 interface Step { id: StepId; question: string; subtitle?: string; multi: boolean; maxSelect?: number; options: Option[] }
 
 const STEPS: Record<string, Step> = {
   daily_use: {
     id: 'daily_use',
     question: 'Hur ser din vardag med bilen ut?',
+    subtitle: 'Välj det alternativ som stämmer bäst',
     multi: false,
     options: [
-      { id: 'solo', label: 'Mest ensam', description: 'Pendling & ärenden', icon: User },
-      { id: 'family', label: 'Med familjen', description: 'Barn & aktiviteter', icon: Users },
-      { id: 'cargo', label: 'Mycket last', description: 'Sport, djur & utrustning', icon: Package },
-      { id: 'sporadic', label: 'Lite & sporadiskt', description: 'Helg & tillfällen', icon: Coffee },
+      { id: 'solo', label: 'Pendling & ärenden', description: 'Jobbet, stan, vardagsärenden', icon: User },
+      { id: 'family', label: 'Familjeliv med barn', description: 'Skola, aktiviteter, längre resor', icon: Users },
+      { id: 'cargo', label: 'Hobby & utrustning', description: 'Sport, husdjur, mycket last', icon: Package },
+      { id: 'sporadic', label: 'Sällan & sporadiskt', description: 'Helger och tillfällen', icon: Coffee },
     ],
   },
   annual_mileage: {
     id: 'annual_mileage',
-    question: 'Hur mycket kör du ungefär per år?',
+    question: 'Hur många mil kör du per år?',
+    subtitle: 'Påverkar driftkostnad och rätt drivlina',
     multi: false,
     options: [
-      { id: 'low', label: 'Under 1 000 mil', description: 'Mestadels stad', icon: MapPin },
-      { id: 'medium', label: '1 000 – 2 000 mil', description: 'Blandad körning', icon: Navigation },
-      { id: 'high', label: 'Över 2 000 mil', description: 'Pendlar & reser mycket', icon: Gauge },
+      { id: 'low', label: 'Under 1 000 mil', description: 'Korta sträckor, mestadels stad', icon: MapPin },
+      { id: 'medium', label: '1 000 – 2 000 mil', description: 'Blandad körning, typisk pendling', icon: Navigation },
+      { id: 'high', label: 'Över 2 000 mil', description: 'Mycket motorväg, långa resor', icon: Gauge, highlight: true },
     ],
   },
   financing_type: {
     id: 'financing_type',
-    question: 'Hur planerar du att köpa bilen?',
-    subtitle: 'Väljer du rätt finansiering sparar du tusenlappar',
+    question: 'Hur vill du betala för bilen?',
+    subtitle: 'Rätt val kan spara dig tusenlappar varje månad',
     multi: false,
     options: [
-      { id: 'loan', label: 'Billån', description: 'Lånefinansiering, du äger bilen', icon: CreditCard },
-      { id: 'leasing', label: 'Privatleasing', description: 'Fast månadskostnad, byt bil enkelt', icon: RefreshCcw },
-      { id: 'cash', label: 'Kontant', description: 'Du betalar hela beloppet direkt', icon: Wallet },
+      { id: 'loan', label: 'Billån', description: 'Du äger bilen — flexibelt & populärt', icon: CreditCard },
+      { id: 'leasing', label: 'Privatleasing', description: 'Fast kostnad, ny bil vart tredje år', icon: RefreshCcw },
+      { id: 'cash', label: 'Kontant betalning', description: 'Inga räntor, full äganderätt direkt', icon: Wallet },
     ],
   },
   monthly_income: {
     id: 'monthly_income',
-    question: 'Vad är hushållets nettoinkomst per månad?',
-    subtitle: 'Vi räknar ut om bilen passar din ekonomi',
+    question: 'Vad är hushållets nettoinkomst?',
+    subtitle: 'Vi beräknar om bilen är rätt för din ekonomi',
     multi: false,
     options: [
-      { id: 'under25k', label: 'Under 25 000 kr', description: 'Netto efter skatt', icon: TrendingUp },
-      { id: '25k40k', label: '25 000 – 40 000 kr', description: 'Netto efter skatt', icon: TrendingUp },
-      { id: '40k60k', label: '40 000 – 60 000 kr', description: 'Netto efter skatt', icon: TrendingUp },
-      { id: 'over60k', label: 'Över 60 000 kr', description: 'Netto efter skatt', icon: TrendingUp },
+      { id: 'under25k', label: 'Under 25 000 kr/mån', description: 'Netto efter skatt', icon: TrendingUp },
+      { id: '25k40k', label: '25 000 – 40 000 kr/mån', description: 'Netto efter skatt', icon: TrendingUp },
+      { id: '40k60k', label: '40 000 – 60 000 kr/mån', description: 'Netto efter skatt', icon: TrendingUp },
+      { id: 'over60k', label: 'Över 60 000 kr/mån', description: 'Netto efter skatt', icon: TrendingUp, highlight: true },
     ],
   },
   monthly_expenses: {
     id: 'monthly_expenses',
-    question: 'Har du andra lån eller amorteringar?',
-    subtitle: 'Exkl. hyra/bolån som de flesta har',
+    question: 'Har du andra lån just nu?',
+    subtitle: 'Exkl. hyra och bolån — konsumtions- & avbetalningslån',
     multi: false,
     options: [
-      { id: 'none', label: 'Inga andra lån', description: 'Ingen avbetalning just nu', icon: Check },
-      { id: 'under3k', label: 'Under 3 000 kr/mån', description: 'Konsumtionslån, student etc.', icon: Receipt },
-      { id: '3k8k', label: '3 000 – 8 000 kr/mån', description: 'Flera lån eller amorteringar', icon: Receipt },
-      { id: 'over8k', label: 'Över 8 000 kr/mån', description: 'Stora åtaganden', icon: Receipt },
+      { id: 'none', label: 'Inga andra lån', description: 'Rent blad ekonomiskt', icon: Check, highlight: true },
+      { id: 'under3k', label: 'Under 3 000 kr/mån', description: 'Studielån, kortkredit etc.', icon: Receipt },
+      { id: '3k8k', label: '3 000 – 8 000 kr/mån', description: 'Flera lån eller avbetalningar', icon: Receipt },
+      { id: 'over8k', label: 'Över 8 000 kr/mån', description: 'Stora åtaganden', icon: AlertCircle },
     ],
   },
   charging: {
     id: 'charging',
-    question: 'Kan du ladda bilen enkelt?',
+    question: 'Var kan du ladda bilen?',
+    subtitle: 'Avgörande för om elbil funkar i din vardag',
     multi: false,
     options: [
-      { id: 'home', label: 'Hemma (garage / carport)', description: 'Bäst för elbil — laddar under natten', icon: Home },
+      { id: 'home', label: 'Hemma — garage eller carport', description: 'Idealiskt för elbil, laddar på natten', icon: Home, highlight: true },
       { id: 'work', label: 'På jobbet', description: 'Laddning under arbetstid', icon: Building2 },
-      { id: 'public', label: 'Bara publika laddare', description: 'Snabbladdning vid behov', icon: ParkingCircle },
-      { id: 'none', label: 'Inte möjligt just nu', description: 'Kan vara ett hinder för elbil', icon: X },
+      { id: 'public', label: 'Publika laddare', description: 'Fungerar, men kräver planering', icon: ParkingCircle },
+      { id: 'none', label: 'Inte möjligt idag', description: 'Elbil blir opraktiskt utan laddning', icon: X },
     ],
   },
   fuel_pref: {
     id: 'fuel_pref',
-    question: 'Vilken drivlina passar dig bäst?',
+    question: 'Vilken drivlina passar dig?',
+    subtitle: 'Baserat på din körprofil finns ett bästa alternativ',
     multi: false,
     options: [
-      { id: 'hybrid', label: 'Hybrid / Laddhybrid', description: 'Flexibel & bränslesnål', icon: BatteryCharging },
-      { id: 'petrol', label: 'Bensin', description: 'Beprövat & bekvämt', icon: Car },
-      { id: 'diesel', label: 'Diesel', description: 'Ekonomisk vid längre körning', icon: Car },
-      { id: 'ev', label: 'Elbil passar mig', description: 'Om laddning är löst', icon: Zap },
+      { id: 'hybrid', label: 'Hybrid / Laddhybrid', description: 'Bränslesnål och flexibel — bäst för många', icon: BatteryCharging, highlight: true },
+      { id: 'ev', label: 'Elbil', description: 'Lägsta driftskostnad om laddning är löst', icon: Zap },
+      { id: 'petrol', label: 'Bensin', description: 'Beprövat, enkelt, inga kompromisser', icon: Car },
+      { id: 'diesel', label: 'Diesel', description: 'Ekonomisk vid högt miltal och motorväg', icon: Gauge },
     ],
   },
   priorities: {
     id: 'priorities',
-    question: 'Vad är viktigast för dig i bilen?',
-    subtitle: 'Välj upp till 3 saker',
+    question: 'Vad värderar du mest i en bil?',
+    subtitle: 'Välj 1–3 saker som är viktigast för dig',
     multi: true,
     maxSelect: 3,
     options: [
-      { id: 'economy', label: 'Låga driftskostnader', description: undefined, icon: TrendingDown },
-      { id: 'safety', label: 'Säkerhet & trygghet', description: undefined, icon: Shield },
-      { id: 'comfort', label: 'Komfort & kvalitet', description: undefined, icon: Armchair },
-      { id: 'performance', label: 'Prestanda & kördynamik', description: undefined, icon: Gauge },
-      { id: 'space', label: 'Utrymme & praktik', description: undefined, icon: Maximize },
-      { id: 'reliability', label: 'Driftsäkerhet', description: undefined, icon: Wrench },
+      { id: 'economy', label: 'Låga driftskostnader', description: 'Snål & billig att äga', icon: TrendingDown },
+      { id: 'safety', label: 'Säkerhet', description: 'Trygghet för hela familjen', icon: Shield },
+      { id: 'comfort', label: 'Komfort & stillhet', description: 'Mjuk körning, bra NVH', icon: Armchair },
+      { id: 'space', label: 'Utrymme & praktikalitet', description: 'Bagageutrymme, säten', icon: Maximize },
+      { id: 'reliability', label: 'Driftsäkerhet', description: 'Inga problem, håller länge', icon: Wrench },
+      { id: 'performance', label: 'Prestanda', description: 'Motorstyrka, körglädje', icon: Gauge },
     ],
   },
 };
@@ -162,14 +167,12 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
   const isHybrid = fuels.includes('hybrid') || fuels.includes('laddhybrid');
   const isDiesel = fuels.includes('diesel');
 
-  // ── EV-specific scoring ──
   if (isEv) {
     if (a.charging === 'home') { score += 20; positives.push('Hemmaladdning är optimalt för elbil'); }
     else if (a.charging === 'work') { score += 14; positives.push('Laddning på jobbet fungerar bra'); }
     else if (a.charging === 'public') { score += 4; negatives.push('Enbart publika laddare begränsar flexibiliteten'); }
     else if (a.charging === 'none') { score -= 18; negatives.push('Utan laddmöjlighet är elbil opraktiskt'); }
   } else {
-    // ── Fuel preference match ──
     if (a.fuel_pref) {
       const match = (a.fuel_pref === 'hybrid' && isHybrid) ||
         (a.fuel_pref === 'diesel' && isDiesel) ||
@@ -180,7 +183,6 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
     }
   }
 
-  // ── Daily use ──
   if (a.daily_use) {
     const familyCues = ['xc', 'x3', 'x5', 'q5', 'q7', 'gle', 'tiguan', 'kodiaq', 'sorento', 'id.4', 'id.5', 'enyaq', 'ioniq', 'model y', 'model x'];
     const soloCues = ['golf', 'polo', '1-serie', 'a3', 'a-klass', 'model 3', 'id.3', 'born', 'yaris', 'corolla'];
@@ -191,7 +193,6 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
     else { score += 6; }
   }
 
-  // ── Mileage ──
   if (a.annual_mileage) {
     if (!isEv && a.annual_mileage === 'high' && isDiesel) { score += 12; positives.push('Diesel lönar sig vid högt miltal'); }
     else if (!isEv && a.annual_mileage === 'low' && isDiesel) { score -= 8; negatives.push('Diesel rekommenderas ej vid lågt miltal'); }
@@ -199,7 +200,6 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
     else { score += 5; }
   }
 
-  // ── Priorities ──
   if (a.priorities && a.priorities.length > 0) {
     for (const prio of a.priorities) {
       const trait = PRIORITY_TRAITS[prio as keyof typeof PRIORITY_TRAITS];
@@ -223,7 +223,7 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
           comfort: 'Komfort är ett styrkeområde',
           performance: 'Sportig och engagerande körning',
           space: 'Bra utrymme och praktikalitet',
-          reliability: 'Stark driftsäkerhet',
+          reliability: 'Stark driftsäkerhet och pålitlighet',
         };
         if (labels[prio] && positives.length < 3) positives.push(labels[prio]);
       }
@@ -254,12 +254,10 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
     description = `${car.brand_display} ${car.model_display} är troligen inte det optimala valet för dig.`;
   }
 
-  // ── Affordability ──
   let affordability: AffordabilityResult | undefined;
   if (a.monthly_income && a.monthly_expenses && a.financing_type && a.annual_mileage) {
     const price = car.pricing.used_from_sek || car.pricing.new_from_sek || 300000;
 
-    // Financing
     let monthly_financing = 0;
     if (a.financing_type === 'loan') {
       const loanAmount = price * 0.8;
@@ -270,7 +268,6 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
       monthly_financing = Math.round(price * 0.0088);
     }
 
-    // Fuel
     const milsMap: Record<string, number> = { low: 800, medium: 1500, high: 2500 };
     const mils = milsMap[a.annual_mileage] ?? 1500;
     let krPerMil = 14;
@@ -280,7 +277,6 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
     else if (fuels.includes('diesel')) krPerMil = 10;
     const monthly_fuel = Math.round((mils * krPerMil) / 12);
 
-    // Insurance
     let monthly_insurance = 900;
     if (price < 200000) monthly_insurance = 600;
     else if (price < 400000) monthly_insurance = 900;
@@ -290,7 +286,6 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
     const monthly_service = fuels.includes('el') ? 125 : 250;
     const total_monthly = monthly_financing + monthly_fuel + monthly_insurance + monthly_service;
 
-    // Affordability check
     const incomeMap: Record<string, number> = { under25k: 22000, '25k40k': 32000, '40k60k': 50000, over60k: 70000 };
     const expMap: Record<string, number> = { none: 0, under3k: 1500, '3k8k': 5000, over8k: 9000 };
     const income = incomeMap[a.monthly_income] ?? 35000;
@@ -306,12 +301,12 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
     const ratio = total_monthly / Math.max(available_budget, 1);
     if (ratio <= 0.85) {
       label = 'comfortable'; afColor = '#16a34a'; afBg = '#f0fdf4';
-      afTitle = 'Ekonomin ser bra ut';
-      afSubtitle = `Bilen passar väl inom din budget med ca ${Math.max(0, available_budget - total_monthly).toLocaleString('sv-SE')} kr/mån kvar`;
+      afTitle = 'Bilen passar din ekonomi';
+      afSubtitle = `Ca ${Math.max(0, available_budget - total_monthly).toLocaleString('sv-SE')} kr/mån kvar i bilbudget`;
     } else if (ratio <= 1.1) {
       label = 'possible'; afColor = '#0e6efe'; afBg = '#eff6ff';
-      afTitle = 'Ekonomin är möjlig';
-      afSubtitle = 'Kräver prioritering men är genomförbart';
+      afTitle = 'Möjlig med lite anpassning';
+      afSubtitle = 'Genomförbart — kräver viss prioritering';
     } else if (ratio <= 1.4) {
       label = 'tight'; afColor = '#d97706'; afBg = '#fffbeb';
       afTitle = 'Ekonomin är tight';
@@ -333,8 +328,8 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
 
 // ─── Option card ──────────────────────────────────────────────────────────────
 
-function OptionCard({ option, selected, onClick, accent }: {
-  option: Option; selected: boolean; onClick: () => void; accent: string;
+function OptionCard({ option, selected, onClick, multi }: {
+  option: Option; selected: boolean; onClick: () => void; multi?: boolean;
 }) {
   const Icon = option.icon;
   return (
@@ -342,25 +337,32 @@ function OptionCard({ option, selected, onClick, accent }: {
       type="button"
       onClick={onClick}
       whileTap={{ scale: 0.985 }}
-      className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl border-2 text-left transition-all duration-150 ${
-        selected ? 'bg-blue-50 border-[#0e6efe] shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300'
+      className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 text-left transition-all duration-150 ${
+        selected
+          ? 'bg-blue-50 border-[#0e6efe] shadow-sm'
+          : 'bg-white border-slate-150 hover:border-slate-300'
       }`}
+      style={{ borderColor: selected ? '#0e6efe' : '#e8edf2' }}
     >
-      <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
-        selected ? 'bg-[#0e6efe]' : 'bg-slate-100'
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+        selected ? 'bg-[#0e6efe]' : 'bg-slate-50'
       }`}>
-        <Icon className={`w-4.5 h-4.5 ${selected ? 'text-white' : 'text-slate-500'}`} style={{ width: 18, height: 18 }} />
+        <Icon
+          className={`w-5 h-5 transition-colors ${selected ? 'text-white' : 'text-slate-400'}`}
+        />
       </div>
       <div className="flex-1 min-w-0">
         <p className={`text-[13.5px] font-semibold leading-tight ${selected ? 'text-[#0e6efe]' : 'text-slate-800'}`}>
           {option.label}
         </p>
         {option.description && (
-          <p className="text-[11.5px] text-slate-400 mt-0.5">{option.description}</p>
+          <p className="text-[11.5px] text-slate-400 mt-0.5 leading-tight">{option.description}</p>
         )}
       </div>
-      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-        selected ? 'bg-[#0e6efe] border-[#0e6efe]' : 'border-slate-300'
+      <div className={`shrink-0 flex items-center justify-center transition-all ${
+        multi
+          ? `w-5 h-5 rounded-md border-2 ${selected ? 'bg-[#0e6efe] border-[#0e6efe]' : 'border-slate-300'}`
+          : `w-5 h-5 rounded-full border-2 ${selected ? 'bg-[#0e6efe] border-[#0e6efe]' : 'border-slate-300'}`
       }`}>
         {selected && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
       </div>
@@ -372,7 +374,7 @@ function OptionCard({ option, selected, onClick, accent }: {
 
 function ScoreArc({ score, color }: { score: number; color: string }) {
   const [displayed, setDisplayed] = useState(0);
-  const r = 44;
+  const r = 48;
   const circ = 2 * Math.PI * r;
 
   useEffect(() => {
@@ -380,7 +382,7 @@ function ScoreArc({ score, color }: { score: number; color: string }) {
     const start = performance.now();
     const animate = (now: number) => {
       const elapsed = now - start;
-      const p = Math.min(elapsed / 1000, 1);
+      const p = Math.min(elapsed / 1200, 1);
       const ease = 1 - Math.pow(1 - p, 3);
       setDisplayed(Math.round(ease * score));
       if (p < 1) frame = requestAnimationFrame(animate);
@@ -392,21 +394,21 @@ function ScoreArc({ score, color }: { score: number; color: string }) {
   const pct = displayed / 100;
 
   return (
-    <div className="relative w-28 h-28 mx-auto">
-      <svg viewBox="0 0 108 108" className="w-full h-full -rotate-90">
-        <circle cx="54" cy="54" r={r} fill="none" stroke="#f1f5f9" strokeWidth="9" />
+    <div className="relative w-32 h-32 mx-auto">
+      <svg viewBox="0 0 116 116" className="w-full h-full -rotate-90">
+        <circle cx="58" cy="58" r={r} fill="none" stroke="#f1f5f9" strokeWidth="10" />
         <motion.circle
-          cx="54" cy="54" r={r} fill="none"
-          stroke={color} strokeWidth="9" strokeLinecap="round"
+          cx="58" cy="58" r={r} fill="none"
+          stroke={color} strokeWidth="10" strokeLinecap="round"
           strokeDasharray={circ}
           initial={{ strokeDashoffset: circ }}
           animate={{ strokeDashoffset: circ * (1 - pct) }}
-          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-[30px] font-black tabular-nums leading-none" style={{ color }}>{displayed}</span>
-        <span className="text-[10px] font-bold text-slate-400 mt-0.5">av 100</span>
+        <span className="text-[34px] font-black tabular-nums leading-none" style={{ color }}>{displayed}</span>
+        <span className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-wide">av 100</span>
       </div>
     </div>
   );
@@ -417,21 +419,210 @@ function ScoreArc({ score, color }: { score: number; color: string }) {
 function AffordBar({ label, value, total, color }: { label: string; value: number; total: number; color: string }) {
   const pct = Math.min(100, (value / total) * 100);
   return (
-    <div className="space-y-1">
-      <div className="flex items-center justify-between">
-        <p className="text-[11.5px] text-slate-500">{label}</p>
-        <p className="text-[12px] font-semibold text-slate-700 tabular-nums">{value.toLocaleString('sv-SE')} kr</p>
-      </div>
-      <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
-        <motion.div
-          className="h-full rounded-full"
-          style={{ backgroundColor: color }}
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
-        />
+    <div className="flex items-center gap-3">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-[11px] text-slate-500 truncate">{label}</p>
+          <p className="text-[12px] font-semibold text-slate-700 tabular-nums ml-2 shrink-0">{value.toLocaleString('sv-SE')} kr</p>
+        </div>
+        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full rounded-full"
+            style={{ backgroundColor: color }}
+            initial={{ width: 0 }}
+            animate={{ width: `${pct}%` }}
+            transition={{ duration: 0.7, ease: 'easeOut', delay: 0.15 }}
+          />
+        </div>
       </div>
     </div>
+  );
+}
+
+// ─── Result insight chip ──────────────────────────────────────────────────────
+
+function InsightChip({ text, positive }: { text: string; positive: boolean }) {
+  return (
+    <div className={`flex items-start gap-2 px-3.5 py-2.5 rounded-xl border ${
+      positive
+        ? 'bg-emerald-50 border-emerald-100'
+        : 'bg-amber-50 border-amber-100'
+    }`}>
+      {positive
+        ? <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-px" strokeWidth={2.5} />
+        : <AlertCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-px" />
+      }
+      <p className={`text-[12px] font-medium leading-snug ${positive ? 'text-emerald-700' : 'text-amber-700'}`}>{text}</p>
+    </div>
+  );
+}
+
+// ─── Result screen ────────────────────────────────────────────────────────────
+
+function ResultScreen({ result, car, onNegotiate, onRedo, onClose }: {
+  result: ScoreResult;
+  car: ComparisonCar;
+  onNegotiate?: () => void;
+  onRedo: () => void;
+  onClose: () => void;
+}) {
+  const af = result.affordability;
+
+  const matchBg = result.score >= 82 ? '#f0fdf4'
+    : result.score >= 65 ? '#eff6ff'
+    : result.score >= 50 ? '#fffbeb'
+    : '#fef2f2';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.25 }}
+      className="flex flex-col h-full"
+    >
+      {/* Scrollable result body */}
+      <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-5 pb-4 space-y-4">
+
+        {/* Score hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="rounded-2xl overflow-hidden"
+          style={{ backgroundColor: matchBg }}
+        >
+          <div className="px-5 pt-5 pb-4 flex items-center gap-5">
+            <ScoreArc score={result.score} color={result.color} />
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bilmatch</p>
+              <p className="text-[20px] font-black leading-tight" style={{ color: result.color }}>
+                {result.title}
+              </p>
+              <p className="text-[12px] text-slate-500 mt-1.5 leading-relaxed">{result.description}</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Insights */}
+        {(result.positives.length > 0 || result.negatives.length > 0) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18 }}
+            className="space-y-2"
+          >
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-1">Analys</p>
+            {result.positives.map((p, i) => <InsightChip key={i} text={p} positive />)}
+            {result.negatives.map((n, i) => <InsightChip key={i} text={n} positive={false} />)}
+          </motion.div>
+        )}
+
+        {/* Affordability card */}
+        {af && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.32 }}
+            className="rounded-2xl overflow-hidden border border-slate-200"
+          >
+            {/* Header */}
+            <div
+              className="px-4 py-3.5 flex items-center gap-3 border-b border-slate-100"
+              style={{ backgroundColor: af.bgColor }}
+            >
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                style={{ backgroundColor: af.color + '20' }}
+              >
+                <TrendingUp className="w-4 h-4" style={{ color: af.color }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[13.5px] font-bold leading-tight" style={{ color: af.color }}>{af.title}</p>
+                <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">{af.subtitle}</p>
+              </div>
+              <div className="text-right shrink-0">
+                <p className="text-[18px] font-black tabular-nums" style={{ color: af.color }}>
+                  {af.total_monthly.toLocaleString('sv-SE')}
+                </p>
+                <p className="text-[10px] text-slate-400 font-medium">kr/mån</p>
+              </div>
+            </div>
+
+            {/* Breakdown */}
+            <div className="bg-white px-4 py-3.5 space-y-3">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Kostnad per månad (uppskattning)</p>
+              {af.monthly_financing > 0 && (
+                <AffordBar label="Finansiering" value={af.monthly_financing} total={af.total_monthly} color={af.color} />
+              )}
+              <AffordBar label="Drivmedel" value={af.monthly_fuel} total={af.total_monthly} color={af.color} />
+              <AffordBar label="Försäkring" value={af.monthly_insurance} total={af.total_monthly} color={af.color} />
+              <AffordBar label="Service & underhåll" value={af.monthly_service} total={af.total_monthly} color={af.color} />
+
+              <div className="pt-2.5 mt-1 border-t border-slate-100 flex items-center justify-between">
+                <div>
+                  <p className="text-[11px] text-slate-500 font-medium">Din bilbudget (ca 20% av inkomst)</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">Minus befintliga lån</p>
+                </div>
+                <p className="text-[14px] font-bold tabular-nums" style={{ color: Math.max(0, af.available_budget) > af.total_monthly ? '#16a34a' : '#dc2626' }}>
+                  {Math.max(0, af.available_budget).toLocaleString('sv-SE')} kr
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* CTA strip */}
+        {onNegotiate && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45 }}
+            className="rounded-2xl bg-gradient-to-r from-[#0e6efe] to-[#2a7fff] p-4 flex items-center gap-3"
+          >
+            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+              <Star className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[13px] font-bold text-white leading-tight">Bilto hjälper dig köpa</p>
+              <p className="text-[11px] text-white/70 mt-0.5">Förhandling, juridik & trygghet inkluderat</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => { onClose(); onNegotiate(); }}
+              className="shrink-0 bg-white/20 hover:bg-white/30 text-white rounded-xl px-3 py-2 text-[12px] font-bold transition-all flex items-center gap-1"
+            >
+              Kom igång <ArrowRight className="w-3 h-3" />
+            </button>
+          </motion.div>
+        )}
+      </div>
+
+      {/* Sticky footer */}
+      <div className="flex-shrink-0 px-5 pt-3 pb-6 bg-white border-t border-slate-100">
+        {onNegotiate && (
+          <motion.button
+            type="button"
+            onClick={() => { onClose(); onNegotiate(); }}
+            whileTap={{ scale: 0.97 }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="w-full h-12 rounded-2xl font-bold text-[14px] text-white flex items-center justify-center gap-2 mb-2"
+            style={{ backgroundColor: '#0e6efe', boxShadow: '0 4px 18px #0e6efe40' }}
+          >
+            Få hjälp att köpa denna bil
+            <ChevronRight className="w-4.5 h-4.5" style={{ width: 18, height: 18 }} />
+          </motion.button>
+        )}
+        <button
+          type="button"
+          onClick={onRedo}
+          className="w-full h-10 rounded-xl text-[13px] font-medium text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all"
+        >
+          Gör om quizet
+        </button>
+      </div>
+    </motion.div>
   );
 }
 
@@ -495,7 +686,7 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
       else if (id === 'charging') update.charging = optId as Answers['charging'];
       else if (id === 'fuel_pref') update.fuel_pref = optId as Answers['fuel_pref'];
       setAnswers(update);
-      setTimeout(() => advance(update), 220);
+      setTimeout(() => advance(update), 200);
     } else {
       let current: string[] = answers.priorities || [];
       if (current.includes(optId)) {
@@ -522,6 +713,18 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
 
   if (!car) return null;
 
+  // Step label map
+  const stepLabels: Record<StepId, string> = {
+    daily_use: 'Vardagsanvändning',
+    annual_mileage: 'Körsträcka',
+    financing_type: 'Finansiering',
+    monthly_income: 'Inkomst',
+    monthly_expenses: 'Befintliga lån',
+    charging: 'Laddning',
+    fuel_pref: 'Drivlina',
+    priorities: 'Prioriteringar',
+  };
+
   return (
     <AnimatePresence>
       {open && (
@@ -539,7 +742,7 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 32, stiffness: 360 }}
-            className="fixed inset-x-0 bottom-0 sm:inset-auto sm:left-1/2 sm:-translate-x-1/2 sm:bottom-8 z-50 w-full sm:w-[440px] flex flex-col bg-[#faf9f7] rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden"
+            className="fixed inset-x-0 bottom-0 sm:inset-auto sm:left-1/2 sm:-translate-x-1/2 sm:bottom-8 z-50 w-full sm:w-[460px] flex flex-col bg-[#f8f9fb] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden"
             style={{ maxHeight: 'calc(100dvh - 40px)' }}
             onClick={e => e.stopPropagation()}
           >
@@ -550,55 +753,70 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
 
             {/* Header */}
             <div className="flex-shrink-0 px-5 pt-3 pb-4 bg-white border-b border-slate-100">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-full bg-[#0e6efe]/10 flex items-center justify-center">
-                    <Star className="w-3.5 h-3.5 text-[#0e6efe]" />
+                  <div className="w-8 h-8 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
+                    <Star className="w-4 h-4 text-[#0e6efe]" />
                   </div>
                   <div>
-                    <p className="text-[10.5px] font-semibold text-slate-400 uppercase tracking-wider">Passar bilen mig?</p>
-                    <p className="text-[13px] font-bold text-slate-900 leading-tight">{car.brand_display} {car.model_display}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Passar bilen mig?</p>
+                    <p className="text-[13.5px] font-bold text-slate-900 leading-tight">{car.brand_display} {car.model_display}</p>
                   </div>
                 </div>
                 <button
                   type="button" onClick={onClose}
-                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
+                  className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
                 >
                   <X className="w-4 h-4 text-slate-500" />
                 </button>
               </div>
 
               {!result && (
-                <div className="mt-3">
-                  <div className="flex items-center gap-2">
+                <div>
+                  {/* Segmented progress */}
+                  <div className="flex gap-1">
                     {stepOrder.map((_, i) => (
                       <div
                         key={i}
                         className="h-1 flex-1 rounded-full transition-all duration-300"
-                        style={{ backgroundColor: i < step ? '#0e6efe' : i === step ? '#93c5fd' : '#e2e8f0' }}
+                        style={{
+                          backgroundColor: i < step ? '#0e6efe' : i === step ? '#93c5fd' : '#e2e8f0',
+                        }}
                       />
                     ))}
                   </div>
-                  <p className="text-[10.5px] text-slate-400 mt-1.5">Fråga {step + 1} av {totalSteps}</p>
+                  <div className="flex items-center justify-between mt-2">
+                    <p className="text-[11px] font-semibold text-[#0e6efe]">{stepLabels[currentStepId]}</p>
+                    <p className="text-[11px] text-slate-400">{step + 1} / {totalSteps}</p>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Scrollable content */}
-            <div className="flex-1 min-h-0 overflow-y-auto">
-              {!result ? (
-                <div className="px-5 pt-4 pb-4">
+            {/* Body */}
+            {result ? (
+              <ResultScreen
+                result={result}
+                car={car}
+                onNegotiate={onNegotiate}
+                onRedo={() => { setStep(0); setAnswers({}); setResult(null); }}
+                onClose={onClose}
+              />
+            ) : (
+              <>
+                {/* Scrollable question area */}
+                <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-5 pb-4">
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                       key={step}
-                      initial={{ opacity: 0, x: direction * 20 }}
+                      initial={{ opacity: 0, x: direction * 24 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: direction * -20 }}
-                      transition={{ duration: 0.15, ease: 'easeOut' }}
+                      exit={{ opacity: 0, x: direction * -24 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
                     >
-                      <p className="text-[16px] font-bold text-slate-900 mb-0.5">{currentStep.question}</p>
+                      <p className="text-[17px] font-black text-slate-900 leading-snug mb-1">{currentStep.question}</p>
                       {currentStep.subtitle && (
-                        <p className="text-[12px] text-slate-500 mb-4">{currentStep.subtitle}</p>
+                        <p className="text-[12px] text-slate-400 mb-4 leading-relaxed">{currentStep.subtitle}</p>
                       )}
                       <div className={`space-y-2 ${!currentStep.subtitle ? 'mt-4' : ''}`}>
                         {currentStep.options.map(opt => (
@@ -607,164 +825,42 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
                             option={opt}
                             selected={getValues().includes(opt.id)}
                             onClick={() => toggleOption(opt.id)}
-                            accent="#0e6efe"
+                            multi={currentStep.multi}
                           />
                         ))}
                       </div>
                     </motion.div>
                   </AnimatePresence>
                 </div>
-              ) : (
-                /* ── RESULT ── */
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="px-5 pt-5 pb-4"
-                >
-                  {/* Score */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="text-center mb-5"
-                  >
-                    <ScoreArc score={result.score} color={result.color} />
-                    <p className="text-[18px] font-black mt-3" style={{ color: result.color }}>{result.title}</p>
-                    <p className="text-[12px] text-slate-500 mt-1 leading-relaxed">{result.description}</p>
-                  </motion.div>
 
-                  {/* Positives / Negatives */}
-                  {(result.positives.length > 0 || result.negatives.length > 0) && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.25 }}
-                      className="space-y-1.5 mb-5"
+                {/* Sticky footer */}
+                <div className="flex-shrink-0 px-5 pt-3 pb-6 bg-white border-t border-slate-100">
+                  <div className="flex gap-2.5">
+                    <button
+                      type="button" onClick={back}
+                      className="w-11 h-11 rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:border-slate-300 hover:text-slate-700 transition-all shrink-0"
                     >
-                      {result.positives.map((p, i) => (
-                        <div key={i} className="flex items-start gap-2 px-3 py-2.5 rounded-xl bg-emerald-50 border border-emerald-100">
-                          <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" strokeWidth={2.5} />
-                          <p className="text-[12px] font-medium text-emerald-700 leading-snug">{p}</p>
-                        </div>
-                      ))}
-                      {result.negatives.map((n, i) => (
-                        <div key={i} className="flex items-start gap-2 px-3 py-2.5 rounded-xl bg-amber-50 border border-amber-100">
-                          <AlertCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-                          <p className="text-[12px] font-medium text-amber-700 leading-snug">{n}</p>
-                        </div>
-                      ))}
-                    </motion.div>
-                  )}
-
-                  {/* Affordability card */}
-                  {result.affordability && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.4 }}
-                      className="rounded-2xl overflow-hidden border border-slate-200 mb-5"
-                    >
-                      {/* Affordability header */}
-                      <div
-                        className="px-4 py-3 flex items-center gap-3"
-                        style={{ backgroundColor: result.affordability.bgColor }}
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    {currentStep.multi && (
+                      <motion.button
+                        type="button"
+                        onClick={() => advance()}
+                        disabled={!canAdvance()}
+                        whileTap={{ scale: 0.97 }}
+                        className={`flex-1 h-11 rounded-xl font-bold text-[14px] flex items-center justify-center gap-1.5 transition-all duration-200 ${
+                          canAdvance() ? 'text-white' : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                        }`}
+                        style={canAdvance() ? { backgroundColor: '#0e6efe', boxShadow: '0 4px 14px #0e6efe40' } : {}}
                       >
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: result.affordability.color + '20' }}>
-                          <TrendingUp className="w-4 h-4" style={{ color: result.affordability.color }} />
-                        </div>
-                        <div>
-                          <p className="text-[13px] font-bold" style={{ color: result.affordability.color }}>{result.affordability.title}</p>
-                          <p className="text-[11px] text-slate-500 leading-snug">{result.affordability.subtitle}</p>
-                        </div>
-                      </div>
-
-                      {/* Cost breakdown */}
-                      <div className="bg-white px-4 py-3 space-y-2.5">
-                        <div className="flex items-center justify-between mb-1">
-                          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Kostnad / månad</p>
-                          <p className="text-[15px] font-black text-slate-900 tabular-nums">
-                            {result.affordability.total_monthly.toLocaleString('sv-SE')} <span className="text-[11px] font-medium text-slate-400">kr</span>
-                          </p>
-                        </div>
-                        {result.affordability.monthly_financing > 0 && (
-                          <AffordBar
-                            label="Finansiering"
-                            value={result.affordability.monthly_financing}
-                            total={result.affordability.total_monthly}
-                            color={result.affordability.color}
-                          />
-                        )}
-                        <AffordBar label="Drivmedel" value={result.affordability.monthly_fuel} total={result.affordability.total_monthly} color={result.affordability.color} />
-                        <AffordBar label="Försäkring (est.)" value={result.affordability.monthly_insurance} total={result.affordability.total_monthly} color={result.affordability.color} />
-                        <AffordBar label="Service & underhåll" value={result.affordability.monthly_service} total={result.affordability.total_monthly} color={result.affordability.color} />
-
-                        <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                          <p className="text-[11px] text-slate-400">Din budget för bil (ca)</p>
-                          <p className="text-[12px] font-semibold text-slate-600 tabular-nums">
-                            {Math.max(0, result.affordability.available_budget).toLocaleString('sv-SE')} kr/mån
-                          </p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </motion.div>
-              )}
-            </div>
-
-            {/* Sticky footer */}
-            <div className="flex-shrink-0 px-5 pt-3 pb-6 bg-white border-t border-slate-100">
-              {!result ? (
-                <div className="flex gap-2.5">
-                  <button
-                    type="button" onClick={back}
-                    className="w-11 h-11 rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:border-slate-300 hover:text-slate-700 transition-all shrink-0"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                  {currentStep.multi && (
-                    <motion.button
-                      type="button"
-                      onClick={() => advance()}
-                      disabled={!canAdvance()}
-                      whileTap={{ scale: 0.97 }}
-                      className={`flex-1 h-11 rounded-xl font-semibold text-[14px] flex items-center justify-center gap-1.5 transition-all duration-200 ${
-                        canAdvance() ? 'text-white shadow-md' : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                      }`}
-                      style={canAdvance() ? { backgroundColor: '#0e6efe', boxShadow: '0 4px 14px #0e6efe40' } : {}}
-                    >
-                      {step === totalSteps - 1 ? 'Se mitt resultat' : 'Nästa'}
-                      <ChevronRight className="w-4 h-4" />
-                    </motion.button>
-                  )}
+                        {step === totalSteps - 1 ? 'Se mitt resultat' : 'Nästa'}
+                        <ChevronRight className="w-4 h-4" />
+                      </motion.button>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  {onNegotiate && (
-                    <motion.button
-                      type="button"
-                      onClick={() => { onClose(); onNegotiate(); }}
-                      whileTap={{ scale: 0.97 }}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6 }}
-                      className="w-full h-12 rounded-2xl font-bold text-[14px] text-white flex items-center justify-center gap-2 shadow-lg"
-                      style={{ backgroundColor: '#0e6efe', boxShadow: '0 4px 18px #0e6efe40' }}
-                    >
-                      Få hjälp att köpa denna bil
-                      <ChevronRight className="w-4.5 h-4.5" style={{ width: 18, height: 18 }} />
-                    </motion.button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => { setStep(0); setAnswers({}); setResult(null); }}
-                    className="w-full h-10 rounded-xl text-[13px] font-medium text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all"
-                  >
-                    Gör om quizet
-                  </button>
-                </div>
-              )}
-            </div>
+              </>
+            )}
           </motion.div>
         </>
       )}

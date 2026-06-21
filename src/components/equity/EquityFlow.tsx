@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wallet, TrendingDown, ChevronRight, Info } from 'lucide-react';
+import { Wallet, TrendingDown, ChevronRight, Sparkles, ArrowRight, BadgeDollarSign } from 'lucide-react';
 import { EquityQuiz, type EquityData } from './EquityQuiz';
 import { EquityResults } from './EquityResults';
 
@@ -13,82 +13,59 @@ interface EquityFlowProps {
 }
 
 function TeaserCard({ onStart }: { onStart: () => void }) {
-  const [showInfo, setShowInfo] = useState(false);
-
   return (
-    <div className="rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 overflow-hidden shadow-xl ring-1 ring-white/5">
-      <div className="px-5 pt-5 pb-4">
+    <div className="rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-sm">
+      {/* Header strip */}
+      <div className="bg-gradient-to-r from-[#0e6efe] to-[#2a7fff] px-5 pt-5 pb-10">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/20 flex items-center justify-center shrink-0">
-            <Wallet className="w-5 h-5 text-[#0e6efe]" />
+          <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
+            <Sparkles className="w-4.5 h-4.5 text-white" style={{ width: 18, height: 18 }} />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[14px] font-bold text-white leading-snug">
-              Vad kan din insats ge dig?
+          <div>
+            <p className="text-white font-black text-[17px] leading-snug">
+              Beräkna vad din insats ger dig
             </p>
-            <p className="text-[12px] text-slate-400 mt-0.5 leading-relaxed">
-              Beräkna hur mycket du kan spara — och hur lite du faktiskt behöver lägga ner
+            <p className="text-white/75 text-[12.5px] mt-1 leading-relaxed">
+              Se hur mycket du kan sänka månadskostnaden — och hur lite du faktiskt behöver betala
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setShowInfo(v => !v)}
-            className="w-7 h-7 rounded-full flex items-center justify-center text-slate-500 hover:text-slate-300 transition-colors shrink-0"
-          >
-            <Info className="w-4 h-4" />
-          </button>
         </div>
+      </div>
 
-        <AnimatePresence>
-          {showInfo && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="overflow-hidden"
-            >
-              <div className="mt-3 space-y-2 text-[12px] text-slate-400 leading-relaxed bg-white/5 rounded-xl px-4 py-3">
-                <p>
-                  <strong className="text-slate-300">Insats</strong> är pengarna du kan
-                  använda när du köper nästa bil — antingen från din nuvarande bils nettovärde,
-                  sparpengar, eller båda.
-                </p>
-                <p>
-                  Du behöver <strong className="text-slate-300">inte använda allt</strong>. Ofta räcker
-                  20 % av bilens pris. Resten av din insats stannar hos dig.
-                </p>
-                <p>
-                  Väljer du en billigare bil kan du dessutom <strong className="text-slate-300">
-                  få pengar tillbaka</strong> och sänka månadskostnaden.
-                </p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <div className="mt-4 grid grid-cols-3 gap-2">
+      {/* Floating benefit cards */}
+      <div className="px-4 -mt-6 mb-4">
+        <div className="bg-white rounded-2xl shadow-md border border-slate-100 divide-y divide-slate-50">
           {[
-            { icon: TrendingDown, label: 'Sänk månadskostnaden' },
-            { icon: Wallet, label: 'Frigör kapital' },
-            { icon: ChevronRight, label: 'Hitta rätt bil' },
+            { icon: TrendingDown, color: '#16a34a', bg: '#f0fdf4', label: 'Sänk månadskostnaden', sub: 'Många sparar 1 500–3 000 kr/mån' },
+            { icon: Wallet, color: '#0e6efe', bg: '#eff6ff', label: 'Frigör kapital', sub: 'Pengar du kan använda till annat' },
+            { icon: BadgeDollarSign, color: '#d97706', bg: '#fffbeb', label: 'Hitta rätt bil för din ekonomi', sub: 'Personliga bilrekommendationer' },
           ].map(b => (
-            <div key={b.label} className="flex flex-col items-center gap-1.5 bg-white/5 rounded-xl px-2 py-3 text-center">
-              <b.icon className="w-4 h-4 text-[#0e6efe]" />
-              <span className="text-[10px] text-slate-400 leading-tight font-medium">{b.label}</span>
+            <div key={b.label} className="flex items-center gap-3 px-4 py-3">
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: b.bg }}>
+                <b.icon className="w-4 h-4" style={{ color: b.color }} />
+              </div>
+              <div>
+                <p className="text-[13px] font-semibold text-slate-800 leading-tight">{b.label}</p>
+                <p className="text-[11px] text-slate-400">{b.sub}</p>
+              </div>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-300 ml-auto shrink-0" />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="px-5 pb-5">
-        <button
+      <div className="px-4 pb-5">
+        <motion.button
           type="button"
           onClick={onStart}
-          className="w-full h-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white text-[14px] font-bold transition-all duration-200 flex items-center justify-center gap-2"
+          whileTap={{ scale: 0.97 }}
+          className="w-full h-12 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[14px] font-bold transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
+          style={{ boxShadow: '0 4px 18px #0e6efe40' }}
         >
           Beräkna min insats
-          <ChevronRight className="w-4 h-4" />
-        </button>
+          <ChevronRight className="w-4.5 h-4.5" style={{ width: 18, height: 18 }} />
+        </motion.button>
+        <p className="text-center text-[11px] text-slate-400 mt-2.5">Tar 2 minuter · Helt gratis</p>
       </div>
     </div>
   );
@@ -105,24 +82,24 @@ export function EquityFlow({ onNegotiate: _onNegotiate, compact, isEv }: EquityF
 
   if (compact && state === 'teaser') {
     return (
-      <button
+      <motion.button
         type="button"
         onClick={() => setState('quiz')}
-        className="w-full flex items-center gap-3 bg-emerald-500 hover:bg-emerald-600 rounded-xl px-4 py-3 transition-all duration-200 group text-left"
+        whileTap={{ scale: 0.97 }}
+        className="w-full flex items-center gap-3 bg-gradient-to-r from-[#0e6efe] to-[#2a7fff] hover:from-[#0a57cc] hover:to-[#1a6fee] rounded-2xl px-4 py-3.5 transition-all duration-200 group text-left shadow-md"
+        style={{ boxShadow: '0 4px 14px #0e6efe30' }}
       >
-        <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
-          <Wallet className="w-4 h-4 text-white" />
+        <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+          <Sparkles className="w-4 h-4 text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-bold text-white">
-            {isEv ? 'Beräkna vad din insats ger dig' : 'Beräkna vad din insats ger dig'}
-          </p>
-          <p className="text-[11px] text-white/75">
+          <p className="text-[13px] font-bold text-white">Beräkna vad din insats ger dig</p>
+          <p className="text-[11px] text-white/70">
             {isEv ? 'Sänk kostnaden · Byt till elbil' : 'Sänk månadskostnaden · Frigör kapital'}
           </p>
         </div>
-        <ChevronRight className="w-4 h-4 text-white/75 group-hover:text-white transition-colors" />
-      </button>
+        <ChevronRight className="w-4 h-4 text-white/75 group-hover:translate-x-0.5 transition-transform shrink-0" />
+      </motion.button>
     );
   }
 
@@ -140,6 +117,7 @@ export function EquityFlow({ onNegotiate: _onNegotiate, compact, isEv }: EquityF
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.2 }}
         >
           <EquityQuiz
             onComplete={handleQuizComplete}
@@ -154,6 +132,7 @@ export function EquityFlow({ onNegotiate: _onNegotiate, compact, isEv }: EquityF
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.2 }}
         >
           <EquityResults
             equity={equityData}
