@@ -341,7 +341,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         active="Sälj bil"
         onSelect={handleMenuSelect}
       />
-      <header className={`fixed top-4 left-1/2 -translate-x-1/2 w-[min(900px,calc(100%-32px))] z-40 h-[56px] rounded-full transition-colors duration-300 bg-[#0e6efe] backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.18)] ring-1 ring-white/10`}>
+      <header className={`fixed top-4 left-1/2 -translate-x-1/2 w-[min(900px,calc(100%-32px))] z-40 h-[72px] rounded-full transition-colors duration-300 bg-[#0e6efe] backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.18)] ring-1 ring-white/10`}>
         <div className="h-full flex items-center justify-between px-4 lg:px-5">
           {/* Logo */}
           <button onClick={onBackHome} className="shrink-0 flex items-center">
