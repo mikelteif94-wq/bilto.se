@@ -131,7 +131,7 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
         onClick={() => setOpen(v => !v)}
         className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border border-slate-200 bg-white/60 hover:bg-white active:bg-slate-50 transition-colors"
       >
-        <span className="text-[12px] font-semibold text-slate-600">Visa vad som ingår</span>
+        <span className="text-[12px] font-semibold text-slate-600">Kostnaderna i detalj</span>
         <span className="text-[10px] text-slate-400">{open ? '▲' : '▼'}</span>
       </button>
       <AnimatePresence initial={false}>
