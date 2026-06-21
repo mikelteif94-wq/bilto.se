@@ -341,8 +341,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         active="Sälj bil"
         onSelect={handleMenuSelect}
       />
-      <header className={`fixed top-3 inset-x-16 lg:top-4 lg:inset-x-24 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 bg-[#0e6efe] ${!scrolled ? 'backdrop-blur-md' : ''}`}>
-        <div className="max-w-4xl mx-auto h-full flex items-center px-5 lg:px-8">
+      <header className={`fixed top-4 left-1/2 -translate-x-1/2 w-[min(960px,calc(100%-48px))] z-40 h-14 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 bg-[#0e6efe] ${!scrolled ? 'backdrop-blur-md' : ''}`}>
+        <div className="h-full flex items-center px-6 lg:px-8">
           <button
             type="button"
             aria-label="Meny"
