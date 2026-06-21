@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import {
-  Search, X, ChevronDown, Zap, Leaf,
+  Search, X, ChevronDown,
   Car, ChevronRight, Users, Filter, ArrowUpDown, Loader2,
   Handshake, ArrowLeftRight, ArrowRight,
 } from 'lucide-react';
@@ -24,19 +24,6 @@ const BODY_LABELS: Record<string, string> = {
   sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
   coupe: 'Coupé', cab: 'Cab', mpv: 'MPV',
 };
-
-const FUEL_ICONS: Record<string, React.ReactNode> = {
-  el: <Zap className="w-3 h-3" />,
-  hybrid: <Leaf className="w-3 h-3" />,
-  laddhybrid: <Leaf className="w-3 h-3" />,
-};
-
-function fuelColor(f: string) {
-  if (f === 'el') return { bg: '#dbeafe', text: '#1d4ed8', border: '#bfdbfe' };
-  if (f === 'hybrid' || f === 'laddhybrid') return { bg: '#dcfce7', text: '#15803d', border: '#bbf7d0' };
-  if (f === 'diesel') return { bg: '#fef3c7', text: '#92400e', border: '#fde68a' };
-  return { bg: '#f1f5f9', text: '#475569', border: '#e2e8f0' };
-}
 
 const BODY_TYPES = ['suv', 'kombi', 'hatchback', 'sedan', 'mpv', 'coupe', 'cab'];
 const FUEL_TYPES = ['el', 'laddhybrid', 'hybrid', 'bensin', 'diesel'];
@@ -76,10 +63,6 @@ function ScoreBadge({ value }: { value: number }) {
 
 function CarCard({ car, onBuy, onDetail }: { car: CatalogCarFull; onBuy: () => void; onDetail: () => void }) {
   const img = car.cleaned_image_url || car.image_url;
-  const fuels = car.fuel_types ?? [];
-  const mainFuel = fuels[0] ?? '';
-  const fuelCol = fuelColor(mainFuel);
-  const fuelLabel = FUEL_LABELS[mainFuel] ?? mainFuel;
   const range = car.price_new_from ? calcCarMonthlyRange(car.price_new_from, car.price_used_from ?? undefined) : null;
   const bodyLabel = car.body_type ? (BODY_LABELS[car.body_type] ?? car.body_type) : null;
 
@@ -113,19 +96,6 @@ function CarCard({ car, onBuy, onDetail }: { car: CatalogCarFull; onBuy: () => v
           <img src="/car-placeholder.svg" alt="" className="w-full h-full object-contain p-6 opacity-30" />
         )}
         <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
-
-        {/* Fuel badge */}
-        {mainFuel && (
-          <div className="absolute top-3 left-3">
-            <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold"
-              style={{ background: fuelCol.bg, color: fuelCol.text, border: `1px solid ${fuelCol.border}` }}
-            >
-              {FUEL_ICONS[mainFuel]}
-              {fuelLabel}
-            </span>
-          </div>
-        )}
 
         {car.rating_overall != null && <ScoreBadge value={car.rating_overall} />}
       </div>
