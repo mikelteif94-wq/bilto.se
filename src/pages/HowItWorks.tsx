@@ -271,13 +271,23 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   const handleCarQueryChange = (q: string) => {
     setCarQuery(q);
     if (carSearchTimer.current) clearTimeout(carSearchTimer.current);
-    if (!q.trim()) { setCarSuggestions([]); setShowSuggestions(false); return; }
+    const trimmed = q.trim();
+    if (!trimmed) { setCarSuggestions([]); setShowSuggestions(false); return; }
+    // Only search if query looks like a car name (letters/digits/spaces/hyphens, no generic descriptors)
+    const genericWords = /^(billig|dyr|stor|liten|snabb|bra|ny|gammal|bil|bilar|auto)/i;
+    if (genericWords.test(trimmed) || trimmed.includes(' ') && trimmed.split(' ').length > 2) {
+      setCarSuggestions([]);
+      setShowSuggestions(false);
+      setCarSearchLoading(false);
+      return;
+    }
     setCarSearchLoading(true);
     carSearchTimer.current = setTimeout(async () => {
+      // Use prefix match on make OR model for accurate results
       const { data } = await supabase
         .from('car_catalog')
         .select('make, model')
-        .or(`make.ilike.%${q.trim()}%,model.ilike.%${q.trim()}%`)
+        .or(`make.ilike.${trimmed}%,model.ilike.${trimmed}%`)
         .limit(8);
       setCarSuggestions(data || []);
       setShowSuggestions(true);

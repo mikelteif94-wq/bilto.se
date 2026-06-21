@@ -529,11 +529,16 @@ function ResultScreen({ result, car, onNegotiate, onRedo, onClose }: {
   onClose: () => void;
 }) {
   const af = result.affordability;
+  const cantAfford = af && (af.label === 'tight' || af.label === 'difficult');
 
-  const matchBg = result.score >= 82 ? '#f0fdf4'
+  const matchBg = cantAfford ? '#fef2f2'
+    : result.score >= 82 ? '#f0fdf4'
     : result.score >= 65 ? '#eff6ff'
     : result.score >= 50 ? '#fffbeb'
     : '#fef2f2';
+
+  const effectiveColor = cantAfford ? '#dc2626' : result.color;
+  const effectiveTitle = cantAfford ? (af!.label === 'difficult' ? 'Ekonomin är ansträngd' : 'Ekonomin är tight') : result.title;
 
   return (
     <motion.div
@@ -545,6 +550,21 @@ function ResultScreen({ result, car, onNegotiate, onRedo, onClose }: {
       {/* Scrollable result body */}
       <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-5 pb-4 space-y-4">
 
+        {/* Affordability warning banner — shown first when user can't afford */}
+        {cantAfford && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-start gap-3 rounded-2xl bg-red-50 border border-red-200 px-4 py-3.5"
+          >
+            <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[13px] font-bold text-red-700 leading-tight">{af!.title}</p>
+              <p className="text-[11.5px] text-red-600/80 mt-0.5 leading-snug">{af!.subtitle}</p>
+            </div>
+          </motion.div>
+        )}
+
         {/* Score hero */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -554,11 +574,11 @@ function ResultScreen({ result, car, onNegotiate, onRedo, onClose }: {
           style={{ backgroundColor: matchBg }}
         >
           <div className="px-5 pt-5 pb-4 flex items-center gap-5">
-            <ScoreArc score={result.score} color={result.color} />
+            <ScoreArc score={result.score} color={effectiveColor} />
             <div className="flex-1 min-w-0">
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bilmatch</p>
-              <p className="text-[20px] font-black leading-tight" style={{ color: result.color }}>
-                {result.title}
+              <p className="text-[20px] font-black leading-tight" style={{ color: effectiveColor }}>
+                {effectiveTitle}
               </p>
               <p className="text-[12px] text-slate-500 mt-1.5 leading-relaxed">{result.description}</p>
             </div>
@@ -810,7 +830,7 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 32, stiffness: 360 }}
-            className="fixed inset-x-0 bottom-0 sm:inset-auto sm:left-1/2 sm:-translate-x-1/2 sm:bottom-8 z-50 w-full sm:w-[460px] flex flex-col bg-[#f8f9fb] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden"
+            className="fixed inset-x-0 bottom-0 sm:inset-auto sm:left-1/2 sm:-translate-x-1/2 sm:bottom-8 z-50 w-full sm:w-[460px] flex flex-col bg-[#f8f9fb] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden touch-pan-y"
             style={{ maxHeight: 'calc(100dvh - 40px)' }}
             onClick={e => e.stopPropagation()}
           >
@@ -873,7 +893,7 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
             ) : (
               <>
                 {/* Scrollable question area */}
-                <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-5 pb-4">
+                <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-5 pt-5 pb-4" style={{ touchAction: 'pan-y' }}>
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                       key={step}

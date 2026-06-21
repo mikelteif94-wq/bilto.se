@@ -409,7 +409,10 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
 
                 {/* Monthly + delta */}
                 <div className="flex items-center justify-between mb-2.5">
-                  <span className="text-[12px] text-slate-500">Månadskostnad (est.)</span>
+                  <div>
+                    <span className="text-[12px] text-slate-500">Månadskostnad (TCO est.)</span>
+                    <p className="text-[10px] text-slate-400">inkl. drivmedel &amp; försäkring</p>
+                  </div>
                   <span className="text-[14px] font-black text-[#0e6efe] tabular-nums">{fmt(car.estimatedMonthly)} kr</span>
                 </div>
 
@@ -476,7 +479,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
                     }}
                     className="flex-1 h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[12px] font-bold transition-all flex items-center justify-center gap-1 active:scale-[0.98]"
                   >
-                    Få hjälp att köpa <ChevronRight className="w-3 h-3" />
+                    Få prishjälp <ChevronRight className="w-3 h-3" />
                   </button>
                   {car.compData && (
                     <button

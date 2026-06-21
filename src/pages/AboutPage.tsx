@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Menu, ShieldCheck, Handshake, Gauge, Star, Users, TrendingUp, Clock } from 'lucide-react';
+import { ArrowRight, Menu, ShieldCheck, Handshake, Gauge, Star } from 'lucide-react';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
 
@@ -23,13 +23,6 @@ const VALUES = [
     title: 'Teknik med ett syfte',
     text: 'Varje del av plattformen är byggd kring samma mål: maximera ditt slutpris och göra affären enkel, tydlig och smidig från första klick till överlämning.',
   },
-];
-
-const STATS = [
-  { value: '5 000+', label: 'Bilar förmedlade', icon: TrendingUp },
-  { value: '~15 000 kr', label: 'Genomsnittlig besparing', icon: Star },
-  { value: '10+ år', label: 'Erfarenhet i branschen', icon: Clock },
-  { value: '100%', label: 'På kundens sida', icon: Users },
 ];
 
 const PROMISES = [
@@ -135,28 +128,6 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Stats bar */}
-        <section className="bg-[#0e6efe] py-8 sm:py-12">
-          <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-8">
-              {STATS.map((s) => {
-                const Icon = s.icon;
-                return (
-                  <div key={s.label} className="flex flex-col items-center text-center">
-                    <Icon className="w-5 h-5 text-white/60 mb-2" strokeWidth={1.8} />
-                    <p className="text-[26px] sm:text-[32px] font-bold text-white tabular-nums leading-none tracking-tight">
-                      {s.value}
-                    </p>
-                    <p className="text-[12px] sm:text-[13px] text-white/70 font-medium mt-1.5 leading-snug">
-                      {s.label}
-                    </p>
-                  </div>
-                );
-              })}
             </div>
           </div>
         </section>
