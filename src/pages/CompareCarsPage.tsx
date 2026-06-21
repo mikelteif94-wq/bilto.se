@@ -1069,6 +1069,15 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             );
             })}
           </div>
+
+          <div className="mt-10 flex justify-center pointer-events-none select-none overflow-hidden">
+            <img
+              src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-full max-w-2xl"
+            />
+          </div>
         </div>
       </section>
 
