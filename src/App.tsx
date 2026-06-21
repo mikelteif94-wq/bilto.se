@@ -49,6 +49,8 @@ const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
+const JamforBilarPage = lazy(() => import('./pages/JamforBilarPage'));
+const FormansbildsKalkylator = lazy(() => import('./pages/FormansbildsKalkylator'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -371,6 +373,37 @@ function App() {
           onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
           onNavigateBuy={() => { window.history.pushState({}, '', '/kop-bil-hjalp'); setPath('/kop-bil-hjalp'); }}
           onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/jamfor-bilar') {
+    const params = new URLSearchParams(window.location.search);
+    const ids = params.get('ids')?.split(',').filter(Boolean) ?? [];
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <JamforBilarPage
+          initialIds={ids}
+          onBack={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
+          onNavigateBuy={(bil) => {
+            const p = new URLSearchParams();
+            if (bil) p.set('bil', bil);
+            p.set('source', 'Jämför-sida');
+            window.history.pushState({}, '', `/kop-bil/bestall?${p.toString()}`);
+            setPath('/kop-bil/bestall');
+          }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/formansbilar') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <FormansbildsKalkylator
+          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
+          onNavigateConsultation={() => { window.history.pushState({}, '', '/gratis-konsultation'); setPath('/gratis-konsultation'); }}
         />
       </Suspense>
     );

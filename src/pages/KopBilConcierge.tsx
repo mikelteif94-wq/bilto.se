@@ -16,6 +16,7 @@ import {
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { setPageMeta } from '../lib/pageMeta';
+import BuyFlowFAQ from '../components/BuyFlowFAQ';
 
 interface KopBilConciergProps {
   onBack: () => void;
@@ -525,6 +526,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
         </div>
       </section>
 
+      <BuyFlowFAQ variant="concierge" />
       <SiteFooter />
     </div>
   );

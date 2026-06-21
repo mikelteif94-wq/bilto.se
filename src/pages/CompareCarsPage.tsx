@@ -5,7 +5,7 @@ import {
   Sparkles, Zap, Truck, Leaf, CarFront,
   Send, Loader2, RotateCcw, Info,
   GitCompareArrows, X, ArrowDown, Phone, Handshake,
-  ShieldCheck, Megaphone, CheckCircle, ArrowLeftRight, ChevronDown,
+  ShieldCheck, Megaphone, CheckCircle, ArrowLeftRight, ChevronDown, Bell,
 } from 'lucide-react';
 import TcoCompareBar, { type TcoCompareCar } from '../components/TcoCompareBar';
 import ReviewsSection from '../components/ReviewsSection';
@@ -29,6 +29,7 @@ import QuizFlow from '../components/quiz/QuizFlow';
 import { QuizComplete } from '../components/quiz/QuizComplete';
 import type { QuizAnswers } from '../components/quiz/QuizTypes';
 import SaveToPortalBanner from '../components/SaveToPortalBanner';
+import SearchAlertModal from '../components/SearchAlertModal';
 import {
   BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS, BRAND_CATEGORIES, PRIORITY_TRAITS,
 } from '../components/quiz/QuizTypes';
@@ -708,6 +709,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   const [budgetShowCount, setBudgetShowCount] = useState(6);
   const budgetGridRef = useRef<HTMLDivElement>(null);
   const [expertShowCount, setExpertShowCount] = useState(6);
+  const [alertModalOpen, setAlertModalOpen] = useState(false);
 
 
   const navigateToSell = useCallback(() => {
@@ -1192,6 +1194,14 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     >
                       <X className="w-3.5 h-3.5" />
                       Rensa filter
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAlertModalOpen(true)}
+                      className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#0e6efe] hover:text-[#0a57cc] transition-colors self-start sm:self-auto"
+                    >
+                      <Bell className="w-3.5 h-3.5" />
+                      Bevaka sökning
                     </button>
                   </div>
 
@@ -2503,6 +2513,17 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         onClose={() => setFitQuizCar(null)}
         dark={activeCategory === 'el'}
         onNegotiate={() => { if (fitQuizCar) { openContactForCar(fitQuizCar); setFitQuizCar(null); } }}
+      />
+
+      {/* Search alert modal */}
+      <SearchAlertModal
+        open={alertModalOpen}
+        onClose={() => setAlertModalOpen(false)}
+        filters={{ budget: activeBudget, category: activeCategory }}
+        filterLabel={[
+          activeBudget ? `Budget: ${activeBudget}` : null,
+          activeCategory && activeCategory !== 'alla' ? `Kategori: ${activeCategory}` : null,
+        ].filter(Boolean).join(' · ') || 'Alla bilar'}
       />
     </div>
   );

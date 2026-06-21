@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, Phone, Check, X, User, Star, ShieldCheck } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
+import BuyFlowFAQ from '../components/BuyFlowFAQ';
 import { validateSwedishPhone } from '../lib/utils';
 import BuyTrackStep, { type BuyTrack } from '../components/forms/BuyTrackStep';
 import BuyDetailsStep, { type BuyDetailsData } from '../components/forms/BuyDetailsStep';
@@ -450,13 +451,15 @@ export default function BuyCarPage({
         </div>
       </div>
 
+      {step === 'track' && <BuyFlowFAQ variant="buy" />}
+
       {scrolled && step !== 'done' && (
         <a
           href="tel:+46855550200"
-          className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-center justify-center gap-2.5 h-14 rounded-xl bg-[#0e6efe] hover:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_10px_30px_rgba(14,110,254,0.4)] transition animate-[slideUp_0.3s_ease-out]"
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3 rounded-full bg-[#0e6efe] text-white text-[13px] font-semibold shadow-lg hover:bg-[#0a57cc] transition-all"
         >
-          <img src="/Man_in_car_showroom_portrait.png" alt="Expert" className="w-8 h-8 rounded-xl object-cover border-2 border-white/40 shrink-0" />
-          <span>Ring expert &middot; bud direkt</span>
+          <Phone className="w-4 h-4" />
+          Ring oss
         </a>
       )}
 
