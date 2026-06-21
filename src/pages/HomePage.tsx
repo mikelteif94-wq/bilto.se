@@ -271,7 +271,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             </a>
             <a
               href="/gratis-konsultation"
-              className={`inline-flex items-center px-4 py-2 rounded-full text-[12px] lg:text-[13px] font-semibold transition whitespace-nowrap ${
+              className={`inline-flex items-center px-5 py-2.5 rounded-xl text-[12px] lg:text-[13px] font-semibold transition whitespace-nowrap ${
                 scrolled
                   ? 'bg-slate-900 text-white hover:bg-slate-700'
                   : 'bg-white text-slate-900 hover:bg-white/90'
