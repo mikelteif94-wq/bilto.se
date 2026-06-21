@@ -240,12 +240,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   }, []);
 
   useEffect(() => {
-    if (heroTab !== 'hitta') { setShowSuggestions(false); return; }
-    if (carQuery.trim()) { setShowSuggestions(true); return; }
-    supabase.from('car_catalog').select('make, model').limit(8).then(({ data }) => {
-      setCarSuggestions(data || []);
-      setShowSuggestions(true);
-    });
+    if (heroTab !== 'hitta') { setShowSuggestions(false); }
   }, [heroTab]);
 
   useEffect(() => {
@@ -258,14 +253,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleCarFocus = async () => {
-    if (carQuery.trim()) { setShowSuggestions(true); return; }
-    const { data } = await supabase
-      .from('car_catalog')
-      .select('make, model')
-      .limit(8);
-    setCarSuggestions(data || []);
-    setShowSuggestions(true);
+  const handleCarFocus = () => {
+    if (carQuery.trim()) { setShowSuggestions(true); }
+    // Don't show random suggestions on empty focus
   };
 
   const handleCarQueryChange = (q: string) => {

@@ -538,32 +538,16 @@ function ResultScreen({ result, car, onNegotiate, onRedo, onClose }: {
     : '#fef2f2';
 
   const effectiveColor = cantAfford ? '#dc2626' : result.color;
-  const effectiveTitle = cantAfford ? (af!.label === 'difficult' ? 'Ekonomin är ansträngd' : 'Ekonomin är tight') : result.title;
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.25 }}
-      className="flex flex-col h-full"
+      className="flex-1 min-h-0 flex flex-col"
     >
       {/* Scrollable result body */}
       <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-5 pb-4 space-y-4">
-
-        {/* Affordability warning banner — shown first when user can't afford */}
-        {cantAfford && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-start gap-3 rounded-2xl bg-red-50 border border-red-200 px-4 py-3.5"
-          >
-            <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-            <div>
-              <p className="text-[13px] font-bold text-red-700 leading-tight">{af!.title}</p>
-              <p className="text-[11.5px] text-red-600/80 mt-0.5 leading-snug">{af!.subtitle}</p>
-            </div>
-          </motion.div>
-        )}
 
         {/* Score hero */}
         <motion.div
@@ -578,7 +562,7 @@ function ResultScreen({ result, car, onNegotiate, onRedo, onClose }: {
             <div className="flex-1 min-w-0">
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bilmatch</p>
               <p className="text-[20px] font-black leading-tight" style={{ color: effectiveColor }}>
-                {effectiveTitle}
+                {result.title}
               </p>
               <p className="text-[12px] text-slate-500 mt-1.5 leading-relaxed">{result.description}</p>
             </div>
