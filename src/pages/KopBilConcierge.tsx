@@ -152,7 +152,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       />
 
       {/* Nav */}
-      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-12 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-20 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"

@@ -200,7 +200,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
         onClose={() => setMenuOpen(false)}
         onSelect={handleMenuSelect}
       />
-      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-12 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${showForm || scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]/40 backdrop-blur-md'}`}>
+      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-20 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${showForm || scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]/40 backdrop-blur-md'}`}>
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
