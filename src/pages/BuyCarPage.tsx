@@ -248,7 +248,7 @@ export default function BuyCarPage({
                 window.history.pushState({}, '', '/gratis-konsultation');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="inline-flex items-center bg-white text-[#0e6efe] text-[12px] lg:text-[14px] font-semibold px-4 lg:px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </button>
