@@ -100,17 +100,18 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
   const pct = (level / 5) * 100;
   const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   const rows: { label: string; value: number }[] = [
-    { label: 'Finansiering', value: tco.financing },
+    { label: 'Finansiering (lån)', value: tco.financing },
     { label: 'Bränsle / el', value: tco.fuel },
     { label: 'Försäkring', value: tco.insurance },
     { label: 'Service & reparation', value: tco.service },
   ];
   return (
-    <div className="mt-3 pt-3 border-t border-[#0047B3]/10">
-      <div className="flex items-center justify-between mb-2">
-        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Total ägarkostnad / mån</p>
-        <span className="text-[12px] font-extrabold tabular-nums" style={{ color: activeColor }}>~{fmt(total)} kr</span>
-      </div>
+    <div>
+      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Uppskattad total ägarkostnad / mån</p>
+      <p className="text-[26px] font-extrabold text-slate-900 tabular-nums leading-none">
+        ~{fmt(total)}<span className="text-[14px] font-semibold text-slate-400 ml-1.5">kr/mån</span>
+      </p>
+      <p className="text-[10.5px] text-slate-400 mt-1 mb-3">Inkl. finansiering · bränsle/el · försäkring · service</p>
       <div className="relative h-3 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
         <motion.div
           className="absolute left-0 top-0 h-full rounded-full"
@@ -120,17 +121,17 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
         />
       </div>
-      <div className="flex justify-between mt-1 mb-3">
+      <div className="flex justify-between mt-1.5 mb-3">
         <span className="text-[9px] text-slate-400">Billig att äga</span>
-        <span className="text-[9px] font-semibold" style={{ color: activeColor }}>{label}</span>
+        <span className="text-[10px] font-bold" style={{ color: activeColor }}>{label}</span>
         <span className="text-[9px] text-slate-400">Dyr att äga</span>
       </div>
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
-        className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border border-slate-200 bg-white/60 hover:bg-white active:bg-slate-50 transition-colors"
       >
-        <span className="text-[11px] font-semibold text-slate-600">Visa kostnadsposter</span>
+        <span className="text-[12px] font-semibold text-slate-600">Visa vad som ingår</span>
         <span className="text-[10px] text-slate-400">{open ? '▲' : '▼'}</span>
       </button>
       <AnimatePresence initial={false}>
@@ -826,16 +827,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
       {/* ── Price + expert text ── */}
       <section className="p-4 bg-gradient-to-br from-[#0047B3]/5 to-[#0047B3]/[0.03] rounded-2xl border border-[#0047B3]/10">
         {carPrice ? (
-          <>
-            <MonthlyCostBlock
-              carPrice={carPrice}
-              usedPrice={usedPrice}
-              monthlyUsed={data.pricing.monthly_used}
-              monthlyUsedMin={data.pricing.monthly_used_min}
-              monthlyUsedMax={data.pricing.monthly_used_max}
-            />
-            <OwnershipMeter tco={calcMonthlyTCO({ carPrice, usedPrice, fuelTypes: data.specs.fuel_types, make: data.brand_display })} />
-          </>
+          <OwnershipMeter tco={calcMonthlyTCO({ carPrice, usedPrice, fuelTypes: data.specs.fuel_types, make: data.brand_display })} />
         ) : (
           <p className="text-[13px] text-slate-400 italic">Pris ej tillgängligt</p>
         )}
