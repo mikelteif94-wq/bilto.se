@@ -262,27 +262,31 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
     setCarQuery(q);
     if (carSearchTimer.current) clearTimeout(carSearchTimer.current);
     const trimmed = q.trim();
-    if (!trimmed) { setCarSuggestions([]); setShowSuggestions(false); return; }
-    // Only search if query looks like a car name (letters/digits/spaces/hyphens, no generic descriptors)
-    const genericWords = /^(billig|dyr|stor|liten|snabb|bra|ny|gammal|bil|bilar|auto)/i;
-    if (genericWords.test(trimmed) || trimmed.includes(' ') && trimmed.split(' ').length > 2) {
+    if (!trimmed || trimmed.length < 2) { setCarSuggestions([]); setShowSuggestions(false); return; }
+
+    // Block generic Swedish descriptors and price adjectives
+    const genericWords = /^(billig|dyr|stor|liten|snabb|bra|ny|gammal|bil|bilar|auto|cheap|bäst|snygg|fin|enkel|lätt|tung)/i;
+    if (genericWords.test(trimmed)) {
       setCarSuggestions([]);
       setShowSuggestions(false);
       setCarSearchLoading(false);
       return;
     }
+
     setCarSearchLoading(true);
     carSearchTimer.current = setTimeout(async () => {
-      // Use prefix match on make OR model for accurate results
+      // Strict prefix match on make OR model — never show random results
       const { data } = await supabase
         .from('car_catalog')
         .select('make, model')
         .or(`make.ilike.${trimmed}%,model.ilike.${trimmed}%`)
-        .limit(8);
-      setCarSuggestions(data || []);
-      setShowSuggestions(true);
+        .order('make', { ascending: true })
+        .limit(6);
+      const results = data || [];
+      setCarSuggestions(results);
+      setShowSuggestions(results.length > 0);
       setCarSearchLoading(false);
-    }, 250);
+    }, 300);
   };
 
   const handleCarSelect = (make: string, model: string) => {
@@ -517,8 +521,25 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                           ))}
                         </div>
                       )}
+                      {carQuery.trim().length >= 2 && !carSearchLoading && carSuggestions.length === 0 && (
+                        <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-[0_8px_32px_-8px_rgba(15,23,42,0.18)] border border-slate-100 overflow-hidden z-50">
+                          <div className="px-4 py-3.5 text-center">
+                            <p className="text-[13px] text-slate-500 mb-2.5">Hittade inga bilar för <span className="font-semibold text-slate-700">"{carQuery.trim()}"</span></p>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                window.history.pushState({}, '', '/kop-bil/bestall');
+                                window.dispatchEvent(new PopStateEvent('popstate'));
+                              }}
+                              className="text-[12.5px] font-bold text-[#0e6efe] hover:underline"
+                            >
+                              Berätta vad du letar efter — vi hittar bilen
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div>
+                    {!carQuery.trim() && <div>
                       <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.1em] mb-2">Populärt just nu</p>
                       <div className="flex flex-wrap gap-1.5">
                         {[
@@ -538,7 +559,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                           </button>
                         ))}
                       </div>
-                    </div>
+                    </div>}
                     <button
                       type="button"
                       onClick={() => {
