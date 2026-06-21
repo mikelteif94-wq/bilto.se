@@ -121,14 +121,6 @@ export default function ElCarCard({
           {displayComment && (
             <p className="text-[10px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
-          {range && (
-            <div className="flex items-baseline gap-0.5">
-              <span className="text-[13px] font-extrabold tabular-nums text-[#0e6efe]">
-                {formatSEK(range.low)}–{formatSEK(range.high)}
-              </span>
-              <span className="text-[9px] font-semibold text-[#0e6efe]/60">kr/mån</span>
-            </div>
-          )}
           <div className="flex items-center gap-1.5 mt-auto pt-1">
             <button
               type="button"
@@ -204,14 +196,6 @@ export default function ElCarCard({
             </div>
             {displayComment && (
               <p className="mt-1 text-[11px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
-            )}
-            {range && (
-              <div className="mt-2 flex items-baseline gap-1">
-                <span className="text-[16px] font-extrabold tabular-nums text-[#0e6efe]">
-                  {formatSEK(range.low)}–{formatSEK(range.high)}
-                </span>
-                <span className="text-[10px] font-semibold text-[#0e6efe]/60">kr/mån</span>
-              </div>
             )}
           </div>
         </div>
