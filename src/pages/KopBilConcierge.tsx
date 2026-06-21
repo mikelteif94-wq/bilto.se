@@ -182,7 +182,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={onNavigateBuy}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/20 border border-white/40 text-white text-[14px] font-semibold hover:bg-white/30 transition backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white/20 border border-white/40 text-white text-[14px] font-semibold hover:bg-white/30 transition backdrop-blur-sm"
             >
               Köp bil med hjälp
             </button>
@@ -315,7 +315,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-13 sm:h-14 px-8 sm:px-10 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] sm:text-[16px] transition shadow-sm inline-flex items-center gap-2 group"
+              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] sm:text-[16px] transition shadow-sm inline-flex items-center gap-2 group"
             >
               Skicka en förfrågan
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -355,7 +355,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-13 sm:h-14 px-8 sm:px-10 rounded-full bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[16px] hover:bg-slate-50 transition shadow-lg inline-flex items-center gap-2 group"
+              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[16px] hover:bg-slate-50 transition shadow-lg inline-flex items-center gap-2 group"
             >
               Kom igång nu
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -449,7 +449,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           </div>
 
           <div className="mt-8 sm:mt-10 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 text-[13px] sm:text-[14px] font-medium shadow-sm">
+            <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 text-[13px] sm:text-[14px] font-medium shadow-sm">
               <Users className="w-4 h-4 text-slate-400 shrink-0" />
               +3 ytterligare experter i teamet
             </div>
@@ -506,14 +506,14 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-13 sm:h-14 px-8 sm:px-10 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] sm:text-[16px] transition shadow-sm inline-flex items-center justify-center gap-2 group"
+              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] sm:text-[16px] transition shadow-sm inline-flex items-center justify-center gap-2 group"
             >
               Skicka en förfrågan
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
             <a
               href="tel:+46855550200"
-              className="h-13 sm:h-14 px-6 sm:px-8 rounded-full border-2 border-slate-300 text-slate-700 font-semibold text-[14px] sm:text-[15px] hover:border-slate-400 hover:bg-white transition inline-flex items-center justify-center gap-2"
+              className="h-13 sm:h-14 px-6 sm:px-8 rounded-xl border-2 border-slate-300 text-slate-700 font-semibold text-[14px] sm:text-[15px] hover:border-slate-400 hover:bg-white transition inline-flex items-center justify-center gap-2"
             >
               <Phone className="w-4 h-4 shrink-0" />
               Ring oss direkt
