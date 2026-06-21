@@ -470,6 +470,17 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             <span className="text-[11px] text-white/60 uppercase tracking-widest font-medium">Scrolla</span>
           </div>
         </div>
+
+        {/* Car illustration */}
+        <div className="absolute bottom-0 left-0 right-0 flex justify-center pointer-events-none select-none overflow-hidden">
+          <img
+            src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7.svg"
+            alt=""
+            aria-hidden="true"
+            className="w-full max-w-2xl opacity-20"
+            style={{ marginBottom: '-2px' }}
+          />
+        </div>
       </section>
 
       {/* ── STATS ── */}
