@@ -1,14 +1,12 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
-  Search, X, ChevronDown, SlidersHorizontal, Zap, Leaf, Fuel,
-  Car, ChevronRight, Star, Users, Filter, ArrowUpDown, Loader2,
+  Search, X, ChevronDown, SlidersHorizontal, Zap,
+  ChevronRight, Filter, ArrowUpDown, Loader2, Car,
 } from 'lucide-react';
 import { useCatalogCars, type CatalogCarFull } from '../hooks/useCatalogCars';
 import { calcCarMonthlyRange } from '../lib/utils';
 import { SiteFooter } from '../components/SiteFooter';
 import { motion, AnimatePresence } from 'framer-motion';
-
-/* ─── helpers ─── */
 
 function fmt(n: number) {
   return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
@@ -18,19 +16,6 @@ const BODY_LABELS: Record<string, string> = {
   sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
   coupe: 'Coupé', cab: 'Cab', mpv: 'MPV',
 };
-
-const FUEL_ICONS: Record<string, React.ReactNode> = {
-  el: <Zap className="w-3 h-3" />,
-  hybrid: <Leaf className="w-3 h-3" />,
-  laddhybrid: <Leaf className="w-3 h-3" />,
-};
-
-function fuelColor(f: string) {
-  if (f === 'el') return { bg: '#dbeafe', text: '#1d4ed8', border: '#bfdbfe' };
-  if (f === 'hybrid' || f === 'laddhybrid') return { bg: '#dcfce7', text: '#15803d', border: '#bbf7d0' };
-  if (f === 'diesel') return { bg: '#fef3c7', text: '#92400e', border: '#fde68a' };
-  return { bg: '#f1f5f9', text: '#475569', border: '#e2e8f0' };
-}
 
 const BODY_TYPES = ['suv', 'kombi', 'hatchback', 'sedan', 'mpv', 'coupe', 'cab'];
 const FUEL_TYPES = ['el', 'laddhybrid', 'hybrid', 'bensin', 'diesel'];
@@ -46,149 +31,7 @@ const SORT_OPTIONS = [
   { value: 'name_asc', label: 'Namn A–Ö' },
 ];
 
-/* ─── ScoreBadge ─── */
-
-function ScoreBadge({ value }: { value: number }) {
-  const color = value >= 9 ? '#059669' : value >= 7.5 ? '#0e6efe' : '#d97706';
-  return (
-    <div
-      className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center"
-      style={{
-        border: `2px solid ${color}`,
-        boxShadow: `0 2px 8px ${color}30`,
-        backgroundColor: 'rgba(255,255,255,0.93)',
-      }}
-    >
-      <span className="text-[11px] font-extrabold tabular-nums leading-none" style={{ color }}>
-        {Number.isInteger(value) ? value : value.toFixed(1)}
-      </span>
-    </div>
-  );
-}
-
-/* ─── CarCard ─── */
-
-function CarCard({ car, onBuy, onDetail }: { car: CatalogCarFull; onBuy: () => void; onDetail: () => void }) {
-  const img = car.cleaned_image_url || car.image_url;
-  const fuels = car.fuel_types ?? [];
-  const mainFuel = fuels[0] ?? '';
-  const fuelCol = fuelColor(mainFuel);
-  const fuelLabel = FUEL_LABELS[mainFuel] ?? mainFuel;
-  const range = car.price_new_from ? calcCarMonthlyRange(car.price_new_from, car.price_used_from ?? undefined) : null;
-  const bodyLabel = car.body_type ? (BODY_LABELS[car.body_type] ?? car.body_type) : null;
-
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.96 }}
-      transition={{ duration: 0.22 }}
-      className="group relative bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-250"
-    >
-      {/* Image */}
-      <div
-        className="relative aspect-[4/3] bg-gradient-to-b from-slate-50 to-white overflow-hidden rounded-t-2xl cursor-pointer"
-        onClick={onDetail}
-      >
-        {img ? (
-          <img
-            src={img}
-            alt={`${car.make} ${car.model}`}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-contain p-3 transition-transform duration-400 group-hover:scale-[1.04]"
-            onError={(e) => {
-              e.currentTarget.src = '/car-placeholder.svg';
-              e.currentTarget.className = 'w-full h-full object-contain p-6 opacity-30';
-            }}
-          />
-        ) : (
-          <img src="/car-placeholder.svg" alt="" className="w-full h-full object-contain p-6 opacity-30" />
-        )}
-        <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
-
-        {/* Fuel badge */}
-        {mainFuel && (
-          <div className="absolute top-3 left-3">
-            <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold"
-              style={{ background: fuelCol.bg, color: fuelCol.text, border: `1px solid ${fuelCol.border}` }}
-            >
-              {FUEL_ICONS[mainFuel]}
-              {fuelLabel}
-            </span>
-          </div>
-        )}
-
-        {car.rating_overall != null && <ScoreBadge value={car.rating_overall} />}
-      </div>
-
-      {/* Body */}
-      <div className="px-4 pt-3 pb-4">
-        <div className="cursor-pointer" onClick={onDetail}>
-          <h3 className="text-[14px] font-bold text-slate-900 leading-snug group-hover:text-blue-600 transition-colors">
-            {car.make} {car.model}
-          </h3>
-
-          <div className="mt-1.5 flex flex-wrap gap-1">
-            {bodyLabel && (
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">
-                {bodyLabel}
-              </span>
-            )}
-            {car.drivetrain_type?.toLowerCase().includes('awd') && (
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600">AWD</span>
-            )}
-            {car.seats != null && car.seats > 0 && (
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 inline-flex items-center gap-0.5">
-                <Users className="w-2.5 h-2.5" />{car.seats}
-              </span>
-            )}
-          </div>
-
-          {car.expert_comment && (
-            <p className="mt-1.5 text-[11px] text-slate-400 line-clamp-2 leading-snug italic">
-              {car.expert_comment}
-            </p>
-          )}
-
-          {range && (
-            <div className="mt-2 flex items-baseline gap-1">
-              <span className="text-[17px] font-extrabold tabular-nums leading-none text-blue-600">
-                {fmt(range.low)}–{fmt(range.high)}
-              </span>
-              <span className="text-[10px] font-semibold text-blue-400">kr/mån</span>
-            </div>
-          )}
-          {car.price_used_from && !range && (
-            <div className="mt-2">
-              <span className="text-[15px] font-extrabold text-slate-800">{fmt(car.price_used_from)}</span>
-              <span className="text-[10px] text-slate-400 ml-1">kr begagnat</span>
-            </div>
-          )}
-        </div>
-
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onBuy(); }}
-          className="mt-3 w-full h-10 rounded-xl text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-[0.97]"
-          style={{
-            background: 'linear-gradient(135deg, #1a7fff 0%, #0e6efe 60%, #0a57cc 100%)',
-            boxShadow: '0 3px 12px rgba(14,110,254,0.28)',
-          }}
-          onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 5px 18px rgba(14,110,254,0.42)')}
-          onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 3px 12px rgba(14,110,254,0.28)')}
-        >
-          Få hjälp att köpa <ChevronRight className="w-3.5 h-3.5 opacity-80" />
-        </button>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─── FilterChip ─── */
-
+/* ── FilterChip ── */
 function FilterChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
@@ -196,8 +39,8 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
       onClick={onClick}
       className={`px-3 py-1.5 rounded-full text-[12px] font-semibold border transition-all duration-150 whitespace-nowrap ${
         active
-          ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
-          : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600'
+          ? 'bg-[#0e6efe] border-[#0e6efe] text-white shadow-sm'
+          : 'bg-white border-slate-200 text-slate-600 hover:border-[#0e6efe] hover:text-[#0e6efe]'
       }`}
     >
       {label}
@@ -205,27 +48,140 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
   );
 }
 
-/* ─── MobilFilterDrawer ─── */
+/* ── ScoreBadge ── */
+function ScoreBadge({ value }: { value: number }) {
+  const color = value >= 9 ? '#059669' : value >= 7.5 ? '#0e6efe' : '#d97706';
+  return (
+    <div
+      className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center bg-white/95"
+      style={{ border: `2px solid ${color}`, boxShadow: `0 1px 6px ${color}30` }}
+    >
+      <span className="text-[10px] font-extrabold tabular-nums" style={{ color }}>
+        {Number.isInteger(value) ? value : value.toFixed(1)}
+      </span>
+    </div>
+  );
+}
 
+/* ── CarCard ── */
+function CarCard({ car, onBuy, onDetail }: { car: CatalogCarFull; onBuy: () => void; onDetail: () => void }) {
+  const img = car.cleaned_image_url || car.image_url;
+  const fuels = car.fuel_types ?? [];
+  const isElectric = fuels.includes('el');
+  const range = car.price_new_from
+    ? calcCarMonthlyRange(car.price_new_from, car.price_used_from ?? undefined)
+    : null;
+  const bodyLabel = car.body_type ? (BODY_LABELS[car.body_type] ?? car.body_type) : null;
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.97 }}
+      transition={{ duration: 0.2 }}
+      className="group relative bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col overflow-hidden cursor-pointer"
+      onClick={onDetail}
+    >
+      {/* Image */}
+      <div className="relative aspect-[16/10] bg-slate-50 overflow-hidden">
+        {img ? (
+          <img
+            src={img}
+            alt={`${car.make} ${car.model}`}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-contain p-3 sm:p-4 transition-transform duration-300 group-hover:scale-[1.05]"
+            onError={e => {
+              e.currentTarget.src = '/car-placeholder.svg';
+              e.currentTarget.className = 'w-full h-full object-contain p-6 opacity-20';
+            }}
+          />
+        ) : (
+          <img src="/car-placeholder.svg" alt="" className="w-full h-full object-contain p-6 opacity-20" />
+        )}
+
+        {/* Only show Elbil badge */}
+        {isElectric && (
+          <div className="absolute top-2 left-2">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100">
+              <Zap className="w-2.5 h-2.5" />
+              Elbil
+            </span>
+          </div>
+        )}
+
+        {car.rating_overall != null && <ScoreBadge value={car.rating_overall} />}
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-col flex-1 px-3 pt-2.5 pb-3 gap-2">
+        <div>
+          <h3 className="text-[13px] sm:text-[14px] font-bold text-slate-900 leading-tight group-hover:text-[#0e6efe] transition-colors truncate">
+            {car.make} {car.model}
+          </h3>
+
+          {/* Tags row — body + AWD only */}
+          <div className="mt-1 flex flex-wrap gap-1">
+            {bodyLabel && (
+              <span className="text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500">
+                {bodyLabel}
+              </span>
+            )}
+            {car.drivetrain_type?.toLowerCase().includes('awd') && (
+              <span className="text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600">
+                AWD
+              </span>
+            )}
+          </div>
+
+          {/* Expert comment */}
+          {car.expert_comment && (
+            <p className="mt-1.5 text-[10px] sm:text-[11px] text-slate-400 line-clamp-2 leading-snug italic hidden sm:block">
+              {car.expert_comment}
+            </p>
+          )}
+        </div>
+
+        {/* Price */}
+        <div className="mt-auto">
+          {range ? (
+            <div className="flex items-baseline gap-1">
+              <span className="text-[15px] sm:text-[16px] font-extrabold tabular-nums text-[#0e6efe] leading-none">
+                {fmt(range.low)}–{fmt(range.high)}
+              </span>
+              <span className="text-[9px] sm:text-[10px] font-semibold text-blue-400">kr/mån</span>
+            </div>
+          ) : car.price_used_from ? (
+            <div className="flex items-baseline gap-1">
+              <span className="text-[14px] font-extrabold text-slate-800">{fmt(car.price_used_from)}</span>
+              <span className="text-[9px] text-slate-400">kr</span>
+            </div>
+          ) : null}
+        </div>
+
+        {/* CTA */}
+        <button
+          type="button"
+          onClick={e => { e.stopPropagation(); onBuy(); }}
+          className="w-full h-9 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[11px] sm:text-[12px] font-bold flex items-center justify-center gap-1 transition-colors duration-150 active:scale-[0.97] mt-1"
+        >
+          Få prishjälp <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ── MobileFilterDrawer ── */
 function MobileFilterDrawer({
-  open,
-  onClose,
-  selectedFuels,
-  toggleFuel,
-  selectedBodies,
-  toggleBody,
-  maxBudget,
-  setMaxBudget,
-  onReset,
+  open, onClose, selectedFuels, toggleFuel, selectedBodies, toggleBody,
+  maxBudget, setMaxBudget, onReset,
 }: {
-  open: boolean;
-  onClose: () => void;
-  selectedFuels: Set<string>;
-  toggleFuel: (f: string) => void;
-  selectedBodies: Set<string>;
-  toggleBody: (b: string) => void;
-  maxBudget: number;
-  setMaxBudget: (n: number) => void;
+  open: boolean; onClose: () => void;
+  selectedFuels: Set<string>; toggleFuel: (f: string) => void;
+  selectedBodies: Set<string>; toggleBody: (b: string) => void;
+  maxBudget: number; setMaxBudget: (n: number) => void;
   onReset: () => void;
 }) {
   return (
@@ -243,51 +199,47 @@ function MobileFilterDrawer({
             className="fixed bottom-0 inset-x-0 z-50 bg-white rounded-t-2xl max-h-[85vh] overflow-y-auto"
           >
             <div className="sticky top-0 bg-white px-5 py-4 flex items-center justify-between border-b border-slate-100">
-              <span className="font-bold text-slate-900">Filter</span>
+              <span className="font-bold text-slate-900 text-[16px]">Filter</span>
               <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-100">
                 <X className="w-5 h-5 text-slate-500" />
               </button>
             </div>
-            <div className="px-5 pb-8 pt-4 space-y-6">
-              {/* Fuel */}
+            <div className="px-5 pb-8 pt-5 space-y-6">
               <div>
-                <p className="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-2">Drivmedel</p>
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3">Drivmedel</p>
                 <div className="flex flex-wrap gap-2">
                   {FUEL_TYPES.map(f => (
                     <FilterChip key={f} label={FUEL_LABELS[f]} active={selectedFuels.has(f)} onClick={() => toggleFuel(f)} />
                   ))}
                 </div>
               </div>
-              {/* Body */}
               <div>
-                <p className="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-2">Karosseri</p>
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3">Karosseri</p>
                 <div className="flex flex-wrap gap-2">
                   {BODY_TYPES.map(b => (
                     <FilterChip key={b} label={BODY_LABELS[b] ?? b} active={selectedBodies.has(b)} onClick={() => toggleBody(b)} />
                   ))}
                 </div>
               </div>
-              {/* Budget */}
               <div>
-                <p className="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  Max månadsbudget: {maxBudget === 30000 ? 'Alla' : `${fmt(maxBudget)} kr/mån`}
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3">
+                  Max månadsbudget: <span className="text-slate-700 normal-case">{maxBudget === 30000 ? 'Alla' : `${fmt(maxBudget)} kr/mån`}</span>
                 </p>
                 <input
                   type="range" min={2000} max={30000} step={500}
                   value={maxBudget}
                   onChange={e => setMaxBudget(Number(e.target.value))}
-                  className="w-full accent-blue-600"
+                  className="w-full accent-[#0e6efe]"
                 />
                 <div className="flex justify-between text-[10px] text-slate-400 mt-1">
-                  <span>2 000</span><span>Alla</span>
+                  <span>2 000 kr/mån</span><span>Alla priser</span>
                 </div>
               </div>
-              <div className="flex gap-3">
-                <button onClick={onReset} className="flex-1 h-10 rounded-xl border border-slate-200 text-slate-600 text-[13px] font-semibold">
-                  Rensa filter
+              <div className="flex gap-3 pt-2">
+                <button onClick={onReset} className="flex-1 h-11 rounded-xl border border-slate-200 text-slate-600 text-[13px] font-semibold hover:bg-slate-50 transition-colors">
+                  Rensa
                 </button>
-                <button onClick={onClose} className="flex-1 h-10 rounded-xl text-white text-[13px] font-bold"
-                  style={{ background: 'linear-gradient(135deg, #1a7fff 0%, #0e6efe 100%)' }}>
+                <button onClick={onClose} className="flex-1 h-11 rounded-xl bg-[#0e6efe] text-white text-[13px] font-bold hover:bg-[#0a57cc] transition-colors">
                   Visa resultat
                 </button>
               </div>
@@ -299,8 +251,7 @@ function MobileFilterDrawer({
   );
 }
 
-/* ─── Main Page ─── */
-
+/* ── Main Page ── */
 interface Props {
   onBackHome: () => void;
   onBuyCar: (make: string, model: string) => void;
@@ -319,34 +270,22 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
   const [visibleCount, setVisibleCount] = useState(24);
 
   const sortRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Close sort menu on outside click
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
-      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
-        setShowSortMenu(false);
-      }
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) setShowSortMenu(false);
     }
     document.addEventListener('mousedown', onClickOutside);
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, []);
 
   function toggleFuel(f: string) {
-    setSelectedFuels(prev => {
-      const next = new Set(prev);
-      if (next.has(f)) next.delete(f); else next.add(f);
-      return next;
-    });
+    setSelectedFuels(prev => { const n = new Set(prev); n.has(f) ? n.delete(f) : n.add(f); return n; });
     setVisibleCount(24);
   }
 
   function toggleBody(b: string) {
-    setSelectedBodies(prev => {
-      const next = new Set(prev);
-      if (next.has(b)) next.delete(b); else next.add(b);
-      return next;
-    });
+    setSelectedBodies(prev => { const n = new Set(prev); n.has(b) ? n.delete(b) : n.add(b); return n; });
     setVisibleCount(24);
   }
 
@@ -368,27 +307,19 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
       const q = search.toLowerCase();
       list = list.filter(c => `${c.make} ${c.model}`.toLowerCase().includes(q));
     }
-
     if (selectedFuels.size > 0) {
-      list = list.filter(c => {
-        const fuels = c.fuel_types ?? [];
-        return fuels.some(f => selectedFuels.has(f));
-      });
+      list = list.filter(c => (c.fuel_types ?? []).some(f => selectedFuels.has(f)));
     }
-
     if (selectedBodies.size > 0) {
       list = list.filter(c => c.body_type && selectedBodies.has(c.body_type));
     }
-
     if (maxBudget < 30000) {
       list = list.filter(c => {
         if (!c.price_new_from) return true;
-        const range = calcCarMonthlyRange(c.price_new_from, c.price_used_from ?? undefined);
-        return range.low <= maxBudget;
+        return calcCarMonthlyRange(c.price_new_from, c.price_used_from ?? undefined).low <= maxBudget;
       });
     }
 
-    // Sort
     if (sort === 'price_asc') {
       list.sort((a, b) => (a.price_used_from ?? a.price_new_from ?? 9e9) - (b.price_used_from ?? b.price_new_from ?? 9e9));
     } else if (sort === 'price_desc') {
@@ -406,141 +337,151 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
   const hasMore = visibleCount < filtered.length;
 
   return (
-    <div className="min-h-screen" style={{ background: '#f8f9fc' }}>
-      {/* ── Header ── */}
-      <header
-        className="sticky top-0 z-30 border-b border-slate-100"
-        style={{ background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)' }}
-      >
+    <div className="min-h-screen bg-[#f8f9fc]">
+      {/* Header */}
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
-          <button onClick={onBackHome} className="shrink-0 p-1.5 -ml-1 rounded-lg hover:bg-slate-100 transition-colors">
-            <img
-              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
-              alt="Bilto"
-              className="h-8 w-auto object-contain"
-            />
+          <button
+            onClick={onBackHome}
+            className="shrink-0 p-1 -ml-1 rounded-lg hover:bg-slate-100 transition-colors"
+          >
+            <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-8 w-auto object-contain" />
           </button>
 
-          {/* Search bar */}
-          <div className="flex-1 relative max-w-md">
+          {/* Search */}
+          <div className="flex-1 relative max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
             <input
-              ref={inputRef}
               type="text"
               placeholder="Sök märke eller modell…"
               value={search}
               onChange={e => { setSearch(e.target.value); setVisibleCount(24); }}
-              className="w-full h-9 pl-9 pr-8 rounded-xl bg-slate-100 text-[13px] text-slate-800 placeholder-slate-400 border border-transparent focus:border-blue-300 focus:bg-white focus:outline-none transition-all duration-150"
+              className="w-full h-9 pl-9 pr-8 rounded-xl bg-slate-100 text-[13px] text-slate-800 placeholder-slate-400 border border-transparent focus:border-[#0e6efe] focus:bg-white focus:outline-none transition-all"
             />
             {search && (
-              <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
 
-          {/* Mobile filter button */}
-          <button
-            type="button"
-            onClick={() => setMobileFilterOpen(true)}
-            className="sm:hidden relative flex items-center gap-1.5 h-9 px-3 rounded-xl border border-slate-200 bg-white text-[12px] font-semibold text-slate-600 hover:border-blue-300"
-          >
-            <Filter className="w-4 h-4" />
-            Filter
-            {activeFilterCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">
-                {activeFilterCount}
-              </span>
-            )}
-          </button>
-
-          {/* Sort (desktop) */}
-          <div ref={sortRef} className="hidden sm:block relative">
+          <div className="flex items-center gap-2 ml-auto">
+            {/* Mobile filter */}
             <button
-              onClick={() => setShowSortMenu(v => !v)}
-              className="flex items-center gap-1.5 h-9 px-3 rounded-xl border border-slate-200 bg-white text-[12px] font-semibold text-slate-600 hover:border-blue-300 transition-colors"
+              type="button"
+              onClick={() => setMobileFilterOpen(true)}
+              className="sm:hidden relative flex items-center gap-1.5 h-9 px-3 rounded-xl border border-slate-200 bg-white text-[12px] font-semibold text-slate-600"
             >
-              <ArrowUpDown className="w-3.5 h-3.5" />
-              {SORT_OPTIONS.find(o => o.value === sort)?.label}
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-            </button>
-            <AnimatePresence>
-              {showSortMenu && (
-                <motion.div
-                  initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute right-0 mt-1 w-44 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50"
-                >
-                  {SORT_OPTIONS.map(o => (
-                    <button
-                      key={o.value}
-                      onClick={() => { setSort(o.value); setShowSortMenu(false); }}
-                      className={`w-full text-left px-4 py-2.5 text-[13px] hover:bg-blue-50 transition-colors ${
-                        sort === o.value ? 'font-bold text-blue-600 bg-blue-50' : 'text-slate-700'
-                      }`}
-                    >
-                      {o.label}
-                    </button>
-                  ))}
-                </motion.div>
+              <Filter className="w-3.5 h-3.5" />
+              Filter
+              {activeFilterCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 min-w-[18px] min-h-[18px] rounded-full bg-[#0e6efe] text-white text-[9px] font-bold flex items-center justify-center px-1">
+                  {activeFilterCount}
+                </span>
               )}
-            </AnimatePresence>
+            </button>
+
+            {/* Desktop sort */}
+            <div ref={sortRef} className="hidden sm:block relative">
+              <button
+                onClick={() => setShowSortMenu(v => !v)}
+                className="flex items-center gap-1.5 h-9 px-3 rounded-xl border border-slate-200 bg-white text-[12px] font-semibold text-slate-600 hover:border-[#0e6efe] hover:text-[#0e6efe] transition-colors"
+              >
+                <ArrowUpDown className="w-3.5 h-3.5" />
+                {SORT_OPTIONS.find(o => o.value === sort)?.label}
+                <ChevronDown className="w-3 h-3 text-slate-400" />
+              </button>
+              <AnimatePresence>
+                {showSortMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.12 }}
+                    className="absolute right-0 mt-1.5 w-44 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50"
+                  >
+                    {SORT_OPTIONS.map(o => (
+                      <button
+                        key={o.value}
+                        onClick={() => { setSort(o.value); setShowSortMenu(false); }}
+                        className={`w-full text-left px-4 py-2.5 text-[13px] hover:bg-blue-50 transition-colors ${
+                          sort === o.value ? 'font-bold text-[#0e6efe] bg-blue-50' : 'text-slate-700'
+                        }`}
+                      >
+                        {o.label}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Desktop filter icon */}
+            <button
+              type="button"
+              onClick={() => setMobileFilterOpen(true)}
+              className="hidden sm:flex items-center gap-1.5 h-9 px-3 rounded-xl border border-slate-200 bg-white text-[12px] font-semibold text-slate-600 hover:border-[#0e6efe] hover:text-[#0e6efe] transition-colors relative"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              Filter
+              {activeFilterCount > 0 && (
+                <span className="ml-0.5 min-w-[18px] h-[18px] rounded-full bg-[#0e6efe] text-white text-[9px] font-bold flex items-center justify-center px-1">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        {/* ── Hero row ── */}
-        <div className="mb-5 flex items-start justify-between gap-4 flex-wrap">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-10">
+        {/* Title row */}
+        <div className="flex items-center justify-between mb-4 gap-3">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
+            <h1 className="text-[22px] sm:text-[28px] font-extrabold text-slate-900 leading-tight">
               Utforska bilar
             </h1>
-            <p className="text-[13px] text-slate-500 mt-0.5">
-              {loading ? 'Laddar…' : `${filtered.length} modeller – välj din nästa bil`}
+            <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5">
+              {loading ? 'Laddar…' : `${filtered.length} modeller att utforska`}
             </p>
           </div>
-
           {hasFilters && (
             <button
               onClick={resetFilters}
-              className="flex items-center gap-1.5 text-[12px] font-semibold text-blue-600 hover:underline mt-1"
+              className="flex items-center gap-1 text-[12px] font-semibold text-[#0e6efe] hover:underline shrink-0"
             >
               <X className="w-3.5 h-3.5" /> Rensa filter
             </button>
           )}
         </div>
 
-        {/* ── Desktop filter bar ── */}
-        <div className="hidden sm:flex flex-wrap items-center gap-2 mb-6">
-          {/* Fuel chips */}
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide mr-1">Drivmedel:</span>
+        {/* Desktop filter chips */}
+        <div className="hidden sm:flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Drivmedel:</span>
           {FUEL_TYPES.map(f => (
             <FilterChip key={f} label={FUEL_LABELS[f]} active={selectedFuels.has(f)} onClick={() => toggleFuel(f)} />
           ))}
-          <span className="ml-3 text-[11px] font-bold text-slate-400 uppercase tracking-wide mr-1">Karosseri:</span>
+          <span className="ml-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Karosseri:</span>
           {BODY_TYPES.map(b => (
             <FilterChip key={b} label={BODY_LABELS[b] ?? b} active={selectedBodies.has(b)} onClick={() => toggleBody(b)} />
           ))}
         </div>
 
-        {/* ── Budget slider (desktop) ── */}
-        <div className="hidden sm:flex items-center gap-4 mb-6 bg-white rounded-xl px-5 py-3.5 border border-slate-100 shadow-sm">
-          <span className="text-[12px] font-bold text-slate-500 uppercase tracking-wide shrink-0">
+        {/* Budget slider (desktop) */}
+        <div className="hidden sm:flex items-center gap-4 mb-5 bg-white rounded-xl px-5 py-3 border border-slate-100 shadow-sm">
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide shrink-0">
             Max månadsbudget:
           </span>
           <input
             type="range" min={2000} max={30000} step={500}
             value={maxBudget}
             onChange={e => { setMaxBudget(Number(e.target.value)); setVisibleCount(24); }}
-            className="flex-1 accent-blue-600"
+            className="flex-1 accent-[#0e6efe]"
           />
-          <span className="text-[13px] font-bold text-blue-700 w-28 text-right shrink-0">
+          <span className="text-[13px] font-bold text-[#0e6efe] w-28 text-right shrink-0">
             {maxBudget === 30000 ? 'Alla priser' : `${fmt(maxBudget)} kr/mån`}
           </span>
         </div>
 
-        {/* ── Results ── */}
+        {/* Results */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 gap-3">
             <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
@@ -550,7 +491,7 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <Car className="w-12 h-12 text-slate-200" />
             <p className="text-[15px] font-semibold text-slate-500">Inga bilar matchade ditt filter</p>
-            <button onClick={resetFilters} className="px-5 py-2.5 rounded-xl bg-blue-600 text-white text-[13px] font-bold">
+            <button onClick={resetFilters} className="px-5 py-2.5 rounded-xl bg-[#0e6efe] text-white text-[13px] font-bold">
               Rensa filter
             </button>
           </div>
@@ -576,21 +517,20 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
               <div className="flex justify-center mt-10">
                 <button
                   onClick={() => setVisibleCount(v => v + 24)}
-                  className="flex items-center gap-2 px-8 py-3 rounded-xl border border-slate-200 bg-white text-[13px] font-semibold text-slate-700 hover:border-blue-300 hover:text-blue-600 transition-all duration-200 shadow-sm"
+                  className="flex items-center gap-2 px-8 py-3 rounded-xl border border-slate-200 bg-white text-[13px] font-semibold text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe] transition-all shadow-sm"
                 >
                   Visa fler bilar ({filtered.length - visibleCount} kvar)
                 </button>
               </div>
             )}
 
-            <p className="text-center text-[11px] text-slate-300 mt-8">
+            <p className="text-center text-[11px] text-slate-300 mt-6">
               Visar {Math.min(visibleCount, filtered.length)} av {filtered.length} modeller
             </p>
           </>
         )}
       </div>
 
-      {/* ── Mobile filter drawer ── */}
       <MobileFilterDrawer
         open={mobileFilterOpen}
         onClose={() => setMobileFilterOpen(false)}
@@ -599,7 +539,7 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
         selectedBodies={selectedBodies}
         toggleBody={toggleBody}
         maxBudget={maxBudget}
-        setMaxBudget={(n) => { setMaxBudget(n); setVisibleCount(24); }}
+        setMaxBudget={n => { setMaxBudget(n); setVisibleCount(24); }}
         onReset={resetFilters}
       />
 
