@@ -707,6 +707,11 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
     !car?.specs?.fuel_types?.includes('bensin') &&
     !car?.specs?.fuel_types?.includes('diesel');
 
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState<Answers>({});
+  const [result, setResult] = useState<ScoreResult | null>(null);
+  const [direction, setDirection] = useState(1);
+
   const stepOrder = useMemo<StepId[]>(() => {
     const cashSelected = answers.financing_type === 'cash';
     if (isEv) {
@@ -716,11 +721,6 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
     if (cashSelected) return ['daily_use', 'annual_mileage', 'financing_type', 'fuel_pref', 'priorities'];
     return ['daily_use', 'annual_mileage', 'financing_type', 'monthly_income', 'monthly_expenses', 'fuel_pref', 'priorities'];
   }, [isEv, answers.financing_type]);
-
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({});
-  const [result, setResult] = useState<ScoreResult | null>(null);
-  const [direction, setDirection] = useState(1);
 
   useEffect(() => {
     if (!open) { setStep(0); setAnswers({}); setResult(null); setDirection(1); }
