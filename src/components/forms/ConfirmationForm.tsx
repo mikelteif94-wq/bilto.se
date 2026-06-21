@@ -55,7 +55,7 @@ export default function ConfirmationForm({
     e.preventDefault();
     if (submitting) return;
 
-    // Create customer — link to auth account if already logged in
+    // Create customer – link to auth account if already logged in
     setStage('customer');
     const { data: { session: existingSession } } = await supabase.auth.getSession();
     const loggedInUserId = existingSession?.user?.id ?? null;
@@ -236,7 +236,7 @@ export default function ConfirmationForm({
             {firstName_cap ? `Tack ${firstName_cap}!` : 'Tack!'}
           </h2>
           <p className="text-slate-600 px-2 mb-5">
-            Vi har tagit emot din bil och hör av oss när budgivningen är klar — du behöver inte göra något mer.
+            Vi har tagit emot din bil och hör av oss när budgivningen är klar – du behöver inte göra något mer.
           </p>
           {trackUrl && (
             <a
@@ -297,7 +297,7 @@ export default function ConfirmationForm({
               <div className="pb-1">
                 <p className="text-sm font-semibold text-slate-900">Expertrådgivning per telefon</p>
                 <p className="text-[13px] text-slate-500 leading-relaxed mt-0.5">
-                  En av våra experter ringer dig för att gå igenom marknaden, bilens värde och hur vi bäst positionerar den — så att vi kan pressa upp priset maximalt.
+                  En av våra experter ringer dig för att gå igenom marknaden, bilens värde och hur vi bäst positionerar den – så att vi kan pressa upp priset maximalt.
                 </p>
               </div>
             </li>
@@ -310,7 +310,7 @@ export default function ConfirmationForm({
               <div>
                 <p className="text-sm font-semibold text-slate-900">Auktion bland hundratals handlare</p>
                 <p className="text-[13px] text-slate-500 leading-relaxed mt-0.5">
-                  Vi skickar din bil till handlare och låter dem buda mot varandra. Du väljer själv om du vill acceptera det högsta budet — utan förpliktelser.
+                  Vi skickar din bil till handlare och låter dem buda mot varandra. Du väljer själv om du vill acceptera det högsta budet – utan förpliktelser.
                 </p>
               </div>
             </li>

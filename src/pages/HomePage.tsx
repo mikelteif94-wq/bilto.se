@@ -304,7 +304,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
               ))}
             </div>
-            <span>4.9 — Över 2 400 nöjda kunder</span>
+            <span>4.9 – Över 2 400 nöjda kunder</span>
           </div>
 
           {/* Main headline */}
@@ -318,7 +318,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
           <p className="text-white/55 text-[17px] sm:text-[20px] font-normal max-w-md leading-relaxed mb-12">
             {heroTab === 'hitta'
-              ? 'Låt våra experter hitta exakt rätt bil — utan stress och krångel.'
+              ? 'Låt våra experter hitta exakt rätt bil – utan stress och krångel.'
               : 'Jämför bud från hundratals certifierade handlare på 48 timmar.'
             }
           </p>
@@ -528,7 +528,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               {
                 step: '03',
                 title: 'Du väljer',
-                text: 'Vi presenterar det högsta budet. Du bestämmer — utan press.',
+                text: 'Vi presenterar det högsta budet. Du bestämmer – utan press.',
                 icon: Handshake,
               },
             ].map((c) => {
@@ -576,7 +576,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               Vi mäklar.<br />Oavsett hur du vill sälja.
             </h2>
             <p className="text-white/45 text-[17px] leading-relaxed">
-              En personlig bilmäklare sköter affären — du får rätt pris utan krångel.
+              En personlig bilmäklare sköter affären – du får rätt pris utan krångel.
             </p>
           </div>
 
@@ -590,7 +590,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               {
                 icon: Sparkles,
                 title: 'Vi föreslår bästa vägen',
-                text: 'Direktbud eller förmedling — vi rekommenderar det som ger dig mest i plånboken.',
+                text: 'Direktbud eller förmedling – vi rekommenderar det som ger dig mest i plånboken.',
               },
               {
                 icon: Shield,
@@ -624,7 +624,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             </button>
             <p className="text-white/35 text-[14px] flex items-center gap-1.5">
               <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" strokeWidth={2} />
-              Personlig rådgivning — gratis och utan bindning
+              Personlig rådgivning – gratis och utan bindning
             </p>
           </div>
         </div>
@@ -661,7 +661,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               {
                 label: '03',
                 title: 'Tryggt betalt',
-                text: 'Du får betalt direkt av en certifierad bilhandlare — utan risk och krångel.',
+                text: 'Du får betalt direkt av en certifierad bilhandlare – utan risk och krångel.',
                 perks: ['Certifierade handlare', 'Säker transaktion', 'Inga mellanhänder'],
               },
             ].map((b) => (
@@ -753,7 +753,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             Få ett skarpt bud<br />på din bil.
           </h3>
           <p className="text-[17px] text-slate-500 leading-relaxed mb-10 max-w-md mx-auto">
-            Ange regnummer — vi tar hand om resten. Gratis och utan bindning.
+            Ange regnummer – vi tar hand om resten. Gratis och utan bindning.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">

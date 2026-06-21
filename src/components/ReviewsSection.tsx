@@ -49,7 +49,7 @@ const REVIEWS: Review[] = [
     name: 'Felix Hammarström',
     initial: 'F',
     color: 'bg-orange-500',
-    text: 'Tack för bra service och svar och grymt bemötande — fick verkligen hjälp med allt.',
+    text: 'Tack för bra service och svar och grymt bemötande – fick verkligen hjälp med allt.',
   },
   {
     name: 'Michael Pena',

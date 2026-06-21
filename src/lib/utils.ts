@@ -60,7 +60,7 @@ export function calcMonthlyTCO({
   const isHybrid = fuelTypes.includes('hybrid');
   const isDiesel = fuelTypes.includes('diesel');
 
-  // ~1 500 mil/år — 125 mil/mån
+  // ~1 500 mil/år – 125 mil/mån
   const fuel = isEl ? 450 : isLaddhybrid ? 800 : isHybrid ? 1350 : isDiesel ? 1350 : 1750;
 
   // Halvårspremie beroende på bilens värde

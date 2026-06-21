@@ -163,7 +163,7 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
               {filtered.map(b => (
                 <div key={b.id} className="p-3 sm:p-5 hover:bg-slate-50/50 transition">
                   <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
-                    {/* Date/time badge — inline on mobile */}
+                    {/* Date/time badge – inline on mobile */}
                     <div className="flex items-center gap-3 sm:block shrink-0">
                       <div className="bg-[#0e6efe]/8 rounded-xl px-3 py-2 text-center min-w-[80px]">
                         <p className="text-[10px] font-semibold text-[#0e6efe] uppercase tracking-wide leading-none">
@@ -171,7 +171,7 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
                         </p>
                         <p className="text-[15px] font-bold text-[#0e6efe] mt-0.5 leading-none">kl. {b.booking_time}</p>
                       </div>
-                      {/* Status changer — shown next to date on mobile */}
+                      {/* Status changer – shown next to date on mobile */}
                       <div className="relative sm:hidden flex-1">
                         <select
                           value={b.status}
@@ -216,7 +216,7 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
                       )}
                     </div>
 
-                    {/* Status changer — desktop only */}
+                    {/* Status changer – desktop only */}
                     <div className="relative shrink-0 hidden sm:block">
                       <select
                         value={b.status}

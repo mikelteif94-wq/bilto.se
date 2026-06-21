@@ -385,7 +385,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                           </div>
                         )}
 
-                        {/* Highest bid highlight — if bids exist */}
+                        {/* Highest bid highlight – if bids exist */}
                         {topBid && (
                           <div className="mx-5 sm:mx-6 mb-4 bg-[#0e6efe]/5 border border-[#0e6efe]/20 rounded-xl px-4 py-3.5 flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
@@ -419,7 +419,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                               </div>
                               <p className="text-sm text-slate-500">
                                 {car.status === 'ny'
-                                  ? 'Vi granskar din bil — du får besked snart.'
+                                  ? 'Vi granskar din bil – du får besked snart.'
                                   : 'Inga bud har kommit in ännu.'}
                               </p>
                             </div>
@@ -488,7 +488,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
               </div>
             )}
 
-            {/* Best bid summary across all cars — if there are bids */}
+            {/* Best bid summary across all cars – if there are bids */}
             {topBidOverall > 0 && (
               <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                 <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
@@ -554,7 +554,7 @@ function EmptyState() {
           Du har inget aktivt ärende ännu
         </h2>
         <p className="text-[15px] text-slate-500 leading-relaxed max-w-sm mx-auto mb-8">
-          Kom igång genom att sälja din bil eller låt oss hjälpa dig hitta rätt bil — helt utan förpliktelser.
+          Kom igång genom att sälja din bil eller låt oss hjälpa dig hitta rätt bil – helt utan förpliktelser.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -584,7 +584,7 @@ function EmptyState() {
           <div>
             <p className="text-[14px] font-semibold text-slate-900 mb-0.5">Sälj via auktion</p>
             <p className="text-[13px] text-slate-500 leading-relaxed">
-              Vi skickar din bil till hundratals handlare och du väljer det bästa budet — utan att behöva göra något.
+              Vi skickar din bil till hundratals handlare och du väljer det bästa budet – utan att behöva göra något.
             </p>
           </div>
         </div>
@@ -595,7 +595,7 @@ function EmptyState() {
           <div>
             <p className="text-[14px] font-semibold text-slate-900 mb-0.5">Köp med förhandlad deal</p>
             <p className="text-[13px] text-slate-500 leading-relaxed">
-              Beskriv vad du letar efter — vi hittar och förhandlar fram bästa pris från verifierade handlare.
+              Beskriv vad du letar efter – vi hittar och förhandlar fram bästa pris från verifierade handlare.
             </p>
           </div>
         </div>

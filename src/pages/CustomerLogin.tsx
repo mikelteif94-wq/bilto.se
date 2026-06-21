@@ -90,7 +90,7 @@ export default function CustomerLogin({ onBack, initialEmail = '' }: CustomerLog
                 Följ ditt<br />ärende.
               </h1>
               <p className="mt-6 text-white/90 text-[17px] leading-[1.6] max-w-lg">
-                Se bud från handlare, följ din bil och hantera dina erbjudanden — allt utan lösenord.
+                Se bud från handlare, följ din bil och hantera dina erbjudanden – allt utan lösenord.
               </p>
 
               <div className="mt-8 space-y-3">
@@ -107,7 +107,7 @@ export default function CustomerLogin({ onBack, initialEmail = '' }: CustomerLog
               </div>
             </div>
 
-            {/* Right column — card */}
+            {/* Right column – card */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
               {sent ? (
                 <SentConfirmation email={email.trim()} onResend={() => setSent(false)} />

@@ -420,7 +420,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
                     {quote.firstname} {quote.lastname}
                   </h1>
                   <p className="text-sm text-slate-500">
-                    {OPTION_LABELS[quote.search_option] || quote.search_option} — Inkom {formatDateTime(quote.created_at)}
+                    {OPTION_LABELS[quote.search_option] || quote.search_option} – Inkom {formatDateTime(quote.created_at)}
                   </p>
                 </div>
               </div>
@@ -825,7 +825,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
                   quoteRequestId={quote.id}
                   adminUserId={adminUserId}
                   adminName={adminName}
-                  itemLabel={quote.car_model || quote.budget ? `${quote.car_model || 'Bil'} (${quote.budget || '—'})` : 'Köplead'}
+                  itemLabel={quote.car_model || quote.budget ? `${quote.car_model || 'Bil'} (${quote.budget || '–'})` : 'Köplead'}
                 />
               )}
             </div>

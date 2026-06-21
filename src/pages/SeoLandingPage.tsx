@@ -36,8 +36,8 @@ export default function SeoLandingPage({ type, city, brand, onSell, onBack }: Se
     : `Sälj din ${entityName}`;
 
   const intro = type === 'city'
-    ? `Bor du i ${entityName}${county ? ` (${county})` : ''} och vill sälja din bil? Bilto hjälper dig få det bästa budet från granskade bilhandlare — utan annonser, krångel eller obekväma visningar.`
-    : `Har du en ${entityName} att sälja? Bilto jämför bud från granskade handlare åt dig och ser till att du får rätt pris — snabbt och tryggt.`;
+    ? `Bor du i ${entityName}${county ? ` (${county})` : ''} och vill sälja din bil? Bilto hjälper dig få det bästa budet från granskade bilhandlare – utan annonser, krångel eller obekväma visningar.`
+    : `Har du en ${entityName} att sälja? Bilto jämför bud från granskade handlare åt dig och ser till att du får rätt pris – snabbt och tryggt.`;
 
   useEffect(() => {
     const slug = type === 'city' ? city?.slug : brand?.slug;
@@ -199,7 +199,7 @@ export default function SeoLandingPage({ type, city, brand, onSell, onBack }: Se
         </div>
       </section>
 
-      {/* Vad är din bil värd — context block */}
+      {/* Vad är din bil värd – context block */}
       {entityDescription && (
         <section className="bg-slate-50 py-12 px-5">
           <div className="max-w-4xl mx-auto">
@@ -207,7 +207,7 @@ export default function SeoLandingPage({ type, city, brand, onSell, onBack }: Se
               {type === 'city' ? `Bilmarknaden i ${entityName}` : `${entityName} på den svenska begagnatmarknaden`}
             </h2>
             <p className="text-[15px] text-slate-600 leading-[1.7] max-w-2xl">
-              {entityDescription} Bilto samarbetar med bilhandlare i hela Sverige — oavsett var du befinner dig kan vi matcha din bil med rätt köpare och se till att du får ett konkurrenskraftigt bud.
+              {entityDescription} Bilto samarbetar med bilhandlare i hela Sverige – oavsett var du befinner dig kan vi matcha din bil med rätt köpare och se till att du får ett konkurrenskraftigt bud.
             </p>
           </div>
         </section>

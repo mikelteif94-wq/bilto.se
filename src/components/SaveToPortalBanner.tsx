@@ -131,7 +131,7 @@ export default function SaveToPortalBanner({
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-semibold text-slate-800">Spara resultaten i portalen</p>
-            <p className="text-[11px] text-slate-400">Logga in via mejl — inga lösenord</p>
+            <p className="text-[11px] text-slate-400">Logga in via mejl – inga lösenord</p>
           </div>
           <ArrowRight className="w-4 h-4 text-slate-400 shrink-0" />
         </button>
@@ -149,7 +149,7 @@ export default function SaveToPortalBanner({
               <p className="text-[13px] font-bold text-slate-800">Spara & följ via portalen</p>
             </div>
             <p className="text-[12px] text-slate-500">
-              Vi skickar en säker inloggningslänk — du ser dina resultat och kan följa ärendet därifrån.
+              Vi skickar en säker inloggningslänk – du ser dina resultat och kan följa ärendet därifrån.
             </p>
             <input
               type="text"
@@ -194,7 +194,7 @@ export default function SaveToPortalBanner({
                 )}
               </button>
             </div>
-            <p className="text-[11px] text-center text-slate-400">Ingen registrering — en säker länk direkt i din mejl</p>
+            <p className="text-[11px] text-center text-slate-400">Ingen registrering – en säker länk direkt i din mejl</p>
           </motion.form>
         </AnimatePresence>
       )}

@@ -11,7 +11,7 @@ interface DealerProposalCardProps {
 const DEAL_TYPE_LABELS: Record<string, { title: string; desc: string }> = {
   lagre_manadskostnad: {
     title: 'Lägre månadskostnad',
-    desc: 'Samma bilklass — billigare per månad',
+    desc: 'Samma bilklass – billigare per månad',
   },
   battre_bil_samma_kostnad: {
     title: 'Bättre bil, samma kostnad',

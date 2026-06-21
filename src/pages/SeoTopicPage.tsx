@@ -15,7 +15,7 @@ interface SeoTopicPageProps {
 const REVIEWS = [
   { name: 'Marcus H.', text: 'Sparade 22 000 kr på min BMW tack vare Biltos förhandlare. Otrolig service!', stars: 5 },
   { name: 'Sofie L.', text: 'Äntligen en tjänst som verkligen jobbar för mig. Fick mer än jag hoppades för min Volvo.', stars: 5 },
-  { name: 'Daniel K.', text: 'Bilrade mig hela vägen — från att hitta rätt bil till att skriva under. Rekommenderar varmt.', stars: 5 },
+  { name: 'Daniel K.', text: 'Bilrade mig hela vägen – från att hitta rätt bil till att skriva under. Rekommenderar varmt.', stars: 5 },
 ];
 
 function FaqItem({ q, a }: { q: string; a: string }) {
@@ -151,7 +151,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
                 {topic.benefits.map(b => (
                   <li key={b.heading} className="flex items-start gap-3 text-white/90 text-[15px]">
                     <Check className="w-4 h-4 text-white shrink-0 mt-0.5" strokeWidth={2.5} />
-                    <span><strong className="font-semibold">{b.heading}</strong> — {b.body}</span>
+                    <span><strong className="font-semibold">{b.heading}</strong> – {b.body}</span>
                   </li>
                 ))}
               </ul>
@@ -214,7 +214,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
             {[
               { icon: Shield, title: 'Granskade handlare', text: 'Alla bilhandlare i Biltos nätverk är kontrollerade och godkända. Du möter bara seriösa aktörer.' },
               { icon: Clock, title: 'Snabb process', text: 'Från start till nycklarna i handen går det ofta 24–72 timmar. Vi respekterar din tid.' },
-              { icon: Phone, title: 'Personlig rådgivare', text: 'En riktig person följer dig hela vägen — inte ett chatbot. Vi är alltid ett samtal bort.' },
+              { icon: Phone, title: 'Personlig rådgivare', text: 'En riktig person följer dig hela vägen – inte ett chatbot. Vi är alltid ett samtal bort.' },
             ].map(item => {
               const Icon = item.icon;
               return (

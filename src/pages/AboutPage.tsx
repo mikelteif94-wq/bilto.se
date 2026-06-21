@@ -16,7 +16,7 @@ const VALUES = [
   {
     icon: Gauge,
     title: 'Genomtänkta flöden',
-    text: 'Processerna är slipade genom tusentals verkliga affärer — steg för steg, så att du sparar tid, får ett bättre pris och känner dig trygg hela vägen.',
+    text: 'Processerna är slipade genom tusentals verkliga affärer – steg för steg, så att du sparar tid, får ett bättre pris och känner dig trygg hela vägen.',
   },
   {
     icon: Handshake,
@@ -29,7 +29,7 @@ const PROMISES = [
   {
     num: '01',
     title: 'Transparenta bud',
-    text: 'Se exakt vad varje handlare erbjuder — utan dolda påslag.',
+    text: 'Se exakt vad varje handlare erbjuder – utan dolda påslag.',
   },
   {
     num: '02',
@@ -39,7 +39,7 @@ const PROMISES = [
   {
     num: '03',
     title: 'Dedikerad rådgivare',
-    text: 'En riktig människa finns tillgänglig hela vägen — från värdering till överlämning.',
+    text: 'En riktig människa finns tillgänglig hela vägen – från värdering till överlämning.',
   },
 ];
 
@@ -111,7 +111,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                 En tryggare väg genom den svenska bilaffären.
               </h1>
               <p className="mt-5 text-[16px] sm:text-[19px] leading-[1.65] text-slate-500 max-w-2xl">
-                Bilto kopplar samman privatpersoner med kvalitetsgranskade bilhandlare — för ett högre slutpris, en enklare process och en affär som håller hela vägen.
+                Bilto kopplar samman privatpersoner med kvalitetsgranskade bilhandlare – för ett högre slutpris, en enklare process och en affär som håller hela vägen.
               </p>
             </div>
           </div>
@@ -142,14 +142,14 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                   Vår mission
                 </span>
                 <h2 className="text-[26px] sm:text-[38px] font-bold text-slate-900 leading-[1.1] tracking-tight">
-                  Vi gör bilförsäljning rättvis, transparent och enkel — för alla.
+                  Vi gör bilförsäljning rättvis, transparent och enkel – för alla.
                 </h2>
                 <div className="mt-5 space-y-4 text-slate-500 text-[15px] sm:text-[16px] leading-[1.75]">
                   <p>
                     Alltför länge har den svenska bilmarknaden präglats av osäkerhet: otydliga värderingar, dolda avgifter och köpare som sitter med informationsövertaget. Vi bestämde oss för att ändra på det.
                   </p>
                   <p>
-                    Idag hjälper Bilto tusentals bilägare att sälja sin bil på egna villkor — med konkurrerande bud från handlare som är granskade innan de ens släpps in i vårt nätverk.
+                    Idag hjälper Bilto tusentals bilägare att sälja sin bil på egna villkor – med konkurrerande bud från handlare som är granskade innan de ens släpps in i vårt nätverk.
                   </p>
                 </div>
 
@@ -241,7 +241,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
               Redo att sälja på dina villkor?
             </h2>
             <p className="mt-4 sm:mt-5 text-white/80 text-[15px] sm:text-[17px] leading-[1.7] max-w-lg mx-auto">
-              Få in bud från granskade handlare på några minuter. Du väljer — vi sköter resten.
+              Få in bud från granskade handlare på några minuter. Du väljer – vi sköter resten.
             </p>
             <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <button

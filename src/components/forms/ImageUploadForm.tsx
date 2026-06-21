@@ -84,7 +84,7 @@ export default function ImageUploadForm({ initialImages, onNext }: ImageUploadFo
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <p className="text-sm text-slate-500 mb-2">
-          Ladda upp {MIN_IMAGES}–{MAX_IMAGES} bilder av bilen — utsida, insida och eventuella skador.
+          Ladda upp {MIN_IMAGES}–{MAX_IMAGES} bilder av bilen – utsida, insida och eventuella skador.
         </p>
         <div className="flex items-center justify-between text-sm">
           <span
@@ -226,7 +226,7 @@ export default function ImageUploadForm({ initialImages, onNext }: ImageUploadFo
         className="w-full h-12 bg-white border border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/5 disabled:opacity-50 text-slate-800 hover:text-[#0e6efe] font-semibold text-[14.5px] rounded-full transition flex items-center justify-center gap-2"
       >
         <PhoneCall className="w-4 h-4" strokeWidth={2.2} />
-        Hoppa över — vi tar det med er direkt
+        Hoppa över – vi tar det med er direkt
       </button>
       <p className="text-center text-[12.5px] text-slate-500 leading-relaxed -mt-2">
         Har du inga bilder just nu? Vi ringer upp dig och hjälper dig vidare.

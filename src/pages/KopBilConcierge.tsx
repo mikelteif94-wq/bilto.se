@@ -44,7 +44,7 @@ const STEPS = [
   {
     n: '01',
     title: 'Du berättar vad du söker',
-    body: 'Via ett kort formulär — märke, budget, körprofil eller bara ett behov. Det tar två minuter.',
+    body: 'Via ett kort formulär – märke, budget, körprofil eller bara ett behov. Det tar två minuter.',
     icon: Search,
   },
   {
@@ -62,7 +62,7 @@ const STEPS = [
   {
     n: '04',
     title: 'Du godkänner och kör',
-    body: 'Du får ett tydligt erbjudande med allt nerskrivet. Tackar du ja levereras bilen — hem om du vill.',
+    body: 'Du får ett tydligt erbjudande med allt nerskrivet. Tackar du ja levereras bilen – hem om du vill.',
     icon: Handshake,
   },
 ];
@@ -70,7 +70,7 @@ const STEPS = [
 const FAQS = [
   {
     q: 'Vad kostar tjänsten?',
-    a: 'Det är helt kostnadsfritt för privatpersoner. Vi tar aldrig betalt av dig. Vi finansieras av ett blygsamt arvode från handlaren när en affär görs — det påverkar inte priset du betalar.',
+    a: 'Det är helt kostnadsfritt för privatpersoner. Vi tar aldrig betalt av dig. Vi finansieras av ett blygsamt arvode från handlaren när en affär görs – det påverkar inte priset du betalar.',
   },
   {
     q: 'Kan ni hjälpa mig om jag redan hittat en bil?',
@@ -82,18 +82,18 @@ const FAQS = [
   },
   {
     q: 'Vad händer om ingen bil passar mig?',
-    a: 'Ingenting. Det finns inga förpliktelser. Du tackar enkelt nej — och om du vill fortsöka justerar vi kriterierna.',
+    a: 'Ingenting. Det finns inga förpliktelser. Du tackar enkelt nej – och om du vill fortsöka justerar vi kriterierna.',
   },
   {
     q: 'Kan ni hjälpa till med inbytesbil?',
-    a: 'Ja. Vi hanterar hela bytesaffären — värderar din bil, inhämtar konkurrerande bud från handlare och säkerställer att inbytesvärdet är marknadsmässigt.',
+    a: 'Ja. Vi hanterar hela bytesaffären – värderar din bil, inhämtar konkurrerande bud från handlare och säkerställer att inbytesvärdet är marknadsmässigt.',
   },
 ];
 
 const INCLUDED = [
-  { title: 'Sökning i hela marknaden', desc: 'Vi letar på alla plattformar — inte bara ett handlares lager.' },
+  { title: 'Sökning i hela marknaden', desc: 'Vi letar på alla plattformar – inte bara ett handlares lager.' },
   { title: 'Prisförhandling', desc: 'Vi vet vad handlaren betalt för bilen och var marginalen finns.' },
-  { title: 'Historikkontroll', desc: 'Ägarhistorik, skador, miltal och service — granskat innan erbjudande.' },
+  { title: 'Historikkontroll', desc: 'Ägarhistorik, skador, miltal och service – granskat innan erbjudande.' },
   { title: 'Ränteförhandling', desc: 'Vi jämför finansiering och pressar räntan mot flera aktörer.' },
   { title: 'Inbytesvärdering', desc: 'Om du byter in en bil hämtar vi konkurrerande bud.' },
   { title: 'Leverans hem', desc: 'Vi kan koordinera hemleverans utan att du behöver besöka handlaren.' },
@@ -209,10 +209,10 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           fetchPriority="high"
           decoding="async"
         />
-        {/* Gradient overlay — strong at top so nav/text readable, fades to transparent */}
+        {/* Gradient overlay – strong at top so nav/text readable, fades to transparent */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/25 to-transparent pointer-events-none" />
 
-        {/* Content — sits below the fixed nav pill (nav is 64px + 12px top = 76px) */}
+        {/* Content – sits below the fixed nav pill (nav is 64px + 12px top = 76px) */}
         <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
           <div className="w-full max-w-md">
             {/* Headline */}
@@ -266,7 +266,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
             <div className="flex items-center justify-center gap-1.5 mt-5">
               <ShieldCheck className="w-4 h-4 text-white/70 shrink-0" />
-              <p className="text-white/70 text-[13px] drop-shadow">Vi jobbar alltid för dig — aldrig för handlaren</p>
+              <p className="text-white/70 text-[13px] drop-shadow">Vi jobbar alltid för dig – aldrig för handlaren</p>
             </div>
           </div>
         </div>
@@ -280,7 +280,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Processen
             </span>
             <h2 className="text-[28px] sm:text-[44px] font-bold leading-[1.1] text-slate-900 tracking-tight">
-              Fyra steg — du gör nästan ingenting
+              Fyra steg – du gör nästan ingenting
             </h2>
           </div>
 
@@ -333,7 +333,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Vad ingår i tjänsten?
             </h2>
             <p className="text-white/70 mt-3 sm:mt-4 text-[15px] sm:text-[17px] max-w-xl mx-auto leading-relaxed">
-              Allt du behöver från idé till nyckel — utan att du behöver göra jobbet.
+              Allt du behöver från idé till nyckel – utan att du behöver göra jobbet.
             </p>
           </div>
 
@@ -416,7 +416,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Teamet
             </span>
             <h2 className="text-[26px] sm:text-[40px] font-bold text-slate-900 leading-tight tracking-tight">
-              Erfarna förhandlare — på din sida
+              Erfarna förhandlare – på din sida
             </h2>
             <p className="text-slate-500 mt-3 sm:mt-4 text-[14px] sm:text-[16px] max-w-xl mx-auto leading-relaxed">
               Vårt team har jobbat som toppsäljare hos Sveriges största bilhandlare i sammanlagt över 40 år. Nu jobbar vi uteslutande för köparen.
@@ -497,7 +497,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       <section className="bg-slate-50 border-t border-slate-200 py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-[28px] sm:text-[48px] font-bold text-slate-900 leading-[1.1] tracking-tight">
-            Redo att köpa bil —<br className="hidden sm:block" /> utan stressen?
+            Redo att köpa bil –<br className="hidden sm:block" /> utan stressen?
           </h2>
           <p className="text-slate-500 mt-4 sm:mt-5 text-[15px] sm:text-[17px] leading-[1.65] max-w-lg mx-auto">
             Det tar två minuter att berätta vad du söker. Resten är upp till oss.

@@ -600,7 +600,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       <Check className="w-3 h-3 text-emerald-600" strokeWidth={3} />
                     </div>
                     <p className="text-[13px] text-slate-600 leading-relaxed">
-                      Vi har skickat en inloggningslänk till <strong className="text-slate-900">{contact.mejl}</strong> — klicka på den för att öppna din portal direkt. Kolla skräpposten om den inte dyker upp.
+                      Vi har skickat en inloggningslänk till <strong className="text-slate-900">{contact.mejl}</strong> – klicka på den för att öppna din portal direkt. Kolla skräpposten om den inte dyker upp.
                     </p>
                   </div>
 
@@ -608,7 +608,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     {[
                       { label: 'Förfrågan mottagen', sub: 'Vi har all information vi behöver.', done: true },
                       { label: 'Vi hör av oss', sub: preferredTimeLabel(contact.preferredTime, 'short'), done: false },
-                      { label: 'Vi förhandlar och levererar', sub: 'Du lutar dig tillbaka — vi sköter resten.', done: false },
+                      { label: 'Vi förhandlar och levererar', sub: 'Du lutar dig tillbaka – vi sköter resten.', done: false },
                     ].map((item, i) => (
                       <div key={i} className="flex items-start gap-3 px-4 py-3 bg-slate-50 rounded-xl">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${item.done ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}>
@@ -657,7 +657,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       <Phone className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.2} />
                     </div>
                     <h3 className="text-[17px] font-semibold text-slate-900">
-                      {guidanceDone ? 'Tack — vi hör av oss!' : 'Vi ringer och guidar dig'}
+                      {guidanceDone ? 'Tack – vi hör av oss!' : 'Vi ringer och guidar dig'}
                     </h3>
                   </div>
                   <button type="button" onClick={() => setGuidanceOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-700 rounded-md transition-colors">

@@ -116,7 +116,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Always load car via token — no login required
+    // Always load car via token – no login required
     void fetchCar();
 
     // Check auth state in parallel (used to link account, not to gate access)
@@ -321,7 +321,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
           </dl>
         </div>
 
-        {/* Soft account prompt — optional, never a gate */}
+        {/* Soft account prompt – optional, never a gate */}
         {!isLoggedIn && (
           <SoftLoginPrompt token={token} email={car.customer?.mejl ?? ''} />
         )}
@@ -353,7 +353,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
               </h2>
             </div>
             <p className="text-sm text-slate-500 mb-5">
-              Handlare har skickat dig personliga erbjudanden — jämför och välj det som passar bäst.
+              Handlare har skickat dig personliga erbjudanden – jämför och välj det som passar bäst.
             </p>
             <div className="grid gap-5">
               {proposals.map((p) => (
@@ -451,7 +451,7 @@ function CustomerLiveFeed({
             <div>
               <p className="text-sm font-semibold text-slate-800">Bilto granskar din bil</p>
               <p className="text-xs text-slate-500 mt-0.5">
-                Inkom {timeAgoSv(carCreatedAt)} — vi förbereder för budgivning
+                Inkom {timeAgoSv(carCreatedAt)} – vi förbereder för budgivning
               </p>
             </div>
           </div>
@@ -621,7 +621,7 @@ function DecisionCard({
         Vill du sälja till det här budet?
       </h2>
       <p className="text-sm text-slate-600 mb-5">
-        Ingen förpliktelse — välj det som passar dig. Du kan också svara din
+        Ingen förpliktelse – välj det som passar dig. Du kan också svara din
         bilmäklare när hen ringer.
       </p>
       <ErrorBanner message={error} className="mb-4" />
@@ -786,7 +786,7 @@ function CompleteListingCard({
             <p className="text-sm text-slate-600 mb-3">
               {allDone
                 ? 'Du har lämnat skickrapport och bilder. Du kan fortfarande lägga till mer om du vill.'
-                : 'Mer detaljer ger handlare bättre underlag — och oftast högre bud. Det tar bara någon minut.'}
+                : 'Mer detaljer ger handlare bättre underlag – och oftast högre bud. Det tar bara någon minut.'}
             </p>
             <div className="flex flex-wrap gap-2 mb-4">
               <Pill

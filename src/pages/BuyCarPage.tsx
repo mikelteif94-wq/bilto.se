@@ -359,7 +359,7 @@ export default function BuyCarPage({
                   Tack, {contact.namn.split(' ')[0]}!
                 </h1>
                 <p className="text-[15px] text-slate-600 leading-relaxed max-w-sm mx-auto">
-                  Din förfrågan är mottagen. En expert tar vid och hör av sig — du behöver inte göra ett dugg mer.
+                  Din förfrågan är mottagen. En expert tar vid och hör av sig – du behöver inte göra ett dugg mer.
                 </p>
               </div>
 
@@ -390,7 +390,7 @@ export default function BuyCarPage({
                 <div className="px-5 pb-5 flex items-start gap-2.5">
                   <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                   <p className="text-[12.5px] text-slate-600 leading-relaxed">
-                    Marcus jobbar <span className="font-semibold">uteslutande för dig</span> — aldrig för handlaren.
+                    Marcus jobbar <span className="font-semibold">uteslutande för dig</span> – aldrig för handlaren.
                   </p>
                 </div>
               </div>
@@ -431,7 +431,7 @@ export default function BuyCarPage({
                   </div>
                   <div>
                     <p className="text-[14px] font-semibold text-slate-900">Vi förhandlar och levererar</p>
-                    <p className="text-[13px] text-slate-500">Du lutar dig tillbaka — vi sköter resten.</p>
+                    <p className="text-[13px] text-slate-500">Du lutar dig tillbaka – vi sköter resten.</p>
                   </div>
                 </div>
               </div>
@@ -469,7 +469,7 @@ export default function BuyCarPage({
                   <Phone className="w-4.5 h-4.5 text-[#0e6efe]" strokeWidth={2.2} />
                 </div>
                 <h3 className="text-[17px] font-semibold text-slate-900">
-                  {guidanceDone ? 'Tack — vi hör av oss!' : 'Vi ringer och guidar dig'}
+                  {guidanceDone ? 'Tack – vi hör av oss!' : 'Vi ringer och guidar dig'}
                 </h3>
               </div>
               <button
@@ -501,7 +501,7 @@ export default function BuyCarPage({
             ) : (
               <div className="px-5 sm:px-6 py-5">
                 <p className="text-[14.5px] text-slate-600 leading-[1.55] mb-4">
-                  Lämna ditt namn och nummer så ringer vi upp inom kort och hjälper dig välja rätt spår — helt utan förpliktelser.
+                  Lämna ditt namn och nummer så ringer vi upp inom kort och hjälper dig välja rätt spår – helt utan förpliktelser.
                 </p>
 
                 <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">

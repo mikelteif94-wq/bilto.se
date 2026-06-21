@@ -35,7 +35,7 @@ export default function TradeInStep({ regnummer, marke, modell, ar, miltal, onYe
       </div>
 
       <p className="text-[15px] text-slate-600 leading-[1.6]">
-        Nu när du säljer — letar du efter en ny bil? Vi kan förhandla både köp och försäljning åt dig på samma gång.
+        Nu när du säljer – letar du efter en ny bil? Vi kan förhandla både köp och försäljning åt dig på samma gång.
       </p>
 
       <button

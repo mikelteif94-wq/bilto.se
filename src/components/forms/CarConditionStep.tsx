@@ -288,13 +288,13 @@ export default function CarConditionStep({
             {lookup.status === 'not_found' && (
               <div className="mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-[13px]">
                 <AlertCircle className="w-4 h-4 shrink-0" />
-                Bilen hittades inte — fyll i uppgifterna manuellt
+                Bilen hittades inte – fyll i uppgifterna manuellt
               </div>
             )}
             {lookup.status === 'error' && (
               <div className="mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-[13px]">
                 <AlertCircle className="w-4 h-4 shrink-0" />
-                Kunde inte hämta uppgifter — fyll i manuellt
+                Kunde inte hämta uppgifter – fyll i manuellt
               </div>
             )}
             <FieldError message={errors.reg} />
@@ -460,7 +460,7 @@ export default function CarConditionStep({
           Vill du beskriva skicket närmare?
         </label>
         <p className="text-sm text-slate-500 mb-3">
-          Frivilligt — berätta t.ex. om servicehistorik, skador eller något unikt.
+          Frivilligt – berätta t.ex. om servicehistorik, skador eller något unikt.
         </p>
         <textarea
           value={skickKommentar}
@@ -472,7 +472,7 @@ export default function CarConditionStep({
         />
       </div>
 
-      {/* Byta bil — toggle + inline fält */}
+      {/* Byta bil – toggle + inline fält */}
       {showTradeIn && (
         <div className="py-6 sm:py-7">
           <button
@@ -524,7 +524,7 @@ export default function CarConditionStep({
                   <span className="text-[13.5px] text-slate-700 font-medium">Jag vet inte vilket märke/modell</span>
                 </button>
 
-                {/* Märke + modell — dolt när unknownTarget */}
+                {/* Märke + modell – dolt när unknownTarget */}
                 {!tradeIn.unknownTarget && (
                   <div className="grid grid-cols-2 gap-2 mb-2">
                     <div className="relative">
@@ -553,12 +553,12 @@ export default function CarConditionStep({
                   </div>
                 )}
 
-                {/* Fritext — visas alltid när unknownTarget, annars som "eller skriv fritt" */}
+                {/* Fritext – visas alltid när unknownTarget, annars som "eller skriv fritt" */}
                 <input
                   type="text"
                   value={tradeIn.targetCar}
                   onChange={e => setTradeIn(t => ({ ...t, targetCar: e.target.value }))}
-                  placeholder={tradeIn.unknownTarget ? 'Beskriv vad du söker — färg, karosseri, utrustning...' : 'Eller skriv fritt — t.ex. SUV med dragkrok'}
+                  placeholder={tradeIn.unknownTarget ? 'Beskriv vad du söker – färg, karosseri, utrustning...' : 'Eller skriv fritt – t.ex. SUV med dragkrok'}
                   className="form-control text-[14px]"
                 />
               </div>

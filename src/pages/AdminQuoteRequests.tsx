@@ -251,7 +251,7 @@ export default function AdminQuoteRequests({
                             {q.firstname} {q.lastname}
                           </td>
                           <td className="px-4 lg:px-6 py-4 text-slate-700">
-                            {q.car_model || q.regnummer || '—'}
+                            {q.car_model || q.regnummer || '–'}
                             {q.budget && <span className="text-slate-400 ml-1">({q.budget.includes('kr') ? q.budget : `${q.budget} kr`})</span>}
                           </td>
                           <td className="px-4 lg:px-6 py-4">

@@ -115,7 +115,7 @@ export default function SeoCarsSection() {
             Samtliga orter där våra bilhandlare är verksamma
           </h2>
           <p className="text-slate-600 text-[15px] mb-8">
-            Vårt nätverk täcker hela Sverige — från Ystad till Kiruna.
+            Vårt nätverk täcker hela Sverige – från Ystad till Kiruna.
           </p>
           <ul className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-6 text-[14px] text-slate-700 leading-[1.9]">
             {CITIES.map((city) => (

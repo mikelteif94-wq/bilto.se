@@ -279,7 +279,7 @@ function LinkField({
       )}
       {status === 'text' && (
         <p className="mt-1.5 text-[12px] text-slate-400">
-          Ingen länk — vi tar kontakt med handlaren åt dig.
+          Ingen länk – vi tar kontakt med handlaren åt dig.
         </p>
       )}
       <FieldError message={error} />
@@ -376,7 +376,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initialD
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Hur vill du betala?
         </label>
-        <p className="text-sm text-slate-500 mb-4">Välj betalningssätt — det hjälper oss hitta rätt upplägg.</p>
+        <p className="text-sm text-slate-500 mb-4">Välj betalningssätt – det hjälper oss hitta rätt upplägg.</p>
         <div className="flex flex-wrap gap-2">
           {PAYMENT_TYPES.map(p => (
             <button
@@ -550,7 +550,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initi
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Hur vill du betala?
         </label>
-        <p className="text-sm text-slate-500 mb-4">Välj betalningssätt — det hjälper oss hitta rätt upplägg.</p>
+        <p className="text-sm text-slate-500 mb-4">Välj betalningssätt – det hjälper oss hitta rätt upplägg.</p>
         <div className="flex flex-wrap gap-2">
           {PAYMENT_TYPES.map(p => (
             <button
@@ -777,7 +777,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     <div className="py-7">
       <label className="block text-[15px] font-bold text-slate-900 mb-1">Drivmedel</label>
       {availableFuelValues && availableFuelValues.size <= 2 && (
-        <p className="text-[12.5px] text-slate-400 mb-2.5">Baserat på vald modell — välj om du vill.</p>
+        <p className="text-[12.5px] text-slate-400 mb-2.5">Baserat på vald modell – välj om du vill.</p>
       )}
       <div className="flex flex-wrap gap-2">
         {FUEL_TYPES.map(f => {
@@ -810,7 +810,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
         Hur vill du betala?
       </label>
-      <p className="text-[13px] text-slate-500 mb-3 leading-snug">Välj betalningssätt — hjälper oss hitta rätt upplägg.</p>
+      <p className="text-[13px] text-slate-500 mb-3 leading-snug">Välj betalningssätt – hjälper oss hitta rätt upplägg.</p>
       <div className="flex flex-wrap gap-2">
         {PAYMENT_TYPES.map(p => (
           <button
@@ -1189,7 +1189,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Budget för nästa bil (kr)
               <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-sm text-slate-500 mb-3">Totalpris eller finansiering — vi hjälper dig hitta rätt upplägg.</p>
+            <p className="text-sm text-slate-500 mb-3">Totalpris eller finansiering – vi hjälper dig hitta rätt upplägg.</p>
             <div className="w-full sm:max-w-xs">
               <input
                 type="text"

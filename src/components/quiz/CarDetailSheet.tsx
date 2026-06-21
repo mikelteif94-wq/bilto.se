@@ -100,7 +100,7 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
   const pct = (level / 5) * 100;
   const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   const rows: { label: string; value: number; note?: string }[] = [
-    { label: 'Finansiering (lån)', value: tco.financing, note: 'Gäller vid billån — faller bort om du köper kontant' },
+    { label: 'Finansiering (lån)', value: tco.financing, note: 'Gäller vid billån – faller bort om du köper kontant' },
     { label: 'Bränsle / el', value: tco.fuel },
     { label: 'Försäkring', value: tco.insurance },
     { label: 'Service & reparation', value: tco.service },
@@ -111,7 +111,7 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
       <p className="text-[26px] font-extrabold text-slate-900 tabular-nums leading-none">
         ~{fmt(total)}<span className="text-[14px] font-semibold text-slate-400 ml-1.5">kr/mån</span>
       </p>
-      <p className="text-[10.5px] text-slate-400 mt-1 mb-3">Inkl. finansiering (vid lån) · bränsle/el · försäkring · service — <span className="italic">ungefärliga riktvärden</span></p>
+      <p className="text-[10.5px] text-slate-400 mt-1 mb-3">Inkl. finansiering (vid lån) · bränsle/el · försäkring · service – <span className="italic">ungefärliga riktvärden</span></p>
       <div className="relative h-3 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
         <motion.div
           className="absolute left-0 top-0 h-full rounded-xl"
@@ -295,10 +295,10 @@ function ScoreRing({ value, size = 56 }: { value: number; size?: number }) {
 function PersonaInsightSection({ persona, data }: { persona: Persona; data: ComparisonCar }) {
   const insights: Record<Persona, { title: string; items: string[] } | null> = {
     first_time_buyer: {
-      title: 'Som förstagångsköpare — tänk på',
+      title: 'Som förstagångsköpare – tänk på',
       items: [
         data.safety.euro_ncap_stars
-          ? `Euro NCAP: ${data.safety.euro_ncap_stars} stjärnor — ${data.safety.euro_ncap_stars >= 5 ? 'utmärkt säkerhetsbetyg' : 'kontrollera testår'}`
+          ? `Euro NCAP: ${data.safety.euro_ncap_stars} stjärnor – ${data.safety.euro_ncap_stars >= 5 ? 'utmärkt säkerhetsbetyg' : 'kontrollera testår'}`
           : 'Be alltid om besiktningsprotokoll och servicehistorik',
         'Begär ett oberoende besiktningsutlåtande',
         'Kolla att garantin gäller och vad den täcker',
@@ -308,16 +308,16 @@ function PersonaInsightSection({ persona, data }: { persona: Persona; data: Comp
       title: 'Familjetest',
       items: [
         data.specs.trunk_liters ? `${data.specs.trunk_liters} liter bagageutrymme` : 'Mät om barnvagnen passar',
-        data.specs.seats >= 7 ? '7-sitsig — plats för hela familjen' : `${data.specs.seats} sittplatser`,
-        data.specs.drivetrain.includes('awd') ? 'Fyrhjulsdrift — trygg i alla väder' : 'Bra vinterdäck rekommenderas',
+        data.specs.seats >= 7 ? '7-sitsig – plats för hela familjen' : `${data.specs.seats} sittplatser`,
+        data.specs.drivetrain.includes('awd') ? 'Fyrhjulsdrift – trygg i alla väder' : 'Bra vinterdäck rekommenderas',
       ],
     },
     researcher: {
       title: 'Marknadsjämförelse',
       items: [
-        data.pricing.used_from_sek ? `Begagnad från ${formatPriceSEK(data.pricing.used_from_sek)} — förhandla mot detta` : 'Jämför mot marknadssnittet',
-        `Expertbetyg ${data.ratings.overall}/10 — ${data.ratings.overall >= 8 ? 'toppklass i segmentet' : 'bra alternativ'}`,
-        data.ratings.value >= 8 ? 'Högt värdebetyg — priset är rätt' : 'Utrymme att pressa priset',
+        data.pricing.used_from_sek ? `Begagnad från ${formatPriceSEK(data.pricing.used_from_sek)} – förhandla mot detta` : 'Jämför mot marknadssnittet',
+        `Expertbetyg ${data.ratings.overall}/10 – ${data.ratings.overall >= 8 ? 'toppklass i segmentet' : 'bra alternativ'}`,
+        data.ratings.value >= 8 ? 'Högt värdebetyg – priset är rätt' : 'Utrymme att pressa priset',
       ],
     },
     enthusiast: {
@@ -332,7 +332,7 @@ function PersonaInsightSection({ persona, data }: { persona: Persona; data: Comp
       title: 'Total ägandekostnad',
       items: [
         `Värdebetyg: ${data.ratings.value}/10`,
-        data.specs.fuel_types.includes('el') ? 'El — låg driftskostnad ~1–2 kr/mil' : data.specs.fuel_types.includes('hybrid') ? 'Hybrid — sänker bränslekostnad' : 'Jämför driftskostnad mot alternativ',
+        data.specs.fuel_types.includes('el') ? 'El – låg driftskostnad ~1–2 kr/mil' : data.specs.fuel_types.includes('hybrid') ? 'Hybrid – sänker bränslekostnad' : 'Jämför driftskostnad mot alternativ',
         data.pricing.used_from_sek ? `Begagnad från ${formatPriceSEK(data.pricing.used_from_sek)}` : 'Se marknadsdata för pris',
       ],
     },
@@ -576,7 +576,7 @@ function CarEquityCalc({ carPrice, usedPrice, carName, bodyType }: { carPrice: n
                     <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                     <div>
                       <p className="text-[12.5px] font-bold text-amber-800">Saknas {fmt(extraNeeded)} kr</p>
-                      <p className="text-[11.5px] text-amber-700 mt-0.5">Din insats {fmt(equity)} kr — behöver {fmt(depositNeeded)} kr (20%).</p>
+                      <p className="text-[11.5px] text-amber-700 mt-0.5">Din insats {fmt(equity)} kr – behöver {fmt(depositNeeded)} kr (20%).</p>
                     </div>
                   </div>
                 )}
@@ -626,7 +626,7 @@ function CarEquityCalc({ carPrice, usedPrice, carName, bodyType }: { carPrice: n
 // ─── How it works strip ───────────────────────────────────────────────────────
 function HowItWorksStrip() {
   const steps = [
-    { icon: PhoneCall, label: 'Konsultation', desc: 'Vi lyssnar på dina behov — bilbyte eller enbart köp' },
+    { icon: PhoneCall, label: 'Konsultation', desc: 'Vi lyssnar på dina behov – bilbyte eller enbart köp' },
     { icon: MessageSquare, label: 'Vi förhandlar', desc: 'Bilto förhandlar priset mot handlaren åt dig' },
     { icon: BadgeCheck, label: 'Klart!', desc: 'Du hämtar bilen på dina villkor, vi sköter pappren' },
   ];
@@ -655,12 +655,12 @@ function HowItWorksStrip() {
 
 function getPersonaCTA(persona: Persona | null, brand: string, model: string): { headline: string; sub: string } {
   switch (persona) {
-    case 'first_time_buyer': return { headline: 'Köp tryggt — vi guidar dig hela vägen', sub: `Rådgivare hjälper dig med ${brand} ${model} från provkörning till kontrakt` };
+    case 'first_time_buyer': return { headline: 'Köp tryggt – vi guidar dig hela vägen', sub: `Rådgivare hjälper dig med ${brand} ${model} från provkörning till kontrakt` };
     case 'family': return { headline: `Vi hittar rätt ${brand} ${model} för familjen`, sub: 'Förhandlar pris, checkar historik och ser till att bilen håller' };
-    case 'researcher': return { headline: 'Vi pressar priset — du har gjort research', sub: `Låt oss förhandla ${brand} ${model} och spara 15 000–40 000 kr` };
-    case 'enthusiast': return { headline: 'Du vet vad du vill — vi ser till rätt pris', sub: `Vi förhandlar ${brand} ${model} baserat på marknadsdata` };
+    case 'researcher': return { headline: 'Vi pressar priset – du har gjort research', sub: `Låt oss förhandla ${brand} ${model} och spara 15 000–40 000 kr` };
+    case 'enthusiast': return { headline: 'Du vet vad du vill – vi ser till rätt pris', sub: `Vi förhandlar ${brand} ${model} baserat på marknadsdata` };
     case 'pragmatist': return { headline: `Bästa priset på ${brand} ${model}`, sub: 'Fast avgift 1 995 kr. Snitt besparing 15 000–40 000 kr.' };
-    default: return { headline: 'Låt oss hitta bästa priset', sub: `Vi förhandlar ${brand} ${model} åt dig — gratis att testa` };
+    default: return { headline: 'Låt oss hitta bästa priset', sub: `Vi förhandlar ${brand} ${model} åt dig – gratis att testa` };
   }
 }
 
@@ -1043,7 +1043,7 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
         {onSelect && (
           <button type="button" onClick={onSelect} className="w-full flex flex-col items-center gap-0.5 py-3.5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 shadow-lg shadow-[#0e6efe]/25">
             <span className="text-[14px] font-bold inline-flex items-center gap-2">Låt oss hitta bästa priset <ArrowRight className="w-4 h-4" /></span>
-            <span className="text-[11px] text-white/65">Vi förhandlar {car.make} {car.model} åt dig — gratis att testa</span>
+            <span className="text-[11px] text-white/65">Vi förhandlar {car.make} {car.model} åt dig – gratis att testa</span>
           </button>
         )}
         {(carPrice || onFitQuiz) && (

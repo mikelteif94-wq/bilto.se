@@ -174,7 +174,7 @@ export function SignupGate({ headline, subtext, bullets, onSent }: SignupGatePro
           )}
         </button>
         <p className="text-[11px] text-center text-slate-400">
-          Ingen registrering — en säker länk direkt i din mejl
+          Ingen registrering – en säker länk direkt i din mejl
         </p>
       </form>
     </motion.div>

@@ -164,9 +164,9 @@ export default function AdminDealers({
                     className="w-full text-left px-4 py-4 hover:bg-slate-50 transition flex items-center gap-3"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-slate-900 truncate">{d.foretagsnamn || '—'}</p>
+                      <p className="font-semibold text-slate-900 truncate">{d.foretagsnamn || '–'}</p>
                       <p className="text-sm text-slate-500 truncate mt-0.5">
-                        {[d.fornamn, d.efternamn].filter(Boolean).join(' ') || d.kontaktperson || d.mejl || '—'}
+                        {[d.fornamn, d.efternamn].filter(Boolean).join(' ') || d.kontaktperson || d.mejl || '–'}
                       </p>
                       <p className="text-xs text-slate-400 mt-1">{formatDate(d.created_at)}</p>
                     </div>
@@ -196,12 +196,12 @@ export default function AdminDealers({
                       className="border-b border-slate-100 last:border-0 hover:bg-slate-50 cursor-pointer transition group"
                     >
                       <td className="px-5 py-3.5 font-semibold text-slate-900">
-                        {d.foretagsnamn || '—'}
+                        {d.foretagsnamn || '–'}
                       </td>
                       <td className="px-5 py-3.5 text-slate-600">
-                        {[d.fornamn, d.efternamn].filter(Boolean).join(' ') || d.kontaktperson || '—'}
+                        {[d.fornamn, d.efternamn].filter(Boolean).join(' ') || d.kontaktperson || '–'}
                       </td>
-                      <td className="px-5 py-3.5 text-slate-500">{d.mejl || '—'}</td>
+                      <td className="px-5 py-3.5 text-slate-500">{d.mejl || '–'}</td>
                       <td className="px-5 py-3.5 text-slate-500 whitespace-nowrap">{formatDate(d.created_at)}</td>
                       <td className="px-4 py-3.5 text-slate-300 group-hover:text-slate-500 transition">
                         <ChevronRight className="w-4 h-4" />

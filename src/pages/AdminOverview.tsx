@@ -118,7 +118,7 @@ export default function AdminOverview({ onLoggedOut, onOpenCar, onNavigate }: Ad
       const optLabel: Record<string, string> = { found: 'Hittat bil', searching: 'Letar bil', trade: 'Inbyte' };
       return {
         id: q.id,
-        label: [q.firstname, q.lastname].filter(Boolean).join(' ') || '—',
+        label: [q.firstname, q.lastname].filter(Boolean).join(' ') || '–',
         sub: optLabel[q.search_option] ?? q.search_option,
         kind: 'quote' as const,
         created_at: q.created_at,

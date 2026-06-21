@@ -106,16 +106,16 @@ export default function AdminDealerProposalEditor({
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
 
-  // Step 0 — Inbytespris
+  // Step 0 – Inbytespris
   const [inbytespris, setInbytespris] = useState('');
   const [kundNuvarandeMaand, setKundNuvarandeMaand] = useState('');
   const [kundNuvarandeRanta, setKundNuvarandeRanta] = useState('');
   const [kundLanerest, setKundLanerest] = useState('');
 
-  // Step 1 — Dealtyp
+  // Step 1 – Dealtyp
   const [dealtyp, setDealtyp] = useState<Dealtyp>('lagre_manadskostnad');
 
-  // Step 2 — Dealer + offered car
+  // Step 2 – Dealer + offered car
   const [selectedDealerId, setSelectedDealerId] = useState('');
   const [selectedInventoryId, setSelectedInventoryId] = useState('');
   const [erbjudenMarke, setErbjudenMarke] = useState('');
@@ -130,12 +130,12 @@ export default function AdminDealerProposalEditor({
   const dropRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
 
-  // Step 3 — Villkor
+  // Step 3 – Villkor
   const [manadskostnad, setManadskostnad] = useState('');
   const [loptid, setLoptid] = useState('36');
   const [ranta, setRanta] = useState('');
 
-  // Step 4 — Extras
+  // Step 4 – Extras
   const [garantiAr, setGarantiAr] = useState(0);
   const [vinterdackInkl, setVinterdackInkl] = useState(false);
   const [personligtMeddelande, setPersonligtMeddelande] = useState('');
@@ -428,7 +428,7 @@ export default function AdminDealerProposalEditor({
         )}
 
         <div className="space-y-6">
-          {/* Step 0 — Handlare */}
+          {/* Step 0 – Handlare */}
           <StepCard number={0} title="Handlare">
             <div className="grid sm:grid-cols-2 gap-4">
               <FormGroup label="Välj handlare" required>
@@ -449,7 +449,7 @@ export default function AdminDealerProposalEditor({
             </div>
           </StepCard>
 
-          {/* Step 0b — Inbytespris */}
+          {/* Step 0b – Inbytespris */}
           <StepCard number={1} title="Vad ger du for kundens bil?">
             <div className="grid sm:grid-cols-2 gap-4 mb-4">
               <FormGroup label="Inbytespris (kr)" required>
@@ -498,19 +498,19 @@ export default function AdminDealerProposalEditor({
                 <SummaryRow label="Inbytespris" value={`${formatKr(inbytesprisNum)} kr`} />
                 <SummaryRow
                   label="Lånerest som löses"
-                  value={lanerestNum > 0 ? `−${formatKr(lanerestNum)} kr` : '—'}
+                  value={lanerestNum > 0 ? `−${formatKr(lanerestNum)} kr` : '–'}
                   valueClass="text-slate-600"
                 />
                 <SummaryRow
                   label="Kunden får över"
-                  value={lanerestNum > 0 ? `${formatKr(kundFarOver)} kr` : '—'}
+                  value={lanerestNum > 0 ? `${formatKr(kundFarOver)} kr` : '–'}
                   valueClass={kundFarOver >= 0 ? 'text-emerald-600 font-bold' : 'text-red-600 font-bold'}
                 />
               </div>
             )}
           </StepCard>
 
-          {/* Step 1 — Dealtyp */}
+          {/* Step 1 – Dealtyp */}
           <StepCard number={2} title="Dealtyp">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {DEAL_TYPES.map((dt) => (
@@ -533,7 +533,7 @@ export default function AdminDealerProposalEditor({
             </div>
           </StepCard>
 
-          {/* Step 2 — Bilen du erbjuder */}
+          {/* Step 2 – Bilen du erbjuder */}
           <StepCard number={3} title="Bilen du erbjuder">
             {selectedDealerId && inventoryCars.length > 0 && (
               <FormGroup label="Välj från lager (valfritt)" className="mb-4">
@@ -632,7 +632,7 @@ export default function AdminDealerProposalEditor({
             </div>
           </StepCard>
 
-          {/* Step 3 — Villkor */}
+          {/* Step 3 – Villkor */}
           <StepCard number={4} title="Villkor">
             <div className="grid sm:grid-cols-3 gap-4">
               <FormGroup label="Månadskostnad (kr)" required>
@@ -647,7 +647,7 @@ export default function AdminDealerProposalEditor({
             </div>
           </StepCard>
 
-          {/* Step 4 — Extras */}
+          {/* Step 4 – Extras */}
           <StepCard number={5} title="Vad ingar i erbjudandet?">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -687,7 +687,7 @@ export default function AdminDealerProposalEditor({
             </div>
           </StepCard>
 
-          {/* Step 5 — Live summary */}
+          {/* Step 5 – Live summary */}
           <StepCard number={6} title="Sammanfattning – vad kunden ser" accent="bg-slate-900">
             <div className="bg-slate-900 rounded-xl p-5 space-y-3 text-sm">
               {/* Dealer + car */}
@@ -731,7 +731,7 @@ export default function AdminDealerProposalEditor({
               {/* Financial summary rows */}
               <SummaryRowDark
                 label="Du ger för kundens bil"
-                value={inbytesprisNum > 0 ? `${formatKr(inbytesprisNum)} kr` : '—'}
+                value={inbytesprisNum > 0 ? `${formatKr(inbytesprisNum)} kr` : '–'}
                 valueClass="text-white font-semibold"
               />
               {lanerestNum > 0 && (
@@ -744,7 +744,7 @@ export default function AdminDealerProposalEditor({
               )}
               <SummaryRowDark
                 label="Din månadskostnad på nya bilen"
-                value={manadskostnadNum > 0 ? `${formatKr(manadskostnadNum)} kr/mån` : '—'}
+                value={manadskostnadNum > 0 ? `${formatKr(manadskostnadNum)} kr/mån` : '–'}
                 valueClass="text-white font-semibold"
               />
               {nuvarandeMaandNum > 0 && (

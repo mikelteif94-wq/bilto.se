@@ -315,7 +315,7 @@ export default function AdminCarDetail({
                       Märke
                     </dt>
                     <dd className="text-slate-900">
-                      {car.marke || <span className="text-slate-400">—</span>}
+                      {car.marke || <span className="text-slate-400">–</span>}
                     </dd>
                   </div>
                   <div>
@@ -323,14 +323,14 @@ export default function AdminCarDetail({
                       Modell
                     </dt>
                     <dd className="text-slate-900">
-                      {car.modell || <span className="text-slate-400">—</span>}
+                      {car.modell || <span className="text-slate-400">–</span>}
                     </dd>
                   </div>
                   <div>
                     <dt className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
                       Årsmodell
                     </dt>
-                    <dd className="text-slate-900">{car.ar || '—'}</dd>
+                    <dd className="text-slate-900">{car.ar || '–'}</dd>
                   </div>
                   <div>
                     <dt className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">

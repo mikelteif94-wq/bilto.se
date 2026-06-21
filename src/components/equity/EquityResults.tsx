@@ -232,10 +232,10 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
           </div>
           <div className="bg-white px-5 py-4 space-y-3">
             <p className="text-[13px] text-slate-600 leading-relaxed">
-              Utan kontantinsats finns det fortfarande vägar framåt. Med ett privatlån kan du finansiera hela köpet — vi förhandlar räntan åt dig.
+              Utan kontantinsats finns det fortfarande vägar framåt. Med ett privatlån kan du finansiera hela köpet – vi förhandlar räntan åt dig.
             </p>
             <div className="space-y-2">
-              {['Vi jämför räntor från flera banker åt dig', 'Ingen bindning — du bestämmer om du vill gå vidare', 'Vi förhandlar pris och ränta samtidigt'].map(p => (
+              {['Vi jämför räntor från flera banker åt dig', 'Ingen bindning – du bestämmer om du vill gå vidare', 'Vi förhandlar pris och ränta samtidigt'].map(p => (
                 <div key={p} className="flex items-start gap-2">
                   <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" strokeWidth={2.5} />
                   <p className="text-[12.5px] text-slate-600">{p}</p>
@@ -536,7 +536,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
           )}
           <div className="flex items-start gap-2">
             <ArrowRight className="w-3.5 h-3.5 text-[#0e6efe] shrink-0 mt-0.5" />
-            <p>Kontantinsatsen är 20% av bilens pris. Vi visar exakt hur mycket mer du behöver — eller hur mycket du får tillbaka.</p>
+            <p>Kontantinsatsen är 20% av bilens pris. Vi visar exakt hur mycket mer du behöver – eller hur mycket du får tillbaka.</p>
           </div>
           <div className="flex items-start gap-2">
             <ArrowRight className="w-3.5 h-3.5 text-[#0e6efe] shrink-0 mt-0.5" />

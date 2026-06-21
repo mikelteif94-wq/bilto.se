@@ -219,18 +219,18 @@ export default function DealerCarsList({
             <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border ${responseLabel.cls}`}>
               <Clock className="w-3 h-3" />
               {responseLabel.text}
-              <span className="text-[10px] font-normal opacity-70 hidden sm:inline">— din genomsnittliga svarstid</span>
+              <span className="text-[10px] font-normal opacity-70 hidden sm:inline">– din genomsnittliga svarstid</span>
             </div>
           )}
         </div>
 
-        {/* Speed tip banner — shown when dealer has no bids */}
+        {/* Speed tip banner – shown when dealer has no bids */}
         {!loading && cars.length > 0 && Object.keys(bidsByCar).length === 0 && (
           <div className="flex items-center gap-3 bg-[#0e6efe]/5 border border-[#0e6efe]/20 rounded-xl px-4 py-3">
             <Zap className="w-4 h-4 text-[#0e6efe] shrink-0" />
             <p className="text-sm text-slate-700">
               <span className="font-semibold text-[#0e6efe]">Snabb start:</span>{' '}
-              Klicka på blixtsymbolen i listan för att lägga snabbud direkt — utan att öppna bilen.
+              Klicka på blixtsymbolen i listan för att lägga snabbud direkt – utan att öppna bilen.
             </p>
           </div>
         )}
@@ -277,7 +277,7 @@ export default function DealerCarsList({
                             </div>
                           )}
                           <p className="text-xs text-slate-500 mt-0.5">
-                            {car.ar || '—'} · {car.miltal.toLocaleString('sv-SE')} mil · {SKICK_LABELS[car.skick] ?? car.skick}
+                            {car.ar || '–'} · {car.miltal.toLocaleString('sv-SE')} mil · {SKICK_LABELS[car.skick] ?? car.skick}
                           </p>
                         </div>
                         <ChevronRight className="w-4 h-4 text-slate-400 shrink-0 mt-1" />
@@ -377,7 +377,7 @@ export default function DealerCarsList({
                               </div>
                             )}
                           </td>
-                          <td className="px-6 py-4 text-slate-600">{car.ar || '—'}</td>
+                          <td className="px-6 py-4 text-slate-600">{car.ar || '–'}</td>
                           <td className="px-6 py-4 text-slate-600 whitespace-nowrap">{car.miltal.toLocaleString('sv-SE')} mil</td>
                           <td className="px-6 py-4 text-slate-600 whitespace-nowrap">{SKICK_LABELS[car.skick] ?? car.skick}</td>
                           <td className="px-6 py-4 text-slate-600">

@@ -74,7 +74,7 @@ export default function TrackChoiceStep({ regnummer, miltal, onChoose, onGuidanc
         </div>
       </div>
 
-      {/* Byta bil card — expanded with miltal selector */}
+      {/* Byta bil card – expanded with miltal selector */}
       {onNavigateTrade && (
         <div className="rounded-xl border border-[#0e6efe] bg-[#0e6efe]/[0.03] overflow-hidden">
           <div className="p-5 sm:p-6">

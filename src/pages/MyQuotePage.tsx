@@ -530,7 +530,7 @@ function ExpertCard() {
       <div className="px-5 sm:px-6 pb-5 flex items-start gap-3">
         <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
         <p className="text-[13px] text-slate-600 leading-relaxed">
-          Marcus arbetar <span className="font-semibold">uteslutande för dig</span> — inte för handlaren. Hans mål är att du ska betala rätt pris och inte ett öre mer.
+          Marcus arbetar <span className="font-semibold">uteslutande för dig</span> – inte för handlaren. Hans mål är att du ska betala rätt pris och inte ett öre mer.
         </p>
       </div>
     </div>

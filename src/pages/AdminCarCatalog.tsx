@@ -743,7 +743,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                                 {FUEL_LABELS[f] ?? f}
                               </span>
                             ))}
-                            {!entry.fuel_types?.length && <span className="text-slate-300 text-xs">—</span>}
+                            {!entry.fuel_types?.length && <span className="text-slate-300 text-xs">–</span>}
                           </div>
                         )}
                       </td>
@@ -760,7 +760,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                             {BODY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                           </select>
                         ) : (
-                          <span className="text-xs text-slate-600 capitalize">{entry.body_type ?? <span className="text-slate-300">—</span>}</span>
+                          <span className="text-xs text-slate-600 capitalize">{entry.body_type ?? <span className="text-slate-300">–</span>}</span>
                         )}
                       </td>
 
@@ -779,7 +779,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                           />
                         ) : (
                           <span className={`text-xs font-bold ${entry.rating_overall != null ? 'text-slate-900' : 'text-slate-300'}`}>
-                            {entry.rating_overall != null ? `${entry.rating_overall}/10` : '—'}
+                            {entry.rating_overall != null ? `${entry.rating_overall}/10` : '–'}
                           </span>
                         )}
                       </td>
@@ -795,7 +795,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                             className="w-full h-8 px-2 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-[#0e6efe]"
                           />
                         ) : (
-                          <span className="text-xs text-slate-500 line-clamp-1">{entry.expert_comment ?? <span className="text-slate-300">—</span>}</span>
+                          <span className="text-xs text-slate-500 line-clamp-1">{entry.expert_comment ?? <span className="text-slate-300">–</span>}</span>
                         )}
                       </td>
 
@@ -1042,7 +1042,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                                 </div>
                               )}
                               {!imgSearchLoading && imgSearchResults.length === 0 && (
-                                <p className="text-xs text-slate-400 text-center py-4">Inga bilder hittades — prova en annan sökning.</p>
+                                <p className="text-xs text-slate-400 text-center py-4">Inga bilder hittades – prova en annan sökning.</p>
                               )}
                               {!imgSearchLoading && imgSearchResults.length > 0 && (
                                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
@@ -1090,7 +1090,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
         <div className="mt-4 flex flex-wrap gap-4 text-xs text-slate-500">
           <div className="flex items-center gap-1.5">
             <Fuel className="w-3.5 h-3.5" />
-            Bränsle — välj en eller flera bränsltyper för bilen
+            Bränsle – välj en eller flera bränsltyper för bilen
           </div>
           <div className="flex items-center gap-1.5">
             <Star className="w-3.5 h-3.5" />
@@ -1098,7 +1098,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
           </div>
           <div className="flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
-            Möjliga dubbletter = samma märke, liknande modellnamn — dölj den du vill ta bort
+            Möjliga dubbletter = samma märke, liknande modellnamn – dölj den du vill ta bort
           </div>
         </div>
       </main>

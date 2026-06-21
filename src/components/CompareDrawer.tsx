@@ -103,7 +103,7 @@ export default function CompareDrawer({ cars, open, onClose, onRemove, onNegotia
               </button>
             </div>
 
-            {/* Scrollable content — no horizontal overflow needed */}
+            {/* Scrollable content – no horizontal overflow needed */}
             <div className="flex-1 overflow-y-auto overscroll-contain">
 
               {/* Sticky car header row */}

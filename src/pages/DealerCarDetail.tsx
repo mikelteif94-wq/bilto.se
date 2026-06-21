@@ -275,7 +275,7 @@ export default function DealerCarDetail({
               {mm || 'Okänd bil'}
             </h1>
             <p className="text-slate-500 mt-1">
-              {car.ar ?? '—'} • {car.miltal.toLocaleString('sv-SE')} mil •{' '}
+              {car.ar ?? '–'} • {car.miltal.toLocaleString('sv-SE')} mil •{' '}
               {SKICK_LABELS[car.skick] ?? car.skick}
             </p>
           </div>
@@ -346,7 +346,7 @@ export default function DealerCarDetail({
           {(car as Record<string, unknown>).momsbil && (
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-md px-4 py-3">
               <Receipt className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span className="text-sm font-semibold text-emerald-800">Momsbil — moms avdragsgill</span>
+              <span className="text-sm font-semibold text-emerald-800">Momsbil – moms avdragsgill</span>
             </div>
           )}
 
@@ -577,7 +577,7 @@ export default function DealerCarDetail({
                 </span>
               </div>
               <p className="text-xs text-amber-700">
-                Du kan fortfarande lägga bud — budet är slutet
+                Du kan fortfarande lägga bud – budet är slutet
               </p>
             </div>
           )}
@@ -589,7 +589,7 @@ export default function DealerCarDetail({
             <div>
               <h2 className="text-lg font-bold text-slate-900">Lägg bud</h2>
               <p className="text-xs text-slate-500 mt-1">
-                Sluten budgivning — andra handlares bud visas inte.
+                Sluten budgivning – andra handlares bud visas inte.
               </p>
             </div>
 
@@ -684,7 +684,7 @@ function Info({ label, value, mono }: { label: string; value?: string | null; mo
         {label}
       </dt>
       <dd className={`text-slate-900 mt-0.5 ${mono ? 'font-mono' : ''}`}>
-        {value || '—'}
+        {value || '–'}
       </dd>
     </div>
   );

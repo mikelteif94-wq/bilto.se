@@ -202,7 +202,7 @@ export default function AdminOfferEditor({
     if (d.warranty_included) savings += d.warranty_value;
     if (d.home_delivery_included) savings += d.home_delivery_value;
     savings += d.other_savings_value;
-    // Trade-in is NOT a saving — it's a separate value transfer shown in the net price
+    // Trade-in is NOT a saving – it's a separate value transfer shown in the net price
     return savings;
   };
 
@@ -697,7 +697,7 @@ export default function AdminOfferEditor({
             </Section>
           </div>
 
-          {/* Sidebar — live deal calculator */}
+          {/* Sidebar – live deal calculator */}
           <div className="space-y-4">
             <div className="bg-white rounded-xl border border-slate-200 overflow-hidden sticky top-20">
               {/* Header */}

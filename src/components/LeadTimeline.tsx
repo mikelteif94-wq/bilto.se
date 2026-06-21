@@ -304,7 +304,7 @@ export default function LeadTimeline({
         <span className="flex items-center gap-1.5">
           <Clock className="w-3 h-3" />
           <span className="font-medium text-slate-600">Senast:</span>
-          {lastActivity ? timeAgoSv(lastActivity.created_at) : '—'}
+          {lastActivity ? timeAgoSv(lastActivity.created_at) : '–'}
         </span>
         <span className="flex items-center gap-1.5">
           <Gavel className="w-3 h-3" />
@@ -321,7 +321,7 @@ export default function LeadTimeline({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {/* Log form — inline if !inline mode, else toggled */}
+        {/* Log form – inline if !inline mode, else toggled */}
         {(inline || showLogForm) && (
           <div className="px-5 pt-4 pb-4 border-b border-slate-100 bg-white">
             {inline && (

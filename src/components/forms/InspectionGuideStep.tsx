@@ -42,7 +42,7 @@ const SHOT_LIST = [
 
 const TIPS = [
   { icon: Sun, t: 'Ta bilderna i dagsljus', d: 'Undvik kvällsljus och starka reflexer.' },
-  { icon: Sparkles, t: 'Tvätta bilen innan', d: 'En ren bil ger bättre bud — alltid.' },
+  { icon: Sparkles, t: 'Tvätta bilen innan', d: 'En ren bil ger bättre bud – alltid.' },
   { icon: Camera, t: 'Håll kameran rakt', d: 'Stå ca 2–3 meter från bilen vid översiktsbilder.' },
   { icon: ImageIcon, t: 'Minst 8 bilder', d: 'Ju fler tydliga bilder, desto snabbare affär.' },
 ];
@@ -62,7 +62,7 @@ export default function InspectionGuideStep({ onNext }: InspectionGuideStepProps
           </h2>
           <p className="mt-3 text-white/90 text-[14.5px] leading-[1.6] max-w-md">
             Bra bilder ger fler bud och bättre pris. Följ guiden nedan så får du
-            bilder som bilhandlarna älskar — det tar bara några minuter.
+            bilder som bilhandlarna älskar – det tar bara några minuter.
           </p>
         </div>
       </div>

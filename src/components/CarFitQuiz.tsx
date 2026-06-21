@@ -89,7 +89,7 @@ const STEPS: Record<string, Step> = {
     subtitle: 'Rätt val kan spara dig tusenlappar varje månad',
     multi: false,
     options: [
-      { id: 'loan', label: 'Billån', description: 'Du äger bilen — flexibelt & populärt', icon: CreditCard },
+      { id: 'loan', label: 'Billån', description: 'Du äger bilen – flexibelt & populärt', icon: CreditCard },
       { id: 'leasing', label: 'Privatleasing', description: 'Fast kostnad, ny bil vart tredje år', icon: RefreshCcw },
       { id: 'cash', label: 'Kontant betalning', description: 'Inga räntor, full äganderätt direkt', icon: Wallet },
     ],
@@ -109,7 +109,7 @@ const STEPS: Record<string, Step> = {
   monthly_expenses: {
     id: 'monthly_expenses',
     question: 'Har du andra lån just nu?',
-    subtitle: 'Exkl. hyra och bolån — konsumtions- & avbetalningslån',
+    subtitle: 'Exkl. hyra och bolån – konsumtions- & avbetalningslån',
     multi: false,
     options: [
       { id: 'none', label: 'Inga andra lån', description: 'Rent blad ekonomiskt', icon: Check, highlight: true },
@@ -124,7 +124,7 @@ const STEPS: Record<string, Step> = {
     subtitle: 'Avgörande för om elbil funkar i din vardag',
     multi: false,
     options: [
-      { id: 'home', label: 'Hemma — garage eller carport', description: 'Idealiskt för elbil, laddar på natten', icon: Home, highlight: true },
+      { id: 'home', label: 'Hemma – garage eller carport', description: 'Idealiskt för elbil, laddar på natten', icon: Home, highlight: true },
       { id: 'work', label: 'På jobbet', description: 'Laddning under arbetstid', icon: Building2 },
       { id: 'public', label: 'Publika laddare', description: 'Fungerar, men kräver planering', icon: ParkingCircle },
       { id: 'none', label: 'Inte möjligt idag', description: 'Elbil blir opraktiskt utan laddning', icon: X },
@@ -139,7 +139,7 @@ const STEPS: Record<string, Step> = {
       { id: 'under5', label: 'Under 5 mil', description: 'Korta pendlingar, stadsärenden', icon: MapPin, highlight: true },
       { id: '5to10', label: '5 – 10 mil', description: 'Längre pendling eller kombinerad körning', icon: Navigation },
       { id: '10to15', label: '10 – 15 mil', description: 'Lång dagspendling', icon: Route },
-      { id: 'over15', label: 'Över 15 mil per dag', description: 'Mycket körning — räckvidd är viktigt', icon: Gauge },
+      { id: 'over15', label: 'Över 15 mil per dag', description: 'Mycket körning – räckvidd är viktigt', icon: Gauge },
     ],
   },
   ev_road_trips: {
@@ -149,8 +149,8 @@ const STEPS: Record<string, Step> = {
     multi: false,
     options: [
       { id: 'rarely', label: 'Sällan eller aldrig', description: 'Bilen används mest lokalt', icon: Home, highlight: true },
-      { id: 'sometimes', label: 'Ibland — ett par gånger per år', description: 'Då räcker snabbladdningsstopp', icon: Clock },
-      { id: 'often', label: 'Ofta — varje månad eller mer', description: 'Snabbladdning och bra räckvidd krävs', icon: Wifi },
+      { id: 'sometimes', label: 'Ibland – ett par gånger per år', description: 'Då räcker snabbladdningsstopp', icon: Clock },
+      { id: 'often', label: 'Ofta – varje månad eller mer', description: 'Snabbladdning och bra räckvidd krävs', icon: Wifi },
     ],
   },
   fuel_pref: {
@@ -159,7 +159,7 @@ const STEPS: Record<string, Step> = {
     subtitle: 'Baserat på din körprofil finns ett bästa alternativ',
     multi: false,
     options: [
-      { id: 'hybrid', label: 'Hybrid / Laddhybrid', description: 'Bränslesnål och flexibel — bäst för många', icon: BatteryCharging, highlight: true },
+      { id: 'hybrid', label: 'Hybrid / Laddhybrid', description: 'Bränslesnål och flexibel – bäst för många', icon: BatteryCharging, highlight: true },
       { id: 'ev', label: 'Elbil', description: 'Lägsta driftskostnad om laddning är löst', icon: Zap },
       { id: 'petrol', label: 'Bensin', description: 'Beprövat, enkelt, inga kompromisser', icon: Car },
       { id: 'diesel', label: 'Diesel', description: 'Ekonomisk vid högt miltal och motorväg', icon: Gauge },
@@ -224,9 +224,9 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
     if (a.ev_road_trips) {
       const fastChargeKw = car.ev_specs?.charge_kw_max ?? 0;
       if (a.ev_road_trips === 'rarely') {
-        score += 8; positives.push('Du gör sällan långa resor — ideal för elbil');
+        score += 8; positives.push('Du gör sällan långa resor – ideal för elbil');
       } else if (a.ev_road_trips === 'sometimes') {
-        if (fastChargeKw >= 100) { score += 6; positives.push(`Snabbladdning upp till ${fastChargeKw} kW — långa resor funkar fint`); }
+        if (fastChargeKw >= 100) { score += 6; positives.push(`Snabbladdning upp till ${fastChargeKw} kW – långa resor funkar fint`); }
         else { score += 2; }
       } else if (a.ev_road_trips === 'often') {
         if (fastChargeKw >= 150) { score += 4; positives.push(`${fastChargeKw} kW snabbladdning hanterar frekventa långresor`); }
@@ -368,7 +368,7 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
     } else if (ratio <= 1.1) {
       label = 'possible'; afColor = '#0e6efe'; afBg = '#eff6ff';
       afTitle = 'Möjlig med lite anpassning';
-      afSubtitle = 'Genomförbart — kräver viss prioritering';
+      afSubtitle = 'Genomförbart – kräver viss prioritering';
     } else if (ratio <= 1.4) {
       label = 'tight'; afColor = '#d97706'; afBg = '#fffbeb';
       afTitle = 'Ekonomin är tight';

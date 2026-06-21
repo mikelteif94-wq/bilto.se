@@ -463,7 +463,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
               <span className="text-xs text-slate-400">Frivilligt</span>
             </div>
             <p className="text-xs text-slate-500 mb-4">
-              Strukturerad checklista — säljaren kan komplettera senare om du hoppar över.
+              Strukturerad checklista – säljaren kan komplettera senare om du hoppar över.
             </p>
             <ConditionReportForm
               value={conditionReport}

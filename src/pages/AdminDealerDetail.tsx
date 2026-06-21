@@ -202,7 +202,7 @@ export default function AdminDealerDetail({
       invoice_number: invoiceNumber,
       invoice_date: new Date().toISOString().slice(0, 10),
       due_date: addForm.due_date,
-      description: addForm.description || (isTradeIn ? 'Förmedlingsavgift — Inbyte' : 'Förmedlingsavgift — Standard'),
+      description: addForm.description || (isTradeIn ? 'Förmedlingsavgift – Inbyte' : 'Förmedlingsavgift – Standard'),
     });
 
     if (insertErr) {
@@ -384,8 +384,8 @@ export default function AdminDealerDetail({
               } />
             )}
             <InfoRow icon={<User className="w-4 h-4" />} label="Kontaktperson" value={[dealer.fornamn, dealer.efternamn].filter(Boolean).join(' ') || dealer.kontaktperson} />
-            <InfoRow icon={<Phone className="w-4 h-4" />} label="Telefon" value={dealer.telefon ? <a href={`tel:${dealer.telefon}`} className="text-slate-900 hover:text-slate-700">{dealer.telefon}</a> : '—'} />
-            <InfoRow icon={<Mail className="w-4 h-4" />} label="E-post" value={dealer.mejl ? <a href={`mailto:${dealer.mejl}`} className="text-slate-900 hover:text-slate-700">{dealer.mejl}</a> : '—'} />
+            <InfoRow icon={<Phone className="w-4 h-4" />} label="Telefon" value={dealer.telefon ? <a href={`tel:${dealer.telefon}`} className="text-slate-900 hover:text-slate-700">{dealer.telefon}</a> : '–'} />
+            <InfoRow icon={<Mail className="w-4 h-4" />} label="E-post" value={dealer.mejl ? <a href={`mailto:${dealer.mejl}`} className="text-slate-900 hover:text-slate-700">{dealer.mejl}</a> : '–'} />
             {dealer.faktura_epost && (
               <InfoRow icon={<Receipt className="w-4 h-4" />} label="Faktura-e-post" value={<a href={`mailto:${dealer.faktura_epost}`} className="text-slate-900 hover:text-slate-700">{dealer.faktura_epost}</a>} />
             )}
@@ -564,7 +564,7 @@ export default function AdminDealerDetail({
                     type="text"
                     value={addForm.description}
                     onChange={e => setAddForm(f => ({ ...f, description: e.target.value }))}
-                    placeholder="t.ex. Förmedlingsavgift — Volvo XC60 2022"
+                    placeholder="t.ex. Förmedlingsavgift – Volvo XC60 2022"
                     className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm text-slate-900 focus:outline-none focus:border-slate-400"
                   />
                 </div>
@@ -641,7 +641,7 @@ export default function AdminDealerDetail({
                           <p className="text-xs text-slate-500 mt-1 truncate">
                             {inv.description || (inv.car
                               ? `${inv.car.marke} ${inv.car.modell} ${inv.car.ar ?? ''} · ${inv.car.regnummer}`
-                              : '—')}
+                              : '–')}
                           </p>
                           <div className="flex items-center gap-3 mt-1 text-[11px] text-slate-400 flex-wrap">
                             {inv.invoice_date && <span>Fakturadatum: {formatDateShort(inv.invoice_date)}</span>}
@@ -740,7 +740,7 @@ function InfoRow({
       </div>
       <div className="min-w-0">
         <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{label}</p>
-        <p className={`text-slate-900 ${mono ? 'font-mono' : ''}`}>{value || '—'}</p>
+        <p className={`text-slate-900 ${mono ? 'font-mono' : ''}`}>{value || '–'}</p>
       </div>
     </div>
   );

@@ -137,7 +137,7 @@ export default function BidsPanel({
     await supabase.from('car_activities').insert({
       car_id: carId,
       type: 'status_change',
-      title: `Vinnande bud godkänt — ${bid.belopp.toLocaleString('sv-SE')} kr`,
+      title: `Vinnande bud godkänt – ${bid.belopp.toLocaleString('sv-SE')} kr`,
       body: `Handlare: ${bid.dealers?.foretagsnamn ?? 'Okänd'}`,
       data: { bid_id: bid.id, amount: bid.belopp, dealer_id: bid.dealer_id },
       source: 'admin',
@@ -231,7 +231,7 @@ export default function BidsPanel({
       </div>
 
       <div className="text-xs text-slate-500 border-l-2 border-slate-200 pl-3 mb-4">
-        Säljare: <span className="font-semibold text-slate-700">{customerName || '—'}</span>
+        Säljare: <span className="font-semibold text-slate-700">{customerName || '–'}</span>
         {customerPhone ? <> · {customerPhone}</> : null}
         {customerEmail ? <> · {customerEmail}</> : null}
       </div>

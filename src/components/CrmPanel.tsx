@@ -1251,7 +1251,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                   rows={4}
                   value={valuationMessage}
                   onChange={(e) => setValuationMessage(e.target.value)}
-                  placeholder="T.ex. 'Osäker på skicket — kan du titta och ge en uppskattning?'"
+                  placeholder="T.ex. 'Osäker på skicket – kan du titta och ge en uppskattning?'"
                   className="form-control"
                 />
               </div>

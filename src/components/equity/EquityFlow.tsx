@@ -26,7 +26,7 @@ function TeaserCard({ onStart }: { onStart: () => void }) {
               Beräkna vad din insats ger dig
             </p>
             <p className="text-white/75 text-[12.5px] mt-1 leading-relaxed">
-              Se hur mycket du kan sänka månadskostnaden — och hur lite du faktiskt behöver betala
+              Se hur mycket du kan sänka månadskostnaden – och hur lite du faktiskt behöver betala
             </p>
           </div>
         </div>

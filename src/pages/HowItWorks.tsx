@@ -58,17 +58,17 @@ const DIRECT_STEPS: Step[] = [
   {
     icon: Phone,
     title: 'Du får en personlig rådgivare',
-    text: 'Oavsett om du säljer, byter eller köper bil — en rådgivare hjälper dig genom hela processen.',
+    text: 'Oavsett om du säljer, byter eller köper bil – en rådgivare hjälper dig genom hela processen.',
   },
   {
     icon: Gavel,
     title: 'Vi hittar bästa budet',
-    text: 'Vi jämför erbjudanden från bilhandlare åt dig — oavsett om du ska sälja din bil, byta in den eller köpa en ny. Bästa erbjudandet vinner!',
+    text: 'Vi jämför erbjudanden från bilhandlare åt dig – oavsett om du ska sälja din bil, byta in den eller köpa en ny. Bästa erbjudandet vinner!',
   },
   {
     icon: Handshake,
     title: 'Vi hämtar eller lämnar bilen',
-    text: 'När du tackar ja ordnar vi upphämtning av din sålda bil eller leverans av din nya — gäller vid försäljning, inbyte och köp. Ingen krångel.',
+    text: 'När du tackar ja ordnar vi upphämtning av din sålda bil eller leverans av din nya – gäller vid försäljning, inbyte och köp. Ingen krångel.',
   },
 ];
 
@@ -81,7 +81,7 @@ const DIRECT_STEP_IMAGES = [
 const FAQ = [
   {
     q: 'Vad kostar det att använda Bilto?',
-    a: 'Det kostar 1 995 kr i fast administrativ avgift — det är allt du betalar, inga dolda avgifter och inget provision. Avgiften gäller dig som privatperson och täcker vår förhandling, granskning och all administration kring affären. Handlare och företag omfattas inte av denna tjänst.',
+    a: 'Det kostar 1 995 kr i fast administrativ avgift – det är allt du betalar, inga dolda avgifter och inget provision. Avgiften gäller dig som privatperson och täcker vår förhandling, granskning och all administration kring affären. Handlare och företag omfattas inte av denna tjänst.',
   },
   {
     q: 'Hur hjälper Bilto mig att köpa bil?',
@@ -97,7 +97,7 @@ const FAQ = [
   },
   {
     q: 'Vad händer om säljaren inte går med på förhandlingen?',
-    a: 'Då berättar vi det rakt ut och ger dig vår rekommendation — är bilen rätt prissatt eller inte. Du bestämmer alltid om du vill gå vidare.',
+    a: 'Då berättar vi det rakt ut och ger dig vår rekommendation – är bilen rätt prissatt eller inte. Du bestämmer alltid om du vill gå vidare.',
   },
   {
     q: 'När betalar jag avgiften?',
@@ -275,7 +275,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
     setCarSearchLoading(true);
     carSearchTimer.current = setTimeout(async () => {
-      // Strict prefix match on make OR model — never show random results
+      // Strict prefix match on make OR model – never show random results
       const { data } = await supabase
         .from('car_catalog')
         .select('make, model')
@@ -413,7 +413,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               Din bilaffär börjar här
             </h1>
             <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
-              Sälj, köp eller byt bil — enkelt, tryggt och helt gratis
+              Sälj, köp eller byt bil – enkelt, tryggt och helt gratis
             </p>
 
             <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
@@ -533,7 +533,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                               }}
                               className="text-[12.5px] font-bold text-[#0e6efe] hover:underline"
                             >
-                              Berätta vad du letar efter — vi hittar bilen
+                              Berätta vad du letar efter – vi hittar bilen
                             </button>
                           </div>
                         </div>
@@ -635,7 +635,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 Ska du köpa eller byta bil?
               </h2>
               <p className="text-[15px] text-slate-500 mt-4 leading-[1.65]">
-                Din personliga bilmäklare hjälper dig hela vägen — oavsett om du letar efter en ny bil, redan hittat en eller vill byta in din nuvarande.
+                Din personliga bilmäklare hjälper dig hela vägen – oavsett om du letar efter en ny bil, redan hittat en eller vill byta in din nuvarande.
               </p>
               <ul className="mt-6 space-y-3">
                 {[
@@ -661,7 +661,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   }}
                   className="h-11 px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
                 >
-                  Kom igång — kostnadsfritt
+                  Kom igång – kostnadsfritt
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -681,7 +681,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   <div className="text-[14px] font-semibold text-slate-900">Vi förhandlar åt dig</div>
                 </div>
                 <p className="text-[13px] text-slate-500 leading-[1.55]">
-                  Oavsett om du köper, byter eller leasar — vi ser till att du får bästa villkor.
+                  Oavsett om du köper, byter eller leasar – vi ser till att du får bästa villkor.
                 </p>
               </div>
             </div>
@@ -698,7 +698,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               Vad våra kunder bytt till nyligen
             </h2>
             <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
-              Hitta din nästa bil bland de mest eftertraktade modellerna. Vi hjälper dig hela vägen — från val till affär.
+              Hitta din nästa bil bland de mest eftertraktade modellerna. Vi hjälper dig hela vägen – från val till affär.
             </p>
           </div>
 
@@ -794,7 +794,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 Din personliga rådgivare
               </h2>
               <p className="text-slate-500 mt-4 text-[15px] leading-[1.65]">
-                En dedikerad rådgivare jämför bud från utvalda bilhandlare och presenterar det bästa erbjudandet — du slipper samtal och förhandlingar.
+                En dedikerad rådgivare jämför bud från utvalda bilhandlare och presenterar det bästa erbjudandet – du slipper samtal och förhandlingar.
               </p>
               <ul className="mt-6 space-y-3">
                 {[
@@ -851,7 +851,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 Vi hämtar bilen oavsett var du bor
               </h2>
               <p className="text-slate-500 mt-4 text-[15px] leading-[1.65]">
-                När du accepterar ett bud bokar vi upphämtning på en plats som passar dig. Bilen hämtas tryggt och smidigt — utan stress eller onödiga resor.
+                När du accepterar ett bud bokar vi upphämtning på en plats som passar dig. Bilen hämtas tryggt och smidigt – utan stress eller onödiga resor.
               </p>
               <ul className="mt-6 space-y-3">
                 {[
@@ -895,7 +895,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               {
                 icon: Check,
                 title: 'Ingen förpliktelse',
-                text: 'Du är aldrig bunden att sälja. Tacka nej till budet om du inte är nöjd — det kostar dig ingenting att avstå.',
+                text: 'Du är aldrig bunden att sälja. Tacka nej till budet om du inte är nöjd – det kostar dig ingenting att avstå.',
               },
             ].map((b) => {
               const Icon = b.icon;
@@ -982,10 +982,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <div className="md:col-span-5">
               <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-4">Kundberättelse</p>
               <h2 className="text-[24px] sm:text-[34px] font-semibold leading-[1.12] text-slate-900 tracking-[-0.02em]">
-                "Jag visste ingenting om bilar — Bilto skötte allt och jag fick mer än jag vågat hoppas på."
+                "Jag visste ingenting om bilar – Bilto skötte allt och jag fick mer än jag vågat hoppas på."
               </h2>
               <p className="text-[13px] text-slate-400 mt-5 font-medium">
-                Josefin L. — Volvo XC40, 2022
+                Josefin L. – Volvo XC40, 2022
               </p>
             </div>
             <div className="md:col-span-7">
@@ -1183,7 +1183,7 @@ function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] 
 
   return (
     <div className="sm:hidden mb-10 -mx-5">
-      {/* Horizontal scroll carousel — peek left/right */}
+      {/* Horizontal scroll carousel – peek left/right */}
       <div
         className="flex overflow-x-auto snap-x snap-mandatory gap-3 px-5 pb-1 scrollbar-hide"
         style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}

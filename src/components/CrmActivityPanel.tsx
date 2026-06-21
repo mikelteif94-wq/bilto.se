@@ -208,7 +208,7 @@ export default function CrmActivityPanel({
         <span className="flex items-center gap-1">
           <Clock className="w-3 h-3" />
           <span className="font-medium text-slate-700">Senast aktivitet:</span>
-          {lastActivity ? timeAgoSv(lastActivity.created_at) : '—'}
+          {lastActivity ? timeAgoSv(lastActivity.created_at) : '–'}
         </span>
         {nextReminder && (
           <>

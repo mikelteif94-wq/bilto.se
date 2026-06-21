@@ -333,10 +333,10 @@ export default function AdminCars({
                           )}
                         </div>
                         <div className="text-sm font-medium text-slate-900 truncate">
-                          {mm || '—'} {car.ar ? `· ${car.ar}` : ''}
+                          {mm || '–'} {car.ar ? `· ${car.ar}` : ''}
                         </div>
                         <div className="text-xs text-slate-500 mt-0.5 truncate flex items-center gap-1 flex-wrap">
-                          <span>{car.miltal.toLocaleString('sv-SE')} mil · {car.customers?.namn || '—'} ·</span>
+                          <span>{car.miltal.toLocaleString('sv-SE')} mil · {car.customers?.namn || '–'} ·</span>
                           <span className={formatInkom(car.created_at).cls + ' text-xs'}>
                             {formatInkom(car.created_at).label}
                           </span>
@@ -400,9 +400,9 @@ export default function AdminCars({
                             </span>
                           </td>
                           <td className="px-4 lg:px-6 py-4 text-slate-900">
-                            {mm || <span className="text-slate-400">—</span>}
+                            {mm || <span className="text-slate-400">–</span>}
                           </td>
-                          <td className="px-4 lg:px-6 py-4 text-slate-600">{car.ar || '—'}</td>
+                          <td className="px-4 lg:px-6 py-4 text-slate-600">{car.ar || '–'}</td>
                           <td className="px-4 lg:px-6 py-4 text-slate-600 whitespace-nowrap">
                             {car.miltal.toLocaleString('sv-SE')} mil
                           </td>
@@ -425,11 +425,11 @@ export default function AdminCars({
                                 {CRM_STATUS_LABELS[car.crm_status] ?? car.crm_status}
                               </span>
                             ) : (
-                              <span className="text-slate-300">—</span>
+                              <span className="text-slate-300">–</span>
                             )}
                           </td>
                           <td className="px-4 lg:px-6 py-4 text-slate-900">
-                            {car.customers?.namn || <span className="text-slate-400">—</span>}
+                            {car.customers?.namn || <span className="text-slate-400">–</span>}
                           </td>
                           <td className={`px-4 lg:px-6 py-4 whitespace-nowrap text-xs ${formatInkom(car.created_at).cls}`}>
                             {formatInkom(car.created_at).label}

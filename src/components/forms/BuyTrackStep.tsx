@@ -63,7 +63,7 @@ export default function BuyTrackStep({ initialBil, onChoose, onGuidance }: BuyTr
         <OptionButton
           icon={HelpCircle}
           title="Nej, jag är inte säker"
-          sub="Berätta vad som är viktigt — vi hittar rätt bil."
+          sub="Berätta vad som är viktigt – vi hittar rätt bil."
           onClick={() => onChoose('explore')}
         />
 

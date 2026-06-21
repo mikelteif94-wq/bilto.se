@@ -293,7 +293,7 @@ function UrlMatcherTab({ catalog }: { catalog: CatalogEntry[] }) {
       {/* Instructions */}
       <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-sm text-blue-700 leading-relaxed">
         <p className="font-semibold mb-1">Hur det fungerar</p>
-        <p>Klistra in en URL per rad. Systemet gissar bilnamnet från URL:ens filnamn och matchar automatiskt mot katalogen. Kontrollera matchningarna och klicka "Spara" — URL:erna sparas som <code className="bg-blue-100 px-1 rounded text-xs">cleaned_image_url</code> på rätt bilpost.</p>
+        <p>Klistra in en URL per rad. Systemet gissar bilnamnet från URL:ens filnamn och matchar automatiskt mot katalogen. Kontrollera matchningarna och klicka "Spara" – URL:erna sparas som <code className="bg-blue-100 px-1 rounded text-xs">cleaned_image_url</code> på rätt bilpost.</p>
       </div>
 
       {/* Text area */}
@@ -387,7 +387,7 @@ function UrlMatcherTab({ catalog }: { catalog: CatalogEntry[] }) {
                   </p>
                   {/* Match selector or label */}
                   {row.status === 'done' ? (
-                    <span className="text-xs font-semibold text-emerald-700">{row.matchLabel} — sparat</span>
+                    <span className="text-xs font-semibold text-emerald-700">{row.matchLabel} – sparat</span>
                   ) : row.matchedCatalogId ? (
                     <div className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
@@ -887,7 +887,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                   <li>Dra och släpp alla filer i ytan ovan (eller klicka för att välja)</li>
                   <li>Systemet matchar automatiskt filnamnet mot bilar i katalogen</li>
                   <li>För omatchade bilder kan du välja rätt bil manuellt i dropdownen</li>
-                  <li>Klicka "Ladda upp" för att starta — bilderna komprimeras automatiskt</li>
+                  <li>Klicka "Ladda upp" för att starta – bilderna komprimeras automatiskt</li>
                 </ol>
                 <p className="text-xs text-slate-400 mt-4">
                   {catalog.length} bilar finns i katalogen. Bilderna sparas i Supabase Storage och länkas till rätt post.

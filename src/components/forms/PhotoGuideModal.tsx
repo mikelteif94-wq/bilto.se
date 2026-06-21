@@ -19,7 +19,7 @@ const VIEWS: GuideView[] = [
     id: 'front-quarter',
     title: 'Framifrån snett (3/4-vy)',
     description:
-      'Stå snett framför bilen — ungefär 45 grader från förarsidan. Hela bilen ska synas.',
+      'Stå snett framför bilen – ungefär 45 grader från förarsidan. Hela bilen ska synas.',
     tip: 'Detta är huvudbilden. Håll kameran i höfthöjd och låt bilen fylla cirka 70% av bildytan.',
     image: 'https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg?auto=compress&cs=tinysrgb&w=1600',
   },
@@ -27,7 +27,7 @@ const VIEWS: GuideView[] = [
     id: 'side',
     title: 'Sidovy',
     description:
-      'Stå rakt mot förarsidan så hela bilen syns från sida — från front till bakparti.',
+      'Stå rakt mot förarsidan så hela bilen syns från sida – från front till bakparti.',
     tip: 'Håll kameran parallellt med bilen. Visa hela hjulbasen.',
     image: 'https://images.pexels.com/photos/707046/pexels-photo-707046.jpeg?auto=compress&cs=tinysrgb&w=1600',
   },
@@ -35,13 +35,13 @@ const VIEWS: GuideView[] = [
     id: 'rear-quarter',
     title: 'Bakifrån snett (3/4-vy)',
     description:
-      'Snett bakom bilen — visa baklucka och passagerarsida samtidigt.',
+      'Snett bakom bilen – visa baklucka och passagerarsida samtidigt.',
     tip: 'Se till att registreringsskylten syns tydligt och att bakljusen är hela.',
     image: 'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=1600',
   },
   {
     id: 'interior',
-    title: 'Interiör — förarplats',
+    title: 'Interiör – förarplats',
     description:
       'Öppna förardörren och fota in mot ratten, instrumentpanel och framsäten.',
     tip: 'Naturligt ljus är bäst. Undvik blixt direkt på skärmen.',
@@ -51,7 +51,7 @@ const VIEWS: GuideView[] = [
     id: 'wheel',
     title: 'Fälg och däck',
     description:
-      'Närbild på en framfälg — visa fälg, däckmönster och bromsskiva.',
+      'Närbild på en framfälg – visa fälg, däckmönster och bromsskiva.',
     tip: 'Gå nära och fota rakt mot fälgen. Skarpt fokus är viktigt.',
     image: 'https://images.pexels.com/photos/244553/pexels-photo-244553.jpeg?auto=compress&cs=tinysrgb&w=1600',
   },
@@ -60,7 +60,7 @@ const VIEWS: GuideView[] = [
     title: 'Mätarställning',
     description:
       'Fota mätarpanelen med tändning på så att miltalet syns tydligt.',
-    tip: 'Håll telefonen rakt — undvik reflektioner från skärmen.',
+    tip: 'Håll telefonen rakt – undvik reflektioner från skärmen.',
     image: 'https://images.pexels.com/photos/1028742/pexels-photo-1028742.jpeg?auto=compress&cs=tinysrgb&w=1600',
   },
 ];
@@ -114,7 +114,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
             </span>
             <div>
               <h2 className="text-sm sm:text-base font-semibold text-slate-900 leading-tight">
-                Fotoguide — så fotar du din bil
+                Fotoguide – så fotar du din bil
               </h2>
               <p className="text-xs text-slate-500">
                 Vy {index + 1} av {VIEWS.length}

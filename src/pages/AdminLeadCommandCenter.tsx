@@ -97,11 +97,11 @@ function statusBadge(status: string, crmStatus: string | null): { label: string;
   if (crmStatus === 'het') return { label: 'Het', cls: 'bg-red-100 text-red-700' };
   if (status === 'converted') return { label: 'Konverterad', cls: 'bg-teal-100 text-teal-700' };
   if (status === 'won') return { label: 'Vunnen', cls: 'bg-green-100 text-green-700' };
-  return { label: status || '—', cls: 'bg-slate-100 text-slate-500' };
+  return { label: status || '–', cls: 'bg-slate-100 text-slate-500' };
 }
 
 function timeAgo(dateStr: string | null): string {
-  if (!dateStr) return '—';
+  if (!dateStr) return '–';
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
   if (mins < 60) return `${mins}m sedan`;
@@ -112,7 +112,7 @@ function timeAgo(dateStr: string | null): string {
 }
 
 function formatDeadline(dateStr: string | null): { label: string; cls: string } {
-  if (!dateStr) return { label: '—', cls: 'text-slate-300' };
+  if (!dateStr) return { label: '–', cls: 'text-slate-300' };
   const diff = new Date(dateStr).getTime() - Date.now();
   const hours = Math.floor(diff / 3600000);
   if (hours < 0) return { label: 'Förfallen', cls: 'text-red-600 font-semibold' };
@@ -174,7 +174,7 @@ export default function AdminLeadCommandCenter({
     const { data: admins } = await supabase.from('admin_users').select('id, name, email');
     setAdminUsers(admins ?? []);
 
-    // Sell leads — cars being sold
+    // Sell leads – cars being sold
     const { data: cars } = await supabase
       .from('cars')
       .select(`
@@ -187,7 +187,7 @@ export default function AdminLeadCommandCenter({
       .order('created_at', { ascending: false })
       .limit(500);
 
-    // Buy/trade leads — quote requests
+    // Buy/trade leads – quote requests
     const { data: quotes } = await supabase
       .from('quote_requests')
       .select(`
@@ -209,7 +209,7 @@ export default function AdminLeadCommandCenter({
         id: c.id,
         type: 'car',
         category: 'salj',
-        customer_name: customer?.namn ?? '—',
+        customer_name: customer?.namn ?? '–',
         customer_phone: customer?.telefon ?? '',
         car_label: [c.marke, c.modell, c.ar].filter(Boolean).join(' ') || c.regnummer,
         highest_bid: highestBid,
@@ -235,12 +235,12 @@ export default function AdminLeadCommandCenter({
         id: q.id,
         type: 'quote',
         category: cat,
-        customer_name: [q.firstname, q.lastname].filter(Boolean).join(' ') || '—',
+        customer_name: [q.firstname, q.lastname].filter(Boolean).join(' ') || '–',
         customer_phone: q.phone ?? '',
         email: q.email ?? '',
         car_label: q.car_model
           ? `${q.car_model}${q.budget ? ` · ${q.budget}` : ''}`
-          : q.budget ?? '—',
+          : q.budget ?? '–',
         highest_bid: null,
         assigned_to_name: q.assigned_to_name ?? '',
         status: q.status ?? 'new',
@@ -615,7 +615,7 @@ export default function AdminLeadCommandCenter({
                         <td className="px-4 py-3.5 text-[13px] font-semibold text-slate-700">
                           {lead.highest_bid != null
                             ? `${lead.highest_bid.toLocaleString('sv-SE')} kr`
-                            : <span className="text-slate-200 font-normal">—</span>}
+                            : <span className="text-slate-200 font-normal">–</span>}
                         </td>
                         <td className="px-4 py-3.5">
                           {lead.assigned_to_name

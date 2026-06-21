@@ -195,7 +195,7 @@ export default function DealerOverview({
         quote_request_id: d.quote_request_id,
         lead_type: isSell ? 'sell' : 'buy',
         car_label: isSell
-          ? [car?.marke, car?.modell, car?.ar].filter(Boolean).join(' ') || car?.regnummer || '—'
+          ? [car?.marke, car?.modell, car?.ar].filter(Boolean).join(' ') || car?.regnummer || '–'
           : (quote?.car_model || 'Bil sökes'),
         budget: quote?.budget,
       };
@@ -760,7 +760,7 @@ function OverviewTab({
                         {[c.marke, c.modell].filter(Boolean).join(' ') || c.regnummer}
                       </div>
                       <div className="text-xs font-mono text-slate-400 mt-0.5">
-                        {c.regnummer} · {c.ar || '—'} · {c.miltal.toLocaleString('sv-SE')} mil
+                        {c.regnummer} · {c.ar || '–'} · {c.miltal.toLocaleString('sv-SE')} mil
                       </div>
                     </div>
                     <span className={`text-xs font-bold shrink-0 tabular-nums ${critical ? 'text-red-600' : urgent ? 'text-amber-600' : 'text-slate-500'}`}>
@@ -799,7 +799,7 @@ function OverviewTab({
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold text-slate-900 truncate">
-                      {b.car ? [b.car.marke, b.car.modell].filter(Boolean).join(' ') || b.car.regnummer : '—'}
+                      {b.car ? [b.car.marke, b.car.modell].filter(Boolean).join(' ') || b.car.regnummer : '–'}
                     </div>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className="text-xs font-mono text-slate-400">{b.car?.regnummer}</span>
@@ -844,7 +844,7 @@ function OverviewTab({
                     {[c.marke, c.modell].filter(Boolean).join(' ') || c.regnummer}
                   </div>
                   <div className="text-xs font-mono text-slate-400 mt-0.5">
-                    {c.regnummer} · {c.ar || '—'} · {c.miltal.toLocaleString('sv-SE')} mil
+                    {c.regnummer} · {c.ar || '–'} · {c.miltal.toLocaleString('sv-SE')} mil
                   </div>
                 </div>
                 <div className="text-right shrink-0">
@@ -954,7 +954,7 @@ function InvoicesTab({
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold text-slate-900 truncate">
-                      {deal.car ? [deal.car.marke, deal.car.modell, deal.car.ar].filter(Boolean).join(' ') : '—'}
+                      {deal.car ? [deal.car.marke, deal.car.modell, deal.car.ar].filter(Boolean).join(' ') : '–'}
                     </div>
                     <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                       <span className="text-xs font-mono text-slate-400">{deal.car?.regnummer}</span>
@@ -1018,7 +1018,7 @@ function InvoicesTab({
                         {inv.commission_type === 'trade_in' ? 'Inbyte' : 'Standard'}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5 truncate">{inv.description || '—'}</p>
+                    <p className="text-xs text-slate-500 mt-0.5 truncate">{inv.description || '–'}</p>
                     <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-400 flex-wrap">
                       {inv.invoice_date && <span>Fakturadatum: {new Date(inv.invoice_date).toLocaleDateString('sv-SE')}</span>}
                       {inv.due_date && (

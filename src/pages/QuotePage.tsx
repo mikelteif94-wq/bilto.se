@@ -150,7 +150,7 @@ export default function QuotePage({
           </div>
 
           <h1 className="text-center text-white text-[28px] font-semibold leading-[1.15] tracking-tight px-2">
-            Hitta rätt bil — vi hjälper dig få rätt affär
+            Hitta rätt bil – vi hjälper dig få rätt affär
           </h1>
 
           <ul className="mt-6 space-y-3.5 text-[16px] font-medium text-white flex flex-col items-center">
@@ -202,7 +202,7 @@ export default function QuotePage({
               Din bilaffär börjar här
             </h1>
             <p className="mt-5 text-white/85 text-[19px] leading-[1.6] max-w-lg">
-              Vi hjälper dig köpa, byta eller hitta rätt bil — enkelt, tryggt och helt utan kostnad.
+              Vi hjälper dig köpa, byta eller hitta rätt bil – enkelt, tryggt och helt utan kostnad.
             </p>
           </div>
           <div className="justify-self-end w-full max-w-[440px]">
@@ -285,7 +285,7 @@ export default function QuotePage({
               Vi möter dig där du är i din bilresa.
             </h3>
             <p className="mt-3 text-slate-600 text-[15px] sm:text-[16px] leading-[1.6] max-w-lg">
-              Oavsett om du redan hittat en bil, letar aktivt eller vill byta — vi granskar historik, jämför priser och hjälper dig igenom hela affären. Helt gratis och opartiskt.
+              Oavsett om du redan hittat en bil, letar aktivt eller vill byta – vi granskar historik, jämför priser och hjälper dig igenom hela affären. Helt gratis och opartiskt.
             </p>
           </div>
 
@@ -296,7 +296,7 @@ export default function QuotePage({
                 accent: 'text-[#0e6efe]',
                 accentBg: 'bg-[#0e6efe]/8',
                 title: 'Vi hittar rätt bil åt dig',
-                body: 'Berätta vad du söker — märke, budget eller bara ett behov. Vi söker i hela marknaden och presenterar de bästa alternativen.',
+                body: 'Berätta vad du söker – märke, budget eller bara ett behov. Vi söker i hela marknaden och presenterar de bästa alternativen.',
                 stat: null,
                 statLabel: null,
               },
@@ -314,7 +314,7 @@ export default function QuotePage({
                 accent: 'text-slate-700',
                 accentBg: 'bg-slate-100',
                 title: 'Trygg och utan press',
-                body: 'Du bestämmer. Vi granskar historik och skick innan affär. Ingen bindning, inga dolda avgifter — du tackar ja eller nej.',
+                body: 'Du bestämmer. Vi granskar historik och skick innan affär. Ingen bindning, inga dolda avgifter – du tackar ja eller nej.',
                 stat: '100%',
                 statLabel: 'utan förpliktelse',
               },
@@ -365,10 +365,10 @@ export default function QuotePage({
                 Kundcase
               </span>
               <h2 className="text-[22px] sm:text-[34px] font-semibold leading-[1.15] sm:leading-[1.1] text-slate-900 tracking-[-0.02em]">
-                "Bilto löste allt från start till mål — jag behövde inte göra någonting själv."
+                "Bilto löste allt från start till mål – jag behövde inte göra någonting själv."
               </h2>
               <p className="text-slate-600 mt-4 text-[14px] sm:text-[15px] leading-[1.65] max-w-md">
-                Johan ville köpa en Toyota RAV4 men hade varken tid eller lust att jaga annonser och förhandla. Bilto tog hand om hela affären — hittade rätt bil, förhandlade priset och såg till att allt gick smidigt. Johan sparade både pengar och en massa tid.
+                Johan ville köpa en Toyota RAV4 men hade varken tid eller lust att jaga annonser och förhandla. Bilto tog hand om hela affären – hittade rätt bil, förhandlade priset och såg till att allt gick smidigt. Johan sparade både pengar och en massa tid.
               </p>
               <div className="mt-6 grid grid-cols-2 gap-2.5">
                 {[
@@ -384,7 +384,7 @@ export default function QuotePage({
                 ))}
               </div>
               <p className="text-[13px] text-slate-500 mt-5">
-                Johan K. — Toyota RAV4, 2023
+                Johan K. – Toyota RAV4, 2023
               </p>
             </div>
             <div className="md:col-span-7 order-2">
@@ -406,7 +406,7 @@ export default function QuotePage({
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-[22px] sm:text-[40px] font-semibold leading-[1.15] sm:leading-[1.08] text-white tracking-[-0.02em]">
-              Erfarna förhandlare — på din sida
+              Erfarna förhandlare – på din sida
             </h2>
             <p className="text-white/80 mt-3 sm:mt-4 text-[14px] sm:text-[17px] leading-[1.55] max-w-lg mx-auto">
               Vårt team har jobbat som toppsäljare hos Sveriges största bilhandlare. Nu jobbar vi för dig istället.
@@ -461,7 +461,7 @@ export default function QuotePage({
               {
                 icon: Phone,
                 title: 'Vi tar ett samtal',
-                text: 'Vi ringer dig och samlar all info kring hur du vill att din nya bil ska vara — märke, budget, utrustning och önskemål.',
+                text: 'Vi ringer dig och samlar all info kring hur du vill att din nya bil ska vara – märke, budget, utrustning och önskemål.',
               },
               {
                 icon: Megaphone,
@@ -471,7 +471,7 @@ export default function QuotePage({
               {
                 icon: Handshake,
                 title: 'Affären är klar',
-                text: 'Du kan tuta och köra med gott samvete — vi har sett till att du gjort en riktigt bra deal.',
+                text: 'Du kan tuta och köra med gott samvete – vi har sett till att du gjort en riktigt bra deal.',
               },
             ].map((step, i, arr) => {
               const Icon = step.icon;
@@ -524,7 +524,7 @@ export default function QuotePage({
               {
                 icon: Search,
                 title: 'Vi letar bilen åt dig',
-                text: 'Vi kontrollerar hela marknaden — inte bara en handlares lager — och hittar bilar som matchar dina önskemål och budget.',
+                text: 'Vi kontrollerar hela marknaden – inte bara en handlares lager – och hittar bilar som matchar dina önskemål och budget.',
                 svg: '/certified-pre-own.75373bb7.svg',
               },
               {
@@ -577,7 +577,7 @@ export default function QuotePage({
               Grundlig genomgång
             </span>
             <h2 className="text-[26px] sm:text-[48px] font-semibold leading-[1.1] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
-              Vi granskar varje detalj — så slipper du oroa dig
+              Vi granskar varje detalj – så slipper du oroa dig
             </h2>
             <p className="text-slate-600 mt-4 sm:mt-6 text-[15px] sm:text-[18px] leading-[1.6] max-w-2xl mx-auto">
               Innan vi rekommenderar en bil till dig går vi igenom fem kritiska datapunkter. Inget lämnas åt slumpen.
@@ -607,7 +607,7 @@ export default function QuotePage({
 
             <div className="lg:col-span-1 space-y-6 sm:space-y-8 order-3">
               {[
-                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik — vi bedömer det faktiska skicket, inte bara foton i annonsen.' },
+                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket, inte bara foton i annonsen.' },
                 { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
                 { label: 'Bilalternativ', desc: 'Vi jämför att din bil ligger rätt till i marknaden så att du inte betalar för mycket.' },
               ].map((point) => (

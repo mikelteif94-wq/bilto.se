@@ -59,7 +59,7 @@ interface CarRow {
   persona_familjetest: string | null;
   persona_kordynamik: string | null;
   seats: number | null;
-  // Engelska kolumner som redan finns i tabellen — uppdateras parallellt
+  // Engelska kolumner som redan finns i tabellen – uppdateras parallellt
   body_type: string | null;
   fuel_types: string[] | null;
   rating_overall: number | null;
@@ -290,7 +290,7 @@ function parseCarJson(raw: unknown): CarRow | null {
   const prisNyFran = numOrNull(c.pris_ny_fran ?? pris.ny_fran);
   const prisNyTill = numOrNull(c.pris_ny_till ?? pris.ny_till);
 
-  // cta: kan vara array eller objekt — spara som jsonb
+  // cta: kan vara array eller objekt – spara som jsonb
   const ctaRawTop = c.cta;
   const ctaParsed =
     ctaRawTop !== null && ctaRawTop !== undefined &&
@@ -361,7 +361,7 @@ function parseCarJson(raw: unknown): CarRow | null {
     meta_description: (c.meta_description) as string | null ?? null,
     persona_familjetest: personaFamilj,
     persona_kordynamik: personaKor,
-    // Befintliga engelska kolumner — uppdateras parallellt för bakåtkompatibilitet
+    // Befintliga engelska kolumner – uppdateras parallellt för bakåtkompatibilitet
     body_type: (() => {
       const mapped = karossRaw ? (KAROSS_MAP[karossRaw] ?? karossRaw.toLowerCase()) : null;
       return mapped && VALID_BODY_TYPES.has(mapped) ? mapped : null;
@@ -446,12 +446,12 @@ export default function AdminCatalogImport({ onBack }: Props) {
     const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token;
     if (!token) {
-      setResults([{ make: '—', model: '—', status: 'error', error: 'Inte inloggad som admin. Logga in och försök igen.' }]);
+      setResults([{ make: '–', model: '–', status: 'error', error: 'Inte inloggad som admin. Logga in och försök igen.' }]);
       setStatus('done');
       return;
     }
 
-    // Build payload rows — strip null values to keep request lean
+    // Build payload rows – strip null values to keep request lean
     const FIELDS: (keyof CarRow)[] = [
       'slug',
       'pris_ny_fran', 'pris_ny_till', 'pris_begagnat',
@@ -673,22 +673,22 @@ export default function AdminCatalogImport({ onBack }: Props) {
                       <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
                         <td className="px-3 py-1.5 text-slate-800">{row.make}</td>
                         <td className="px-3 py-1.5 text-slate-700">{row.model}</td>
-                        <td className="px-3 py-1.5 text-slate-500">{row.kaross ?? '—'}</td>
-                        <td className="px-3 py-1.5 text-slate-500">{row.drivmedel ?? '—'}</td>
-                        <td className="px-3 py-1.5 text-slate-500">{row.betyg_totalt ?? '—'}</td>
+                        <td className="px-3 py-1.5 text-slate-500">{row.kaross ?? '–'}</td>
+                        <td className="px-3 py-1.5 text-slate-500">{row.drivmedel ?? '–'}</td>
+                        <td className="px-3 py-1.5 text-slate-500">{row.betyg_totalt ?? '–'}</td>
                         <td className={`px-3 py-1.5 font-medium ${row.pris_begagnat ? 'text-slate-800' : 'text-red-400'}`}>
-                          {row.pris_begagnat ? `${(row.pris_begagnat / 1000).toFixed(0)}k` : '—'}
+                          {row.pris_begagnat ? `${(row.pris_begagnat / 1000).toFixed(0)}k` : '–'}
                         </td>
                         <td className={`px-3 py-1.5 font-medium ${row.manadskostnad_begagnad ? 'text-slate-800' : 'text-red-400'}`}>
-                          {row.manadskostnad_begagnad ? `${(row.manadskostnad_begagnad / 1000).toFixed(1)}k` : '—'}
+                          {row.manadskostnad_begagnad ? `${(row.manadskostnad_begagnad / 1000).toFixed(1)}k` : '–'}
                         </td>
                         <td className="px-3 py-1.5 text-slate-500">
-                          {row.pris_ny_fran ? `${(row.pris_ny_fran / 1000).toFixed(0)}k` : '—'}
+                          {row.pris_ny_fran ? `${(row.pris_ny_fran / 1000).toFixed(0)}k` : '–'}
                         </td>
                         <td className="px-3 py-1.5 text-slate-500">
-                          {row.manadskostnad_ny ? `${(row.manadskostnad_ny / 1000).toFixed(1)}k` : '—'}
+                          {row.manadskostnad_ny ? `${(row.manadskostnad_ny / 1000).toFixed(1)}k` : '–'}
                         </td>
-                        <td className="px-3 py-1.5 text-slate-400 font-mono">{row.slug ?? '—'}</td>
+                        <td className="px-3 py-1.5 text-slate-400 font-mono">{row.slug ?? '–'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -699,7 +699,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
               {rows.length > 0 && (
                 <details className="mt-3">
                   <summary className="text-[11px] text-slate-400 cursor-pointer hover:text-slate-600">
-                    Visa rådata (rad 1) — felsök om priser saknas
+                    Visa rådata (rad 1) – felsök om priser saknas
                   </summary>
                   <pre className="mt-2 text-[10px] bg-slate-50 border border-slate-100 rounded p-3 overflow-x-auto text-slate-500 max-h-48">
                     {JSON.stringify(rows[0], null, 2)}

@@ -306,7 +306,7 @@ export default function SellCarPage({
                   <Phone className="w-4.5 h-4.5 text-[#0e6efe]" strokeWidth={2.2} />
                 </div>
                 <h3 className="text-[17px] font-semibold text-slate-900">
-                  {guidanceDone ? 'Tack — vi hör av oss!' : 'Vi ringer och guidar dig'}
+                  {guidanceDone ? 'Tack – vi hör av oss!' : 'Vi ringer och guidar dig'}
                 </h3>
               </div>
               <button
@@ -338,7 +338,7 @@ export default function SellCarPage({
             ) : (
               <div className="px-5 sm:px-6 py-5">
                 <p className="text-[14.5px] text-slate-600 leading-[1.55] mb-4">
-                  Lämna ditt namn och nummer så ringer vi upp inom kort och hjälper dig välja rätt spår — helt utan förpliktelser.
+                  Lämna ditt namn och nummer så ringer vi upp inom kort och hjälper dig välja rätt spår – helt utan förpliktelser.
                 </p>
 
                 <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">

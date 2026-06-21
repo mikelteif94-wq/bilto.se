@@ -718,7 +718,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
         <ErrorBanner message={error} />
 
-        {/* Din Bilto-ranking — always visible (not gated on main loading) */}
+        {/* Din Bilto-ranking – always visible (not gated on main loading) */}
         <div>
           <h2 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
             <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
@@ -737,7 +737,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
           )}
         </div>
 
-        {/* Köpintressen — used by the matching engine */}
+        {/* Köpintressen – used by the matching engine */}
         <div>
           <h2 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
             <ShoppingCart className="w-3.5 h-3.5 text-[#0e6efe]" />
@@ -1168,7 +1168,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                 <h2 className="font-semibold text-slate-900">Aviseringar</h2>
               </header>
               <p className="text-sm text-slate-600 leading-relaxed">
-                Du får mejl till <strong>{info.mejl || '—'}</strong> när nya bilar går ut till bud
+                Du får mejl till <strong>{info.mejl || '–'}</strong> när nya bilar går ut till bud
                 och när en auktion du deltar i avslutas. Vill du ändra mejl, uppdatera
                 fältet ovan och spara.
               </p>

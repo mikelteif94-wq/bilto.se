@@ -264,7 +264,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
               </h1>
               <p className="mt-6 text-white/90 text-[17px] leading-[1.6] max-w-lg">
                 Vi levererar kvalitetsleads direkt till dig. Förhandlingen sköter
-                vi — registrera dig nu och var först när vi lanserar.
+                vi – registrera dig nu och var först när vi lanserar.
               </p>
 
               {/* Countdown timer */}
@@ -310,13 +310,13 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
           <div className="max-w-5xl mx-auto">
             <div className="mb-12 sm:mb-16 max-w-xl">
               <span className="text-[12px] font-medium text-slate-500 mb-3 block">
-                — Så funkar det
+                – Så funkar det
               </span>
               <h2 className="text-[34px] sm:text-[48px] font-semibold leading-[1.02] text-slate-900 tracking-[-0.02em]">
-                Tre steg — vi jobbar, du köper.
+                Tre steg – vi jobbar, du köper.
               </h2>
               <p className="text-slate-600 mt-5 text-[17px] leading-[1.6] max-w-2xl">
-                Från kvalitetslead till avslutad affär — utan att du behöver jaga samtal.
+                Från kvalitetslead till avslutad affär – utan att du behöver jaga samtal.
               </p>
             </div>
 
@@ -330,7 +330,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
                 {
                   icon: Phone,
                   title: 'Vi förhandlar åt dig',
-                  text: 'Du lägger ditt bud — vi sköter alla samtal och prisdiskussioner med säljaren.',
+                  text: 'Du lägger ditt bud – vi sköter alla samtal och prisdiskussioner med säljaren.',
                 },
                 {
                   icon: Handshake,

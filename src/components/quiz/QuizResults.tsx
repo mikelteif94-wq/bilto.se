@@ -69,7 +69,7 @@ function scoreCarMatch(car: CatalogCar, answers: QuizAnswers): { score: number; 
   const detectedFuelType = detectFuelType(car.model, car.make);
   const brandCategory = getBrandCategory(car.make);
 
-  // Budget filtering — penalise expensive brands when budget is set
+  // Budget filtering – penalise expensive brands when budget is set
   const budgetMax = answers.budget_max;
   const budgetMin = answers.budget_min;
   const budgetType = answers.budget_type;

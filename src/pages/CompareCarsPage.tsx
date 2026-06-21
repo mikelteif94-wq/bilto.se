@@ -256,7 +256,7 @@ function parseFuelTypes(q: string): string[] {
   return found;
 }
 
-// Detect brand mention in query — returns brand_id fragments matched
+// Detect brand mention in query – returns brand_id fragments matched
 function detectBrandInQuery(q: string): string | null {
   const brands: [string, string][] = [
     ['volvo', 'volvo'], ['tesla', 'tesla'], ['bmw', 'bmw'], ['audi', 'audi'],
@@ -296,25 +296,25 @@ function searchScoreCar(car: ComparisonCar, query: string): SearchResult {
   // Exact name match
   if (name.includes(q.replace(/\s+/g, ' ').trim())) return { score: 100, qualityBonus: car.ratings.overall, matchedBody: true, matchedFuel: true, matchedBrand: true };
 
-  // Brand matching — if a brand is specified, only that brand gets brand points
+  // Brand matching – if a brand is specified, only that brand gets brand points
   let matchedBrand = false;
   if (requestedBrand) {
     if (brandLower.includes(requestedBrand) || requestedBrand.includes(brandLower)) {
       score += 35;
       matchedBrand = true;
     } else {
-      // Brand was requested but doesn't match — heavy penalty so off-brand cars rank last
+      // Brand was requested but doesn't match – heavy penalty so off-brand cars rank last
       score -= 50;
     }
   } else {
-    // No brand requested — small generic name-token match
+    // No brand requested – small generic name-token match
     const tokens = q.split(/[\s,\-+]+/).filter(t => t.length >= 2);
     for (const token of tokens) {
       if (name.includes(token)) score += 12;
     }
   }
 
-  // Body type compound matching — must match if body type words are present
+  // Body type compound matching – must match if body type words are present
   let matchedBody = false;
   if (requestedBodyTypes.length > 0) {
     if (requestedBodyTypes.includes(car.specs.body_type)) {
@@ -336,11 +336,11 @@ function searchScoreCar(car: ComparisonCar, query: string): SearchResult {
     }
   }
 
-  // Trait matching — scan the full query for known trait keywords
+  // Trait matching – scan the full query for known trait keywords
   for (const { keys, check, weight } of TRAIT_MAP) {
     if (keys.some(k => q.includes(k))) {
       if (check(car)) score += weight;
-      // No penalty for not matching traits — they are additive signals
+      // No penalty for not matching traits – they are additive signals
     }
   }
 
@@ -386,7 +386,7 @@ function searchScoreCar(car: ComparisonCar, query: string): SearchResult {
     }
   }
 
-  // Quality bonus for tiebreaking — not added to score directly, used in sort
+  // Quality bonus for tiebreaking – not added to score directly, used in sort
   const qualityBonus = car.ratings.overall * 1.5 + car.ratings.value;
 
   return { score: Math.max(0, score), qualityBonus, matchedBody, matchedFuel, matchedBrand };
@@ -706,7 +706,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   }, []);
 
   useEffect(() => {
-    document.title = 'Köp bil — Jämför, hitta & förhandla | Bilto';
+    document.title = 'Köp bil – Jämför, hitta & förhandla | Bilto';
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -1144,7 +1144,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           </div>
         </div>
 
-        {/* Budget filtered results — full-width stripe */}
+        {/* Budget filtered results – full-width stripe */}
         <AnimatePresence>
           {activeBudget !== null && (
             <motion.div
@@ -1320,7 +1320,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   </div>
                 </div>
 
-                {/* Desktop layout — unchanged */}
+                {/* Desktop layout – unchanged */}
                 <div className="hidden sm:flex flex-col lg:flex-row lg:items-center lg:gap-16">
                   <div className="flex flex-col items-center lg:items-start lg:flex-1 w-full">
                     <h2 className="text-[36px] sm:text-[42px] lg:text-[52px] font-extrabold text-slate-900 tracking-tight leading-[1.05] mb-3 text-center lg:text-left">
@@ -1329,8 +1329,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     </h2>
                     <p className="text-slate-500 text-[15px] sm:text-[16px] lg:text-[17px] leading-relaxed mb-6 max-w-sm sm:max-w-md mx-auto lg:mx-0 text-center lg:text-left">
                       {isEvPage
-                        ? 'Svara på 5 korta frågor om hur du kör, din räckviddsoro och budget — vi matchar dig med den elbil som passar dig bäst.'
-                        : 'Svara på 5 korta frågor om hur du kör, vad du prioriterar och din budget — vi matchar dig med de bilar som passar dig bäst.'}
+                        ? 'Svara på 5 korta frågor om hur du kör, din räckviddsoro och budget – vi matchar dig med den elbil som passar dig bäst.'
+                        : 'Svara på 5 korta frågor om hur du kör, vad du prioriterar och din budget – vi matchar dig med de bilar som passar dig bäst.'}
                     </p>
                     <ul className="flex flex-col gap-3 mb-7 w-full max-w-sm mx-auto lg:mx-0">
                       {(isEvPage ? [
@@ -1369,7 +1369,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       />
                     </div>
                   </div>
-                  {/* Right: car image grid — desktop only */}
+                  {/* Right: car image grid – desktop only */}
                   <div className="hidden lg:grid grid-cols-2 gap-4 w-[420px] shrink-0">
                     {(isEvPage
                       ? ['tesla_model_y', 'kia_ev6', 'hyundai_ioniq5', 'polestar_2']
@@ -1446,7 +1446,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       {selectedQuizCars.size === 0
                         ? 'Välj upp till 3 bilar du är intresserad av'
                         : selectedQuizCars.size === 3
-                        ? 'Max 3 bilar valda — avmarkera för att byta'
+                        ? 'Max 3 bilar valda – avmarkera för att byta'
                         : `${selectedQuizCars.size} av 3 bil${selectedQuizCars.size > 1 ? 'ar' : ''} vald${selectedQuizCars.size > 1 ? 'a' : ''}`}
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
@@ -1545,7 +1545,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                               }}
                               className="h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold inline-flex items-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-[#0e6efe]/30"
                             >
-                              Gå vidare — vi ringer dig
+                              Gå vidare – vi ringer dig
                               <ArrowRight className="w-4 h-4" />
                             </button>
                           </div>
@@ -1558,7 +1558,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     <div className="w-14 h-14 rounded-xl bg-slate-200 flex items-center justify-center mx-auto mb-4">
                       <Car className="w-6 h-6 text-slate-400" />
                     </div>
-                    <p className="text-[14px] text-slate-500 mb-4">Vi hjälper dig ändå — kontakta oss så hittar vi rätt bil.</p>
+                    <p className="text-[14px] text-slate-500 mb-4">Vi hjälper dig ändå – kontakta oss så hittar vi rätt bil.</p>
                     <button onClick={() => setBuyDrawerCar('')} className="h-11 px-6 rounded-xl bg-[#0e6efe] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition">
                       Kontakta oss <ArrowRight className="w-4 h-4" />
                     </button>
@@ -1597,7 +1597,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             {[
               { step: '1', title: 'Hitta din bil', desc: 'Jämför våra toppval, använd vår smarta sökning eller testa bilmatch för att hitta rätt.', icon: Search },
               { step: '2', title: 'Vi förhandlar åt dig', desc: 'Vi kontaktar säljaren, pressar priset och granskar bilen åt dig. Du slipper förhandla själv.', icon: Megaphone },
-              { step: '3', title: 'Affären är klar', desc: 'Du kan tuta och köra med gott samvete — vi har sett till att du gjort en riktigt bra deal.', icon: Handshake },
+              { step: '3', title: 'Affären är klar', desc: 'Du kan tuta och köra med gott samvete – vi har sett till att du gjort en riktigt bra deal.', icon: Handshake },
             ].map(s => {
               const StepIcon = s.icon;
               return (
@@ -1629,7 +1629,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               </h2>
               <p className="text-[13px] mt-1 text-slate-400 font-medium">
                 {activeCategory === 'el'
-                  ? 'Alla bilar kör enbart på el — välj ett kort för att jämföra'
+                  ? 'Alla bilar kör enbart på el – välj ett kort för att jämföra'
                   : 'Markera bilar för att jämföra dem sida vid sida'}
               </p>
             </div>
@@ -1758,7 +1758,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             </motion.div>
           </AnimatePresence>
 
-          {/* "Hittar du inte bilen?" — always visible banner below grid */}
+          {/* "Hittar du inte bilen?" – always visible banner below grid */}
           <button
             type="button"
             onClick={() => openBuyDrawer(carSearchQuery.trim() || '', 'found')}
@@ -1987,7 +1987,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       ].map(item => (
                         <li key={item.label} className="flex items-start gap-2 text-[11px]">
                           <div className="w-1.5 h-1.5 rounded-full bg-[#0e6efe] mt-1 shrink-0" />
-                          <span><span className="font-semibold text-slate-800">{item.label}</span>{' '}<span className="text-slate-500">— {item.desc}</span></span>
+                          <span><span className="font-semibold text-slate-800">{item.label}</span>{' '}<span className="text-slate-500">– {item.desc}</span></span>
                         </li>
                       ))}
                     </ul>
@@ -2217,13 +2217,13 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 Kundcase
               </span>
               <h2 className="text-[22px] sm:text-[34px] font-semibold leading-[1.15] sm:leading-[1.1] text-slate-900 tracking-[-0.02em]">
-                "Bilto löste allt från start till mål — jag behövde inte göra någonting själv."
+                "Bilto löste allt från start till mål – jag behövde inte göra någonting själv."
               </h2>
               <p className="text-slate-600 mt-4 text-[14px] sm:text-[15px] leading-[1.65] max-w-md">
-                Johan ville köpa en Toyota RAV4 men hade varken tid eller lust att jaga annonser och förhandla. Bilto tog hand om hela affären — hittade rätt bil, förhandlade priset och såg till att allt gick smidigt. Johan sparade både pengar och en massa tid.
+                Johan ville köpa en Toyota RAV4 men hade varken tid eller lust att jaga annonser och förhandla. Bilto tog hand om hela affären – hittade rätt bil, förhandlade priset och såg till att allt gick smidigt. Johan sparade både pengar och en massa tid.
               </p>
               <p className="text-[13px] text-slate-500 mt-5">
-                Johan K. — Toyota RAV4, 2023
+                Johan K. – Toyota RAV4, 2023
               </p>
             </div>
             <div className="md:col-span-7 order-2">
@@ -2294,7 +2294,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               {
                 icon: Search,
                 title: 'Vi letar bilen åt dig',
-                text: 'Vi kontrollerar hela marknaden — inte bara en handlares lager — och hittar bilar som matchar dina önskemål och budget.',
+                text: 'Vi kontrollerar hela marknaden – inte bara en handlares lager – och hittar bilar som matchar dina önskemål och budget.',
                 svg: '/certified-pre-own.75373bb7.svg',
               },
               {
@@ -2347,7 +2347,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               Grundlig genomgång
             </span>
             <h2 className="text-[26px] sm:text-[48px] font-semibold leading-[1.1] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
-              Vi granskar varje detalj — så slipper du oroa dig
+              Vi granskar varje detalj – så slipper du oroa dig
             </h2>
             <p className="text-slate-600 mt-4 sm:mt-6 text-[15px] sm:text-[18px] leading-[1.6] max-w-2xl mx-auto">
               Innan vi rekommenderar en bil till dig går vi igenom fem kritiska datapunkter. Inget lämnas åt slumpen.
@@ -2374,7 +2374,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             </div>
             <div className="lg:col-span-1 space-y-6 sm:space-y-8 order-3">
               {[
-                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik — vi bedömer det faktiska skicket, inte bara foton i annonsen.' },
+                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket, inte bara foton i annonsen.' },
                 { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
                 { label: 'Bilalternativ', desc: 'Vi jämför att din bil ligger rätt till i marknaden så att du inte betalar för mycket.' },
               ].map((point) => (
@@ -2408,7 +2408,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/50 to-transparent" />
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-5xl mx-auto px-5 sm:px-8 w-full">
-            <p className="text-[11px] font-bold text-white/60 uppercase tracking-[0.18em] mb-3">Bilto — din bilexpert</p>
+            <p className="text-[11px] font-bold text-white/60 uppercase tracking-[0.18em] mb-3">Bilto – din bilexpert</p>
             <h2 className="text-[32px] sm:text-[52px] font-bold text-white leading-[1.05] tracking-tight mb-4 max-w-xl">
               Vi gör din bilaffär trygg och enkel.
             </h2>

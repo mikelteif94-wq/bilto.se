@@ -63,7 +63,7 @@ export default function PortalCallbackPage({ onSuccess, onBack }: PortalCallback
           return;
         }
 
-        // 3. Link customer rows to this auth user — only if customer rows exist for this email.
+        // 3. Link customer rows to this auth user – only if customer rows exist for this email.
         //    link-customer-account returns has_cases=true only when rows were found.
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.access_token) {
@@ -77,7 +77,7 @@ export default function PortalCallbackPage({ onSuccess, onBack }: PortalCallback
         }
 
         sessionStorage.setItem('bilto_portal', 'customer');
-        // Always go to dashboard — it handles the empty state with CTAs
+        // Always go to dashboard – it handles the empty state with CTAs
         onSuccess();
       } catch (err) {
         console.error('[portal-callback]', err);

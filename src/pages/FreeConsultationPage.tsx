@@ -390,7 +390,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
             Boka din kostnadsfria konsultation
           </h1>
           <p className="mt-3 text-blue-100 text-[15px] sm:text-base max-w-lg mx-auto leading-relaxed">
-            En av våra bilexperter ringer upp dig vid en tid som passar. Vi lyssnar, ger råd och hjälper dig — utan förpliktelser.
+            En av våra bilexperter ringer upp dig vid en tid som passar. Vi lyssnar, ger råd och hjälper dig – utan förpliktelser.
           </p>
         </div>
       </div>
@@ -717,7 +717,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
               {form.booking_date && (
                 <>
                   <p className="text-[13px] font-semibold text-slate-700 mb-3">
-                    Tillgängliga tider — <span className="font-normal text-slate-500">{selectedDateLabel}</span>
+                    Tillgängliga tider – <span className="font-normal text-slate-500">{selectedDateLabel}</span>
                   </p>
                   <div className="grid grid-cols-3 gap-2 mb-4">
                     {TIME_SLOTS.map(t => {
@@ -838,7 +838,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
             <div className="flex flex-col sm:flex-row items-stretch divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
               {[
                 { icon: Check,       color: 'text-emerald-600', bg: 'bg-emerald-50',  title: 'Kostnadsfritt',     desc: 'Du betalar ingenting för konsultationen.' },
-                { icon: Phone,       color: 'text-[#0e6efe]',   bg: 'bg-blue-50',     title: 'Vi ringer dig',     desc: 'Vi tar initiativet — ingen väntan i kö.' },
+                { icon: Phone,       color: 'text-[#0e6efe]',   bg: 'bg-blue-50',     title: 'Vi ringer dig',     desc: 'Vi tar initiativet – ingen väntan i kö.' },
                 { icon: ShieldCheck, color: 'text-slate-600',   bg: 'bg-slate-100',   title: 'Inga förpliktelser', desc: 'Tacka nej när du vill, utan förklaring.' },
               ].map(item => (
                 <div key={item.title} className="flex-1 flex items-start gap-3 py-5 sm:py-0 sm:px-6 first:pt-0 last:pb-0 sm:first:pl-0 sm:last:pr-0">

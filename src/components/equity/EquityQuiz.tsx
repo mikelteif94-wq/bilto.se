@@ -292,7 +292,7 @@ export function EquityQuiz({ onComplete, onClose }: EquityQuizProps) {
                 sublabel="Kolla på Blocket eller Kvdbil för ett marknadsvärde"
                 value={carValue} min={20000} max={700000} step={5000}
                 onChange={setCarValue} formatValue={v => formatSEK(v)} color="#0e6efe"
-                note="Vet du inte exakt? Uppskatta lite generöst — vi justerar efteråt."
+                note="Vet du inte exakt? Uppskatta lite generöst – vi justerar efteråt."
               />
             )}
 
@@ -304,14 +304,14 @@ export function EquityQuiz({ onComplete, onClose }: EquityQuizProps) {
                 onChange={setCarDebt}
                 formatValue={v => v === 0 ? 'Ingen skuld' : formatSEK(v)}
                 color={carDebt > carValue ? '#dc2626' : '#0e6efe'}
-                note={`Ditt nettovärde: ${formatSEK(Math.max(0, carValue - carDebt))} — det tar du med dig till nästa bil.`}
+                note={`Ditt nettovärde: ${formatSEK(Math.max(0, carValue - carDebt))} – det tar du med dig till nästa bil.`}
               />
             )}
 
             {step === 3 && (
               <SliderStep
                 label={hasCurrentCar ? 'Extra kontanter till insatsen?' : 'Hur mycket har du sparat?'}
-                sublabel={hasCurrentCar ? 'Sparpengar utöver din nuvarande bil — valfritt' : 'Sparpengar du kan använda som kontantinsats'}
+                sublabel={hasCurrentCar ? 'Sparpengar utöver din nuvarande bil – valfritt' : 'Sparpengar du kan använda som kontantinsats'}
                 value={cashSavings} min={0} max={500000} step={5000}
                 onChange={setCashSavings}
                 formatValue={v => v === 0 ? 'Inga extra' : formatSEK(v)}
@@ -341,7 +341,7 @@ export function EquityQuiz({ onComplete, onClose }: EquityQuizProps) {
                   color="#0e6efe"
                   note={
                     hasCurrentCar && currentMonthly > desiredMonthly
-                      ? `Du siktar på att spara ${formatSEK(currentMonthly - desiredMonthly)}/mån — det är ${formatSEK((currentMonthly - desiredMonthly) * 12)}/år!`
+                      ? `Du siktar på att spara ${formatSEK(currentMonthly - desiredMonthly)}/mån – det är ${formatSEK((currentMonthly - desiredMonthly) * 12)}/år!`
                       : undefined
                   }
                 />

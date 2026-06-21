@@ -13,7 +13,7 @@ export function formatKr(v: number): string {
 }
 
 export function formatTimeLeftSimple(endIso: string | null, now: number): string {
-  if (!endIso) return '—';
+  if (!endIso) return '–';
   const diff = new Date(endIso).getTime() - now;
   if (diff <= 0) return 'Slut';
   const mins = Math.floor(diff / 60000);
