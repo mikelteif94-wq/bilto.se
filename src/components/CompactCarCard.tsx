@@ -67,9 +67,7 @@ function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make }: { carPrice: nu
 }
 
 function ScoreBadge({ value }: { value: number }) {
-  const isTop = value >= 9;
-  const isMid = value >= 7.5;
-  const color = isTop ? '#059669' : isMid ? '#0e6efe' : '#d97706';
+  const color = value >= 8 ? '#16a34a' : value >= 6 ? '#d97706' : '#dc2626';
   return (
     <div
       className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-full"

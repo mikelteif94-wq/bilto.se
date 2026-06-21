@@ -176,13 +176,15 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
 
 // ─── Rating bar ───────────────────────────────────────────────────────────────
 function RatingBar({ label, value, icon: Icon }: { label: string; value: number; icon: typeof Star }) {
+  const barColor = value >= 8 ? '#16a34a' : value >= 6 ? '#d97706' : '#dc2626';
   return (
     <div className="flex items-center gap-3">
       <Icon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
       <span className="text-[12px] text-slate-500 w-20 shrink-0">{label}</span>
       <div className="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
         <motion.div
-          className="h-full bg-[#0047B3] rounded-full"
+          className="h-full rounded-full"
+          style={{ backgroundColor: barColor }}
           initial={{ width: 0 }}
           animate={{ width: `${value * 10}%` }}
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
@@ -270,20 +272,21 @@ function ScoreRing({ value, size = 56 }: { value: number; size?: number }) {
   const r = (size - 8) / 2;
   const circ = 2 * Math.PI * r;
   const pct = value / 10;
+  const ringColor = value >= 8 ? '#16a34a' : value >= 6 ? '#d97706' : '#dc2626';
   return (
     <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#e2e8f0" strokeWidth={5} />
         <motion.circle
           cx={size / 2} cy={size / 2} r={r} fill="none"
-          stroke="#0047B3" strokeWidth={5} strokeLinecap="round"
+          stroke={ringColor} strokeWidth={5} strokeLinecap="round"
           strokeDasharray={circ}
           initial={{ strokeDashoffset: circ }}
           animate={{ strokeDashoffset: circ * (1 - pct) }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
         />
       </svg>
-      <span className="absolute text-[14px] font-extrabold text-slate-900 tabular-nums">{value}</span>
+      <span className="absolute text-[14px] font-extrabold tabular-nums" style={{ color: ringColor }}>{value}</span>
     </div>
   );
 }
