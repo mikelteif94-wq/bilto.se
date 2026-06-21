@@ -1,8 +1,8 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-const LOAN_RATE = 0.0649 / 12;
-const LOAN_MONTHS = 36;
+const LOAN_RATE = 0.0799 / 12; // ~8% APR, typiskt billån Sverige 2025-2026
+const LOAN_MONTHS = 60;        // 5 år – vanligast för begagnat
 const LOAN_DOWN_PCT = 0.20;
 const LOAN_FEE_PCT = 0.01;
 
@@ -29,13 +29,14 @@ export function calcCarMonthlyRange(
   };
 }
 
-const PREMIUM_MAKES = new Set(['bmw', 'mercedes', 'audi', 'porsche', 'lexus', 'jaguar', 'land rover', 'landrover', 'genesis', 'maserati', 'bentley', 'rolls-royce']);
+const PREMIUM_MAKES = new Set(['bmw', 'mercedes', 'audi', 'porsche', 'lexus', 'jaguar', 'land rover', 'landrover', 'genesis', 'maserati', 'bentley', 'rolls-royce', 'volvo']);
 
 export interface TCOBreakdown {
   financing: number;
   fuel: number;
   insurance: number;
   service: number;
+  tax: number;
   total: number;
 }
 
@@ -57,19 +58,63 @@ export function calcMonthlyTCO({
 
   const isEl = fuelTypes.includes('el');
   const isLaddhybrid = fuelTypes.includes('laddhybrid');
+  const isMildhybrid = fuelTypes.includes('mildhybrid');
   const isHybrid = fuelTypes.includes('hybrid');
   const isDiesel = fuelTypes.includes('diesel');
 
-  // ~1 500 mil/år – 125 mil/mån
-  const fuel = isEl ? 450 : isLaddhybrid ? 800 : isHybrid ? 1350 : isDiesel ? 1350 : 1750;
+  // Bränsle/el vid 1 500 mil/år (15 000 km/år = 1 250 km/mån)
+  // El: ~20 kWh/100 km × 1 250 km × 0,70 kr/kWh = 175 kr/mån (hemmaladdning ~0,70 kr/kWh inkl. nätavgift)
+  // Laddhybrid: 60 % el + 40 % bensin (0,7 l/mil): 105 + 945 = ~1 050 kr/mån
+  // Mildhybrid: likt bensin men ~10 % bättre → 0,72 l/mil: 1 350 kr/mån
+  // Hybrid: 15 % bättre bensin → 0,68 l/mil: ~1 275 kr/mån
+  // Diesel: 0,58 l/mil × 19,50 kr: ~1 130 kr/mån
+  // Bensin: 0,80 l/mil × 18,00 kr: ~1 800 kr/mån
+  const fuel = isEl
+    ? 175
+    : isLaddhybrid
+    ? 1050
+    : isHybrid
+    ? 1275
+    : isMildhybrid
+    ? 1350
+    : isDiesel
+    ? 1130
+    : 1800;
 
-  // Halvårspremie beroende på bilens värde
-  const insurance = basePrice < 200_000 ? 600 : basePrice < 350_000 ? 850 : basePrice < 550_000 ? 1250 : 1750;
+  // Helförsäkring – halvårspremie delat på 6, baserat på bilens värde
+  const insurance =
+    basePrice < 200_000 ? 450
+    : basePrice < 350_000 ? 625
+    : basePrice < 550_000 ? 900
+    : 1250;
 
-  // Service + reparation + delar
-  const service = isEl ? 250 : isPremium ? 700 : 400;
+  // Service & reparation per mån (inkl. däck, delar, verkstad)
+  // El: ingen olja, regenerativ bromsning – ~200 kr/mån
+  // Premium: märkesverkstad, dyrare delar – ~750 kr/mån
+  // Diesel: lite mer underhåll än bensin – ~500 kr/mån
+  // Standard: ~380 kr/mån
+  const service = isEl ? 200 : isPremium ? 750 : isDiesel ? 500 : 380;
 
-  return { financing, fuel, insurance, service, total: financing + fuel + insurance + service };
+  // Fordonsskatt (fordonsskatt.se) – månadsvis
+  // El: ~1 000 kr/år → 83 kr/mån
+  // Laddhybrid/mildhybrid: ~2 400 kr/år → 200 kr/mån
+  // Hybrid: ~2 800 kr/år → 233 kr/mån
+  // Diesel med lågt CO2: +500 kr/år premium → räkna upp
+  // Bensin medel (130-160 g CO2): ~2 400 kr/år → 200 kr/mån
+  // Stor bensin/SUV (>180 g): ~4 800 kr/år → 400 kr/mån
+  const tax = isEl
+    ? 83
+    : isLaddhybrid || isMildhybrid
+    ? 200
+    : isHybrid
+    ? 233
+    : isDiesel
+    ? 275
+    : basePrice >= 500_000
+    ? 400  // stor/sportbil med högt CO2
+    : 200;
+
+  return { financing, fuel, insurance, service, tax, total: financing + fuel + insurance + service + tax };
 }
 
 export function cn(...inputs: ClassValue[]) {

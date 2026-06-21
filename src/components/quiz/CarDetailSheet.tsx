@@ -93,17 +93,18 @@ function getFuelLabel(fuelTypes: string[]): string {
 function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
   const [open, setOpen] = useState(false);
   const { total } = tco;
-  const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
+  const level = total < 5000 ? 1 : total < 8000 ? 2 : total < 12000 ? 3 : total < 17000 ? 4 : 5;
   const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
   const trackColor = level <= 2 ? '#dcfce7' : level === 3 ? '#ffedd5' : '#fee2e2';
   const pct = (level / 5) * 100;
   const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   const rows: { label: string; value: number; note?: string }[] = [
-    { label: 'Finansiering (lån)', value: tco.financing, note: 'Gäller vid billån – faller bort om du köper kontant' },
-    { label: 'Bränsle / el', value: tco.fuel },
-    { label: 'Försäkring', value: tco.insurance },
+    { label: 'Finansiering (lån)', value: tco.financing, note: 'Vid billån 60 mån – faller bort vid kontantköp' },
+    { label: 'Bränsle / el', value: tco.fuel, note: '1 500 mil/år · hemmaladdning för el' },
+    { label: 'Försäkring (helförsäkring)', value: tco.insurance },
     { label: 'Service & reparation', value: tco.service },
+    { label: 'Fordonsskatt', value: tco.tax },
   ];
   return (
     <div>
@@ -111,7 +112,7 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
       <p className="text-[26px] font-extrabold text-slate-900 tabular-nums leading-none">
         ~{fmt(total)}<span className="text-[14px] font-semibold text-slate-400 ml-1.5">kr/mån</span>
       </p>
-      <p className="text-[10.5px] text-slate-400 mt-1 mb-3">Inkl. finansiering (vid lån) · bränsle/el · försäkring · service – <span className="italic">ungefärliga riktvärden</span></p>
+      <p className="text-[10.5px] text-slate-400 mt-1 mb-3">Inkl. finansiering (lån 60 mån) · bränsle/el (1 500 mil/år) · helförsäkring · service · fordonsskatt – <span className="italic">ungefärliga riktvärden</span></p>
       <div className="relative h-3 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
         <motion.div
           className="absolute left-0 top-0 h-full rounded-xl"

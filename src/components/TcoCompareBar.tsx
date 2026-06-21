@@ -26,6 +26,7 @@ const COST_LABELS: Record<string, string> = {
   fuel: 'Drivmedel',
   insurance: 'Försäkring',
   service: 'Service',
+  tax: 'Fordonsskatt',
 };
 
 const COST_COLORS: Record<string, string> = {
@@ -33,6 +34,7 @@ const COST_COLORS: Record<string, string> = {
   fuel: '#10b981',
   insurance: '#f59e0b',
   service: '#6366f1',
+  tax: '#94a3b8',
 };
 
 function CarSlot({ car, onRemove }: { car: TcoCompareCar; onRemove: () => void }) {
