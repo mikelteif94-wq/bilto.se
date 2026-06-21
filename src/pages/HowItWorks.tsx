@@ -751,7 +751,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               type="button"
-              onClick={() => { window.history.pushState({}, '', '/kop-bil/bestall'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+              onClick={() => { window.history.pushState({}, '', '/gratis-konsultation'); window.dispatchEvent(new PopStateEvent('popstate')); }}
               className="h-12 px-8 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all shadow-[0_4px_14px_rgba(14,110,254,0.30)] hover:shadow-[0_6px_20px_rgba(14,110,254,0.42)] hover:-translate-y-px"
             >
               Kostnadsfri konsultation
