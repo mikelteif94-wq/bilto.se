@@ -208,7 +208,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
       {/* ── NAV ── */}
       <header
-        className={`fixed top-0 inset-x-0 z-30 h-16 transition-all duration-300 ${
+        className={`fixed top-0 inset-x-0 z-30 h-[53px] lg:h-16 transition-all duration-300 ${
           scrolled
             ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100'
             : 'bg-transparent'
