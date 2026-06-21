@@ -341,57 +341,52 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         active="Sälj bil"
         onSelect={handleMenuSelect}
       />
-      <header className={`fixed top-4 left-1/2 -translate-x-1/2 w-[min(900px,calc(100%-32px))] z-40 h-[72px] rounded-full transition-colors duration-300 bg-[#0e6efe] backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.18)] ring-1 ring-white/10`}>
-        <div className="h-full flex items-center justify-between px-4 lg:px-5">
-          {/* Logo */}
-          <button onClick={onBackHome} className="shrink-0 flex items-center">
+      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 bg-[#0e6efe] ${!scrolled ? 'backdrop-blur-md' : ''}`}>
+        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
+          <button
+            type="button"
+            aria-label="Meny"
+            onClick={() => setMenuOpen(true)}
+            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white"
+          >
+            <Menu className="w-6 h-6 text-white" strokeWidth={2} />
+          </button>
+          <button onClick={onBackHome} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center">
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
-              className="h-[52px] lg:h-[68px] w-auto object-contain"
+              className="h-20 lg:h-32 w-auto object-contain"
               fetchPriority="high"
               decoding="async"
             />
           </button>
-
-          {/* Nav links – desktop */}
-          <nav className="hidden lg:flex items-center gap-7">
+          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             <button
               type="button"
               onClick={() => {
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="text-[14px] text-white/75 font-medium transition-colors hover:text-white"
+              className="text-[15px] text-white/70 font-medium transition hover:text-white"
             >
               Bilköpshjälpen
             </button>
             <button
               type="button"
               onClick={onBackHome}
-              className="text-[14px] text-white/75 font-medium transition-colors hover:text-white"
+              className="text-[15px] text-white/70 font-medium transition hover:text-white"
             >
               Sälj bil
             </button>
           </nav>
-
-          {/* Right side */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center ml-auto">
             <a
               href="/gratis-konsultation"
               onMouseEnter={() => { import('../pages/FreeConsultationPage'); import('../pages/KopBilConcierge'); }}
-              className="inline-flex items-center bg-white text-[#0e6efe] text-[13px] font-semibold px-4 h-9 rounded-full hover:bg-blue-50 transition whitespace-nowrap shadow-sm"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[12px] lg:text-[14px] font-semibold px-4 lg:px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
-            <button
-              type="button"
-              aria-label="Meny"
-              onClick={() => setMenuOpen(true)}
-              className="lg:hidden w-9 h-9 flex items-center justify-center text-white"
-            >
-              <Menu className="w-5 h-5 text-white" strokeWidth={2.5} />
-            </button>
           </div>
         </div>
       </header>
