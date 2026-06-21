@@ -205,7 +205,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           src="/files_2615643-2026-06-21T06-29-18-662Z-b858d9c8-9893-488f-8103-98fee9292c16 copy.webp"
           alt=""
           aria-hidden
-          className="absolute inset-0 w-full h-full object-cover object-bottom"
+          className="absolute inset-0 w-full h-full object-cover object-[50%_65%]"
           fetchPriority="high"
           decoding="async"
         />
