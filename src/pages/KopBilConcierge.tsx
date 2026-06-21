@@ -199,97 +199,87 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative bg-[#0e6efe] pt-28 pb-0 overflow-hidden">
-        <div className="absolute -left-60 -top-40 w-[800px] h-[800px] rounded-full bg-[#1a7cff] opacity-50 pointer-events-none" />
-        <div className="absolute right-0 bottom-0 w-[500px] h-[500px] rounded-full bg-[#0a57cc] opacity-40 pointer-events-none" />
+      <section className="relative min-h-[100svh] flex flex-col overflow-hidden">
+        {/* Background image */}
+        <img
+          src="/files_2615643-2026-06-20T00-26-02-459Z-header8.jpg"
+          alt=""
+          aria-hidden
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          fetchPriority="high"
+          decoding="async"
+        />
+        {/* Gradient overlay — strong at top so nav/text readable, fades to transparent */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/25 to-transparent pointer-events-none" />
 
-        <div className="relative max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-end">
-            <div className="pb-12 lg:pb-20">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-[13px] font-semibold mb-6 sm:mb-8">
-                <ShieldCheck className="w-4 h-4 shrink-0" />
-                Vi jobbar alltid för dig — aldrig för handlaren
+        {/* Content — sits below the fixed nav pill (nav is 64px + 12px top = 76px) */}
+        <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
+          <div className="w-full max-w-md">
+            {/* Headline */}
+            <h1 className="text-white text-[36px] sm:text-[48px] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
+              Din personliga<br />bilköpare
+            </h1>
+            <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
+              Gratis · Hela marknaden · Utan förpliktelse
+            </p>
+
+            {/* Card */}
+            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+              <div className="px-6 pt-6 pb-2">
+                <p className="text-[13px] font-bold text-slate-400 uppercase tracking-widest mb-4">Köp bil med expert</p>
+                <ul className="space-y-3 mb-5">
+                  {[
+                    'Söker i hela marknaden, inte bara ett lager',
+                    'Förhandlar pris, ränta och tillval åt dig',
+                    'Granskar historik och skick före köp',
+                    'Koordinerar hemleverans om du vill',
+                  ].map((point) => (
+                    <li key={point} className="flex items-start gap-3 text-slate-700 text-[14px] sm:text-[15px]">
+                      <div className="w-5 h-5 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Check className="w-3 h-3 text-[#0e6efe]" strokeWidth={3} />
+                      </div>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h1 className="text-white text-[38px] sm:text-[52px] lg:text-[62px] font-bold leading-[1.05] tracking-tight">
-                Din personliga<br />
-                <span className="text-white/85">bilköpare</span>
-              </h1>
-              <p className="mt-5 text-white/85 text-[16px] sm:text-[19px] leading-[1.65] max-w-[480px]">
-                Berätta vad du söker. Vi hittar rätt bil, granskar historiken och förhandlar priset — du slipper göra ett enda samtal till en handlare.
-              </p>
 
-              <ul className="mt-7 space-y-3">
-                {[
-                  'Söker i hela marknaden, inte bara ett lager',
-                  'Förhandlar pris, ränta och tillval',
-                  'Granskar historik och skick före köp',
-                  'Gratis — utan förpliktelse',
-                ].map((point) => (
-                  <li key={point} className="flex items-center gap-3 text-white text-[14px] sm:text-[15px] font-medium">
-                    <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                    </div>
-                    {point}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3">
+              <div className="px-6 pb-6 space-y-3">
                 <button
                   type="button"
                   onClick={() => onNavigateBuy()}
-                  className="h-13 sm:h-14 px-7 sm:px-8 rounded-full bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[16px] hover:bg-slate-50 transition shadow-lg inline-flex items-center gap-2 group justify-center"
+                  className="w-full h-13 sm:h-14 rounded-2xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-md inline-flex items-center justify-center gap-2 group"
                 >
                   Kom igång gratis
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
                 </button>
                 <a
                   href="tel:+46855550200"
-                  className="h-13 sm:h-14 px-6 sm:px-7 rounded-full border-2 border-white/30 text-white font-semibold text-[14px] sm:text-[15px] hover:border-white/60 transition inline-flex items-center gap-2 justify-center"
+                  className="w-full h-11 rounded-2xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-slate-50 transition inline-flex items-center justify-center gap-2"
                 >
                   <Phone className="w-4 h-4 shrink-0" />
                   Ring oss: 08-5555 0200
                 </a>
               </div>
-              <p className="mt-4 text-white/55 text-[13px]">Vi hör av oss inom en arbetsdag.</p>
-            </div>
 
-            <div className="hidden lg:flex items-end justify-center pb-0">
-              <img
-                src="/ChatGPT_Image_8_maj_2026_09_33_53.png"
-                alt="Glad kund med ny bil"
-                className="w-full max-w-[500px] object-contain drop-shadow-2xl"
-                fetchPriority="high"
-                decoding="async"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="relative h-14 sm:h-16 mt-0">
-          <svg viewBox="0 0 1440 64" className="absolute bottom-0 w-full" preserveAspectRatio="none" fill="white">
-            <path d="M0,32 C360,80 1080,-16 1440,32 L1440,64 L0,64 Z" />
-          </svg>
-        </div>
-      </section>
-
-      {/* ── Stats bar ── */}
-      <section className="bg-white border-b border-slate-100 py-8 sm:py-10">
-        <div className="max-w-4xl mx-auto px-5 sm:px-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 text-center">
-            {[
-              { value: '5 000+', label: 'Bilar förmedlade' },
-              { value: '~15 000 kr', label: 'Genomsnittlig besparing' },
-              { value: '10+ år', label: 'Erfarenhet i branschen' },
-              { value: '100%', label: 'På kundens sida' },
-            ].map((s) => (
-              <div key={s.label}>
-                <p className="text-[24px] sm:text-[28px] font-bold text-[#0e6efe] tabular-nums tracking-tight leading-none">
-                  {s.value}
-                </p>
-                <p className="text-[12px] sm:text-[13px] text-slate-500 font-medium mt-1.5 leading-snug">{s.label}</p>
+              <div className="border-t border-slate-100 px-6 py-3 flex items-center justify-center gap-4">
+                {[
+                  { value: '5 000+', label: 'Bilar förmedlade' },
+                  { value: '~15 000 kr', label: 'Snittbesparing' },
+                  { value: '100%', label: 'På din sida' },
+                ].map((s) => (
+                  <div key={s.label} className="text-center">
+                    <p className="text-[13px] sm:text-[14px] font-bold text-[#0e6efe] leading-none">{s.value}</p>
+                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">{s.label}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            <div className="flex items-center justify-center gap-1.5 mt-5">
+              <ShieldCheck className="w-4 h-4 text-white/70 shrink-0" />
+              <p className="text-white/70 text-[13px] drop-shadow">Vi jobbar alltid för dig — aldrig för handlaren</p>
+            </div>
           </div>
         </div>
       </section>
