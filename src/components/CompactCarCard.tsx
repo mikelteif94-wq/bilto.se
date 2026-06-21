@@ -34,6 +34,33 @@ function formatSEK(n: number) {
   return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
 }
 
+function OwnershipMeter({ monthlyLow }: { monthlyLow: number }) {
+  const level = monthlyLow < 3000 ? 1 : monthlyLow < 4500 ? 2 : monthlyLow < 6500 ? 3 : monthlyLow < 9000 ? 4 : 5;
+  const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
+  const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
+  const segments = [1, 2, 3, 4, 5];
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
+      <div className="flex items-center gap-[2px]">
+        {segments.map(s => (
+          <div
+            key={s}
+            className="rounded-sm transition-all"
+            style={{
+              width: 10,
+              height: 5,
+              backgroundColor: s <= level ? activeColor : '#e2e8f0',
+              opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1,
+            }}
+          />
+        ))}
+      </div>
+      <span className="text-[9px] font-semibold" style={{ color: activeColor }}>{label}</span>
+    </div>
+  );
+}
+
 function ScoreBadge({ value }: { value: number }) {
   const isTop = value >= 9;
   const isMid = value >= 7.5;
@@ -144,6 +171,7 @@ export default function CompactCarCard({
               <span className="text-[9px] font-semibold text-[#0e6efe]/60">kr/mån</span>
             </div>
           )}
+          {range && <OwnershipMeter monthlyLow={range.low} />}
           {monthlySaving != null && monthlySaving > 0 && (
             <p className="text-[9px] font-semibold text-emerald-600">Sparar {formatSEK(monthlySaving)} kr/mån</p>
           )}
@@ -246,6 +274,7 @@ export default function CompactCarCard({
               <span className="text-[10px] font-semibold text-[#0e6efe]/60">kr/mån</span>
             </div>
           )}
+          {range && <div className="mt-1.5"><OwnershipMeter monthlyLow={range.low} /></div>}
           {monthlySaving != null && monthlySaving > 0 && (
             <p className="mt-1 text-[10.5px] font-semibold text-emerald-600">Sparar {formatSEK(monthlySaving)} kr/mån</p>
           )}
