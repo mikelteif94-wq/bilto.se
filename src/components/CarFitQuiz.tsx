@@ -317,7 +317,7 @@ function scoreCarFit(car: ComparisonCar, a: Answers, isEv: boolean): ScoreResult
   }
 
   let affordability: AffordabilityResult | undefined;
-  if (a.monthly_income && a.monthly_expenses && a.financing_type && a.annual_mileage) {
+  if (a.financing_type !== 'cash' && a.monthly_income && a.monthly_expenses && a.financing_type && a.annual_mileage) {
     const price = car.pricing.used_from_sek || car.pricing.new_from_sek || 300000;
 
     let monthly_financing = 0;
@@ -708,9 +708,14 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
     !car?.specs?.fuel_types?.includes('diesel');
 
   const stepOrder = useMemo<StepId[]>(() => {
-    if (isEv) return ['daily_use', 'annual_mileage', 'financing_type', 'monthly_income', 'monthly_expenses', 'charging', 'ev_daily_range', 'ev_road_trips', 'priorities'];
+    const cashSelected = answers.financing_type === 'cash';
+    if (isEv) {
+      if (cashSelected) return ['daily_use', 'annual_mileage', 'financing_type', 'charging', 'ev_daily_range', 'ev_road_trips', 'priorities'];
+      return ['daily_use', 'annual_mileage', 'financing_type', 'monthly_income', 'monthly_expenses', 'charging', 'ev_daily_range', 'ev_road_trips', 'priorities'];
+    }
+    if (cashSelected) return ['daily_use', 'annual_mileage', 'financing_type', 'fuel_pref', 'priorities'];
     return ['daily_use', 'annual_mileage', 'financing_type', 'monthly_income', 'monthly_expenses', 'fuel_pref', 'priorities'];
-  }, [isEv]);
+  }, [isEv, answers.financing_type]);
 
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
@@ -866,15 +871,16 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
             </div>
 
             {/* Body */}
-            {result ? (
-              <ResultScreen
-                result={result}
-                car={car}
-                onNegotiate={onNegotiate}
-                onRedo={() => { setStep(0); setAnswers({}); setResult(null); }}
-                onClose={onClose}
-              />
-            ) : (
+            <div className="flex-1 min-h-0 flex flex-col">
+              {result ? (
+                <ResultScreen
+                  result={result}
+                  car={car}
+                  onNegotiate={onNegotiate}
+                  onRedo={() => { setStep(0); setAnswers({}); setResult(null); }}
+                  onClose={onClose}
+                />
+              ) : (
               <>
                 {/* Scrollable question area */}
                 <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-5 pt-5 pb-4" style={{ touchAction: 'pan-y' }}>
@@ -933,6 +939,7 @@ export function CarFitQuiz({ car, open, onClose, onNegotiate }: CarFitQuizProps)
                 </div>
               </>
             )}
+            </div>
           </motion.div>
         </>
       )}

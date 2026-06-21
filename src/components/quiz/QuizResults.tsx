@@ -69,6 +69,30 @@ function scoreCarMatch(car: CatalogCar, answers: QuizAnswers): { score: number; 
   const detectedFuelType = detectFuelType(car.model, car.make);
   const brandCategory = getBrandCategory(car.make);
 
+  // Budget filtering — penalise expensive brands when budget is set
+  const budgetMax = answers.budget_max;
+  const budgetMin = answers.budget_min;
+  const budgetType = answers.budget_type;
+  if (budgetMax && budgetMax > 0) {
+    const compData = findComparisonCarByMakeModel(car.make, car.model);
+    const carPrice = compData?.pricing.used_from_sek || compData?.pricing.new_from_sek;
+    if (budgetType === 'cash' && carPrice) {
+      if (carPrice > budgetMax * 1.3) { score -= 40; } // way over budget
+      else if (carPrice > budgetMax) { score -= 20; }
+      else if (budgetMin && carPrice < budgetMin) { score -= 10; }
+      else { score += 15; reasons.push('Passar din budget'); }
+    } else if (budgetType === 'monthly' && carPrice) {
+      // rough monthly estimate: price * 0.007
+      const estMonthly = carPrice * 0.007;
+      if (estMonthly > budgetMax * 1.3) { score -= 40; }
+      else if (estMonthly > budgetMax) { score -= 20; }
+      else { score += 15; reasons.push('Passar din månadsbudget'); }
+    }
+    // Heavily penalise premium brands when budget is low
+    if (budgetType === 'cash' && budgetMax < 400000 && brandCategory === 'premium') { score -= 25; }
+    if (budgetType === 'monthly' && budgetMax < 5000 && brandCategory === 'premium') { score -= 25; }
+  }
+
   if (answers.body_type && answers.body_type.length > 0) {
     if (detectedBodyType && answers.body_type.includes(detectedBodyType)) {
       score += 25;

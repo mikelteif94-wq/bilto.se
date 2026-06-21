@@ -100,7 +100,6 @@ export default function ElCarCard({
   return (
     <div
       className={`group relative bg-white rounded-xl overflow-hidden transition-all duration-300 ${ringClass}`}
-      style={{ touchAction: 'pan-y' }}
     >
       {/* Mobile: horizontal layout */}
       <div className="flex sm:hidden" onClick={() => onDetail?.()}>
