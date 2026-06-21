@@ -324,7 +324,7 @@ export default function SellCarPage({
                 <div className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-[#0e6efe] shrink-0 mt-0.5" />
                   <p className="text-[14.5px] text-slate-600 leading-[1.55]">
-                    En av våra rådgivare ringer upp dig inom kort och hjälper dig välja det bästa sättet att sälja din bil. Helt kostnadsfritt och utan bindning.
+                    En expert ringer upp och guidar dig till bästa sättet att sälja din bil. Kostnadsfritt och utan bindning.
                   </p>
                 </div>
                 <button
@@ -338,7 +338,7 @@ export default function SellCarPage({
             ) : (
               <div className="px-5 sm:px-6 py-5">
                 <p className="text-[14.5px] text-slate-600 leading-[1.55] mb-4">
-                  Lämna ditt namn och nummer så ringer vi upp inom kort och hjälper dig välja rätt spår – helt utan förpliktelser.
+                  Lämna ditt namn och nummer – vi ringer upp och visar dig bästa vägen att sälja din bil.
                 </p>
 
                 <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">
@@ -387,7 +387,7 @@ export default function SellCarPage({
                   {guidanceSubmitting ? 'Skickar...' : 'Ring upp mig'}
                 </button>
                 <p className="mt-3 text-[12px] text-slate-500 text-center">
-                  Vi ringer normalt inom 1 arbetsdag. Helt kostnadsfritt.
+                  Vi ringer inom 4 timmar under kontorstid. Kostnadsfritt, utan bindning.
                 </p>
               </div>
             )}

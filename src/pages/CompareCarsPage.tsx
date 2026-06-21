@@ -1592,12 +1592,12 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       {/* How it works */}
       <section id="sa-funkar-det" className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-b border-slate-100">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 text-center mb-8 sm:mb-10">Så fungerar det</h2>
+          <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 text-center mb-8 sm:mb-10">Din väg till rätt bil</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
             {[
-              { step: '1', title: 'Hitta din bil', desc: 'Jämför våra toppval, använd vår smarta sökning eller testa bilmatch för att hitta rätt.', icon: Search },
-              { step: '2', title: 'Vi förhandlar åt dig', desc: 'Vi kontaktar säljaren, pressar priset och granskar bilen åt dig. Du slipper förhandla själv.', icon: Megaphone },
-              { step: '3', title: 'Affären är klar', desc: 'Du kan tuta och köra med gott samvete – vi har sett till att du gjort en riktigt bra deal.', icon: Handshake },
+              { step: '1', title: 'Välj och jämför', desc: 'Jämför toppval, använd vår smarta sökning eller testa bilmatch för att hitta exakt rätt modell.', icon: Search },
+              { step: '2', title: 'Vi pressar priset', desc: 'Vi kontaktar säljaren, förhandlar priset och granskar bilen åt dig. Du slipper förhandla själv.', icon: Megaphone },
+              { step: '3', title: 'Bilen är din', desc: 'Du kan tuta och köra med gott samvete – vi har sett till att du gjort en riktigt bra affär.', icon: Handshake },
             ].map(s => {
               const StepIcon = s.icon;
               return (

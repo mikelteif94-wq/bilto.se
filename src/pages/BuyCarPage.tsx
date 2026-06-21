@@ -134,7 +134,7 @@ export default function BuyCarPage({
   const currentStepNum = currentIndex + 1;
 
   const titles: Record<FormStep, string> = {
-    track: 'Hur kan vi hjälpa dig?',
+    track: 'Vad behöver du hjälp med?',
     details: track === 'found'
       ? 'Berätta om bilen'
       : track === 'know'
@@ -359,7 +359,7 @@ export default function BuyCarPage({
                   Tack, {contact.namn.split(' ')[0]}!
                 </h1>
                 <p className="text-[15px] text-slate-600 leading-relaxed max-w-sm mx-auto">
-                  Din förfrågan är mottagen. En expert tar vid och hör av sig – du behöver inte göra ett dugg mer.
+                  Din förfrågan är mottagen. En expert tar vid och hör av sig – du behöver inte göra något mer.
                 </p>
               </div>
 
@@ -431,7 +431,7 @@ export default function BuyCarPage({
                   </div>
                   <div>
                     <p className="text-[14px] font-semibold text-slate-900">Vi förhandlar och levererar</p>
-                    <p className="text-[13px] text-slate-500">Du lutar dig tillbaka – vi sköter resten.</p>
+                    <p className="text-[13px] text-slate-500">Du kopplar av – vi sköter allt från förhandling till leverans.</p>
                   </div>
                 </div>
               </div>

@@ -108,10 +108,10 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                 Om Bilto
               </span>
               <h1 className="text-[34px] sm:text-[52px] lg:text-[64px] font-bold leading-[1.05] tracking-tight text-slate-900">
-                En tryggare väg genom den svenska bilaffären.
+                Vi gör bilaffären transparent – och lönsam för dig.
               </h1>
               <p className="mt-5 text-[16px] sm:text-[19px] leading-[1.65] text-slate-500 max-w-2xl">
-                Bilto kopplar samman privatpersoner med kvalitetsgranskade bilhandlare – för ett högre slutpris, en enklare process och en affär som håller hela vägen.
+                Bilto förbinder privatpersoner med granskade bilhandlare – för ett högre slutpris, en enklare process och en affär som håller hela vägen.
               </p>
             </div>
           </div>
@@ -142,14 +142,14 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                   Vår mission
                 </span>
                 <h2 className="text-[26px] sm:text-[38px] font-bold text-slate-900 leading-[1.1] tracking-tight">
-                  Vi gör bilförsäljning rättvis, transparent och enkel – för alla.
+                  Vi tar makten från handlaren och ger den till dig.
                 </h2>
                 <div className="mt-5 space-y-4 text-slate-500 text-[15px] sm:text-[16px] leading-[1.75]">
                   <p>
-                    Alltför länge har den svenska bilmarknaden präglats av osäkerhet: otydliga värderingar, dolda avgifter och köpare som sitter med informationsövertaget. Vi bestämde oss för att ändra på det.
+                    Bilmarknaden har länge präglats av otydliga priser, dolda avgifter och ett informationsövertag på handlarens sida. Vi bestämde oss för att ändra på det.
                   </p>
                   <p>
-                    Idag hjälper Bilto tusentals bilägare att sälja sin bil på egna villkor – med konkurrerande bud från handlare som är granskade innan de ens släpps in i vårt nätverk.
+                    Idag säljer tusentals bilägare via Bilto och får konkurrerande bud från handlare som är granskade innan de ens tillåts lägga ett bud.
                   </p>
                 </div>
 
@@ -238,10 +238,10 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
           </div>
           <div className="relative max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-20 text-center">
             <h2 className="text-[28px] sm:text-[44px] font-bold text-white leading-[1.1] tracking-tight max-w-2xl mx-auto">
-              Redo att sälja på dina villkor?
+              Sälja på dina villkor? Börja här.
             </h2>
             <p className="mt-4 sm:mt-5 text-white/80 text-[15px] sm:text-[17px] leading-[1.7] max-w-lg mx-auto">
-              Få in bud från granskade handlare på några minuter. Du väljer – vi sköter resten.
+              Få bud från granskade handlare på några minuter. Du väljer det bästa – vi hämtar bilen.
             </p>
             <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <button

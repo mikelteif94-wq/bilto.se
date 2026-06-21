@@ -318,7 +318,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
           <p className="text-white/55 text-[17px] sm:text-[20px] font-normal max-w-md leading-relaxed mb-12">
             {heroTab === 'hitta'
-              ? 'Låt våra experter hitta exakt rätt bil – utan stress och krångel.'
+              ? 'Din personliga bilexpert hittar rätt bil och förhandlar priset – utan stress.'
               : 'Jämför bud från hundratals certifierade handlare på 48 timmar.'
             }
           </p>
@@ -515,19 +515,19 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             {[
               {
                 step: '01',
-                title: 'Registrera din bil',
+                title: 'Värdera din bil gratis',
                 text: 'Fyll i regnummer, miltal och skick. Tar under fem minuter.',
                 icon: Car,
               },
               {
                 step: '02',
-                title: 'Handlare lägger bud',
+                title: 'Handlare tävlar om din bil',
                 text: 'Utvalda bilhandlare lämnar sina bästa bud i en sluten auktion under 48 timmar.',
                 icon: TrendingUp,
               },
               {
                 step: '03',
-                title: 'Du väljer',
+                title: 'Du väljer – utan press',
                 text: 'Vi presenterar det högsta budet. Du bestämmer – utan press.',
                 icon: Handshake,
               },
@@ -640,7 +640,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
           <div className="mb-16">
             <p className="text-[12px] font-semibold text-slate-400 uppercase tracking-[0.2em] mb-4">Varför Bilto</p>
             <h2 className="text-[36px] sm:text-[48px] font-black text-slate-900 tracking-[-0.02em] leading-[1.05]">
-              Enkelt. Tryggt. Lönsamt.
+              Snabbt. Tryggt. Lönsamt.
             </h2>
           </div>
 
@@ -648,19 +648,19 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             {[
               {
                 label: '01',
-                title: 'Snabbt och enkelt',
+                title: 'Klart på under 5 minuter',
                 text: 'Vi frågar bara om det som påverkar bilens värde, så att du får ett riktigt bud på några minuter.',
                 perks: ['Tar under 5 minuter', 'Inga onödiga frågor', 'Svar inom 24h'],
               },
               {
                 label: '02',
-                title: 'Full transparens',
+                title: 'Full insyn – inga dolda avgifter',
                 text: 'Se hur miltal, färg och utrustning påverkar värdet. Din mäklare förklarar hela värderingen.',
                 perks: ['Tydlig prisuppdelning', 'Inga dolda avgifter', 'Du ser alla bud'],
               },
               {
                 label: '03',
-                title: 'Tryggt betalt',
+                title: 'Pengarna på kontot direkt',
                 text: 'Du får betalt direkt av en certifierad bilhandlare – utan risk och krångel.',
                 perks: ['Certifierade handlare', 'Säker transaktion', 'Inga mellanhänder'],
               },

@@ -44,7 +44,7 @@ const STEPS = [
   {
     n: '01',
     title: 'Du berättar vad du söker',
-    body: 'Via ett kort formulär – märke, budget, körprofil eller bara ett behov. Det tar två minuter.',
+    body: 'Via ett kort formulär – märke, budget, körprofil eller bara ett behov. Tar två minuter.',
     icon: Search,
   },
   {
@@ -217,10 +217,10 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           <div className="w-full max-w-md">
             {/* Headline */}
             <h1 className="text-white text-[36px] sm:text-[48px] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
-              Din personliga<br />bilköpare
+              Köp bil –<br />med en expert på din sida
             </h1>
             <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
-              Gratis · Hela marknaden · Utan förpliktelse
+              Helt gratis · Söker hela marknaden · Noll bindning
             </p>
 
             {/* Card */}
@@ -280,7 +280,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Processen
             </span>
             <h2 className="text-[28px] sm:text-[44px] font-bold leading-[1.1] text-slate-900 tracking-tight">
-              Fyra steg – du gör nästan ingenting
+              Fyra steg – du behöver bara sitta still
             </h2>
           </div>
 
@@ -333,7 +333,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Vad ingår i tjänsten?
             </h2>
             <p className="text-white/70 mt-3 sm:mt-4 text-[15px] sm:text-[17px] max-w-xl mx-auto leading-relaxed">
-              Allt du behöver från idé till nyckel – utan att du behöver göra jobbet.
+              Allt från idé till nyckel – vi gör jobbet åt dig.
             </p>
           </div>
 
@@ -372,7 +372,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Kundcase
             </span>
             <h2 className="text-[26px] sm:text-[40px] font-bold text-slate-900 leading-tight tracking-tight">
-              Vad en Bilto-expert faktiskt gör åt dig
+              Vad din Bilto-expert gör åt dig
             </h2>
           </div>
 
@@ -497,10 +497,10 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       <section className="bg-slate-50 border-t border-slate-200 py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-[28px] sm:text-[48px] font-bold text-slate-900 leading-[1.1] tracking-tight">
-            Redo att köpa bil –<br className="hidden sm:block" /> utan stressen?
+            Trött på bilköps-kaos?<br className="hidden sm:block" /> Vi sköter det.
           </h2>
           <p className="text-slate-500 mt-4 sm:mt-5 text-[15px] sm:text-[17px] leading-[1.65] max-w-lg mx-auto">
-            Det tar två minuter att berätta vad du söker. Resten är upp till oss.
+            Berätta vad du söker – resten tar vi hand om.
           </p>
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <button
@@ -520,7 +520,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             </a>
           </div>
           <p className="mt-5 text-[12px] sm:text-[13px] text-slate-400">
-            Gratis · Utan förpliktelse · Vi hör av oss inom en arbetsdag
+            Gratis · Utan bindning · Vi hör av oss inom en arbetsdag
           </p>
         </div>
       </section>

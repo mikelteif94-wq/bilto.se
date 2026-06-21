@@ -57,18 +57,18 @@ interface Step {
 const DIRECT_STEPS: Step[] = [
   {
     icon: Phone,
-    title: 'Du får en personlig rådgivare',
-    text: 'Oavsett om du säljer, byter eller köper bil – en rådgivare hjälper dig genom hela processen.',
+    title: 'Din egen expert från dag ett',
+    text: 'En dedikerad rådgivare tar hand om dig hela vägen – oavsett om du säljer, byter eller köper bil.',
   },
   {
     icon: Gavel,
-    title: 'Vi hittar bästa budet',
-    text: 'Vi jämför erbjudanden från bilhandlare åt dig – oavsett om du ska sälja din bil, byta in den eller köpa en ny. Bästa erbjudandet vinner!',
+    title: 'Vi pressar fram bästa budet',
+    text: 'Vi inhämtar konkurrerande bud från granskade bilhandlare och presenterar bara det bästa. Du jämför, du väljer.',
   },
   {
     icon: Handshake,
-    title: 'Vi hämtar eller lämnar bilen',
-    text: 'När du tackar ja ordnar vi upphämtning av din sålda bil eller leverans av din nya – gäller vid försäljning, inbyte och köp. Ingen krångel.',
+    title: 'Vi hämtar eller levererar bilen',
+    text: 'Tackar du ja ordnar vi upphämtning av din sålda bil eller leverans av den nya – var som helst i Sverige. Noll krångel.',
   },
 ];
 
@@ -81,27 +81,27 @@ const DIRECT_STEP_IMAGES = [
 const FAQ = [
   {
     q: 'Vad kostar det att använda Bilto?',
-    a: 'Det kostar 1 995 kr i fast administrativ avgift – det är allt du betalar, inga dolda avgifter och inget provision. Avgiften gäller dig som privatperson och täcker vår förhandling, granskning och all administration kring affären. Handlare och företag omfattas inte av denna tjänst.',
+    a: 'Det kostar 1 995 kr i fast avgift – det är allt du betalar. Inga dolda avgifter, noll provision. Avgiften täcker förhandling, granskning och all administration kring affären. Gäller privatpersoner.',
   },
   {
     q: 'Hur hjälper Bilto mig att köpa bil?',
-    a: 'Du berättar vilken bil du är intresserad av och vi tar över därifrån. Vi kontaktar säljaren, granskar annonsens riktighet, förhandlar pris, ränta och tillbehör, och ser till att du inte betalar mer än du behöver.',
+    a: 'Du berättar vilken bil du är intresserad av – vi tar över härifrån. Vi kontaktar säljaren, verifierar annonsens riktighet, förhandlar pris, ränta och tillbehör, och ser till att du inte betalar mer än du måste.',
   },
   {
     q: 'Hur stor besparing kan jag räkna med?',
-    a: 'Det varierar, men våra kunder sparar i snitt 15 000–40 000 kr per bilaffär när man räknar ihop prisnedförhandling, inbytesvärde, ränta och tillbehör som förhandlas in. Vår avgift på 1 995 kr betalar sig alltså mångfalt.',
+    a: 'Våra kunder sparar i snitt 15 000–40 000 kr per bilaffär – räknat på prisnedförhandling, inbytesvärde, ränta och tillbehör. Vår avgift på 1 995 kr betalar sig alltså mångfalt.',
   },
   {
     q: 'Kan ni hjälpa mig även om jag inte hittat en bil ännu?',
-    a: 'Absolut. Vi kan hjälpa dig hitta rätt bil via vår bilmatch, smarta sökning eller helt enkelt genom att du berättar vad du söker. Sen sköter vi resten.',
+    a: 'Absolut. Vi hjälper dig hitta rätt bil via vår bilmatch eller sökning, eller helt enkelt utifrån vad du berättar att du söker. Sen sköter vi resten.',
   },
   {
     q: 'Vad händer om säljaren inte går med på förhandlingen?',
-    a: 'Då berättar vi det rakt ut och ger dig vår rekommendation – är bilen rätt prissatt eller inte. Du bestämmer alltid om du vill gå vidare.',
+    a: 'Då berättar vi det rakt ut och ger dig vår opartiska bedömning – är bilen rätt prissatt eller inte. Du bestämmer alltid om du vill gå vidare.',
   },
   {
     q: 'När betalar jag avgiften?',
-    a: 'Avgiften på 1 995 kr betalas när vi påbörjar förhandlingen åt dig. Om affären inte går igenom på grund av att säljaren avböjer kontaktar du oss så löser vi det.',
+    a: 'Avgiften på 1 995 kr betalas när vi påbörjar förhandlingen åt dig. Om affären inte går igenom på grund av att säljaren avböjer, hör du av dig till oss så löser vi det.',
   },
 ];
 
@@ -410,10 +410,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
           <div className="w-full max-w-md">
             <h1 className="text-white text-[clamp(22px,6.5vw,50px)] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2 whitespace-nowrap">
-              Din bilaffär börjar här
+              Sälj, köp eller byt bil
             </h1>
             <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
-              Sälj, köp eller byt bil – enkelt, tryggt och helt gratis
+              Gratis värdering • Fri upphämtning • Pengar direkt på kontot
             </p>
 
             <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
@@ -639,9 +639,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               </p>
               <ul className="mt-6 space-y-3">
                 {[
-                  'En personlig bilmäklare på din sida',
-                  'Vi granskar pris, villkor och avtal',
-                  'Betala bara om affären blir av',
+                  'En dedikerad bilmäklare på din sida',
+                  'Vi granskar pris, villkor och avtal åt dig',
+                  'Du betalar bara om affären går i lås',
                   'Fungerar vid köp, byte och leasing',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
@@ -694,12 +694,12 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-14">
             <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Bilkatalogen</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
-              Vad våra kunder bytt till nyligen
-            </h2>
-            <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
-              Hitta din nästa bil bland de mest eftertraktade modellerna. Vi hjälper dig hela vägen – från val till affär.
-            </p>
+              <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
+                Vad våra kunder bytt till senast
+              </h2>
+              <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
+                Populäraste modellerna just nu. Berätta vad du söker – vi hittar den och förhandlar priset.
+              </p>
           </div>
 
           {(() => {
@@ -794,13 +794,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 Din personliga rådgivare
               </h2>
               <p className="text-slate-500 mt-4 text-[15px] leading-[1.65]">
-                En dedikerad rådgivare jämför bud från utvalda bilhandlare och presenterar det bästa erbjudandet – du slipper samtal och förhandlingar.
+                En dedikerad expert hanterar hela processen – från att inhämta bud till att presentera det bästa erbjudandet. Du slipper telefonsamtal från handlare och onödiga förhandlingar.
               </p>
               <ul className="mt-6 space-y-3">
                 {[
                   'Samma kontaktperson hela vägen',
-                  'Du slipper samtal från olika bilhandlare',
-                  'Vi sköter kontakten och förhandlingen åt dig',
+                  'Inga samtal från okända handlare',
+                  'Vi förhandlar och sköter all kontakt åt dig',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[14px] text-slate-700">
                     <Check className="w-4 h-4 mt-0.5 text-emerald-500 shrink-0" strokeWidth={2.5} />
@@ -848,15 +848,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <div className="order-1 md:order-2">
               <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Täcker hela Sverige</p>
               <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
-                Vi hämtar bilen oavsett var du bor
+                Din bil hämtas – var du än bor
               </h2>
               <p className="text-slate-500 mt-4 text-[15px] leading-[1.65]">
-                När du accepterar ett bud bokar vi upphämtning på en plats som passar dig. Bilen hämtas tryggt och smidigt – utan stress eller onödiga resor.
+                När du accepterar ett bud bokar vi upphämtning på en plats som passar dig. Gratis, smidigt och utan onödiga resor.
               </p>
               <ul className="mt-6 space-y-3">
                 {[
                   'Vi hämtar där det passar dig',
-                  'Trygg upphämtning utan krångel',
+                  'Trygg och smidig upphämtning',
                   'Ingen upphämtningsavgift',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[14px] text-slate-700">
@@ -876,7 +876,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           <div className="mb-10 sm:mb-14 max-w-2xl">
             <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Trygghet</p>
             <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
-              Din partner för en trygg och smart bilaffär
+              Din partner för en trygg och lönsam bilaffär
             </h2>
           </div>
 
@@ -885,7 +885,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               {
                 icon: ShieldCheck,
                 title: 'Granskade handlare',
-                text: 'Endast auktoriserade bilhandlare med dokumenterad historik deltar. Vi granskar företag, omdömen och tidigare affärer innan någon får lägga ett bud.',
+                text: 'Endast auktoriserade bilhandlare med dokumenterad historik deltar. Vi granskar företag, omdömen och tidigare affärer – innan de ens får lägga ett bud.',
               },
               {
                 icon: Clock,
@@ -894,7 +894,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               },
               {
                 icon: Check,
-                title: 'Ingen förpliktelse',
+                title: 'Noll förpliktelse',
                 text: 'Du är aldrig bunden att sälja. Tacka nej till budet om du inte är nöjd – det kostar dig ingenting att avstå.',
               },
             ].map((b) => {
@@ -923,13 +923,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <div className="relative grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
               <div>
                 <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-bold tracking-tight leading-[1.06] text-white">
-                  Vill du ha hjälp att få bästa affären?
+                  Vill du ha en expert i ditt hörn?
                 </h2>
                 <ul className="mt-6 space-y-3">
                   {[
-                    'En personlig bilexpert sköter förhandlingen',
-                    'Vi jämför bud från handlare åt dig',
-                    'Du får konkreta råd och sparar pengar',
+                    'En personlig bilexpert sköter hela förhandlingen',
+                    'Vi jämför bud från granskade handlare åt dig',
+                    'Du sparar i snitt 15 000–40 000 kr per affär',
                   ].map((text) => (
                     <li key={text} className="flex items-center gap-3">
                       <span className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-white/20">
@@ -981,11 +981,11 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           <div className="grid md:grid-cols-12 gap-8 sm:gap-12 items-center">
             <div className="md:col-span-5">
               <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-4">Kundberättelse</p>
-              <h2 className="text-[24px] sm:text-[34px] font-semibold leading-[1.12] text-slate-900 tracking-[-0.02em]">
+              <h2 className="text-[28px] sm:text-[34px] font-semibold leading-[1.12] text-slate-900 tracking-[-0.02em]">
                 "Jag visste ingenting om bilar – Bilto skötte allt och jag fick mer än jag vågat hoppas på."
               </h2>
               <p className="text-[13px] text-slate-400 mt-5 font-medium">
-                Josefin L. – Volvo XC40, 2022
+                Josefin L. – sålde sin Volvo XC40, 2022
               </p>
             </div>
             <div className="md:col-span-7">
@@ -1010,7 +1010,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           <div className="mb-10 sm:mb-14">
             <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3">Vanliga frågor</p>
             <h2 className="text-[28px] sm:text-[38px] font-bold text-white tracking-[-0.02em] leading-[1.08]">
-              Fler frågor? Vi har svaren.
+              Vanliga frågor – vi svarar rakt på sak.
             </h2>
           </div>
           <div className="divide-y divide-white/15 border-y border-white/15">

@@ -384,13 +384,13 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
       <div className="bg-[#0e6efe] pt-32 pb-16 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="inline-flex items-center gap-1.5 bg-white/15 text-white text-xs font-semibold px-3 py-1.5 rounded-xl mb-5 tracking-wide uppercase">
-            Kostnadsfritt första möte
+            Gratis – ingen bindning
           </div>
           <h1 className="text-[28px] sm:text-4xl font-bold text-white leading-tight tracking-tight">
-            Boka din kostnadsfria konsultation
+            Boka gratis samtal med en bilexpert
           </h1>
           <p className="mt-3 text-blue-100 text-[15px] sm:text-base max-w-lg mx-auto leading-relaxed">
-            En av våra bilexperter ringer upp dig vid en tid som passar. Vi lyssnar, ger råd och hjälper dig – utan förpliktelser.
+            En expert ringer vid en tid du väljer. Konkreta råd, inga säljtricks – och absolut noll bindning.
           </p>
         </div>
       </div>
@@ -403,7 +403,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
           {/* Step 1: Syfte */}
           {step === 'syfte' && (
             <div>
-              <h2 className="text-[22px] font-bold text-slate-900 mb-1">Vad kan vi hjälpa dig med?</h2>
+              <h2 className="text-[22px] font-bold text-slate-900 mb-1">Vad behöver du hjälp med?</h2>
               <p className="text-slate-500 text-[14px] mb-6">Välj det alternativ som passar bäst.</p>
               <div className="space-y-2.5">
                 {SYFTE_OPTIONS.map(opt => (
