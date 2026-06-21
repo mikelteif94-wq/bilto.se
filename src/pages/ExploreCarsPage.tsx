@@ -1,12 +1,18 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import {
-  Search, X, ChevronDown, SlidersHorizontal, Zap, Leaf, Fuel,
-  Car, ChevronRight, Star, Users, Filter, ArrowUpDown, Loader2,
+  Search, X, ChevronDown, Zap, Leaf,
+  Car, ChevronRight, Users, Filter, ArrowUpDown, Loader2,
+  Handshake, ArrowLeftRight, ArrowRight,
 } from 'lucide-react';
 import { useCatalogCars, type CatalogCarFull } from '../hooks/useCatalogCars';
 import { calcCarMonthlyRange } from '../lib/utils';
 import { SiteFooter } from '../components/SiteFooter';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { DetailCarData } from '../components/quiz/CarDetailSheet';
+
+const CarDetailSheet = lazy(() =>
+  import('../components/quiz/CarDetailSheet').then(m => ({ default: m.CarDetailSheet }))
+);
 
 /* ─── helpers ─── */
 
@@ -299,11 +305,101 @@ function MobileFilterDrawer({
   );
 }
 
+/* ─── IntentSheet ─── */
+
+function IntentSheet({
+  car,
+  onClose,
+  onChoose,
+}: {
+  car: CatalogCarFull | null;
+  onClose: () => void;
+  onChoose: (track: 'found' | 'searching' | 'trade') => void;
+}) {
+  const name = car ? `${car.make} ${car.model}` : 'bil';
+
+  return (
+    <AnimatePresence>
+      {car && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 z-40 backdrop-blur-sm"
+            onClick={onClose}
+          />
+          <motion.div
+            initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+            transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+            className="fixed bottom-0 inset-x-0 z-50 bg-white rounded-t-2xl"
+          >
+            <div className="px-5 pt-5 pb-safe-bottom">
+              <div className="flex items-center justify-between mb-1">
+                <h2 className="text-[17px] font-bold text-slate-900">Välj hur vi kan hjälpa dig</h2>
+                <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-100">
+                  <X className="w-5 h-5 text-slate-400" />
+                </button>
+              </div>
+              <p className="text-[13px] text-slate-400 mb-4">Välj det som passar dig bäst.</p>
+
+              <div className="space-y-2.5 pb-6">
+                <button
+                  type="button"
+                  onClick={() => onChoose('found')}
+                  className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
+                    <Handshake className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-semibold text-slate-900 leading-snug">Jag har hittat en {name}</p>
+                    <p className="text-[12.5px] text-slate-400 mt-0.5 leading-snug">Vi förhandlar med säljaren åt dig och pressar priset.</p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onChoose('searching')}
+                  className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
+                    <Search className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-semibold text-slate-900 leading-snug">Jag letar efter en {name}</p>
+                    <p className="text-[12.5px] text-slate-400 mt-0.5 leading-snug">Vi hittar, kollar och förhandlar åt dig.</p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onChoose('trade')}
+                  className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
+                    <ArrowLeftRight className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-semibold text-slate-900 leading-snug">Jag vill byta in</p>
+                    <p className="text-[12.5px] text-slate-400 mt-0.5 leading-snug">Vi sköter inbytet och hjälper dig hitta ny bil.</p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
 /* ─── Main Page ─── */
 
 interface Props {
   onBackHome: () => void;
-  onBuyCar: (make: string, model: string) => void;
+  onBuyCar: (make: string, model: string, typ?: string) => void;
 }
 
 export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
@@ -317,6 +413,8 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(24);
+  const [intentCar, setIntentCar] = useState<CatalogCarFull | null>(null);
+  const [detailCar, setDetailCar] = useState<DetailCarData | null>(null);
 
   const sortRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -565,8 +663,23 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
                   <CarCard
                     key={car.id}
                     car={car}
-                    onBuy={() => onBuyCar(car.make, car.model)}
-                    onDetail={() => onBuyCar(car.make, car.model)}
+                    onBuy={() => setIntentCar(car)}
+                    onDetail={() => {
+                      const img = car.cleaned_image_url || car.image_url;
+                      setDetailCar({
+                        make: car.make,
+                        model: car.model,
+                        image_url: img,
+                        matchScore: car.rating_overall ? car.rating_overall * 10 : 70,
+                        matchReasons: car.strengths?.slice(0, 3) ?? [],
+                        bodyType: car.body_type ?? undefined,
+                        fuelType: car.fuel_types?.[0] ?? undefined,
+                        seats: car.seats ?? undefined,
+                        cargo: car.baggage_liters ? `${car.baggage_liters} l` : undefined,
+                        rating: car.rating_overall ?? undefined,
+                        usedPrice: car.price_used_from ?? undefined,
+                      });
+                    }}
                   />
                 ))}
               </AnimatePresence>
@@ -602,6 +715,32 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
         setMaxBudget={(n) => { setMaxBudget(n); setVisibleCount(24); }}
         onReset={resetFilters}
       />
+
+      <IntentSheet
+        car={intentCar}
+        onClose={() => setIntentCar(null)}
+        onChoose={(track) => {
+          if (!intentCar) return;
+          setIntentCar(null);
+          onBuyCar(intentCar.make, intentCar.model, track);
+        }}
+      />
+
+      <Suspense fallback={null}>
+        {detailCar && (
+          <CarDetailSheet
+            car={detailCar}
+            onClose={() => setDetailCar(null)}
+            onSelect={() => {
+              const car = detailCar;
+              setDetailCar(null);
+              const catalogCar = cars.find(c => c.make === car.make && c.model === car.model);
+              if (catalogCar) setIntentCar(catalogCar);
+              else onBuyCar(car.make, car.model, 'found');
+            }}
+          />
+        )}
+      </Suspense>
 
       <SiteFooter />
     </div>

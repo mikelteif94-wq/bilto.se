@@ -438,9 +438,10 @@ function App() {
             setPath('/');
             setPublicRoute({ page: 'home' });
           }}
-          onBuyCar={(make, model) => {
+          onBuyCar={(make, model, typ) => {
             const bil = encodeURIComponent(`${make} ${model}`);
-            window.history.pushState({}, '', `/kop-bil/bestall?bil=${bil}&typ=found`);
+            const track = typ ?? 'found';
+            window.history.pushState({}, '', `/kop-bil/bestall?bil=${bil}&typ=${track}`);
             setPath('/kop-bil/bestall');
           }}
         />
