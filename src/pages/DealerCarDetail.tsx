@@ -346,7 +346,7 @@ export default function DealerCarDetail({
           {(car as Record<string, unknown>).momsbil && (
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-md px-4 py-3">
               <Receipt className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span className="text-sm font-semibold text-emerald-800">Momsbil -- moms avdragsgill</span>
+              <span className="text-sm font-semibold text-emerald-800">Momsbil — moms avdragsgill</span>
             </div>
           )}
 

@@ -706,7 +706,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   }, []);
 
   useEffect(() => {
-    document.title = 'Köp bil -- Jämför, hitta & förhandla | Bilto';
+    document.title = 'Köp bil — Jämför, hitta & förhandla | Bilto';
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -1558,7 +1558,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     <div className="w-14 h-14 rounded-xl bg-slate-200 flex items-center justify-center mx-auto mb-4">
                       <Car className="w-6 h-6 text-slate-400" />
                     </div>
-                    <p className="text-[14px] text-slate-500 mb-4">Vi hjälper dig ändå -- kontakta oss så hittar vi rätt bil.</p>
+                    <p className="text-[14px] text-slate-500 mb-4">Vi hjälper dig ändå — kontakta oss så hittar vi rätt bil.</p>
                     <button onClick={() => setBuyDrawerCar('')} className="h-11 px-6 rounded-xl bg-[#0e6efe] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition">
                       Kontakta oss <ArrowRight className="w-4 h-4" />
                     </button>
@@ -1597,7 +1597,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             {[
               { step: '1', title: 'Hitta din bil', desc: 'Jämför våra toppval, använd vår smarta sökning eller testa bilmatch för att hitta rätt.', icon: Search },
               { step: '2', title: 'Vi förhandlar åt dig', desc: 'Vi kontaktar säljaren, pressar priset och granskar bilen åt dig. Du slipper förhandla själv.', icon: Megaphone },
-              { step: '3', title: 'Affären är klar', desc: 'Du kan tuta och köra med gott samvete -- vi har sett till att du gjort en riktigt bra deal.', icon: Handshake },
+              { step: '3', title: 'Affären är klar', desc: 'Du kan tuta och köra med gott samvete — vi har sett till att du gjort en riktigt bra deal.', icon: Handshake },
             ].map(s => {
               const StepIcon = s.icon;
               return (
@@ -1987,7 +1987,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       ].map(item => (
                         <li key={item.label} className="flex items-start gap-2 text-[11px]">
                           <div className="w-1.5 h-1.5 rounded-full bg-[#0e6efe] mt-1 shrink-0" />
-                          <span><span className="font-semibold text-slate-800">{item.label}</span>{' '}<span className="text-slate-500">-- {item.desc}</span></span>
+                          <span><span className="font-semibold text-slate-800">{item.label}</span>{' '}<span className="text-slate-500">— {item.desc}</span></span>
                         </li>
                       ))}
                     </ul>
@@ -2294,7 +2294,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               {
                 icon: Search,
                 title: 'Vi letar bilen åt dig',
-                text: 'Vi kontrollerar hela marknaden -- inte bara en handlares lager -- och hittar bilar som matchar dina önskemål och budget.',
+                text: 'Vi kontrollerar hela marknaden — inte bara en handlares lager — och hittar bilar som matchar dina önskemål och budget.',
                 svg: '/certified-pre-own.75373bb7.svg',
               },
               {
@@ -2347,7 +2347,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               Grundlig genomgång
             </span>
             <h2 className="text-[26px] sm:text-[48px] font-semibold leading-[1.1] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
-              Vi granskar varje detalj -- så slipper du oroa dig
+              Vi granskar varje detalj — så slipper du oroa dig
             </h2>
             <p className="text-slate-600 mt-4 sm:mt-6 text-[15px] sm:text-[18px] leading-[1.6] max-w-2xl mx-auto">
               Innan vi rekommenderar en bil till dig går vi igenom fem kritiska datapunkter. Inget lämnas åt slumpen.
@@ -2374,7 +2374,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             </div>
             <div className="lg:col-span-1 space-y-6 sm:space-y-8 order-3">
               {[
-                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik -- vi bedömer det faktiska skicket, inte bara foton i annonsen.' },
+                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik — vi bedömer det faktiska skicket, inte bara foton i annonsen.' },
                 { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
                 { label: 'Bilalternativ', desc: 'Vi jämför att din bil ligger rätt till i marknaden så att du inte betalar för mycket.' },
               ].map((point) => (
