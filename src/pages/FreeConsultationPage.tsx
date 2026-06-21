@@ -569,20 +569,24 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
 
       {step !== 'bekraftelse' && (
         <div className="border-t border-slate-100 py-10 px-4 mt-4">
-          <div className="max-w-lg mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-            {[
-              { icon: Check,        color: 'text-green-600', bg: 'bg-green-50',    title: '100% kostnadsfritt', desc: 'Du betalar ingenting för konsultationen.' },
-              { icon: Phone,        color: 'text-[#0e6efe]', bg: 'bg-blue-50',     title: 'Vi ringer dig',      desc: 'Ingen väntan i telefonkö — vi tar initiativet.' },
-              { icon: ShieldCheck,  color: 'text-slate-600', bg: 'bg-slate-100',   title: 'Inga förpliktelser', desc: 'Tacka nej utan förklaring, när du vill.' },
-            ].map(item => (
-              <div key={item.title} className="flex flex-col items-center gap-2">
-                <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center`}>
-                  <item.icon className={`w-5 h-5 ${item.color}`} strokeWidth={1.8} />
+          <div className="max-w-lg mx-auto">
+            <div className="flex flex-col sm:flex-row items-stretch divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+              {[
+                { icon: Check,       color: 'text-emerald-600', bg: 'bg-emerald-50',  title: 'Kostnadsfritt',     desc: 'Du betalar ingenting för konsultationen.' },
+                { icon: Phone,       color: 'text-[#0e6efe]',   bg: 'bg-blue-50',     title: 'Vi ringer dig',     desc: 'Vi tar initiativet — ingen väntan i kö.' },
+                { icon: ShieldCheck, color: 'text-slate-600',   bg: 'bg-slate-100',   title: 'Inga förpliktelser', desc: 'Tacka nej när du vill, utan förklaring.' },
+              ].map(item => (
+                <div key={item.title} className="flex-1 flex items-start gap-3 py-5 sm:py-0 sm:px-6 first:pt-0 last:pb-0 sm:first:pl-0 sm:last:pr-0">
+                  <div className={`w-9 h-9 rounded-xl ${item.bg} flex items-center justify-center shrink-0 mt-0.5`}>
+                    <item.icon className={`w-4.5 h-4.5 ${item.color}`} strokeWidth={2} style={{ width: 18, height: 18 }} />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-[14px] text-slate-900 leading-snug">{item.title}</div>
+                    <div className="text-[13px] text-slate-500 mt-0.5 leading-snug">{item.desc}</div>
+                  </div>
                 </div>
-                <div className="font-semibold text-[14px] text-slate-800">{item.title}</div>
-                <div className="text-[13px] text-slate-500 leading-snug">{item.desc}</div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       )}
