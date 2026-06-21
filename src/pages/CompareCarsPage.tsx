@@ -971,7 +971,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   return (
     <div className="min-h-screen bg-[#faf8f5]">
       {/* Navbar */}
-      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]/40 backdrop-blur-md'}`}>
+      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-12 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]/40 backdrop-blur-md'}`}>
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button type="button" aria-label="Meny" onClick={() => setMenuOpen(true)} className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white">
             <Menu className="w-6 h-6 text-white" strokeWidth={2} />

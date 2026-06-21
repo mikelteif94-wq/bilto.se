@@ -75,7 +75,7 @@ export default function QuotePage({
         onSelect={handleMenuSelect}
       />
       <header
-        className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${
+        className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-30 h-12 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${
           scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]/40 backdrop-blur-md'
         }`}
       >
