@@ -2078,17 +2078,17 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       </section>
 
       {/* AI Smart Search */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-orange-500">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-[#0e1c2f]">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/20 text-[13px] font-medium text-white mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-[13px] font-medium text-white mb-4">
               <Search className="w-4 h-4 text-white" />
               Smart bilsökning
             </div>
             <h2 className="text-[22px] sm:text-[32px] font-bold text-white mb-2">
               Hittar du inte rätt bil?
             </h2>
-            <p className="text-orange-100 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
+            <p className="text-slate-300 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
               Beskriv vad du söker så hjälper vi dig hitta rätt bil.
             </p>
           </div>
