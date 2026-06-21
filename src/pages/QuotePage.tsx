@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import {
   Menu, User, Check, Phone, Handshake, ShieldCheck, Megaphone, Search, Sparkles, Gavel,
   ArrowRight, TrendingDown, Lock,
@@ -10,6 +10,10 @@ import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import { SiteFooter } from '../components/SiteFooter';
 import { getAllComparisonCars, type ComparisonCar } from '../lib/comparison';
 import { useCarImages } from '../hooks/useCarImages';
+
+const CarFitQuiz = lazy(() =>
+  import('../components/CarFitQuiz').then(m => ({ default: m.CarFitQuiz }))
+);
 
 interface QuotePageProps {
   onBackHome: () => void;
@@ -25,6 +29,7 @@ export default function QuotePage({
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [detailCar, setDetailCar] = useState<ComparisonCar | null>(null);
+  const [fitQuizCar, setFitQuizCar] = useState<ComparisonCar | null>(null);
   const { getCarImage } = useCarImages();
   const allCars = getAllComparisonCars();
   const TRADE_IN_IDS = ['volvo_xc60', 'bmw_x3', 'tesla_model_y'];
@@ -668,9 +673,27 @@ export default function QuotePage({
             setDetailCar(null);
             navigateToBuy(`${car.brand_display} ${car.model_display}`);
           }}
-          onFitQuiz={() => setDetailCar(null)}
+          onFitQuiz={() => {
+            const car = detailCar;
+            setDetailCar(null);
+            setFitQuizCar(car);
+          }}
         />
       )}
+
+      <Suspense fallback={null}>
+        <CarFitQuiz
+          car={fitQuizCar!}
+          open={!!fitQuizCar}
+          onClose={() => setFitQuizCar(null)}
+          onNegotiate={() => {
+            if (fitQuizCar) {
+              setFitQuizCar(null);
+              navigateToBuy(`${fitQuizCar.brand_display} ${fitQuizCar.model_display}`);
+            }
+          }}
+        />
+      </Suspense>
     </div>
   );
 }
