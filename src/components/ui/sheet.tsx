@@ -59,12 +59,12 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
             exit={{ y: '100%' }}
             transition={{ type: 'tween', ease: [0.32, 0.72, 0, 1], duration: 0.32 }}
             className={cn(
-              'relative w-full sm:max-w-[460px] max-h-[92vh] bg-white rounded-t-xl sm:rounded-b-none flex flex-col shadow-2xl',
+              'relative w-full sm:max-w-[460px] max-h-[92vh] bg-white rounded-t-2xl sm:rounded-b-none flex flex-col shadow-2xl',
               className
             )}
           >
             {/* Handle + close */}
-            <div className="sticky top-0 z-10 flex items-center justify-center pt-3 pb-2 bg-white rounded-t-xl">
+            <div className="sticky top-0 z-10 flex items-center justify-center pt-3 pb-2 bg-white rounded-t-2xl">
               <div className="w-10 h-1 rounded-full bg-slate-200" />
               <button
                 type="button"

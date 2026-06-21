@@ -9,9 +9,14 @@ import { calcCarMonthlyRange } from '../lib/utils';
 import { SiteFooter } from '../components/SiteFooter';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { DetailCarData } from '../components/quiz/CarDetailSheet';
+import { getAllComparisonCars } from '../lib/comparison';
+import type { ComparisonCar } from '../lib/comparison/types';
 
 const CarDetailSheet = lazy(() =>
   import('../components/quiz/CarDetailSheet').then(m => ({ default: m.CarDetailSheet }))
+);
+const CarFitQuiz = lazy(() =>
+  import('../components/CarFitQuiz').then(m => ({ default: m.CarFitQuiz }))
 );
 
 /* ─── helpers ─── */
@@ -471,6 +476,7 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
   const [visibleCount, setVisibleCount] = useState(24);
   const [intentCar, setIntentCar] = useState<CatalogCarFull | null>(null);
   const [detailCar, setDetailCar] = useState<DetailCarData | null>(null);
+  const [fitQuizCar, setFitQuizCar] = useState<ComparisonCar | null>(null);
 
   const sortRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -794,8 +800,31 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
               if (catalogCar) setIntentCar(catalogCar);
               else onBuyCar(car.make, car.model, 'found');
             }}
+            onFitQuiz={() => {
+              const car = detailCar;
+              setDetailCar(null);
+              const cc = getAllComparisonCars().find(
+                c => c.brand_display.toLowerCase() === car.make.toLowerCase() &&
+                     c.model_display.toLowerCase() === car.model.toLowerCase()
+              );
+              if (cc) setFitQuizCar(cc);
+            }}
           />
         )}
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <CarFitQuiz
+          car={fitQuizCar!}
+          open={!!fitQuizCar}
+          onClose={() => setFitQuizCar(null)}
+          onNegotiate={() => {
+            if (fitQuizCar) {
+              setFitQuizCar(null);
+              onBuyCar(fitQuizCar.brand_display, fitQuizCar.model_display);
+            }
+          }}
+        />
       </Suspense>
 
       <SiteFooter />
