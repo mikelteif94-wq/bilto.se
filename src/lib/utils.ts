@@ -29,6 +29,49 @@ export function calcCarMonthlyRange(
   };
 }
 
+const PREMIUM_MAKES = new Set(['bmw', 'mercedes', 'audi', 'porsche', 'lexus', 'jaguar', 'land rover', 'landrover', 'genesis', 'maserati', 'bentley', 'rolls-royce']);
+
+export interface TCOBreakdown {
+  financing: number;
+  fuel: number;
+  insurance: number;
+  service: number;
+  total: number;
+}
+
+export function calcMonthlyTCO({
+  carPrice,
+  usedPrice,
+  fuelTypes = [],
+  make,
+}: {
+  carPrice: number;
+  usedPrice?: number;
+  fuelTypes?: string[];
+  make?: string;
+}): TCOBreakdown {
+  const range = calcCarMonthlyRange(carPrice, usedPrice);
+  const financing = range.low;
+  const basePrice = range.basePrice;
+  const isPremium = make ? PREMIUM_MAKES.has(make.toLowerCase()) : basePrice > 450_000;
+
+  const isEl = fuelTypes.includes('el');
+  const isLaddhybrid = fuelTypes.includes('laddhybrid');
+  const isHybrid = fuelTypes.includes('hybrid');
+  const isDiesel = fuelTypes.includes('diesel');
+
+  // ~1 500 mil/år — 125 mil/mån
+  const fuel = isEl ? 450 : isLaddhybrid ? 800 : isHybrid ? 1350 : isDiesel ? 1350 : 1750;
+
+  // Halvårspremie beroende på bilens värde
+  const insurance = basePrice < 200_000 ? 600 : basePrice < 350_000 ? 850 : basePrice < 550_000 ? 1250 : 1750;
+
+  // Service + reparation + delar
+  const service = isEl ? 250 : isPremium ? 700 : 400;
+
+  return { financing, fuel, insurance, service, total: financing + fuel + insurance + service };
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

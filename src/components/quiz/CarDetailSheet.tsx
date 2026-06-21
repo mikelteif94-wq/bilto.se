@@ -89,6 +89,36 @@ function getFuelLabel(fuelTypes: string[]): string {
   return fuelTypes.map(f => labels[f] || f).join(', ');
 }
 
+// ─── Ownership cost meter ─────────────────────────────────────────────────────
+function OwnershipMeter({ monthlyLow }: { monthlyLow: number }) {
+  const level = monthlyLow < 3000 ? 1 : monthlyLow < 4500 ? 2 : monthlyLow < 6500 ? 3 : monthlyLow < 9000 ? 4 : 5;
+  const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
+  const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
+  const trackColor = level <= 2 ? '#dcfce7' : level === 3 ? '#ffedd5' : '#fee2e2';
+  const pct = (level / 5) * 100;
+  return (
+    <div className="mt-3 pt-3 border-t border-[#0047B3]/10">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Ägarkostnad</p>
+        <span className="text-[11px] font-bold" style={{ color: activeColor }}>{label}</span>
+      </div>
+      <div className="relative h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
+        <motion.div
+          className="absolute left-0 top-0 h-full rounded-full"
+          style={{ backgroundColor: activeColor }}
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
+        />
+      </div>
+      <div className="flex justify-between mt-1">
+        <span className="text-[9px] text-slate-400">Billig att äga</span>
+        <span className="text-[9px] text-slate-400">Dyr att äga</span>
+      </div>
+    </div>
+  );
+}
+
 // ─── Rating bar ───────────────────────────────────────────────────────────────
 function RatingBar({ label, value, icon: Icon }: { label: string; value: number; icon: typeof Star }) {
   return (
@@ -752,13 +782,16 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
       {/* ── Price + expert text ── */}
       <section className="p-4 bg-gradient-to-br from-[#0047B3]/5 to-[#0047B3]/[0.03] rounded-2xl border border-[#0047B3]/10">
         {carPrice ? (
-          <MonthlyCostBlock
-            carPrice={carPrice}
-            usedPrice={usedPrice}
-            monthlyUsed={data.pricing.monthly_used}
-            monthlyUsedMin={data.pricing.monthly_used_min}
-            monthlyUsedMax={data.pricing.monthly_used_max}
-          />
+          <>
+            <MonthlyCostBlock
+              carPrice={carPrice}
+              usedPrice={usedPrice}
+              monthlyUsed={data.pricing.monthly_used}
+              monthlyUsedMin={data.pricing.monthly_used_min}
+              monthlyUsedMax={data.pricing.monthly_used_max}
+            />
+            <OwnershipMeter monthlyLow={calcCarMonthlyRange(carPrice, usedPrice).low} />
+          </>
         ) : (
           <p className="text-[13px] text-slate-400 italic">Pris ej tillgängligt</p>
         )}

@@ -1,5 +1,5 @@
 import { Star, Check, ChevronRight, Users, Info } from 'lucide-react';
-import { calcCarMonthlyRange } from '../lib/utils';
+import { calcCarMonthlyRange, calcMonthlyTCO } from '../lib/utils';
 
 const BODY_LABELS: Record<string, string> = {
   sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
@@ -34,29 +34,33 @@ function formatSEK(n: number) {
   return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
 }
 
-function OwnershipMeter({ monthlyLow }: { monthlyLow: number }) {
-  const level = monthlyLow < 3000 ? 1 : monthlyLow < 4500 ? 2 : monthlyLow < 6500 ? 3 : monthlyLow < 9000 ? 4 : 5;
+function fuelLabelToTypes(fuelLabel?: string): string[] {
+  if (!fuelLabel) return [];
+  const l = fuelLabel.toLowerCase();
+  if (l.includes('laddhybrid') || l.includes('plug')) return ['laddhybrid'];
+  if (l.includes('hybrid')) return ['hybrid'];
+  if (l.includes('el') || l.includes('electric')) return ['el'];
+  if (l.includes('diesel')) return ['diesel'];
+  return ['bensin'];
+}
+
+function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make }: { carPrice: number; usedPrice?: number; fuelLabel?: string; make?: string }) {
+  const tco = calcMonthlyTCO({ carPrice, usedPrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
+  const { total } = tco;
+  const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
   const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
-  const segments = [1, 2, 3, 4, 5];
+  const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   return (
     <div className="flex items-center gap-2">
       <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
       <div className="flex items-center gap-[2px]">
-        {segments.map(s => (
-          <div
-            key={s}
-            className="rounded-sm transition-all"
-            style={{
-              width: 10,
-              height: 5,
-              backgroundColor: s <= level ? activeColor : '#e2e8f0',
-              opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1,
-            }}
-          />
+        {[1,2,3,4,5].map(s => (
+          <div key={s} className="rounded-sm" style={{ width: 10, height: 5, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1 }} />
         ))}
       </div>
-      <span className="text-[9px] font-semibold" style={{ color: activeColor }}>{label}</span>
+      <span className="text-[9px] font-semibold tabular-nums" style={{ color: activeColor }}>~{fmt(total)} kr/mån</span>
+      <span className="text-[8px] text-slate-400">({label.toLowerCase()})</span>
     </div>
   );
 }
@@ -171,7 +175,7 @@ export default function CompactCarCard({
               <span className="text-[9px] font-semibold text-[#0e6efe]/60">kr/mån</span>
             </div>
           )}
-          {range && <OwnershipMeter monthlyLow={range.low} />}
+          {range && <OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} />}
           {monthlySaving != null && monthlySaving > 0 && (
             <p className="text-[9px] font-semibold text-emerald-600">Sparar {formatSEK(monthlySaving)} kr/mån</p>
           )}
@@ -274,7 +278,7 @@ export default function CompactCarCard({
               <span className="text-[10px] font-semibold text-[#0e6efe]/60">kr/mån</span>
             </div>
           )}
-          {range && <div className="mt-1.5"><OwnershipMeter monthlyLow={range.low} /></div>}
+          {range && <div className="mt-1.5"><OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} /></div>}
           {monthlySaving != null && monthlySaving > 0 && (
             <p className="mt-1 text-[10.5px] font-semibold text-emerald-600">Sparar {formatSEK(monthlySaving)} kr/mån</p>
           )}
