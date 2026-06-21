@@ -655,6 +655,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
 
   // Quiz state
   const [quizStep, setQuizStep] = useState<QuizStep>('idle');
@@ -869,7 +870,11 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
     };
     setChatMessages(prev => [...prev, userMsg, assistantMsg]);
     setChatInput('');
-    setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+    setTimeout(() => {
+      if (chatScrollRef.current) {
+        chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+      }
+    }, 100);
   };
 
   const openContactForCar = (car: ComparisonCar | null) => {
@@ -2068,7 +2073,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
 
           <div className="bg-slate-900 rounded-xl ring-1 ring-white/10 overflow-hidden">
             {chatMessages.length > 0 && (
-              <div className="max-h-[500px] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <div ref={chatScrollRef} className="max-h-[400px] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
                 <div className="p-4 sm:p-6 space-y-4">
                   {chatMessages.map((msg, i) => (
                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -2169,7 +2174,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     <button
                       key={label}
                       onClick={() => handleChatSubmit(query)}
-                      className="px-3 py-1.5 rounded-full bg-white/10 text-[12px] text-white font-medium hover:bg-[#0e6efe] hover:text-white transition-all border border-white/15"
+                      className="px-3 py-1.5 rounded-full bg-white/10 text-[13px] text-white font-medium hover:bg-[#0e6efe] hover:text-white transition-all border border-white/15 active:scale-95"
                     >
                       {label}
                     </button>
@@ -2216,7 +2221,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 <img
                   src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(Instagram_Post_(45))_copy_copy_copy_copy_copy.jpg"
                   alt="Johan framför sin Toyota RAV4"
-                  className="w-full h-[300px] sm:h-[460px] md:h-[520px] object-contain bg-slate-100"
+                  className="w-full h-[300px] sm:h-[460px] md:h-[520px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
               </div>

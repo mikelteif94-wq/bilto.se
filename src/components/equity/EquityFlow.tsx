@@ -86,19 +86,19 @@ export function EquityFlow({ onNegotiate: _onNegotiate, compact, isEv }: EquityF
         type="button"
         onClick={() => setState('quiz')}
         whileTap={{ scale: 0.97 }}
-        className="w-full flex items-center gap-3 bg-gradient-to-r from-[#0e6efe] to-[#2a7fff] hover:from-[#0a57cc] hover:to-[#1a6fee] rounded-2xl px-4 py-3.5 transition-all duration-200 group text-left shadow-md"
-        style={{ boxShadow: '0 4px 14px #0e6efe30' }}
+        className="w-full flex items-center gap-3 bg-white hover:bg-blue-50 border-2 border-[#0e6efe] rounded-2xl px-4 py-3.5 transition-all duration-200 group text-left shadow-sm"
+        style={{ boxShadow: '0 4px 14px #0e6efe18' }}
       >
-        <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-          <Sparkles className="w-4 h-4 text-white" />
+        <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+          <Sparkles className="w-4 h-4 text-[#0e6efe]" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-bold text-white">Beräkna vad din insats ger dig</p>
-          <p className="text-[11px] text-white/70">
+          <p className="text-[13px] font-bold text-[#0e6efe]">Beräkna vad din insats ger dig</p>
+          <p className="text-[11px] text-[#0e6efe]/60">
             {isEv ? 'Sänk kostnaden · Byt till elbil' : 'Sänk månadskostnaden · Frigör kapital'}
           </p>
         </div>
-        <ChevronRight className="w-4 h-4 text-white/75 group-hover:translate-x-0.5 transition-transform shrink-0" />
+        <ChevronRight className="w-4 h-4 text-[#0e6efe]/50 group-hover:translate-x-0.5 transition-transform shrink-0" />
       </motion.button>
     );
   }
