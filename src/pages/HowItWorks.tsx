@@ -736,7 +736,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   <div className="mt-8 text-center">
                     <button
                       type="button"
-                      onClick={() => { window.history.pushState({}, '', '/utforska'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                      onClick={() => setShowAllCars(true)}
                       className="h-11 px-7 rounded-xl border border-slate-200 hover:border-[#0e6efe] text-slate-600 hover:text-[#0e6efe] font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
                     >
                       Se fler bilar
@@ -748,16 +748,18 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             );
           })()}
 
-          <div className="mt-8 text-center">
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               type="button"
-              onClick={() => { window.history.pushState({}, '', '/utforska'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-              className="h-11 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
+              onClick={() => { window.history.pushState({}, '', '/kop-bil/bestall'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+              className="h-12 px-8 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all shadow-[0_4px_14px_rgba(14,110,254,0.30)] hover:shadow-[0_6px_20px_rgba(14,110,254,0.42)] hover:-translate-y-px"
             >
-              Utforska alla bilar
+              Kostnadsfri konsultation
               <ArrowRight className="w-4 h-4" />
             </button>
+            <p className="text-[12.5px] text-slate-400">Ingen bindning &bull; Svar inom 24h</p>
           </div>
+
         </div>
       </section>
 

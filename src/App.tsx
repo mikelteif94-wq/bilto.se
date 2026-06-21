@@ -48,7 +48,6 @@ const KopBilConcierge = lazy(() => import('./pages/KopBilConcierge'));
 const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
-const ExploreCarsPage = lazy(() => import('./pages/ExploreCarsPage'));
 const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
 
 const PageLoader = () => (
@@ -429,25 +428,6 @@ function App() {
     );
   }
 
-  if (path === '/utforska') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <ExploreCarsPage
-          onBackHome={() => {
-            window.history.pushState({}, '', '/');
-            setPath('/');
-            setPublicRoute({ page: 'home' });
-          }}
-          onBuyCar={(make, model, typ) => {
-            const bil = encodeURIComponent(`${make} ${model}`);
-            const track = typ ?? 'found';
-            window.history.pushState({}, '', `/kop-bil/bestall?bil=${bil}&typ=${track}`);
-            setPath('/kop-bil/bestall');
-          }}
-        />
-      </Suspense>
-    );
-  }
 
   if (path === '/salj-bil-hjalp') {
     return (

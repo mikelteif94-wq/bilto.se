@@ -133,7 +133,7 @@ export default function BuyContactStep({ initialData, onNext, submitting = false
               key={t.value}
               type="button"
               onClick={() => set('preferredTime', d.preferredTime === t.value ? '' : t.value)}
-              className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+              className={`px-4 sm:px-5 h-10 rounded-xl text-[14px] font-medium transition-all ${
                 d.preferredTime === t.value
                   ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                   : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
@@ -182,7 +182,7 @@ export default function BuyContactStep({ initialData, onNext, submitting = false
       <button
         type="submit"
         disabled={submitting}
-        className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold text-[15px] rounded-full transition mt-2 shadow-sm"
+        className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold text-[15px] rounded-xl transition mt-2 shadow-sm"
       >
         {submitting ? 'Skickar...' : 'Skicka förfrågan'}
       </button>

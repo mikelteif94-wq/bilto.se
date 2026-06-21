@@ -208,7 +208,7 @@ function BrandModelSelector({
         <button
           type="button"
           onClick={() => { onBrandChange('Vet ej'); onModelChange('Vet ej'); }}
-          className={`inline-flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-medium transition-all border ${
+          className={`inline-flex items-center gap-1.5 px-4 h-9 rounded-xl text-[13px] font-medium transition-all border ${
             brand === 'Vet ej'
               ? 'bg-slate-900 text-white border-slate-900'
               : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
@@ -220,7 +220,7 @@ function BrandModelSelector({
           <button
             type="button"
             onClick={onQuiz}
-            className="inline-flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-semibold bg-[#0e6efe]/10 text-[#0e6efe] hover:bg-[#0e6efe]/18 transition-all"
+            className="inline-flex items-center gap-1.5 px-4 h-9 rounded-xl text-[13px] font-semibold bg-[#0e6efe]/10 text-[#0e6efe] hover:bg-[#0e6efe]/18 transition-all"
           >
             <Sparkles className="w-3.5 h-3.5" />
             Hitta med bilmatch
@@ -359,7 +359,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initialD
                 key={f.value}
                 type="button"
                 onClick={() => set('fuelType', d.fuelType === f.value ? '' : f.value)}
-                className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all ${
+                className={`px-4 h-9 rounded-xl text-[13.5px] font-medium transition-all ${
                   d.fuelType === f.value
                     ? 'bg-[#0e6efe] text-white shadow-sm'
                     : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
@@ -383,7 +383,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initialD
               key={p.value}
               type="button"
               onClick={() => set('paymentType', p.value)}
-              className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+              className={`px-4 sm:px-5 h-10 rounded-xl text-[14px] font-medium transition-all ${
                 d.paymentType === p.value
                   ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                   : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
@@ -407,7 +407,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initialD
               key={s.value}
               type="button"
               onClick={() => set('buyingStage', s.value)}
-              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all text-left sm:text-center ${
+              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-xl text-[14px] font-medium transition-all text-left sm:text-center ${
                 d.buyingStage === s.value
                   ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                   : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
@@ -423,7 +423,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initialD
       <div className="pt-6 sm:pt-7 flex justify-end">
         <button
           type="submit"
-          className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-full transition shadow-sm"
+          className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-xl transition shadow-sm"
         >
           Nästa
         </button>
@@ -482,7 +482,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initi
               onClick={() => {
                 set('targetCar', d.targetCar === t.value ? '' : t.value);
               }}
-              className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all ${
+              className={`px-4 h-9 rounded-xl text-[13.5px] font-medium transition-all ${
                 d.targetCar === t.value
                   ? 'bg-[#0e6efe] text-white shadow-sm'
                   : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
@@ -509,7 +509,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initi
                 type="button"
                 onClick={() => toggleMustHave(m.value)}
                 disabled={disabled}
-                className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all ${
+                className={`px-4 h-9 rounded-xl text-[13.5px] font-medium transition-all ${
                   selected
                     ? 'bg-[#0e6efe] text-white shadow-sm'
                     : disabled
@@ -557,7 +557,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initi
               key={p.value}
               type="button"
               onClick={() => set('paymentType', p.value)}
-              className={`px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all ${
+              className={`px-4 sm:px-5 h-10 rounded-xl text-[14px] font-medium transition-all ${
                 d.paymentType === p.value
                   ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                   : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
@@ -581,7 +581,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initi
               key={s.value}
               type="button"
               onClick={() => set('buyingStage', s.value)}
-              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-full text-[14px] font-medium transition-all text-left sm:text-center ${
+              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-xl text-[14px] font-medium transition-all text-left sm:text-center ${
                 d.buyingStage === s.value
                   ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                   : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
@@ -597,7 +597,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initi
       <div className="pt-6 sm:pt-7 flex justify-end">
         <button
           type="submit"
-          className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-full transition shadow-sm"
+          className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-xl transition shadow-sm"
         >
           Nästa
         </button>
@@ -789,7 +789,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               type="button"
               onClick={() => isCompatible && set('fuelType', isSelected ? '' : f.value)}
               disabled={!isCompatible}
-              className={`px-4 h-9 rounded-full text-[13.5px] font-medium transition-all active:scale-[0.97] ${
+              className={`px-4 h-9 rounded-xl text-[13.5px] font-medium transition-all active:scale-[0.97] ${
                 isSelected
                   ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
                   : isCompatible
@@ -817,7 +817,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             key={p.value}
             type="button"
             onClick={() => set('paymentType', p.value)}
-            className={`px-5 h-10 rounded-full text-[14px] font-semibold transition-all active:scale-[0.97] ${
+            className={`px-5 h-10 rounded-xl text-[14px] font-semibold transition-all active:scale-[0.97] ${
               d.paymentType === p.value
                 ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
                 : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
@@ -1216,7 +1216,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               key={s.value}
               type="button"
               onClick={() => set('buyingStage', s.value)}
-              className={`w-full sm:w-auto px-5 h-10 rounded-full text-[14px] font-medium transition-all active:scale-[0.97] text-left sm:text-center ${
+              className={`w-full sm:w-auto px-5 h-10 rounded-xl text-[14px] font-medium transition-all active:scale-[0.97] text-left sm:text-center ${
                 d.buyingStage === s.value
                   ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
                   : 'bg-slate-100 text-slate-800 hover:bg-slate-200'

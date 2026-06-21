@@ -107,7 +107,7 @@ export default function BuyTradeInStep({ initialData, onNext }: BuyTradeInStepPr
                 }));
                 setErrors(prev => { const n = { ...prev }; delete n.hasTradeIn; return n; });
               }}
-              className={`flex-1 h-12 rounded-full text-[15px] font-semibold transition-all ${
+              className={`flex-1 h-12 rounded-xl text-[15px] font-semibold transition-all ${
                 d.hasTradeIn === val
                   ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                   : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
@@ -164,7 +164,7 @@ export default function BuyTradeInStep({ initialData, onNext }: BuyTradeInStepPr
                     }));
                     setErrors(prev => { const n = { ...prev }; delete n.hasLoan; return n; });
                   }}
-                  className={`flex-1 h-12 rounded-full text-[15px] font-semibold transition-all ${
+                  className={`flex-1 h-12 rounded-xl text-[15px] font-semibold transition-all ${
                     d.hasLoan === val
                       ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                       : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
@@ -226,7 +226,7 @@ export default function BuyTradeInStep({ initialData, onNext }: BuyTradeInStepPr
       <div className="pt-6 sm:pt-7 flex justify-end">
         <button
           type="submit"
-          className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-full transition shadow-sm"
+          className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-xl transition shadow-sm"
         >
           Nästa
         </button>
