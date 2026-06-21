@@ -927,12 +927,12 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
 
         {/* EV specs panel */}
         {data.ev_specs && (
-          <div className="mt-3 rounded-2xl overflow-hidden border border-sky-100">
-            <div className="flex items-center gap-2 px-3.5 py-2 bg-sky-50 border-b border-sky-100">
+          <div className="mt-3 rounded-2xl overflow-hidden border border-sky-200 bg-sky-50">
+            <div className="flex items-center gap-2 px-3.5 py-2 bg-sky-100 border-b border-sky-200">
               <Zap className="w-3.5 h-3.5 text-sky-500" />
               <span className="text-[11px] font-bold text-sky-700 uppercase tracking-wide">Elbilsdata</span>
             </div>
-            <div className="grid grid-cols-2 divide-x divide-y divide-slate-100 bg-white">
+            <div className="grid grid-cols-2 divide-x divide-y divide-sky-100 bg-sky-50/60">
               <div className="px-3.5 py-2.5">
                 <p className="text-[10px] text-slate-400 uppercase tracking-wide font-medium">Räckvidd WLTP</p>
                 <p className="text-[15px] font-bold text-slate-900 tabular-nums mt-0.5">{data.ev_specs.range_wltp_km} <span className="text-[11px] font-normal text-slate-400">km</span></p>

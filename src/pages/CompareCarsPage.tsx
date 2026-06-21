@@ -7,6 +7,7 @@ import {
   GitCompareArrows, X, ArrowDown, Phone, Handshake,
   ShieldCheck, Megaphone, CheckCircle, ArrowLeftRight, ChevronDown,
 } from 'lucide-react';
+import TcoCompareBar, { type TcoCompareCar } from '../components/TcoCompareBar';
 import ReviewsSection from '../components/ReviewsSection';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAllComparisonCars } from '../lib/comparison';
@@ -639,6 +640,17 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [compareOpen, setCompareOpen] = useState(false);
 
+  // TCO compare state (up to 2 cars)
+  const [tcoCompare, setTcoCompare] = useState<TcoCompareCar[]>([]);
+
+  const toggleTcoCompare = useCallback((car: TcoCompareCar) => {
+    setTcoCompare(prev => {
+      if (prev.some(c => c.id === car.id)) return prev.filter(c => c.id !== car.id);
+      if (prev.length >= 2) return prev;
+      return [...prev, car];
+    });
+  }, []);
+
   // Chat state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState('');
@@ -1162,6 +1174,12 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                     {budgetFilteredCars.slice(0, budgetShowCount).map((car, i) => {
                       const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
+                      const tcoId = car.id;
+                      const tcoItem: TcoCompareCar = {
+                        id: tcoId, name: `${car.brand_display} ${car.model_display}`,
+                        imageUrl: imgUrl, carPrice: car.pricing.new_from_sek ?? undefined,
+                        usedPrice: car.pricing.used_from_sek ?? undefined, fuelTypes: car.specs.fuel_types,
+                      };
                       if (car.specs.fuel_types.includes('el')) {
                         return (
                           <ElCarCard
@@ -1180,6 +1198,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                             onDetail={() => setDetailCar(car)}
                             onCompare={() => toggleSelect(car.id)}
                             onFitQuiz={() => setFitQuizCar(car)}
+                            onTcoCompare={() => toggleTcoCompare(tcoItem)}
+                            isTcoCompared={tcoCompare.some(c => c.id === tcoId)}
                           />
                         );
                       }
@@ -1201,6 +1221,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                           onCompare={() => toggleSelect(car.id)}
                           onFitQuiz={() => setFitQuizCar(car)}
                           isCompared={selectedIds.has(car.id)}
+                          onTcoCompare={() => toggleTcoCompare(tcoItem)}
+                          isTcoCompared={tcoCompare.some(c => c.id === tcoId)}
                           index={i}
                           disableMotion={isMobile}
                         />
@@ -1660,6 +1682,11 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   : undefined;
                 const compCar = findComparisonCarByMakeModel(car.make, car.model);
                 const rating = car.rating_overall ?? compCar?.ratings.overall ?? undefined;
+                const tcoItem: TcoCompareCar = {
+                  id: car.id, name: `${car.make} ${car.model}`,
+                  imageUrl: imgUrl, carPrice: car.price_new_from ?? undefined,
+                  usedPrice: car.price_used_from ?? undefined, fuelTypes: car.fuel_types ?? [],
+                };
                 if (isEl) {
                   return (
                     <ElCarCard
@@ -1681,6 +1708,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       onDetail={() => { if (compCar) setDetailCar(compCar); }}
                       onCompare={compCar ? () => toggleSelect(compCar.id) : () => {}}
                       onFitQuiz={() => { if (compCar) setFitQuizCar(compCar); }}
+                      onTcoCompare={() => toggleTcoCompare(tcoItem)}
+                      isTcoCompared={tcoCompare.some(c => c.id === car.id)}
                     />
                   );
                 }
@@ -1704,6 +1733,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     onCompare={compCar ? () => toggleSelect(compCar.id) : () => {}}
                     onFitQuiz={() => { if (compCar) setFitQuizCar(compCar); }}
                     isCompared={!!(compCar && selectedIds.has(compCar.id))}
+                    onTcoCompare={() => toggleTcoCompare(tcoItem)}
+                    isTcoCompared={tcoCompare.some(c => c.id === car.id)}
                     index={i}
                     disableMotion={isMobile}
                   />
@@ -2395,6 +2426,13 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           openContactForCar(car);
         }}
         getImageUrl={getImageForCar}
+      />
+
+      {/* TCO compare bar */}
+      <TcoCompareBar
+        cars={tcoCompare}
+        onRemove={(id) => setTcoCompare(prev => prev.filter(c => c.id !== id))}
+        onGetHelp={(name) => openBuyDrawer(name, 'found')}
       />
 
       {/* Detail sheet */}

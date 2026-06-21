@@ -1,4 +1,4 @@
-import { Zap, Star, Check, ChevronRight, Info } from 'lucide-react';
+import { Zap, Star, Check, ChevronRight, Info, Scale } from 'lucide-react';
 import { calcCarMonthlyRange, calcMonthlyTCO } from '../lib/utils';
 
 const BODY_LABELS: Record<string, string> = {
@@ -25,6 +25,8 @@ interface ElCarCardProps {
   onDetail?: () => void;
   onSelect?: () => void;
   onFitQuiz?: () => void;
+  onTcoCompare?: () => void;
+  isTcoCompared?: boolean;
 }
 
 function formatSEK(n: number) {
@@ -85,7 +87,7 @@ export default function ElCarCard({
   name, imageUrl, rating, expertComment,
   carPrice, usedPrice, fuelLabel, bodyType, drivetrain, pros,
   isSelected, topBadge,
-  onNegotiate, onDetail,
+  onNegotiate, onDetail, onTcoCompare, isTcoCompared,
 }: ElCarCardProps) {
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
@@ -168,6 +170,16 @@ export default function ElCarCard({
                 <Info className="w-3 h-3" />
               </button>
             )}
+            {onTcoCompare && (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onTcoCompare(); }}
+                className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-all active:scale-[0.97] ${isTcoCompared ? 'bg-[#0e6efe] border-[#0e6efe] text-white' : 'border-slate-200 text-slate-400 hover:border-[#0e6efe]/40 hover:text-[#0e6efe]'}`}
+                title={isTcoCompared ? 'Ta bort från jämförelse' : 'Jämför ägandekostnad'}
+              >
+                <Scale className="w-3 h-3" />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -237,16 +249,29 @@ export default function ElCarCard({
           >
             Få prishjälp <ChevronRight className="w-3.5 h-3.5 opacity-80" />
           </button>
-          {onDetail && (
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onDetail(); }}
-              className="w-full flex items-center justify-center gap-1.5 h-8 rounded-xl border border-slate-200 bg-white text-slate-500 text-[11px] font-semibold transition-all active:scale-[0.97] hover:border-[#0e6efe]/30 hover:text-[#0e6efe] hover:bg-[#0e6efe]/5"
-            >
-              <Info className="w-3 h-3" />
-              Läs mer
-            </button>
-          )}
+          <div className="flex gap-1.5">
+            {onDetail && (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onDetail(); }}
+                className="flex-1 flex items-center justify-center gap-1.5 h-8 rounded-xl border border-slate-200 bg-white text-slate-500 text-[11px] font-semibold transition-all active:scale-[0.97] hover:border-[#0e6efe]/30 hover:text-[#0e6efe] hover:bg-[#0e6efe]/5"
+              >
+                <Info className="w-3 h-3" />
+                Läs mer
+              </button>
+            )}
+            {onTcoCompare && (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onTcoCompare(); }}
+                className={`flex-1 flex items-center justify-center gap-1.5 h-8 rounded-xl border text-[11px] font-semibold transition-all active:scale-[0.97] ${isTcoCompared ? 'bg-[#0e6efe] border-[#0e6efe] text-white' : 'border-slate-200 bg-white text-slate-500 hover:border-[#0e6efe]/30 hover:text-[#0e6efe] hover:bg-[#0e6efe]/5'}`}
+                title={isTcoCompared ? 'Ta bort från jämförelse' : 'Jämför ägandekostnad'}
+              >
+                <Scale className="w-3 h-3" />
+                {isTcoCompared ? 'Jämförs' : 'Jämför'}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
