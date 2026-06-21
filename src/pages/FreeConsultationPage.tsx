@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
-  ChevronDown,
   Clock,
   Lock,
   Phone,
@@ -14,6 +13,8 @@ import {
   HelpCircle,
   Calendar,
   Menu,
+  ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SiteFooter } from '../components/SiteFooter';
@@ -33,11 +34,11 @@ import { Video as LucideIcon } from 'lucide-react';
 type Syfte = 'kop_bil' | 'salj_bil' | 'inbyte' | 'finansiering' | 'ovrig';
 
 const SYFTE_OPTIONS: { value: Syfte; label: string; desc: string; icon: LucideIcon }[] = [
-  { value: 'kop_bil', label: 'Köpa bil', desc: 'Jag vill ha hjälp att hitta rätt bil', icon: Search },
-  { value: 'salj_bil', label: 'Sälja bil', desc: 'Jag vill sälja min bil till bästa pris', icon: Tag },
-  { value: 'inbyte', label: 'Inbyte', desc: 'Jag vill byta in min bil mot en ny', icon: RefreshCw },
-  { value: 'finansiering', label: 'Finansiering', desc: 'Jag har frågor om lån eller leasing', icon: CreditCard },
-  { value: 'ovrig', label: 'Annat', desc: 'Jag har en annan fråga', icon: HelpCircle },
+  { value: 'kop_bil',      label: 'Köpa bil',      desc: 'Jag vill ha hjälp att hitta rätt bil',    icon: Search },
+  { value: 'salj_bil',     label: 'Sälja bil',      desc: 'Jag vill sälja min bil till bästa pris',  icon: Tag },
+  { value: 'inbyte',       label: 'Inbyte',         desc: 'Jag vill byta in min bil mot en ny',      icon: RefreshCw },
+  { value: 'finansiering', label: 'Finansiering',   desc: 'Jag har frågor om lån eller leasing',     icon: CreditCard },
+  { value: 'ovrig',        label: 'Annat',          desc: 'Jag har en annan fråga',                  icon: HelpCircle },
 ];
 
 const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
@@ -59,8 +60,8 @@ function getBookedSlots(dateStr: string): Set<string> {
   return booked;
 }
 
-function getAvailableDates(): { date: Date; dateStr: string; label: string }[] {
-  const days: { date: Date; dateStr: string; label: string }[] = [];
+function getAvailableDates(): { date: Date; dateStr: string; label: string; day: string; date2: string; month: string }[] {
+  const days: { date: Date; dateStr: string; label: string; day: string; date2: string; month: string }[] = [];
   const dayNames = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
   const monthNames = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
   let added = 0;
@@ -70,10 +71,16 @@ function getAvailableDates(): { date: Date; dateStr: string; label: string }[] {
     d.setDate(d.getDate() + offset);
     offset++;
     const dow = d.getDay();
-    if (dow === 0 || dow === 6) continue; // skip weekends
+    if (dow === 0 || dow === 6) continue;
     const dateStr = d.toISOString().split('T')[0];
-    const label = `${dayNames[dow]} ${d.getDate()} ${monthNames[d.getMonth()]}`;
-    days.push({ date: d, dateStr, label });
+    days.push({
+      date: d,
+      dateStr,
+      label: `${dayNames[dow]} ${d.getDate()} ${monthNames[d.getMonth()]}`,
+      day: dayNames[dow],
+      date2: String(d.getDate()),
+      month: monthNames[d.getMonth()],
+    });
     added++;
   }
   return days;
@@ -101,26 +108,33 @@ const INITIAL: FormData = {
   booking_time: '',
 };
 
+const STEP_LABELS = ['Ärende', 'Uppgifter', 'Tid'];
+
 function ProgressBar({ step }: { step: Step }) {
   const steps: Step[] = ['syfte', 'kontakt', 'tid', 'bekraftelse'];
   const idx = steps.indexOf(step);
   return (
-    <div className="flex items-center gap-2 mb-8">
-      {steps.slice(0, 3).map((s, i) => (
-        <div key={s} className="flex items-center gap-2">
-          <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
-              i < idx
-                ? 'bg-[#0e6efe] text-white'
-                : i === idx
-                ? 'bg-[#0e6efe] text-white ring-4 ring-blue-100'
-                : 'bg-slate-100 text-slate-400'
-            }`}
-          >
-            {i < idx ? <Check className="w-4 h-4" /> : i + 1}
+    <div className="flex items-center gap-0 mb-10">
+      {STEP_LABELS.map((label, i) => (
+        <div key={label} className="flex items-center flex-1 last:flex-none">
+          <div className="flex flex-col items-center gap-1.5">
+            <div
+              className={`w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold transition-all duration-200 ${
+                i < idx
+                  ? 'bg-[#0e6efe] text-white shadow-md shadow-blue-200'
+                  : i === idx
+                  ? 'bg-[#0e6efe] text-white ring-4 ring-[#0e6efe]/15 shadow-md shadow-blue-200'
+                  : 'bg-slate-100 text-slate-400'
+              }`}
+            >
+              {i < idx ? <Check className="w-4 h-4" strokeWidth={2.5} /> : i + 1}
+            </div>
+            <span className={`text-[11px] font-medium whitespace-nowrap ${i <= idx ? 'text-slate-700' : 'text-slate-400'}`}>
+              {label}
+            </span>
           </div>
-          {i < 2 && (
-            <div className={`h-0.5 w-12 rounded ${i < idx ? 'bg-[#0e6efe]' : 'bg-slate-200'}`} />
+          {i < STEP_LABELS.length - 1 && (
+            <div className={`h-[2px] flex-1 mx-2 mb-5 rounded-full transition-all duration-300 ${i < idx ? 'bg-[#0e6efe]' : 'bg-slate-200'}`} />
           )}
         </div>
       ))}
@@ -195,7 +209,6 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
       });
       if (error) throw error;
 
-      // Fire-and-forget email notification
       supabase.functions.invoke('notify-consultation-booking', {
         body: {
           namn: form.namn,
@@ -231,7 +244,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
-        active="Köp bil"
+        active={null as unknown as 'Sälj bil'}
         onSelect={handleMenuSelect}
       />
 
@@ -258,7 +271,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
             <button type="button" onClick={onBack} className="text-[15px] text-white/80 hover:text-white transition font-medium">
               Sälj bil
             </button>
-            <button type="button" onClick={() => onNavigateBuy?.()} className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/20 border border-white/40 text-white text-[14px] font-semibold hover:bg-white/30 transition backdrop-blur-sm">
+            <button type="button" onClick={() => onNavigateBuy?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">
               Köp bil med hjälp
             </button>
           </nav>
@@ -275,16 +288,17 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
         </div>
       </header>
 
-      {/* Hero band */}
-      <div className="bg-[#0e6efe] pt-32 pb-16 px-4">
+      {/* Hero */}
+      <div className="bg-[#0e6efe] pt-32 pb-14 px-4">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-white/20 text-white text-xs font-semibold px-3 py-1.5 rounded-full mb-4 uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 bg-white/15 text-white text-xs font-semibold px-3 py-1.5 rounded-full mb-5 tracking-wide">
+            <Sparkles className="w-3.5 h-3.5" />
             100% kostnadsfritt
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-white leading-tight">
+          <h1 className="text-[28px] sm:text-4xl font-bold text-white leading-tight tracking-tight">
             Boka din kostnadsfria konsultation
           </h1>
-          <p className="mt-3 text-blue-100 text-base lg:text-lg max-w-xl mx-auto">
+          <p className="mt-3 text-blue-100 text-[15px] sm:text-base max-w-lg mx-auto leading-relaxed">
             En av våra bilexperter ringer upp dig vid en tid som passar. Vi lyssnar, ger råd och hjälper dig — utan förpliktelser.
           </p>
         </div>
@@ -296,32 +310,32 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
         </svg>
       </div>
 
-      {/* Form card */}
-      <div className="py-12 px-4">
-        <div className="max-w-xl mx-auto">
+      {/* Form */}
+      <div className="py-10 px-4">
+        <div className="max-w-lg mx-auto">
           {step !== 'bekraftelse' && <ProgressBar step={step} />}
 
           {/* Step 1: Syfte */}
           {step === 'syfte' && (
             <div>
-              <h2 className="text-xl font-bold text-slate-900 mb-1">Vad kan vi hjälpa dig med?</h2>
-              <p className="text-slate-500 text-sm mb-6">Välj det alternativ som passar bäst.</p>
-              <div className="grid gap-3">
+              <h2 className="text-[22px] font-bold text-slate-900 mb-1">Vad kan vi hjälpa dig med?</h2>
+              <p className="text-slate-500 text-[14px] mb-6">Välj det alternativ som passar bäst.</p>
+              <div className="space-y-2.5">
                 {SYFTE_OPTIONS.map(opt => (
                   <button
                     key={opt.value}
                     type="button"
                     onClick={() => handleSyfteSelect(opt.value)}
-                    className="group flex items-center gap-4 w-full p-4 rounded-2xl border-2 border-slate-200 hover:border-[#0e6efe] hover:bg-blue-50/50 transition-all text-left"
+                    className="group w-full flex items-center gap-4 px-5 py-4 rounded-2xl border border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50 active:scale-[0.99] transition-all duration-150 text-left"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-blue-50 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition">
-                      <opt.icon className="w-5 h-5 text-[#0e6efe]" />
+                    <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/8 group-hover:bg-[#0e6efe]/12 flex items-center justify-center shrink-0 transition-colors">
+                      <opt.icon className="w-4.5 h-4.5 text-[#0e6efe]" strokeWidth={1.8} style={{ width: 18, height: 18 }} />
                     </div>
-                    <div>
-                      <div className="font-semibold text-slate-900 text-sm">{opt.label}</div>
-                      <div className="text-slate-500 text-xs mt-0.5">{opt.desc}</div>
+                    <div className="min-w-0">
+                      <div className="font-semibold text-slate-900 text-[15px] leading-snug">{opt.label}</div>
+                      <div className="text-slate-500 text-[13px] mt-0.5 truncate">{opt.desc}</div>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] ml-auto transition" />
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] ml-auto shrink-0 transition-colors" />
                   </button>
                 ))}
               </div>
@@ -331,17 +345,15 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
           {/* Step 2: Kontakt */}
           {step === 'kontakt' && (
             <div>
-              {selectedSyfte && (
-                <button
-                  type="button"
-                  onClick={() => setStep('syfte')}
-                  className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-700 mb-5 transition"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                  Ändra ämne
-                </button>
-              )}
-              <h2 className="text-xl font-bold text-slate-900 mb-6">Dina uppgifter</h2>
+              <button
+                type="button"
+                onClick={() => setStep('syfte')}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Ändra ämne
+              </button>
+              <h2 className="text-[22px] font-bold text-slate-900 mb-6">Dina uppgifter</h2>
 
               <div className="space-y-5">
                 <div>
@@ -356,7 +368,6 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                   />
                   <FieldError message={errors.namn} />
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-2">Telefonnummer *</label>
                   <input
@@ -370,7 +381,6 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                   />
                   <FieldError message={errors.telefon} />
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-2">E-postadress *</label>
                   <input
@@ -384,7 +394,6 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                   />
                   <FieldError message={errors.email} />
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-2">
                     Meddelande <span className="text-slate-400 font-normal">(valfritt)</span>
@@ -402,7 +411,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
               <button
                 type="button"
                 onClick={handleKontaktNext}
-                className="mt-6 w-full bg-[#0e6efe] hover:bg-blue-600 text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition"
+                className="btn-primary w-full mt-7 h-12 text-[15px]"
               >
                 Välj datum och tid
                 <ArrowRight className="w-4 h-4" />
@@ -416,16 +425,16 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
               <button
                 type="button"
                 onClick={() => setStep('kontakt')}
-                className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-700 mb-5 transition"
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Tillbaka
               </button>
-              <h2 className="text-xl font-bold text-slate-900 mb-1">Välj datum</h2>
-              <p className="text-slate-500 text-sm mb-4">Välj ett av de närmaste lediga dagarna.</p>
+              <h2 className="text-[22px] font-bold text-slate-900 mb-1">Välj datum och tid</h2>
+              <p className="text-slate-500 text-[14px] mb-6">Välj ett av de närmaste lediga alternativen.</p>
 
               {/* Date selector */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-7">
+              <div className="grid grid-cols-4 gap-2 mb-7">
                 {availableDates.map(d => {
                   const selected = form.booking_date === d.dateStr;
                   return (
@@ -436,14 +445,15 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                         setForm(f => ({ ...f, booking_date: d.dateStr, booking_time: '' }));
                         setErrors(e => ({ ...e, booking_date: undefined, booking_time: undefined }));
                       }}
-                      className={`flex flex-col items-center gap-1 px-3 py-3.5 rounded-xl border-2 transition-all ${
+                      className={`flex flex-col items-center gap-0.5 py-3.5 px-2 rounded-xl border transition-all duration-150 active:scale-[0.97] ${
                         selected
-                          ? 'border-[#0e6efe] bg-blue-50 text-[#0e6efe]'
-                          : 'border-slate-200 hover:border-slate-300 text-slate-700'
+                          ? 'border-[#0e6efe] bg-[#0e6efe] text-white shadow-md shadow-blue-200'
+                          : 'border-slate-200 bg-white hover:border-[#0e6efe]/50 hover:bg-blue-50/40 text-slate-700'
                       }`}
                     >
-                      <Calendar className={`w-4 h-4 ${selected ? 'text-[#0e6efe]' : 'text-slate-400'}`} />
-                      <span className="text-[13px] font-semibold leading-tight text-center">{d.label}</span>
+                      <span className={`text-[11px] font-semibold uppercase tracking-wide ${selected ? 'text-blue-100' : 'text-slate-400'}`}>{d.day}</span>
+                      <span className={`text-[22px] font-bold leading-none ${selected ? 'text-white' : 'text-slate-800'}`}>{d.date2}</span>
+                      <span className={`text-[11px] font-medium ${selected ? 'text-blue-100' : 'text-slate-400'}`}>{d.month}</span>
                     </button>
                   );
                 })}
@@ -453,10 +463,10 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
               {/* Time grid */}
               {form.booking_date && (
                 <>
-                  <h3 className="text-sm font-semibold text-slate-700 mb-3">
-                    Välj tid — <span className="font-normal text-slate-500">{selectedDateLabel}</span>
-                  </h3>
-                  <div className="grid grid-cols-3 gap-2.5 mb-1">
+                  <p className="text-[13px] font-semibold text-slate-700 mb-3">
+                    Tillgängliga tider — <span className="font-normal text-slate-500">{selectedDateLabel}</span>
+                  </p>
+                  <div className="grid grid-cols-3 gap-2 mb-4">
                     {TIME_SLOTS.map(t => {
                       const booked = bookedSlots.has(t);
                       const selected = form.booking_time === t;
@@ -464,7 +474,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                         return (
                           <div
                             key={t}
-                            className="flex items-center justify-center gap-1.5 px-3 py-3 rounded-xl border-2 border-slate-100 bg-slate-50 text-slate-300 cursor-not-allowed select-none"
+                            className="flex items-center justify-center gap-1.5 py-3 rounded-xl border border-slate-100 bg-slate-50 text-slate-300 cursor-not-allowed select-none"
                           >
                             <Lock className="w-3 h-3 shrink-0" />
                             <span className="text-[13px] font-medium">{t}</span>
@@ -479,21 +489,20 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                             setForm(f => ({ ...f, booking_time: t }));
                             setErrors(e => ({ ...e, booking_time: undefined }));
                           }}
-                          className={`flex items-center justify-center gap-1.5 px-3 py-3 rounded-xl border-2 transition-all ${
+                          className={`flex items-center justify-center gap-1.5 py-3 rounded-xl border transition-all duration-150 active:scale-[0.97] ${
                             selected
-                              ? 'border-[#0e6efe] bg-blue-50 text-[#0e6efe]'
-                              : 'border-slate-200 hover:border-[#0e6efe]/50 text-slate-700'
+                              ? 'border-[#0e6efe] bg-[#0e6efe] text-white shadow-md shadow-blue-200'
+                              : 'border-slate-200 hover:border-[#0e6efe]/50 hover:bg-blue-50/40 text-slate-700'
                           }`}
                         >
-                          <Clock className={`w-3.5 h-3.5 shrink-0 ${selected ? 'text-[#0e6efe]' : 'text-slate-400'}`} />
-                          <span className="text-[13px] font-medium">{t}</span>
-                          {selected && <Check className="w-3 h-3 ml-auto" />}
+                          <Clock className={`w-3.5 h-3.5 shrink-0 ${selected ? 'text-blue-100' : 'text-slate-400'}`} />
+                          <span className={`text-[13px] font-semibold ${selected ? 'text-white' : ''}`}>{t}</span>
                         </button>
                       );
                     })}
                   </div>
-                  <p className="text-xs text-slate-400 mb-5 mt-2 flex items-center gap-1">
-                    <Lock className="w-3 h-3" /> = Redan bokad
+                  <p className="text-[12px] text-slate-400 mb-5 flex items-center gap-1.5">
+                    <Lock className="w-3 h-3 shrink-0" /> Grå tider är redan bokade
                   </p>
                 </>
               )}
@@ -506,13 +515,13 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="w-full bg-[#0e6efe] hover:bg-blue-600 disabled:opacity-60 text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition"
+                className="btn-primary w-full h-12 text-[15px] disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
               >
                 {submitting ? 'Bokar...' : 'Boka konsultation'}
                 {!submitting && <ArrowRight className="w-4 h-4" />}
               </button>
 
-              <p className="text-center text-xs text-slate-400 mt-3">
+              <p className="text-center text-[12px] text-slate-400 mt-3">
                 Ingen bindning. Avboka när som helst.
               </p>
             </div>
@@ -525,49 +534,39 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 <Check className="w-8 h-8 text-green-600" strokeWidth={2.5} />
               </div>
               <h2 className="text-2xl font-bold text-slate-900 mb-2">Tack, {form.namn.split(' ')[0]}!</h2>
-              <p className="text-slate-600 text-base mb-1">
-                Din konsultation är bokad
-              </p>
-              <p className="font-semibold text-[#0e6efe] text-base mb-6">
+              <p className="text-slate-600 text-base mb-1">Din konsultation är bokad</p>
+              <p className="font-semibold text-[#0e6efe] text-base mb-8">
                 {selectedDateLabel} kl. {form.booking_time}
               </p>
 
               <div className="bg-slate-50 rounded-2xl p-5 text-left mb-8 border border-slate-100 max-w-sm mx-auto">
                 <h3 className="font-semibold text-sm text-slate-700 mb-3">Din bokning</h3>
-                <div className="grid gap-2 text-sm text-slate-600">
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Namn</span>
-                    <span className="font-medium text-slate-800">{form.namn}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Telefon</span>
-                    <span className="font-medium text-slate-800">{form.telefon}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Ärende</span>
-                    <span className="font-medium text-slate-800">{selectedSyfte?.label ?? ''}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Datum</span>
-                    <span className="font-medium text-slate-800">{selectedDateLabel}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Tid</span>
-                    <span className="font-medium text-slate-800">kl. {form.booking_time}</span>
-                  </div>
+                <div className="grid gap-2.5 text-sm">
+                  {[
+                    { label: 'Namn',   value: form.namn },
+                    { label: 'Telefon', value: form.telefon },
+                    { label: 'Ärende', value: selectedSyfte?.label ?? '' },
+                    { label: 'Datum',  value: selectedDateLabel },
+                    { label: 'Tid',    value: `kl. ${form.booking_time}` },
+                  ].map(row => (
+                    <div key={row.label} className="flex justify-between">
+                      <span className="text-slate-400">{row.label}</span>
+                      <span className="font-medium text-slate-800">{row.value}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               {form.email && (
                 <p className="text-sm text-slate-500 mb-6">
-                  En bekräftelse har skickats till <span className="font-medium text-slate-700">{form.email}</span>
+                  En bekräftelse skickas till <span className="font-medium text-slate-700">{form.email}</span>
                 </p>
               )}
 
               <button
                 type="button"
                 onClick={onBack}
-                className="inline-flex items-center gap-2 bg-[#0e6efe] text-white font-semibold px-6 py-3 rounded-xl hover:bg-blue-600 transition"
+                className="btn-primary px-8 h-12"
               >
                 Tillbaka till startsidan
               </button>
@@ -577,19 +576,19 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
       </div>
 
       {step !== 'bekraftelse' && (
-        <div className="bg-slate-50 border-y border-slate-100 py-8 px-4 mt-4">
-          <div className="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+        <div className="border-t border-slate-100 py-10 px-4 mt-4">
+          <div className="max-w-lg mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
             {[
-              { icon: <Check className="w-5 h-5 text-green-600" />, title: '100% kostnadsfritt', desc: 'Du betalar ingenting för konsultationen.' },
-              { icon: <Phone className="w-5 h-5 text-[#0e6efe]" />, title: 'Vi ringer dig', desc: 'Ingen väntan i telefonkö — vi tar initiativet.' },
-              { icon: <ChevronDown className="w-5 h-5 text-slate-400" />, title: 'Inga förpliktelser', desc: 'Tacka nej utan förklaring, när du vill.' },
+              { icon: Check,        color: 'text-green-600', bg: 'bg-green-50',    title: '100% kostnadsfritt', desc: 'Du betalar ingenting för konsultationen.' },
+              { icon: Phone,        color: 'text-[#0e6efe]', bg: 'bg-blue-50',     title: 'Vi ringer dig',      desc: 'Ingen väntan i telefonkö — vi tar initiativet.' },
+              { icon: ShieldCheck,  color: 'text-slate-600', bg: 'bg-slate-100',   title: 'Inga förpliktelser', desc: 'Tacka nej utan förklaring, när du vill.' },
             ].map(item => (
               <div key={item.title} className="flex flex-col items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
-                  {item.icon}
+                <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center`}>
+                  <item.icon className={`w-5 h-5 ${item.color}`} strokeWidth={1.8} />
                 </div>
-                <div className="font-semibold text-sm text-slate-800">{item.title}</div>
-                <div className="text-xs text-slate-500">{item.desc}</div>
+                <div className="font-semibold text-[14px] text-slate-800">{item.title}</div>
+                <div className="text-[13px] text-slate-500 leading-snug">{item.desc}</div>
               </div>
             ))}
           </div>

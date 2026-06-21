@@ -369,7 +369,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               }}
               className="text-[15px] text-white/70 font-medium transition hover:text-white"
             >
-              Köp bil
+              Bilköpshjälpen
             </button>
             <button
               type="button"
@@ -405,7 +405,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
         <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
           <div className="w-full max-w-md">
-            <h1 className="text-white text-[36px] sm:text-[50px] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
+            <h1 className="text-white text-[clamp(22px,6.5vw,50px)] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2 whitespace-nowrap">
               Din bilaffär börjar här
             </h1>
             <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">

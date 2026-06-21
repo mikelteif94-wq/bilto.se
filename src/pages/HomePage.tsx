@@ -242,7 +242,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               }}
               className={`text-[15px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
             >
-              Köp bil
+              Bilköpshjälpen
             </button>
             <button
               type="button"

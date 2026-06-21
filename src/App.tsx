@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { supabase } from './lib/supabase';
 import type { Session } from '@supabase/supabase-js';
 import { slugToCity, slugToBrand } from './lib/seo-pages';
+import { slugToTopic } from './lib/seo-topics';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
@@ -45,6 +46,7 @@ const CompareCarsPage = lazy(() => import('./pages/CompareCarsPage'));
 const SaljBilMedHjalp = lazy(() => import('./pages/SaljBilMedHjalp'));
 const KopBilConcierge = lazy(() => import('./pages/KopBilConcierge'));
 const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
+const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 const ExploreCarsPage = lazy(() => import('./pages/ExploreCarsPage'));
 const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
@@ -520,6 +522,24 @@ function App() {
         />
       </Suspense>
     );
+  }
+
+  const topicSlugs = ['forhandla-bil', 'bilkopshjalp', 'spara-pengar-bilkop', 'sank-manadskostnad-bil', 'byta-bil', 'bilradgivare', 'gratis-bilvardering'];
+  const topicSlug = topicSlugs.find(s => path === `/${s}`);
+  if (topicSlug) {
+    const topic = slugToTopic(topicSlug);
+    if (topic) {
+      return (
+        <Suspense fallback={<PageLoader />}>
+          <SeoTopicPage
+            topic={topic}
+            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onNavigateConsultation={() => { window.history.pushState({}, '', '/gratis-konsultation'); setPath('/gratis-konsultation'); }}
+            onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
+          />
+        </Suspense>
+      );
+    }
   }
 
   const cityMatch = path.match(/^\/salj-din-bil-i-([a-z0-9-]+)\/?$/);

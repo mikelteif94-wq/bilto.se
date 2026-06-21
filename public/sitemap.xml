@@ -28,18 +28,57 @@
   <url>
     <loc>https://bilto.se/kop-bil-hjalp</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://bilto.se/gratis-konsultation</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://bilto.se/salj-bil-hjalp</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <!-- SEO Ämnessidor – Köp/Spara/Förhandla -->
+  <url>
+    <loc>https://bilto.se/forhandla-bil</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bilto.se/bilkopshjalp</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bilto.se/spara-pengar-bilkop</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bilto.se/sank-manadskostnad-bil</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bilto.se/byta-bil</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bilto.se/bilradgivare</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bilto.se/gratis-bilvardering</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Övriga sidor -->
   <url>
     <loc>https://bilto.se/om-oss</loc>
     <changefreq>monthly</changefreq>
