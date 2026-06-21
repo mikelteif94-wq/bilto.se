@@ -968,11 +968,11 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               </p>
             </div>
             <div className="md:col-span-7">
-              <div className="relative rounded-xl overflow-hidden">
+              <div className="relative rounded-xl overflow-hidden bg-[#0e6efe] h-[280px] sm:h-[440px] md:h-[520px]">
                 <img
                   src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(1200_x_1400_px)_(2000_x_2000_px)_(1).png"
                   alt="Josefin framför sin Volvo XC40"
-                  className="w-full h-[280px] sm:h-[440px] md:h-[520px] object-contain bg-slate-100"
+                  className="absolute inset-0 w-full h-full object-cover scale-[1.03]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
               </div>
