@@ -262,18 +262,6 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 </a>
               </div>
 
-              <div className="border-t border-slate-100 px-6 py-3 flex items-center justify-center gap-4">
-                {[
-                  { value: '5 000+', label: 'Bilar förmedlade' },
-                  { value: '~15 000 kr', label: 'Snittbesparing' },
-                  { value: '100%', label: 'På din sida' },
-                ].map((s) => (
-                  <div key={s.label} className="text-center">
-                    <p className="text-[13px] sm:text-[14px] font-bold text-[#0e6efe] leading-none">{s.value}</p>
-                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">{s.label}</p>
-                  </div>
-                ))}
-              </div>
             </div>
 
             <div className="flex items-center justify-center gap-1.5 mt-5">
