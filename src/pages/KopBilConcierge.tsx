@@ -202,7 +202,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       <section className="relative min-h-[100svh] flex flex-col overflow-hidden">
         {/* Background image */}
         <img
-          src="/files_2615643-2026-06-20T00-26-02-459Z-header8.jpg"
+          src="/files_2615643-2026-06-21T06-29-18-662Z-b858d9c8-9893-488f-8103-98fee9292c16 copy.webp"
           alt=""
           aria-hidden
           className="absolute inset-0 w-full h-full object-cover object-center"
