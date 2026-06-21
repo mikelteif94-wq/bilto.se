@@ -412,7 +412,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               Sälj, köp eller byt bil — enkelt, tryggt och helt gratis
             </p>
 
-            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
               {/* Tab strip */}
               <div className="flex border-b border-slate-100">
                 {(['salj', 'hitta'] as const).map((t) => (
@@ -466,7 +466,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 ) : (
                   <div ref={carSearchRef} className="relative space-y-3">
                     <div className="relative">
-                      <div className="flex items-center h-12 rounded-2xl bg-slate-50 border-2 border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:bg-white focus-within:shadow-[0_0_0_4px_rgba(14,110,254,0.08)] transition-all duration-200">
+                      <div className="flex items-center h-12 rounded-xl bg-slate-50 border-2 border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:bg-white focus-within:shadow-[0_0_0_4px_rgba(14,110,254,0.08)] transition-all duration-200">
                         <span className="flex items-center justify-center w-11 shrink-0">
                           {carSearchLoading
                             ? <div className="w-4 h-4 border-2 border-slate-300 border-t-[#0e6efe] rounded-full animate-spin" />
