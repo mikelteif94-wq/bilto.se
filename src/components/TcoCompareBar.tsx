@@ -168,7 +168,7 @@ export default function TcoCompareBar({ cars, onRemove, onGetHelp }: TcoCompareB
                   onClick={() => onGetHelp(cars[winner ? cars.findIndex(c => c.name === winner) : 0]?.name ?? cars[0].name)}
                   className="w-full h-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold flex items-center justify-center gap-2 transition-colors"
                 >
-                  Få hjälp att köpa
+                  Få prishjälp
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>

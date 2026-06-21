@@ -230,33 +230,38 @@ export default function BuyCarPage({
 
   return (
     <div className="min-h-screen bg-[#faf8f5] flex flex-col">
-      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-30 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
-        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
-          <button onClick={onBack} className="shrink-0 flex items-center">
+      <nav
+        className="fixed top-0 left-0 right-0 z-50"
+        style={{
+          background: 'linear-gradient(180deg, #0a57cc 0%, #0e6efe 100%)',
+          boxShadow: '0 1px 0 rgba(255,255,255,0.08), 0 4px 24px rgba(10,87,204,0.28)',
+        }}
+      >
+        <div className="h-[2px] w-full" style={{ background: 'linear-gradient(90deg, rgba(251,191,36,0.7) 0%, rgba(255,255,255,0.4) 40%, rgba(56,189,248,0.6) 100%)' }} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+          <button onClick={onBack} className="shrink-0 flex items-center group">
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
               fetchPriority="high"
               decoding="async"
-              className="h-20 lg:h-32 w-auto object-contain"
+              className="h-16 lg:h-24 w-auto object-contain transition-opacity duration-200 group-hover:opacity-90"
             />
           </button>
-          <div className="flex items-center ml-auto">
-            <button
-              type="button"
-              onClick={() => {
-                window.history.pushState({}, '', '/gratis-konsultation');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-              }}
-              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
-            >
-              Kostnadsfri konsultation
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => {
+              window.history.pushState({}, '', '/gratis-konsultation');
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            }}
+            className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+          >
+            Kostnadsfri konsultation
+          </button>
         </div>
-      </header>
+      </nav>
 
-      <div className="flex-1 flex flex-col items-center px-4 pt-24 sm:pt-28 pb-6 sm:pb-8">
+      <div className="flex-1 flex flex-col items-center px-4 pt-28 sm:pt-32 pb-6 sm:pb-8">
         <div className="w-full max-w-lg">
           {step !== 'done' && (
             <div className="mb-6 sm:mb-8">
@@ -434,7 +439,7 @@ export default function BuyCarPage({
               <div className="text-center">
                 <a
                   href="tel:+46855550200"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-100 text-slate-700 text-[14px] font-medium hover:bg-slate-200 transition"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-100 text-slate-700 text-[14px] font-medium hover:bg-slate-200 transition"
                 >
                   <Phone className="w-4 h-4" />
                   Ring oss direkt: 08-5555 0200
@@ -448,7 +453,7 @@ export default function BuyCarPage({
       {scrolled && step !== 'done' && (
         <a
           href="tel:+46855550200"
-          className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-center justify-center gap-2.5 h-14 rounded-full bg-[#0e6efe] hover:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_10px_30px_rgba(14,110,254,0.4)] transition animate-[slideUp_0.3s_ease-out]"
+          className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-center justify-center gap-2.5 h-14 rounded-xl bg-[#0e6efe] hover:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_10px_30px_rgba(14,110,254,0.4)] transition animate-[slideUp_0.3s_ease-out]"
         >
           <img src="/Man_in_car_showroom_portrait.png" alt="Expert" className="w-8 h-8 rounded-full object-cover border-2 border-white/40 shrink-0" />
           <span>Ring expert &middot; bud direkt</span>
@@ -488,7 +493,7 @@ export default function BuyCarPage({
                 <button
                   type="button"
                   onClick={() => setGuidanceOpen(false)}
-                  className="mt-6 w-full h-11 bg-[#0e6efe] hover:bg-[#0b5ce0] text-white font-semibold rounded-lg transition-colors"
+                  className="mt-6 w-full h-11 bg-[#0e6efe] hover:bg-[#0b5ce0] text-white font-semibold rounded-xl transition-colors"
                 >
                   Klar
                 </button>
@@ -540,7 +545,7 @@ export default function BuyCarPage({
                   type="button"
                   disabled={guidanceSubmitting}
                   onClick={submitGuidance}
-                  className="mt-5 w-full h-11 bg-[#0e6efe] hover:bg-[#0b5ce0] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors"
+                  className="mt-5 w-full h-11 bg-[#0e6efe] hover:bg-[#0b5ce0] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors"
                 >
                   {guidanceSubmitting ? 'Skickar...' : 'Ring upp mig'}
                 </button>

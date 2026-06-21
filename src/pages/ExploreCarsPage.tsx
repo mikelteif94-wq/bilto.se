@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import {
   Search, X, ChevronDown,
   Car, ChevronRight, Users, Filter, ArrowUpDown, Loader2,
-  Handshake, ArrowLeftRight, ArrowRight,
+  Handshake, ArrowLeftRight, ArrowRight, Scale,
 } from 'lucide-react';
 import { useCatalogCars, type CatalogCarFull } from '../hooks/useCatalogCars';
 import { calcCarMonthlyRange } from '../lib/utils';
@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { DetailCarData } from '../components/quiz/CarDetailSheet';
 import { getAllComparisonCars } from '../lib/comparison';
 import type { ComparisonCar } from '../lib/comparison/types';
+import TcoCompareBar, { type TcoCompareCar } from '../components/TcoCompareBar';
 
 const CarDetailSheet = lazy(() =>
   import('../components/quiz/CarDetailSheet').then(m => ({ default: m.CarDetailSheet }))
@@ -63,14 +64,14 @@ function ScoreBadge({ value }: { value: number }) {
   const color = value >= 9 ? '#059669' : value >= 7.5 ? '#0e6efe' : '#d97706';
   return (
     <div
-      className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center"
+      className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center"
       style={{
         border: `2px solid ${color}`,
         boxShadow: `0 2px 8px ${color}30`,
         backgroundColor: 'rgba(255,255,255,0.93)',
       }}
     >
-      <span className="text-[11px] font-extrabold tabular-nums leading-none" style={{ color }}>
+      <span className="text-[10px] font-extrabold tabular-nums leading-none" style={{ color }}>
         {Number.isInteger(value) ? value : value.toFixed(1)}
       </span>
     </div>
@@ -79,10 +80,19 @@ function ScoreBadge({ value }: { value: number }) {
 
 /* ─── CarCard ─── */
 
-function CarCard({ car, onBuy, onDetail }: { car: CatalogCarFull; onBuy: () => void; onDetail: () => void }) {
+function CarCard({
+  car, onBuy, onDetail, onCompare, isCompared,
+}: {
+  car: CatalogCarFull;
+  onBuy: () => void;
+  onDetail: () => void;
+  onCompare: () => void;
+  isCompared: boolean;
+}) {
   const img = car.cleaned_image_url || car.image_url;
   const range = car.price_new_from ? calcCarMonthlyRange(car.price_new_from, car.price_used_from ?? undefined) : null;
   const bodyLabel = car.body_type ? (BODY_LABELS[car.body_type] ?? car.body_type) : null;
+  const dtBadge = drivetrainBadge(car.drivetrain_type);
 
   return (
     <motion.div
@@ -91,7 +101,9 @@ function CarCard({ car, onBuy, onDetail }: { car: CatalogCarFull; onBuy: () => v
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.22 }}
-      className="group relative bg-white rounded-xl ring-1 ring-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-250"
+      className={`group relative bg-white rounded-2xl ring-1 shadow-sm hover:shadow-md transition-all duration-250 flex flex-col ${
+        isCompared ? 'ring-blue-400 shadow-blue-100' : 'ring-slate-100 hover:-translate-y-0.5'
+      }`}
     >
       {/* Image */}
       <div
@@ -104,7 +116,7 @@ function CarCard({ car, onBuy, onDetail }: { car: CatalogCarFull; onBuy: () => v
             alt={`${car.make} ${car.model}`}
             loading="lazy"
             decoding="async"
-            className="w-full h-full object-contain p-3 transition-transform duration-400 group-hover:scale-[1.04]"
+            className="w-full h-full object-contain p-2.5 transition-transform duration-400 group-hover:scale-[1.04]"
             onError={(e) => {
               e.currentTarget.src = '/car-placeholder.svg';
               e.currentTarget.className = 'w-full h-full object-contain p-6 opacity-30';
@@ -114,70 +126,75 @@ function CarCard({ car, onBuy, onDetail }: { car: CatalogCarFull; onBuy: () => v
           <img src="/car-placeholder.svg" alt="" className="w-full h-full object-contain p-6 opacity-30" />
         )}
         <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
-
         {car.rating_overall != null && <ScoreBadge value={car.rating_overall} />}
       </div>
 
       {/* Body */}
-      <div className="px-4 pt-3 pb-4">
-        <div className="cursor-pointer" onClick={onDetail}>
-          <h3 className="text-[14px] font-bold text-slate-900 leading-snug group-hover:text-blue-600 transition-colors">
+      <div className="px-3 pt-2.5 pb-3 flex flex-col flex-1">
+        <div className="cursor-pointer flex-1" onClick={onDetail}>
+          <h3 className="text-[13px] font-bold text-slate-900 leading-snug group-hover:text-blue-600 transition-colors line-clamp-1">
             {car.make} {car.model}
           </h3>
 
-          <div className="mt-1.5 flex flex-wrap gap-1">
+          <div className="mt-1 flex flex-wrap gap-1">
             {bodyLabel && (
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">
+              <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">
                 {bodyLabel}
               </span>
             )}
-            {drivetrainBadge(car.drivetrain_type) && (
-              <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${drivetrainBadge(car.drivetrain_type)!.className}`}>
-                {drivetrainBadge(car.drivetrain_type)!.label}
+            {dtBadge && (
+              <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${dtBadge.className}`}>
+                {dtBadge.label}
               </span>
             )}
             {car.seats != null && car.seats > 0 && (
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 inline-flex items-center gap-0.5">
-                <Users className="w-2.5 h-2.5" />{car.seats}
+              <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 inline-flex items-center gap-0.5">
+                <Users className="w-2 h-2" />{car.seats}
               </span>
             )}
           </div>
 
-          {car.expert_comment && (
-            <p className="mt-1.5 text-[11px] text-slate-400 line-clamp-2 leading-snug italic">
-              {car.expert_comment}
-            </p>
-          )}
-
-          {range && (
+          {range ? (
             <div className="mt-2 flex items-baseline gap-1">
-              <span className="text-[17px] font-extrabold tabular-nums leading-none text-blue-600">
+              <span className="text-[15px] font-extrabold tabular-nums leading-none text-blue-600">
                 {fmt(range.low)}–{fmt(range.high)}
               </span>
-              <span className="text-[10px] font-semibold text-blue-400">kr/mån</span>
+              <span className="text-[9px] font-semibold text-blue-400">kr/mån</span>
             </div>
-          )}
-          {car.price_used_from && !range && (
+          ) : car.price_used_from ? (
             <div className="mt-2">
-              <span className="text-[15px] font-extrabold text-slate-800">{fmt(car.price_used_from)}</span>
-              <span className="text-[10px] text-slate-400 ml-1">kr begagnat</span>
+              <span className="text-[13px] font-extrabold text-slate-800">{fmt(car.price_used_from)}</span>
+              <span className="text-[9px] text-slate-400 ml-1">kr begagnat</span>
             </div>
-          )}
+          ) : null}
         </div>
 
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); onBuy(); }}
-          className="mt-3 w-full h-10 rounded-xl text-white text-[12.5px] font-bold flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-[0.97]"
-          style={{
-            background: 'linear-gradient(135deg, #1a7fff 0%, #0e6efe 60%, #0a57cc 100%)',
-            boxShadow: '0 3px 12px rgba(14,110,254,0.28)',
-          }}
-          onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 5px 18px rgba(14,110,254,0.42)')}
-          onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 3px 12px rgba(14,110,254,0.28)')}
-        >
-          Få hjälp att köpa <ChevronRight className="w-3.5 h-3.5 opacity-80" />
-        </button>
+        {/* Buttons */}
+        <div className="mt-2.5 flex gap-1.5">
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onBuy(); }}
+            className="flex-1 h-9 rounded-xl text-white text-[11.5px] font-bold flex items-center justify-center gap-1 transition-all duration-200 active:scale-[0.97]"
+            style={{
+              background: 'linear-gradient(135deg, #1a7fff 0%, #0e6efe 60%, #0a57cc 100%)',
+              boxShadow: '0 3px 10px rgba(14,110,254,0.25)',
+            }}
+          >
+            Få prishjälp <ChevronRight className="w-3 h-3 opacity-80" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onCompare(); }}
+            title={isCompared ? 'Ta bort från jämförelse' : 'Jämför kostnad'}
+            className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 active:scale-[0.97] ${
+              isCompared
+                ? 'bg-blue-600 text-white shadow-sm shadow-blue-200'
+                : 'bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-600'
+            }`}
+          >
+            <Scale className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
     </motion.div>
   );
@@ -204,24 +221,13 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
 /* ─── MobilFilterDrawer ─── */
 
 function MobileFilterDrawer({
-  open,
-  onClose,
-  selectedFuels,
-  toggleFuel,
-  selectedBodies,
-  toggleBody,
-  maxBudget,
-  setMaxBudget,
-  onReset,
+  open, onClose, selectedFuels, toggleFuel, selectedBodies, toggleBody,
+  maxBudget, setMaxBudget, onReset,
 }: {
-  open: boolean;
-  onClose: () => void;
-  selectedFuels: Set<string>;
-  toggleFuel: (f: string) => void;
-  selectedBodies: Set<string>;
-  toggleBody: (b: string) => void;
-  maxBudget: number;
-  setMaxBudget: (n: number) => void;
+  open: boolean; onClose: () => void;
+  selectedFuels: Set<string>; toggleFuel: (f: string) => void;
+  selectedBodies: Set<string>; toggleBody: (b: string) => void;
+  maxBudget: number; setMaxBudget: (n: number) => void;
   onReset: () => void;
 }) {
   return (
@@ -245,7 +251,6 @@ function MobileFilterDrawer({
               </button>
             </div>
             <div className="px-5 pb-8 pt-4 space-y-6">
-              {/* Fuel */}
               <div>
                 <p className="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-2">Drivmedel</p>
                 <div className="flex flex-wrap gap-2">
@@ -254,7 +259,6 @@ function MobileFilterDrawer({
                   ))}
                 </div>
               </div>
-              {/* Body */}
               <div>
                 <p className="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-2">Karosseri</p>
                 <div className="flex flex-wrap gap-2">
@@ -263,7 +267,6 @@ function MobileFilterDrawer({
                   ))}
                 </div>
               </div>
-              {/* Budget */}
               <div>
                 <p className="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-2">
                   Max månadsbudget: {maxBudget === 30000 ? 'Alla' : `${fmt(maxBudget)} kr/mån`}
@@ -298,9 +301,7 @@ function MobileFilterDrawer({
 /* ─── IntentSheet ─── */
 
 function IntentSheet({
-  car,
-  onClose,
-  onChoose,
+  car, onClose, onChoose,
 }: {
   car: CatalogCarFull | null;
   onClose: () => void;
@@ -329,23 +330,15 @@ function IntentSheet({
             transition={{ type: 'spring', stiffness: 320, damping: 32 }}
             className="fixed bottom-0 inset-x-0 z-50 bg-white rounded-t-xl overflow-hidden"
           >
-            {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-9 h-1 rounded-full bg-slate-200" />
             </div>
 
-            {/* Car preview — compact horizontal card */}
             <div className="mx-4 mt-2 mb-4 bg-slate-50 rounded-xl flex items-center gap-3 p-3 ring-1 ring-slate-100">
               <div className="relative w-[90px] h-[62px] shrink-0 bg-white rounded-xl overflow-hidden">
                 {img ? (
-                  <img
-                    src={img}
-                    alt={name}
-                    className="w-full h-full object-contain p-1.5"
-                    onError={(e) => {
-                      e.currentTarget.src = '/car-placeholder.svg';
-                      e.currentTarget.className = 'w-full h-full object-contain p-3 opacity-30';
-                    }}
+                  <img src={img} alt={name} className="w-full h-full object-contain p-1.5"
+                    onError={(e) => { e.currentTarget.src = '/car-placeholder.svg'; e.currentTarget.className = 'w-full h-full object-contain p-3 opacity-30'; }}
                   />
                 ) : (
                   <img src="/car-placeholder.svg" alt="" className="w-full h-full object-contain p-3 opacity-30" />
@@ -353,21 +346,15 @@ function IntentSheet({
                 {car.rating_overall != null && (
                   <div
                     className="absolute bottom-1 right-1 w-6 h-6 rounded-full flex items-center justify-center bg-white/95 ring-1"
-                    style={{
-                      ringColor: car.rating_overall >= 9 ? '#059669' : car.rating_overall >= 7.5 ? '#0e6efe' : '#d97706',
-                      boxShadow: `0 1px 4px ${car.rating_overall >= 9 ? '#05966930' : car.rating_overall >= 7.5 ? '#0e6efe30' : '#d9770630'}`,
-                    }}
+                    style={{ boxShadow: `0 1px 4px ${car.rating_overall >= 9 ? '#05966930' : car.rating_overall >= 7.5 ? '#0e6efe30' : '#d9770630'}` }}
                   >
-                    <span
-                      className="text-[8px] font-extrabold tabular-nums"
-                      style={{ color: car.rating_overall >= 9 ? '#059669' : car.rating_overall >= 7.5 ? '#0e6efe' : '#d97706' }}
-                    >
+                    <span className="text-[8px] font-extrabold tabular-nums"
+                      style={{ color: car.rating_overall >= 9 ? '#059669' : car.rating_overall >= 7.5 ? '#0e6efe' : '#d97706' }}>
                       {Number.isInteger(car.rating_overall) ? car.rating_overall : car.rating_overall.toFixed(1)}
                     </span>
                   </div>
                 )}
               </div>
-
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-bold text-slate-900 leading-snug truncate">{name}</p>
                 <div className="flex flex-wrap items-center gap-1 mt-0.5">
@@ -398,17 +385,13 @@ function IntentSheet({
               </div>
             </div>
 
-            {/* Divider + label */}
             <div className="px-5 mb-3">
               <p className="text-[12px] font-bold text-slate-400 uppercase tracking-wider">Välj det som passar dig bäst</p>
             </div>
 
             <div className="px-4 space-y-2 pb-8">
-              <button
-                type="button"
-                onClick={() => onChoose('found')}
-                className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
-              >
+              <button type="button" onClick={() => onChoose('found')}
+                className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left">
                 <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
                   <Handshake className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
                 </div>
@@ -419,11 +402,8 @@ function IntentSheet({
                 <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
               </button>
 
-              <button
-                type="button"
-                onClick={() => onChoose('searching')}
-                className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
-              >
+              <button type="button" onClick={() => onChoose('searching')}
+                className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left">
                 <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
                   <Search className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
                 </div>
@@ -434,11 +414,8 @@ function IntentSheet({
                 <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
               </button>
 
-              <button
-                type="button"
-                onClick={() => onChoose('trade')}
-                className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
-              >
+              <button type="button" onClick={() => onChoose('trade')}
+                className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left">
                 <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
                   <ArrowLeftRight className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
                 </div>
@@ -477,11 +454,10 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
   const [intentCar, setIntentCar] = useState<CatalogCarFull | null>(null);
   const [detailCar, setDetailCar] = useState<DetailCarData | null>(null);
   const [fitQuizCar, setFitQuizCar] = useState<ComparisonCar | null>(null);
+  const [compareIds, setCompareIds] = useState<Set<string>>(new Set());
 
   const sortRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Close sort menu on outside click
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
       if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
@@ -493,20 +469,12 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
   }, []);
 
   function toggleFuel(f: string) {
-    setSelectedFuels(prev => {
-      const next = new Set(prev);
-      if (next.has(f)) next.delete(f); else next.add(f);
-      return next;
-    });
+    setSelectedFuels(prev => { const n = new Set(prev); n.has(f) ? n.delete(f) : n.add(f); return n; });
     setVisibleCount(24);
   }
 
   function toggleBody(b: string) {
-    setSelectedBodies(prev => {
-      const next = new Set(prev);
-      if (next.has(b)) next.delete(b); else next.add(b);
-      return next;
-    });
+    setSelectedBodies(prev => { const n = new Set(prev); n.has(b) ? n.delete(b) : n.add(b); return n; });
     setVisibleCount(24);
   }
 
@@ -518,37 +486,37 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
     setVisibleCount(24);
   }
 
+  function toggleCompare(car: CatalogCarFull) {
+    setCompareIds(prev => {
+      const n = new Set(prev);
+      if (n.has(car.id)) { n.delete(car.id); return n; }
+      if (n.size >= 2) return prev; // max 2
+      n.add(car.id);
+      return n;
+    });
+  }
+
   const hasFilters = selectedFuels.size > 0 || selectedBodies.size > 0 || maxBudget < 30000 || search.length > 0;
   const activeFilterCount = selectedFuels.size + selectedBodies.size + (maxBudget < 30000 ? 1 : 0);
 
   const filtered = useMemo(() => {
     let list = [...cars];
-
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(c => `${c.make} ${c.model}`.toLowerCase().includes(q));
     }
-
     if (selectedFuels.size > 0) {
-      list = list.filter(c => {
-        const fuels = c.fuel_types ?? [];
-        return fuels.some(f => selectedFuels.has(f));
-      });
+      list = list.filter(c => (c.fuel_types ?? []).some(f => selectedFuels.has(f)));
     }
-
     if (selectedBodies.size > 0) {
       list = list.filter(c => c.body_type && selectedBodies.has(c.body_type));
     }
-
     if (maxBudget < 30000) {
       list = list.filter(c => {
         if (!c.price_new_from) return true;
-        const range = calcCarMonthlyRange(c.price_new_from, c.price_used_from ?? undefined);
-        return range.low <= maxBudget;
+        return calcCarMonthlyRange(c.price_new_from, c.price_used_from ?? undefined).low <= maxBudget;
       });
     }
-
-    // Sort
     if (sort === 'price_asc') {
       list.sort((a, b) => (a.price_used_from ?? a.price_new_from ?? 9e9) - (b.price_used_from ?? b.price_new_from ?? 9e9));
     } else if (sort === 'price_desc') {
@@ -558,12 +526,22 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
     } else if (sort === 'name_asc') {
       list.sort((a, b) => `${a.make} ${a.model}`.localeCompare(`${b.make} ${b.model}`, 'sv'));
     }
-
     return list;
   }, [cars, search, selectedFuels, selectedBodies, maxBudget, sort]);
 
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
+
+  const compareCars: TcoCompareCar[] = cars
+    .filter(c => compareIds.has(c.id))
+    .map(c => ({
+      id: c.id,
+      name: `${c.make} ${c.model}`,
+      imageUrl: c.cleaned_image_url || c.image_url,
+      carPrice: c.price_new_from ?? undefined,
+      usedPrice: c.price_used_from ?? undefined,
+      fuelTypes: c.fuel_types ?? [],
+    }));
 
   return (
     <div className="min-h-screen" style={{ background: '#f8f9fc' }}>
@@ -574,18 +552,12 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
           <button onClick={onBackHome} className="shrink-0 p-1.5 -ml-1 rounded-lg hover:bg-slate-100 transition-colors">
-            <img
-              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
-              alt="Bilto"
-              className="h-8 w-auto object-contain"
-            />
+            <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-8 w-auto object-contain" />
           </button>
 
-          {/* Search bar */}
           <div className="flex-1 relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
             <input
-              ref={inputRef}
               type="text"
               placeholder="Sök märke eller modell…"
               value={search}
@@ -599,7 +571,6 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
             )}
           </div>
 
-          {/* Mobile filter button */}
           <button
             type="button"
             onClick={() => setMobileFilterOpen(true)}
@@ -614,7 +585,6 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
             )}
           </button>
 
-          {/* Sort (desktop) */}
           <div ref={sortRef} className="hidden sm:block relative">
             <button
               onClick={() => setShowSortMenu(v => !v)}
@@ -632,13 +602,8 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
                   className="absolute right-0 mt-1 w-44 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50"
                 >
                   {SORT_OPTIONS.map(o => (
-                    <button
-                      key={o.value}
-                      onClick={() => { setSort(o.value); setShowSortMenu(false); }}
-                      className={`w-full text-left px-4 py-2.5 text-[13px] hover:bg-blue-50 transition-colors ${
-                        sort === o.value ? 'font-bold text-blue-600 bg-blue-50' : 'text-slate-700'
-                      }`}
-                    >
+                    <button key={o.value} onClick={() => { setSort(o.value); setShowSortMenu(false); }}
+                      className={`w-full text-left px-4 py-2.5 text-[13px] hover:bg-blue-50 transition-colors ${sort === o.value ? 'font-bold text-blue-600 bg-blue-50' : 'text-slate-700'}`}>
                       {o.label}
                     </button>
                   ))}
@@ -649,52 +614,46 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
         {/* ── Hero row ── */}
-        <div className="mb-5 flex items-start justify-between gap-4 flex-wrap">
+        <div className="mb-4 flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
+            <h1 className="text-xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
               Utforska bilar
             </h1>
-            <p className="text-[13px] text-slate-500 mt-0.5">
+            <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5">
               {loading ? 'Laddar…' : `${filtered.length} modeller – välj din nästa bil`}
             </p>
           </div>
-
           {hasFilters && (
-            <button
-              onClick={resetFilters}
-              className="flex items-center gap-1.5 text-[12px] font-semibold text-blue-600 hover:underline mt-1"
-            >
+            <button onClick={resetFilters} className="flex items-center gap-1.5 text-[12px] font-semibold text-blue-600 hover:underline mt-1">
               <X className="w-3.5 h-3.5" /> Rensa filter
             </button>
           )}
         </div>
 
+        {/* ── TCO hint chip on mobile ── */}
+        {compareIds.size === 0 && (
+          <div className="sm:hidden mb-4 flex items-center gap-2 px-3 py-2 bg-blue-50 rounded-xl border border-blue-100">
+            <Scale className="w-4 h-4 text-blue-500 shrink-0" />
+            <p className="text-[12px] text-blue-700 font-medium">Tryck på <Scale className="w-3 h-3 inline" /> för att jämföra ägandekostnad</p>
+          </div>
+        )}
+
         {/* ── Desktop filter bar ── */}
         <div className="hidden sm:flex flex-wrap items-center gap-2 mb-6">
-          {/* Fuel chips */}
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide mr-1">Drivmedel:</span>
-          {FUEL_TYPES.map(f => (
-            <FilterChip key={f} label={FUEL_LABELS[f]} active={selectedFuels.has(f)} onClick={() => toggleFuel(f)} />
-          ))}
+          {FUEL_TYPES.map(f => <FilterChip key={f} label={FUEL_LABELS[f]} active={selectedFuels.has(f)} onClick={() => toggleFuel(f)} />)}
           <span className="ml-3 text-[11px] font-bold text-slate-400 uppercase tracking-wide mr-1">Karosseri:</span>
-          {BODY_TYPES.map(b => (
-            <FilterChip key={b} label={BODY_LABELS[b] ?? b} active={selectedBodies.has(b)} onClick={() => toggleBody(b)} />
-          ))}
+          {BODY_TYPES.map(b => <FilterChip key={b} label={BODY_LABELS[b] ?? b} active={selectedBodies.has(b)} onClick={() => toggleBody(b)} />)}
         </div>
 
         {/* ── Budget slider (desktop) ── */}
         <div className="hidden sm:flex items-center gap-4 mb-6 bg-white rounded-xl px-5 py-3.5 border border-slate-100 shadow-sm">
-          <span className="text-[12px] font-bold text-slate-500 uppercase tracking-wide shrink-0">
-            Max månadsbudget:
-          </span>
-          <input
-            type="range" min={2000} max={30000} step={500}
-            value={maxBudget}
+          <span className="text-[12px] font-bold text-slate-500 uppercase tracking-wide shrink-0">Max månadsbudget:</span>
+          <input type="range" min={2000} max={30000} step={500} value={maxBudget}
             onChange={e => { setMaxBudget(Number(e.target.value)); setVisibleCount(24); }}
-            className="flex-1 accent-blue-600"
-          />
+            className="flex-1 accent-blue-600" />
           <span className="text-[13px] font-bold text-blue-700 w-28 text-right shrink-0">
             {maxBudget === 30000 ? 'Alla priser' : `${fmt(maxBudget)} kr/mån`}
           </span>
@@ -716,22 +675,19 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
           </div>
         ) : (
           <>
-            <motion.div
-              layout
-              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4"
-            >
+            <motion.div layout className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
               <AnimatePresence>
                 {visible.map(car => (
                   <CarCard
                     key={car.id}
                     car={car}
+                    isCompared={compareIds.has(car.id)}
+                    onCompare={() => toggleCompare(car)}
                     onBuy={() => setIntentCar(car)}
                     onDetail={() => {
                       const img = car.cleaned_image_url || car.image_url;
                       setDetailCar({
-                        make: car.make,
-                        model: car.model,
-                        image_url: img,
+                        make: car.make, model: car.model, image_url: img,
                         matchScore: car.rating_overall ? car.rating_overall * 10 : 70,
                         matchReasons: car.strengths?.slice(0, 3) ?? [],
                         bodyType: car.body_type ?? undefined,
@@ -758,7 +714,7 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
               </div>
             )}
 
-            <p className="text-center text-[11px] text-slate-300 mt-8">
+            <p className="text-center text-[11px] text-slate-300 mt-8 mb-4">
               Visar {Math.min(visibleCount, filtered.length)} av {filtered.length} modeller
             </p>
           </>
@@ -785,6 +741,16 @@ export default function ExploreCarsPage({ onBackHome, onBuyCar }: Props) {
           if (!intentCar) return;
           setIntentCar(null);
           onBuyCar(intentCar.make, intentCar.model, track);
+        }}
+      />
+
+      {/* ── TCO Compare Bar ── */}
+      <TcoCompareBar
+        cars={compareCars}
+        onRemove={(id) => setCompareIds(prev => { const n = new Set(prev); n.delete(id); return n; })}
+        onGetHelp={(name) => {
+          const [make, ...rest] = name.split(' ');
+          onBuyCar(make, rest.join(' '));
         }}
       />
 
