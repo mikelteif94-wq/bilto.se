@@ -2207,7 +2207,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 <img
                   src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(Instagram_Post_(45))_copy_copy_copy_copy_copy.jpg"
                   alt="Johan framför sin Toyota RAV4"
-                  className="w-full h-[300px] sm:h-[460px] md:h-[520px] object-cover object-center"
+                  className="w-full h-[300px] sm:h-[460px] md:h-[520px] object-contain bg-slate-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
               </div>

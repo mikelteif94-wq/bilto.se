@@ -970,7 +970,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 <img
                   src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(1200_x_1400_px)_(2000_x_2000_px)_(1).png"
                   alt="Josefin framför sin Volvo XC40"
-                  className="w-full h-[280px] sm:h-[440px] md:h-[520px] object-cover object-top"
+                  className="w-full h-[280px] sm:h-[440px] md:h-[520px] object-contain bg-slate-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
               </div>

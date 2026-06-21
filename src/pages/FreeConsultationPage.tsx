@@ -14,7 +14,6 @@ import {
   Calendar,
   Menu,
   ShieldCheck,
-  Sparkles,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SiteFooter } from '../components/SiteFooter';
@@ -289,11 +288,10 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
       </header>
 
       {/* Hero */}
-      <div className="bg-[#0e6efe] pt-32 pb-14 px-4">
+      <div className="bg-[#0e6efe] pt-32 pb-16 px-4">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="inline-flex items-center gap-1.5 bg-white/15 text-white text-xs font-semibold px-3 py-1.5 rounded-full mb-5 tracking-wide">
-            <Sparkles className="w-3.5 h-3.5" />
-            100% kostnadsfritt
+          <div className="inline-flex items-center gap-1.5 bg-white/15 text-white text-xs font-semibold px-3 py-1.5 rounded-full mb-5 tracking-wide uppercase">
+            Kostnadsfritt första möte
           </div>
           <h1 className="text-[28px] sm:text-4xl font-bold text-white leading-tight tracking-tight">
             Boka din kostnadsfria konsultation
@@ -302,12 +300,6 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
             En av våra bilexperter ringer upp dig vid en tid som passar. Vi lyssnar, ger råd och hjälper dig — utan förpliktelser.
           </p>
         </div>
-      </div>
-
-      <div className="bg-[#0e6efe] -mb-1">
-        <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
-          <path d="M0 48 C360 0 1080 0 1440 48 L1440 48 L0 48 Z" fill="white" />
-        </svg>
       </div>
 
       {/* Form */}
