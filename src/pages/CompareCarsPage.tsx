@@ -218,7 +218,7 @@ const TRAIT_MAP: Array<{ keys: string[]; check: (c: ComparisonCar) => boolean; w
   { keys: ['familj', 'barn', 'barnfamilj', 'syskon'], check: c => c.specs.seats >= 5 && (c.specs.trunk_liters || 0) >= 400, weight: 20 },
   { keys: ['hund', 'hundar', 'husdjur', 'djur'], check: c => (c.specs.trunk_liters || 0) >= 450 && (c.specs.body_type === 'suv' || c.specs.body_type === 'kombi'), weight: 22 },
   { keys: ['stor bagage', 'stort bagageutrymme', 'bagageutrymme', 'bagage', 'lastförmåga', 'lastbar'], check: c => (c.specs.trunk_liters || 0) >= 450, weight: 18 },
-  { keys: ['billig', 'prisvärd', 'budget', 'förmånlig', 'billigt', 'prisvä'], check: c => c.ratings.value >= 8, weight: 18 },
+  { keys: ['billig', 'prisvärd', 'budget', 'förmånlig', 'billigt', 'prisvä'], check: c => (c.pricing.new_from_sek != null && c.pricing.new_from_sek <= 400_000) || (c.pricing.used_from_sek != null && c.pricing.used_from_sek <= 250_000), weight: 22 },
   { keys: ['ekonomisk', 'snål', 'låg förbrukning', 'driftskostnad', 'drifts'], check: c => c.ratings.value >= 7, weight: 14 },
   { keys: ['lyxig', 'lyx', 'premium', 'exklusiv', 'prestige'], check: c => c.segment === 'premium' || c.segment === 'luxury', weight: 18 },
   { keys: ['sportig', 'sport', 'kul', 'rolig'], check: c => c.ratings.driving >= 8, weight: 18 },
@@ -337,10 +337,21 @@ function searchScoreCar(car: ComparisonCar, query: string): SearchResult {
   }
 
   // Trait matching – scan the full query for known trait keywords
+  const isBudgetSearch = ['billig', 'prisvärd', 'budget', 'förmånlig', 'billigt', 'prisvä'].some(k => q.includes(k));
   for (const { keys, check, weight } of TRAIT_MAP) {
     if (keys.some(k => q.includes(k))) {
       if (check(car)) score += weight;
-      // No penalty for not matching traits – they are additive signals
+      else if (isBudgetSearch && keys.includes('billig')) score -= 15;
+    }
+  }
+
+  // Penalize expensive cars for budget queries
+  if (isBudgetSearch) {
+    const p = car.pricing.new_from_sek;
+    if (p != null) {
+      if (p > 700_000) score -= 25;
+      else if (p > 500_000) score -= 15;
+      else if (p > 400_000) score -= 8;
     }
   }
 
