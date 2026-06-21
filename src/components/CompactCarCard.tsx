@@ -52,15 +52,20 @@ function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make }: { carPrice: nu
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
   const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
-      <div className="flex items-center gap-[2px]">
-        {[1,2,3,4,5].map(s => (
-          <div key={s} className="rounded-sm" style={{ width: 10, height: 5, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1 }} />
-        ))}
+    <div className="mt-1">
+      <div className="flex items-baseline gap-1.5">
+        <span className="text-[15px] font-extrabold tabular-nums leading-none" style={{ color: activeColor }}>~{fmt(total)}</span>
+        <span className="text-[11px] font-semibold text-slate-400">kr/mån</span>
       </div>
-      <span className="text-[9px] font-semibold tabular-nums" style={{ color: activeColor }}>~{fmt(total)} kr/mån</span>
-      <span className="text-[8px] text-slate-400">({label.toLowerCase()})</span>
+      <div className="flex items-center gap-1.5 mt-1">
+        <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
+        <div className="flex items-center gap-[2px]">
+          {[1,2,3,4,5].map(s => (
+            <div key={s} className="rounded-sm" style={{ width: 11, height: 5, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1 }} />
+          ))}
+        </div>
+        <span className="text-[9px] text-slate-400">({label.toLowerCase()})</span>
+      </div>
     </div>
   );
 }
@@ -114,14 +119,12 @@ export default function CompactCarCard({
       <div className="flex sm:hidden" onClick={handleCardClick}>
         {/* Image */}
         <div className="relative w-[110px] shrink-0 bg-gradient-to-b from-slate-50 to-white self-stretch flex items-center">
-          {imageUrl ? (
+          {imageUrl && (
             <img
               src={imageUrl} alt={name} loading="lazy" decoding="async"
               className="w-full h-full object-contain p-2"
-              onError={(e) => { e.currentTarget.src = '/car-placeholder.svg'; e.currentTarget.className = 'w-full h-full object-contain p-3 opacity-30'; }}
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
-          ) : (
-            <img src="/car-placeholder.svg" alt={name} loading="lazy" decoding="async" className="w-full h-full object-contain p-3 opacity-30" />
           )}
           {topBadge && !isSelected && (
             <div className="absolute top-1.5 left-1.5">
@@ -198,14 +201,12 @@ export default function CompactCarCard({
       {/* Desktop: vertical layout */}
       <div className="hidden sm:block" onClick={handleCardClick}>
         <div className="relative aspect-[16/9] bg-gradient-to-b from-slate-50 to-white overflow-hidden">
-          {imageUrl ? (
+          {imageUrl && (
             <img
               src={imageUrl} alt={name} loading="lazy" decoding="async"
               className="w-full h-full object-contain p-3 transition-transform duration-500 group-hover:scale-[1.05]"
-              onError={(e) => { e.currentTarget.src = '/car-placeholder.svg'; e.currentTarget.className = 'w-full h-full object-contain p-6 opacity-35'; }}
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
-          ) : (
-            <img src="/car-placeholder.svg" alt={name} loading="lazy" decoding="async" className="w-full h-full object-contain p-6 opacity-35" />
           )}
           <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/70 to-transparent pointer-events-none" />
           {topBadge && !isSelected && (

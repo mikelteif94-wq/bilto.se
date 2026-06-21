@@ -99,8 +99,8 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
   const trackColor = level <= 2 ? '#dcfce7' : level === 3 ? '#ffedd5' : '#fee2e2';
   const pct = (level / 5) * 100;
   const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
-  const rows: { label: string; value: number }[] = [
-    { label: 'Finansiering (lån)', value: tco.financing },
+  const rows: { label: string; value: number; note?: string }[] = [
+    { label: 'Finansiering (lån)', value: tco.financing, note: 'Gäller vid billån — faller bort om du köper kontant' },
     { label: 'Bränsle / el', value: tco.fuel },
     { label: 'Försäkring', value: tco.insurance },
     { label: 'Service & reparation', value: tco.service },
@@ -111,7 +111,7 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
       <p className="text-[26px] font-extrabold text-slate-900 tabular-nums leading-none">
         ~{fmt(total)}<span className="text-[14px] font-semibold text-slate-400 ml-1.5">kr/mån</span>
       </p>
-      <p className="text-[10.5px] text-slate-400 mt-1 mb-3">Inkl. finansiering · bränsle/el · försäkring · service</p>
+      <p className="text-[10.5px] text-slate-400 mt-1 mb-3">Inkl. finansiering (vid lån) · bränsle/el · försäkring · service — <span className="italic">ungefärliga riktvärden</span></p>
       <div className="relative h-3 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
         <motion.div
           className="absolute left-0 top-0 h-full rounded-full"
@@ -146,9 +146,12 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
           >
             <div className="mt-2 rounded-xl overflow-hidden border border-slate-100">
               {rows.map((row, i) => (
-                <div key={row.label} className={`flex items-center justify-between px-3 py-2.5 ${i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}`}>
-                  <span className="text-[12px] text-slate-500">{row.label}</span>
-                  <span className="text-[13px] font-semibold text-slate-800 tabular-nums">~{fmt(row.value)} kr</span>
+                <div key={row.label} className={`px-3 py-2.5 ${i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] text-slate-500">{row.label}</span>
+                    <span className="text-[13px] font-semibold text-slate-800 tabular-nums">~{fmt(row.value)} kr</span>
+                  </div>
+                  {row.note && <p className="text-[9px] text-slate-400 mt-0.5 italic">{row.note}</p>}
                 </div>
               ))}
               <div className="flex items-center justify-between px-3 py-3 bg-slate-900">
@@ -156,7 +159,14 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
                 <span className="text-[14px] font-extrabold tabular-nums" style={{ color: activeColor }}>~{fmt(total)} kr</span>
               </div>
             </div>
-            <p className="text-[9px] text-slate-400 mt-1.5 leading-snug px-1">Uppskattning baserad på ~1 500 mil/år, halvårspremie och typisk service. Faktiska kostnader varierar.</p>
+            <div className="mt-2 px-1 space-y-1">
+              <p className="text-[10px] text-slate-500 leading-snug">
+                <span className="font-semibold text-slate-600">Finansiering</span> gäller dig som tar billån (20% kontantinsats, 6,49% ränta, 36 mån). Köper du kontant faller den posten bort.
+              </p>
+              <p className="text-[9.5px] text-slate-400 leading-snug">
+                Alla siffror är uppskattningar baserade på ~1 500 mil/år och marknadspris för just den här bilen. Faktiska kostnader varierar.
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
