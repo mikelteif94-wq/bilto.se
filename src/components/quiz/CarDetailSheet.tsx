@@ -11,7 +11,7 @@ import { type ComparisonCar, getAllComparisonCars } from '@/lib/comparison';
 import { useCarCatalogLookup } from '@/lib/comparison/useCarCatalogLookup';
 import type { QuizAnswers } from './QuizTypes';
 import { inferPersona, type Persona } from './persona';
-import { calcCarMonthlyRange, calcCarMonthly } from '@/lib/utils';
+import { calcCarMonthlyRange, calcCarMonthly, calcMonthlyTCO, type TCOBreakdown } from '@/lib/utils';
 import { CalcPanel } from '@/components/CalcPanel';
 
 export interface DetailCarData {
@@ -90,19 +90,28 @@ function getFuelLabel(fuelTypes: string[]): string {
 }
 
 // ─── Ownership cost meter ─────────────────────────────────────────────────────
-function OwnershipMeter({ monthlyLow }: { monthlyLow: number }) {
-  const level = monthlyLow < 3000 ? 1 : monthlyLow < 4500 ? 2 : monthlyLow < 6500 ? 3 : monthlyLow < 9000 ? 4 : 5;
+function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
+  const [open, setOpen] = useState(false);
+  const { total } = tco;
+  const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
   const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
   const trackColor = level <= 2 ? '#dcfce7' : level === 3 ? '#ffedd5' : '#fee2e2';
   const pct = (level / 5) * 100;
+  const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
+  const rows: { label: string; value: number }[] = [
+    { label: 'Finansiering', value: tco.financing },
+    { label: 'Bränsle / el', value: tco.fuel },
+    { label: 'Försäkring', value: tco.insurance },
+    { label: 'Service & reparation', value: tco.service },
+  ];
   return (
     <div className="mt-3 pt-3 border-t border-[#0047B3]/10">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Ägarkostnad</p>
-        <span className="text-[11px] font-bold" style={{ color: activeColor }}>{label}</span>
+        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Total ägarkostnad / mån</p>
+        <span className="text-[12px] font-extrabold tabular-nums" style={{ color: activeColor }}>~{fmt(total)} kr</span>
       </div>
-      <div className="relative h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
+      <div className="relative h-3 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
         <motion.div
           className="absolute left-0 top-0 h-full rounded-full"
           style={{ backgroundColor: activeColor }}
@@ -111,10 +120,45 @@ function OwnershipMeter({ monthlyLow }: { monthlyLow: number }) {
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
         />
       </div>
-      <div className="flex justify-between mt-1">
+      <div className="flex justify-between mt-1 mb-3">
         <span className="text-[9px] text-slate-400">Billig att äga</span>
+        <span className="text-[9px] font-semibold" style={{ color: activeColor }}>{label}</span>
         <span className="text-[9px] text-slate-400">Dyr att äga</span>
       </div>
+      <button
+        type="button"
+        onClick={() => setOpen(v => !v)}
+        className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 transition-colors"
+      >
+        <span className="text-[11px] font-semibold text-slate-600">Visa kostnadsposter</span>
+        <span className="text-[10px] text-slate-400">{open ? '▲' : '▼'}</span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="tco-breakdown"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div className="mt-2 rounded-xl overflow-hidden border border-slate-100">
+              {rows.map((row, i) => (
+                <div key={row.label} className={`flex items-center justify-between px-3 py-2.5 ${i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}`}>
+                  <span className="text-[12px] text-slate-500">{row.label}</span>
+                  <span className="text-[13px] font-semibold text-slate-800 tabular-nums">~{fmt(row.value)} kr</span>
+                </div>
+              ))}
+              <div className="flex items-center justify-between px-3 py-3 bg-slate-900">
+                <span className="text-[12px] font-bold text-white">Totalt per månad</span>
+                <span className="text-[14px] font-extrabold tabular-nums" style={{ color: activeColor }}>~{fmt(total)} kr</span>
+              </div>
+            </div>
+            <p className="text-[9px] text-slate-400 mt-1.5 leading-snug px-1">Uppskattning baserad på ~1 500 mil/år, halvårspremie och typisk service. Faktiska kostnader varierar.</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -790,7 +834,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
               monthlyUsedMin={data.pricing.monthly_used_min}
               monthlyUsedMax={data.pricing.monthly_used_max}
             />
-            <OwnershipMeter monthlyLow={calcCarMonthlyRange(carPrice, usedPrice).low} />
+            <OwnershipMeter tco={calcMonthlyTCO({ carPrice, usedPrice, fuelTypes: data.specs.fuel_types, make: data.brand_display })} />
           </>
         ) : (
           <p className="text-[13px] text-slate-400 italic">Pris ej tillgängligt</p>
