@@ -1395,7 +1395,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               </motion.div>
             )}
             {quizStep === 'active' && (
-              <motion.div key="quiz-active-top" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="max-w-lg mx-auto">
+              <motion.div key="quiz-active-top" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }} className="max-w-lg mx-auto px-4 sm:px-0 py-6 sm:py-0">
                 <QuizFlow onComplete={handleQuizComplete} onBack={handleQuizReset} preselectedCar={quizPreselectedCar} />
               </motion.div>
             )}
