@@ -558,7 +558,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
             <div className="flex items-center justify-center gap-1.5 mt-5">
               <ShieldCheck className="w-4 h-4 text-white/70 shrink-0" />
-              <p className="text-white/70 text-[13px] drop-shadow">Certifierade handlare · Fri upphämtning · Pengarna direkt</p>
+              <p className="text-white/70 text-[13px] drop-shadow text-center">Certifierade handlare · Fri upphämtning · Pengarna direkt</p>
             </div>
           </div>
         </div>
