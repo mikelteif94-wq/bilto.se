@@ -1,5 +1,5 @@
 import { Zap, Star, Check, ChevronRight, Info } from 'lucide-react';
-import { calcCarMonthlyRange } from '../lib/utils';
+import { calcCarMonthlyRange, calcMonthlyTCO } from '../lib/utils';
 
 const BODY_LABELS: Record<string, string> = {
   sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
@@ -29,6 +29,27 @@ interface ElCarCardProps {
 
 function formatSEK(n: number) {
   return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
+}
+
+function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make }: { carPrice: number; usedPrice?: number; fuelLabel?: string; make?: string }) {
+  const tco = calcMonthlyTCO({ carPrice, usedPrice, fuelTypes: fuelLabel?.toLowerCase().includes('el') ? ['el'] : ['bensin'], make });
+  const { total } = tco;
+  const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
+  const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
+  const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
+  const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
+      <div className="flex items-center gap-[2px]">
+        {[1,2,3,4,5].map(s => (
+          <div key={s} className="rounded-sm" style={{ width: 10, height: 5, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1 }} />
+        ))}
+      </div>
+      <span className="text-[9px] font-semibold tabular-nums" style={{ color: activeColor }}>~{fmt(total)} kr/mån</span>
+      <span className="text-[8px] text-slate-400">({label.toLowerCase()})</span>
+    </div>
+  );
 }
 
 function ScoreBadge({ value }: { value: number }) {
@@ -121,6 +142,7 @@ export default function ElCarCard({
           {displayComment && (
             <p className="text-[10px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
+          {carPrice && <OwnershipMeter carPrice={carPrice} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} />}
           <div className="flex items-center gap-1.5 mt-auto pt-1">
             <button
               type="button"
@@ -197,6 +219,7 @@ export default function ElCarCard({
             {displayComment && (
               <p className="mt-1 text-[11px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
             )}
+            {carPrice && <div className="mt-1.5"><OwnershipMeter carPrice={carPrice} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} /></div>}
           </div>
         </div>
 
