@@ -341,21 +341,21 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         active="Sälj bil"
         onSelect={handleMenuSelect}
       />
-      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-2xl shadow-lg ring-1 ring-white/10 transition-colors duration-300 bg-[#0e6efe] ${!scrolled ? 'backdrop-blur-md' : ''}`}>
-        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
+      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-12 lg:h-16 rounded-2xl shadow-lg ring-1 ring-white/10 transition-colors duration-300 bg-[#0e6efe] ${!scrolled ? 'backdrop-blur-md' : ''}`}>
+        <div className="max-w-[1400px] mx-auto h-full flex items-center px-4 lg:px-8">
           <button
             type="button"
             aria-label="Meny"
             onClick={() => setMenuOpen(true)}
-            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white"
+            className="lg:hidden -ml-1 w-9 h-9 flex items-center justify-center text-white"
           >
-            <Menu className="w-6 h-6 text-white" strokeWidth={2} />
+            <Menu className="w-5 h-5 text-white" strokeWidth={2} />
           </button>
-          <button onClick={onBackHome} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center">
+          <button onClick={onBackHome} className="shrink-0 lg:mr-10 -ml-1 lg:-ml-3 flex items-center">
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
-              className="h-20 lg:h-32 w-auto object-contain"
+              className="h-16 lg:h-32 w-auto object-contain"
               fetchPriority="high"
               decoding="async"
             />
@@ -383,7 +383,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <a
               href="/gratis-konsultation"
               onMouseEnter={() => { import('../pages/FreeConsultationPage'); import('../pages/KopBilConcierge'); }}
-              className="inline-flex items-center bg-white text-[#0e6efe] text-[12px] lg:text-[14px] font-semibold px-4 lg:px-5 h-10 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[14px] font-semibold px-3 lg:px-5 h-8 lg:h-10 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
