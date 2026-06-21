@@ -54,7 +54,7 @@ export default function DealerProposalCard({ proposal: p }: DealerProposalCardPr
   const bildUrls = Array.isArray(p.erbjuden_bild_urls) ? p.erbjuden_bild_urls : [];
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       {/* Dealer + deal-type header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
         <div className="flex items-center gap-2.5">

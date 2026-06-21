@@ -84,7 +84,7 @@ function VehicleFoundCard({ regnummer, data }: VehicleFoundCardProps) {
 
   return (
     <div
-      className={`mt-4 rounded-2xl overflow-hidden border transition-all duration-500 ${
+      className={`mt-4 rounded-xl overflow-hidden border transition-all duration-500 ${
         visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
       } border-emerald-200 bg-gradient-to-br from-emerald-50 to-white shadow-sm`}
     >
@@ -478,7 +478,7 @@ export default function CarConditionStep({
           <button
             type="button"
             onClick={() => setWantsTradeIn(v => !v)}
-            className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-150 text-left ${
+            className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all duration-150 text-left ${
               wantsTradeIn
                 ? 'border-[#0e6efe] bg-[#0e6efe]/[0.04]'
                 : 'border-slate-200 bg-white hover:border-slate-300'
@@ -505,7 +505,7 @@ export default function CarConditionStep({
           </button>
 
           {wantsTradeIn && (
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-white overflow-hidden divide-y divide-slate-100">
+            <div className="mt-4 rounded-xl border border-slate-200 bg-white overflow-hidden divide-y divide-slate-100">
               {/* Vilken bil vill du ha? */}
               <div className="p-4 sm:p-5">
                 <p className="text-[14px] font-semibold text-slate-800 mb-3">Vilken bil vill du ha istället?</p>

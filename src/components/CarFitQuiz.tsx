@@ -556,7 +556,7 @@ export function CarFitQuiz({ car, open, onClose, dark = false, onNegotiate }: Ca
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.97 }}
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
-            className="fixed inset-x-0 bottom-0 sm:inset-auto sm:left-1/2 sm:-translate-x-1/2 sm:bottom-8 z-50 w-full sm:w-[430px] rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl"
+            className="fixed inset-x-0 bottom-0 sm:inset-auto sm:left-1/2 sm:-translate-x-1/2 sm:bottom-8 z-50 w-full sm:w-[430px] rounded-t-3xl sm:rounded-xl overflow-hidden shadow-2xl"
             style={{ background: bg, border: `1px solid ${borderColor}` }}
             onClick={e => e.stopPropagation()}
           >

@@ -537,11 +537,11 @@ export default function LeadTimeline({
   );
 
   if (inline) {
-    return <div className="rounded-2xl border border-slate-200 overflow-hidden">{content}</div>;
+    return <div className="rounded-xl border border-slate-200 overflow-hidden">{content}</div>;
   }
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-2xl shadow-sm overflow-hidden ring-1 ring-slate-200">
+    <div className="flex flex-col h-full bg-white rounded-xl shadow-sm overflow-hidden ring-1 ring-slate-200">
       {content}
     </div>
   );

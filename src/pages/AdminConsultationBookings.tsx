@@ -150,15 +150,15 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
 
         {/* Table */}
         {loading ? (
-          <div className="bg-white rounded-2xl border border-slate-100 p-8 text-center text-slate-400 text-sm">
+          <div className="bg-white rounded-xl border border-slate-100 p-8 text-center text-slate-400 text-sm">
             Laddar bokningar...
           </div>
         ) : filtered.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-slate-100 p-8 text-center text-slate-400 text-sm">
+          <div className="bg-white rounded-xl border border-slate-100 p-8 text-center text-slate-400 text-sm">
             Inga bokningar hittades.
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
             <div className="divide-y divide-slate-50">
               {filtered.map(b => (
                 <div key={b.id} className="p-4 sm:p-5 hover:bg-slate-50/50 transition">

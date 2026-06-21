@@ -131,7 +131,7 @@ export function QuizExperience({ onComplete, onSkip, isAnalyzing, analysisReady 
       {/* Question content */}
       <main className="flex-1 flex flex-col justify-center px-4 pb-8 pt-6">
         <div className="max-w-lg mx-auto w-full">
-          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm">
+          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm">
             <h2 className="text-[18px] sm:text-[22px] font-bold text-slate-900 leading-tight mb-2">
               {question.question}
             </h2>

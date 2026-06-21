@@ -126,7 +126,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
           {/* Hero image */}
           <div className="mt-8 sm:mt-12 pb-10 sm:pb-16 relative">
             <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
-              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-[21/8] sm:aspect-[21/7] bg-slate-100">
+              <div className="relative rounded-xl overflow-hidden aspect-[21/8] sm:aspect-[21/7] bg-slate-100">
                 <img
                   src="/files_2615643-2026-06-20T00-26-02-459Z-header8.jpg"
                   alt="Nöjda bilköpare"
@@ -182,7 +182,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                   </p>
                 </div>
 
-                <div className="mt-8 relative rounded-2xl overflow-hidden aspect-[4/3] bg-slate-100">
+                <div className="mt-8 relative rounded-xl overflow-hidden aspect-[4/3] bg-slate-100">
                   <img
                     src="/Man_in_car_showroom_portrait.png"
                     alt="Alexander, VD och medgrundare"
@@ -210,7 +210,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                     {VALUES.map((item) => {
                       const Icon = item.icon;
                       return (
-                        <div key={item.title} className="flex gap-4 p-5 rounded-2xl bg-slate-50 hover:bg-[#0e6efe] group transition-colors duration-300">
+                        <div key={item.title} className="flex gap-4 p-5 rounded-xl bg-slate-50 hover:bg-[#0e6efe] group transition-colors duration-300">
                           <div className="w-10 h-10 rounded-xl bg-[#0e6efe] group-hover:bg-white/20 flex items-center justify-center shrink-0 transition-colors duration-300">
                             <Icon className="w-5 h-5 text-white" strokeWidth={2} />
                           </div>
@@ -228,7 +228,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                   </div>
                 </div>
 
-                <div className="bg-slate-50 rounded-2xl p-6 sm:p-7">
+                <div className="bg-slate-50 rounded-xl p-6 sm:p-7">
                   <span className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.22em] mb-4 block">
                     Vårt löfte
                   </span>
@@ -276,14 +276,14 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
               <button
                 type="button"
                 onClick={onBackHome}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-4 px-10 rounded-full bg-white text-[#0e6efe] hover:bg-slate-50 font-bold text-[16px] transition shadow-lg group"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-4 px-10 rounded-xl bg-white text-[#0e6efe] hover:bg-slate-50 font-bold text-[16px] transition shadow-lg group"
               >
                 Värdera din bil gratis
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
               </button>
               <a
                 href="/gratis-konsultation"
-                className="w-full sm:w-auto inline-flex items-center justify-center py-4 px-10 rounded-full border-2 border-white/50 text-white font-semibold text-[16px] hover:border-white/80 hover:bg-white/10 transition"
+                className="w-full sm:w-auto inline-flex items-center justify-center py-4 px-10 rounded-xl border-2 border-white/50 text-white font-semibold text-[16px] hover:border-white/80 hover:bg-white/10 transition"
               >
                 Boka konsultation
               </a>

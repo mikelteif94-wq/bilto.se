@@ -500,7 +500,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         </button>
                       </div>
                       {showSuggestions && carSuggestions.length > 0 && (
-                        <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-2xl shadow-[0_8px_32px_-8px_rgba(15,23,42,0.18)] border border-slate-100 overflow-hidden z-50">
+                        <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-[0_8px_32px_-8px_rgba(15,23,42,0.18)] border border-slate-100 overflow-hidden z-50">
                           {carSuggestions.map((s, i) => (
                             <button
                               key={i}
@@ -531,7 +531,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                             key={s.label}
                             type="button"
                             onClick={() => handleCarSelect(s.make, s.model)}
-                            className="inline-flex items-center gap-1 text-[12px] text-slate-600 hover:text-[#0e6efe] bg-white hover:bg-blue-50 border border-slate-200 hover:border-[#0e6efe]/40 rounded-full px-3 py-1.5 font-medium transition-all shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
+                            className="inline-flex items-center gap-1 text-[12px] text-slate-600 hover:text-[#0e6efe] bg-white hover:bg-blue-50 border border-slate-200 hover:border-[#0e6efe]/40 rounded-xl px-3 py-1.5 font-medium transition-all shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
                           >
                             <TrendingUp className="w-3 h-3 opacity-50" />
                             {s.label}
@@ -582,7 +582,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               return (
                 <li key={step.title} className="group">
                   {img && (
-                    <div className="rounded-2xl overflow-hidden aspect-[16/10] mb-6 shadow-sm">
+                    <div className="rounded-xl overflow-hidden aspect-[16/10] mb-6 shadow-sm">
                       <img
                         src={img}
                         alt={step.title}
@@ -638,14 +638,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }}
-                  className="h-11 px-6 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
+                  className="h-11 px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
                 >
                   Läs mer om hur det fungerar
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
-            <div className="relative rounded-2xl overflow-hidden">
+            <div className="relative rounded-xl overflow-hidden">
               <img
                 src="/BSM_car_sale_key_woman_handover_101122.jpg"
                 alt="Personlig mäklare hjälper bilsäljare"
@@ -737,7 +737,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     <button
                       type="button"
                       onClick={() => { window.history.pushState({}, '', '/utforska'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                      className="h-11 px-7 rounded-full border border-slate-200 hover:border-[#0e6efe] text-slate-600 hover:text-[#0e6efe] font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
+                      className="h-11 px-7 rounded-xl border border-slate-200 hover:border-[#0e6efe] text-slate-600 hover:text-[#0e6efe] font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
                     >
                       Se fler bilar
                       <ArrowRight className="w-4 h-4" />
@@ -752,7 +752,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <button
               type="button"
               onClick={() => { window.history.pushState({}, '', '/utforska'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-              className="h-11 px-7 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
+              className="h-11 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
             >
               Utforska alla bilar
               <ArrowRight className="w-4 h-4" />
@@ -786,7 +786,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 ))}
               </ul>
             </div>
-            <div className="relative rounded-2xl overflow-hidden aspect-square max-w-[480px] mx-auto w-full">
+            <div className="relative rounded-xl overflow-hidden aspect-square max-w-[480px] mx-auto w-full">
               <img
                 src="/13ccde8b-copy-copy.png"
                 alt="Personlig rådgivare framför kund-bil"
@@ -857,7 +857,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-px bg-slate-200 rounded-2xl overflow-hidden ring-1 ring-slate-200">
+          <div className="grid sm:grid-cols-3 gap-px bg-slate-200 rounded-xl overflow-hidden ring-1 ring-slate-200">
             {[
               {
                 icon: ShieldCheck,
@@ -919,13 +919,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
                   <a
                     href="/gratis-konsultation"
-                    className="inline-flex items-center justify-center h-12 px-7 rounded-full bg-white text-[#0e6efe] text-[15px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
+                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-white text-[#0e6efe] text-[15px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
                   >
                     Kostnadsfri konsultation
                   </a>
                   <a
                     href="tel:+46855550200"
-                    className="inline-flex items-center justify-center h-12 px-7 rounded-full border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
+                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
                   >
                     <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
                     Ring 08-5555 0200
@@ -942,7 +942,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
-                <div className="absolute bottom-0 right-0 bg-white rounded-2xl shadow-xl p-2.5 w-[148px] sm:w-[168px]">
+                <div className="absolute bottom-0 right-0 bg-white rounded-xl shadow-xl p-2.5 w-[148px] sm:w-[168px]">
                   <p className="text-[10px] font-bold text-slate-900 text-center mb-1.5">Välj en tid</p>
                   <CalendarWidget />
                 </div>
@@ -966,7 +966,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               </p>
             </div>
             <div className="md:col-span-7">
-              <div className="relative rounded-2xl overflow-hidden">
+              <div className="relative rounded-xl overflow-hidden">
                 <img
                   src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(1200_x_1400_px)_(2000_x_2000_px)_(1).png"
                   alt="Josefin framför sin Volvo XC40"
@@ -1028,13 +1028,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           onClick={() => setCarsModalOpen(false)}
         >
           <div
-            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
+            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => setCarsModalOpen(false)}
-              className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition"
+              className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition"
               aria-label="Stäng"
             >
               <X className="w-5 h-5" />
@@ -1094,7 +1094,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       {scrolled && (
         <a
           href="tel:+46855550200"
-          className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-center justify-center gap-2.5 h-14 rounded-full bg-[#0e6efe] hover:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_10px_30px_rgba(14,110,254,0.4)] transition animate-[slideUp_0.3s_ease-out]"
+          className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-center justify-center gap-2.5 h-14 rounded-xl bg-[#0e6efe] hover:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_10px_30px_rgba(14,110,254,0.4)] transition animate-[slideUp_0.3s_ease-out]"
         >
           <img src="/Man_in_car_showroom_portrait.png" alt="Expert" className="w-8 h-8 rounded-full object-cover border-2 border-white/40 shrink-0" />
           <span>Ring expert &middot; bud direkt</span>
@@ -1172,7 +1172,7 @@ function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] 
             className="snap-center shrink-0 w-[82vw] max-w-[340px]"
           >
             {/* Image with step badge */}
-            <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-md">
+            <div className="relative rounded-xl overflow-hidden aspect-[4/3] shadow-md">
               <img
                 src={images[i]}
                 alt={step.title}

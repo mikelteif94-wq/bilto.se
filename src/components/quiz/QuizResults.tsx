@@ -257,7 +257,7 @@ export function QuizResults({ answers, onBack, onSelectCar }: QuizResultsProps) 
               window.dispatchEvent(new PopStateEvent('popstate'));
               window.scrollTo({ top: 0, behavior: 'auto' });
             }}
-            className="w-full h-14 rounded-2xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] flex items-center justify-center gap-2.5 shadow-lg shadow-[#0e6efe]/30 active:scale-[0.99] transition-all"
+            className="w-full h-14 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] flex items-center justify-center gap-2.5 shadow-lg shadow-[#0e6efe]/30 active:scale-[0.99] transition-all"
           >
             Hjälp mig köpa en av dessa bilar
             <ArrowRight className="w-5 h-5" />
@@ -275,7 +275,7 @@ export function QuizResults({ answers, onBack, onSelectCar }: QuizResultsProps) 
 
       {recommendations.length === 0 && (
         <div className="text-center py-16">
-          <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-xl bg-slate-800 flex items-center justify-center mx-auto mb-4">
             <Car className="w-7 h-7 text-slate-500" />
           </div>
           <h3 className="text-[18px] font-bold text-white mb-2">Inga exakta matchningar hittades</h3>

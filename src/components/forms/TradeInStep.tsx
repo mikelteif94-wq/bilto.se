@@ -41,7 +41,7 @@ export default function TradeInStep({ regnummer, marke, modell, ar, miltal, onYe
       <button
         type="button"
         onClick={onYes}
-        className="group w-full text-left rounded-2xl border-2 border-[#0e6efe] bg-[#0e6efe]/[0.03] hover:bg-[#0e6efe]/[0.07] p-5 sm:p-6 transition-all"
+        className="group w-full text-left rounded-xl border-2 border-[#0e6efe] bg-[#0e6efe]/[0.03] hover:bg-[#0e6efe]/[0.07] p-5 sm:p-6 transition-all"
       >
         <div className="flex items-center gap-4">
           <div className="w-11 h-11 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
@@ -64,7 +64,7 @@ export default function TradeInStep({ regnummer, marke, modell, ar, miltal, onYe
       <button
         type="button"
         onClick={onNo}
-        className="group w-full text-left rounded-2xl border border-slate-200 bg-white hover:border-slate-300 p-5 sm:p-6 transition-all"
+        className="group w-full text-left rounded-xl border border-slate-200 bg-white hover:border-slate-300 p-5 sm:p-6 transition-all"
       >
         <div className="flex items-center gap-4">
           <div className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center shrink-0">

@@ -546,8 +546,8 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
 function EmptyState() {
   return (
     <div className="py-6 space-y-6">
-      <div className="bg-white border border-slate-200 rounded-2xl p-10 sm:p-14 text-center shadow-sm">
-        <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-5">
+      <div className="bg-white border border-slate-200 rounded-xl p-10 sm:p-14 text-center shadow-sm">
+        <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center mx-auto mb-5">
           <CarIcon className="w-8 h-8 text-slate-300" />
         </div>
         <h2 className="text-xl font-bold text-slate-900 mb-2">

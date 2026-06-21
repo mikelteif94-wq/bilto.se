@@ -155,7 +155,7 @@ export default function CustomerOfferCard({ offer }: { offer: Offer }) {
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
 
       {/* Gradient header */}
       <div className={`bg-gradient-to-br ${rating.gradient} px-5 sm:px-6 py-5`}>

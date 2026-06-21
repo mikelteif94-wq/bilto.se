@@ -224,7 +224,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             </p>
 
             {/* Card */}
-            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
               <div className="px-6 pt-6 pb-2">
                 <p className="text-[13px] font-bold text-slate-400 uppercase tracking-widest mb-4">Köp bil med expert</p>
                 <ul className="space-y-3 mb-5">
@@ -248,14 +248,14 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 <button
                   type="button"
                   onClick={() => onNavigateBuy()}
-                  className="w-full h-13 sm:h-14 rounded-2xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-md inline-flex items-center justify-center gap-2 group"
+                  className="w-full h-13 sm:h-14 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-md inline-flex items-center justify-center gap-2 group"
                 >
                   Kom igång gratis
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
                 </button>
                 <a
                   href="tel:+46855550200"
-                  className="w-full h-11 rounded-2xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-slate-50 transition inline-flex items-center justify-center gap-2"
+                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-slate-50 transition inline-flex items-center justify-center gap-2"
                 >
                   <Phone className="w-4 h-4 shrink-0" />
                   Ring oss: 08-5555 0200
@@ -291,7 +291,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 const Icon = step.icon;
                 return (
                   <div key={step.n} className="relative flex lg:flex-col items-start lg:items-center gap-4 lg:gap-0 lg:text-center">
-                    <div className="relative z-10 w-16 h-16 lg:w-20 lg:h-20 rounded-2xl bg-[#0e6efe] flex items-center justify-center shrink-0 lg:mb-5 shadow-lg shadow-[#0e6efe]/20">
+                    <div className="relative z-10 w-16 h-16 lg:w-20 lg:h-20 rounded-xl bg-[#0e6efe] flex items-center justify-center shrink-0 lg:mb-5 shadow-lg shadow-[#0e6efe]/20">
                       <Icon className="w-7 h-7 lg:w-8 lg:h-8 text-white" strokeWidth={1.8} />
                       <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border-2 border-[#0e6efe] text-[#0e6efe] text-[10px] font-bold flex items-center justify-center">
                         {step.n}
@@ -339,7 +339,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {INCLUDED.map((item) => (
-              <div key={item.title} className="flex items-start gap-4 bg-white/10 rounded-2xl p-5 border border-white/15">
+              <div key={item.title} className="flex items-start gap-4 bg-white/10 rounded-xl p-5 border border-white/15">
                 <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-white" strokeWidth={2.5} />
                 </div>
@@ -378,7 +378,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
           <div className="grid sm:grid-cols-2 gap-5 sm:gap-6">
             {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="bg-slate-50 rounded-2xl border border-slate-200 p-6 sm:p-8">
+              <div key={t.name} className="bg-slate-50 rounded-xl border border-slate-200 p-6 sm:p-8">
                 <Quote className="w-7 h-7 text-[#0e6efe]/20 mb-4" />
                 <p className="text-[14px] sm:text-[15px] text-slate-700 leading-[1.7] mb-6 italic">
                   "{t.quote}"
@@ -425,7 +425,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto">
             {EXPERTS.map((e) => (
-              <div key={e.name} className="flex items-center gap-5 bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm">
+              <div key={e.name} className="flex items-center gap-5 bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-sm">
                 <div className="relative shrink-0">
                   <img
                     src={e.avatar}
@@ -471,7 +471,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
           <div className="space-y-2">
             {FAQS.map((faq, i) => (
-              <div key={i} className="border border-slate-200 rounded-2xl overflow-hidden">
+              <div key={i} className="border border-slate-200 rounded-xl overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}

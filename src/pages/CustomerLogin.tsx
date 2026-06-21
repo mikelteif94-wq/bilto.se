@@ -108,13 +108,13 @@ export default function CustomerLogin({ onBack, initialEmail = '' }: CustomerLog
             </div>
 
             {/* Right column — card */}
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
               {sent ? (
                 <SentConfirmation email={email.trim()} onResend={() => setSent(false)} />
               ) : (
                 <>
                   <div className="px-7 pt-8 pb-2">
-                    <div className="w-12 h-12 rounded-2xl bg-[#0e6efe]/10 flex items-center justify-center mb-5">
+                    <div className="w-12 h-12 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mb-5">
                       <Mail className="w-6 h-6 text-[#0e6efe]" />
                     </div>
                     <h2 className="text-[20px] font-bold text-slate-900 mb-1">

@@ -726,7 +726,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                                 key={f.value}
                                 type="button"
                                 onClick={() => toggleFuel(f.value)}
-                                className={`px-2 py-0.5 rounded-full text-[11px] font-semibold border transition ${
+                                className={`px-2 py-0.5 rounded-lg text-[11px] font-semibold border transition ${
                                   editState.fuel_types.includes(f.value)
                                     ? 'bg-[#0e6efe] text-white border-[#0e6efe]'
                                     : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'

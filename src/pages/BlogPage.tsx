@@ -498,7 +498,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
             <p className="mt-4">Var därför alltid tydlig och ärlig kring bilens skick.</p>
           </section>
 
-          <section className="rounded-2xl bg-slate-900 text-white p-8 sm:p-10">
+          <section className="rounded-xl bg-slate-900 text-white p-8 sm:p-10">
             <h2 className="text-[28px] font-semibold mb-4 leading-tight">Sälj bilen enkelt med Bilto</h2>
             <p className="text-white/85">Bilto hjälper dig att sälja bilen snabbt, tryggt och enkelt.</p>
             <h3 className="text-[18px] font-semibold mt-6 mb-3">Så fungerar det</h3>
@@ -559,8 +559,8 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
           </div>
 
           {success ? (
-            <div className="mt-8 rounded-2xl bg-white border border-emerald-200 p-8 text-center shadow-sm">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 mb-4">
+            <div className="mt-8 rounded-xl bg-white border border-emerald-200 p-8 text-center shadow-sm">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-emerald-100 text-emerald-600 mb-4">
                 <Check className="w-6 h-6" />
               </div>
               <h3 className="text-[20px] font-semibold text-slate-900">Tack!</h3>
@@ -577,7 +577,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
           ) : (
             <form
               onSubmit={handleSubmit}
-              className="mt-8 rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm space-y-4"
+              className="mt-8 rounded-xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm space-y-4"
             >
               <div>
                 <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">

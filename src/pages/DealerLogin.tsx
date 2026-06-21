@@ -194,7 +194,7 @@ export default function DealerLogin({
             </div>
 
             <div className="relative">
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
+              <div className="bg-white rounded-xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
                 <div className="bg-slate-50 border-b border-slate-200 px-7 py-5 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
                     <Building2 className="w-5 h-5 text-[#0e6efe]" />

@@ -221,7 +221,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
     return (
       <div className="space-y-4">
         {/* Summary */}
-        <div className="bg-slate-900 rounded-2xl px-5 py-4 flex items-center gap-3">
+        <div className="bg-slate-900 rounded-xl px-5 py-4 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
             <Wallet className="w-5 h-5 text-white" />
           </div>
@@ -236,7 +236,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm"
+          className="rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm"
         >
           <div className="bg-gradient-to-r from-[#0e6efe] to-[#2a7fff] px-5 py-4 flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
@@ -304,7 +304,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
   return (
     <div className="space-y-5">
       {/* Equity summary card */}
-      <div className="bg-slate-900 rounded-2xl px-5 py-4 flex flex-wrap gap-4">
+      <div className="bg-slate-900 rounded-xl px-5 py-4 flex flex-wrap gap-4">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
             <Wallet className="w-5 h-5 text-white" />
@@ -559,7 +559,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
       />
 
       {/* How it works */}
-      <div className="bg-blue-50 rounded-2xl px-5 py-4 space-y-3">
+      <div className="bg-blue-50 rounded-xl px-5 py-4 space-y-3">
         <p className="text-[13px] font-bold text-slate-800">Hur fungerar insatsen?</p>
         <div className="space-y-2 text-[12px] text-slate-600 leading-relaxed">
           {equity.hasCurrentCar && (
@@ -594,7 +594,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
       {selectedIds.size > 0 && !compareOpen && (
         <div className="fixed bottom-0 inset-x-0 z-40 pb-[env(safe-area-inset-bottom)]">
           <div className="mx-3 mb-3">
-            <div className="max-w-md mx-auto bg-slate-900 rounded-2xl shadow-2xl px-4 py-3 flex items-center gap-3">
+            <div className="max-w-md mx-auto bg-slate-900 rounded-xl shadow-2xl px-4 py-3 flex items-center gap-3">
               <div className="flex-1 min-w-0">
                 <p className="text-white text-[13px] font-semibold">{selectedIds.size} bil{selectedIds.size > 1 ? 'ar' : ''} valda</p>
               </div>

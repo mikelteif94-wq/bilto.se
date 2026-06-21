@@ -303,7 +303,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+          <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4">Kund</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Namn *">
@@ -336,7 +336,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
             </div>
           </section>
 
-          <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+          <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4">Bil</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Regnummer *">
@@ -437,7 +437,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
             </div>
           </section>
 
-          <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+          <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
             <div className="flex items-center justify-between mb-1">
               <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
                 Bilder
@@ -455,7 +455,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
             />
           </section>
 
-          <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+          <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
             <div className="flex items-center justify-between mb-1">
               <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
                 Skickrapport
@@ -472,7 +472,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
             />
           </section>
 
-          <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+          <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4">
               Försäljning
             </h2>
@@ -570,7 +570,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
           </section>
 
           {activateNow && (
-            <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+            <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-4 gap-3">
                 <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
                   <Building2 className="w-4 h-4" />
@@ -661,13 +661,13 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
           )}
 
           {error && (
-            <div role="alert" className="flex items-start gap-2.5 p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm">
+            <div role="alert" className="flex items-start gap-2.5 p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-sm">
               <XCircle className="w-5 h-5 shrink-0 mt-[1px]" />
               <span className="leading-snug">{error}</span>
             </div>
           )}
           {success && (
-            <div role="status" className="flex items-start gap-2.5 p-3 rounded-xl bg-green-50 border border-green-200 text-green-800 text-sm">
+            <div role="status" className="flex items-start gap-2.5 p-3 rounded-lg bg-green-50 border border-green-200 text-green-800 text-sm">
               <CheckCircle2 className="w-5 h-5 shrink-0 mt-[1px]" />
               <span className="leading-snug">{success}</span>
             </div>
@@ -677,14 +677,14 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
             <button
               type="button"
               onClick={onBack}
-              className="h-12 px-5 rounded-full border border-slate-200 text-slate-700 font-semibold hover:bg-slate-100 transition"
+              className="h-12 px-5 rounded-lg border border-slate-200 text-slate-700 font-semibold hover:bg-slate-100 transition"
             >
               Avbryt
             </button>
             <button
               type="submit"
               disabled={!valid || submitting}
-              className="flex-1 h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold rounded-full transition flex items-center justify-center gap-2 shadow-sm"
+              className="flex-1 h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition flex items-center justify-center gap-2 shadow-sm"
             >
               {submitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

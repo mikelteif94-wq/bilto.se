@@ -123,7 +123,7 @@ export default function ReviewsSection({ variant = 'light' }: Props) {
           {REVIEWS.map((r, idx) => (
             <article
               key={idx}
-              className="relative bg-white rounded-2xl border border-slate-200/70 p-6 shadow-[0_2px_10px_-2px_rgba(15,23,42,0.06)] hover:shadow-[0_12px_30px_-10px_rgba(15,23,42,0.15)] hover:-translate-y-0.5 transition-all duration-300"
+              className="relative bg-white rounded-xl border border-slate-200/70 p-6 shadow-[0_2px_10px_-2px_rgba(15,23,42,0.06)] hover:shadow-[0_12px_30px_-10px_rgba(15,23,42,0.15)] hover:-translate-y-0.5 transition-all duration-300"
             >
               <Quote className="absolute top-5 right-5 w-6 h-6 text-slate-200" strokeWidth={2} />
               <div className="flex items-center gap-0.5 mb-4">
@@ -164,7 +164,7 @@ export default function ReviewsSection({ variant = 'light' }: Props) {
             {REVIEWS.map((r, idx) => (
               <article
                 key={idx}
-                className="relative bg-white rounded-2xl border border-slate-200/70 p-6 shadow-[0_2px_10px_-2px_rgba(15,23,42,0.06)] shrink-0 w-[85%] snap-center"
+                className="relative bg-white rounded-xl border border-slate-200/70 p-6 shadow-[0_2px_10px_-2px_rgba(15,23,42,0.06)] shrink-0 w-[85%] snap-center"
               >
                 <Quote className="absolute top-5 right-5 w-6 h-6 text-slate-200" strokeWidth={2} />
                 <div className="flex items-center gap-0.5 mb-4">

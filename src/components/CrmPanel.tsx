@@ -1056,7 +1056,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
           onClick={() => !sending && setDealerPickerOpen(false)}
         >
           <div
-            className="bg-white rounded-2xl w-full max-w-lg max-h-[85vh] flex flex-col"
+            className="bg-white rounded-xl w-full max-w-lg max-h-[85vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-5 border-b border-slate-200">
@@ -1149,7 +1149,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
           onClick={() => setLostReasonOpen(false)}
         >
           <div
-            className="bg-white rounded-2xl w-full max-w-md"
+            className="bg-white rounded-xl w-full max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-5 border-b border-slate-200">
@@ -1201,7 +1201,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
           onClick={() => !submittingValuation && setValuationOpen(false)}
         >
           <div
-            className="bg-white rounded-2xl w-full max-w-md"
+            className="bg-white rounded-xl w-full max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-5 border-b border-slate-200">

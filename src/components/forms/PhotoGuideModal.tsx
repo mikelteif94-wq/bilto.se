@@ -106,7 +106,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
         className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
       />
 
-      <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+      <div className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
         <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
             <span className="w-9 h-9 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">

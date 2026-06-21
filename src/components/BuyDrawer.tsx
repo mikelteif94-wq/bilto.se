@@ -443,7 +443,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       setStep('details');
                       setError(null);
                     }}
-                    className="w-full flex items-start gap-4 p-5 rounded-2xl border-2 border-[#0e6efe] bg-[#0e6efe]/5 hover:bg-[#0e6efe]/10 transition-all text-left group"
+                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-[#0e6efe] bg-[#0e6efe]/5 hover:bg-[#0e6efe]/10 transition-all text-left group"
                   >
                     <div className="w-10 h-10 rounded-full bg-[#0e6efe] flex items-center justify-center shrink-0 mt-0.5">
                       <CheckCircle className="w-5 h-5 text-white" />
@@ -463,7 +463,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       setStep('details');
                       setError(null);
                     }}
-                    className="w-full flex items-start gap-4 p-5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 transition-all text-left group"
+                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 transition-all text-left group"
                   >
                     <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
                       <Search className="w-5 h-5 text-slate-600" />
@@ -483,7 +483,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       setStep('details');
                       setError(null);
                     }}
-                    className="w-full flex items-start gap-4 p-5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 transition-all text-left group"
+                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 transition-all text-left group"
                   >
                     <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
                       <ArrowLeftRight className="w-5 h-5 text-slate-600" />
@@ -579,7 +579,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     <a
                       href={`/min-forfragan/${portalToken}`}
                       onClick={() => trackEvent('portal_clicked')}
-                      className="flex items-center justify-center gap-2.5 w-full max-w-sm h-14 bg-[#0e6efe] hover:bg-[#0b5cd8] active:bg-[#0950c0] text-white font-bold text-[16px] rounded-2xl transition shadow-lg shadow-[#0e6efe]/25 mb-3 mx-auto"
+                      className="flex items-center justify-center gap-2.5 w-full max-w-sm h-14 bg-[#0e6efe] hover:bg-[#0b5cd8] active:bg-[#0950c0] text-white font-bold text-[16px] rounded-xl transition shadow-lg shadow-[#0e6efe]/25 mb-3 mx-auto"
                     >
                       <CheckCircle className="w-5 h-5 shrink-0" />
                       Följ mitt ärende
@@ -588,7 +588,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     <button
                       type="button"
                       onClick={onClose}
-                      className="flex items-center justify-center gap-2.5 w-full max-w-sm h-14 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] rounded-2xl transition shadow-lg shadow-[#0e6efe]/25 mb-3 mx-auto"
+                      className="flex items-center justify-center gap-2.5 w-full max-w-sm h-14 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] rounded-xl transition shadow-lg shadow-[#0e6efe]/25 mb-3 mx-auto"
                     >
                       <CheckCircle className="w-5 h-5 shrink-0" />
                       Tillbaka till startsidan
@@ -650,7 +650,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
           {/* Guidance mini-modal */}
           {guidanceOpen && (
             <div className="fixed inset-0 z-60 flex items-end sm:items-center justify-center bg-slate-900/50 px-4 py-6">
-              <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
                 <div className="flex items-center justify-between px-5 sm:px-6 pt-5 pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2.5">
                     <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 flex items-center justify-center">

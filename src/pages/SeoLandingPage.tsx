@@ -124,7 +124,7 @@ export default function SeoLandingPage({ type, city, brand, onSell, onBack }: Se
               </ul>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-xl p-6">
+            <div className="bg-white rounded-xl shadow-xl p-6">
               <h2 className="text-[17px] font-bold text-slate-900 mb-1">
                 {type === 'city' ? `Värdera din bil i ${entityName}` : `Vad är din ${entityName} värd?`}
               </h2>

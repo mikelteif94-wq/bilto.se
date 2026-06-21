@@ -1027,7 +1027,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             {heroSubtitle ?? 'J\u00e4mf\u00f6r bilar, hitta r\u00e4tt modell och l\u00e5t oss f\u00f6rhandla fram b\u00e4sta priset \u00e5t dig. Helt gratis och opartiskt.'}
           </p>
 
-          <div className="mt-8 bg-white rounded-2xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden max-w-md mx-auto text-left">
+          <div className="mt-8 bg-white rounded-xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden max-w-md mx-auto text-left">
             {(ctaOptions ?? [
               {
                 icon: CheckCircle,
@@ -1104,7 +1104,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       setTimeout(() => budgetGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
                     }
                   }}
-                  className={`flex flex-col rounded-2xl overflow-hidden group transition-all duration-300 shrink-0 snap-start w-[140px] sm:w-auto ${
+                  className={`flex flex-col rounded-xl overflow-hidden group transition-all duration-300 shrink-0 snap-start w-[140px] sm:w-auto ${
                     isActive
                       ? 'shadow-[0_8px_28px_rgba(14,110,254,0.22)] bg-white'
                       : 'ring-1 ring-slate-100 hover:ring-slate-200 hover:shadow-lg bg-white'
@@ -1259,7 +1259,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               <motion.div key="quiz-idle" initial={isMobile ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ touchAction: 'pan-y' }}>
                 {/* Mobile card */}
                 <div className="block sm:hidden px-4 py-6">
-                  <div className="rounded-3xl bg-[#0e6efe] overflow-hidden">
+                  <div className="rounded-xl bg-[#0e6efe] overflow-hidden">
                     {/* Content area */}
                     <div className="px-5 pt-7 pb-5">
                       <h2 className="text-[30px] font-extrabold text-white tracking-tight leading-[1.1] mb-5">
@@ -1286,7 +1286,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       <button
                         type="button"
                         onClick={() => setQuizStep('active')}
-                        className="w-full h-[52px] rounded-2xl bg-white text-[#0e6efe] font-bold text-[15px] flex items-center justify-center gap-2 group transition-all duration-200 active:scale-[0.98] shadow-lg shadow-black/10"
+                        className="w-full h-[52px] rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] flex items-center justify-center gap-2 group transition-all duration-200 active:scale-[0.98] shadow-lg shadow-black/10"
                       >
                         {isEvPage ? 'Hitta din elbilsmatch' : 'Hitta din bilmatch'}
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -1340,7 +1340,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       <button
                         type="button"
                         onClick={() => setQuizStep('active')}
-                        className="w-full h-[54px] rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[16px] flex items-center justify-center gap-2.5 group transition-all duration-200 shadow-lg shadow-[#0e6efe]/30 hover:shadow-xl hover:shadow-[#0e6efe]/35 hover:-translate-y-0.5 active:scale-[0.98]"
+                        className="w-full h-[54px] rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[16px] flex items-center justify-center gap-2.5 group transition-all duration-200 shadow-lg shadow-[#0e6efe]/30 hover:shadow-xl hover:shadow-[#0e6efe]/35 hover:-translate-y-0.5 active:scale-[0.98]"
                       >
                         {isEvPage ? 'Hitta din elbilsmatch' : 'Hitta din bilmatch'}
                         <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
@@ -1370,7 +1370,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                           initial={{ opacity: 0, y: 16 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.1 + i * 0.1 }}
-                          className="aspect-[4/3] rounded-2xl bg-white border border-slate-100 shadow-sm flex items-end justify-center overflow-hidden p-2"
+                          className="aspect-[4/3] rounded-xl bg-white border border-slate-100 shadow-sm flex items-end justify-center overflow-hidden p-2"
                         >
                           {img && <img src={img} alt={`${car.brand_display} ${car.model_display}`} className="w-full h-auto object-contain" />}
                         </motion.div>
@@ -1496,7 +1496,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                           exit={{ opacity: 0, y: 16 }}
                           transition={{ duration: 0.22, ease: 'easeOut' }}
                           style={{ touchAction: 'pan-y' }}
-                          className="mt-6 rounded-2xl bg-slate-900 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 shadow-xl"
+                          className="mt-6 rounded-xl bg-slate-900 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 shadow-xl"
                         >
                           <div className="flex-1 min-w-0">
                             <p className="text-[13px] font-semibold text-white mb-1">
@@ -1541,7 +1541,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   </>
                 ) : (
                   <div className="text-center py-12">
-                    <div className="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-14 h-14 rounded-xl bg-slate-200 flex items-center justify-center mx-auto mb-4">
                       <Car className="w-6 h-6 text-slate-400" />
                     </div>
                     <p className="text-[14px] text-slate-500 mb-4">Vi hjälper dig ändå -- kontakta oss så hittar vi rätt bil.</p>
@@ -1748,7 +1748,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           <button
             type="button"
             onClick={() => openBuyDrawer(carSearchQuery.trim() || '', 'found')}
-            className={`group w-full mt-4 flex items-center gap-4 px-5 py-4 rounded-2xl border transition-all duration-200 text-left ${
+            className={`group w-full mt-4 flex items-center gap-4 px-5 py-4 rounded-xl border transition-all duration-200 text-left ${
               activeCategory === 'el'
                 ? 'bg-white/5 border-white/15 hover:border-[#38bdf8]/50 hover:bg-[#38bdf8]/5'
                 : 'bg-white border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/[0.03]'
@@ -1802,7 +1802,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             className="fixed bottom-0 inset-x-0 z-40 pb-[env(safe-area-inset-bottom)]"
           >
             <div className="mx-3 mb-3 sm:mx-6 sm:mb-4">
-              <div className="max-w-3xl mx-auto bg-slate-900 rounded-2xl shadow-2xl shadow-black/30 px-4 sm:px-5 py-3.5 flex items-center gap-3">
+              <div className="max-w-3xl mx-auto bg-slate-900 rounded-xl shadow-2xl shadow-black/30 px-4 sm:px-5 py-3.5 flex items-center gap-3">
                 {/* Mini thumbnails */}
                 <div className="flex items-center -space-x-2 shrink-0">
                   {selectedCars.slice(0, MAX_COMPARE).map(car => {
@@ -1872,7 +1872,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               Ange registreringsnumret på din nuvarande bil. Vi hjälper dig förhandla bästa möjliga värde och hitta din nästa.
             </p>
 
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-5 sm:p-6 max-w-md">
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-5 sm:p-6 max-w-md">
               <p className="text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-3">
                 Din nuvarande bil
               </p>
@@ -2006,7 +2006,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     transition={{ duration: isMobile ? 0 : 0.35, delay: isMobile ? 0 : i * 0.06 }}
                     onClick={() => setDetailCar(car)}
                     style={{ touchAction: 'pan-y' }}
-                    className="flex flex-col rounded-2xl overflow-hidden cursor-pointer group hover:shadow-lg transition-all duration-300 ring-1 ring-white hover:ring-slate-200"
+                    className="flex flex-col rounded-xl overflow-hidden cursor-pointer group hover:shadow-lg transition-all duration-300 ring-1 ring-white hover:ring-slate-200"
                   >
                     <div className="relative w-full aspect-[4/3] bg-white flex items-end justify-center overflow-hidden">
                       {img ? (
@@ -2057,7 +2057,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             </p>
           </div>
 
-          <div className="bg-slate-900 rounded-2xl ring-1 ring-white/10 overflow-hidden">
+          <div className="bg-slate-900 rounded-xl ring-1 ring-white/10 overflow-hidden">
             {chatMessages.length > 0 && (
               <div className="max-h-[500px] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
                 <div className="p-4 sm:p-6 space-y-4">
@@ -2072,7 +2072,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                             <span className="text-[11px] font-medium text-slate-400">Bilto</span>
                           </div>
                         )}
-                        <div className={`px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed ${
+                        <div className={`px-4 py-2.5 rounded-xl text-[14px] leading-relaxed ${
                           msg.role === 'user'
                             ? 'bg-[#0e6efe] text-white rounded-br-md'
                             : 'bg-slate-800 text-slate-200 ring-1 ring-white/10 rounded-bl-md'
@@ -2203,7 +2203,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               </p>
             </div>
             <div className="md:col-span-7 order-2">
-              <div className="relative rounded-2xl overflow-hidden">
+              <div className="relative rounded-xl overflow-hidden">
                 <img
                   src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(Instagram_Post_(45))_copy_copy_copy_copy_copy.jpg"
                   alt="Johan framför sin Toyota RAV4"
@@ -2291,7 +2291,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               return (
                 <div
                   key={item.title}
-                  className="group rounded-2xl border border-slate-200 bg-white p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
+                  className="group rounded-xl border border-slate-200 bg-white p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
                 >
                   <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-slate-50 group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
                     <img

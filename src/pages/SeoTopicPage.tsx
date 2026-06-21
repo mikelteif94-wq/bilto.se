@@ -158,7 +158,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
             </div>
 
             {/* CTA card */}
-            <div className="bg-white rounded-2xl shadow-xl p-7">
+            <div className="bg-white rounded-xl shadow-xl p-7">
               <h2 className="text-[18px] font-bold text-slate-900 mb-2">{topic.ctaHeading}</h2>
               <p className="text-[13px] text-slate-500 mb-5">{topic.ctaBody}</p>
 
@@ -218,7 +218,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
             ].map(item => {
               const Icon = item.icon;
               return (
-                <div key={item.title} className="border border-slate-100 rounded-2xl p-6">
+                <div key={item.title} className="border border-slate-100 rounded-xl p-6">
                   <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
                     <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={1.8} />
                   </div>
@@ -236,7 +236,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
         <div className="max-w-3xl mx-auto">
           <h2 className="text-[26px] font-bold text-slate-900 tracking-tight mb-2">Vanliga frågor</h2>
           <p className="text-slate-500 text-[15px] mb-8">Har du fler frågor? Boka en gratis konsultation så svarar vi personligen.</p>
-          <div className="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-100 px-6">
+          <div className="bg-white rounded-xl border border-slate-100 divide-y divide-slate-100 px-6">
             {topic.faqs.map(f => <FaqItem key={f.q} q={f.q} a={f.a} />)}
           </div>
         </div>
@@ -248,7 +248,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
           <h2 className="text-[22px] font-bold text-slate-900 mb-8">Vad säger våra kunder?</h2>
           <div className="grid sm:grid-cols-3 gap-5">
             {REVIEWS.map(r => (
-              <div key={r.name} className="border border-slate-100 rounded-2xl p-5">
+              <div key={r.name} className="border border-slate-100 rounded-xl p-5">
                 <div className="flex gap-0.5 mb-3">
                   {Array.from({ length: r.stars }).map((_, i) => (
                     <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />

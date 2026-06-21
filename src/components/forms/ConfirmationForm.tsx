@@ -249,7 +249,7 @@ export default function ConfirmationForm({
           )}
         </div>
 
-        <div className="bg-gradient-to-br from-[#0e6efe] to-[#0b5cd8] text-white rounded-2xl p-5 sm:p-6 mb-6 shadow-sm">
+        <div className="bg-gradient-to-br from-[#0e6efe] to-[#0b5cd8] text-white rounded-xl p-5 sm:p-6 mb-6 shadow-sm">
           <div className="flex items-start gap-3 mb-3">
             <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0">
               <Phone className="w-5 h-5" strokeWidth={2.2} />
@@ -268,7 +268,7 @@ export default function ConfirmationForm({
           </p>
         </div>
 
-        <div className="border border-slate-200 rounded-2xl p-5 sm:p-6 mb-6">
+        <div className="border border-slate-200 rounded-xl p-5 sm:p-6 mb-6">
           <h3 className="text-xs font-semibold text-[#0e6efe] uppercase tracking-wide mb-5">
             Så här går det till
           </h3>

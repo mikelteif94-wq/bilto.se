@@ -325,7 +325,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
           {/* Action card */}
           <div className="w-full max-w-xl">
-            <div className="bg-white rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
+            <div className="bg-white rounded-xl shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
               {/* Tabs */}
               <div className="flex border-b border-slate-100 px-2 pt-1">
                 {(['salj', 'hitta'] as const).map((t) => (
@@ -374,7 +374,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                     </div>
 
                     {showSuggestions && !carSearchLoading && (
-                      <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50">
+                      <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-50">
                         {carSuggestions.length === 0 ? (
                           <div className="flex items-center gap-3 px-4 py-4 text-[14px] text-slate-400">
                             <Search className="w-4 h-4 shrink-0" />
@@ -523,7 +523,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             ].map((c) => {
               const Icon = c.icon;
               return (
-                <div key={c.step} className="group bg-slate-50 hover:bg-slate-900 rounded-2xl p-8 transition-all duration-300 cursor-default">
+                <div key={c.step} className="group bg-slate-50 hover:bg-slate-900 rounded-xl p-8 transition-all duration-300 cursor-default">
                   <div className="flex items-start justify-between mb-8">
                     <span className="text-[13px] font-bold text-slate-300 group-hover:text-white/30 tabular-nums tracking-wider transition-colors">{c.step}</span>
                     <div className="w-10 h-10 rounded-xl bg-white group-hover:bg-white/10 flex items-center justify-center transition-colors shadow-sm">
@@ -589,7 +589,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             ].map((c) => {
               const Icon = c.icon;
               return (
-                <div key={c.title} className="rounded-2xl border border-white/8 bg-white/4 p-8 hover:bg-white/8 transition-all duration-300">
+                <div key={c.title} className="rounded-xl border border-white/8 bg-white/4 p-8 hover:bg-white/8 transition-all duration-300">
                   <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-6">
                     <Icon className="w-5 h-5 text-white" strokeWidth={1.8} />
                   </div>
@@ -701,7 +701,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             {REVIEWS.map((r) => (
               <div
                 key={r.name}
-                className="rounded-2xl border border-white/8 bg-white/4 p-7 hover:bg-white/8 transition-all duration-300"
+                className="rounded-xl border border-white/8 bg-white/4 p-7 hover:bg-white/8 transition-all duration-300"
               >
                 <div className="flex gap-0.5 mb-5">
                   {[...Array(r.stars)].map((_, i) => (

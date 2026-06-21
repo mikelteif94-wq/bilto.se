@@ -57,7 +57,7 @@ export function SignupGate({ headline, subtext, bullets, onSent }: SignupGatePro
       <motion.div
         initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden"
+        className="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden"
       >
         <div className="px-6 py-8 flex flex-col items-center text-center gap-4">
           <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center">
@@ -91,7 +91,7 @@ export function SignupGate({ headline, subtext, bullets, onSent }: SignupGatePro
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm"
+      className="rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm"
     >
       {/* Top banner */}
       <div className="bg-gradient-to-r from-[#0e6efe] to-[#2a7fff] px-5 py-4 flex items-center gap-3">

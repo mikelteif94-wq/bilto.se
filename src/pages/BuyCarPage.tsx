@@ -359,7 +359,7 @@ export default function BuyCarPage({
               </div>
 
               {/* Expert handoff card */}
-              <div className="max-w-sm mx-auto mb-7 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="max-w-sm mx-auto mb-7 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
                 <div className="bg-[#0e6efe]/5 px-5 py-3 border-b border-slate-100">
                   <p className="text-[12px] font-bold text-[#0e6efe] uppercase tracking-wider">Din tilldelade expert</p>
                 </div>
@@ -457,7 +457,7 @@ export default function BuyCarPage({
 
       {guidanceOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4 py-6">
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
             <div className="flex items-center justify-between px-5 sm:px-6 pt-5 pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 flex items-center justify-center">

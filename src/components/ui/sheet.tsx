@@ -59,12 +59,12 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
             exit={{ y: '100%' }}
             transition={{ type: 'tween', ease: [0.32, 0.72, 0, 1], duration: 0.32 }}
             className={cn(
-              'relative w-full sm:max-w-[460px] max-h-[92vh] bg-white rounded-t-2xl sm:rounded-b-none flex flex-col shadow-2xl',
+              'relative w-full sm:max-w-[460px] max-h-[92vh] bg-white rounded-t-xl sm:rounded-b-none flex flex-col shadow-2xl',
               className
             )}
           >
             {/* Handle + close */}
-            <div className="sticky top-0 z-10 flex items-center justify-center pt-3 pb-2 bg-white rounded-t-2xl">
+            <div className="sticky top-0 z-10 flex items-center justify-center pt-3 pb-2 bg-white rounded-t-xl">
               <div className="w-10 h-1 rounded-full bg-slate-200" />
               <button
                 type="button"
@@ -88,7 +88,7 @@ function SheetSkeleton() {
   return (
     <div className="px-4 pt-2 pb-8 space-y-5">
       {/* Car image placeholder */}
-      <div className="relative w-full h-44 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden flex items-center justify-center">
+      <div className="relative w-full h-44 rounded-xl bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden flex items-center justify-center">
         <ShimmerOverlay />
         <svg viewBox="0 0 220 80" className="w-48 opacity-10" fill="none">
           <path d="M30 55 L30 45 Q30 38 38 36 L60 30 Q70 22 90 20 L140 20 Q160 20 170 30 L190 36 Q198 38 198 45 L198 55 Q198 60 193 60 L183 60 Q182 52 174 52 Q166 52 165 60 L75 60 Q74 52 66 52 Q58 52 57 60 L37 60 Q30 60 30 55 Z" fill="currentColor" className="text-slate-400" />
@@ -108,7 +108,7 @@ function SheetSkeleton() {
       </div>
 
       {/* Price card */}
-      <div className="relative rounded-2xl bg-slate-50 border border-slate-100 p-4 space-y-2 overflow-hidden">
+      <div className="relative rounded-xl bg-slate-50 border border-slate-100 p-4 space-y-2 overflow-hidden">
         <ShimmerOverlay />
         <div className="h-3 w-32 rounded bg-slate-200" />
         <div className="h-7 w-48 rounded-lg bg-slate-200" />
@@ -118,7 +118,7 @@ function SheetSkeleton() {
       </div>
 
       {/* CTA button */}
-      <div className="relative h-14 rounded-2xl bg-slate-100 overflow-hidden"><ShimmerOverlay /></div>
+      <div className="relative h-14 rounded-xl bg-slate-100 overflow-hidden"><ShimmerOverlay /></div>
 
       {/* Spec grid */}
       <div className="grid grid-cols-2 gap-2.5">
@@ -130,7 +130,7 @@ function SheetSkeleton() {
       </div>
 
       {/* Ratings */}
-      <div className="relative rounded-2xl bg-slate-50 p-4 space-y-3 overflow-hidden">
+      <div className="relative rounded-xl bg-slate-50 p-4 space-y-3 overflow-hidden">
         <ShimmerOverlay />
         <div className="h-4 w-32 rounded bg-slate-200" />
         {[...Array(4)].map((_, i) => (

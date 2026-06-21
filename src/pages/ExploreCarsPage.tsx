@@ -86,7 +86,7 @@ function CarCard({ car, onBuy, onDetail }: { car: CatalogCarFull; onBuy: () => v
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.22 }}
-      className="group relative bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-250"
+      className="group relative bg-white rounded-xl ring-1 ring-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-250"
     >
       {/* Image */}
       <div
@@ -322,7 +322,7 @@ function IntentSheet({
           <motion.div
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-            className="fixed bottom-0 inset-x-0 z-50 bg-white rounded-t-2xl overflow-hidden"
+            className="fixed bottom-0 inset-x-0 z-50 bg-white rounded-t-xl overflow-hidden"
           >
             {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-1">
@@ -330,7 +330,7 @@ function IntentSheet({
             </div>
 
             {/* Car preview — compact horizontal card */}
-            <div className="mx-4 mt-2 mb-4 bg-slate-50 rounded-2xl flex items-center gap-3 p-3 ring-1 ring-slate-100">
+            <div className="mx-4 mt-2 mb-4 bg-slate-50 rounded-xl flex items-center gap-3 p-3 ring-1 ring-slate-100">
               <div className="relative w-[90px] h-[62px] shrink-0 bg-white rounded-xl overflow-hidden">
                 {img ? (
                   <img

@@ -695,7 +695,7 @@ export default function AdminDealerDetail({
             className="absolute inset-0 bg-black/50"
             onClick={() => { setConfirmAction(null); setActionError(null); }}
           />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4">
+          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 space-y-4">
             <h2 className="text-lg font-bold text-slate-900">{CONFIRM_CONFIG[confirmAction].title}</h2>
             <p className="text-sm text-slate-600 leading-relaxed">{CONFIRM_CONFIG[confirmAction].body}</p>
             {actionError && (

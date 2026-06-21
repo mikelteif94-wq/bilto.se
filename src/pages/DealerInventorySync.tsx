@@ -860,7 +860,7 @@ export default function DealerInventorySync({
       {/* ── Add single car modal ── */}
       {addOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+          <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
               <h3 className="text-base font-bold text-slate-900">Lägg till bil</h3>
               <button onClick={() => setAddOpen(false)} className="text-slate-400 hover:text-slate-700">

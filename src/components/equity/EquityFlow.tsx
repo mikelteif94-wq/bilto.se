@@ -16,7 +16,7 @@ function TeaserCard({ onStart }: { onStart: () => void }) {
   const [showInfo, setShowInfo] = useState(false);
 
   return (
-    <div className="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 overflow-hidden shadow-xl ring-1 ring-white/5">
+    <div className="rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 overflow-hidden shadow-xl ring-1 ring-white/5">
       <div className="px-5 pt-5 pb-4">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/20 flex items-center justify-center shrink-0">

@@ -34,7 +34,7 @@ export default function FinancingCalc({ carPrice }: FinancingCalcProps) {
   const sliderPct = ((price - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100;
 
   return (
-    <div className="w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="w-full rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       {/* Header */}
       <div className="mb-4">
         <h3 className="text-[15px] font-bold text-slate-800">Beräkna månadskostnad</h3>

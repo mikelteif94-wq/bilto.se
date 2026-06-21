@@ -171,7 +171,7 @@ export function EquityQuiz({ onComplete, onClose }: EquityQuizProps) {
   const effectiveStep = step;
 
   return (
-    <div className="relative bg-white rounded-2xl shadow-2xl ring-1 ring-slate-100 overflow-hidden max-w-md w-full mx-auto">
+    <div className="relative bg-white rounded-xl shadow-2xl ring-1 ring-slate-100 overflow-hidden max-w-md w-full mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-slate-100">
         <div className="flex items-center gap-2">

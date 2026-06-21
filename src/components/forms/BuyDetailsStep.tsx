@@ -1000,9 +1000,9 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   <button
                     type="button"
                     onClick={onExplore}
-                    className="group relative flex items-center gap-3.5 p-4 rounded-2xl bg-white border border-slate-200 hover:border-[#0e6efe]/50 hover:shadow-lg hover:shadow-[#0e6efe]/8 active:scale-[0.98] transition-all duration-200 text-left overflow-hidden"
+                    className="group relative flex items-center gap-3.5 p-4 rounded-xl bg-white border border-slate-200 hover:border-[#0e6efe]/50 hover:shadow-lg hover:shadow-[#0e6efe]/8 active:scale-[0.98] transition-all duration-200 text-left overflow-hidden"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#0e6efe]/0 to-[#0e6efe]/0 group-hover:from-[#0e6efe]/[0.03] group-hover:to-[#0e6efe]/[0.06] transition-all duration-300 rounded-2xl" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#0e6efe]/0 to-[#0e6efe]/0 group-hover:from-[#0e6efe]/[0.03] group-hover:to-[#0e6efe]/[0.06] transition-all duration-300 rounded-xl" />
                     <div className="w-11 h-11 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/18 flex items-center justify-center shrink-0 transition-colors duration-200 relative">
                       <Search className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
                     </div>
@@ -1017,9 +1017,9 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   <button
                     type="button"
                     onClick={onQuiz}
-                    className="group relative flex items-center gap-3.5 p-4 rounded-2xl bg-white border border-slate-200 hover:border-amber-300/60 hover:shadow-lg hover:shadow-amber-500/8 active:scale-[0.98] transition-all duration-200 text-left overflow-hidden"
+                    className="group relative flex items-center gap-3.5 p-4 rounded-xl bg-white border border-slate-200 hover:border-amber-300/60 hover:shadow-lg hover:shadow-amber-500/8 active:scale-[0.98] transition-all duration-200 text-left overflow-hidden"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-50/0 to-amber-50/0 group-hover:from-amber-50 group-hover:to-amber-50/60 transition-all duration-300 rounded-2xl" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-50/0 to-amber-50/0 group-hover:from-amber-50 group-hover:to-amber-50/60 transition-all duration-300 rounded-xl" />
                     <div className="w-11 h-11 rounded-xl bg-amber-50 group-hover:bg-amber-100 flex items-center justify-center shrink-0 transition-colors duration-200 relative">
                       <Sparkles className="w-5 h-5 text-amber-500" strokeWidth={2} />
                     </div>
@@ -1251,7 +1251,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       <div className="pt-2 pb-2">
         <button
           type="submit"
-          className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] active:bg-[#0950c0] text-white font-bold text-[15px] rounded-2xl transition-all duration-150 shadow-sm shadow-[#0e6efe]/20 active:scale-[0.99]"
+          className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] active:bg-[#0950c0] text-white font-bold text-[15px] rounded-xl transition-all duration-150 shadow-sm shadow-[#0e6efe]/20 active:scale-[0.99]"
         >
           Nästa
         </button>

@@ -108,7 +108,7 @@ export default function CompactCarCard({
 
   return (
     <div
-      className={`group relative bg-white rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer ${ringClass}`}
+      className={`group relative bg-white rounded-xl overflow-hidden transition-all duration-300 cursor-pointer ${ringClass}`}
       style={{ touchAction: 'pan-y' }}
     >
       {/* Mobile: horizontal layout */}

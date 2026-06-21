@@ -348,7 +348,7 @@ function PersonaInsightSection({ persona, data }: { persona: Persona; data: Comp
   const Icon = iconMap[persona];
 
   return (
-    <section className="p-4 bg-amber-50 rounded-2xl border border-amber-100">
+    <section className="p-4 bg-amber-50 rounded-xl border border-amber-100">
       <div className="flex items-center gap-2 mb-3">
         <div className="w-6 h-6 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
           <Icon className="w-3.5 h-3.5 text-amber-600" />
@@ -454,7 +454,7 @@ function CarEquityCalc({ carPrice, usedPrice, carName, bodyType }: { carPrice: n
       <button
         type="button"
         onClick={() => setStep('car')}
-        className="w-full flex items-center gap-3 bg-emerald-600 hover:bg-emerald-700 rounded-2xl px-4 py-3.5 transition-all duration-150 group text-left active:scale-[0.99]"
+        className="w-full flex items-center gap-3 bg-emerald-600 hover:bg-emerald-700 rounded-xl px-4 py-3.5 transition-all duration-150 group text-left active:scale-[0.99]"
       >
         <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center shrink-0">
           <Wallet className="w-4 h-4 text-white" />
@@ -482,7 +482,7 @@ function CarEquityCalc({ carPrice, usedPrice, carName, bodyType }: { carPrice: n
         </button>
       </div>
 
-      <div className="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden">
+      <div className="bg-slate-50 rounded-xl border border-slate-100 overflow-hidden">
         <div className="flex h-1">
           {(['car', 'debt', 'cash', 'result'] as EquityStep[]).map((s, i) => {
             const steps: EquityStep[] = ['car', 'debt', 'cash', 'result'];
@@ -628,7 +628,7 @@ function HowItWorksStrip() {
     { icon: BadgeCheck, label: 'Klart!', desc: 'Du hämtar bilen på dina villkor, vi sköter pappren' },
   ];
   return (
-    <div className="rounded-2xl border border-slate-100 bg-slate-50 overflow-hidden">
+    <div className="rounded-xl border border-slate-100 bg-slate-50 overflow-hidden">
       <div className="px-4 pt-3.5 pb-1">
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Så fungerar det</p>
       </div>
@@ -683,7 +683,7 @@ export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAn
           {/* Image area */}
           <div className="mx-4 mb-4">
             {loading ? (
-              <div className="relative w-full h-44 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden flex items-center justify-center">
+              <div className="relative w-full h-44 rounded-xl bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
                 <svg viewBox="0 0 220 80" className="w-40 opacity-10" fill="none">
                   <path d="M30 55 L30 45 Q30 38 38 36 L60 30 Q70 22 90 20 L140 20 Q160 20 170 30 L190 36 Q198 38 198 45 L198 55 Q198 60 193 60 L183 60 Q182 52 174 52 Q166 52 165 60 L75 60 Q74 52 66 52 Q58 52 57 60 L37 60 Q30 60 30 55 Z" fill="currentColor" className="text-slate-400" />
@@ -696,7 +696,7 @@ export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAn
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.4 }}
-                className="w-full bg-gradient-to-b from-slate-50 to-white rounded-2xl overflow-hidden flex items-center justify-center"
+                className="w-full bg-gradient-to-b from-slate-50 to-white rounded-xl overflow-hidden flex items-center justify-center"
                 style={{ height: '180px' }}
               >
                 <img
@@ -781,14 +781,14 @@ export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAn
 function LoadingSkeleton() {
   return (
     <div className="space-y-4">
-      <div className="relative rounded-2xl bg-slate-50 border border-slate-100 p-4 space-y-2.5 overflow-hidden">
+      <div className="relative rounded-xl bg-slate-50 border border-slate-100 p-4 space-y-2.5 overflow-hidden">
         <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
         <div className="h-3 w-32 rounded bg-slate-200" />
         <div className="h-8 w-48 rounded-lg bg-slate-200" />
         <div className="h-4 w-full rounded bg-slate-100" />
         <div className="h-4 w-5/6 rounded bg-slate-100" />
       </div>
-      <div className="relative h-14 rounded-2xl bg-slate-100 overflow-hidden">
+      <div className="relative h-14 rounded-xl bg-slate-100 overflow-hidden">
         <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
       </div>
       <div className="grid grid-cols-2 gap-2.5">
@@ -798,7 +798,7 @@ function LoadingSkeleton() {
           </div>
         ))}
       </div>
-      <div className="relative rounded-2xl bg-slate-50 p-4 space-y-3 overflow-hidden">
+      <div className="relative rounded-xl bg-slate-50 p-4 space-y-3 overflow-hidden">
         <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
         {[...Array(4)].map((_, i) => (
           <div key={i} className="flex items-center gap-3">
@@ -835,7 +835,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
   return (
     <div className="space-y-6">
       {/* ── Price + expert text ── */}
-      <section className="p-4 bg-gradient-to-br from-[#0047B3]/5 to-[#0047B3]/[0.03] rounded-2xl border border-[#0047B3]/10">
+      <section className="p-4 bg-gradient-to-br from-[#0047B3]/5 to-[#0047B3]/[0.03] rounded-xl border border-[#0047B3]/10">
         {carPrice ? (
           <OwnershipMeter tco={calcMonthlyTCO({ carPrice, usedPrice, fuelTypes: data.specs.fuel_types, make: data.brand_display })} />
         ) : (
@@ -873,7 +873,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
           <button
             type="button"
             onClick={onSelect}
-            className="w-full flex flex-col items-center gap-0.5 py-3.5 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 shadow-lg shadow-[#0e6efe]/25"
+            className="w-full flex flex-col items-center gap-0.5 py-3.5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 shadow-lg shadow-[#0e6efe]/25"
           >
             <span className="text-[14px] font-bold inline-flex items-center gap-2">
               {cta.headline} <ArrowRight className="w-4 h-4" />
@@ -887,7 +887,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
               <button
                 type="button"
                 onClick={() => setCalcOpen(v => !v)}
-                className={`flex items-center justify-center gap-2 h-12 rounded-2xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.97] ${calcOpen ? 'bg-slate-900 border-slate-900 text-white' : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'}`}
+                className={`flex items-center justify-center gap-2 h-12 rounded-xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.97] ${calcOpen ? 'bg-slate-900 border-slate-900 text-white' : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'}`}
               >
                 <Gauge className="w-3.5 h-3.5" />
                 {calcOpen ? 'Stäng kalkyl' : 'Räkna kalkyl'}
@@ -897,7 +897,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
               <button
                 type="button"
                 onClick={onFitQuiz}
-                className="flex items-center justify-center gap-2 h-12 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-[12px] font-semibold transition-all duration-150 active:scale-[0.97]"
+                className="flex items-center justify-center gap-2 h-12 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-[12px] font-semibold transition-all duration-150 active:scale-[0.97]"
               >
                 <Users className="w-3.5 h-3.5" />
                 Passar den mig?
@@ -927,7 +927,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
 
         {/* EV specs panel */}
         {data.ev_specs && (
-          <div className="mt-3 rounded-2xl overflow-hidden border border-sky-200 bg-sky-50">
+          <div className="mt-3 rounded-xl overflow-hidden border border-sky-200 bg-sky-50">
             <div className="flex items-center gap-2 px-3.5 py-2 bg-sky-100 border-b border-sky-200">
               <Zap className="w-3.5 h-3.5 text-sky-500" />
               <span className="text-[11px] font-bold text-sky-700 uppercase tracking-wide">Elbilsdata</span>
@@ -965,7 +965,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
       {/* ── Ratings ── */}
       <section>
         <SectionTitle>Betyg</SectionTitle>
-        <div className="p-4 bg-slate-50 rounded-2xl space-y-3.5">
+        <div className="p-4 bg-slate-50 rounded-xl space-y-3.5">
           <RatingBar label="Körning" value={data.ratings.driving} icon={Gauge} />
           <RatingBar label="Komfort" value={data.ratings.comfort} icon={Armchair} />
           <RatingBar label="Praktiskt" value={data.ratings.practicality} icon={Briefcase} />
@@ -1038,7 +1038,7 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
     <div className="space-y-5">
       <div className="space-y-2.5">
         {onSelect && (
-          <button type="button" onClick={onSelect} className="w-full flex flex-col items-center gap-0.5 py-3.5 rounded-2xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 shadow-lg shadow-[#0e6efe]/25">
+          <button type="button" onClick={onSelect} className="w-full flex flex-col items-center gap-0.5 py-3.5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 shadow-lg shadow-[#0e6efe]/25">
             <span className="text-[14px] font-bold inline-flex items-center gap-2">Låt oss hitta bästa priset <ArrowRight className="w-4 h-4" /></span>
             <span className="text-[11px] text-white/65">Vi förhandlar {car.make} {car.model} åt dig — gratis att testa</span>
           </button>
@@ -1046,12 +1046,12 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
         {(carPrice || onFitQuiz) && (
           <div className="grid grid-cols-2 gap-2">
             {carPrice && (
-              <button type="button" onClick={() => setCalcOpen(v => !v)} className={`flex items-center justify-center gap-2 h-12 rounded-2xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.97] ${calcOpen ? 'bg-slate-900 border-slate-900 text-white' : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'}`}>
+              <button type="button" onClick={() => setCalcOpen(v => !v)} className={`flex items-center justify-center gap-2 h-12 rounded-xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.97] ${calcOpen ? 'bg-slate-900 border-slate-900 text-white' : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'}`}>
                 <Gauge className="w-3.5 h-3.5" /> {calcOpen ? 'Stäng kalkyl' : 'Räkna kalkyl'}
               </button>
             )}
             {onFitQuiz && (
-              <button type="button" onClick={onFitQuiz} className="flex items-center justify-center gap-2 h-12 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-[12px] font-semibold transition-all duration-150 active:scale-[0.97]">
+              <button type="button" onClick={onFitQuiz} className="flex items-center justify-center gap-2 h-12 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-[12px] font-semibold transition-all duration-150 active:scale-[0.97]">
                 <Users className="w-3.5 h-3.5" /> Passar den mig?
               </button>
             )}
@@ -1066,7 +1066,7 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
         </AnimatePresence>
       </div>
 
-      <div className="flex items-start gap-2.5 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+      <div className="flex items-start gap-2.5 p-4 bg-slate-50 rounded-xl border border-slate-100">
         <Info className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
         <p className="text-[13px] text-slate-500">Detaljerad data för denna modell läggs till löpande.</p>
       </div>

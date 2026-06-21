@@ -636,7 +636,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
       <main className="max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-10">
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-white border border-slate-200 rounded-xl p-1 mb-6 w-fit">
+        <div className="flex gap-1 bg-white border border-slate-200 rounded-lg p-1 mb-6 w-fit">
           <button
             onClick={() => setActiveTab('upload')}
             className={`px-5 h-9 rounded-lg text-sm font-semibold transition ${
@@ -725,7 +725,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
               className={`
-                relative cursor-pointer rounded-2xl border-2 border-dashed p-10 sm:p-16 text-center
+                relative cursor-pointer rounded-xl border-2 border-dashed p-10 sm:p-16 text-center
                 transition-all duration-200
                 ${dragOver
                   ? 'border-[#0e6efe] bg-[#0e6efe]/5 scale-[1.01]'

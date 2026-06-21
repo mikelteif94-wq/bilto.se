@@ -99,7 +99,7 @@ export default function ElCarCard({
 
   return (
     <div
-      className={`group relative bg-white rounded-2xl overflow-hidden transition-all duration-300 ${ringClass}`}
+      className={`group relative bg-white rounded-xl overflow-hidden transition-all duration-300 ${ringClass}`}
       style={{ touchAction: 'pan-y' }}
     >
       {/* Mobile: horizontal layout */}

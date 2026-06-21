@@ -151,7 +151,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
   if (success) {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4 py-10">
-        <div className="max-w-lg w-full bg-white rounded-2xl border border-slate-200 p-8 sm:p-10 text-center shadow-sm">
+        <div className="max-w-lg w-full bg-white rounded-xl border border-slate-200 p-8 sm:p-10 text-center shadow-sm">
           <div className="w-16 h-16 rounded-full bg-[#0e6efe]/10 flex items-center justify-center mx-auto mb-6">
             <Check className="w-8 h-8 text-[#0e6efe]" strokeWidth={2.5} />
           </div>
@@ -409,7 +409,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
                 </div>
               </div>
               <div className="md:col-span-6">
-                <div className="relative rounded-2xl overflow-hidden">
+                <div className="relative rounded-xl overflow-hidden">
                   <img
                     src="/BSM_car_sale_key_woman_handover_101122.jpg"
                     alt="Samtal med rådgivare"
@@ -452,7 +452,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
               </p>
             </div>
 
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/60 overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-xl shadow-slate-200/60 overflow-hidden">
               <div className="bg-slate-50 border-b border-slate-200 px-8 py-5 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
                   <FileSignature className="w-5 h-5 text-[#0e6efe]" />

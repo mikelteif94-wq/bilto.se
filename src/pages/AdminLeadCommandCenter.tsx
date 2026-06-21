@@ -483,7 +483,7 @@ export default function AdminLeadCommandCenter({
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-300">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-300">
               {activeTab.icon ?? <Search className="w-5 h-5" />}
             </div>
             <p className="text-sm font-medium text-slate-400">Inga leads</p>
@@ -499,7 +499,7 @@ export default function AdminLeadCommandCenter({
         ) : (
           <>
             {/* Desktop table */}
-            <div className="hidden lg:block bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+            <div className="hidden lg:block bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50/80">

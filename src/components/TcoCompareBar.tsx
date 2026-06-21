@@ -128,7 +128,7 @@ export default function TcoCompareBar({ cars, onRemove, onGetHelp }: TcoCompareB
           transition={{ type: 'spring', stiffness: 340, damping: 32 }}
           className="fixed bottom-0 inset-x-0 z-40 pb-safe"
         >
-          <div className="mx-3 mb-3 bg-white rounded-2xl shadow-[0_-8px_40px_rgba(15,23,42,0.14)] ring-1 ring-slate-200 overflow-hidden">
+          <div className="mx-3 mb-3 bg-white rounded-xl shadow-[0_-8px_40px_rgba(15,23,42,0.14)] ring-1 ring-slate-200 overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900">
               <div className="flex items-center gap-2">

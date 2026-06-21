@@ -326,7 +326,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                     key={opt.value}
                     type="button"
                     onClick={() => handleSyfteSelect(opt.value)}
-                    className="group w-full flex items-center gap-4 px-5 py-4 rounded-2xl border border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50 active:scale-[0.99] transition-all duration-150 text-left"
+                    className="group w-full flex items-center gap-4 px-5 py-4 rounded-xl border border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50 active:scale-[0.99] transition-all duration-150 text-left"
                   >
                     <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/8 group-hover:bg-[#0e6efe]/12 flex items-center justify-center shrink-0 transition-colors">
                       <opt.icon className="w-4.5 h-4.5 text-[#0e6efe]" strokeWidth={1.8} style={{ width: 18, height: 18 }} />
@@ -539,7 +539,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 {selectedDateLabel} kl. {form.booking_time}
               </p>
 
-              <div className="bg-slate-50 rounded-2xl p-5 text-left mb-8 border border-slate-100 max-w-sm mx-auto">
+              <div className="bg-slate-50 rounded-xl p-5 text-left mb-8 border border-slate-100 max-w-sm mx-auto">
                 <h3 className="font-semibold text-sm text-slate-700 mb-3">Din bokning</h3>
                 <div className="grid gap-2.5 text-sm">
                   {[

@@ -46,7 +46,7 @@ export default function DarkCarCard({
 
   return (
     <div
-      className="group relative bg-white rounded-2xl transition-shadow duration-200 ring-1 ring-slate-100 hover:ring-slate-200 shadow-[0_1px_4px_rgba(0,0,0,0.07)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)]"
+      className="group relative bg-white rounded-xl transition-shadow duration-200 ring-1 ring-slate-100 hover:ring-slate-200 shadow-[0_1px_4px_rgba(0,0,0,0.07)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)]"
       style={{ touchAction: 'pan-y' }}
     >
       {/* Clickable card area */}

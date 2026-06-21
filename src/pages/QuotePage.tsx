@@ -163,7 +163,7 @@ export default function QuotePage({
             </li>
           </ul>
 
-          <div className="mt-6 bg-white rounded-2xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] p-5">
+          <div className="mt-6 bg-white rounded-xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] p-5">
             <button
               type="button"
               onClick={() => navigateToBuy()}
@@ -201,7 +201,7 @@ export default function QuotePage({
             </p>
           </div>
           <div className="justify-self-end w-full max-w-[440px]">
-            <div className="bg-white rounded-2xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden">
+            <div className="bg-white rounded-xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden">
               {/* Tab strip */}
               <div className="flex border-b border-slate-100">
                 {([
@@ -284,7 +284,7 @@ export default function QuotePage({
             </p>
           </div>
 
-          <div className="flex flex-col divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
+          <div className="flex flex-col divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
             {[
               {
                 icon: Search,
@@ -383,7 +383,7 @@ export default function QuotePage({
               </p>
             </div>
             <div className="md:col-span-7 order-2">
-              <div className="relative rounded-2xl overflow-hidden">
+              <div className="relative rounded-xl overflow-hidden">
                 <img
                   src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(Instagram_Post_(45))_copy_copy_copy_copy_copy.jpg"
                   alt="Johan framför sin Toyota RAV4"
@@ -540,7 +540,7 @@ export default function QuotePage({
               return (
                 <div
                   key={item.title}
-                  className="group rounded-2xl border border-slate-200 bg-white p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
+                  className="group rounded-xl border border-slate-200 bg-white p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
                 >
                   <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-slate-50 group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
                     <img

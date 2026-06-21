@@ -50,7 +50,7 @@ const TIPS = [
 export default function InspectionGuideStep({ onNext }: InspectionGuideStepProps) {
   return (
     <div className="space-y-8">
-      <div className="rounded-2xl bg-[#0e6efe] text-white p-6 sm:p-7 relative overflow-hidden">
+      <div className="rounded-xl bg-[#0e6efe] text-white p-6 sm:p-7 relative overflow-hidden">
         <div className="absolute -right-10 -top-10 w-[180px] h-[180px] rounded-full bg-[#3d8cff] opacity-50" />
         <div className="relative">
           <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] bg-white/15 backdrop-blur px-2.5 py-1 rounded-full">
@@ -112,7 +112,7 @@ export default function InspectionGuideStep({ onNext }: InspectionGuideStepProps
         </div>
       </div>
 
-      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 flex gap-3">
+      <div className="rounded-xl border border-amber-200 bg-amber-50 p-5 flex gap-3">
         <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
         <div>
           <p className="text-[14px] font-semibold text-amber-900">Var ärlig med eventuella skador</p>
@@ -123,7 +123,7 @@ export default function InspectionGuideStep({ onNext }: InspectionGuideStepProps
         </div>
       </div>
 
-      <div className="rounded-2xl bg-slate-50 border border-slate-200 p-5">
+      <div className="rounded-xl bg-slate-50 border border-slate-200 p-5">
         <p className="text-[13.5px] text-slate-600 leading-[1.6]">
           <span className="font-semibold text-slate-900">Klar att ladda upp bilderna?</span>{' '}
           I nästa steg laddar du upp dina bilder. Du kan alltid gå tillbaka och
