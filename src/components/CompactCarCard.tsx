@@ -52,20 +52,14 @@ function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make }: { carPrice: nu
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
   const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   return (
-    <div className="mt-1">
-      <div className="flex items-baseline gap-1.5">
-        <span className="text-[15px] font-extrabold tabular-nums leading-none" style={{ color: activeColor }}>~{fmt(total)}</span>
-        <span className="text-[11px] font-semibold text-slate-400">kr/mån</span>
+    <div className="flex items-center gap-1.5 mt-1">
+      <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
+      <div className="flex items-center gap-[2px]">
+        {[1,2,3,4,5].map(s => (
+          <div key={s} className="rounded-sm" style={{ width: 11, height: 5, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1 }} />
+        ))}
       </div>
-      <div className="flex items-center gap-1.5 mt-1">
-        <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
-        <div className="flex items-center gap-[2px]">
-          {[1,2,3,4,5].map(s => (
-            <div key={s} className="rounded-sm" style={{ width: 11, height: 5, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1 }} />
-          ))}
-        </div>
-        <span className="text-[9px] text-slate-400">({label.toLowerCase()})</span>
-      </div>
+      <span className="text-[9px] text-slate-400">({label.toLowerCase()})</span>
     </div>
   );
 }
