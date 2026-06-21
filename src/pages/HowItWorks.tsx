@@ -341,7 +341,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         active="Sälj bil"
         onSelect={handleMenuSelect}
       />
-      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 transition-colors duration-300 bg-[#0e6efe] ${!scrolled ? 'backdrop-blur-md' : ''}`}>
+      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-2xl shadow-lg ring-1 ring-white/10 transition-colors duration-300 bg-[#0e6efe] ${!scrolled ? 'backdrop-blur-md' : ''}`}>
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
@@ -383,7 +383,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <a
               href="/gratis-konsultation"
               onMouseEnter={() => { import('../pages/FreeConsultationPage'); import('../pages/KopBilConcierge'); }}
-              className="inline-flex items-center bg-white text-[#0e6efe] text-[12px] lg:text-[14px] font-semibold px-4 lg:px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[12px] lg:text-[14px] font-semibold px-4 lg:px-5 h-10 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
