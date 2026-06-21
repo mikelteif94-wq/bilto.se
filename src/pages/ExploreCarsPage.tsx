@@ -286,7 +286,14 @@ function IntentSheet({
   onClose: () => void;
   onChoose: (track: 'found' | 'searching' | 'trade') => void;
 }) {
-  const name = car ? `${car.make} ${car.model}` : 'bil';
+  if (!car) return null;
+
+  const name = `${car.make} ${car.model}`;
+  const img = car.cleaned_image_url || car.image_url;
+  const range = car.price_new_from
+    ? calcCarMonthlyRange(car.price_new_from, car.price_used_from ?? undefined)
+    : null;
+  const bodyLabel = car.body_type ? (BODY_LABELS[car.body_type] ?? car.body_type) : null;
 
   return (
     <AnimatePresence>
@@ -300,63 +307,125 @@ function IntentSheet({
           <motion.div
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-            className="fixed bottom-0 inset-x-0 z-50 bg-white rounded-t-2xl"
+            className="fixed bottom-0 inset-x-0 z-50 bg-white rounded-t-2xl overflow-hidden"
           >
-            <div className="px-5 pt-5 pb-safe-bottom">
-              <div className="flex items-center justify-between mb-1">
-                <h2 className="text-[17px] font-bold text-slate-900">Välj hur vi kan hjälpa dig</h2>
-                <button onClick={onClose} className="p-1 rounded-lg hover:bg-slate-100">
-                  <X className="w-5 h-5 text-slate-400" />
-                </button>
+            {/* Drag handle */}
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-9 h-1 rounded-full bg-slate-200" />
+            </div>
+
+            {/* Car preview — compact horizontal card */}
+            <div className="mx-4 mt-2 mb-4 bg-slate-50 rounded-2xl flex items-center gap-3 p-3 ring-1 ring-slate-100">
+              <div className="relative w-[90px] h-[62px] shrink-0 bg-white rounded-xl overflow-hidden">
+                {img ? (
+                  <img
+                    src={img}
+                    alt={name}
+                    className="w-full h-full object-contain p-1.5"
+                    onError={(e) => {
+                      e.currentTarget.src = '/car-placeholder.svg';
+                      e.currentTarget.className = 'w-full h-full object-contain p-3 opacity-30';
+                    }}
+                  />
+                ) : (
+                  <img src="/car-placeholder.svg" alt="" className="w-full h-full object-contain p-3 opacity-30" />
+                )}
+                {car.rating_overall != null && (
+                  <div
+                    className="absolute bottom-1 right-1 w-6 h-6 rounded-full flex items-center justify-center bg-white/95 ring-1"
+                    style={{
+                      ringColor: car.rating_overall >= 9 ? '#059669' : car.rating_overall >= 7.5 ? '#0e6efe' : '#d97706',
+                      boxShadow: `0 1px 4px ${car.rating_overall >= 9 ? '#05966930' : car.rating_overall >= 7.5 ? '#0e6efe30' : '#d9770630'}`,
+                    }}
+                  >
+                    <span
+                      className="text-[8px] font-extrabold tabular-nums"
+                      style={{ color: car.rating_overall >= 9 ? '#059669' : car.rating_overall >= 7.5 ? '#0e6efe' : '#d97706' }}
+                    >
+                      {Number.isInteger(car.rating_overall) ? car.rating_overall : car.rating_overall.toFixed(1)}
+                    </span>
+                  </div>
+                )}
               </div>
-              <p className="text-[13px] text-slate-400 mb-4">Välj det som passar dig bäst.</p>
 
-              <div className="space-y-2.5 pb-6">
-                <button
-                  type="button"
-                  onClick={() => onChoose('found')}
-                  className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
-                    <Handshake className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-bold text-slate-900 leading-snug truncate">{name}</p>
+                <div className="flex flex-wrap items-center gap-1 mt-0.5">
+                  {bodyLabel && (
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-white text-slate-500 ring-1 ring-slate-200">
+                      {bodyLabel}
+                    </span>
+                  )}
+                  {car.drivetrain_type?.toLowerCase().includes('awd') && (
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-blue-50 text-blue-600">AWD</span>
+                  )}
+                  {car.seats != null && car.seats > 0 && (
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-white text-slate-500 ring-1 ring-slate-200">
+                      <Users className="w-2.5 h-2.5" />{car.seats}
+                    </span>
+                  )}
+                </div>
+                {range && (
+                  <div className="mt-1 flex items-baseline gap-0.5">
+                    <span className="text-[13px] font-extrabold tabular-nums text-blue-600">
+                      {fmt(range.low)}–{fmt(range.high)}
+                    </span>
+                    <span className="text-[9px] font-semibold text-blue-400">kr/mån</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-semibold text-slate-900 leading-snug">Jag har hittat en {name}</p>
-                    <p className="text-[12.5px] text-slate-400 mt-0.5 leading-snug">Vi förhandlar med säljaren åt dig och pressar priset.</p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => onChoose('searching')}
-                  className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
-                    <Search className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-semibold text-slate-900 leading-snug">Jag letar efter en {name}</p>
-                    <p className="text-[12.5px] text-slate-400 mt-0.5 leading-snug">Vi hittar, kollar och förhandlar åt dig.</p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => onChoose('trade')}
-                  className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
-                    <ArrowLeftRight className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-semibold text-slate-900 leading-snug">Jag vill byta in</p>
-                    <p className="text-[12.5px] text-slate-400 mt-0.5 leading-snug">Vi sköter inbytet och hjälper dig hitta ny bil.</p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
-                </button>
+                )}
               </div>
+            </div>
+
+            {/* Divider + label */}
+            <div className="px-5 mb-3">
+              <p className="text-[12px] font-bold text-slate-400 uppercase tracking-wider">Välj det som passar dig bäst</p>
+            </div>
+
+            <div className="px-4 space-y-2 pb-8">
+              <button
+                type="button"
+                onClick={() => onChoose('found')}
+                className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
+              >
+                <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
+                  <Handshake className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-semibold text-slate-900 leading-snug">Jag har hittat en {name}</p>
+                  <p className="text-[12.5px] text-slate-400 mt-0.5 leading-snug">Vi förhandlar med säljaren åt dig och pressar priset.</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onChoose('searching')}
+                className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
+              >
+                <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
+                  <Search className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-semibold text-slate-900 leading-snug">Jag letar efter en {name}</p>
+                  <p className="text-[12.5px] text-slate-400 mt-0.5 leading-snug">Vi hittar, kollar och förhandlar åt dig.</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onChoose('trade')}
+                className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-blue-400/50 hover:bg-blue-50/50 active:scale-[0.99] transition-all duration-150 text-left"
+              >
+                <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
+                  <ArrowLeftRight className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" strokeWidth={2.2} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-semibold text-slate-900 leading-snug">Jag vill byta in</p>
+                  <p className="text-[12.5px] text-slate-400 mt-0.5 leading-snug">Vi sköter inbytet och hjälper dig hitta ny bil.</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+              </button>
             </div>
           </motion.div>
         </>
