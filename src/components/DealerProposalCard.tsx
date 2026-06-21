@@ -58,7 +58,7 @@ export default function DealerProposalCard({ proposal: p }: DealerProposalCardPr
       {/* Dealer + deal-type header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-xl bg-slate-200 flex items-center justify-center">
             <Building2 className="w-4 h-4 text-slate-500" />
           </div>
           <div>
@@ -69,7 +69,7 @@ export default function DealerProposalCard({ proposal: p }: DealerProposalCardPr
           </div>
         </div>
         {dealType && (
-          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100">
+          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
             {dealType.title}
           </span>
         )}
@@ -164,13 +164,13 @@ export default function DealerProposalCard({ proposal: p }: DealerProposalCardPr
       {(p.garanti_ar > 0 || p.vinterdack_inkl) && (
         <div className="px-5 pb-4 flex flex-wrap gap-2">
           {p.garanti_ar > 0 && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100">
               <Shield className="w-3.5 h-3.5" />
               {p.garanti_ar} års garanti
             </span>
           )}
           {p.vinterdack_inkl && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-sky-50 text-sky-700 border border-sky-100">
               <Snowflake className="w-3.5 h-3.5" />
               Vinterdäck inkl.
             </span>

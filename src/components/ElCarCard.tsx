@@ -69,7 +69,7 @@ function ScoreBadge({ value }: { value: number }) {
   const color = isTop ? '#059669' : isMid ? '#0e6efe' : '#d97706';
   return (
     <div
-      className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-full"
+      className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-xl"
       style={{
         border: `2px solid ${color}`,
         boxShadow: `0 2px 8px ${color}30`,

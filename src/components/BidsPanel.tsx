@@ -189,7 +189,7 @@ export default function BidsPanel({
             Inkomna bud {!loading && <span className="text-slate-400 text-base font-medium">({bids.length})</span>}
           </h2>
           {newBidFlash && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold animate-pulse">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl bg-amber-100 text-amber-700 text-xs font-bold animate-pulse">
               <Zap className="w-3 h-3" /> Nytt bud!
             </span>
           )}
@@ -213,7 +213,7 @@ export default function BidsPanel({
               <button
                 onClick={() => setConfirmClear(false)}
                 disabled={clearing}
-                className="h-8 px-3 rounded-full border border-slate-200 text-slate-600 text-xs font-semibold hover:bg-slate-50 transition"
+                className="h-8 px-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-semibold hover:bg-slate-50 transition"
               >
                 Avbryt
               </button>
@@ -221,7 +221,7 @@ export default function BidsPanel({
           ) : (
             <button
               onClick={() => setConfirmClear(true)}
-              className="h-8 px-3 rounded-full border border-red-200 text-red-700 text-xs font-semibold hover:bg-red-50 transition flex items-center gap-1.5"
+              className="h-8 px-3 rounded-xl border border-red-200 text-red-700 text-xs font-semibold hover:bg-red-50 transition flex items-center gap-1.5"
             >
               <Trash2 className="w-3.5 h-3.5" />
               Rensa alla bud
@@ -254,13 +254,13 @@ export default function BidsPanel({
                       {formatKr(bid.belopp)} kr
                     </span>
                     {isWinner && (
-                      <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 ring-1 ring-amber-200">
+                      <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-xl bg-amber-100 text-amber-800 ring-1 ring-amber-200">
                         <Trophy className="w-3 h-3" /> Vinnande
                       </span>
                     )}
                     {!isWinner && bid.status && (
                       <span
-                        className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${
+                        className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-xl ring-1 ring-inset ${
                           STATUS_COLORS[bid.status] ?? 'bg-slate-100 text-slate-600 ring-slate-200'
                         }`}
                       >

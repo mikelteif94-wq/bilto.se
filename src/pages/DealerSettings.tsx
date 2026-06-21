@@ -186,7 +186,7 @@ function TierMedal({ tier }: { tier: string | null }) {
   }
   // default: new/unranked
   return (
-    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 border-2 border-blue-300 flex items-center justify-center">
+    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 border-2 border-blue-300 flex items-center justify-center">
       <TrendingUp className="w-6 h-6 text-blue-500" />
     </div>
   );
@@ -241,7 +241,7 @@ function ScoreBar({ score, max, color }: ScoreBarProps) {
   return (
     <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
       <div
-        className={`h-full rounded-full transition-all ${color}`}
+        className={`h-full rounded-xl transition-all ${color}`}
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -764,7 +764,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       key={b}
                       type="button"
                       onClick={() => setBuyPrefs((p) => ({ ...p, marken: toggleArrayItem(p.marken, b) }))}
-                      className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${
+                      className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition ${
                         buyPrefs.marken.includes(b)
                           ? 'bg-[#0e6efe] text-white border-[#0e6efe]'
                           : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
@@ -790,7 +790,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       key={s.value}
                       type="button"
                       onClick={() => setBuyPrefs((p) => ({ ...p, segment: toggleArrayItem(p.segment, s.value) }))}
-                      className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${
+                      className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition ${
                         buyPrefs.segment.includes(s.value)
                           ? 'bg-slate-900 text-white border-slate-900'
                           : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
@@ -814,7 +814,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       key={r}
                       type="button"
                       onClick={() => setBuyPrefs((p) => ({ ...p, regions: toggleArrayItem(p.regions, r) }))}
-                      className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${
+                      className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition ${
                         buyPrefs.regions.includes(r)
                           ? 'bg-emerald-600 text-white border-emerald-600'
                           : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
@@ -863,7 +863,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                   type="button"
                   onClick={saveBuyPrefs}
                   disabled={buyPrefsSaving}
-                  className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white font-semibold transition"
+                  className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white font-semibold transition"
                 >
                   {buyPrefsSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   Spara köpintressen
@@ -946,7 +946,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                     <button
                       type="submit"
                       disabled={saving}
-                      className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white font-semibold transition"
+                      className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white font-semibold transition"
                     >
                       {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                       Spara ändringar
@@ -1003,7 +1003,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                   <button
                     type="submit"
                     disabled={pwSaving}
-                    className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white font-semibold transition"
+                    className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white font-semibold transition"
                   >
                     {pwSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
                     Byt lösenord
@@ -1022,7 +1022,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                 {isOwner && !showInviteForm && (
                   <button
                     onClick={() => setShowInviteForm(true)}
-                    className="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-xs font-semibold transition"
+                    className="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-xs font-semibold transition"
                   >
                     <UserPlus className="w-3.5 h-3.5" />
                     Bjud in
@@ -1089,14 +1089,14 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                     <button
                       type="button"
                       onClick={() => { setShowInviteForm(false); setInviteError(null); }}
-                      className="h-9 px-4 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-100 text-sm font-medium transition"
+                      className="h-9 px-4 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-sm font-medium transition"
                     >
                       Avbryt
                     </button>
                     <button
                       type="submit"
                       disabled={inviting}
-                      className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white text-sm font-semibold transition"
+                      className="inline-flex items-center gap-1.5 h-9 px-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white text-sm font-semibold transition"
                     >
                       {inviting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UserPlus className="w-3.5 h-3.5" />}
                       Skicka inbjudan
@@ -1119,7 +1119,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                 <ul className="divide-y divide-slate-100">
                   {members.map((m) => (
                     <li key={m.id} className="flex items-center gap-3 py-3">
-                      <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
                         {m.roll === 'owner'
                           ? <Crown className="w-4 h-4 text-amber-500" />
                           : <UserIcon className="w-4 h-4 text-slate-400" />
@@ -1233,7 +1233,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       role="switch"
                       aria-checked={blocketSyncEnabled}
                       onClick={() => setBlocketSyncEnabled((v) => !v)}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${blocketSyncEnabled ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-xl transition-colors ${blocketSyncEnabled ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
                     >
                       <span className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${blocketSyncEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
                     </button>
@@ -1267,7 +1267,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       type="button"
                       onClick={runBlocketSync}
                       disabled={blocketSyncing || !blocketApiKey.trim()}
-                      className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-sm transition"
+                      className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-sm transition"
                     >
                       {blocketSyncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                       Synka nu
@@ -1283,7 +1283,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                         type="button"
                         onClick={saveBlocket}
                         disabled={blocketSaving}
-                        className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white font-semibold text-sm transition"
+                        className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white font-semibold text-sm transition"
                       >
                         {blocketSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                         Spara

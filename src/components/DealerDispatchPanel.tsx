@@ -251,7 +251,7 @@ export default function DealerDispatchPanel({
           {Object.entries(summary).filter(([, v]) => v > 0).map(([key, count]) => {
             const cfg = STATUS_CONFIG[key];
             return (
-              <span key={key} className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${cfg.cls}`}>
+              <span key={key} className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-medium ${cfg.cls}`}>
                 {cfg.icon} {count} {cfg.label}
               </span>
             );
@@ -294,7 +294,7 @@ export default function DealerDispatchPanel({
                           {isOverdue && <span className="ml-2 text-red-600 font-medium">Förfallen</span>}
                         </div>
                       </div>
-                      <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.cls}`}>
+                      <span className={`flex items-center gap-1 px-2 py-0.5 rounded-xl text-xs font-medium ${cfg.cls}`}>
                         {cfg.icon} {cfg.label}
                       </span>
                       {!['replied', 'offered'].includes(d.response_status) && (

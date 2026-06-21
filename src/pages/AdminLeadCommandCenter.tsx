@@ -391,7 +391,7 @@ export default function AdminLeadCommandCenter({
                 key={tab.key}
                 onClick={() => setCategory(tab.key)}
                 className={`
-                  flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium border transition shrink-0
+                  flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-medium border transition shrink-0
                   ${active
                     ? 'bg-slate-900 text-white border-slate-900'
                     : `bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 ${tab.color}`
@@ -575,7 +575,7 @@ export default function AdminLeadCommandCenter({
                           <div className="relative" ref={badgePopover === lead.id ? badgePopoverRef : undefined}>
                             <button
                               onClick={() => setBadgePopover(badgePopover === lead.id ? null : lead.id)}
-                              className={`inline-flex items-center gap-1 h-6 px-2 rounded-full border text-[10px] transition
+                              className={`inline-flex items-center gap-1 h-6 px-2 rounded-xl border text-[10px] transition
                                 ${lead.quality_badges.length > 0
                                   ? 'border-slate-300 bg-slate-50 text-slate-600 hover:bg-slate-100'
                                   : 'border-slate-200 text-slate-300 hover:border-slate-300 hover:text-slate-500'
@@ -603,12 +603,12 @@ export default function AdminLeadCommandCenter({
                           </div>
                         </td>
                         <td className="px-4 py-3.5">
-                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${catPill.cls}`}>
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-xs font-medium ${catPill.cls}`}>
                             {catPill.label}
                           </span>
                         </td>
                         <td className="px-4 py-3.5">
-                          <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${statusCls}`}>
+                          <span className={`inline-flex px-2 py-0.5 rounded-xl text-xs font-medium ${statusCls}`}>
                             {statusLbl}
                           </span>
                         </td>
@@ -680,10 +680,10 @@ export default function AdminLeadCommandCenter({
                         )}
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${catPill.cls}`}>
+                        <span className={`px-2 py-0.5 rounded-xl text-[11px] font-medium ${catPill.cls}`}>
                           {catPill.label}
                         </span>
-                        <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${statusCls}`}>
+                        <span className={`px-2 py-0.5 rounded-xl text-[11px] font-medium ${statusCls}`}>
                           {statusLbl}
                         </span>
                       </div>

@@ -1164,7 +1164,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                         <h3 className="text-[17px] sm:text-[20px] font-extrabold text-slate-900">
                           {activeBudget === 'Öppen budget' ? 'Alla bilar' : `Bilar: ${activeBudget}`}
                         </h3>
-                        <span className="px-2 py-0.5 rounded-full bg-[#0e6efe] text-white text-[11px] font-bold">
+                        <span className="px-2 py-0.5 rounded-xl bg-[#0e6efe] text-white text-[11px] font-bold">
                           {budgetFilteredCars.length} st
                         </span>
                       </div>
@@ -1250,7 +1250,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       <button
                         type="button"
                         onClick={() => setBudgetShowCount(prev => prev + 6)}
-                        className="inline-flex items-center gap-2 h-11 px-8 rounded-full bg-white ring-1 ring-slate-200 hover:ring-[#0e6efe] text-slate-700 hover:text-[#0e6efe] text-[13px] font-semibold transition-all duration-200 shadow-sm"
+                        className="inline-flex items-center gap-2 h-11 px-8 rounded-xl bg-white ring-1 ring-slate-200 hover:ring-[#0e6efe] text-slate-700 hover:text-[#0e6efe] text-[13px] font-semibold transition-all duration-200 shadow-sm"
                       >
                         Visa fler bilar
                         <ChevronDown className="w-4 h-4" />
@@ -1421,15 +1421,15 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                           performance: 'Prestanda', space: 'Utrymme', tech: 'Modern teknik',
                           resale: 'Andrahandsvärde', reliability: 'Pålitlighet',
                         };
-                        return <span key={p} className="shrink-0 px-3 py-1.5 rounded-full bg-[#0e6efe]/10 text-[12px] font-medium text-[#0e6efe]">{names[p] || p}</span>;
+                        return <span key={p} className="shrink-0 px-3 py-1.5 rounded-xl bg-[#0e6efe]/10 text-[12px] font-medium text-[#0e6efe]">{names[p] || p}</span>;
                       })}
                       {quizAnswers.body_type?.map(bt => (
-                        <span key={bt} className="shrink-0 px-3 py-1.5 rounded-full bg-slate-200 text-[12px] font-medium text-slate-700 capitalize">
+                        <span key={bt} className="shrink-0 px-3 py-1.5 rounded-xl bg-slate-200 text-[12px] font-medium text-slate-700 capitalize">
                           {bt === 'hatchback' ? 'Halvkombi' : bt === 'coupe' ? 'Coupe' : bt.charAt(0).toUpperCase() + bt.slice(1)}
                         </span>
                       ))}
                       {quizAnswers.fuel_type?.map(ft => (
-                        <span key={ft} className="shrink-0 px-3 py-1.5 rounded-full bg-slate-200 text-[12px] font-medium text-slate-700">
+                        <span key={ft} className="shrink-0 px-3 py-1.5 rounded-xl bg-slate-200 text-[12px] font-medium text-slate-700">
                           {ft === 'electric' ? 'Elbil' : ft === 'hybrid' ? 'Hybrid' : ft === 'petrol' ? 'Bensin' : 'Diesel'}
                         </span>
                       ))}
@@ -1520,7 +1520,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                               {quizResults
                                 .filter(c => selectedQuizCars.has(`${c.make}-${c.model}`))
                                 .map(c => (
-                                  <span key={`${c.make}-${c.model}`} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[11px] font-medium text-white/90">
+                                  <span key={`${c.make}-${c.model}`} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/10 text-[11px] font-medium text-white/90">
                                     {c.make} {c.model}
                                   </span>
                                 ))}
@@ -1602,7 +1602,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               const StepIcon = s.icon;
               return (
               <div key={s.step} className="flex sm:flex-col items-start sm:items-center gap-4 sm:gap-0 sm:text-center">
-                <div className="w-10 h-10 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0 sm:mb-3">
+                <div className="w-10 h-10 rounded-xl bg-[#0e6efe] text-white flex items-center justify-center shrink-0 sm:mb-3">
                   <StepIcon className="w-[18px] h-[18px]" strokeWidth={2.4} />
                 </div>
                 <div>
@@ -1640,7 +1640,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 value={carSearchQuery}
                 onChange={e => { setCarSearchQuery(e.target.value); setActiveCategory('alla'); setShowAllCars(false); }}
                 placeholder="Sök märke eller modell…"
-                className="w-full h-11 pl-10 pr-9 rounded-full bg-white ring-1 ring-slate-200 focus:ring-2 focus:ring-[#0e6efe] outline-none text-[13px] text-slate-800 placeholder:text-slate-400 shadow-sm transition-all"
+                className="w-full h-11 pl-10 pr-9 rounded-xl bg-white ring-1 ring-slate-200 focus:ring-2 focus:ring-[#0e6efe] outline-none text-[13px] text-slate-800 placeholder:text-slate-400 shadow-sm transition-all"
               />
               {carSearchQuery && (
                 <button
@@ -1662,7 +1662,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 <button
                   key={cat.key}
                   onClick={() => { setActiveCategory(cat.key); setShowAllCars(false); setCarSearchQuery(''); setExpertShowCount(6); }}
-                  className={`shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold transition-all duration-200 whitespace-nowrap ${
+                  className={`shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-semibold transition-all duration-200 whitespace-nowrap ${
                     isActive
                       ? 'bg-[#0e6efe] text-white shadow-lg shadow-[#0e6efe]/25'
                       : 'bg-white text-slate-500 ring-1 ring-slate-200/80 hover:text-slate-800 hover:ring-slate-300 hover:shadow-md hover:shadow-slate-200/60'
@@ -1768,7 +1768,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 : 'bg-white border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/[0.03]'
             }`}
           >
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${activeCategory === 'el' ? 'bg-white/10 group-hover:bg-[#38bdf8]/15' : 'bg-slate-100 group-hover:bg-[#0e6efe]/10'}`}>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${activeCategory === 'el' ? 'bg-white/10 group-hover:bg-[#38bdf8]/15' : 'bg-slate-100 group-hover:bg-[#0e6efe]/10'}`}>
               <Search className={`w-5 h-5 transition-colors ${activeCategory === 'el' ? 'text-slate-500 group-hover:text-[#38bdf8]' : 'text-slate-400 group-hover:text-[#0e6efe]'}`} />
             </div>
             <div className="flex-1 min-w-0">
@@ -1791,7 +1791,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   if (next >= allCategoryCars.length) setShowAllCars(true);
                   else setExpertShowCount(next);
                 }}
-                className={`inline-flex items-center gap-2 px-7 py-3 rounded-full text-[14px] font-semibold ring-1 transition-all duration-200 ${
+                className={`inline-flex items-center gap-2 px-7 py-3 rounded-xl text-[14px] font-semibold ring-1 transition-all duration-200 ${
                   activeCategory === 'el'
                     ? 'bg-white/8 text-slate-200 ring-white/15 hover:ring-[#38bdf8]/40 hover:text-white'
                     : 'bg-white text-slate-700 ring-slate-200 hover:ring-slate-300 hover:shadow-sm'
@@ -1917,7 +1917,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               <button
                 type="button"
                 onClick={scrollToQuiz}
-                className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
               >
                 <Car className="w-3.5 h-3.5" />
                 Hitta nästa bil – bilmatch
@@ -1925,7 +1925,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               <button
                 type="button"
                 onClick={() => document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
               >
                 <Search className="w-3.5 h-3.5" />
                 Utforska bilar
@@ -2029,7 +2029,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                         <Car className="w-12 h-12 text-slate-300 mb-4" />
                       )}
                       {car.ratings.overall != null && (
-                        <div className={`absolute top-2 right-2 w-8 h-8 rounded-full shadow-md flex items-center justify-center ${car.ratings.overall >= 9 ? 'bg-emerald-500' : 'bg-[#0e6efe]'}`}>
+                        <div className={`absolute top-2 right-2 w-8 h-8 rounded-xl shadow-md flex items-center justify-center ${car.ratings.overall >= 9 ? 'bg-emerald-500' : 'bg-[#0e6efe]'}`}>
                           <span className="text-[11px] font-bold text-white">{car.ratings.overall}</span>
                         </div>
                       )}
@@ -2059,7 +2059,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-950">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0e6efe]/20 text-[13px] font-medium text-[#60a5fa] mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0e6efe]/20 text-[13px] font-medium text-[#60a5fa] mb-4">
               <Search className="w-4 h-4 text-[#60a5fa]" />
               Smart bilsökning
             </div>
@@ -2145,7 +2145,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                               <button
                                 key={r}
                                 onClick={() => handleChatSubmit(r)}
-                                className="px-3 py-1.5 rounded-full bg-slate-700 text-[12px] text-slate-200 font-medium hover:bg-[#0e6efe] hover:text-white transition-all"
+                                className="px-3 py-1.5 rounded-xl bg-slate-700 text-[12px] text-slate-200 font-medium hover:bg-[#0e6efe] hover:text-white transition-all"
                               >
                                 {r}
                               </button>
@@ -2174,7 +2174,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     <button
                       key={label}
                       onClick={() => handleChatSubmit(query)}
-                      className="px-3 py-1.5 rounded-full bg-white/10 text-[13px] text-white font-medium hover:bg-[#0e6efe] hover:text-white transition-all border border-white/15 active:scale-95"
+                      className="px-3 py-1.5 rounded-xl bg-white/10 text-[13px] text-white font-medium hover:bg-[#0e6efe] hover:text-white transition-all border border-white/15 active:scale-95"
                     >
                       {label}
                     </button>
@@ -2376,7 +2376,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             </div>
           </div>
           <div className="mt-12 sm:mt-16 text-center">
-            <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-full px-5 sm:px-7 py-3 sm:py-4 shadow-sm">
+            <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-5 sm:px-7 py-3 sm:py-4 shadow-sm">
               <ShieldCheck className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
               <span className="text-[14px] sm:text-[15px] text-slate-700 font-medium">
                 Alla bilar vi rekommenderar har klarat vår 5-punktskontroll
@@ -2408,7 +2408,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             <button
               type="button"
               onClick={() => openBuyDrawer('', 'searching')}
-              className="inline-flex items-center gap-2 h-12 px-7 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition active:scale-[0.98] shadow-lg"
+              className="inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition active:scale-[0.98] shadow-lg"
             >
               Kom igång gratis
               <ArrowRight className="w-4 h-4" />

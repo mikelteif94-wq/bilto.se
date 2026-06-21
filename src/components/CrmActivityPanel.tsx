@@ -233,7 +233,7 @@ export default function CrmActivityPanel({
               <button
                 key={lt.type}
                 onClick={() => setLogType(lt.type)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition border ${
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-medium transition border ${
                   logType === lt.type
                     ? 'bg-slate-900 text-white border-slate-900'
                     : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
@@ -325,7 +325,7 @@ export default function CrmActivityPanel({
                     </div>
                     <button
                       onClick={() => markReminderDone(r)}
-                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-semibold transition shrink-0 ${
+                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-xl text-[11px] font-semibold transition shrink-0 ${
                         overdue
                           ? 'bg-red-600 hover:bg-red-700 text-white'
                           : 'bg-amber-600 hover:bg-amber-700 text-white'
@@ -374,7 +374,7 @@ export default function CrmActivityPanel({
                     <li key={activity.id} className="pl-5 relative">
                       {/* Icon dot */}
                       <span
-                        className={`absolute -left-[18px] top-0.5 w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${cfg.color}`}
+                        className={`absolute -left-[18px] top-0.5 w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${cfg.color}`}
                         style={{ width: '1.75rem', height: '1.75rem', left: '-0.875rem' }}
                       >
                         <Icon className="w-3.5 h-3.5" />

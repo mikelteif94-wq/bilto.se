@@ -62,7 +62,7 @@ function CarSlot({ car, onRemove }: { car: TcoCompareCar; onRemove: () => void }
         </div>
         <button
           onClick={onRemove}
-          className="shrink-0 w-6 h-6 rounded-full bg-slate-100 hover:bg-red-100 flex items-center justify-center transition-colors"
+          className="shrink-0 w-6 h-6 rounded-xl bg-slate-100 hover:bg-red-100 flex items-center justify-center transition-colors"
           aria-label="Ta bort"
         >
           <X className="w-3 h-3 text-slate-400 hover:text-red-500" />
@@ -82,7 +82,7 @@ function CarSlot({ car, onRemove }: { car: TcoCompareCar; onRemove: () => void }
                     initial={{ width: 0 }}
                     animate={{ width: `${pct}%` }}
                     transition={{ duration: 0.5, delay: 0.1 }}
-                    className="h-full rounded-full"
+                    className="h-full rounded-xl"
                     style={{ backgroundColor: COST_COLORS[key] }}
                   />
                 </div>

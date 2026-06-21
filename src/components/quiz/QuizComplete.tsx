@@ -57,8 +57,8 @@ export function QuizComplete({ answers, isAnalysisReady, onShowResults }: QuizCo
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="absolute inset-0 rounded-full bg-[#0e6efe]/10 animate-pulse" />
-            <div className="absolute inset-1 rounded-full bg-[#0e6efe]/10 border border-[#0e6efe]/20 flex items-center justify-center">
+            <div className="absolute inset-0 rounded-xl bg-[#0e6efe]/10 animate-pulse" />
+            <div className="absolute inset-1 rounded-xl bg-[#0e6efe]/10 border border-[#0e6efe]/20 flex items-center justify-center">
               {isAnalysisReady ? (
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 300 }}>
                   <Search className="h-8 w-8 text-[#0e6efe]" strokeWidth={2} />
@@ -147,7 +147,7 @@ export function QuizComplete({ answers, isAnalysisReady, onShowResults }: QuizCo
             </div>
             <div className="flex flex-wrap gap-2">
               {focusItems.map((item, idx) => (
-                <span key={idx} className="inline-flex items-center px-3 py-1.5 rounded-full bg-white border border-slate-200 text-[12px] font-medium text-slate-700">
+                <span key={idx} className="inline-flex items-center px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-[12px] font-medium text-slate-700">
                   {item}
                 </span>
               ))}

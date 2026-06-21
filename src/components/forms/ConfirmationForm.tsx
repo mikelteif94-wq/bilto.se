@@ -229,7 +229,7 @@ export default function ConfirmationForm({
     return (
       <div className="py-2 sm:py-4">
         <div className="text-center mb-7">
-          <div className="w-16 h-16 bg-[#0e6efe]/10 rounded-full flex items-center justify-center mx-auto mb-5">
+          <div className="w-16 h-16 bg-[#0e6efe]/10 rounded-xl flex items-center justify-center mx-auto mb-5">
             <Check className="w-9 h-9 text-[#0e6efe]" strokeWidth={2} />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">
@@ -241,7 +241,7 @@ export default function ConfirmationForm({
           {trackUrl && (
             <a
               href={trackUrl}
-              className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] rounded-full transition shadow-md"
+              className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] rounded-xl transition shadow-md"
             >
               Följ din bil live
               <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
@@ -251,7 +251,7 @@ export default function ConfirmationForm({
 
         <div className="bg-gradient-to-br from-[#0e6efe] to-[#0b5cd8] text-white rounded-xl p-5 sm:p-6 mb-6 shadow-sm">
           <div className="flex items-start gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
               <Phone className="w-5 h-5" strokeWidth={2.2} />
             </div>
             <div>
@@ -275,7 +275,7 @@ export default function ConfirmationForm({
           <ol className="relative space-y-5">
             <li className="flex gap-4">
               <div className="relative shrink-0">
-                <div className="w-9 h-9 rounded-full bg-[#0e6efe] text-white flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-[#0e6efe] text-white flex items-center justify-center">
                   <Check className="w-4.5 h-4.5" strokeWidth={2.5} />
                 </div>
                 <span className="absolute left-1/2 top-9 -translate-x-1/2 w-px h-[calc(100%+1.25rem)] bg-slate-200" aria-hidden="true" />
@@ -289,7 +289,7 @@ export default function ConfirmationForm({
             </li>
             <li className="flex gap-4">
               <div className="relative shrink-0">
-                <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center ring-2 ring-[#0e6efe]/30">
+                <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center ring-2 ring-[#0e6efe]/30">
                   <Phone className="w-4.5 h-4.5" strokeWidth={2.2} />
                 </div>
                 <span className="absolute left-1/2 top-9 -translate-x-1/2 w-px h-[calc(100%+1.25rem)] bg-slate-200" aria-hidden="true" />
@@ -303,7 +303,7 @@ export default function ConfirmationForm({
             </li>
             <li className="flex gap-4">
               <div className="shrink-0">
-                <div className="w-9 h-9 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center">
                   <Gavel className="w-4.5 h-4.5" strokeWidth={2.2} />
                 </div>
               </div>
@@ -343,7 +343,7 @@ export default function ConfirmationForm({
             </div>
             <a
               href={trackUrl}
-              className="shrink-0 inline-flex items-center gap-1.5 h-9 px-4 bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[12.5px] rounded-full transition whitespace-nowrap"
+              className="shrink-0 inline-flex items-center gap-1.5 h-9 px-4 bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[12.5px] rounded-xl transition whitespace-nowrap"
             >
               Öppna
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.2} />
@@ -532,7 +532,7 @@ export default function ConfirmationForm({
       <button
         type="submit"
         disabled={submitting}
-        className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-semibold text-[15px] rounded-full transition flex items-center justify-center gap-2 shadow-sm"
+        className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-semibold text-[15px] rounded-xl transition flex items-center justify-center gap-2 shadow-sm"
       >
         {submitting && <Loader2 className="w-5 h-5 animate-spin" />}
         {statusText()}

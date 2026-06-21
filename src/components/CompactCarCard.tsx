@@ -70,7 +70,7 @@ function ScoreBadge({ value }: { value: number }) {
   const color = value >= 8 ? '#16a34a' : value >= 6 ? '#d97706' : '#dc2626';
   return (
     <div
-      className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-full"
+      className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-xl"
       style={{
         border: `2px solid ${color}`,
         boxShadow: `0 2px 8px ${color}30`,

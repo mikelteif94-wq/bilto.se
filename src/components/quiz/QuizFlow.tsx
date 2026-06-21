@@ -110,7 +110,7 @@ export default function QuizFlow({ onComplete, onBack, preselectedCar }: QuizFlo
 
       {preselectedCar && (
         <div className="flex items-center gap-2 mb-4">
-          <span className="inline-flex items-center h-7 px-3 bg-[#0e6efe]/10 text-[#0e6efe] font-semibold text-[13px] rounded-full">
+          <span className="inline-flex items-center h-7 px-3 bg-[#0e6efe]/10 text-[#0e6efe] font-semibold text-[13px] rounded-xl">
             {preselectedCar}
           </span>
         </div>
@@ -124,7 +124,7 @@ export default function QuizFlow({ onComplete, onBack, preselectedCar }: QuizFlo
       {/* Progress bar */}
       <div className="relative h-1 bg-slate-200 rounded-full overflow-hidden mb-8">
         <div
-          className="absolute inset-y-0 left-0 bg-[#0047B3] rounded-full transition-all duration-300"
+          className="absolute inset-y-0 left-0 bg-[#0047B3] rounded-xl transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -187,12 +187,12 @@ function BudgetSelector({ answers, setAnswers }: { answers: QuizAnswers; setAnsw
 
   return (
     <div className="space-y-5">
-      <div className="inline-flex rounded-full bg-slate-100 p-1">
+      <div className="inline-flex rounded-xl bg-slate-100 p-1">
         <button
           type="button"
           onClick={() => setAnswers({ ...answers, budget_type: 'monthly', budget_min: undefined, budget_max: undefined })}
           className={cn(
-            'px-5 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200',
+            'px-5 py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-200',
             budgetType === 'monthly'
               ? 'bg-white text-slate-900 shadow-sm'
               : 'text-slate-500 hover:text-slate-700'
@@ -204,7 +204,7 @@ function BudgetSelector({ answers, setAnswers }: { answers: QuizAnswers; setAnsw
           type="button"
           onClick={() => setAnswers({ ...answers, budget_type: 'cash', budget_min: undefined, budget_max: undefined })}
           className={cn(
-            'px-5 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-200',
+            'px-5 py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-200',
             budgetType === 'cash'
               ? 'bg-white text-slate-900 shadow-sm'
               : 'text-slate-500 hover:text-slate-700'

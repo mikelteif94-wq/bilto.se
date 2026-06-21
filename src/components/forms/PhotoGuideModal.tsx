@@ -109,7 +109,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
       <div className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
         <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
+            <span className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
               <Camera className="w-4 h-4" />
             </span>
             <div>
@@ -124,7 +124,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
           <button
             type="button"
             onClick={onClose}
-            className="w-9 h-9 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center transition"
+            className="w-9 h-9 rounded-xl hover:bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center transition"
             aria-label="Stäng"
           >
             <X className="w-5 h-5" />
@@ -141,7 +141,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
                 className="w-full h-full object-cover animate-[fadeIn_300ms_ease-out]"
               />
 
-              <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-sm border border-slate-200 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-slate-700 shadow-sm">
+              <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-sm border border-slate-200 rounded-xl px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-slate-700 shadow-sm">
                 Referensbild
               </span>
 
@@ -251,7 +251,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex items-center gap-1.5 h-10 px-4 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition"
+              className="inline-flex items-center gap-1.5 h-10 px-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition"
             >
               Klar
               <Check className="w-4 h-4" />
@@ -260,7 +260,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
             <button
               type="button"
               onClick={() => setIndex((i) => Math.min(VIEWS.length - 1, i + 1))}
-              className="inline-flex items-center gap-1.5 h-10 px-4 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition"
+              className="inline-flex items-center gap-1.5 h-10 px-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition"
             >
               Nästa
               <ChevronRight className="w-4 h-4" />

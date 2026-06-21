@@ -115,7 +115,7 @@ export default function QuotePage({
                   item === 'Vi förhandlar åt dig'
                     ? 'text-white font-semibold'
                     : item === 'Köp bil'
-                    ? 'inline-flex items-center h-8 px-4 rounded-full bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0a57cc] shadow-sm'
+                    ? 'inline-flex items-center h-8 px-4 rounded-xl bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0a57cc] shadow-sm'
                     : 'text-white/80 hover:text-white'
                 }`}
               >
@@ -194,7 +194,7 @@ export default function QuotePage({
         />
         <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-[13px] font-semibold mb-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/20 backdrop-blur-sm text-white text-[13px] font-semibold mb-6">
               <Sparkles className="w-4 h-4" />
               Gratis och opartiskt
             </span>
@@ -278,7 +278,7 @@ export default function QuotePage({
       <section className="bg-white border-t border-slate-100">
         <div className="max-w-5xl mx-auto px-5 sm:px-6 py-12 sm:py-20">
           <div className="mb-8 sm:mb-10">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] text-[12px] font-semibold mb-4">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] text-[12px] font-semibold mb-4">
               Vad behöver du hjälp med?
             </span>
             <h3 className="text-[24px] sm:text-[34px] font-semibold leading-[1.1] tracking-tight text-slate-900">
@@ -347,7 +347,7 @@ export default function QuotePage({
                   document.getElementById('experternas-val')?.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
               }}
-              className="h-12 px-8 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] inline-flex items-center gap-2 group transition shadow-sm"
+              className="h-12 px-8 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] inline-flex items-center gap-2 group transition shadow-sm"
             >
               Utforska alla bilar
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
@@ -620,7 +620,7 @@ export default function QuotePage({
           </div>
 
           <div className="mt-12 sm:mt-16 text-center">
-            <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-full px-5 sm:px-7 py-3 sm:py-4 shadow-sm">
+            <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-5 sm:px-7 py-3 sm:py-4 shadow-sm">
               <ShieldCheck className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
               <span className="text-[14px] sm:text-[15px] text-slate-700 font-medium">
                 Alla bilar vi rekommenderar har klarat vår 5-punktskontroll
@@ -644,7 +644,7 @@ export default function QuotePage({
           <button
             type="button"
             onClick={() => navigateToBuy()}
-            className="h-14 px-10 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[16px] rounded-full transition shadow-sm inline-flex items-center justify-center gap-2"
+            className="h-14 px-10 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[16px] rounded-xl transition shadow-sm inline-flex items-center justify-center gap-2"
           >
             Kom igång
             <ArrowRight className="w-5 h-5" />

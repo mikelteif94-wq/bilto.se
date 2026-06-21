@@ -135,7 +135,7 @@ export default function ReviewsSection({ variant = 'light' }: Props) {
                 {r.text}
               </p>
               <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                <div className={`w-10 h-10 rounded-full ${r.color} text-white flex items-center justify-center font-semibold text-[15px]`}>
+                <div className={`w-10 h-10 rounded-xl ${r.color} text-white flex items-center justify-center font-semibold text-[15px]`}>
                   {r.initial}
                 </div>
                 <div className="min-w-0">
@@ -176,7 +176,7 @@ export default function ReviewsSection({ variant = 'light' }: Props) {
                   {r.text}
                 </p>
                 <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                  <div className={`w-10 h-10 rounded-full ${r.color} text-white flex items-center justify-center font-semibold text-[15px]`}>
+                  <div className={`w-10 h-10 rounded-xl ${r.color} text-white flex items-center justify-center font-semibold text-[15px]`}>
                     {r.initial}
                   </div>
                   <div className="min-w-0">
@@ -201,7 +201,7 @@ export default function ReviewsSection({ variant = 'light' }: Props) {
               type="button"
               onClick={() => scrollToIdx(Math.max(0, activeIdx - 1))}
               aria-label="Föregående recension"
-              className="w-10 h-10 rounded-full border border-slate-300 bg-white flex items-center justify-center text-slate-700 active:scale-95 transition"
+              className="w-10 h-10 rounded-xl border border-slate-300 bg-white flex items-center justify-center text-slate-700 active:scale-95 transition"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -220,7 +220,7 @@ export default function ReviewsSection({ variant = 'light' }: Props) {
               type="button"
               onClick={() => scrollToIdx(Math.min(REVIEWS.length - 1, activeIdx + 1))}
               aria-label="Nästa recension"
-              className="w-10 h-10 rounded-full border border-slate-300 bg-white flex items-center justify-center text-slate-700 active:scale-95 transition"
+              className="w-10 h-10 rounded-xl border border-slate-300 bg-white flex items-center justify-center text-slate-700 active:scale-95 transition"
             >
               <ChevronRight className="w-5 h-5" />
             </button>

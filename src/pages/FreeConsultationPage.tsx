@@ -118,7 +118,7 @@ function ProgressBar({ step }: { step: Step }) {
         <div key={label} className="flex items-center flex-1 last:flex-none">
           <div className="flex flex-col items-center gap-1.5">
             <div
-              className={`w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold transition-all duration-200 ${
+              className={`w-9 h-9 rounded-xl flex items-center justify-center text-[13px] font-bold transition-all duration-200 ${
                 i < idx
                   ? 'bg-[#0e6efe] text-white shadow-md shadow-blue-200'
                   : i === idx
@@ -133,7 +133,7 @@ function ProgressBar({ step }: { step: Step }) {
             </span>
           </div>
           {i < STEP_LABELS.length - 1 && (
-            <div className={`h-[2px] flex-1 mx-2 mb-5 rounded-full transition-all duration-300 ${i < idx ? 'bg-[#0e6efe]' : 'bg-slate-200'}`} />
+            <div className={`h-[2px] flex-1 mx-2 mb-5 rounded-xl transition-all duration-300 ${i < idx ? 'bg-[#0e6efe]' : 'bg-slate-200'}`} />
           )}
         </div>
       ))}
@@ -290,7 +290,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
       {/* Hero */}
       <div className="bg-[#0e6efe] pt-32 pb-16 px-4">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="inline-flex items-center gap-1.5 bg-white/15 text-white text-xs font-semibold px-3 py-1.5 rounded-full mb-5 tracking-wide uppercase">
+          <div className="inline-flex items-center gap-1.5 bg-white/15 text-white text-xs font-semibold px-3 py-1.5 rounded-xl mb-5 tracking-wide uppercase">
             Kostnadsfritt första möte
           </div>
           <h1 className="text-[28px] sm:text-4xl font-bold text-white leading-tight tracking-tight">
@@ -522,7 +522,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
           {/* Step 4: Bekräftelse */}
           {step === 'bekraftelse' && (
             <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
+              <div className="w-16 h-16 rounded-xl bg-green-100 flex items-center justify-center mx-auto mb-5">
                 <Check className="w-8 h-8 text-green-600" strokeWidth={2.5} />
               </div>
               <h2 className="text-2xl font-bold text-slate-900 mb-2">Tack, {form.namn.split(' ')[0]}!</h2>

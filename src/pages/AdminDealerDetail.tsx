@@ -360,7 +360,7 @@ export default function AdminDealerDetail({
               <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 break-words">{dealer.foretagsnamn}</h1>
               <p className="text-slate-500 mt-1 font-mono text-sm">{dealer.orgnr}</p>
             </div>
-            <span className={`inline-flex items-center text-xs font-semibold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full ring-1 ring-inset shrink-0 ${statusCls}`}>
+            <span className={`inline-flex items-center text-xs font-semibold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl ring-1 ring-inset shrink-0 ${statusCls}`}>
               {statusLabel}
             </span>
           </div>
@@ -397,7 +397,7 @@ export default function AdminDealerDetail({
             {dealer.godkand ? (
               <>
                 <div className="flex items-start gap-3">
-                  <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
                     <Check className="w-4 h-4 text-green-600" />
                   </div>
                   <div>
@@ -416,7 +416,7 @@ export default function AdminDealerDetail({
                 </div>
                 <button
                   onClick={() => setConfirmAction('revoke')}
-                  className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-slate-300 text-slate-700 text-sm font-semibold hover:border-slate-400 hover:bg-slate-50 transition"
+                  className="inline-flex items-center gap-2 h-9 px-4 rounded-xl border border-slate-300 text-slate-700 text-sm font-semibold hover:border-slate-400 hover:bg-slate-50 transition"
                 >
                   Återkalla godkännande
                 </button>
@@ -424,7 +424,7 @@ export default function AdminDealerDetail({
             ) : dealer.rejected ? (
               <>
                 <div className="flex items-start gap-3">
-                  <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
                     <Ban className="w-4 h-4 text-red-600" />
                   </div>
                   <div>
@@ -437,7 +437,7 @@ export default function AdminDealerDetail({
                 <button
                   onClick={handleApprove}
                   disabled={approving}
-                  className="inline-flex items-center gap-2 h-9 px-4 rounded-full bg-black hover:bg-slate-800 disabled:bg-slate-400 text-white text-sm font-semibold transition"
+                  className="inline-flex items-center gap-2 h-9 px-4 rounded-xl bg-black hover:bg-slate-800 disabled:bg-slate-400 text-white text-sm font-semibold transition"
                 >
                   {approving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                   Godkänn ändå
@@ -455,14 +455,14 @@ export default function AdminDealerDetail({
                   <button
                     onClick={handleApprove}
                     disabled={approving}
-                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full bg-black hover:bg-slate-800 disabled:bg-slate-400 text-white text-sm font-semibold transition"
+                    className="inline-flex items-center gap-2 h-9 px-4 rounded-xl bg-black hover:bg-slate-800 disabled:bg-slate-400 text-white text-sm font-semibold transition"
                   >
                     {approving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                     {approving ? 'Godkänner…' : 'Godkänn'}
                   </button>
                   <button
                     onClick={() => setConfirmAction('reject')}
-                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 transition"
+                    className="inline-flex items-center gap-2 h-9 px-4 rounded-xl border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 transition"
                   >
                     <Ban className="w-3.5 h-3.5" />
                     Neka ansökan
@@ -477,7 +477,7 @@ export default function AdminDealerDetail({
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Farlig zon</p>
             <button
               onClick={() => setConfirmAction('delete')}
-              className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 transition"
+              className="inline-flex items-center gap-2 h-9 px-4 rounded-xl border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 transition"
             >
               <Trash2 className="w-3.5 h-3.5" />
               Ta bort handlare
@@ -503,7 +503,7 @@ export default function AdminDealerDetail({
               </div>
               <button
                 onClick={() => setShowAddInvoice(v => !v)}
-                className="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-full bg-slate-900 hover:bg-slate-700 text-white text-xs font-semibold transition"
+                className="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-700 text-white text-xs font-semibold transition"
               >
                 {showAddInvoice ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                 {showAddInvoice ? 'Avbryt' : 'Ny faktura'}
@@ -593,7 +593,7 @@ export default function AdminDealerDetail({
               </div>
             ) : invoices.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-10 text-center px-6">
-                <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
                   <Receipt className="w-4 h-4 text-slate-300" />
                 </div>
                 <p className="text-sm text-slate-400">
@@ -627,10 +627,10 @@ export default function AdminDealerDetail({
                             {inv.invoice_number && (
                               <span className="text-sm font-bold font-mono text-slate-900">{inv.invoice_number}</span>
                             )}
-                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${s.cls}`}>
+                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-xl ring-1 ring-inset ${s.cls}`}>
                               {s.label}
                             </span>
-                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${
+                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-xl ring-1 ring-inset ${
                               inv.commission_type === 'trade_in'
                                 ? 'bg-sky-50 text-sky-700 ring-sky-200'
                                 : 'bg-slate-100 text-slate-500 ring-slate-200'
@@ -704,7 +704,7 @@ export default function AdminDealerDetail({
             <div className="flex gap-2 pt-1">
               <button
                 onClick={() => { setConfirmAction(null); setActionError(null); }}
-                className="flex-1 h-10 rounded-full border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition"
+                className="flex-1 h-10 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition"
               >
                 Avbryt
               </button>

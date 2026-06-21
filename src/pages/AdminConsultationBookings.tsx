@@ -175,10 +175,10 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-1.5">
                         <span className="font-semibold text-slate-900 text-sm">{b.namn}</span>
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                        <span className="text-xs px-2 py-0.5 rounded-xl bg-slate-100 text-slate-600">
                           {SYFTE_LABELS[b.syfte] ?? b.syfte}
                         </span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[b.status] ?? 'bg-slate-100 text-slate-500'}`}>
+                        <span className={`text-xs px-2 py-0.5 rounded-xl font-medium ${STATUS_COLORS[b.status] ?? 'bg-slate-100 text-slate-500'}`}>
                           {STATUS_LABELS[b.status] ?? b.status}
                         </span>
                       </div>

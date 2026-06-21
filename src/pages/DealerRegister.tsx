@@ -152,7 +152,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
     return (
       <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4 py-10">
         <div className="max-w-lg w-full bg-white rounded-xl border border-slate-200 p-8 sm:p-10 text-center shadow-sm">
-          <div className="w-16 h-16 rounded-full bg-[#0e6efe]/10 flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mx-auto mb-6">
             <Check className="w-8 h-8 text-[#0e6efe]" strokeWidth={2.5} />
           </div>
           <h1 className="text-[28px] font-semibold text-slate-900 mb-3 tracking-tight">
@@ -164,7 +164,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
 
           <div className="bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl p-5 mb-7 text-left">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0 ring-1 ring-[#0e6efe]/15">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 ring-1 ring-[#0e6efe]/15">
                 <Mail className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
               </div>
               <div>
@@ -184,7 +184,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
 
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] transition"
+            className="inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] transition"
           >
             Till startsidan
           </button>
@@ -234,7 +234,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
           <div className="flex items-center ml-auto">
             <a
               href="/handlare/logga-in"
-              className="inline-flex items-center gap-2 bg-white text-[#0e6efe] text-[14px] font-semibold px-5 h-10 rounded-full hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center gap-2 bg-white text-[#0e6efe] text-[14px] font-semibold px-5 h-10 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               <User className="w-[18px] h-[18px]" strokeWidth={2.2} />
               Logga in
@@ -288,7 +288,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
                 <button
                   type="button"
                   onClick={goApply}
-                  className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-full bg-white text-[#0e6efe] hover:bg-white/90 font-semibold text-[15px] transition"
+                  className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl bg-white text-[#0e6efe] hover:bg-white/90 font-semibold text-[15px] transition"
                 >
                   Förregistrera dig
                   <ArrowRight className="w-4 h-4" />
@@ -418,7 +418,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
                   <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
                   <div className="hidden sm:block absolute left-6 bottom-6 bg-white rounded-xl p-5 shadow-lg max-w-xs">
                     <div className="flex items-center gap-3 mb-1.5">
-                      <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
                         <Phone className="w-5 h-5" strokeWidth={2} />
                       </div>
                       <div className="text-[14px] font-semibold text-slate-900">
@@ -586,7 +586,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
                   <button
                     type="submit"
                     disabled={loading}
-                    className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14.5px] rounded-full transition"
+                    className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14.5px] rounded-xl transition"
                   >
                     {loading ? (
                       <Loader2 className="w-4 h-4 animate-spin" />

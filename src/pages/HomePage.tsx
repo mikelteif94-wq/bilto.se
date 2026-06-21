@@ -298,7 +298,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
         <div className="relative z-10 flex flex-col items-center justify-center text-center px-5 pt-24 pb-0" style={{ minHeight: '100svh' }}>
           {/* Social proof pill */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/15 bg-white/8 backdrop-blur-md text-[13px] font-medium text-white/80 mb-8">
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl border border-white/15 bg-white/8 backdrop-blur-md text-[13px] font-medium text-white/80 mb-8">
             <div className="flex gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
@@ -413,7 +413,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                           key={f}
                           type="button"
                           onClick={() => handleCarQueryChange(f)}
-                          className="text-[12px] text-slate-500 hover:text-slate-800 border border-slate-200 hover:border-slate-400 rounded-full px-3 py-1 transition font-medium"
+                          className="text-[12px] text-slate-500 hover:text-slate-800 border border-slate-200 hover:border-slate-400 rounded-xl px-3 py-1 transition font-medium"
                         >
                           {f}
                         </button>
@@ -554,7 +554,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 setHeroTab('salj');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="inline-flex items-center gap-2.5 h-12 px-8 rounded-full bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[15px] transition group"
+              className="inline-flex items-center gap-2.5 h-12 px-8 rounded-xl bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[15px] transition group"
             >
               Värdera min bil
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
@@ -617,7 +617,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="inline-flex items-center gap-2.5 h-12 px-8 rounded-full bg-white text-slate-900 hover:bg-white/90 font-semibold text-[15px] transition group"
+              className="inline-flex items-center gap-2.5 h-12 px-8 rounded-xl bg-white text-slate-900 hover:bg-white/90 font-semibold text-[15px] transition group"
             >
               Prata med en mäklare
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
@@ -728,7 +728,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                     alt={r.name}
                     loading="lazy"
                     decoding="async"
-                    className="w-10 h-10 rounded-full object-cover shrink-0"
+                    className="w-10 h-10 rounded-xl object-cover shrink-0"
                   />
                   <div>
                     <p className="text-[14px] font-semibold text-white">{r.name}</p>
@@ -762,7 +762,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 setHeroTab('salj');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-full bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[16px] transition group"
+              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-xl bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[16px] transition group"
             >
               Värdera min bil gratis
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
@@ -772,7 +772,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-full border border-slate-200 hover:border-slate-400 text-slate-700 font-semibold text-[16px] transition"
+              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-xl border border-slate-200 hover:border-slate-400 text-slate-700 font-semibold text-[16px] transition"
             >
               Köp bil med hjälp
             </button>

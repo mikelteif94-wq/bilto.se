@@ -211,7 +211,7 @@ export default function AdminQuizSubmissions({
                         {sub.selected_cars.map((car, i) => (
                           <span
                             key={i}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0047B3]/10 text-[#0047B3] text-sm font-medium"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0047B3]/10 text-[#0047B3] text-sm font-medium"
                           >
                             <CarIcon className="w-3.5 h-3.5" />
                             {car.make} {car.model}

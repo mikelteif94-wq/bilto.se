@@ -208,17 +208,17 @@ function Section({
         {collapsible && !expanded && (
           <div className="flex items-center gap-1.5">
             {serious > 0 && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-[11px] font-semibold">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl bg-red-100 text-red-700 text-[11px] font-semibold">
                 <AlertOctagon className="w-3 h-3" />{serious}
               </span>
             )}
             {issues - serious > 0 && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[11px] font-semibold">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl bg-amber-100 text-amber-700 text-[11px] font-semibold">
                 <AlertTriangle className="w-3 h-3" />{issues - serious}
               </span>
             )}
             {issues === 0 && flags.some((f) => f === 'ok') && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-semibold">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl bg-emerald-100 text-emerald-700 text-[11px] font-semibold">
                 <Check className="w-3 h-3" />OK
               </span>
             )}
@@ -291,7 +291,7 @@ function StatusButtons({
             key={o.val}
             type="button"
             onClick={() => onChange(active ? '' : o.val)}
-            className={`inline-flex items-center gap-1 h-7 px-2.5 rounded-full border text-[11px] font-semibold transition ${
+            className={`inline-flex items-center gap-1 h-7 px-2.5 rounded-xl border text-[11px] font-semibold transition ${
               active
                 ? o.cls
                 : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
@@ -328,7 +328,7 @@ function YesNo({
               key={v}
               type="button"
               onClick={() => onChange(active ? '' : v)}
-              className={`h-9 px-4 rounded-full border text-xs font-semibold capitalize transition ${
+              className={`h-9 px-4 rounded-xl border text-xs font-semibold capitalize transition ${
                 active
                   ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
                   : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'

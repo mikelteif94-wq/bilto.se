@@ -255,7 +255,7 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
                 return (
                   <div key={step.key} className="flex items-center flex-1 last:flex-none min-w-0">
                     <div className="flex flex-col items-center gap-1.5 min-w-0 w-full">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all shrink-0 ${
+                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold transition-all shrink-0 ${
                         done
                           ? 'bg-emerald-500 text-white'
                           : active
@@ -377,7 +377,7 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
           <p className="text-sm text-slate-600 mb-4">Din bilmäklare hjälper dig gärna. Ring eller mejla oss.</p>
           <a
             href="tel:+46855550200"
-            className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-slate-100 text-slate-700 text-sm font-medium hover:bg-slate-200 transition"
+            className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-slate-100 text-slate-700 text-sm font-medium hover:bg-slate-200 transition"
           >
             <Phone className="w-4 h-4" />
             08-5555 0200
@@ -505,7 +505,7 @@ function ExpertCard() {
           <img
             src="/Man_in_car_showroom_portrait.png"
             alt="Marcus Holm"
-            className="w-16 h-16 rounded-full object-cover object-top border-2 border-slate-200"
+            className="w-16 h-16 rounded-xl object-cover object-top border-2 border-slate-200"
           />
           <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
         </div>
@@ -521,7 +521,7 @@ function ExpertCard() {
         </div>
         <a
           href="tel:+46855550200"
-          className="shrink-0 inline-flex items-center gap-2 h-10 px-4 rounded-full bg-[#0e6efe] text-white text-sm font-semibold hover:bg-[#0a57cc] transition"
+          className="shrink-0 inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#0e6efe] text-white text-sm font-semibold hover:bg-[#0a57cc] transition"
         >
           <Phone className="w-3.5 h-3.5" />
           Ring
@@ -568,7 +568,7 @@ function SuggestionCard({ suggestion: s }: { suggestion: Suggestion }) {
             href={s.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition"
+            className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition"
           >
             Se annonsen
             <ExternalLink className="w-3.5 h-3.5" />

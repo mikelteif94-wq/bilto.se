@@ -150,7 +150,7 @@ export default function AdminQuoteRequests({
             <button
               key={f.key}
               onClick={() => setSearchFilter(f.key)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition whitespace-nowrap ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition whitespace-nowrap ${
                 searchFilter === f.key
                   ? 'bg-slate-900 text-white'
                   : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
@@ -192,12 +192,12 @@ export default function AdminQuoteRequests({
                           <span className="text-sm font-semibold text-slate-900">
                             {q.firstname} {q.lastname}
                           </span>
-                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${STATUS_COLORS[q.status] || STATUS_COLORS.new}`}>
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-xl ${STATUS_COLORS[q.status] || STATUS_COLORS.new}`}>
                             {STATUS_LABELS[q.status] || q.status}
                           </span>
                           {q.email_verified
-                            ? <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700"><ShieldCheck className="w-3 h-3" />Verifierad</span>
-                            : <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700"><ShieldAlert className="w-3 h-3" />Overifierad</span>
+                            ? <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-xl bg-emerald-100 text-emerald-700"><ShieldCheck className="w-3 h-3" />Verifierad</span>
+                            : <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-xl bg-amber-100 text-amber-700"><ShieldAlert className="w-3 h-3" />Overifierad</span>
                           }
                         </div>
                         <div className="text-xs text-slate-500 truncate">
@@ -262,12 +262,12 @@ export default function AdminQuoteRequests({
                           </td>
                           <td className="px-4 lg:px-6 py-4">
                             {q.email_verified
-                              ? <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700"><ShieldCheck className="w-3 h-3" />Verifierad</span>
-                              : <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700"><ShieldAlert className="w-3 h-3" />Overifierad</span>
+                              ? <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-xl bg-emerald-100 text-emerald-700"><ShieldCheck className="w-3 h-3" />Verifierad</span>
+                              : <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-xl bg-amber-100 text-amber-700"><ShieldAlert className="w-3 h-3" />Overifierad</span>
                             }
                           </td>
                           <td className="px-4 lg:px-6 py-4">
-                            <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_COLORS[q.status] || STATUS_COLORS.new}`}>
+                            <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-xl ${STATUS_COLORS[q.status] || STATUS_COLORS.new}`}>
                               {STATUS_LABELS[q.status] || q.status}
                             </span>
                           </td>

@@ -70,8 +70,8 @@ export function QualityBadgeList({ badges, size = 'sm' }: QualityBadgeListProps)
 
   const pillBase =
     size === 'sm'
-      ? 'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] leading-none'
-      : 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs leading-none';
+      ? 'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-xl text-[10px] leading-none'
+      : 'inline-flex items-center gap-1 px-2 py-0.5 rounded-xl text-xs leading-none';
 
   const activeDefs = defs.filter((d) => badges.includes(d.key));
   if (activeDefs.length === 0) return null;
@@ -118,7 +118,7 @@ export function QualityBadgePicker({ badges, onChange, saving = false }: Quality
             onClick={() => toggle(d.key)}
             disabled={saving}
             className={`
-              inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] leading-none
+              inline-flex items-center gap-1 px-2 py-1 rounded-xl text-[11px] leading-none
               border transition-all
               ${active
                 ? `${d.activeCls} border-transparent shadow-sm`

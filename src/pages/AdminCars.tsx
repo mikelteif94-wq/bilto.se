@@ -264,7 +264,7 @@ export default function AdminCars({
             {onNavigateCatalog && (
               <button
                 onClick={onNavigateCatalog}
-                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 font-medium text-sm transition"
+                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 font-medium text-sm transition"
               >
                 <BookOpen className="w-4 h-4" />
                 <span className="hidden sm:inline">Bilkatalog</span>
@@ -273,7 +273,7 @@ export default function AdminCars({
             {onNavigateBulkUpload && (
               <button
                 onClick={onNavigateBulkUpload}
-                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 font-medium text-sm transition"
+                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 font-medium text-sm transition"
               >
                 <Upload className="w-4 h-4" />
                 <span className="hidden sm:inline">Bulk-bilder</span>
@@ -310,7 +310,7 @@ export default function AdminCars({
                             {car.regnummer}
                           </span>
                           <span
-                            className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${
+                            className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-xl ring-1 ring-inset ${
                               STATUS_STYLES[car.status] ?? STATUS_STYLES.ny
                             }`}
                           >
@@ -318,7 +318,7 @@ export default function AdminCars({
                           </span>
                           {car.crm_status && (
                             <span
-                              className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                              className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-xl ${
                                 CRM_STATUS_COLORS[car.crm_status] ?? 'bg-slate-100 text-slate-600'
                               }`}
                             >
@@ -326,7 +326,7 @@ export default function AdminCars({
                             </span>
                           )}
                           {car.hidden_from_dealers && (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">
+                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-xl bg-slate-200 text-slate-600">
                               <EyeOff className="w-3 h-3" />
                               Dold
                             </span>
@@ -408,7 +408,7 @@ export default function AdminCars({
                           </td>
                           <td className="px-4 lg:px-6 py-4">
                             <span
-                              className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full ring-1 ring-inset ${
+                              className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-xl ring-1 ring-inset ${
                                 STATUS_STYLES[car.status] ?? STATUS_STYLES.ny
                               }`}
                             >
@@ -418,7 +418,7 @@ export default function AdminCars({
                           <td className="px-4 lg:px-6 py-4">
                             {car.crm_status ? (
                               <span
-                                className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full ${
+                                className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-xl ${
                                   CRM_STATUS_COLORS[car.crm_status] ?? 'bg-slate-100 text-slate-600'
                                 }`}
                               >

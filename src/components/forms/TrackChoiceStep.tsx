@@ -79,7 +79,7 @@ export default function TrackChoiceStep({ regnummer, miltal, onChoose, onGuidanc
         <div className="rounded-xl border border-[#0e6efe] bg-[#0e6efe]/[0.03] overflow-hidden">
           <div className="p-5 sm:p-6">
             <div className="flex items-start gap-4 mb-5">
-              <div className="w-11 h-11 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
                 <Repeat className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
               </div>
               <div className="flex-1 min-w-0">
@@ -129,7 +129,7 @@ export default function TrackChoiceStep({ regnummer, miltal, onChoose, onGuidanc
       <button
         type="button"
         onClick={() => onChoose('auction')}
-        className="w-full flex items-center justify-center gap-2 h-12 rounded-full border border-slate-300 text-[15px] font-semibold text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe] transition-colors"
+        className="w-full flex items-center justify-center gap-2 h-12 rounded-xl border border-slate-300 text-[15px] font-semibold text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe] transition-colors"
       >
         Jag vill s&auml;lja direkt
       </button>

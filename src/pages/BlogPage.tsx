@@ -83,7 +83,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 max-w-4xl mx-auto px-6 pb-10 sm:pb-14">
-          <span className="inline-block text-[11px] font-semibold tracking-wider uppercase text-white/90 bg-[#0e6efe] px-3 py-1.5 rounded-full">
+          <span className="inline-block text-[11px] font-semibold tracking-wider uppercase text-white/90 bg-[#0e6efe] px-3 py-1.5 rounded-xl">
             Guide
           </span>
           <h1 className="mt-4 text-white text-[32px] sm:text-[48px] leading-[1.1] font-semibold tracking-tight max-w-3xl">
@@ -546,7 +546,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
       <section className="bg-slate-50 py-14 sm:py-20">
         <div className="max-w-2xl mx-auto px-6">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] mb-5">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] mb-5">
               <Car className="w-7 h-7" />
             </div>
             <h2 className="text-[30px] sm:text-[36px] font-semibold tracking-tight text-slate-900 leading-[1.15]">

@@ -122,7 +122,7 @@ function DepositBar({ equity, depositRequired, equityFreed, extraNeeded }: {
       </div>
       <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
         <motion.div
-          className="h-full rounded-full"
+          className="h-full rounded-xl"
           style={{ backgroundColor: hasSurplus ? '#16a34a' : hasShortfall ? '#d97706' : '#0e6efe' }}
           initial={{ width: 0 }}
           animate={{ width: `${coverPct}%` }}
@@ -397,7 +397,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
                   </div>
                   {car.rating != null && (
                     <div
-                      className="shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center"
+                      className="shrink-0 w-8 h-8 rounded-xl border-2 flex items-center justify-center"
                       style={{ borderColor: ratingColor, backgroundColor: ratingColor + '15' }}
                     >
                       <span className="text-[10px] font-black tabular-nums" style={{ color: ratingColor }}>
@@ -450,7 +450,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
                 {car.matchReasons.length > 0 && (
                   <div className="mt-2.5 flex flex-wrap gap-1">
                     {car.matchReasons.map(r => (
-                      <span key={r} className="px-2 py-0.5 rounded-full bg-slate-50 border border-slate-100 text-[10px] text-slate-500 font-medium">
+                      <span key={r} className="px-2 py-0.5 rounded-xl bg-slate-50 border border-slate-100 text-[10px] text-slate-500 font-medium">
                         {r}
                       </span>
                     ))}

@@ -212,7 +212,7 @@ export default function DealerLogin({
                 <div className="p-7 sm:p-9">
                   {pending ? (
                     <div className="text-center py-4">
-                      <div className="w-14 h-14 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-5">
+                      <div className="w-14 h-14 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-5">
                         <Clock className="w-7 h-7" />
                       </div>
                       <h3 className="text-[20px] font-semibold text-slate-900 mb-2 tracking-tight">
@@ -273,7 +273,7 @@ export default function DealerLogin({
                       <button
                         type="submit"
                         disabled={loading}
-                        className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14.5px] rounded-full transition"
+                        className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14.5px] rounded-xl transition"
                       >
                         {loading ? (
                           <Loader2 className="w-4 h-4 animate-spin" />

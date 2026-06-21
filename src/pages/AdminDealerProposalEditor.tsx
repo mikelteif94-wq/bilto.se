@@ -370,14 +370,14 @@ export default function AdminDealerProposalEditor({
     return (
       <PortalLayout navItems={[]} identity="" identityRole="Admin" onLogout={handleLogout} breadcrumb={breadcrumb}>
         <div className="max-w-lg mx-auto px-4 py-20 text-center">
-          <div className="w-16 h-16 rounded-full bg-emerald-50 border-2 border-emerald-200 flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 rounded-xl bg-emerald-50 border-2 border-emerald-200 flex items-center justify-center mx-auto mb-6">
             <Check className="w-8 h-8 text-emerald-600" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Förslag skickat!</h2>
           <p className="text-slate-500 mb-8">Kunden har notifierats och kan se förslaget i sin portal.</p>
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#0e6efe] text-white font-semibold text-sm hover:bg-[#0a57cc] transition"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#0e6efe] text-white font-semibold text-sm hover:bg-[#0a57cc] transition"
           >
             <ChevronLeft className="w-4 h-4" />
             Tillbaka till bilen
@@ -723,7 +723,7 @@ export default function AdminDealerProposalEditor({
 
               {/* Dealtyp tag */}
               <div className="pb-3 border-b border-slate-700">
-                <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold">
+                <span className="inline-block px-2.5 py-0.5 rounded-xl bg-blue-500/20 text-blue-300 text-xs font-semibold">
                   {DEAL_TYPES.find((d) => d.value === dealtyp)?.title ?? ''}
                 </span>
               </div>
@@ -936,7 +936,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
     <button
       type="button"
       onClick={() => onChange(!checked)}
-      className={`relative w-10 h-6 rounded-full transition ${checked ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
+      className={`relative w-10 h-6 rounded-xl transition ${checked ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
     >
       <span
         className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${

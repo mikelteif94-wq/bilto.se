@@ -330,7 +330,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-mono">
                                 {car.regnummer}
                               </span>
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border ${meta.bg} ${meta.color}`}>
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-xl text-[11px] font-semibold border ${meta.bg} ${meta.color}`}>
                                 {meta.label}
                               </span>
                             </div>
@@ -362,7 +362,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                                 return (
                                   <div key={step} className="flex items-center flex-1 last:flex-none min-w-0">
                                     <div className="flex flex-col items-center gap-1 min-w-0 w-full">
-                                      <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shrink-0 ${
+                                      <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-xs font-bold transition-all shrink-0 ${
                                         done ? 'bg-emerald-500 text-white'
                                         : active ? 'bg-[#0e6efe] text-white ring-4 ring-[#0e6efe]/20'
                                         : 'bg-slate-100 text-slate-400'
@@ -436,7 +436,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                                   >
                                     <div className="flex items-center gap-2">
                                       {idx === 0 && (
-                                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full">
+                                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-xl">
                                           Bäst
                                         </span>
                                       )}
@@ -560,7 +560,7 @@ function EmptyState() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <a
             href="/"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-7 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] transition shadow-sm"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] transition shadow-sm"
           >
             <CarIcon className="w-4.5 h-4.5" />
             Sälj / värdera bil
@@ -568,7 +568,7 @@ function EmptyState() {
           </a>
           <a
             href="/kop-bil"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-7 rounded-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-semibold text-[15px] transition"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-7 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-semibold text-[15px] transition"
           >
             <Search className="w-4 h-4" />
             Hitta / köp bil
@@ -630,7 +630,7 @@ function QuoteRequestCard({ qr }: { qr: QuoteRequestRow }) {
                 {isEquity ? 'Insatskalkyl' : 'Bilmatch'} · {date}
               </p>
             </div>
-            <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-sky-50 border border-sky-200 text-sky-700">
+            <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-xl text-[10px] font-semibold bg-sky-50 border border-sky-200 text-sky-700">
               {qr.status === 'new' ? 'Ny' : qr.status === 'contacted' ? 'Kontaktad' : qr.status}
             </span>
           </div>
@@ -638,12 +638,12 @@ function QuoteRequestCard({ qr }: { qr: QuoteRequestRow }) {
           {isEquity && equityAnswers && (
             <div className="mt-2 flex flex-wrap gap-2">
               {equityAnswers.equity != null && (
-                <span className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
+                <span className="px-2.5 py-1 rounded-xl bg-slate-100 text-[11px] font-medium text-slate-600">
                   Insats: {new Intl.NumberFormat('sv-SE').format(equityAnswers.equity)} kr
                 </span>
               )}
               {equityAnswers.desiredMonthly != null && (
-                <span className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
+                <span className="px-2.5 py-1 rounded-xl bg-slate-100 text-[11px] font-medium text-slate-600">
                   {new Intl.NumberFormat('sv-SE').format(equityAnswers.desiredMonthly)} kr/mån
                 </span>
               )}
@@ -653,17 +653,17 @@ function QuoteRequestCard({ qr }: { qr: QuoteRequestRow }) {
           {!isEquity && quizAnswers && (
             <div className="mt-2 flex flex-wrap gap-2">
               {quizAnswers.budget && (
-                <span className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
+                <span className="px-2.5 py-1 rounded-xl bg-slate-100 text-[11px] font-medium text-slate-600">
                   Budget: {quizAnswers.budget}
                 </span>
               )}
               {quizAnswers.fuel_type?.map(ft => (
-                <span key={ft} className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
+                <span key={ft} className="px-2.5 py-1 rounded-xl bg-slate-100 text-[11px] font-medium text-slate-600">
                   {ft === 'electric' ? 'El' : ft === 'hybrid' ? 'Hybrid' : ft === 'petrol' ? 'Bensin' : 'Diesel'}
                 </span>
               ))}
               {quizAnswers.body_type?.slice(0, 2).map(bt => (
-                <span key={bt} className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600 capitalize">
+                <span key={bt} className="px-2.5 py-1 rounded-xl bg-slate-100 text-[11px] font-medium text-slate-600 capitalize">
                   {bt}
                 </span>
               ))}

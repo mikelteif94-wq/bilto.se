@@ -345,7 +345,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     <img
                       src="/Man_in_car_showroom_portrait.png"
                       alt="Bilto-expert"
-                      className="w-9 h-9 rounded-full object-cover object-top border-2 border-white shadow-sm"
+                      className="w-9 h-9 rounded-xl object-cover object-top border-2 border-white shadow-sm"
                     />
                     <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />
                   </div>
@@ -359,7 +359,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                 <div className="flex-1 min-w-0">
                   {car && !hasSpecificCar && step !== 'done' && (
                     <div className="flex items-center gap-2 mb-1.5">
-                      <span className="inline-flex items-center h-7 px-3 bg-[#0e6efe]/10 text-[#0e6efe] font-semibold text-[13px] rounded-full">
+                      <span className="inline-flex items-center h-7 px-3 bg-[#0e6efe]/10 text-[#0e6efe] font-semibold text-[13px] rounded-xl">
                         {car}
                       </span>
                     </div>
@@ -392,7 +392,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     <button
                       type="button"
                       onClick={handleBack}
-                      className="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-500 transition-colors"
+                      className="w-9 h-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-500 transition-colors"
                       aria-label="Tillbaka"
                     >
                       <ChevronLeft className="w-5 h-5" />
@@ -401,7 +401,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                   <button
                     type="button"
                     onClick={onClose}
-                    className="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-500 transition-colors"
+                    className="w-9 h-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-500 transition-colors"
                     aria-label="Stäng"
                   >
                     <X className="w-5 h-5" />
@@ -445,7 +445,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     }}
                     className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-[#0e6efe] bg-[#0e6efe]/5 hover:bg-[#0e6efe]/10 transition-all text-left group"
                   >
-                    <div className="w-10 h-10 rounded-full bg-[#0e6efe] flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-10 h-10 rounded-xl bg-[#0e6efe] flex items-center justify-center shrink-0 mt-0.5">
                       <CheckCircle className="w-5 h-5 text-white" />
                     </div>
                     <div>
@@ -465,7 +465,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     }}
                     className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 transition-all text-left group"
                   >
-                    <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
                       <Search className="w-5 h-5 text-slate-600" />
                     </div>
                     <div>
@@ -485,7 +485,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     }}
                     className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 transition-all text-left group"
                   >
-                    <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
                       <ArrowLeftRight className="w-5 h-5 text-slate-600" />
                     </div>
                     <div>
@@ -565,7 +565,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
 
               {step === 'done' && (
                 <div className="text-center pt-6 pb-6">
-                  <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 rounded-xl bg-emerald-100 flex items-center justify-center mx-auto mb-4">
                     <Check className="w-8 h-8 text-emerald-600" />
                   </div>
                   <h2 className="text-[22px] sm:text-[26px] font-bold text-slate-900 mb-2">
@@ -653,7 +653,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
               <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
                 <div className="flex items-center justify-between px-5 sm:px-6 pt-5 pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 flex items-center justify-center">
+                    <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
                       <Phone className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.2} />
                     </div>
                     <h3 className="text-[17px] font-semibold text-slate-900">

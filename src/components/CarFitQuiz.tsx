@@ -489,7 +489,7 @@ function AffordBar({ label, value, total, color }: { label: string; value: numbe
         </div>
         <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
           <motion.div
-            className="h-full rounded-full"
+            className="h-full rounded-xl"
             style={{ backgroundColor: color }}
             initial={{ width: 0 }}
             animate={{ width: `${pct}%` }}

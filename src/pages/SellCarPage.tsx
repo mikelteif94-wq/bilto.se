@@ -302,7 +302,7 @@ export default function SellCarPage({
           <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
             <div className="flex items-center justify-between px-5 sm:px-6 pt-5 pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
                   <Phone className="w-4.5 h-4.5 text-[#0e6efe]" strokeWidth={2.2} />
                 </div>
                 <h3 className="text-[17px] font-semibold text-slate-900">

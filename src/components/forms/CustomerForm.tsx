@@ -115,7 +115,7 @@ export default function CustomerForm({ initialData, onNext, requirePassword = tr
 
       <button
         type="submit"
-        className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-full transition mt-2 shadow-sm"
+        className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-xl transition mt-2 shadow-sm"
       >
         Nästa
       </button>

@@ -334,7 +334,7 @@ function App() {
             <p className="text-sm text-slate-500 mb-6">Ditt konto har inte administratörsrättigheter.</p>
             <button
               onClick={async () => { await supabase.auth.signOut(); navigate('/admin'); }}
-              className="h-10 px-6 bg-black hover:bg-slate-800 text-white font-semibold text-sm rounded-full transition"
+              className="h-10 px-6 bg-black hover:bg-slate-800 text-white font-semibold text-sm rounded-xl transition"
             >
               Logga ut
             </button>

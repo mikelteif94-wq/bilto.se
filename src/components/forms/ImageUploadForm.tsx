@@ -119,7 +119,7 @@ export default function ImageUploadForm({ initialImages, onNext }: ImageUploadFo
               <button
                 type="button"
                 onClick={() => removeImage(i)}
-                className="absolute top-2 right-2 w-7 h-7 bg-white/95 hover:bg-white rounded-full flex items-center justify-center shadow-sm transition"
+                className="absolute top-2 right-2 w-7 h-7 bg-white/95 hover:bg-white rounded-xl flex items-center justify-center shadow-sm transition"
                 aria-label="Ta bort"
               >
                 <X className="w-4 h-4 text-slate-700" />
@@ -199,7 +199,7 @@ export default function ImageUploadForm({ initialImages, onNext }: ImageUploadFo
       <button
         type="submit"
         disabled={!canContinue || compressing}
-        className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold text-[15px] rounded-full transition shadow-sm"
+        className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold text-[15px] rounded-xl transition shadow-sm"
       >
         {canContinue
           ? 'Nästa'

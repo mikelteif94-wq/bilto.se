@@ -129,7 +129,7 @@ function CalendarWidget() {
             key={i}
             onClick={() => day && setSelected(day)}
             disabled={!day}
-            className={`h-5 w-full text-[10px] font-medium rounded-full transition-colors ${
+            className={`h-5 w-full text-[10px] font-medium rounded-xl transition-colors ${
               !day ? '' :
               day === selected
                 ? 'bg-[#0e6efe] text-white'
@@ -486,7 +486,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                           <button
                             type="button"
                             onClick={() => { setCarQuery(''); setCarSuggestions([]); setShowSuggestions(false); }}
-                            className="mr-1 w-6 h-6 flex items-center justify-center rounded-full hover:bg-slate-200 text-slate-400 transition shrink-0"
+                            className="mr-1 w-6 h-6 flex items-center justify-center rounded-xl hover:bg-slate-200 text-slate-400 transition shrink-0"
                           >
                             <XCircle className="w-4 h-4" />
                           </button>
@@ -654,7 +654,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
               <div className="hidden sm:block absolute left-6 bottom-6 bg-white rounded-xl p-4 shadow-lg max-w-xs">
                 <div className="flex items-center gap-3 mb-1.5">
-                  <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
                     <Handshake className="w-5 h-5" strokeWidth={2} />
                   </div>
                   <div className="text-[14px] font-semibold text-slate-900">Vi förhandlar åt dig</div>
@@ -797,7 +797,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
               <div className="hidden md:block absolute right-5 bottom-5 max-w-[240px] bg-white rounded-xl p-4 shadow-lg">
                 <div className="flex items-center gap-2.5 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-500 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-500 flex items-center justify-center">
                     <Phone className="w-4 h-4" strokeWidth={2.25} />
                   </div>
                   <div className="text-[13px] font-semibold text-slate-900">Alltid tillgänglig</div>
@@ -1098,7 +1098,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           href="tel:+46855550200"
           className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-center justify-center gap-2.5 h-14 rounded-xl bg-[#0e6efe] hover:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_10px_30px_rgba(14,110,254,0.4)] transition animate-[slideUp_0.3s_ease-out]"
         >
-          <img src="/Man_in_car_showroom_portrait.png" alt="Expert" className="w-8 h-8 rounded-full object-cover border-2 border-white/40 shrink-0" />
+          <img src="/Man_in_car_showroom_portrait.png" alt="Expert" className="w-8 h-8 rounded-xl object-cover border-2 border-white/40 shrink-0" />
           <span>Ring expert &middot; bud direkt</span>
         </a>
       )}

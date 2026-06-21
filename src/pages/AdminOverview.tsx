@@ -292,7 +292,7 @@ export default function AdminOverview({ onLoggedOut, onOpenCar, onNavigate }: Ad
                           onClick={() => onOpenCar(c.id)}
                           className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
                         >
-                          <div className={`w-2 h-6 rounded-full shrink-0 ${urgent ? 'bg-red-400' : 'bg-amber-300'}`} />
+                          <div className={`w-2 h-6 rounded-xl shrink-0 ${urgent ? 'bg-red-400' : 'bg-amber-300'}`} />
                           <span className="flex-1 text-sm font-medium text-slate-800 truncate">{c.label}</span>
                           <span className={`text-xs font-bold tabular-nums shrink-0 ${urgent ? 'text-red-600' : 'text-amber-600'}`}>
                             {fmtTimeLeft(c.auktion_slut)}
@@ -340,7 +340,7 @@ export default function AdminOverview({ onLoggedOut, onOpenCar, onNavigate }: Ad
                           <div className="text-xs text-slate-400">{s.sub}</div>
                         </div>
                         {s.badge != null && s.badge > 0 && (
-                          <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-bold shrink-0">
+                          <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-xl bg-amber-100 text-amber-700 text-[10px] font-bold shrink-0">
                             {s.badge}
                           </span>
                         )}

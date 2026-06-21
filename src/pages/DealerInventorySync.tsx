@@ -377,7 +377,7 @@ export default function DealerInventorySync({
       headerAction={
         <button
           onClick={() => setAddOpen(true)}
-          className="flex items-center gap-1.5 h-8 px-3 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white text-xs font-semibold rounded-full transition"
+          className="flex items-center gap-1.5 h-8 px-3 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white text-xs font-semibold rounded-xl transition"
         >
           <Plus className="w-3.5 h-3.5" />
           Lägg till bil
@@ -542,7 +542,7 @@ export default function DealerInventorySync({
                               <select
                                 value={row.status}
                                 onChange={(e) => updateStatus(row.id, e.target.value)}
-                                className={`text-xs font-medium px-2 py-1 rounded-full border-0 outline-none cursor-pointer ${st.cls}`}
+                                className={`text-xs font-medium px-2 py-1 rounded-xl border-0 outline-none cursor-pointer ${st.cls}`}
                               >
                                 {Object.entries(STATUS_LABELS).map(([k, v]) => (
                                   <option key={k} value={k}>{v.label}</option>
@@ -586,7 +586,7 @@ export default function DealerInventorySync({
                           </button>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${st.cls}`}>{st.label}</span>
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-xl ${st.cls}`}>{st.label}</span>
                           {row.pris != null && (
                             <span className="text-xs text-slate-600 font-medium">{row.pris.toLocaleString('sv')} kr</span>
                           )}
@@ -620,7 +620,7 @@ export default function DealerInventorySync({
               </div>
               <button
                 onClick={downloadTemplate}
-                className="flex items-center gap-1.5 h-8 px-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-full transition shrink-0"
+                className="flex items-center gap-1.5 h-8 px-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl transition shrink-0"
               >
                 <Download className="w-3.5 h-3.5" />
                 Mall
@@ -705,7 +705,7 @@ export default function DealerInventorySync({
                   <button
                     onClick={importCSV}
                     disabled={csvImporting}
-                    className="h-10 px-6 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-sm rounded-full transition flex items-center gap-2"
+                    className="h-10 px-6 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-sm rounded-xl transition flex items-center gap-2"
                   >
                     {csvImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                     {csvImporting ? 'Importerar...' : `Importera ${csvRows.length} bilar`}
@@ -767,7 +767,7 @@ export default function DealerInventorySync({
               <button
                 onClick={runLeadMatching}
                 disabled={matchLoading || inventory.filter((r) => r.status === 'tillganglig').length === 0}
-                className="h-10 px-6 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-sm rounded-full transition flex items-center gap-2"
+                className="h-10 px-6 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold text-sm rounded-xl transition flex items-center gap-2"
               >
                 {matchLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Target className="w-4 h-4" />}
                 {matchLoading ? 'Matchar...' : 'Kör matchning'}
@@ -807,7 +807,7 @@ export default function DealerInventorySync({
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className={`inline-flex items-center justify-center w-10 h-5 rounded-full text-white text-xs font-bold ${scoreColor}`}>
+                              <span className={`inline-flex items-center justify-center w-10 h-5 rounded-xl text-white text-xs font-bold ${scoreColor}`}>
                                 {lead.match_score}
                               </span>
                               <p className="text-sm font-semibold text-slate-900 truncate">
@@ -832,7 +832,7 @@ export default function DealerInventorySync({
                         </div>
                         <div className="mt-3 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                           <div
-                            className={`h-full rounded-full transition-all ${scoreColor}`}
+                            className={`h-full rounded-xl transition-all ${scoreColor}`}
                             style={{ width: `${lead.match_score}%` }}
                           />
                         </div>
@@ -913,14 +913,14 @@ export default function DealerInventorySync({
             <div className="px-5 py-4 border-t border-slate-100 flex gap-3">
               <button
                 onClick={() => setAddOpen(false)}
-                className="flex-1 h-10 rounded-full border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition"
+                className="flex-1 h-10 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition"
               >
                 Avbryt
               </button>
               <button
                 onClick={saveAddForm}
                 disabled={!addForm.marke || !addForm.modell || !addForm.ar || addSaving}
-                className="flex-1 h-10 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 text-white text-sm font-semibold transition flex items-center justify-center gap-2"
+                className="flex-1 h-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 text-white text-sm font-semibold transition flex items-center justify-center gap-2"
               >
                 {addSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                 Spara

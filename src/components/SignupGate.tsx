@@ -60,7 +60,7 @@ export function SignupGate({ headline, subtext, bullets, onSent }: SignupGatePro
         className="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden"
       >
         <div className="px-6 py-8 flex flex-col items-center text-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+          <div className="w-14 h-14 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
             <Mail className="w-7 h-7 text-emerald-600" />
           </div>
           <div>
@@ -112,17 +112,17 @@ export function SignupGate({ headline, subtext, bullets, onSent }: SignupGatePro
             <div key={i} className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-slate-100 shrink-0" />
               <div className="flex-1 space-y-1.5">
-                <div className={`h-3 rounded-full bg-slate-100`} style={{ width: `${w}%` }} />
+                <div className={`h-3 rounded-xl bg-slate-100`} style={{ width: `${w}%` }} />
                 <div className="h-2.5 rounded-full bg-slate-100 w-1/3" />
               </div>
-              <div className="w-14 h-6 rounded-full bg-slate-100 shrink-0" />
+              <div className="w-14 h-6 rounded-xl bg-slate-100 shrink-0" />
             </div>
           ))}
         </div>
 
         {/* Lock overlay */}
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/70 backdrop-blur-[2px] rounded-b-none">
-          <div className="w-10 h-10 rounded-full bg-slate-900/8 border border-slate-200 flex items-center justify-center mb-2">
+          <div className="w-10 h-10 rounded-xl bg-slate-900/8 border border-slate-200 flex items-center justify-center mb-2">
             <Lock className="w-4.5 h-4.5 text-slate-500" />
           </div>
           <p className="text-[13px] font-semibold text-slate-600">Resultaten visas i din portal</p>

@@ -452,7 +452,7 @@ export default function DealerCarDetail({
                 </h2>
                 <div className="flex flex-wrap gap-2">
                   {utrustning.map((item, i) => (
-                    <span key={i} className="inline-flex items-center px-3 py-1.5 rounded-full bg-slate-100 text-xs font-medium text-slate-700">
+                    <span key={i} className="inline-flex items-center px-3 py-1.5 rounded-xl bg-slate-100 text-xs font-medium text-slate-700">
                       {item}
                     </span>
                   ))}
@@ -560,7 +560,7 @@ export default function DealerCarDetail({
                 </p>
                 <div className="h-1.5 rounded-full bg-emerald-200 overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all duration-1000 ${isLow ? 'bg-amber-400' : 'bg-emerald-500'}`}
+                    className={`h-full rounded-xl transition-all duration-1000 ${isLow ? 'bg-amber-400' : 'bg-emerald-500'}`}
                     style={{ width: `${progressPct}%` }}
                   />
                 </div>
@@ -641,7 +641,7 @@ export default function DealerCarDetail({
             <button
               type="submit"
               disabled={auctionClosed || submitting}
-              className="w-full h-11 inline-flex items-center justify-center gap-2 bg-black hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold text-[14px] rounded-full px-5 transition"
+              className="w-full h-11 inline-flex items-center justify-center gap-2 bg-black hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold text-[14px] rounded-xl px-5 transition"
             >
               {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
               {auctionClosed
@@ -661,7 +661,7 @@ export default function DealerCarDetail({
         >
           <button
             onClick={() => setLightboxIdx(null)}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
+            className="absolute top-4 right-4 w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
           >
             <X className="w-5 h-5" />
           </button>

@@ -590,7 +590,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
                     setSendToAllApproved(true);
                     setSelectedDealerIds(new Set());
                   }}
-                  className={`h-9 px-4 rounded-full text-sm font-semibold border transition ${
+                  className={`h-9 px-4 rounded-xl text-sm font-semibold border transition ${
                     sendToAllApproved
                       ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
                       : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
@@ -603,7 +603,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
                   onClick={() => {
                     setSendToAllApproved(false);
                   }}
-                  className={`h-9 px-4 rounded-full text-sm font-semibold border transition ${
+                  className={`h-9 px-4 rounded-xl text-sm font-semibold border transition ${
                     !sendToAllApproved
                       ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
                       : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'

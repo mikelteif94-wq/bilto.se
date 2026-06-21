@@ -274,7 +274,7 @@ export default function LeadTimeline({
             </div>
             <span className="text-sm font-bold text-slate-900 tracking-tight">Tidslinje</span>
             {activities.length > 0 && (
-              <span className="text-xs font-semibold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-semibold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-xl">
                 {activities.length}
               </span>
             )}
@@ -405,7 +405,7 @@ export default function LeadTimeline({
                     </div>
                     <button
                       onClick={() => markReminderDone(r.id)}
-                      className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold transition ${
+                      className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-[10px] font-bold transition ${
                         overdue ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-amber-600 hover:bg-amber-700 text-white'
                       }`}
                     >
@@ -488,7 +488,7 @@ export default function LeadTimeline({
                                     {activity.title}
                                   </span>
                                   {badge && (
-                                    <span className="ml-2 text-[10px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-full">
+                                    <span className="ml-2 text-[10px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-xl">
                                       {badge}
                                     </span>
                                   )}
@@ -515,7 +515,7 @@ export default function LeadTimeline({
                                     .filter(([, v]) => v !== null && v !== undefined && v !== '')
                                     .slice(0, 6)
                                     .map(([k, v]) => (
-                                      <span key={k} className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-medium">
+                                      <span key={k} className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-xl font-medium">
                                         {k}: {String(v)}
                                       </span>
                                     ))}

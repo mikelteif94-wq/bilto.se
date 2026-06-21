@@ -91,7 +91,7 @@ export default function PortalCallbackPage({ onSuccess, onBack }: PortalCallback
     return (
       <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
         <div className="text-center space-y-4">
-          <div className="w-14 h-14 rounded-full bg-[#0e6efe]/10 flex items-center justify-center mx-auto">
+          <div className="w-14 h-14 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mx-auto">
             <Loader2 className="w-7 h-7 text-[#0e6efe] animate-spin" />
           </div>
           <p className="text-[15px] font-semibold text-slate-700">
@@ -106,7 +106,7 @@ export default function PortalCallbackPage({ onSuccess, onBack }: PortalCallback
   return (
     <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white border border-slate-200 rounded-xl p-8 shadow-sm text-center space-y-5">
-        <div className="w-14 h-14 rounded-full bg-red-50 border border-red-100 flex items-center justify-center mx-auto">
+        <div className="w-14 h-14 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center mx-auto">
           <ShieldAlert className="w-7 h-7 text-red-500" />
         </div>
         <div>
@@ -116,7 +116,7 @@ export default function PortalCallbackPage({ onSuccess, onBack }: PortalCallback
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold rounded-full transition text-sm"
+          className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold rounded-xl transition text-sm"
         >
           <Mail className="w-4 h-4" />
           Begär ny länk

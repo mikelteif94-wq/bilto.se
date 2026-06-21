@@ -187,7 +187,7 @@ export default function SeoLandingPage({ type, city, brand, onSell, onBack }: Se
               const Icon = item.icon;
               return (
                 <div key={item.title} className="border border-slate-100 rounded-xl p-6">
-                  <div className="w-9 h-9 rounded-full border border-slate-200 flex items-center justify-center mb-4">
+                  <div className="w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center mb-4">
                     <Icon className="w-4 h-4 text-slate-600" strokeWidth={2} />
                   </div>
                   <h3 className="font-semibold text-slate-900 mb-2">{item.title}</h3>

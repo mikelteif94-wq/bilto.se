@@ -77,11 +77,11 @@ function CustomSlider({ value, min, max, step, onChange, color = '#0e6efe' }: {
     >
       <div className="absolute inset-x-0 h-2.5 rounded-full bg-slate-100">
         <div
-          className="absolute left-0 top-0 h-full rounded-full transition-none"
+          className="absolute left-0 top-0 h-full rounded-xl transition-none"
           style={{ width: `${pct}%`, backgroundColor: color, opacity: 0.25 }}
         />
         <div
-          className="absolute left-0 top-0 h-full rounded-full"
+          className="absolute left-0 top-0 h-full rounded-xl"
           style={{ width: `${pct}%`, backgroundColor: color }}
         />
       </div>
@@ -197,7 +197,7 @@ export function EquityQuiz({ onComplete, onClose }: EquityQuizProps) {
           </div>
           <button
             type="button" onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors"
+            className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

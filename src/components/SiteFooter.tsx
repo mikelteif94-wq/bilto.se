@@ -9,9 +9,9 @@ export function SiteFooter() {
       }} />
 
       {/* Decorative background glow */}
-      <div className="absolute top-0 left-1/4 w-96 h-64 rounded-full pointer-events-none"
+      <div className="absolute top-0 left-1/4 w-96 h-64 rounded-xl pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(14,110,254,0.06) 0%, transparent 70%)' }} />
-      <div className="absolute top-0 right-1/4 w-64 h-48 rounded-full pointer-events-none"
+      <div className="absolute top-0 right-1/4 w-64 h-48 rounded-xl pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.04) 0%, transparent 70%)' }} />
 
       <div className="relative max-w-7xl mx-auto px-6 pt-14 pb-8">

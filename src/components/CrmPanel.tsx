@@ -608,7 +608,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
               <button
                 key={o.value}
                 onClick={() => setStatus(o.value)}
-                className={`px-4 h-9 rounded-full text-sm font-semibold ring-1 transition ${
+                className={`px-4 h-9 rounded-xl text-sm font-semibold ring-1 transition ${
                   active
                     ? 'bg-slate-900 text-white ring-slate-900'
                     : 'bg-white text-slate-700 ring-slate-200 hover:bg-slate-50'
@@ -634,7 +634,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
         <button
           onClick={saveManagement}
           disabled={savingMgmt || !dirtyMgmt}
-          className="mt-4 w-full sm:w-auto h-11 px-6 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-full transition inline-flex items-center justify-center gap-2"
+          className="mt-4 w-full sm:w-auto h-11 px-6 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl transition inline-flex items-center justify-center gap-2"
         >
           {savingMgmt && <Loader2 className="w-4 h-4 animate-spin" />}
           {savedMgmt && !savingMgmt && <Check className="w-4 h-4" />}
@@ -713,7 +713,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                   {forMe && !isResponding && (
                     <button
                       onClick={() => startResponse(v)}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
                       Svara med värdering
@@ -722,7 +722,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                   {!forMe && !isResponding && (
                     <button
                       onClick={() => cancelValuationRequest(v.id)}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-600 text-xs font-semibold transition"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-600 text-xs font-semibold transition"
                     >
                       Avbryt förfrågan
                     </button>
@@ -768,14 +768,14 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                         <button
                           onClick={submitValuationResponse}
                           disabled={submittingResponse || !responseValue}
-                          className="inline-flex items-center gap-2 px-4 h-9 rounded-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white text-xs font-semibold transition"
+                          className="inline-flex items-center gap-2 px-4 h-9 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white text-xs font-semibold transition"
                         >
                           {submittingResponse && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                           Skicka svar
                         </button>
                         <button
                           onClick={() => setRespondingId(null)}
-                          className="inline-flex items-center gap-2 px-4 h-9 rounded-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-600 text-xs font-semibold transition"
+                          className="inline-flex items-center gap-2 px-4 h-9 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-600 text-xs font-semibold transition"
                         >
                           Avbryt
                         </button>
@@ -979,7 +979,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
         <button
           onClick={submitActivity}
           disabled={submittingActivity}
-          className="mt-3 inline-flex items-center gap-2 px-4 h-10 rounded-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white text-sm font-semibold transition"
+          className="mt-3 inline-flex items-center gap-2 px-4 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white text-sm font-semibold transition"
         >
           {submittingActivity && <Loader2 className="w-4 h-4 animate-spin" />}
           <Plus className="w-4 h-4" />
@@ -1125,14 +1125,14 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
               <button
                 onClick={() => setDealerPickerOpen(false)}
                 disabled={sending}
-                className="px-4 h-10 rounded-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
+                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
               >
                 Avbryt
               </button>
               <button
                 onClick={handleSendToDealers}
                 disabled={sending || selectedDealerIds.size === 0}
-                className="inline-flex items-center gap-2 px-5 h-10 rounded-full bg-[#0e6efe] hover:bg-blue-700 disabled:bg-slate-300 text-white text-sm font-semibold transition"
+                className="inline-flex items-center gap-2 px-5 h-10 rounded-xl bg-[#0e6efe] hover:bg-blue-700 disabled:bg-slate-300 text-white text-sm font-semibold transition"
               >
                 {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 Skicka till {selectedDealerIds.size}
@@ -1178,14 +1178,14 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
             <div className="p-5 border-t border-slate-200 flex justify-end gap-2">
               <button
                 onClick={() => setLostReasonOpen(false)}
-                className="px-4 h-10 rounded-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
+                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
               >
                 Avbryt
               </button>
               <button
                 onClick={confirmLostReason}
                 disabled={!pendingLostReason.trim()}
-                className="px-5 h-10 rounded-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white text-sm font-semibold transition"
+                className="px-5 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white text-sm font-semibold transition"
               >
                 Markera förlorad
               </button>
@@ -1260,14 +1260,14 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
               <button
                 onClick={() => setValuationOpen(false)}
                 disabled={submittingValuation}
-                className="px-4 h-10 rounded-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
+                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
               >
                 Avbryt
               </button>
               <button
                 onClick={submitValuationRequest}
                 disabled={submittingValuation || !valuationToUserId}
-                className="inline-flex items-center gap-2 px-5 h-10 rounded-full bg-amber-500 hover:bg-amber-600 disabled:bg-slate-300 text-white text-sm font-semibold transition"
+                className="inline-flex items-center gap-2 px-5 h-10 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:bg-slate-300 text-white text-sm font-semibold transition"
               >
                 {submittingValuation ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

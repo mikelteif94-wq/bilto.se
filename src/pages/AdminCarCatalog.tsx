@@ -540,7 +540,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
           </button>
           <span className="text-slate-300 select-none">/</span>
           <span className="text-sm font-semibold text-slate-900">Bilkatalog</span>
-          <span className="ml-1 px-2 py-0.5 rounded-full bg-slate-100 text-xs font-bold text-slate-500">{stats.total}</span>
+          <span className="ml-1 px-2 py-0.5 rounded-xl bg-slate-100 text-xs font-bold text-slate-500">{stats.total}</span>
           <div className="flex-1" />
           {/* CSV upload */}
           <input
@@ -739,7 +739,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                         ) : (
                           <div className="flex flex-wrap gap-1">
                             {entry.fuel_types?.map(f => (
-                              <span key={f} className={`px-1.5 py-0.5 rounded-full text-[10px] font-semibold ${FUEL_COLORS[f] ?? 'bg-slate-100 text-slate-600'}`}>
+                              <span key={f} className={`px-1.5 py-0.5 rounded-xl text-[10px] font-semibold ${FUEL_COLORS[f] ?? 'bg-slate-100 text-slate-600'}`}>
                                 {FUEL_LABELS[f] ?? f}
                               </span>
                             ))}
@@ -804,7 +804,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                         <button
                           onClick={() => toggleActive(entry)}
                           title={entry.is_active ? 'Klicka för att dölja' : 'Klicka för att visa'}
-                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold transition ${
+                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-xl text-[10px] font-bold transition ${
                             entry.is_active
                               ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
                               : 'bg-slate-100 text-slate-400 hover:bg-slate-200'

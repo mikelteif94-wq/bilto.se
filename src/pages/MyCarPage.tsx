@@ -445,7 +445,7 @@ function CustomerLiveFeed({
       <div className="px-5 py-4">
         {!hasActivity ? (
           <div className="flex items-start gap-3 py-2">
-            <div className="w-8 h-8 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0 text-sm">
+            <div className="w-8 h-8 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0 text-sm">
               ⏳
             </div>
             <div>
@@ -459,7 +459,7 @@ function CustomerLiveFeed({
           <ol className="space-y-3">
             {/* Inkommit-rad alltid synlig */}
             <li className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 text-sm">✅</div>
+              <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0 text-sm">✅</div>
               <div>
                 <p className="text-sm font-semibold text-slate-800">Bil inskickad</p>
                 <p className="text-xs text-slate-400 mt-0.5">{timeAgoSv(carCreatedAt)}</p>
@@ -467,7 +467,7 @@ function CustomerLiveFeed({
             </li>
             {activities.map((a) => (
               <li key={a.id} className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0 text-sm">
+                <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 text-sm">
                   {ACTIVITY_ICONS[a.type] ?? '📋'}
                 </div>
                 <div>
@@ -769,7 +769,7 @@ function CompleteListingCard({
       >
         <div className="flex items-start gap-3 sm:gap-4">
           <div
-            className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
+            className={`shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${
               allDone ? 'bg-emerald-100 text-emerald-600' : 'bg-[#0e6efe]/10 text-[#0e6efe]'
             }`}
           >
@@ -807,7 +807,7 @@ function CompleteListingCard({
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition"
+              className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition"
             >
               {allDone ? 'Lägg till mer' : 'Komplettera nu'}
             </button>
@@ -840,7 +840,7 @@ function CompleteListingCard({
         <button
           type="button"
           onClick={() => setTab('rapport')}
-          className={`inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-xs font-semibold transition ${
+          className={`inline-flex items-center gap-1.5 h-9 px-4 rounded-xl text-xs font-semibold transition ${
             tab === 'rapport'
               ? 'bg-slate-900 text-white'
               : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -852,7 +852,7 @@ function CompleteListingCard({
         <button
           type="button"
           onClick={() => setTab('bilder')}
-          className={`inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-xs font-semibold transition ${
+          className={`inline-flex items-center gap-1.5 h-9 px-4 rounded-xl text-xs font-semibold transition ${
             tab === 'bilder'
               ? 'bg-slate-900 text-white'
               : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -943,7 +943,7 @@ function SoftLoginPrompt({ token, email }: { token: string; email: string }) {
   }
   return (
     <div className="bg-white rounded-md border border-slate-200 p-5 flex items-center gap-4">
-      <div className="w-10 h-10 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+      <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
         <UserPlus className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
       </div>
       <div className="flex-1 min-w-0">
@@ -955,7 +955,7 @@ function SoftLoginPrompt({ token, email }: { token: string; email: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="shrink-0 h-9 px-4 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-xs font-semibold transition"
+        className="shrink-0 h-9 px-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-xs font-semibold transition"
       >
         Skapa konto
       </button>
@@ -1011,7 +1011,7 @@ function LoginOrCreateCard({ token: _token, prefillEmail = '' }: { token: string
     return (
       <div className="bg-white border border-[#0e6efe]/20 rounded-xl p-5 sm:p-6">
         <div className="flex items-start gap-3 mb-5">
-          <div className="w-10 h-10 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
             <Gavel className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
           </div>
           <div>
@@ -1080,7 +1080,7 @@ function LoginOrCreateCard({ token: _token, prefillEmail = '' }: { token: string
   return (
     <div className="bg-white border border-[#0e6efe]/20 rounded-xl p-5 sm:p-6">
       <div className="flex items-start gap-3 mb-5">
-        <div className="w-10 h-10 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
           <Lock className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
         </div>
         <div>
@@ -1140,7 +1140,7 @@ function LoginOrCreateCard({ token: _token, prefillEmail = '' }: { token: string
 function Pill({ label, done }: { label: string; done: boolean }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full text-[11px] font-semibold ${
+      className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-xl text-[11px] font-semibold ${
         done
           ? 'bg-emerald-100 text-emerald-800'
           : 'bg-amber-100 text-amber-800'

@@ -137,7 +137,7 @@ function CarImagePreview({ brand, model }: { brand: string; model: string }) {
         {compData && compData.specs.fuel_types.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
             {compData.specs.fuel_types.slice(0, 3).map(f => (
-              <span key={f} className="text-[11px] px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-500 capitalize">{f}</span>
+              <span key={f} className="text-[11px] px-2 py-0.5 rounded-xl bg-white border border-slate-200 text-slate-500 capitalize">{f}</span>
             ))}
           </div>
         )}

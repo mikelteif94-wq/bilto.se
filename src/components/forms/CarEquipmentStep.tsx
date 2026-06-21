@@ -62,7 +62,7 @@ export default function CarEquipmentStep({
                 type="button"
                 onClick={() => toggle(item)}
                 disabled={unsure}
-                className={`px-3 sm:px-5 h-10 rounded-full text-[13px] sm:text-[14px] font-medium transition-all ${
+                className={`px-3 sm:px-5 h-10 rounded-xl text-[13px] sm:text-[14px] font-medium transition-all ${
                   active
                     ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                     : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
@@ -95,7 +95,7 @@ export default function CarEquipmentStep({
         <button
           type="button"
           onClick={() => setUnsure((v) => !v)}
-          className={`inline-flex items-center gap-2 px-4 h-10 rounded-full text-[14px] font-medium transition-all ${
+          className={`inline-flex items-center gap-2 px-4 h-10 rounded-xl text-[14px] font-medium transition-all ${
             unsure
               ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
               : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
@@ -108,7 +108,7 @@ export default function CarEquipmentStep({
       <div className="pt-6 sm:pt-7 flex justify-end">
         <button
           type="submit"
-          className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-full transition shadow-sm"
+          className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-xl transition shadow-sm"
         >
           Nästa
         </button>

@@ -126,7 +126,7 @@ export function CalcPanel({ carPrice, usedPrice, dark = false }: CalcPanelProps)
           onTouchStart={slider.onTouchStart}
         >
           <div className={`absolute inset-x-0 h-1.5 rounded-full ${dark ? 'bg-white/10' : 'bg-slate-200'}`}>
-            <div className="absolute left-0 top-0 h-full rounded-full bg-[#0e6efe]" style={{ width: `${sliderPct}%` }} />
+            <div className="absolute left-0 top-0 h-full rounded-xl bg-[#0e6efe]" style={{ width: `${sliderPct}%` }} />
           </div>
           <div
             className="absolute w-5 h-5 rounded-full bg-white border-2 border-[#0e6efe] shadow-md -translate-x-1/2"

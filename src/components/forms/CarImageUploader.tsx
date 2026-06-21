@@ -97,7 +97,7 @@ export default function CarImageUploader({
               <button
                 type="button"
                 onClick={() => remove(i)}
-                className="absolute top-1.5 right-1.5 w-6 h-6 bg-white/95 hover:bg-white rounded-full flex items-center justify-center shadow-sm"
+                className="absolute top-1.5 right-1.5 w-6 h-6 bg-white/95 hover:bg-white rounded-xl flex items-center justify-center shadow-sm"
                 aria-label="Ta bort"
               >
                 <X className="w-3.5 h-3.5 text-slate-700" />

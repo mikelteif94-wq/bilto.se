@@ -837,7 +837,7 @@ export default function AdminOfferEditor({
                 {/* Rating + deal price */}
                 <div className="border-t border-slate-100 pt-3 flex items-center justify-between flex-wrap gap-2">
                   {data.deal_rating && (
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold ${
                       RATING_OPTIONS.find((r) => r.value === data.deal_rating)?.color
                     }`}>
                       <Star className="w-3 h-3" />

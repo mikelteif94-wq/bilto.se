@@ -389,14 +389,14 @@ export default function DealerAddCar({
             <button
               type="button"
               onClick={onBack}
-              className="h-12 px-5 rounded-full border border-slate-200 text-slate-700 font-semibold hover:bg-slate-100 transition"
+              className="h-12 px-5 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:bg-slate-100 transition"
             >
               Avbryt
             </button>
             <button
               type="submit"
               disabled={!valid || submitting}
-              className="flex-1 h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold rounded-full transition flex items-center justify-center gap-2 shadow-sm"
+              className="flex-1 h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition flex items-center justify-center gap-2 shadow-sm"
             >
               {submitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

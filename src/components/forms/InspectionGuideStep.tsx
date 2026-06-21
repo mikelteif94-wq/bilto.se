@@ -53,7 +53,7 @@ export default function InspectionGuideStep({ onNext }: InspectionGuideStepProps
       <div className="rounded-xl bg-[#0e6efe] text-white p-6 sm:p-7 relative overflow-hidden">
         <div className="absolute -right-10 -top-10 w-[180px] h-[180px] rounded-full bg-[#3d8cff] opacity-50" />
         <div className="relative">
-          <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] bg-white/15 backdrop-blur px-2.5 py-1 rounded-full">
+          <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] bg-white/15 backdrop-blur px-2.5 py-1 rounded-xl">
             <Camera className="w-3.5 h-3.5" />
             Fotoguide
           </div>
@@ -135,7 +135,7 @@ export default function InspectionGuideStep({ onNext }: InspectionGuideStepProps
         <button
           type="button"
           onClick={onNext}
-          className="w-full sm:w-auto sm:min-w-[220px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-full transition shadow-sm inline-flex items-center justify-center gap-2"
+          className="w-full sm:w-auto sm:min-w-[220px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-xl transition shadow-sm inline-flex items-center justify-center gap-2"
         >
           Fortsätt till uppladdning
           <ArrowRight className="w-4 h-4" />

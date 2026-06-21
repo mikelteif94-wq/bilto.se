@@ -147,7 +147,7 @@ export default function CustomerLogin({ onBack, initialEmail = '' }: CustomerLog
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white font-semibold text-[15px] rounded-full transition shadow-sm"
+                      className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-300 text-white font-semibold text-[15px] rounded-xl transition shadow-sm"
                     >
                       {loading ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -174,7 +174,7 @@ export default function CustomerLogin({ onBack, initialEmail = '' }: CustomerLog
 function SentConfirmation({ email, onResend }: { email: string; onResend: () => void }) {
   return (
     <div className="px-7 py-10 text-center space-y-5">
-      <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mx-auto">
+      <div className="w-16 h-16 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mx-auto">
         <Mail className="w-8 h-8 text-emerald-600" />
       </div>
 

@@ -114,7 +114,7 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
       <p className="text-[10.5px] text-slate-400 mt-1 mb-3">Inkl. finansiering (vid lån) · bränsle/el · försäkring · service — <span className="italic">ungefärliga riktvärden</span></p>
       <div className="relative h-3 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
         <motion.div
-          className="absolute left-0 top-0 h-full rounded-full"
+          className="absolute left-0 top-0 h-full rounded-xl"
           style={{ backgroundColor: activeColor }}
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
@@ -183,7 +183,7 @@ function RatingBar({ label, value, icon: Icon }: { label: string; value: number;
       <span className="text-[12px] text-slate-500 w-20 shrink-0">{label}</span>
       <div className="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
         <motion.div
-          className="h-full rounded-full"
+          className="h-full rounded-xl"
           style={{ backgroundColor: barColor }}
           initial={{ width: 0 }}
           animate={{ width: `${value * 10}%` }}
@@ -398,7 +398,7 @@ function EqSlider({ value, min, max, step, onChange }: { value: number; min: num
   return (
     <div ref={trackRef} className="relative h-9 flex items-center cursor-pointer select-none" onMouseDown={onMouseDown} onTouchStart={onTouchStart}>
       <div className="absolute inset-x-0 h-1.5 rounded-full bg-slate-200">
-        <div className="absolute left-0 top-0 h-full rounded-full bg-[#0e6efe]" style={{ width: `${pct}%` }} />
+        <div className="absolute left-0 top-0 h-full rounded-xl bg-[#0e6efe]" style={{ width: `${pct}%` }} />
       </div>
       <div className="absolute w-5 h-5 rounded-full bg-white border-2 border-[#0e6efe] shadow-md -translate-x-1/2" style={{ left: `${pct}%` }} />
     </div>

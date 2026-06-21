@@ -88,7 +88,7 @@ export default function SetPasswordPage({ onDone }: SetPasswordPageProps) {
           </p>
           <a
             href={sessionStorage.getItem('bilto_portal') === 'customer' ? '/logga-in' : '/handlare/logga-in'}
-            className="inline-flex items-center justify-center h-11 px-5 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold rounded-full transition text-sm"
+            className="inline-flex items-center justify-center h-11 px-5 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold rounded-xl transition text-sm"
           >
             Till inloggning
           </a>
@@ -101,7 +101,7 @@ export default function SetPasswordPage({ onDone }: SetPasswordPageProps) {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-white border border-slate-200 rounded-xl p-10 text-center shadow-sm">
-          <div className="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+          <div className="w-14 h-14 rounded-xl bg-emerald-50 flex items-center justify-center mx-auto mb-4">
             <Check className="w-7 h-7 text-emerald-600" strokeWidth={2.4} />
           </div>
           <h1 className="text-xl font-bold text-slate-900 mb-2">Lösenord sparat</h1>
@@ -172,7 +172,7 @@ export default function SetPasswordPage({ onDone }: SetPasswordPageProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-11 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-300 text-white font-semibold rounded-full transition text-sm flex items-center justify-center gap-2"
+            className="w-full h-11 bg-[#0e6efe] hover:bg-[#0b5cd8] disabled:bg-slate-300 text-white font-semibold rounded-xl transition text-sm flex items-center justify-center gap-2"
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             Spara lösenord

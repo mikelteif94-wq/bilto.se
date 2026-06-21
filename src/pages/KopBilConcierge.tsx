@@ -430,7 +430,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                   <img
                     src={e.avatar}
                     alt={e.name}
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover object-top border-4 border-white shadow-md"
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover object-top border-4 border-white shadow-md"
                   />
                   <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
                 </div>

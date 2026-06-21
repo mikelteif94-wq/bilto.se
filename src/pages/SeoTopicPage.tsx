@@ -281,7 +281,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
                 key={link.path}
                 href={link.path}
                 onClick={e => { e.preventDefault(); window.history.pushState({}, '', link.path); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 bg-white text-[13px] font-medium text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe] transition"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 bg-white text-[13px] font-medium text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe] transition"
               >
                 {link.label}
                 <ArrowRight className="w-3 h-3" />

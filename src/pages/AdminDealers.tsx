@@ -120,7 +120,7 @@ export default function AdminDealers({
               >
                 {label}
                 {counts[key] > 0 && (
-                  <span className={`ml-1.5 inline-flex items-center justify-center text-[10px] font-bold min-w-[16px] h-4 px-1 rounded-full ${
+                  <span className={`ml-1.5 inline-flex items-center justify-center text-[10px] font-bold min-w-[16px] h-4 px-1 rounded-xl ${
                     activeTab === key ? countColor : 'bg-slate-300 text-slate-600'
                   }`}>
                     {counts[key]}

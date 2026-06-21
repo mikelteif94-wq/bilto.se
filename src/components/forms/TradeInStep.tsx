@@ -44,7 +44,7 @@ export default function TradeInStep({ regnummer, marke, modell, ar, miltal, onYe
         className="group w-full text-left rounded-xl border-2 border-[#0e6efe] bg-[#0e6efe]/[0.03] hover:bg-[#0e6efe]/[0.07] p-5 sm:p-6 transition-all"
       >
         <div className="flex items-center gap-4">
-          <div className="w-11 h-11 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+          <div className="w-11 h-11 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
             <Repeat className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
           </div>
           <div className="flex-1 min-w-0">
@@ -67,7 +67,7 @@ export default function TradeInStep({ regnummer, marke, modell, ar, miltal, onYe
         className="group w-full text-left rounded-xl border border-slate-200 bg-white hover:border-slate-300 p-5 sm:p-6 transition-all"
       >
         <div className="flex items-center gap-4">
-          <div className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+          <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
             <X className="w-5 h-5 text-slate-400" strokeWidth={2.2} />
           </div>
           <div className="flex-1 min-w-0">

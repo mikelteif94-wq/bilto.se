@@ -168,7 +168,7 @@ export default function CustomerOfferCard({ offer }: { offer: Offer }) {
               {offer.car_description || 'Biloffer'}
             </h3>
           </div>
-          <span className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${rating.badge}`}>
+          <span className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold ${rating.badge}`}>
             <Star className="w-3 h-3" />
             {rating.badgeText}
           </span>
@@ -284,7 +284,7 @@ function CompareRow({
         <Icon className="w-4 h-4 text-slate-400 shrink-0" />
         <span className="text-sm font-semibold text-slate-700">{label}</span>
         {saving && (
-          <span className="ml-auto text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
+          <span className="ml-auto text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-xl">
             {saving}
           </span>
         )}
@@ -329,7 +329,7 @@ function IncludedRow({
           )}
         </div>
       </div>
-      <span className={`shrink-0 text-xs font-bold px-2.5 py-0.5 rounded-full ${badgeClass}`}>
+      <span className={`shrink-0 text-xs font-bold px-2.5 py-0.5 rounded-xl ${badgeClass}`}>
         {badge}
       </span>
     </div>

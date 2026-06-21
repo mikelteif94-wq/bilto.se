@@ -336,7 +336,7 @@ function UrlMatcherTab({ catalog }: { catalog: CatalogEntry[] }) {
             <div className="ml-auto flex gap-2">
               <button
                 onClick={() => { setRows([]); setRawInput(''); }}
-                className="h-8 px-3 text-xs rounded-full border border-slate-200 hover:bg-slate-50 text-slate-600 transition"
+                className="h-8 px-3 text-xs rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition"
               >
                 Börja om
               </button>
@@ -439,7 +439,7 @@ function UrlMatcherTab({ catalog }: { catalog: CatalogEntry[] }) {
               <button
                 type="button"
                 onClick={() => setPreviewUrl(null)}
-                className="absolute top-2 right-2 z-10 w-7 h-7 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center transition"
+                className="absolute top-2 right-2 z-10 w-7 h-7 bg-black/50 hover:bg-black/70 rounded-xl flex items-center justify-center transition"
               >
                 <X className="w-3.5 h-3.5 text-white" />
               </button>
@@ -711,7 +711,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                 </div>
                 <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#0e6efe] transition-all duration-300 rounded-full"
+                    className="h-full bg-[#0e6efe] transition-all duration-300 rounded-xl"
                     style={{ width: `${matchedCount > 0 ? (doneCount / matchedCount) * 100 : 0}%` }}
                   />
                 </div>
@@ -745,7 +745,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                 }}
               />
               <div className="flex flex-col items-center gap-3">
-                <div className={`w-14 h-14 rounded-full flex items-center justify-center transition ${dragOver ? 'bg-[#0e6efe]/10' : 'bg-slate-100'}`}>
+                <div className={`w-14 h-14 rounded-xl flex items-center justify-center transition ${dragOver ? 'bg-[#0e6efe]/10' : 'bg-slate-100'}`}>
                   {dragOver ? (
                     <Upload className="w-6 h-6 text-[#0e6efe]" />
                   ) : (
@@ -787,7 +787,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                   <button
                     onClick={retryFailed}
                     disabled={uploading}
-                    className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-medium text-sm transition"
+                    className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-medium text-sm transition"
                   >
                     <RefreshCw className="w-4 h-4" />
                     Försök igen ({errorCount})
@@ -796,7 +796,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                 {doneCount > 0 && (
                   <button
                     onClick={clearDone}
-                    className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-medium text-sm transition"
+                    className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-medium text-sm transition"
                   >
                     <CheckCircle2 className="w-4 h-4 text-green-600" />
                     Rensa klara
@@ -865,7 +865,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                         {item.status === 'pending' && (
                           <button
                             onClick={() => removeFile(idx)}
-                            className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-slate-100 transition"
+                            className="w-7 h-7 flex items-center justify-center rounded-xl hover:bg-slate-100 transition"
                             aria-label="Ta bort"
                           >
                             <X className="w-4 h-4 text-slate-400" />

@@ -315,7 +315,7 @@ export default function DealerOverview({
   const headerAction = (
     <button
       onClick={onAddCar}
-      className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition shadow-sm"
+      className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-sm font-semibold transition shadow-sm"
     >
       <Sparkles className="w-4 h-4" />
       <span className="hidden sm:inline">Få bud på en bil</span>
@@ -343,7 +343,7 @@ export default function DealerOverview({
           </div>
           <button
             onClick={onAddCar}
-            className="sm:hidden inline-flex items-center gap-2 h-10 px-4 rounded-full bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold transition shadow-sm text-sm"
+            className="sm:hidden inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold transition shadow-sm text-sm"
           >
             <Sparkles className="w-4 h-4" />
             Få bud på bil
@@ -555,7 +555,7 @@ function OverviewTab({
               <button
                 key={tab.key}
                 onClick={() => setLeadTab(tab.key)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition ${
                   leadTab === tab.key
                     ? 'bg-slate-900 text-white border-slate-900'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
@@ -586,12 +586,12 @@ function OverviewTab({
                     >
                       <div className="flex items-start justify-between gap-3 mb-1">
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className={`shrink-0 inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ${lead.lead_type === 'buy' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
+                          <span className={`shrink-0 inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-xl ${lead.lead_type === 'buy' ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
                             {lead.lead_type === 'buy' ? 'Köplead' : 'Säljlead'}
                           </span>
                           <span className="font-semibold text-sm text-slate-900 truncate">{lead.car_label}</span>
                         </div>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold shrink-0 ${status.cls}`}>
+                        <span className={`text-[10px] px-2 py-0.5 rounded-xl font-semibold shrink-0 ${status.cls}`}>
                           {status.label}
                         </span>
                       </div>
@@ -611,7 +611,7 @@ function OverviewTab({
                           {lead.response_status === 'sent' && (
                             <button
                               onClick={() => void updateDispatchStatus(lead.id, 'read')}
-                              className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full border border-slate-200 text-[11px] font-medium text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 transition"
+                              className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-xl border border-slate-200 text-[11px] font-medium text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 transition"
                             >
                               <Eye className="w-3 h-3" />
                               Markera som läst
@@ -619,7 +619,7 @@ function OverviewTab({
                           )}
                           <button
                             onClick={() => setActionPanel(isActive && actionPanel?.mode === 'reply' ? null : { id: lead.id, mode: 'reply' })}
-                            className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-[11px] font-medium transition ${
+                            className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-xl border text-[11px] font-medium transition ${
                               isActive && actionPanel?.mode === 'reply'
                                 ? 'bg-slate-900 text-white border-slate-900'
                                 : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300'
@@ -630,7 +630,7 @@ function OverviewTab({
                           </button>
                           <button
                             onClick={() => setActionPanel(isActive && actionPanel?.mode === 'offer' ? null : { id: lead.id, mode: 'offer' })}
-                            className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full border text-[11px] font-medium transition ${
+                            className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-xl border text-[11px] font-medium transition ${
                               isActive && actionPanel?.mode === 'offer'
                                 ? 'bg-[#0e6efe] text-white border-[#0e6efe]'
                                 : 'border-[#0e6efe]/30 text-[#0e6efe] bg-blue-50/40 hover:bg-blue-50 hover:border-[#0e6efe]/60'
@@ -642,7 +642,7 @@ function OverviewTab({
                           {isActive && (
                             <button
                               onClick={() => setActionPanel(null)}
-                              className="ml-auto inline-flex items-center justify-center w-7 h-7 rounded-full border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition"
+                              className="ml-auto inline-flex items-center justify-center w-7 h-7 rounded-xl border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition"
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -752,8 +752,8 @@ function OverviewTab({
                     className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
                   >
                     <div className="relative shrink-0">
-                      <div className={`w-2 h-8 rounded-full ${critical ? 'bg-red-400' : urgent ? 'bg-amber-400' : 'bg-slate-200'}`} />
-                      {critical && <div className="absolute inset-0 w-2 rounded-full bg-red-400 animate-pulse" />}
+                      <div className={`w-2 h-8 rounded-xl ${critical ? 'bg-red-400' : urgent ? 'bg-amber-400' : 'bg-slate-200'}`} />
+                      {critical && <div className="absolute inset-0 w-2 rounded-xl bg-red-400 animate-pulse" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-slate-900 truncate">
@@ -808,7 +808,7 @@ function OverviewTab({
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className={`inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full ${b.isLeading ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}`}>
+                    <span className={`inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-xl ${b.isLeading ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}`}>
                       {b.isLeading ? 'Leder' : 'Överbjuden'}
                     </span>
                     {!b.isLeading && (
@@ -981,7 +981,7 @@ function InvoicesTab({
                   </div>
                   <div className="shrink-0 text-right">
                     {invStatus ? (
-                      <span className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${invStatus.cls}`}>
+                      <span className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-xl ring-1 ring-inset ${invStatus.cls}`}>
                         {invStatus.label}
                       </span>
                     ) : (
@@ -1014,7 +1014,7 @@ function InvoicesTab({
                       {inv.invoice_number && (
                         <span className="text-sm font-bold font-mono text-slate-900">{inv.invoice_number}</span>
                       )}
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${inv.commission_type === 'trade_in' ? 'bg-sky-50 text-sky-700 ring-sky-200' : 'bg-slate-100 text-slate-600 ring-slate-200'}`}>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-xl ring-1 ring-inset ${inv.commission_type === 'trade_in' ? 'bg-sky-50 text-sky-700 ring-sky-200' : 'bg-slate-100 text-slate-600 ring-slate-200'}`}>
                         {inv.commission_type === 'trade_in' ? 'Inbyte' : 'Standard'}
                       </span>
                     </div>
@@ -1035,7 +1035,7 @@ function InvoicesTab({
                     <div className="text-[10px] text-slate-400">
                       exkl. moms {inv.belopp.toLocaleString('sv-SE')} kr
                     </div>
-                    <span className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full ring-1 ring-inset ${s.cls}`}>
+                    <span className={`inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-xl ring-1 ring-inset ${s.cls}`}>
                       {s.label}
                     </span>
                   </div>
@@ -1047,7 +1047,7 @@ function InvoicesTab({
       ) : (
         wonDeals.length === 0 && (
           <div className="bg-white border border-slate-200 rounded-xl p-12 text-center">
-            <div className="w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto mb-3">
+            <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto mb-3">
               <Receipt className="w-5 h-5 text-slate-300" />
             </div>
             <p className="text-sm font-semibold text-slate-700 mb-1">Inga fakturor ännu</p>
@@ -1114,7 +1114,7 @@ function NavLink({ label, onClick }: { label: string; onClick?: () => void }) {
 function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
     <div className="flex flex-col items-center gap-2.5 px-4 py-10 text-center">
-      <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center">
+      <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
         {icon}
       </div>
       <p className="text-sm text-slate-400">{text}</p>

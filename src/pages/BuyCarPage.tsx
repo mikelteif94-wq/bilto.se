@@ -352,7 +352,7 @@ export default function BuyCarPage({
             <div className="pt-12 sm:pt-16 pb-10">
               {/* Success badge */}
               <div className="text-center mb-8">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-5">
+                <div className="w-16 h-16 rounded-xl bg-emerald-100 flex items-center justify-center mx-auto mb-5">
                   <Check className="w-8 h-8 text-emerald-600" />
                 </div>
                 <h1 className="text-[24px] sm:text-[28px] font-bold text-slate-900 mb-3">
@@ -373,7 +373,7 @@ export default function BuyCarPage({
                     <img
                       src="/Man_in_car_showroom_portrait.png"
                       alt="Marcus Holm"
-                      className="w-14 h-14 rounded-full object-cover object-top border-2 border-slate-200"
+                      className="w-14 h-14 rounded-xl object-cover object-top border-2 border-slate-200"
                     />
                     <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
                   </div>
@@ -455,7 +455,7 @@ export default function BuyCarPage({
           href="tel:+46855550200"
           className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-center justify-center gap-2.5 h-14 rounded-xl bg-[#0e6efe] hover:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_10px_30px_rgba(14,110,254,0.4)] transition animate-[slideUp_0.3s_ease-out]"
         >
-          <img src="/Man_in_car_showroom_portrait.png" alt="Expert" className="w-8 h-8 rounded-full object-cover border-2 border-white/40 shrink-0" />
+          <img src="/Man_in_car_showroom_portrait.png" alt="Expert" className="w-8 h-8 rounded-xl object-cover border-2 border-white/40 shrink-0" />
           <span>Ring expert &middot; bud direkt</span>
         </a>
       )}
@@ -465,7 +465,7 @@ export default function BuyCarPage({
           <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
             <div className="flex items-center justify-between px-5 sm:px-6 pt-5 pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-full bg-[#0e6efe]/10 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
                   <Phone className="w-4.5 h-4.5 text-[#0e6efe]" strokeWidth={2.2} />
                 </div>
                 <h3 className="text-[17px] font-semibold text-slate-900">

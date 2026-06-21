@@ -117,7 +117,7 @@ export default function AdminLogin({ onLoggedIn, onBack }: AdminLoginProps) {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14.5px] rounded-full transition"
+                    className="w-full inline-flex items-center justify-center gap-2 h-12 bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-400 text-white font-semibold text-[14.5px] rounded-xl transition"
                   >
                     {loading ? (
                       <Loader2 className="w-4 h-4 animate-spin" />

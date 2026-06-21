@@ -69,7 +69,7 @@ export function Sheet({ open, onClose, children, className }: SheetProps) {
               <button
                 type="button"
                 onClick={onClose}
-                className="absolute right-4 top-3 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors"
+                className="absolute right-4 top-3 w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors"
               >
                 <X className="w-4 h-4 text-slate-600" />
               </button>

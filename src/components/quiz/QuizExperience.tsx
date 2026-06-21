@@ -121,7 +121,7 @@ export function QuizExperience({ onComplete, onSkip, isAnalyzing, analysisReady 
           </div>
           <div className="h-1 bg-slate-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#0e6efe] rounded-full transition-all duration-300"
+              className="h-full bg-[#0e6efe] rounded-xl transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
