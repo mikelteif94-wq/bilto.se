@@ -1816,48 +1816,58 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             className="fixed bottom-0 inset-x-0 z-40 pb-[env(safe-area-inset-bottom)]"
           >
             <div className="mx-3 mb-3 sm:mx-6 sm:mb-4">
-              <div className="max-w-3xl mx-auto bg-slate-900 rounded-xl shadow-2xl shadow-black/30 px-4 sm:px-5 py-3.5 flex items-center gap-3">
-                {/* Mini thumbnails */}
-                <div className="flex items-center -space-x-2 shrink-0">
+              <div className="max-w-3xl mx-auto bg-slate-900 rounded-xl shadow-2xl shadow-black/30 px-4 sm:px-5 py-3 flex items-center gap-3">
+                {/* Per-car thumbnails with individual remove */}
+                <div className="flex items-center gap-2 shrink-0">
                   {selectedCars.slice(0, MAX_COMPARE).map(car => {
                     const img = getImageForCar(car);
                     return (
-                      <div key={car.id} className="w-10 h-10 rounded-xl bg-slate-700 ring-2 ring-slate-900 overflow-hidden shrink-0">
-                        {img ? (
-                          <img src={img} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Car className="w-4 h-4 text-slate-500" />
-                          </div>
-                        )}
+                      <div key={car.id} className="relative shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-slate-700 overflow-hidden">
+                          {img ? (
+                            <img src={img} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Car className="w-4 h-4 text-slate-500" />
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => toggleSelect(car.id)}
+                          aria-label={`Ta bort ${car.brand_display} ${car.model_display}`}
+                          className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-slate-600 hover:bg-red-500 flex items-center justify-center transition-colors"
+                        >
+                          <X className="w-2.5 h-2.5 text-white" />
+                        </button>
                       </div>
                     );
                   })}
+                  {/* Empty slots hint */}
+                  {selectedIds.size < 2 && Array.from({ length: 2 - selectedIds.size }).map((_, i) => (
+                    <div key={i} className="w-10 h-10 rounded-xl border-2 border-dashed border-slate-600 flex items-center justify-center shrink-0">
+                      <span className="text-slate-600 text-[18px] font-light leading-none">+</span>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-white text-[14px] font-semibold">
-                    {selectedIds.size} {selectedIds.size === 1 ? 'bil vald' : 'bilar valda'}
+                  <p className="text-white text-[13px] font-semibold leading-tight">
+                    {selectedIds.size < 2
+                      ? `Välj ${2 - selectedIds.size} bil till`
+                      : `${selectedIds.size} bilar valda`}
                   </p>
-                  <p className="text-slate-400 text-[11px]">
-                    {selectedIds.size < 2 ? `Välj minst 2 för att jämföra` : `Upp till ${MAX_COMPARE} bilar`}
+                  <p className="text-slate-400 text-[11px] mt-0.5">
+                    {selectedIds.size < 2 ? 'Tryck "Jämför" på ett kort' : 'Klicka X för att ta bort'}
                   </p>
                 </div>
-
-                <button
-                  onClick={() => setSelectedIds(new Set())}
-                  className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition shrink-0"
-                >
-                  <X className="w-4 h-4" />
-                </button>
 
                 <button
                   onClick={() => setCompareOpen(true)}
                   disabled={selectedIds.size < 2}
-                  className="h-11 px-5 sm:px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-700 disabled:text-slate-500 text-white text-[14px] font-semibold inline-flex items-center gap-2 transition shrink-0"
+                  className="h-11 px-4 sm:px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:bg-slate-700 disabled:text-slate-500 text-white text-[13px] font-semibold inline-flex items-center gap-2 transition shrink-0"
                 >
                   <GitCompareArrows className="w-4 h-4" />
-                  <span className="hidden sm:inline">Jämför</span>
+                  <span>Jämför</span>
                 </button>
               </div>
             </div>
@@ -2056,17 +2066,17 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       </section>
 
       {/* AI Smart Search */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-slate-950">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-orange-500">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0e6efe]/20 text-[13px] font-medium text-[#60a5fa] mb-4">
-              <Search className="w-4 h-4 text-[#60a5fa]" />
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/20 text-[13px] font-medium text-white mb-4">
+              <Search className="w-4 h-4 text-white" />
               Smart bilsökning
             </div>
             <h2 className="text-[22px] sm:text-[32px] font-bold text-white mb-2">
               Hittar du inte rätt bil?
             </h2>
-            <p className="text-slate-400 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
+            <p className="text-orange-100 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
               Beskriv vad du söker så hjälper vi dig hitta rätt bil.
             </p>
           </div>
@@ -2187,7 +2197,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder='T.ex. "elbil för familj", "Toyota SUV" eller "bil med hund"...'
-                  className="flex-1 h-11 px-4 rounded-xl border border-white/15 bg-white/8 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition placeholder:text-slate-500"
+                  className="flex-1 h-11 px-4 rounded-xl border border-orange-300 bg-white text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-700/40 focus:border-orange-700 transition placeholder:text-slate-400"
                 />
                 <button type="submit" disabled={!chatInput.trim()} className="h-11 w-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:opacity-40 text-white flex items-center justify-center transition shrink-0">
                   <Send className="w-4 h-4" />

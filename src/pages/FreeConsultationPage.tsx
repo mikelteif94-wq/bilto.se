@@ -11,9 +11,12 @@ import {
   RefreshCw,
   CreditCard,
   HelpCircle,
-  Calendar,
   Menu,
   ShieldCheck,
+  Car,
+  Loader2,
+  AlertCircle,
+  Link as LinkIcon,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SiteFooter } from '../components/SiteFooter';
@@ -21,6 +24,8 @@ import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { setPageMeta } from '../lib/pageMeta';
 import FieldError from '../components/forms/FieldError';
 import { validateSwedishPhone } from '../lib/utils';
+import RegInput from '../components/RegInput';
+import { useVehicleLookup } from '../lib/useVehicleLookup';
 
 interface FreeConsultationPageProps {
   onBack: () => void;
@@ -85,7 +90,9 @@ function getAvailableDates(): { date: Date; dateStr: string; label: string; day:
   return days;
 }
 
-type Step = 'syfte' | 'kontakt' | 'tid' | 'bekraftelse';
+// kop_sub = sub-step for kop_bil (hittat / letar)
+// salj_reg = sub-step for salj_bil / inbyte (regnummer)
+type Step = 'syfte' | 'kop_sub' | 'salj_reg' | 'kontakt' | 'tid' | 'bekraftelse';
 
 interface FormData {
   syfte: Syfte | '';
@@ -95,6 +102,15 @@ interface FormData {
   meddelande: string;
   booking_date: string;
   booking_time: string;
+  // kop_bil extras
+  kop_status: 'hittat' | 'letar' | '';
+  bil_link: string;
+  // salj/inbyte extras
+  regnummer: string;
+  bil_marke: string;
+  bil_modell: string;
+  bil_ar: string;
+  bil_miltal: string;
 }
 
 const INITIAL: FormData = {
@@ -105,13 +121,23 @@ const INITIAL: FormData = {
   meddelande: '',
   booking_date: '',
   booking_time: '',
+  kop_status: '',
+  bil_link: '',
+  regnummer: '',
+  bil_marke: '',
+  bil_modell: '',
+  bil_ar: '',
+  bil_miltal: '',
 };
 
 const STEP_LABELS = ['Ärende', 'Uppgifter', 'Tid'];
 
 function ProgressBar({ step }: { step: Step }) {
-  const steps: Step[] = ['syfte', 'kontakt', 'tid', 'bekraftelse'];
-  const idx = steps.indexOf(step);
+  const orderedSteps: Step[] = ['syfte', 'kop_sub', 'salj_reg', 'kontakt', 'tid', 'bekraftelse'];
+  const visibleSteps: Step[] = ['syfte', 'kontakt', 'tid'];
+  const idx = Math.max(visibleSteps.indexOf(step as Step), orderedSteps.indexOf(step) >= orderedSteps.indexOf('kontakt') ? 1 : 0);
+  const displayIdx = step === 'syfte' || step === 'kop_sub' || step === 'salj_reg' ? 0 : step === 'kontakt' ? 1 : step === 'tid' ? 2 : 3;
+
   return (
     <div className="flex items-center gap-0 mb-10">
       {STEP_LABELS.map((label, i) => (
@@ -119,26 +145,65 @@ function ProgressBar({ step }: { step: Step }) {
           <div className="flex flex-col items-center gap-1.5">
             <div
               className={`w-9 h-9 rounded-xl flex items-center justify-center text-[13px] font-bold transition-all duration-200 ${
-                i < idx
+                i < displayIdx
                   ? 'bg-[#0e6efe] text-white shadow-md shadow-blue-200'
-                  : i === idx
+                  : i === displayIdx
                   ? 'bg-[#0e6efe] text-white ring-4 ring-[#0e6efe]/15 shadow-md shadow-blue-200'
                   : 'bg-slate-100 text-slate-400'
               }`}
             >
-              {i < idx ? <Check className="w-4 h-4" strokeWidth={2.5} /> : i + 1}
+              {i < displayIdx ? <Check className="w-4 h-4" strokeWidth={2.5} /> : i + 1}
             </div>
-            <span className={`text-[11px] font-medium whitespace-nowrap ${i <= idx ? 'text-slate-700' : 'text-slate-400'}`}>
+            <span className={`text-[11px] font-medium whitespace-nowrap ${i <= displayIdx ? 'text-slate-700' : 'text-slate-400'}`}>
               {label}
             </span>
           </div>
           {i < STEP_LABELS.length - 1 && (
-            <div className={`h-[2px] flex-1 mx-2 mb-5 rounded-xl transition-all duration-300 ${i < idx ? 'bg-[#0e6efe]' : 'bg-slate-200'}`} />
+            <div className={`h-[2px] flex-1 mx-2 mb-5 rounded-xl transition-all duration-300 ${i < displayIdx ? 'bg-[#0e6efe]' : 'bg-slate-200'}`} />
           )}
         </div>
       ))}
     </div>
   );
+}
+
+// Sub-component for vehicle lookup display
+function VehicleCard({ regnummer }: { regnummer: string }) {
+  const lookup = useVehicleLookup(regnummer);
+  if (lookup.status === 'loading') {
+    return (
+      <div className="flex items-center gap-2 mt-3 px-4 py-3 bg-blue-50 rounded-xl border border-blue-100 text-blue-700 text-sm">
+        <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+        Hämtar uppgifter...
+      </div>
+    );
+  }
+  if (lookup.status === 'found') {
+    return (
+      <div className="mt-3 px-4 py-3 bg-emerald-50 rounded-xl border border-emerald-100">
+        <div className="flex items-center gap-2 mb-1">
+          <Check className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={2.5} />
+          <span className="text-[13px] font-semibold text-emerald-800">Bilen hittad</span>
+        </div>
+        <p className="text-[14px] font-bold text-slate-900">
+          {lookup.data.marke} {lookup.data.modell}
+          {lookup.data.ar ? ` · ${lookup.data.ar}` : ''}
+        </p>
+        <p className="text-[12px] text-slate-500 mt-0.5">
+          {[lookup.data.bransle, lookup.data.farg, lookup.data.miltal ? `${lookup.data.miltal.toLocaleString('sv-SE')} mil` : ''].filter(Boolean).join(' · ')}
+        </p>
+      </div>
+    );
+  }
+  if (lookup.status === 'not_found' || lookup.status === 'error') {
+    return (
+      <div className="flex items-center gap-2 mt-3 px-4 py-3 bg-amber-50 rounded-xl border border-amber-100 text-amber-800 text-[13px]">
+        <AlertCircle className="w-4 h-4 shrink-0" />
+        Kunde inte hämta uppgifter – du kan ändå fortsätta.
+      </div>
+    );
+  }
+  return null;
 }
 
 export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigateHowItWorks }: FreeConsultationPageProps) {
@@ -155,6 +220,8 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
     [form.booking_date]
   );
 
+  const vehicleLookup = useVehicleLookup(form.regnummer);
+
   useEffect(() => {
     setPageMeta({
       title: 'Gratis konsultation – Köp eller sälj bil med expertstöd | Bilto',
@@ -162,6 +229,20 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
       canonical: 'https://bilto.se/gratis-konsultation',
     });
   }, []);
+
+  // Sync vehicle data into form when lookup finds a car
+  useEffect(() => {
+    if (vehicleLookup.status === 'found') {
+      const d = vehicleLookup.data;
+      setForm(f => ({
+        ...f,
+        bil_marke: d.marke,
+        bil_modell: d.modell,
+        bil_ar: d.ar ? String(d.ar) : '',
+        bil_miltal: d.miltal ? String(d.miltal) : '',
+      }));
+    }
+  }, [vehicleLookup.status]);
 
   const validateKontakt = () => {
     const errs: Partial<Record<keyof FormData, string>> = {};
@@ -179,7 +260,13 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
 
   const handleSyfteSelect = (s: Syfte) => {
     setForm(f => ({ ...f, syfte: s }));
-    setStep('kontakt');
+    if (s === 'kop_bil') {
+      setStep('kop_sub');
+    } else if (s === 'salj_bil' || s === 'inbyte') {
+      setStep('salj_reg');
+    } else {
+      setStep('kontakt');
+    }
   };
 
   const handleKontaktNext = () => {
@@ -203,7 +290,13 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
         namn: form.namn,
         telefon: form.telefon,
         email: form.email,
-        meddelande: form.meddelande,
+        meddelande: [
+          form.meddelande,
+          form.kop_status === 'hittat' && form.bil_link ? `Bil-länk: ${form.bil_link}` : '',
+          form.kop_status === 'letar' ? 'Letar efter bil' : '',
+          form.regnummer ? `Regnummer: ${form.regnummer}` : '',
+          form.bil_marke ? `Bil: ${form.bil_marke} ${form.bil_modell} (${form.bil_ar})` : '',
+        ].filter(Boolean).join('\n'),
         status: 'pending',
       });
       if (error) throw error;
@@ -334,8 +427,8 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
             </div>
           )}
 
-          {/* Step 2: Kontakt */}
-          {step === 'kontakt' && (
+          {/* Step kop_sub: Har du hittat en bil? */}
+          {step === 'kop_sub' && (
             <div>
               <button
                 type="button"
@@ -345,6 +438,176 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Ändra ämne
               </button>
+              <h2 className="text-[22px] font-bold text-slate-900 mb-1">Har du hittat en bil?</h2>
+              <p className="text-slate-500 text-[14px] mb-6">
+                Svaret hjälper oss förbereda rätt hjälp inför samtalet.
+              </p>
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForm(f => ({ ...f, kop_status: 'hittat' }));
+                  }}
+                  className={`group w-full flex items-center gap-4 px-5 py-4 rounded-xl border transition-all duration-150 text-left ${
+                    form.kop_status === 'hittat'
+                      ? 'border-[#0e6efe] bg-[#0e6efe]/5 shadow-sm'
+                      : 'border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50'
+                  }`}
+                >
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${form.kop_status === 'hittat' ? 'bg-[#0e6efe] text-white' : 'bg-[#0e6efe]/8 text-[#0e6efe]'}`}>
+                    <LinkIcon style={{ width: 18, height: 18 }} strokeWidth={1.8} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-slate-900 text-[15px]">Ja, jag har hittat en bil</div>
+                    <div className="text-slate-500 text-[13px] mt-0.5">Jag vill ha hjälp att förhandla och granska den</div>
+                  </div>
+                  {form.kop_status === 'hittat' && <Check className="w-4 h-4 text-[#0e6efe] ml-auto shrink-0" strokeWidth={2.5} />}
+                  {form.kop_status !== 'hittat' && <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] ml-auto shrink-0 transition-colors" />}
+                </button>
+
+                {form.kop_status === 'hittat' && (
+                  <div className="pl-[52px] pr-1 -mt-1 pb-1">
+                    <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">
+                      Länk till annonsen <span className="text-slate-400 font-normal">(valfritt)</span>
+                    </label>
+                    <div className="relative">
+                      <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                      <input
+                        type="url"
+                        inputMode="url"
+                        value={form.bil_link}
+                        onChange={e => setForm(f => ({ ...f, bil_link: e.target.value }))}
+                        placeholder="https://www.blocket.se/annons/..."
+                        className="form-control pl-9 text-[13px]"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForm(f => ({ ...f, kop_status: 'letar' }));
+                  }}
+                  className={`group w-full flex items-center gap-4 px-5 py-4 rounded-xl border transition-all duration-150 text-left ${
+                    form.kop_status === 'letar'
+                      ? 'border-[#0e6efe] bg-[#0e6efe]/5 shadow-sm'
+                      : 'border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50'
+                  }`}
+                >
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${form.kop_status === 'letar' ? 'bg-[#0e6efe] text-white' : 'bg-[#0e6efe]/8 text-[#0e6efe]'}`}>
+                    <Search style={{ width: 18, height: 18 }} strokeWidth={1.8} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-slate-900 text-[15px]">Nej, jag letar fortfarande</div>
+                    <div className="text-slate-500 text-[13px] mt-0.5">Jag vill ha hjälp att hitta och jämföra alternativ</div>
+                  </div>
+                  {form.kop_status === 'letar' && <Check className="w-4 h-4 text-[#0e6efe] ml-auto shrink-0" strokeWidth={2.5} />}
+                  {form.kop_status !== 'letar' && <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] ml-auto shrink-0 transition-colors" />}
+                </button>
+              </div>
+
+              {form.kop_status && (
+                <button
+                  type="button"
+                  onClick={() => setStep('kontakt')}
+                  className="btn-primary w-full mt-6 h-12 text-[15px]"
+                >
+                  Fortsätt
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Step salj_reg: Regnummer för sälja/inbyte */}
+          {step === 'salj_reg' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setStep('syfte')}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Ändra ämne
+              </button>
+              <h2 className="text-[22px] font-bold text-slate-900 mb-1">
+                {form.syfte === 'inbyte' ? 'Vilken bil vill du byta in?' : 'Vilken bil vill du sälja?'}
+              </h2>
+              <p className="text-slate-500 text-[14px] mb-6">
+                Ange regnummer så hämtar vi uppgifter automatiskt.
+              </p>
+
+              <div className="mb-2">
+                <RegInput
+                  value={form.regnummer}
+                  onChange={v => setForm(f => ({ ...f, regnummer: v, bil_marke: '', bil_modell: '', bil_ar: '', bil_miltal: '' }))}
+                />
+              </div>
+              <VehicleCard regnummer={form.regnummer} />
+
+              {vehicleLookup.status === 'found' && (
+                <div className="mt-4 space-y-3">
+                  <div>
+                    <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Miltal (mil)</label>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      value={form.bil_miltal}
+                      onChange={e => setForm(f => ({ ...f, bil_miltal: e.target.value }))}
+                      placeholder="t.ex. 8500"
+                      className="form-control"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-6 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStep('kontakt')}
+                  className="flex-1 btn-primary h-12 text-[15px]"
+                >
+                  Fortsätt
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+              <p className="text-center text-[12px] text-slate-400 mt-3">
+                Inget regnummer? Du kan lämna fältet tomt och berätta mer i meddelandet.
+              </p>
+            </div>
+          )}
+
+          {/* Step 2: Kontakt */}
+          {step === 'kontakt' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (form.syfte === 'kop_bil') setStep('kop_sub');
+                  else if (form.syfte === 'salj_bil' || form.syfte === 'inbyte') setStep('salj_reg');
+                  else setStep('syfte');
+                }}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Tillbaka
+              </button>
+
+              {/* Summary chip */}
+              {form.syfte && (
+                <div className="flex items-center gap-2 mb-5 px-3 py-2 bg-[#0e6efe]/5 rounded-xl border border-[#0e6efe]/15">
+                  <Car className="w-4 h-4 text-[#0e6efe] shrink-0" />
+                  <span className="text-[13px] font-medium text-[#0e6efe]">
+                    {selectedSyfte?.label}
+                    {form.kop_status === 'hittat' && form.bil_link && ` · Har hittat bil`}
+                    {form.kop_status === 'letar' && ` · Letar fortfarande`}
+                    {form.regnummer && ` · ${form.regnummer}`}
+                    {form.bil_marke && ` – ${form.bil_marke} ${form.bil_modell}`}
+                  </span>
+                </div>
+              )}
+
               <h2 className="text-[22px] font-bold text-slate-900 mb-6">Dina uppgifter</h2>
 
               <div className="space-y-5">
@@ -425,7 +688,6 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
               <h2 className="text-[22px] font-bold text-slate-900 mb-1">Välj datum och tid</h2>
               <p className="text-slate-500 text-[14px] mb-6">Välj ett av de närmaste lediga alternativen.</p>
 
-              {/* Date selector */}
               <div className="grid grid-cols-4 gap-2 mb-7">
                 {availableDates.map(d => {
                   const selected = form.booking_date === d.dateStr;
@@ -452,7 +714,6 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
               </div>
               {errors.booking_date && <p className="text-red-500 text-xs -mt-4 mb-4">{errors.booking_date}</p>}
 
-              {/* Time grid */}
               {form.booking_date && (
                 <>
                   <p className="text-[13px] font-semibold text-slate-700 mb-3">
@@ -509,8 +770,10 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 disabled={submitting}
                 className="btn-primary w-full h-12 text-[15px] disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
               >
-                {submitting ? 'Bokar...' : 'Boka konsultation'}
-                {!submitting && <ArrowRight className="w-4 h-4" />}
+                {submitting
+                  ? <><Loader2 className="w-4 h-4 animate-spin" />Bokar...</>
+                  : <>Boka konsultation <ArrowRight className="w-4 h-4" /></>
+                }
               </button>
 
               <p className="text-center text-[12px] text-slate-400 mt-3">
@@ -538,9 +801,11 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                     { label: 'Namn',   value: form.namn },
                     { label: 'Telefon', value: form.telefon },
                     { label: 'Ärende', value: selectedSyfte?.label ?? '' },
+                    form.regnummer ? { label: 'Regnummer', value: form.regnummer } : null,
+                    form.bil_marke ? { label: 'Bil', value: `${form.bil_marke} ${form.bil_modell}` } : null,
                     { label: 'Datum',  value: selectedDateLabel },
                     { label: 'Tid',    value: `kl. ${form.booking_time}` },
-                  ].map(row => (
+                  ].filter(Boolean).map(row => row && (
                     <div key={row.label} className="flex justify-between">
                       <span className="text-slate-400">{row.label}</span>
                       <span className="font-medium text-slate-800">{row.value}</span>

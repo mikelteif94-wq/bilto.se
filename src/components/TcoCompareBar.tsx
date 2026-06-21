@@ -62,10 +62,10 @@ function CarSlot({ car, onRemove }: { car: TcoCompareCar; onRemove: () => void }
         </div>
         <button
           onClick={onRemove}
-          className="shrink-0 w-6 h-6 rounded-xl bg-slate-100 hover:bg-red-100 flex items-center justify-center transition-colors"
+          className="shrink-0 w-7 h-7 rounded-xl bg-slate-100 hover:bg-red-100 hover:text-red-500 text-slate-500 flex items-center justify-center transition-colors"
           aria-label="Ta bort"
         >
-          <X className="w-3 h-3 text-slate-400 hover:text-red-500" />
+          <X className="w-3.5 h-3.5" />
         </button>
       </div>
 
