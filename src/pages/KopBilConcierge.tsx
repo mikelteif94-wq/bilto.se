@@ -56,7 +56,7 @@ const STEPS = [
   {
     n: '03',
     title: 'Vi hittar och förhandlar',
-    body: 'Vår expert söker i hela marknaden, kontrollerar historik och förhandlar pris, ränta och tillval — du behöver aldrig prata med en handlare.',
+    body: 'Vår expert söker i hela marknaden, kontrollerar historik och förhandlar pris, ränta och tillval.',
     icon: TrendingDown,
   },
   {
@@ -90,6 +90,38 @@ const FAQS = [
   },
 ];
 
+const INCLUDED = [
+  { title: 'Sökning i hela marknaden', desc: 'Vi letar på alla plattformar — inte bara ett handlares lager.' },
+  { title: 'Prisförhandling', desc: 'Vi vet vad handlaren betalt för bilen och var marginalen finns.' },
+  { title: 'Historikkontroll', desc: 'Ägarhistorik, skador, miltal och service — granskat innan erbjudande.' },
+  { title: 'Ränteförhandling', desc: 'Vi jämför finansiering och pressar räntan mot flera aktörer.' },
+  { title: 'Inbytesvärdering', desc: 'Om du byter in en bil hämtar vi konkurrerande bud.' },
+  { title: 'Leverans hem', desc: 'Vi kan koordinera hemleverans utan att du behöver besöka handlaren.' },
+];
+
+const TESTIMONIALS = [
+  {
+    quote: 'Jag hade hittat en Volvo XC40 men kände mig osäker. Bilto fick 15 000 kr i ersättning för en felaktig annons, förhandlade ner räntan 2 % och fick dubbdäck och 2 års garanti på köpet.',
+    name: 'Josefin L.',
+    car: 'Volvo XC40, 2022',
+    saves: [
+      { label: 'Ränta', val: '−2 %' },
+      { label: 'Ersättning', val: '15 000 kr' },
+      { label: 'Inbyte', val: '+7 000 kr' },
+    ],
+  },
+  {
+    quote: 'Jag visste inte ens vilket märke jag ville ha. Experten ställde rätt frågor, föreslog tre alternativ och hittade en BMW i perfekt skick till 40 000 kr under vad jag trodde jag måste betala.',
+    name: 'Daniel K.',
+    car: 'BMW 320i, 2021',
+    saves: [
+      { label: 'Besparing', val: '40 000 kr' },
+      { label: 'Tid sparat', val: '3 veckor' },
+      { label: 'Fordon granskade', val: '12 st' },
+    ],
+  },
+];
+
 export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowItWorks }: KopBilConciergProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -120,9 +152,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       />
 
       {/* Nav */}
-      <header
-        className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]"
-      >
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-6 z-40 h-16 rounded-full shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
@@ -168,35 +198,34 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
         </div>
       </header>
 
-      {/* Hero */}
+      {/* ── Hero ── */}
       <section className="relative bg-[#0e6efe] pt-28 pb-0 overflow-hidden">
         <div className="absolute -left-60 -top-40 w-[800px] h-[800px] rounded-full bg-[#1a7cff] opacity-50 pointer-events-none" />
         <div className="absolute right-0 bottom-0 w-[500px] h-[500px] rounded-full bg-[#0a57cc] opacity-40 pointer-events-none" />
 
-        <div className="relative max-w-[1200px] mx-auto px-6 lg:px-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-end">
-            {/* Left copy */}
-            <div className="pb-14 lg:pb-20">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-[13px] font-semibold mb-8">
-                <ShieldCheck className="w-4 h-4" />
+        <div className="relative max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-end">
+            <div className="pb-12 lg:pb-20">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-[13px] font-semibold mb-6 sm:mb-8">
+                <ShieldCheck className="w-4 h-4 shrink-0" />
                 Vi jobbar alltid för dig — aldrig för handlaren
               </div>
-              <h1 className="text-white text-[40px] sm:text-[56px] lg:text-[64px] font-bold leading-[1.0] tracking-tight">
+              <h1 className="text-white text-[38px] sm:text-[52px] lg:text-[62px] font-bold leading-[1.05] tracking-tight">
                 Din personliga<br />
                 <span className="text-white/85">bilköpare</span>
               </h1>
-              <p className="mt-6 text-white/85 text-[17px] sm:text-[20px] leading-[1.6] max-w-[480px]">
+              <p className="mt-5 text-white/85 text-[16px] sm:text-[19px] leading-[1.65] max-w-[480px]">
                 Berätta vad du söker. Vi hittar rätt bil, granskar historiken och förhandlar priset — du slipper göra ett enda samtal till en handlare.
               </p>
 
-              <ul className="mt-8 space-y-3">
+              <ul className="mt-7 space-y-3">
                 {[
                   'Söker i hela marknaden, inte bara ett lager',
                   'Förhandlar pris, ränta och tillval',
                   'Granskar historik och skick före köp',
                   'Gratis — utan förpliktelse',
                 ].map((point) => (
-                  <li key={point} className="flex items-center gap-3 text-white text-[15px] font-medium">
+                  <li key={point} className="flex items-center gap-3 text-white text-[14px] sm:text-[15px] font-medium">
                     <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
                       <Check className="w-3 h-3 text-white" strokeWidth={3} />
                     </div>
@@ -205,32 +234,31 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 ))}
               </ul>
 
-              <div className="mt-10 flex flex-col sm:flex-row gap-3">
+              <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3">
                 <button
                   type="button"
                   onClick={() => onNavigateBuy()}
-                  className="h-14 px-8 rounded-full bg-white text-[#0e6efe] font-bold text-[16px] hover:bg-slate-50 transition shadow-lg inline-flex items-center gap-2 group justify-center"
+                  className="h-13 sm:h-14 px-7 sm:px-8 rounded-full bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[16px] hover:bg-slate-50 transition shadow-lg inline-flex items-center gap-2 group justify-center"
                 >
                   Kom igång gratis
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
                 </button>
                 <a
                   href="tel:+46855550200"
-                  className="h-14 px-7 rounded-full border-2 border-white/30 text-white font-semibold text-[15px] hover:border-white/60 transition inline-flex items-center gap-2 justify-center"
+                  className="h-13 sm:h-14 px-6 sm:px-7 rounded-full border-2 border-white/30 text-white font-semibold text-[14px] sm:text-[15px] hover:border-white/60 transition inline-flex items-center gap-2 justify-center"
                 >
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-4 h-4 shrink-0" />
                   Ring oss: 08-5555 0200
                 </a>
               </div>
-              <p className="mt-4 text-white/60 text-[13px]">Vi hör av oss inom en arbetsdag.</p>
+              <p className="mt-4 text-white/55 text-[13px]">Vi hör av oss inom en arbetsdag.</p>
             </div>
 
-            {/* Right: hero image */}
             <div className="hidden lg:flex items-end justify-center pb-0">
               <img
                 src="/ChatGPT_Image_8_maj_2026_09_33_53.png"
                 alt="Glad kund med ny bil"
-                className="w-full max-w-[520px] object-contain drop-shadow-2xl"
+                className="w-full max-w-[500px] object-contain drop-shadow-2xl"
                 fetchPriority="high"
                 decoding="async"
               />
@@ -238,18 +266,17 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           </div>
         </div>
 
-        {/* Wave divider */}
-        <div className="relative h-16 mt-0">
+        <div className="relative h-14 sm:h-16 mt-0">
           <svg viewBox="0 0 1440 64" className="absolute bottom-0 w-full" preserveAspectRatio="none" fill="white">
             <path d="M0,32 C360,80 1080,-16 1440,32 L1440,64 L0,64 Z" />
           </svg>
         </div>
       </section>
 
-      {/* Trust bar */}
-      <section className="bg-white py-10 border-b border-slate-100">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+      {/* ── Stats bar ── */}
+      <section className="bg-white border-b border-slate-100 py-8 sm:py-10">
+        <div className="max-w-4xl mx-auto px-5 sm:px-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 text-center">
             {[
               { value: '5 000+', label: 'Bilar förmedlade' },
               { value: '~15 000 kr', label: 'Genomsnittlig besparing' },
@@ -257,60 +284,60 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               { value: '100%', label: 'På kundens sida' },
             ].map((s) => (
               <div key={s.label}>
-                <p className="text-[26px] sm:text-[30px] font-bold text-[#0e6efe] tabular-nums tracking-tight leading-none">
+                <p className="text-[24px] sm:text-[28px] font-bold text-[#0e6efe] tabular-nums tracking-tight leading-none">
                   {s.value}
                 </p>
-                <p className="text-[12px] sm:text-[13px] text-slate-500 font-medium mt-1.5">{s.label}</p>
+                <p className="text-[12px] sm:text-[13px] text-slate-500 font-medium mt-1.5 leading-snug">{s.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="bg-white py-20 sm:py-28 px-5 sm:px-6">
+      {/* ── How it works ── */}
+      <section className="py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+          <div className="text-center mb-12 sm:mb-14">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Processen
             </span>
-            <h2 className="text-[32px] sm:text-[48px] font-bold leading-[1.05] text-slate-900 tracking-tight">
+            <h2 className="text-[28px] sm:text-[44px] font-bold leading-[1.1] text-slate-900 tracking-tight">
               Fyra steg — du gör nästan ingenting
             </h2>
           </div>
 
           <div className="relative">
-            {/* Connecting line desktop */}
             <div className="hidden lg:block absolute top-10 left-[12.5%] right-[12.5%] h-px bg-slate-200" />
-
-            <div className="grid lg:grid-cols-4 gap-8 lg:gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-6">
               {STEPS.map((step) => {
                 const Icon = step.icon;
                 return (
-                  <div key={step.n} className="relative text-center flex flex-col items-center">
-                    <div className="relative z-10 w-20 h-20 rounded-2xl bg-[#0e6efe] flex items-center justify-center mb-5 shadow-lg shadow-[#0e6efe]/25">
-                      <Icon className="w-8 h-8 text-white" strokeWidth={1.8} />
+                  <div key={step.n} className="relative flex lg:flex-col items-start lg:items-center gap-4 lg:gap-0 lg:text-center">
+                    <div className="relative z-10 w-16 h-16 lg:w-20 lg:h-20 rounded-2xl bg-[#0e6efe] flex items-center justify-center shrink-0 lg:mb-5 shadow-lg shadow-[#0e6efe]/20">
+                      <Icon className="w-7 h-7 lg:w-8 lg:h-8 text-white" strokeWidth={1.8} />
                       <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border-2 border-[#0e6efe] text-[#0e6efe] text-[10px] font-bold flex items-center justify-center">
                         {step.n}
                       </span>
                     </div>
-                    <h3 className="text-[16px] sm:text-[17px] font-bold text-slate-900 mb-2 leading-snug">
-                      {step.title}
-                    </h3>
-                    <p className="text-[13.5px] text-slate-500 leading-relaxed max-w-[200px]">
-                      {step.body}
-                    </p>
+                    <div>
+                      <h3 className="text-[15px] sm:text-[16px] font-bold text-slate-900 mb-1.5 leading-snug">
+                        {step.title}
+                      </h3>
+                      <p className="text-[13px] sm:text-[13.5px] text-slate-500 leading-relaxed lg:max-w-[190px]">
+                        {step.body}
+                      </p>
+                    </div>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          <div className="mt-14 text-center">
+          <div className="mt-12 sm:mt-14 text-center">
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-14 px-10 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-sm inline-flex items-center gap-2 group"
+              className="h-13 sm:h-14 px-8 sm:px-10 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] sm:text-[16px] transition shadow-sm inline-flex items-center gap-2 group"
             >
               Skicka en förfrågan
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -320,58 +347,76 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
         </div>
       </section>
 
-      {/* Testimonial / case */}
-      <section className="bg-[#f5f8fc] py-20 sm:py-28 px-5 sm:px-6">
+      {/* ── What's included ── */}
+      <section className="bg-[#0e6efe] py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+          <div className="text-center mb-10 sm:mb-12">
+            <h2 className="text-[26px] sm:text-[42px] font-bold text-white leading-tight tracking-tight">
+              Vad ingår i tjänsten?
+            </h2>
+            <p className="text-white/70 mt-3 sm:mt-4 text-[15px] sm:text-[17px] max-w-xl mx-auto leading-relaxed">
+              Allt du behöver från idé till nyckel — utan att du behöver göra jobbet.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            {INCLUDED.map((item) => (
+              <div key={item.title} className="flex items-start gap-4 bg-white/10 rounded-2xl p-5 border border-white/15">
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
+                  <Check className="w-4 h-4 text-white" strokeWidth={2.5} />
+                </div>
+                <div>
+                  <p className="text-white font-semibold text-[14px] sm:text-[15px] leading-snug">{item.title}</p>
+                  <p className="text-white/60 text-[13px] mt-1 leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 sm:mt-12 text-center">
+            <button
+              type="button"
+              onClick={() => onNavigateBuy()}
+              className="h-13 sm:h-14 px-8 sm:px-10 rounded-full bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[16px] hover:bg-slate-50 transition shadow-lg inline-flex items-center gap-2 group"
+            >
+              Kom igång nu
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section className="py-16 sm:py-24 px-5 sm:px-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10 sm:mb-12">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Kundcase
             </span>
-            <h2 className="text-[28px] sm:text-[40px] font-bold text-slate-900 leading-tight tracking-tight">
+            <h2 className="text-[26px] sm:text-[40px] font-bold text-slate-900 leading-tight tracking-tight">
               Vad en Bilto-expert faktiskt gör åt dig
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {[
-              {
-                quote: 'Jag hade hittat en Volvo XC40 men kände mig osäker. Bilto fick 15 000 kr i ersättning för en felaktig annons, förhandlade ner räntan 2 % och fick dubbdäck och 2 års garanti på köpet.',
-                name: 'Josefin L.',
-                car: 'Volvo XC40, 2022',
-                saves: [
-                  { label: 'Ränta', val: '−2 %' },
-                  { label: 'Ersättning', val: '15 000 kr' },
-                  { label: 'Inbyte', val: '+7 000 kr' },
-                ],
-              },
-              {
-                quote: 'Jag visste inte ens vilket märke jag ville ha. Experten ställde rätt frågor, föreslog tre alternativ och hittade en BMW i perfekt skick till 40 000 kr under vad jag trodde jag måste betala.',
-                name: 'Daniel K.',
-                car: 'BMW 320i, 2021',
-                saves: [
-                  { label: 'Besparing', val: '40 000 kr' },
-                  { label: 'Tid sparat', val: '3 veckor' },
-                  { label: 'Fordon granskade', val: '12 st' },
-                ],
-              },
-            ].map((t) => (
-              <div key={t.name} className="bg-white rounded-2xl border border-slate-200 p-7 sm:p-8 shadow-sm">
-                <Quote className="w-8 h-8 text-[#0e6efe]/20 mb-4" />
-                <p className="text-[15px] sm:text-[16px] text-slate-700 leading-[1.65] mb-6 italic">
+          <div className="grid sm:grid-cols-2 gap-5 sm:gap-6">
+            {TESTIMONIALS.map((t) => (
+              <div key={t.name} className="bg-slate-50 rounded-2xl border border-slate-200 p-6 sm:p-8">
+                <Quote className="w-7 h-7 text-[#0e6efe]/20 mb-4" />
+                <p className="text-[14px] sm:text-[15px] text-slate-700 leading-[1.7] mb-6 italic">
                   "{t.quote}"
                 </p>
-                <div className="grid grid-cols-3 gap-3 mb-6">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5">
                   {t.saves.map((s) => (
-                    <div key={s.label} className="bg-[#0e6efe]/5 rounded-xl px-3 py-3 text-center">
-                      <p className="text-[15px] font-bold text-[#0e6efe] leading-tight">{s.val}</p>
-                      <p className="text-[10px] text-slate-500 font-medium mt-0.5">{s.label}</p>
+                    <div key={s.label} className="bg-white rounded-xl px-3 py-3 text-center border border-slate-200">
+                      <p className="text-[14px] sm:text-[15px] font-bold text-[#0e6efe] leading-tight">{s.val}</p>
+                      <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5">{s.label}</p>
                     </div>
                   ))}
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
                   <div>
@@ -385,130 +430,83 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
         </div>
       </section>
 
-      {/* Meet the experts */}
-      <section className="bg-white py-20 sm:py-28 px-5 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+      {/* ── Team ── */}
+      <section className="bg-slate-50 border-y border-slate-200 py-16 sm:py-24 px-5 sm:px-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10 sm:mb-12">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Teamet
             </span>
-            <h2 className="text-[28px] sm:text-[40px] font-bold text-slate-900 leading-tight tracking-tight">
+            <h2 className="text-[26px] sm:text-[40px] font-bold text-slate-900 leading-tight tracking-tight">
               Erfarna förhandlare — på din sida
             </h2>
-            <p className="text-slate-500 mt-4 text-[15px] sm:text-[17px] max-w-xl mx-auto leading-relaxed">
+            <p className="text-slate-500 mt-3 sm:mt-4 text-[14px] sm:text-[16px] max-w-xl mx-auto leading-relaxed">
               Vårt team har jobbat som toppsäljare hos Sveriges största bilhandlare i sammanlagt över 40 år. Nu jobbar vi uteslutande för köparen.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto">
             {EXPERTS.map((e) => (
-              <div key={e.name} className="flex flex-col items-center text-center bg-[#f5f8fc] rounded-2xl p-8 border border-slate-200">
-                <div className="relative mb-5">
+              <div key={e.name} className="flex items-center gap-5 bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm">
+                <div className="relative shrink-0">
                   <img
                     src={e.avatar}
                     alt={e.name}
-                    className="w-24 h-24 rounded-full object-cover object-top border-4 border-white shadow-md"
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover object-top border-4 border-white shadow-md"
                   />
-                  <span className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white" />
+                  <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
                 </div>
-                <p className="text-[18px] font-bold text-slate-900">{e.name}</p>
-                <p className="text-[13px] text-[#0e6efe] font-semibold mt-1">{e.title}</p>
-                <p className="text-[12px] text-slate-500 mt-0.5">{e.years} · {e.spec}</p>
-                <div className="flex gap-0.5 mt-3">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  ))}
+                <div>
+                  <p className="text-[16px] sm:text-[17px] font-bold text-slate-900">{e.name}</p>
+                  <p className="text-[13px] text-[#0e6efe] font-semibold mt-0.5">{e.title}</p>
+                  <p className="text-[12px] text-slate-500 mt-0.5">{e.years} · {e.spec}</p>
+                  <div className="flex gap-0.5 mt-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 text-center">
-            <div className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-slate-100 text-slate-600 text-[14px] font-medium">
-              <Users className="w-4 h-4" />
+          <div className="mt-8 sm:mt-10 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 text-[13px] sm:text-[14px] font-medium shadow-sm">
+              <Users className="w-4 h-4 text-slate-400 shrink-0" />
               +3 ytterligare experter i teamet
             </div>
           </div>
         </div>
       </section>
 
-      {/* What's included */}
-      <section className="bg-[#0e6efe] py-20 sm:py-28 px-5 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-[28px] sm:text-[44px] font-bold text-white leading-tight tracking-tight">
-              Vad ingår i tjänsten?
-            </h2>
-            <p className="text-white/75 mt-4 text-[15px] sm:text-[17px] max-w-xl mx-auto">
-              Allt du behöver från idé till nyckel — utan att du behöver göra jobbet.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { title: 'Sökning i hela marknaden', desc: 'Vi letar på alla plattformar — inte bara ett handlares lager.' },
-              { title: 'Prisförhandling', desc: 'Vi vet vad handlaren betalt för bilen och var marginalen finns.' },
-              { title: 'Historikkontroll', desc: 'Ägarhistorik, skador, miltal och service — granskat innan erbjudande.' },
-              { title: 'Ränteförhandling', desc: 'Vi jämför finansiering och pressar räntan mot flera aktörer.' },
-              { title: 'Inbytesvärdering', desc: 'Om du byter in en bil hämtar vi konkurrerande bud.' },
-              { title: 'Leverans hem', desc: 'Vi kan koordinera hemleverans utan att du behöver besöka handlaren.' },
-            ].map((item) => (
-              <div key={item.title} className="flex items-start gap-4 bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
-                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
-                  <Check className="w-4 h-4 text-white" strokeWidth={2.5} />
-                </div>
-                <div>
-                  <p className="text-white font-semibold text-[15px] leading-snug">{item.title}</p>
-                  <p className="text-white/65 text-[13px] mt-1 leading-relaxed">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <button
-              type="button"
-              onClick={() => onNavigateBuy()}
-              className="h-14 px-10 rounded-full bg-white text-[#0e6efe] font-bold text-[16px] hover:bg-slate-50 transition shadow-lg inline-flex items-center gap-2 group"
-            >
-              Kom igång nu
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="bg-white py-20 sm:py-28 px-5 sm:px-6">
+      {/* ── FAQ ── */}
+      <section className="py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+          <div className="text-center mb-10 sm:mb-12">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Vanliga frågor
             </span>
-            <h2 className="text-[28px] sm:text-[40px] font-bold text-slate-900 leading-tight tracking-tight">
+            <h2 className="text-[26px] sm:text-[40px] font-bold text-slate-900 leading-tight tracking-tight">
               Allt du behöver veta
             </h2>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             {FAQS.map((faq, i) => (
-              <div
-                key={i}
-                className="border border-slate-200 rounded-2xl overflow-hidden"
-              >
+              <div key={i} className="border border-slate-200 rounded-2xl overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-slate-50 transition-colors"
+                  className="w-full flex items-center justify-between gap-4 px-5 sm:px-6 py-4 sm:py-5 text-left hover:bg-slate-50 transition-colors"
                 >
-                  <span className="text-[15px] font-semibold text-slate-900 leading-snug">{faq.q}</span>
+                  <span className="text-[14px] sm:text-[15px] font-semibold text-slate-900 leading-snug">{faq.q}</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 sm:w-5 sm:h-5 text-slate-400 shrink-0 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`}
                   />
                 </button>
                 {openFaq === i && (
-                  <div className="px-6 pb-5 pt-0">
-                    <p className="text-[14.5px] text-slate-600 leading-[1.65]">{faq.a}</p>
+                  <div className="px-5 sm:px-6 pb-5 border-t border-slate-100 pt-3">
+                    <p className="text-[13.5px] sm:text-[14.5px] text-slate-600 leading-[1.7]">{faq.a}</p>
                   </div>
                 )}
               </div>
@@ -517,33 +515,35 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="bg-[#f5f8fc] py-20 sm:py-28 px-5 sm:px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-[32px] sm:text-[52px] font-bold text-slate-900 leading-[1.05] tracking-tight">
-            Redo att köpa bil — utan stressen?
+      {/* ── Final CTA ── */}
+      <section className="bg-slate-50 border-t border-slate-200 py-16 sm:py-24 px-5 sm:px-8">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-[28px] sm:text-[48px] font-bold text-slate-900 leading-[1.1] tracking-tight">
+            Redo att köpa bil —<br className="hidden sm:block" /> utan stressen?
           </h2>
-          <p className="text-slate-600 mt-5 text-[16px] sm:text-[18px] leading-[1.6] max-w-xl mx-auto">
+          <p className="text-slate-500 mt-4 sm:mt-5 text-[15px] sm:text-[17px] leading-[1.65] max-w-lg mx-auto">
             Det tar två minuter att berätta vad du söker. Resten är upp till oss.
           </p>
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-14 px-10 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-sm inline-flex items-center justify-center gap-2 group"
+              className="h-13 sm:h-14 px-8 sm:px-10 rounded-full bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] sm:text-[16px] transition shadow-sm inline-flex items-center justify-center gap-2 group"
             >
               Skicka en förfrågan
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
             <a
               href="tel:+46855550200"
-              className="h-14 px-8 rounded-full border-2 border-slate-300 text-slate-700 font-semibold text-[15px] hover:border-slate-400 transition inline-flex items-center justify-center gap-2"
+              className="h-13 sm:h-14 px-6 sm:px-8 rounded-full border-2 border-slate-300 text-slate-700 font-semibold text-[14px] sm:text-[15px] hover:border-slate-400 hover:bg-white transition inline-flex items-center justify-center gap-2"
             >
-              <Phone className="w-4 h-4" />
+              <Phone className="w-4 h-4 shrink-0" />
               Ring oss direkt
             </a>
           </div>
-          <p className="mt-5 text-[13px] text-slate-400">Gratis · Utan förpliktelse · Vi hör av oss inom en arbetsdag</p>
+          <p className="mt-5 text-[12px] sm:text-[13px] text-slate-400">
+            Gratis · Utan förpliktelse · Vi hör av oss inom en arbetsdag
+          </p>
         </div>
       </section>
 
