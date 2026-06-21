@@ -640,7 +640,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   }}
                   className="h-11 px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
                 >
-                  Läs mer om hur det fungerar
+                  Få bilköpshjälp
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
