@@ -20,6 +20,19 @@ function fmt(n: number) {
   return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
 }
 
+function drivetrainBadge(dt: string | null): { label: string; className: string } | null {
+  if (!dt) return null;
+  const s = dt.toLowerCase();
+  const hasAwd = s.includes('awd') || s.includes('4wd');
+  const hasFwd = s.includes('fwd');
+  const hasRwd = s.includes('rwd');
+  if (hasAwd && (hasFwd || hasRwd))
+    return { label: hasRwd ? 'Bak/Fyrhjul' : 'Fram/Fyrhjul', className: 'bg-slate-100 text-slate-600' };
+  if (hasAwd) return { label: 'AWD', className: 'bg-blue-50 text-blue-600' };
+  if (hasRwd) return { label: 'Bakhjul', className: 'bg-slate-100 text-slate-600' };
+  return null;
+}
+
 const BODY_LABELS: Record<string, string> = {
   sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
   coupe: 'Coupé', cab: 'Cab', mpv: 'MPV',
@@ -113,8 +126,10 @@ function CarCard({ car, onBuy, onDetail }: { car: CatalogCarFull; onBuy: () => v
                 {bodyLabel}
               </span>
             )}
-            {car.drivetrain_type?.toLowerCase().includes('awd') && (
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600">AWD</span>
+            {drivetrainBadge(car.drivetrain_type) && (
+              <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${drivetrainBadge(car.drivetrain_type)!.className}`}>
+                {drivetrainBadge(car.drivetrain_type)!.label}
+              </span>
             )}
             {car.seats != null && car.seats > 0 && (
               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 inline-flex items-center gap-0.5">
@@ -356,8 +371,10 @@ function IntentSheet({
                       {bodyLabel}
                     </span>
                   )}
-                  {car.drivetrain_type?.toLowerCase().includes('awd') && (
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-blue-50 text-blue-600">AWD</span>
+                  {drivetrainBadge(car.drivetrain_type) && (
+                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold ${drivetrainBadge(car.drivetrain_type)!.className}`}>
+                      {drivetrainBadge(car.drivetrain_type)!.label}
+                    </span>
                   )}
                   {car.seats != null && car.seats > 0 && (
                     <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-white text-slate-500 ring-1 ring-slate-200">
