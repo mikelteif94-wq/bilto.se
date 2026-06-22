@@ -1,11 +1,12 @@
-import { useState, useMemo } from 'react';
-import { ChevronDown, ChevronUp, ArrowRight, Info, Briefcase, Car, Zap, Fuel, ChevronLeft } from 'lucide-react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { ChevronDown, ChevronUp, ArrowRight, Info, Briefcase, Car, Zap, Fuel, Menu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SiteFooter } from '../components/SiteFooter';
 import { setPageMeta } from '../lib/pageMeta';
 import { getAllComparisonCars } from '../lib/comparison';
 import { useCatalogCars } from '../hooks/useCatalogCars';
 import { useCarImages } from '../hooks/useCarImages';
+import MobileMenu from '../components/MobileMenu';
 
 interface FormansbildsKalkylatornProps {
   onBack: () => void;
@@ -14,15 +15,50 @@ interface FormansbildsKalkylatornProps {
 
 const ALL_CARS = getAllComparisonCars();
 
-const PRISBASBELOPP_2025 = 58_800;
+// Skatteverket factors by income year
+const YEAR_FACTORS: Record<number, number> = {
+  2026: 0.317,
+  2025: 0.299,
+  2024: 0.290,
+  2023: 0.290,
+  2022: 0.290,
+  2021: 0.290,
+};
+const INCOME_YEARS = [2026, 2025, 2024, 2023, 2022, 2021];
 
-function calcFormansvardeAr(nybilspris: number, isEl: boolean): number {
-  const raw = 0.29 * nybilspris + 0.75 * PRISBASBELOPP_2025;
-  return isEl ? raw * 0.60 : raw;
+// Skatteverket formula: factor × nybilspris + 2 × fordonsskatt
+// El/laddhybrid: multiply total by 0.60 (−40%)
+// >3000 mil i tjänsten: multiply total by 0.75
+function calcFormansvardeAr({
+  nybilspris,
+  extrautrustning,
+  fordonsskatt,
+  isElOrLaddhybrid,
+  tjanstekorsning,
+  year,
+}: {
+  nybilspris: number;
+  extrautrustning: number;
+  fordonsskatt: number;
+  isElOrLaddhybrid: boolean;
+  tjanstekorsning: boolean;
+  year: number;
+}): number {
+  const factor = YEAR_FACTORS[year] ?? 0.290;
+  const totalBilpris = nybilspris + extrautrustning;
+  let annual = factor * totalBilpris + 2 * fordonsskatt;
+  if (isElOrLaddhybrid) annual *= 0.60;
+  if (tjanstekorsning) annual *= 0.75;
+  return Math.round(annual);
 }
 
 function fmt(n: number) {
   return Math.round(n).toLocaleString('sv-SE');
+}
+
+function parseSEK(s: string): number {
+  const cleaned = s.replace(/[^0-9]/g, '');
+  return cleaned ? parseInt(cleaned, 10) : 0;
 }
 
 const MARGINALSKATTER = [
@@ -34,7 +70,7 @@ const MARGINALSKATTER = [
 
 const BRANSLE_TYPES = [
   { id: 'bensin', label: 'Bensin / Diesel', Icon: Fuel },
-  { id: 'hybrid', label: 'Hybrid', Icon: Zap },
+  { id: 'laddhybrid', label: 'Laddhybrid (−40%)', Icon: Zap },
   { id: 'el', label: 'El (−40%)', Icon: Zap },
 ];
 
@@ -68,16 +104,20 @@ const FAQ_ITEMS = [
     a: 'En förmånsbil är en bil du får av din arbetsgivare att använda privat, som en del av din lön. Du betalar skatt på förmånsvärdet – inte på bilen. Det kan vara ekonomiskt fördelaktigt jämfört med att köpa bilen privat.',
   },
   {
-    q: 'Hur beräknas förmånsvärdet?',
-    a: 'Förmånsvärdet beräknas enligt Skatteverkets regler: 0,29 × nybilspriset + 0,75 × prisbasbeloppet (58 800 kr 2025). Elbilar och laddhybrider (t.o.m. juni 2026) får 40 % rabatt på förmånsvärdet.',
+    q: 'Hur beräknas förmånsvärdet enligt Skatteverket?',
+    a: 'Förmånsvärdet beräknas enligt Skatteverkets formel: faktor × nybilspriset + 2 × fordonsskatten. Faktorn för 2026 är 0,317. Elbilar och laddhybrider får 40% reduktion på förmånsvärdet.',
   },
   {
     q: 'Vad kostar en förmånsbil mig i plånboken?',
-    a: 'Din månadskostnad är förmånsvärdet/12 × din marginalskatt. Vid en bil med förmånsvärde 90 000 kr/år och 52% marginalskatt = 3 900 kr/mån i extra skatt. Arbetsgivaren betalar vanligtvis drivmedel, försäkring och service.',
+    a: 'Din månadskostnad är förmånsvärdet/12 × din marginalskatt. Vid ett förmånsvärde på 57 600 kr/år och 52% marginalskatt = ca 2 500 kr/mån i extra skatt. Arbetsgivaren betalar vanligtvis drivmedel, försäkring och service.',
   },
   {
-    q: 'Är elbil alltid bäst som förmånsbil?',
+    q: 'Varför är elbil billigare som förmånsbil?',
     a: 'Elbilar har 40% lägre förmånsvärde, vilket ger lägre månadsskatt. Dessutom är driftkostnaderna lägre. Men nybilspriset är ofta högre. Kalkylatorn visar exakt vad som är billigast för dig.',
+  },
+  {
+    q: 'Vad innebär reducering för tjänstekörning?',
+    a: 'Om du kör minst 3 000 mil i tjänsten per år reduceras förmånsvärdet med 25%. Kontrollera med din arbetsgivare om detta gäller för din tjänst.',
   },
   {
     q: 'Kan Bilto hjälpa mig förhandla förmånsbil?',
@@ -87,18 +127,35 @@ const FAQ_ITEMS = [
 
 export default function FormansbildsKalkylator({ onBack, onNavigateConsultation }: FormansbildsKalkylatornProps) {
   setPageMeta({
-    title: 'Förmånsbilskalkylator – beräkna förmånsskatt | Bilto',
-    description: 'Räkna ut vad din förmånsbil kostar i skatt per månad. Jämför elbil, bensin och diesel enligt Skatteverkets regler 2025.',
+    title: 'Förmånsbilskalkylator – beräkna förmånsskatt 2026 | Bilto',
+    description: 'Räkna ut vad din förmånsbil kostar i skatt per månad enligt Skatteverkets formel 2026. Jämför elbil, laddhybrid och bensin.',
   });
 
   const { cars: catalogCars } = useCatalogCars();
   const { getCarImage } = useCarImages(catalogCars);
 
+  const [incomeYear, setIncomeYear] = useState(2026);
   const [nybilspris, setNybilspris] = useState(450_000);
-  const [bransledTyp, setBransledTyp] = useState<'bensin' | 'hybrid' | 'el'>('bensin');
+  const [extrautrustningStr, setExtrautrustningStr] = useState('');
+  const [fordonsskattStr, setFordonsskattStr] = useState('');
+  const [bransledTyp, setBransledTyp] = useState<'bensin' | 'laddhybrid' | 'el'>('bensin');
   const [marginalSkatt, setMarginalSkatt] = useState(0.52);
+  const [tjanstekorsning, setTjanstekorsning] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [selectedCarId, setSelectedCarId] = useState<string>('');
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [hasExtrautrustning, setHasExtrautrustning] = useState(false);
+
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', fn, { passive: true });
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+
+  const extrautrustning = parseSEK(extrautrustningStr);
+  const fordonsskatt = parseSEK(fordonsskattStr);
+  const isElOrLaddhybrid = bransledTyp === 'el' || bransledTyp === 'laddhybrid';
 
   const selectedCar = useMemo(() => QUICK_CARS.find(c => c.id === selectedCarId), [selectedCarId]);
   const selectedImg = useMemo(() => {
@@ -107,20 +164,27 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
     return getCarImage(selectedCar.brand_display, selectedCar.model_display);
   }, [selectedCar, getCarImage]);
 
-  const isEl = bransledTyp === 'el';
+  const formansvardeAr = useMemo(() => calcFormansvardeAr({
+    nybilspris,
+    extrautrustning,
+    fordonsskatt,
+    isElOrLaddhybrid,
+    tjanstekorsning,
+    year: incomeYear,
+  }), [nybilspris, extrautrustning, fordonsskatt, isElOrLaddhybrid, tjanstekorsning, incomeYear]);
 
-  const formansvardeAr = useMemo(() => calcFormansvardeAr(nybilspris, isEl), [nybilspris, isEl]);
-  const formansvardeMan = formansvardeAr / 12;
-  const skattPerMan = formansvardeMan * marginalSkatt;
+  const formansvardeMan = Math.round(formansvardeAr / 12);
+  const skattPerMan = Math.round(formansvardeMan * marginalSkatt);
 
   const RATE = 0.0799 / 12;
   const MONTHS = 60;
   const DOWN = 0.20;
   const loan = nybilspris * (1 - DOWN) * 1.01;
-  const privatKop = (loan * RATE) / (1 - Math.pow(1 + RATE, -MONTHS));
+  const privatKop = Math.round((loan * RATE) / (1 - Math.pow(1 + RATE, -MONTHS)));
   const besparingVsPrivatKop = privatKop - skattPerMan;
 
   const sliderPct = ((nybilspris - 100_000) / (1_200_000 - 100_000)) * 100;
+  const factor = YEAR_FACTORS[incomeYear] ?? 0.290;
 
   const handleCarSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const car = QUICK_CARS.find(c => c.id === e.target.value);
@@ -128,58 +192,71 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
     if (car?.pricing.new_from_sek) {
       setNybilspris(car.pricing.new_from_sek);
       const isElCar = car.specs.fuel_types.includes('el');
-      const isHybrid = car.specs.fuel_types.some(f => ['laddhybrid', 'hybrid', 'mildhybrid'].includes(f));
-      setBransledTyp(isElCar ? 'el' : isHybrid ? 'hybrid' : 'bensin');
+      const isLaddhybrid = car.specs.fuel_types.includes('laddhybrid');
+      setBransledTyp(isElCar ? 'el' : isLaddhybrid ? 'laddhybrid' : 'bensin');
     }
   };
 
   return (
     <div className="min-h-screen bg-[#f8f9fb]">
-      {/* Nav — matches site style */}
-      <nav className="sticky top-0 z-40" style={{
-        background: 'linear-gradient(180deg, #0a57cc 0%, #0e6efe 100%)',
-        boxShadow: '0 1px 0 rgba(255,255,255,0.08), 0 4px 24px rgba(10,87,204,0.28)',
-      }}>
-        <div className="h-[2px] w-full" style={{
-          background: 'linear-gradient(90deg, rgba(251,191,36,0.7) 0%, rgba(255,255,255,0.4) 40%, rgba(56,189,248,0.6) 100%)',
-        }} />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1 text-white/80 hover:text-white transition text-[13px] font-medium"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Tillbaka
+      {/* Floating pill nav — same as rest of Bilto */}
+      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-30 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]/40 backdrop-blur-md'}`}>
+        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
+          <button type="button" aria-label="Meny" onClick={() => setMenuOpen(true)}
+            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white">
+            <Menu className="w-6 h-6 text-white" strokeWidth={2} />
           </button>
-          <div className="w-px h-5 bg-white/20 mx-1" />
-          <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-10 w-auto object-contain" />
+          <button onClick={onBack} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center">
+            <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto"
+              className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
+          </button>
+          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+            <button type="button" onClick={onBack}
+              className="text-[15px] text-white/70 hover:text-white transition font-medium">
+              Köp bil
+            </button>
+            <span className="text-[15px] text-white font-bold underline underline-offset-4 decoration-white/50">
+              Förmånsbil
+            </span>
+            <a href="/sa-funkar-det" className="text-[15px] text-white/70 hover:text-white transition font-medium">
+              Så funkar det
+            </a>
+          </nav>
+          <div className="flex items-center ml-auto gap-3">
+            <a href="/gratis-konsultation"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
+              Kostnadsfri konsultation
+            </a>
+          </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Hero — its own dark block */}
-      <div className="bg-[#060e1e]">
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} active="Köp bil med hjälp" />
+
+      {/* Hero — primary blue */}
+      <div style={{ background: 'linear-gradient(135deg, #0a57cc 0%, #0e6efe 60%, #1a7fff 100%)' }}>
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 right-1/4 w-96 h-64 rounded-full opacity-25"
-              style={{ background: 'radial-gradient(circle, rgba(14,110,254,0.6) 0%, transparent 70%)' }} />
+            <div className="absolute -top-10 right-0 w-80 h-80 rounded-full opacity-20"
+              style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)' }} />
           </div>
-          <div className="relative max-w-4xl mx-auto px-4 pt-10 pb-10 sm:pt-12 sm:pb-12">
+          <div className="relative max-w-4xl mx-auto px-4 pt-28 pb-10 sm:pt-32 sm:pb-12">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
               <div>
-                <div className="inline-flex items-center gap-2 bg-white/10 text-white/70 text-[12px] font-semibold px-4 py-1.5 rounded-full mb-4 border border-white/10">
+                <div className="inline-flex items-center gap-2 bg-white/15 text-white/80 text-[12px] font-semibold px-4 py-1.5 rounded-full mb-4 border border-white/20">
                   <Briefcase className="w-3.5 h-3.5" />
-                  Tjänstebil &amp; förmånsbil 2025
+                  Tjänstebil &amp; förmånsbil {incomeYear}
                 </div>
                 <h1 className="text-[26px] sm:text-[34px] font-extrabold text-white mb-2 leading-tight">
                   Förmånsbilskalkylator
                 </h1>
-                <p className="text-[14px] sm:text-[16px] text-white/50 max-w-lg leading-relaxed">
-                  Räkna ut exakt vad din förmånsbil kostar i skatt – och jämför mot privat billån.
+                <p className="text-[14px] sm:text-[16px] text-white/65 max-w-lg leading-relaxed">
+                  Räkna ut exakt vad din förmånsbil kostar i skatt – enligt Skatteverkets officiella formel.
                 </p>
               </div>
               {selectedImg && selectedCar && (
                 <div className="shrink-0 hidden sm:block">
-                  <p className="text-[11px] text-white/40 text-center mb-1">{selectedCar.brand_display} {selectedCar.model_display}</p>
+                  <p className="text-[11px] text-white/50 text-center mb-1">{selectedCar.brand_display} {selectedCar.model_display}</p>
                   <img src={selectedImg} alt="" className="h-20 object-contain drop-shadow-lg" />
                 </div>
               )}
@@ -189,13 +266,35 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
       </div>
 
       <div className="max-w-4xl mx-auto px-4 pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 -mt-4">
-          {/* Inputs */}
-          <div className="lg:col-span-3 space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 mt-6">
+          {/* ── Inputs — second on mobile (order-2), left on desktop ── */}
+          <div className="lg:col-span-3 lg:order-1 order-2 space-y-4">
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-6">
-              {/* Quick pick */}
+
+              {/* Income year */}
               <div>
-                <label className="text-[13px] font-bold text-slate-700 block mb-2">Välj bil från katalog</label>
+                <label className="text-[13px] font-bold text-slate-700 block mb-2">Inkomstår</label>
+                <div className="flex flex-wrap gap-2">
+                  {INCOME_YEARS.map(y => (
+                    <button
+                      key={y}
+                      type="button"
+                      onClick={() => setIncomeYear(y)}
+                      className={`h-9 px-4 rounded-xl border-2 text-[13px] font-semibold transition ${
+                        incomeYear === y
+                          ? 'border-[#0e6efe] bg-[#0e6efe]/8 text-[#0e6efe]'
+                          : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                      }`}
+                    >
+                      {y}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick pick from catalog */}
+              <div>
+                <label className="text-[13px] font-bold text-slate-700 block mb-2">Välj bil från katalog (valfritt)</label>
                 <div className="relative">
                   <Car className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                   <select
@@ -203,7 +302,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                     onChange={handleCarSelect}
                     className="w-full h-11 pl-9 pr-9 rounded-xl border border-slate-200 bg-white text-[13px] text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 appearance-none"
                   >
-                    <option value="">— Valfritt: välj från katalog —</option>
+                    <option value="">— Välj modell för att fylla i pris automatiskt —</option>
                     {QUICK_CARS.map(c => (
                       <option key={c.id} value={c.id}>
                         {c.brand_display} {c.model_display} — {fmt(c.pricing.new_from_sek ?? 0)} kr
@@ -214,7 +313,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                 </div>
               </div>
 
-              {/* Price slider */}
+              {/* Nybilspris slider */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-[13px] font-bold text-slate-700">Nybilspris (inkl. moms)</label>
@@ -236,7 +335,60 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                 </div>
               </div>
 
-              {/* Fuel type */}
+              {/* Fordonsskatt */}
+              <div>
+                <label className="text-[13px] font-bold text-slate-700 block mb-2">
+                  Fordonsskatt {incomeYear} (kr/år)
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={fordonsskattStr}
+                    onChange={e => setFordonsskattStr(e.target.value.replace(/[^0-9]/g, ''))}
+                    placeholder="t.ex. 4 000"
+                    className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-white text-[13px] text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] text-slate-400 pointer-events-none">kr</span>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1.5">Finns på Transportstyrelsen eller i bilens dokument.</p>
+              </div>
+
+              {/* Extrautrustning toggle */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-[13px] font-bold text-slate-700">Extrautrustning</label>
+                  <button
+                    type="button"
+                    onClick={() => { setHasExtrautrustning(v => !v); if (hasExtrautrustning) setExtrautrustningStr(''); }}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none ${hasExtrautrustning ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
+                  >
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${hasExtrautrustning ? 'translate-x-6' : 'translate-x-1'}`} />
+                  </button>
+                </div>
+                <AnimatePresence initial={false}>
+                  {hasExtrautrustning && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                      <div className="relative mt-1">
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={extrautrustningStr}
+                          onChange={e => setExtrautrustningStr(e.target.value.replace(/[^0-9]/g, ''))}
+                          placeholder="t.ex. 25 000"
+                          className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-white text-[13px] text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30"
+                        />
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] text-slate-400 pointer-events-none">kr</span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                {!hasExtrautrustning && (
+                  <p className="text-[11px] text-slate-400">Lägg till om bilen har tillvalsutrustning.</p>
+                )}
+              </div>
+
+              {/* Drivmedel */}
               <div>
                 <label className="text-[13px] font-bold text-slate-700 block mb-2.5">Drivmedel</label>
                 <div className="grid grid-cols-3 gap-2">
@@ -247,7 +399,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                         key={b.id}
                         type="button"
                         onClick={() => setBransledTyp(b.id as typeof bransledTyp)}
-                        className={`flex flex-col items-center gap-1.5 py-3.5 rounded-xl border-2 text-[12px] font-semibold transition ${
+                        className={`flex flex-col items-center gap-1.5 py-3.5 rounded-xl border-2 text-[11.5px] font-semibold transition ${
                           active
                             ? 'border-[#0e6efe] bg-[#0e6efe]/8 text-[#0e6efe]'
                             : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
@@ -259,7 +411,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                     );
                   })}
                 </div>
-                {isEl && (
+                {isElOrLaddhybrid && (
                   <div className="mt-2.5 flex items-start gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
                     <Zap className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                     <p className="text-[11.5px] text-emerald-700 leading-relaxed">
@@ -269,9 +421,24 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                 )}
               </div>
 
+              {/* Tjänstekörning reducering */}
+              <div className="flex items-center justify-between py-3.5 px-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div>
+                  <p className="text-[13px] font-bold text-slate-700">Körs bilen minst 3 000 mil i tjänsten per år?</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">Ger 25% reducering av förmånsvärdet</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setTjanstekorsning(v => !v)}
+                  className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none ${tjanstekorsning ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
+                >
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${tjanstekorsning ? 'translate-x-6' : 'translate-x-1'}`} />
+                </button>
+              </div>
+
               {/* Marginalskatt */}
               <div>
-                <label className="text-[13px] font-bold text-slate-700 block mb-2.5">Marginalskatt</label>
+                <label className="text-[13px] font-bold text-slate-700 block mb-2.5">Din marginalskatt</label>
                 <div className="grid grid-cols-4 gap-2">
                   {MARGINALSKATTER.map(m => (
                     <button
@@ -296,24 +463,38 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
               </div>
             </div>
 
-            {/* Formula card */}
+            {/* Formula explanation */}
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
               <h2 className="text-[14px] font-bold text-slate-800 mb-1 flex items-center gap-2">
                 <Info className="w-4 h-4 text-slate-400" />
-                Hur beräknas förmånsvärdet?
+                Skatteverkets formel {incomeYear}
               </h2>
               <p className="text-[12px] text-slate-500 mb-4">
-                Formel: <span className="font-semibold text-slate-700">0,29 × nybilspris + 0,75 × 58 800 kr</span>
+                <span className="font-semibold text-slate-700">{factor.toString().replace('.', ',')} × nybilspris + 2 × fordonsskatt</span>
+                {isElOrLaddhybrid && <span className="text-emerald-600 font-semibold"> × 0,60 (el/laddhybrid)</span>}
+                {tjanstekorsning && <span className="text-[#0e6efe] font-semibold"> × 0,75 (tjänstekörning)</span>}
               </p>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: 'Nybilspris', val: `${fmt(nybilspris)} kr`, note: 'Inkl. moms och utrustning' },
-                  { label: 'Förmånsvärde/år', val: `${fmt(formansvardeAr)} kr`, note: isEl ? 'Reducerat med 40% (el)' : 'Standardberäkning' },
-                  { label: 'Din skattekostnad', val: `${fmt(skattPerMan)} kr/mån`, note: `Vid ${Math.round(marginalSkatt * 100)}% marginalskatt` },
+                  {
+                    label: 'Nybilspris',
+                    val: `${fmt(nybilspris + extrautrustning)} kr`,
+                    note: extrautrustning ? `Inkl. ${fmt(extrautrustning)} kr utrustning` : 'Inkl. moms',
+                  },
+                  {
+                    label: 'Förmånsvärde/år',
+                    val: `${fmt(formansvardeAr)} kr`,
+                    note: isElOrLaddhybrid ? 'Reducerat 40% (el)' : tjanstekorsning ? 'Reducerat 25%' : 'Standardberäkning',
+                  },
+                  {
+                    label: 'Din skattekostnad',
+                    val: `${fmt(skattPerMan)} kr/mån`,
+                    note: `Vid ${Math.round(marginalSkatt * 100)}% marginalskatt`,
+                  },
                 ].map(({ label, val, note }) => (
                   <div key={label} className="bg-slate-50 rounded-xl p-3 text-center">
                     <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">{label}</p>
-                    <p className="text-[15px] font-extrabold text-slate-800 tabular-nums leading-tight">{val}</p>
+                    <p className="text-[13px] sm:text-[15px] font-extrabold text-slate-800 tabular-nums leading-tight">{val}</p>
                     <p className="text-[10px] text-slate-400 mt-1">{note}</p>
                   </div>
                 ))}
@@ -321,26 +502,28 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
             </div>
           </div>
 
-          {/* Results column */}
-          <div className="lg:col-span-2 space-y-4">
-            {/* Main result */}
+          {/* ── Results column — first on mobile, right on desktop ── */}
+          <div className="lg:col-span-2 lg:order-2 order-1 space-y-4">
+            {/* Main result card */}
             <div className="rounded-2xl overflow-hidden shadow-lg" style={{
               background: 'linear-gradient(135deg, #0a57cc 0%, #0e6efe 60%, #1a7fff 100%)',
             }}>
               <div className="p-5 sm:p-6">
                 <p className="text-[11px] font-bold text-white/60 uppercase tracking-widest mb-4">
-                  Din förmånsbil kostar
+                  Din förmånsskatt
                 </p>
                 <div className="mb-1">
                   <span className="text-[46px] font-extrabold tabular-nums text-white leading-none">{fmt(skattPerMan)}</span>
                 </div>
-                <p className="text-[14px] font-semibold text-white/60 mb-5">kr per månad i inkomstskatt</p>
+                <p className="text-[14px] font-semibold text-white/60 mb-5">kr per månad</p>
 
                 <div className="space-y-2.5 border-t border-white/20 pt-4">
+                  <ResultLine label={`Inkomstår`} value={`${incomeYear}`} />
                   <ResultLine label="Förmånsvärde / år" value={`${fmt(formansvardeAr)} kr`} />
                   <ResultLine label="Förmånsvärde / mån" value={`${fmt(formansvardeMan)} kr`} />
                   <ResultLine label="Marginalskatt" value={`${Math.round(marginalSkatt * 100)}%`} />
-                  {isEl && <ResultLine label="El-reduktion" value="−40%" highlight />}
+                  {isElOrLaddhybrid && <ResultLine label="El/laddhybrid-reduktion" value="−40%" highlight />}
+                  {tjanstekorsning && <ResultLine label="Tjänstekörning-reduktion" value="−25%" highlight />}
                 </div>
               </div>
 
@@ -351,7 +534,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
               )}
             </div>
 
-            {/* Comparison */}
+            {/* Comparison vs private loan */}
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
               <p className="text-[13px] font-bold text-slate-800 mb-4">Jämförelse vs privat billån</p>
               <div className="space-y-3">
@@ -384,7 +567,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
             <button
               type="button"
               onClick={onNavigateConsultation}
-              className="w-full h-13 py-3.5 rounded-xl font-bold text-[14px] flex items-center justify-center gap-2 transition text-white"
+              className="w-full py-3.5 rounded-xl font-bold text-[14px] flex items-center justify-center gap-2 transition text-white"
               style={{ background: 'linear-gradient(135deg, #060e1e 0%, #0e1c2f 60%, #0a57cc 100%)' }}
             >
               Prata med en bilexpert
