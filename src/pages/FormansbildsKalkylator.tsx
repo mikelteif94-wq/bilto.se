@@ -217,7 +217,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
           </nav>
           <div className="flex items-center ml-auto gap-3">
             <a href="/gratis-konsultation"
-              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
+              className="inline-flex items-center bg-[#faf8f5] text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
               Kostnadsfri konsultation
             </a>
           </div>
@@ -236,7 +236,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
           <div className="relative max-w-4xl mx-auto px-4 pt-28 pb-10 sm:pt-32 sm:pb-12">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
               <div>
-                <div className="inline-flex items-center gap-2 bg-white/15 text-white/80 text-[12px] font-semibold px-4 py-1.5 rounded-full mb-4 border border-white/20">
+                <div className="inline-flex items-center gap-2 bg-[#faf8f5]/15 text-white/80 text-[12px] font-semibold px-4 py-1.5 rounded-full mb-4 border border-white/20">
                   <Briefcase className="w-3.5 h-3.5" />
                   Tjänstebil &amp; förmånsbil {incomeYear}
                 </div>
@@ -262,7 +262,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 mt-6">
           {/* ── Inputs — left on desktop, first on mobile ── */}
           <div className="lg:col-span-3 space-y-4">
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden divide-y divide-slate-100">
+            <div className="bg-[#faf8f5] rounded-2xl border border-slate-100 shadow-sm overflow-hidden divide-y divide-slate-100">
 
               {/* Income year */}
               <div className="p-5 sm:p-6">
@@ -360,7 +360,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                     onClick={() => { setHasExtrautrustning(v => !v); if (hasExtrautrustning) setExtrautrustningStr(''); }}
                     className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none ${hasExtrautrustning ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
                   >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${hasExtrautrustning ? 'translate-x-6' : 'translate-x-1'}`} />
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-[#faf8f5] shadow transition-transform duration-200 ${hasExtrautrustning ? 'translate-x-6' : 'translate-x-1'}`} />
                   </button>
                 </div>
                 <AnimatePresence initial={false}>
@@ -426,7 +426,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                     onClick={() => setTjanstekorsning(v => !v)}
                     className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none ${tjanstekorsning ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
                   >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${tjanstekorsning ? 'translate-x-6' : 'translate-x-1'}`} />
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-[#faf8f5] shadow transition-transform duration-200 ${tjanstekorsning ? 'translate-x-6' : 'translate-x-1'}`} />
                   </button>
                 </div>
               </div>
@@ -455,7 +455,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
             </div>
 
             {/* Formula explanation */}
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+            <div className="bg-[#faf8f5] rounded-2xl border border-slate-100 shadow-sm p-5">
               <h2 className="text-[13px] font-bold text-slate-800 mb-1 flex items-center gap-2">
                 <Info className="w-4 h-4 text-[#0e6efe]" />
                 Skatteverkets formel {incomeYear}
@@ -548,7 +548,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
           <h2 className="text-[22px] font-extrabold text-slate-900 mb-5">Vanliga frågor om förmånsbil</h2>
           <div className="space-y-2">
             {FAQ_ITEMS.map((item, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div key={i} className="bg-[#faf8f5] rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}

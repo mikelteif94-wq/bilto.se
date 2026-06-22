@@ -108,7 +108,7 @@ export default function CustomerLogin({ onBack, initialEmail = '' }: CustomerLog
             </div>
 
             {/* Right column – card */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
+            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
               {sent ? (
                 <SentConfirmation email={email.trim()} onResend={() => setSent(false)} />
               ) : (

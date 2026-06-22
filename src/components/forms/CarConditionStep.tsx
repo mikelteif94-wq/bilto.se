@@ -232,7 +232,7 @@ export default function CarConditionStep({
               </div>
             )}
             {lookup.status === 'error' && (
-              <div className="mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[#faf8f5] border border-slate-200 text-slate-500 text-[13px]">
+              <div className="mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-[13px]">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 Kunde inte hämta uppgifter – fyll i manuellt
               </div>
@@ -270,7 +270,7 @@ export default function CarConditionStep({
                 setModell('');
                 setErrors((prev) => ({ ...prev, marke: undefined, modell: undefined }));
               }}
-              className={`form-control ${errors.marke ? 'form-control-error' : ''} disabled:bg-[#faf8f5] disabled:text-slate-400 disabled:cursor-not-allowed`}
+              className={`form-control ${errors.marke ? 'form-control-error' : ''} disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed`}
             >
               <option value="">Välj märke</option>
               {POPULAR_BRANDS.map((b) => (
@@ -292,7 +292,7 @@ export default function CarConditionStep({
               disabled={!marke || lookup.status === 'loading'}
               placeholder={marke ? 'T.ex. 530, XC60, A4...' : 'Välj märke först'}
               autoComplete="off"
-              className={`form-control ${errors.modell ? 'form-control-error' : ''} disabled:bg-[#faf8f5] disabled:text-slate-400 disabled:cursor-not-allowed`}
+              className={`form-control ${errors.modell ? 'form-control-error' : ''} disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed`}
             />
             {marke && (
               <datalist id={`models-${marke}`}>
@@ -345,7 +345,7 @@ export default function CarConditionStep({
               setAr(e.target.value);
               setErrors((prev) => ({ ...prev, ar: undefined }));
             }}
-            className={`form-control ${errors.ar ? 'form-control-error' : ''} disabled:bg-[#faf8f5] disabled:text-slate-400 disabled:cursor-not-allowed`}
+            className={`form-control ${errors.ar ? 'form-control-error' : ''} disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed`}
           >
             <option value="">Välj årsmodell</option>
             {YEAR_OPTIONS.map((y) => (
@@ -421,7 +421,7 @@ export default function CarConditionStep({
             className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all duration-150 text-left ${
               wantsTradeIn
                 ? 'border-[#0e6efe] bg-[#0e6efe]/[0.04]'
-                : 'border-slate-200 bg-white hover:border-slate-300'
+                : 'border-slate-200 bg-[#faf8f5] hover:border-slate-300'
             }`}
           >
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
@@ -445,7 +445,7 @@ export default function CarConditionStep({
           </button>
 
           {wantsTradeIn && (
-            <div className="mt-4 rounded-xl border border-slate-200 bg-white overflow-hidden divide-y divide-slate-100">
+            <div className="mt-4 rounded-xl border border-slate-200 bg-[#faf8f5] overflow-hidden divide-y divide-slate-100">
               {/* Vilken bil vill du ha? */}
               <div className="p-4 sm:p-5">
                 <p className="text-[14px] font-semibold text-slate-800 mb-3">Vilken bil vill du ha istället?</p>
@@ -555,7 +555,7 @@ export default function CarConditionStep({
                       className={`flex-1 h-10 rounded-xl text-[14px] font-semibold border-2 transition-all ${
                         tradeIn.paymentType === p.value
                           ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
-                          : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+                          : 'bg-[#faf8f5] border-slate-200 text-slate-700 hover:border-slate-300'
                       }`}
                     >
                       {p.label}

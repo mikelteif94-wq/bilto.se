@@ -161,7 +161,7 @@ export default function PortalLayout({
       {/* ── Main area ── */}
       <div className={`flex-1 flex flex-col min-w-0 ${compactSidebar ? 'md:ml-[56px]' : 'md:ml-[220px]'}`}>
         {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-white border-b border-slate-200 h-14 flex items-center px-4 sm:px-6 gap-3 shrink-0">
+        <header className="sticky top-0 z-20 bg-[#faf8f5] border-b border-slate-200 h-14 flex items-center px-4 sm:px-6 gap-3 shrink-0">
           {/* Hamburger – mobile only */}
           <button
             onClick={() => setMobileOpen(true)}

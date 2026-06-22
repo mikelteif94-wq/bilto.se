@@ -64,7 +64,7 @@ export default function TradeInStep({ regnummer, marke, modell, ar, miltal, onYe
       <button
         type="button"
         onClick={onNo}
-        className="group w-full text-left rounded-xl border border-slate-200 bg-white hover:border-slate-300 p-5 sm:p-6 transition-all"
+        className="group w-full text-left rounded-xl border border-slate-200 bg-[#faf8f5] hover:border-slate-300 p-5 sm:p-6 transition-all"
       >
         <div className="flex items-center gap-4">
           <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">

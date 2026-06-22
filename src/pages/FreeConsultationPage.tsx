@@ -383,7 +383,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
       {/* Hero */}
       <div className="bg-[#0e6efe] pt-32 pb-16 px-4">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="inline-flex items-center gap-1.5 bg-white/15 text-white text-xs font-semibold px-3 py-1.5 rounded-xl mb-5 tracking-wide uppercase">
+          <div className="inline-flex items-center gap-1.5 bg-[#faf8f5]/15 text-white text-xs font-semibold px-3 py-1.5 rounded-xl mb-5 tracking-wide uppercase">
             Gratis – ingen bindning
           </div>
           <h1 className="text-[28px] sm:text-4xl font-bold text-white leading-tight tracking-tight">
@@ -411,7 +411,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                     key={opt.value}
                     type="button"
                     onClick={() => handleSyfteSelect(opt.value)}
-                    className="group w-full flex items-center gap-4 px-5 py-4 rounded-xl border border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50 active:scale-[0.99] transition-all duration-150 text-left"
+                    className="group w-full flex items-center gap-4 px-5 py-4 rounded-xl border border-slate-200 bg-[#faf8f5] hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50 active:scale-[0.99] transition-all duration-150 text-left"
                   >
                     <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/8 group-hover:bg-[#0e6efe]/12 flex items-center justify-center shrink-0 transition-colors">
                       <opt.icon className="w-4.5 h-4.5 text-[#0e6efe]" strokeWidth={1.8} style={{ width: 18, height: 18 }} />
@@ -451,7 +451,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                   className={`group w-full flex items-center gap-4 px-5 py-4 rounded-xl border transition-all duration-150 text-left ${
                     form.kop_status === 'hittat'
                       ? 'border-[#0e6efe] bg-[#0e6efe]/5 shadow-sm'
-                      : 'border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50'
+                      : 'border-slate-200 bg-[#faf8f5] hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50'
                   }`}
                 >
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${form.kop_status === 'hittat' ? 'bg-[#0e6efe] text-white' : 'bg-[#0e6efe]/8 text-[#0e6efe]'}`}>
@@ -492,7 +492,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                   className={`group w-full flex items-center gap-4 px-5 py-4 rounded-xl border transition-all duration-150 text-left ${
                     form.kop_status === 'letar'
                       ? 'border-[#0e6efe] bg-[#0e6efe]/5 shadow-sm'
-                      : 'border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50'
+                      : 'border-slate-200 bg-[#faf8f5] hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50'
                   }`}
                 >
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${form.kop_status === 'letar' ? 'bg-[#0e6efe] text-white' : 'bg-[#0e6efe]/8 text-[#0e6efe]'}`}>
@@ -702,7 +702,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                       className={`flex flex-col items-center gap-0.5 py-3.5 px-2 rounded-xl border transition-all duration-150 active:scale-[0.97] ${
                         selected
                           ? 'border-[#0e6efe] bg-[#0e6efe] text-white shadow-md shadow-blue-200'
-                          : 'border-slate-200 bg-white hover:border-[#0e6efe]/50 hover:bg-blue-50/40 text-slate-700'
+                          : 'border-slate-200 bg-[#faf8f5] hover:border-[#0e6efe]/50 hover:bg-blue-50/40 text-slate-700'
                       }`}
                     >
                       <span className={`text-[11px] font-semibold uppercase tracking-wide ${selected ? 'text-blue-100' : 'text-slate-400'}`}>{d.day}</span>
@@ -727,7 +727,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                         return (
                           <div
                             key={t}
-                            className="flex items-center justify-center gap-1.5 py-3 rounded-xl border border-slate-100 bg-[#faf8f5] text-slate-300 cursor-not-allowed select-none"
+                            className="flex items-center justify-center gap-1.5 py-3 rounded-xl border border-slate-100 bg-slate-50 text-slate-300 cursor-not-allowed select-none"
                           >
                             <Lock className="w-3 h-3 shrink-0" />
                             <span className="text-[13px] font-medium">{t}</span>
@@ -794,7 +794,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 {selectedDateLabel} kl. {form.booking_time}
               </p>
 
-              <div className="bg-[#faf8f5] rounded-xl p-5 text-left mb-8 border border-slate-100 max-w-sm mx-auto">
+              <div className="bg-slate-50 rounded-xl p-5 text-left mb-8 border border-slate-100 max-w-sm mx-auto">
                 <h3 className="font-semibold text-sm text-slate-700 mb-3">Din bokning</h3>
                 <div className="grid gap-2.5 text-sm">
                   {[

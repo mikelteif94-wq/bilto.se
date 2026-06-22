@@ -330,7 +330,7 @@ function App() {
     if (adminVerified === false) {
       return (
         <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
-          <div className="bg-white rounded-md shadow-sm border border-slate-200 p-8 max-w-md text-center">
+          <div className="bg-[#faf8f5] rounded-md shadow-sm border border-slate-200 p-8 max-w-md text-center">
             <h1 className="text-xl font-bold text-slate-900 mb-2">Ingen behörighet</h1>
             <p className="text-sm text-slate-500 mb-6">Ditt konto har inte administratörsrättigheter.</p>
             <button
@@ -855,7 +855,7 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
   if (error || !dealer) {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white rounded-xl border border-slate-200 p-8 text-center">
+        <div className="max-w-md w-full bg-[#faf8f5] rounded-xl border border-slate-200 p-8 text-center">
           <p className="text-slate-700 mb-6">{error ?? 'Ingen handlarprofil hittades för detta konto.'}</p>
           <button onClick={async () => { await supabase.auth.signOut(); onLoggedOut(); }} className="text-slate-600 hover:text-slate-900 font-medium">
             Logga ut
@@ -868,7 +868,7 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
   if (!dealer.godkand) {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white rounded-md border border-slate-200 p-10 text-center shadow-sm">
+        <div className="max-w-md w-full bg-[#faf8f5] rounded-md border border-slate-200 p-10 text-center shadow-sm">
           <h1 className="text-xl font-bold text-slate-900 mb-2">Ditt konto väntar på godkännande</h1>
           <p className="text-slate-500 mb-6">Vi granskar din ansökan och hör av oss inom 24 timmar.</p>
           <button onClick={async () => { await supabase.auth.signOut(); onLoggedOut(); }} className="text-slate-600 hover:text-slate-900 font-medium">

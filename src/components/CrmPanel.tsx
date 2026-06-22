@@ -582,7 +582,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
 
   if (initialLoading) {
     return (
-      <div className="bg-white rounded-md border border-slate-200 p-8 flex items-center justify-center">
+      <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-8 flex items-center justify-center">
         <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
       </div>
     );
@@ -595,7 +595,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
   return (
     <div className="space-y-6">
       {/* Hantering: operativ status + interna anteckningar */}
-      <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
+      <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 sm:p-6">
         <h2 className="text-lg font-bold text-slate-900 mb-4">Hantering</h2>
 
         <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
@@ -611,7 +611,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                 className={`px-4 h-9 rounded-xl text-sm font-semibold ring-1 transition ${
                   active
                     ? 'bg-slate-900 text-white ring-slate-900'
-                    : 'bg-white text-slate-700 ring-slate-200 hover:bg-[#faf8f5]'
+                    : 'bg-[#faf8f5] text-slate-700 ring-slate-200 hover:bg-slate-50'
                 }`}
               >
                 {o.label}
@@ -643,7 +643,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
       </div>
 
       {/* CRM-status pipeline */}
-      <div className="bg-white rounded-md border border-slate-200 p-6">
+      <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6">
         <div className="flex items-baseline justify-between mb-4">
           <h2 className="text-lg font-bold text-slate-900">CRM-status</h2>
           {crmStatus && (
@@ -666,7 +666,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                 className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold ring-1 transition text-left ${
                   active
                     ? s.activeCls + ' ring-2'
-                    : 'bg-white text-slate-700 ring-slate-200 hover:bg-[#faf8f5]'
+                    : 'bg-[#faf8f5] text-slate-700 ring-slate-200 hover:bg-slate-50'
                 }`}
               >
                 <Icon className={`w-4 h-4 shrink-0 ${active ? '' : s.iconCls}`} />
@@ -676,7 +676,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
           })}
         </div>
         {crmStatus === 'forlorad' && lostReason && (
-          <div className="mt-4 flex items-start gap-2 text-sm bg-[#faf8f5] border border-slate-200 rounded-lg p-3">
+          <div className="mt-4 flex items-start gap-2 text-sm bg-slate-50 border border-slate-200 rounded-lg p-3">
             <XCircle className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" />
             <div>
               <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
@@ -700,7 +700,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
               const forMe = v.to_user_id === adminUserId;
               const isResponding = respondingId === v.id;
               return (
-                <li key={v.id} className="bg-white rounded-lg border border-amber-200 p-4">
+                <li key={v.id} className="bg-[#faf8f5] rounded-lg border border-amber-200 p-4">
                   <div className="flex items-center gap-2 text-sm flex-wrap mb-2">
                     <span className="font-semibold text-slate-900">{v.from_user_name || 'Admin'}</span>
                     <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
@@ -722,13 +722,13 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                   {!forMe && !isResponding && (
                     <button
                       onClick={() => cancelValuationRequest(v.id)}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-slate-300 hover:bg-[#faf8f5] text-slate-600 text-xs font-semibold transition"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#faf8f5] border border-slate-300 hover:bg-slate-50 text-slate-600 text-xs font-semibold transition"
                     >
                       Avbryt förfrågan
                     </button>
                   )}
                   {isResponding && (
-                    <div className="mt-2 space-y-2 bg-[#faf8f5] rounded-lg p-3">
+                    <div className="mt-2 space-y-2 bg-slate-50 rounded-lg p-3">
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
@@ -775,7 +775,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                         </button>
                         <button
                           onClick={() => setRespondingId(null)}
-                          className="inline-flex items-center gap-2 px-4 h-9 rounded-xl bg-white border border-slate-300 hover:bg-[#faf8f5] text-slate-600 text-xs font-semibold transition"
+                          className="inline-flex items-center gap-2 px-4 h-9 rounded-xl bg-[#faf8f5] border border-slate-300 hover:bg-slate-50 text-slate-600 text-xs font-semibold transition"
                         >
                           Avbryt
                         </button>
@@ -790,7 +790,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
       )}
 
       {/* Påminnelser */}
-      <div className="bg-white rounded-md border border-slate-200 p-6">
+      <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6">
         <div className="flex items-baseline justify-between mb-4">
           <h2 className="text-lg font-bold text-slate-900">
             Påminnelser
@@ -872,7 +872,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
       </div>
 
       {/* Logga aktivitet */}
-      <div className="bg-white rounded-md border border-slate-200 p-6">
+      <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6">
         <h2 className="text-lg font-bold text-slate-900 mb-4">Logga aktivitet</h2>
 
         <div className="flex gap-2 mb-4 border-b border-slate-200">
@@ -988,7 +988,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
       </div>
 
       {/* Tidslinje */}
-      <div className="bg-white rounded-md border border-slate-200 p-6">
+      <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6">
         <h2 className="text-lg font-bold text-slate-900 mb-4">
           Historik
           {activities.length > 0 && (
@@ -1013,7 +1013,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
               return (
                 <li key={a.id} className="pl-6 relative group">
                   <span
-                    className={`absolute -left-[9px] top-0.5 w-4 h-4 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center ${meta.color}`}
+                    className={`absolute -left-[9px] top-0.5 w-4 h-4 rounded-full bg-[#faf8f5] border-2 border-slate-200 flex items-center justify-center ${meta.color}`}
                   >
                     <Icon className="w-2.5 h-2.5" />
                   </span>
@@ -1056,7 +1056,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
           onClick={() => !sending && setDealerPickerOpen(false)}
         >
           <div
-            className="bg-white rounded-xl w-full max-w-lg max-h-[85vh] flex flex-col"
+            className="bg-[#faf8f5] rounded-xl w-full max-w-lg max-h-[85vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-5 border-b border-slate-200">
@@ -1099,7 +1099,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                     const checked = selectedDealerIds.has(d.id);
                     return (
                       <li key={d.id}>
-                        <label className="flex items-start gap-3 p-3 rounded-lg hover:bg-[#faf8f5] cursor-pointer">
+                        <label className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 cursor-pointer">
                           <input
                             type="checkbox"
                             checked={checked}
@@ -1125,7 +1125,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
               <button
                 onClick={() => setDealerPickerOpen(false)}
                 disabled={sending}
-                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-[#faf8f5] text-slate-700 text-sm font-semibold transition"
+                className="px-4 h-10 rounded-xl bg-[#faf8f5] border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
               >
                 Avbryt
               </button>
@@ -1149,7 +1149,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
           onClick={() => setLostReasonOpen(false)}
         >
           <div
-            className="bg-white rounded-xl w-full max-w-md"
+            className="bg-[#faf8f5] rounded-xl w-full max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-5 border-b border-slate-200">
@@ -1178,7 +1178,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
             <div className="p-5 border-t border-slate-200 flex justify-end gap-2">
               <button
                 onClick={() => setLostReasonOpen(false)}
-                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-[#faf8f5] text-slate-700 text-sm font-semibold transition"
+                className="px-4 h-10 rounded-xl bg-[#faf8f5] border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
               >
                 Avbryt
               </button>
@@ -1201,7 +1201,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
           onClick={() => !submittingValuation && setValuationOpen(false)}
         >
           <div
-            className="bg-white rounded-xl w-full max-w-md"
+            className="bg-[#faf8f5] rounded-xl w-full max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-5 border-b border-slate-200">
@@ -1232,7 +1232,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                           className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold ring-1 transition ${
                             active
                               ? 'bg-amber-500 text-white ring-amber-500'
-                              : 'bg-white text-slate-700 ring-slate-200 hover:bg-[#faf8f5]'
+                              : 'bg-[#faf8f5] text-slate-700 ring-slate-200 hover:bg-slate-50'
                           }`}
                         >
                           <UserCircle2 className="w-4 h-4" />
@@ -1260,7 +1260,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
               <button
                 onClick={() => setValuationOpen(false)}
                 disabled={submittingValuation}
-                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-[#faf8f5] text-slate-700 text-sm font-semibold transition"
+                className="px-4 h-10 rounded-xl bg-[#faf8f5] border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
               >
                 Avbryt
               </button>

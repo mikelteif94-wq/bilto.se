@@ -410,7 +410,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
           {/* Main content */}
           <div className="lg:col-span-2 space-y-5">
             {/* Header card */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
               <div className="flex items-start gap-3 mb-4">
                 <span className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                   <Icon className="w-5 h-5" />
@@ -461,7 +461,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
             </div>
 
             {/* Details card */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
               <h2 className="text-base font-bold text-slate-900 mb-4">Detaljer</h2>
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
                 {quote.search_option === 'searching' && (
@@ -556,7 +556,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
 
             {/* Quiz answers */}
             {quote.quiz_answers && (
-              <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+              <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
                 <h2 className="text-base font-bold text-slate-900 mb-4">Quiz-preferenser</h2>
                 <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
                   {quote.quiz_answers.body_type && quote.quiz_answers.body_type.length > 0 && (
@@ -614,7 +614,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
             )}
 
             {/* Suggestions section */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-bold text-slate-900">Bilforslag till kund</h2>
                 <button
@@ -627,7 +627,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
               </div>
 
               {showSuggestionForm && (
-                <div className="mb-5 p-4 rounded-lg border border-slate-200 bg-[#faf8f5] space-y-3">
+                <div className="mb-5 p-4 rounded-lg border border-slate-200 bg-slate-50 space-y-3">
                   <div>
                     <label className="block text-xs font-semibold text-slate-600 mb-1">Bil (t.ex. Volvo XC60 2023) *</label>
                     <input
@@ -723,7 +723,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
               {suggestions.length > 0 && (
                 <div className="space-y-3">
                   {suggestions.map(s => (
-                    <div key={s.id} className="flex gap-3 p-3 rounded-lg border border-slate-200 bg-white">
+                    <div key={s.id} className="flex gap-3 p-3 rounded-lg border border-slate-200 bg-[#faf8f5]">
                       {s.car_image_url ? (
                         <img src={s.car_image_url} alt="" className="w-20 h-14 rounded-lg object-cover shrink-0" />
                       ) : (
@@ -755,7 +755,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
             </div>
 
             {/* Notes */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
               <h2 className="text-base font-bold text-slate-900 mb-3">Interna anteckningar</h2>
               <textarea
                 value={notes}
@@ -781,7 +781,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
           {/* Sidebar */}
           <div className="space-y-5">
             {/* Status */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
+            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5">
               <h3 className="text-sm font-bold text-slate-900 mb-3">Status</h3>
               <select
                 value={status}
@@ -795,7 +795,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
             </div>
 
             {/* Customer portal link */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
+            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5">
               <h3 className="text-sm font-bold text-slate-900 mb-2">Kundportal</h3>
               <p className="text-xs text-slate-500 mb-3">
                 Kopiera lanken och skicka till kunden. Dar ser de forslag och erbjudanden.
@@ -818,7 +818,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
             </div>
 
             {/* Dealer Dispatch */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
+            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5">
               <h3 className="text-sm font-bold text-slate-900 mb-4">Dealer Dispatch</h3>
               {quote && (
                 <DealerDispatchPanel
@@ -832,7 +832,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
 
             {/* Create offer */}
             {onCreateOffer && (
-              <div className="bg-white rounded-xl border border-slate-200 p-5">
+              <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5">
                 <h3 className="text-sm font-bold text-slate-900 mb-2">Skapa erbjudande</h3>
                 <p className="text-xs text-slate-500 mb-4">
                   Skapa ett erbjudande med prisuppgifter och besparingsredovisning som kunden kan se i sin portal.
@@ -848,7 +848,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
             )}
 
             {/* Convert action */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
+            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5">
               <h3 className="text-sm font-bold text-slate-900 mb-2">Skapa arende</h3>
               <p className="text-xs text-slate-500 mb-4">
                 Konvertera denna forfragan till en bil i systemet som handlare kan lagga bud pa.

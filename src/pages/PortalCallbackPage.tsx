@@ -105,7 +105,7 @@ export default function PortalCallbackPage({ onSuccess, onBack }: PortalCallback
 
   return (
     <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white border border-slate-200 rounded-xl p-8 shadow-sm text-center space-y-5">
+      <div className="max-w-md w-full bg-[#faf8f5] border border-slate-200 rounded-xl p-8 shadow-sm text-center space-y-5">
         <div className="w-14 h-14 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center mx-auto">
           <ShieldAlert className="w-7 h-7 text-red-500" />
         </div>

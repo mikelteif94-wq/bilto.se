@@ -131,7 +131,7 @@ export function QuizExperience({ onComplete, onSkip, isAnalyzing, analysisReady 
       {/* Question content */}
       <main className="flex-1 flex flex-col justify-center px-4 pb-8 pt-6">
         <div className="max-w-lg mx-auto w-full">
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm">
+          <div className="bg-[#faf8f5] rounded-xl p-4 sm:p-6 shadow-sm">
             <h2 className="text-[18px] sm:text-[22px] font-bold text-slate-900 leading-tight mb-2">
               {question.question}
             </h2>
@@ -156,8 +156,8 @@ export function QuizExperience({ onComplete, onSkip, isAnalyzing, analysisReady 
                       'relative w-full flex items-center gap-3 px-3 sm:px-4 py-3 sm:py-3.5 rounded-xl border-2 transition-all duration-150 text-left',
                       question.id === 'body_type' ? 'flex-col items-center justify-center py-3.5 sm:py-4 text-center' : '',
                       selected
-                        ? 'border-[#0e6efe] bg-white shadow-sm'
-                        : 'border-slate-200 bg-white hover:border-slate-300'
+                        ? 'border-[#0e6efe] bg-[#faf8f5] shadow-sm'
+                        : 'border-slate-200 bg-[#faf8f5] hover:border-slate-300'
                     )}
                   >
                     {isMultiSelect && (

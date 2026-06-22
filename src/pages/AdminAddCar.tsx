@@ -303,7 +303,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
+          <section className="bg-[#faf8f5] rounded-lg border border-slate-200 p-5 sm:p-6">
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4">Kund</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Namn *">
@@ -336,7 +336,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
             </div>
           </section>
 
-          <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
+          <section className="bg-[#faf8f5] rounded-lg border border-slate-200 p-5 sm:p-6">
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4">Bil</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Regnummer *">
@@ -365,7 +365,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
                     setMarke(e.target.value);
                     setModell('');
                   }}
-                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-white"
+                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-[#faf8f5]"
                 >
                   <option value="">Välj märke</option>
                   {POPULAR_BRANDS.map((b) => (
@@ -384,7 +384,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
                   disabled={!marke}
                   placeholder={marke ? 'Välj eller skriv modell' : 'Välj märke först'}
                   autoComplete="off"
-                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-white disabled:bg-[#faf8f5] disabled:text-slate-400"
+                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-[#faf8f5] disabled:bg-slate-50 disabled:text-slate-400"
                 />
                 {marke && (
                   <datalist id={`admin-models-${marke}`}>
@@ -409,7 +409,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
                 <select
                   value={skick}
                   onChange={(e) => setSkick(e.target.value)}
-                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-white"
+                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-[#faf8f5]"
                 >
                   {SKICK_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>
@@ -437,7 +437,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
             </div>
           </section>
 
-          <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
+          <section className="bg-[#faf8f5] rounded-lg border border-slate-200 p-5 sm:p-6">
             <div className="flex items-center justify-between mb-1">
               <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
                 Bilder
@@ -455,7 +455,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
             />
           </section>
 
-          <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
+          <section className="bg-[#faf8f5] rounded-lg border border-slate-200 p-5 sm:p-6">
             <div className="flex items-center justify-between mb-1">
               <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
                 Skickrapport
@@ -472,7 +472,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
             />
           </section>
 
-          <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
+          <section className="bg-[#faf8f5] rounded-lg border border-slate-200 p-5 sm:p-6">
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4">
               Försäljning
             </h2>
@@ -570,7 +570,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
           </section>
 
           {activateNow && (
-            <section className="bg-white rounded-lg border border-slate-200 p-5 sm:p-6">
+            <section className="bg-[#faf8f5] rounded-lg border border-slate-200 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-4 gap-3">
                 <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
                   <Building2 className="w-4 h-4" />
@@ -593,7 +593,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
                   className={`h-9 px-4 rounded-xl text-sm font-semibold border transition ${
                     sendToAllApproved
                       ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
-                      : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+                      : 'bg-[#faf8f5] border-slate-200 text-slate-700 hover:border-slate-300'
                   }`}
                 >
                   Alla godkända
@@ -606,7 +606,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
                   className={`h-9 px-4 rounded-xl text-sm font-semibold border transition ${
                     !sendToAllApproved
                       ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
-                      : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+                      : 'bg-[#faf8f5] border-slate-200 text-slate-700 hover:border-slate-300'
                   }`}
                 >
                   Välj specifika
@@ -634,7 +634,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
                         return (
                           <label
                             key={d.id}
-                            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-[#faf8f5]"
+                            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-slate-50"
                           >
                             <input
                               type="checkbox"

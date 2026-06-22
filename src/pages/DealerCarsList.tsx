@@ -242,7 +242,7 @@ export default function DealerCarsList({
             <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
           </div>
         ) : cars.length === 0 ? (
-          <div className="bg-white rounded-lg border border-slate-200 p-12 text-center">
+          <div className="bg-[#faf8f5] rounded-lg border border-slate-200 p-12 text-center">
             <p className="text-slate-500">Inga aktiva auktioner just nu.</p>
           </div>
         ) : (
@@ -258,7 +258,7 @@ export default function DealerCarsList({
                 const isQuickBidOpen = quickBid?.carId === car.id;
 
                 return (
-                  <div key={car.id} className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+                  <div key={car.id} className="bg-[#faf8f5] rounded-lg border border-slate-200 shadow-sm overflow-hidden">
                     <button
                       onClick={() => !isQuickBidOpen && onOpenCar(car.id)}
                       className="w-full text-left p-4 active:bg-slate-50 transition"
@@ -331,7 +331,7 @@ export default function DealerCarsList({
             </div>
 
             {/* ── Desktop table ── */}
-            <div className="hidden md:block bg-white rounded-lg border border-slate-200 overflow-hidden shadow-sm">
+            <div className="hidden md:block bg-[#faf8f5] rounded-lg border border-slate-200 overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
@@ -469,7 +469,7 @@ function QuickBidForm({
           onKeyDown={(e) => { if (e.key === 'Enter') onSubmit(); if (e.key === 'Escape') onClose(); }}
           placeholder="Belopp"
           className={`${compact ? 'w-28' : 'w-32'} h-8 pl-3 pr-7 rounded-lg border text-xs focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 ${
-            quickBid.error ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-white'
+            quickBid.error ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-[#faf8f5]'
           }`}
         />
         <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400">kr</span>

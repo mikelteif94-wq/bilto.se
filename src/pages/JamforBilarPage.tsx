@@ -66,7 +66,7 @@ function ScoreBadge({ value, small = false }: { value: number; small?: boolean }
   const size = small ? 'w-8 h-8' : 'w-10 h-10';
   const fontSize = small ? 'text-[11px]' : 'text-[13px]';
   return (
-    <div className={`absolute top-2.5 right-2.5 flex items-center justify-center ${size} rounded-xl bg-white/95 shadow-md`}
+    <div className={`absolute top-2.5 right-2.5 flex items-center justify-center ${size} rounded-xl bg-[#faf8f5]/95 shadow-md`}
       style={{ border: `2.5px solid ${color}` }}>
       <span className={`${fontSize} font-extrabold leading-none`} style={{ color }}>{value}</span>
     </div>
@@ -93,14 +93,14 @@ function CarPickCard({
   const isTop = car.ratings.overall >= 8.5;
 
   return (
-    <div className={`group relative bg-white rounded-xl transition-all duration-200 ring-1 shadow-[0_1px_4px_rgba(0,0,0,0.07)] ${
+    <div className={`group relative bg-[#faf8f5] rounded-xl transition-all duration-200 ring-1 shadow-[0_1px_4px_rgba(0,0,0,0.07)] ${
       selected
         ? 'ring-[#0e6efe] shadow-[0_4px_20px_rgba(14,110,254,0.18)]'
         : 'ring-slate-100 hover:ring-slate-200 hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)]'
     }`}>
       {/* Clickable image + info */}
       <div className="cursor-pointer" onClick={selected ? onRemove : onSelect}>
-        <div className={`relative bg-white overflow-hidden rounded-t-xl ${small ? 'aspect-[16/9]' : 'aspect-[16/10]'}`}>
+        <div className={`relative bg-[#faf8f5] overflow-hidden rounded-t-xl ${small ? 'aspect-[16/9]' : 'aspect-[16/10]'}`}>
           {img ? (
             <img src={img} alt={`${car.brand_display} ${car.model_display}`}
               className={`w-full h-full object-contain ${small ? 'p-2' : 'p-3 sm:p-4'}`}
@@ -120,7 +120,7 @@ function CarPickCard({
               </span>
             )}
             {isTop && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-white/95 text-[9px] font-bold text-[#0e6efe] shadow-sm">
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#faf8f5]/95 text-[9px] font-bold text-[#0e6efe] shadow-sm">
                 <Star className="w-2 h-2 fill-[#0e6efe] text-[#0e6efe]" /> Topp
               </span>
             )}
@@ -178,7 +178,7 @@ function CarPickCard({
             <button
               type="button"
               onClick={e => { e.stopPropagation(); onNegotiate(); }}
-              className={`w-full flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700 transition-all active:scale-[0.98] ${small ? 'h-6 text-[9px]' : 'h-7 text-[10px]'} font-medium`}
+              className={`w-full flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-[#faf8f5] text-slate-500 hover:border-slate-300 hover:text-slate-700 transition-all active:scale-[0.98] ${small ? 'h-6 text-[9px]' : 'h-7 text-[10px]'} font-medium`}
             >
               Få prishjälp
             </button>
@@ -213,7 +213,7 @@ function CarSearch({ onSelect, exclude, getCarImage }: {
           value={q}
           onChange={e => setQ(e.target.value)}
           placeholder="Sök märke eller modell…"
-          className="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 bg-white text-[13px] focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30"
+          className="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 bg-[#faf8f5] text-[13px] focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30"
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
@@ -352,7 +352,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
               </button>
             )}
             <a href="/gratis-konsultation"
-              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
+              className="inline-flex items-center bg-[#faf8f5] text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
               Kostnadsfri konsultation
             </a>
           </div>
@@ -372,7 +372,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
           </div>
           <div className="relative max-w-5xl mx-auto px-4 sm:px-6 pt-28 pb-10 sm:pt-32 sm:pb-12">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 bg-white/15 text-white/80 text-[11px] font-semibold px-3 py-1.5 rounded-full mb-4 border border-white/20">
+              <div className="inline-flex items-center gap-2 bg-[#faf8f5]/15 text-white/80 text-[11px] font-semibold px-3 py-1.5 rounded-full mb-4 border border-white/20">
                 Jämför sida vid sida · Upp till 2 bilar
               </div>
               <h1 className="text-[26px] sm:text-[36px] font-extrabold text-white mb-2.5 leading-tight">
@@ -388,7 +388,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
 
       <div className="pb-16">
         {/* ── Car picker section ── */}
-        <section className="bg-white border-b border-slate-200 py-6 sm:py-8 mb-8 shadow-sm">
+        <section className="bg-[#faf8f5] border-b border-slate-200 py-6 sm:py-8 mb-8 shadow-sm">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
 
             {/* Selected cars chips */}
@@ -401,7 +401,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                     <button
                       type="button"
                       onClick={() => setCars(prev => prev.filter(c => c.id !== car.id))}
-                      className="ml-0.5 w-5 h-5 rounded-full bg-white/20 hover:bg-white/35 flex items-center justify-center transition-colors"
+                      className="ml-0.5 w-5 h-5 rounded-full bg-[#faf8f5]/20 hover:bg-[#faf8f5]/35 flex items-center justify-center transition-colors"
                     >
                       <X className="w-2.5 h-2.5" />
                     </button>
@@ -482,7 +482,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                 initial={{ opacity: 0, scale: 0.97, y: 16 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.97, y: 16 }}
-                className="fixed inset-x-4 top-20 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-[560px] z-50 bg-white rounded-2xl shadow-2xl p-5"
+                className="fixed inset-x-4 top-20 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-[560px] z-50 bg-[#faf8f5] rounded-2xl shadow-2xl p-5"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-[15px] font-bold text-slate-900">Välj bil att jämföra</h2>
@@ -637,7 +637,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                 <div className="overflow-x-auto">
                   <div style={{ minWidth: `${110 + cars.length * 150}px` }}>
                     <div className="grid" style={{ gridTemplateColumns: `110px repeat(${cars.length}, 1fr)` }}>
-                      <div className="px-3 py-3 border-b border-slate-100 bg-[#faf8f5]/80" />
+                      <div className="px-3 py-3 border-b border-slate-100 bg-slate-50/80" />
                       {cars.map((c, i) => (
                         <div key={i} className="px-3 py-3 text-center text-[12px] font-bold text-slate-700 border-b border-slate-100 bg-slate-50/80 border-l border-slate-100">
                           {c.brand_display} {c.model_display}
@@ -692,7 +692,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                     return (
                       <button key={c.id} type="button"
                         onClick={() => setBuyModalCar(`${c.brand_display} ${c.model_display}`)}
-                        className="inline-flex items-center gap-2.5 bg-white text-[#0e6efe] font-bold text-[13px] px-5 h-11 rounded-xl hover:bg-[#faf8f5] transition">
+                        className="inline-flex items-center gap-2.5 bg-[#faf8f5] text-[#0e6efe] font-bold text-[13px] px-5 h-11 rounded-xl hover:bg-slate-50 transition">
                         {img && <img src={img} alt="" className="h-7 w-10 object-contain" />}
                         Hjälp med {c.model_display}
                         <ArrowRight className="w-4 h-4 ml-auto" />
@@ -736,7 +736,7 @@ function CompareSection({ title, sectionKey, open, onToggle, children }: {
   title: string; sectionKey: string; open: boolean; onToggle: () => void; children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-[0_1px_4px_rgba(0,0,0,0.06)] overflow-hidden">
+    <div className="bg-[#faf8f5] rounded-2xl border border-slate-200 shadow-[0_1px_4px_rgba(0,0,0,0.06)] overflow-hidden">
       <button type="button" onClick={onToggle}
         className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition">
         <span className="text-[15px] font-bold text-slate-900">{title}</span>

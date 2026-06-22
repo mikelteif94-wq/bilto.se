@@ -119,7 +119,7 @@ export default function ImageUploadForm({ initialImages, onNext }: ImageUploadFo
               <button
                 type="button"
                 onClick={() => removeImage(i)}
-                className="absolute top-2 right-2 w-7 h-7 bg-white/95 hover:bg-white rounded-xl flex items-center justify-center shadow-sm transition"
+                className="absolute top-2 right-2 w-7 h-7 bg-[#faf8f5]/95 hover:bg-[#faf8f5] rounded-xl flex items-center justify-center shadow-sm transition"
                 aria-label="Ta bort"
               >
                 <X className="w-4 h-4 text-slate-700" />
@@ -213,7 +213,7 @@ export default function ImageUploadForm({ initialImages, onNext }: ImageUploadFo
           <div className="w-full border-t border-slate-200" />
         </div>
         <div className="relative flex justify-center">
-          <span className="bg-white px-3 text-[12px] uppercase tracking-[0.14em] text-slate-400 font-medium">
+          <span className="bg-[#faf8f5] px-3 text-[12px] uppercase tracking-[0.14em] text-slate-400 font-medium">
             Eller
           </span>
         </div>
@@ -223,7 +223,7 @@ export default function ImageUploadForm({ initialImages, onNext }: ImageUploadFo
         type="button"
         onClick={handleSkip}
         disabled={compressing}
-        className="w-full h-12 bg-white border border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/5 disabled:opacity-50 text-slate-800 hover:text-[#0e6efe] font-semibold text-[14.5px] rounded-full transition flex items-center justify-center gap-2"
+        className="w-full h-12 bg-[#faf8f5] border border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/5 disabled:opacity-50 text-slate-800 hover:text-[#0e6efe] font-semibold text-[14.5px] rounded-full transition flex items-center justify-center gap-2"
       >
         <PhoneCall className="w-4 h-4" strokeWidth={2.2} />
         Hoppa över – vi tar det med er direkt

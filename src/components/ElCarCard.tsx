@@ -99,12 +99,12 @@ export default function ElCarCard({
 
   return (
     <div
-      className={`group relative bg-white rounded-xl overflow-hidden transition-all duration-300 ${ringClass}`}
+      className={`group relative bg-[#faf8f5] rounded-xl overflow-hidden transition-all duration-300 ${ringClass}`}
     >
       {/* Mobile: horizontal layout */}
       <div className="flex sm:hidden" onClick={() => onDetail?.()}>
         {/* Image */}
-        <div className="relative w-[110px] shrink-0 bg-gradient-to-b from-slate-50 to-white self-stretch flex items-center">
+        <div className="relative w-[110px] shrink-0 bg-gradient-to-b from-slate-50 to-[#faf8f5] self-stretch flex items-center">
           {imageUrl && (
             <img
               src={imageUrl} alt={name} loading="lazy" decoding="async"
@@ -186,7 +186,7 @@ export default function ElCarCard({
       {/* Desktop: vertical layout */}
       <div className="hidden sm:block">
         <div className="cursor-pointer" onClick={() => onDetail?.()}>
-          <div className="relative aspect-[16/9] bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+          <div className="relative aspect-[16/9] bg-gradient-to-b from-slate-50 to-[#faf8f5] overflow-hidden">
             {imageUrl && (
               <img
                 src={imageUrl} alt={name} loading="lazy" decoding="async"
@@ -194,7 +194,7 @@ export default function ElCarCard({
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
             )}
-            <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/70 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#faf8f5]/70 to-transparent pointer-events-none" />
             <div className="absolute top-2.5 left-2.5">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold"
                 style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)', color: '#fff', boxShadow: '0 2px 8px rgba(14,165,233,0.35)' }}>

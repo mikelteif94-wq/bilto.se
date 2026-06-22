@@ -319,7 +319,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                     const activeStep = meta.step;
 
                     return (
-                      <div key={car.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                      <div key={car.id} className="bg-[#faf8f5] border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                         {/* Color top bar */}
                         <div className={`h-0.5 w-full ${meta.topColor}`} />
 
@@ -344,7 +344,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                           {car.access_token && (
                             <button
                               onClick={() => onOpenCar(car.access_token!)}
-                              className="shrink-0 inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-[#faf8f5] transition"
+                              className="shrink-0 inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-slate-200 bg-[#faf8f5] text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
                             >
                               Öppna <ExternalLink className="w-3 h-3" />
                             </button>
@@ -432,7 +432,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                                 {bids.slice(0, 5).map((b, idx) => (
                                   <div
                                     key={b.id}
-                                    className="flex items-center justify-between py-2 px-3 rounded-lg bg-[#faf8f5] hover:bg-slate-100 transition"
+                                    className="flex items-center justify-between py-2 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition"
                                   >
                                     <div className="flex items-center gap-2">
                                       {idx === 0 && (
@@ -456,7 +456,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
 
                         {/* Share link + open button footer */}
                         {car.access_token && (
-                          <div className="border-t border-slate-100 px-5 sm:px-6 py-3 flex items-center gap-3 bg-[#faf8f5]/60">
+                          <div className="border-t border-slate-100 px-5 sm:px-6 py-3 flex items-center gap-3 bg-slate-50/60">
                             <div className="flex-1 min-w-0">
                               <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Din personliga länk</span>
                               <p className="text-xs text-slate-500 font-mono truncate mt-0.5">
@@ -465,7 +465,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                             </div>
                             <button
                               onClick={() => handleCopyLink(car.id, car.access_token!)}
-                              className="shrink-0 inline-flex items-center gap-1.5 h-7 px-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:bg-[#faf8f5] transition"
+                              className="shrink-0 inline-flex items-center gap-1.5 h-7 px-2.5 rounded-lg border border-slate-200 bg-[#faf8f5] text-xs font-semibold text-slate-600 hover:bg-slate-50 transition"
                             >
                               {copiedId === car.id ? (
                                 <><Check className="w-3 h-3 text-emerald-600" /><span className="text-emerald-600">Kopierad</span></>
@@ -490,7 +490,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
 
             {/* Best bid summary across all cars – if there are bids */}
             {topBidOverall > 0 && (
-              <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="bg-[#faf8f5] border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                 <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
                   <div className="flex items-center gap-3 px-5 py-4">
                     <span className="w-8 h-8 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
@@ -524,7 +524,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
             )}
 
             {/* Help */}
-            <div className="bg-white border border-slate-200 rounded-xl px-5 sm:px-6 py-5 flex items-center gap-4 shadow-sm">
+            <div className="bg-[#faf8f5] border border-slate-200 rounded-xl px-5 sm:px-6 py-5 flex items-center gap-4 shadow-sm">
               <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
                 <Phone className="w-5 h-5 text-[#0e6efe]" />
               </div>
@@ -546,7 +546,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
 function EmptyState() {
   return (
     <div className="py-6 space-y-6">
-      <div className="bg-white border border-slate-200 rounded-xl p-10 sm:p-14 text-center shadow-sm">
+      <div className="bg-[#faf8f5] border border-slate-200 rounded-xl p-10 sm:p-14 text-center shadow-sm">
         <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center mx-auto mb-5">
           <CarIcon className="w-8 h-8 text-slate-300" />
         </div>
@@ -568,7 +568,7 @@ function EmptyState() {
           </a>
           <a
             href="/kop-bil"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-7 rounded-xl bg-white border border-slate-200 hover:bg-[#faf8f5] text-slate-800 font-semibold text-[15px] transition"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-7 rounded-xl bg-[#faf8f5] border border-slate-200 hover:bg-slate-50 text-slate-800 font-semibold text-[15px] transition"
           >
             <Search className="w-4 h-4" />
             Hitta / köp bil
@@ -577,7 +577,7 @@ function EmptyState() {
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-5 flex items-start gap-4">
+        <div className="bg-[#faf8f5] border border-slate-200 rounded-xl p-5 flex items-start gap-4">
           <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
             <Gavel className="w-5 h-5 text-[#0e6efe]" />
           </div>
@@ -588,7 +588,7 @@ function EmptyState() {
             </p>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-5 flex items-start gap-4">
+        <div className="bg-[#faf8f5] border border-slate-200 rounded-xl p-5 flex items-start gap-4">
           <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
             <TrendingUp className="w-5 h-5 text-emerald-600" />
           </div>
@@ -613,7 +613,7 @@ function QuoteRequestCard({ qr }: { qr: QuoteRequestRow }) {
   const quizAnswers = qr.quiz_answers as { budget?: string; body_type?: string[]; fuel_type?: string[] } | null;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+    <div className="bg-[#faf8f5] border border-slate-200 rounded-xl overflow-hidden shadow-sm">
       <div className="h-0.5 w-full bg-[#0e6efe]" />
       <div className="px-5 py-4 flex items-start gap-3">
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${isEquity ? 'bg-emerald-50' : 'bg-[#0e6efe]/10'}`}>
@@ -691,7 +691,7 @@ function KpiCard({
   highlight?: boolean;
 }) {
   return (
-    <div className={`relative bg-white border rounded-xl overflow-hidden shadow-sm ${highlight ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200'}`}>
+    <div className={`relative bg-[#faf8f5] border rounded-xl overflow-hidden shadow-sm ${highlight ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200'}`}>
       <div className={`h-0.5 w-full ${topColor}`} />
       <div className="p-4 sm:p-5">
         <div className="flex items-start justify-between mb-3">

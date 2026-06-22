@@ -91,7 +91,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
           <div className="flex items-center ml-auto">
             <a
               href="/gratis-konsultation"
-              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center bg-[#faf8f5] text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
@@ -101,7 +101,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
 
       <main>
         {/* Hero */}
-        <section className="relative pt-24 sm:pt-28 overflow-hidden bg-white">
+        <section className="relative pt-24 sm:pt-28 overflow-hidden bg-[#faf8f5]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-0">
             <div className="max-w-3xl">
               <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.22em] mb-4">
@@ -133,7 +133,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
         </section>
 
         {/* Mission + Promise combined */}
-        <section className="py-14 sm:py-20 bg-white">
+        <section className="py-14 sm:py-20 bg-[#faf8f5]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-start">
               {/* Left: mission text + portrait */}
@@ -181,8 +181,8 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                     {VALUES.map((item) => {
                       const Icon = item.icon;
                       return (
-                        <div key={item.title} className="flex gap-4 p-5 rounded-xl bg-[#faf8f5] hover:bg-[#0e6efe] group transition-colors duration-300">
-                          <div className="w-10 h-10 rounded-xl bg-[#0e6efe] group-hover:bg-white/20 flex items-center justify-center shrink-0 transition-colors duration-300">
+                        <div key={item.title} className="flex gap-4 p-5 rounded-xl bg-slate-50 hover:bg-[#0e6efe] group transition-colors duration-300">
+                          <div className="w-10 h-10 rounded-xl bg-[#0e6efe] group-hover:bg-[#faf8f5]/20 flex items-center justify-center shrink-0 transition-colors duration-300">
                             <Icon className="w-5 h-5 text-white" strokeWidth={2} />
                           </div>
                           <div>
@@ -199,7 +199,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                   </div>
                 </div>
 
-                <div className="bg-[#faf8f5] rounded-xl p-6 sm:p-7">
+                <div className="bg-slate-50 rounded-xl p-6 sm:p-7">
                   <span className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.22em] mb-4 block">
                     Vårt löfte
                   </span>
@@ -247,14 +247,14 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
               <button
                 type="button"
                 onClick={onBackHome}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-4 px-10 rounded-xl bg-white text-[#0e6efe] hover:bg-[#faf8f5] font-bold text-[16px] transition shadow-lg group"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-4 px-10 rounded-xl bg-[#faf8f5] text-[#0e6efe] hover:bg-slate-50 font-bold text-[16px] transition shadow-lg group"
               >
                 Värdera din bil gratis
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
               </button>
               <a
                 href="/gratis-konsultation"
-                className="w-full sm:w-auto inline-flex items-center justify-center py-4 px-10 rounded-xl border-2 border-white/50 text-white font-semibold text-[16px] hover:border-white/80 hover:bg-white/10 transition"
+                className="w-full sm:w-auto inline-flex items-center justify-center py-4 px-10 rounded-xl border-2 border-white/50 text-white font-semibold text-[16px] hover:border-white/80 hover:bg-[#faf8f5]/10 transition"
               >
                 Boka konsultation
               </a>

@@ -63,7 +63,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
 
   return (
     <div className="min-h-screen bg-[#faf8f5]">
-      <header className="border-b border-slate-200 bg-white sticky top-0 z-10">
+      <header className="border-b border-slate-200 bg-[#faf8f5] sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center">
           <button
             onClick={onBackHome}
@@ -129,7 +129,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
                 { titel: 'Hösten', text: 'Efterfrågan börjar minska och priserna kan bli något lägre.' },
                 { titel: 'Vintern', text: 'Fyrhjulsdrivna bilar och kombimodeller är mer attraktiva under vintern.' },
               ].map((s) => (
-                <div key={s.titel} className="rounded-xl border border-slate-200 bg-[#faf8f5] p-5">
+                <div key={s.titel} className="rounded-xl border border-slate-200 bg-slate-50 p-5">
                   <h3 className="font-semibold text-slate-900 mb-1.5">{s.titel}</h3>
                   <p className="text-[15px] text-slate-600 leading-[1.6]">{s.text}</p>
                 </div>
@@ -346,7 +346,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
             <p className="mb-5">Det finns fördelar och nackdelar med båda alternativen.</p>
             <div className="overflow-x-auto rounded-xl border border-slate-200">
               <table className="w-full text-left text-[15px]">
-                <thead className="bg-[#faf8f5] text-slate-700">
+                <thead className="bg-slate-50 text-slate-700">
                   <tr>
                     <th className="px-4 py-3 font-semibold">Faktor</th>
                     <th className="px-4 py-3 font-semibold">Sälja privat</th>
@@ -543,7 +543,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
         </article>
       </main>
 
-      <section className="bg-[#faf8f5] py-14 sm:py-20">
+      <section className="bg-slate-50 py-14 sm:py-20">
         <div className="max-w-2xl mx-auto px-6">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] mb-5">
@@ -559,7 +559,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
           </div>
 
           {success ? (
-            <div className="mt-8 rounded-xl bg-white border border-emerald-200 p-8 text-center shadow-sm">
+            <div className="mt-8 rounded-xl bg-[#faf8f5] border border-emerald-200 p-8 text-center shadow-sm">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-emerald-100 text-emerald-600 mb-4">
                 <Check className="w-6 h-6" />
               </div>
@@ -577,7 +577,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
           ) : (
             <form
               onSubmit={handleSubmit}
-              className="mt-8 rounded-xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm space-y-4"
+              className="mt-8 rounded-xl bg-[#faf8f5] border border-slate-200 p-6 sm:p-8 shadow-sm space-y-4"
             >
               <div>
                 <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">

@@ -210,7 +210,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <header
         className={`fixed top-0 inset-x-0 z-30 h-[53px] lg:h-16 transition-all duration-300 ${
           scrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100'
+            ? 'bg-[#faf8f5]/95 backdrop-blur-md shadow-sm border-b border-slate-100'
             : 'bg-transparent'
         }`}
       >
@@ -274,7 +274,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               className={`inline-flex items-center px-5 py-2.5 rounded-xl text-[12px] lg:text-[13px] font-semibold transition whitespace-nowrap ${
                 scrolled
                   ? 'bg-slate-900 text-white hover:bg-slate-700'
-                  : 'bg-white text-slate-900 hover:bg-white/90'
+                  : 'bg-[#faf8f5] text-slate-900 hover:bg-[#faf8f5]/90'
               }`}
             >
               Kostnadsfri konsultation
@@ -298,7 +298,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
         <div className="relative z-10 flex flex-col items-center justify-center text-center px-5 pt-24 pb-0" style={{ minHeight: '100svh' }}>
           {/* Social proof pill */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl border border-white/15 bg-white/8 backdrop-blur-md text-[13px] font-medium text-white/80 mb-8">
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl border border-white/15 bg-[#faf8f5]/8 backdrop-blur-md text-[13px] font-medium text-white/80 mb-8">
             <div className="flex gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
@@ -325,7 +325,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
           {/* Action card */}
           <div className="w-full max-w-xl">
-            <div className="bg-white rounded-xl shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
+            <div className="bg-[#faf8f5] rounded-xl shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
               {/* Tabs */}
               <div className="flex border-b border-slate-100 px-2 pt-1">
                 {(['salj', 'hitta'] as const).map((t) => (
@@ -348,7 +348,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               <div className="p-4 sm:p-5">
                 {heroTab === 'hitta' ? (
                   <div ref={carSearchRef} className="relative">
-                    <div className="flex items-center h-13 rounded-xl border border-slate-200 bg-[#faf8f5] overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
+                    <div className="flex items-center h-13 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-slate-400 focus-within:bg-[#faf8f5] transition-all">
                       <span className="flex items-center justify-center w-12 shrink-0">
                         <Search className="w-4.5 h-4.5 text-slate-400" />
                       </span>
@@ -374,7 +374,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                     </div>
 
                     {showSuggestions && !carSearchLoading && (
-                      <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-50">
+                      <div className="absolute left-0 right-0 top-full mt-2 bg-[#faf8f5] rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-50">
                         {carSuggestions.length === 0 ? (
                           <div className="flex items-center gap-3 px-4 py-4 text-[14px] text-slate-400">
                             <Search className="w-4 h-4 shrink-0" />
@@ -390,7 +390,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                                 key={i}
                                 type="button"
                                 onClick={() => handleCarSelect(s.make, s.model)}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#faf8f5] transition group border-t border-slate-100 first:border-0"
+                                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group border-t border-slate-100 first:border-0"
                               >
                                 <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
                                   <Car className="w-3.5 h-3.5 text-slate-500" />
@@ -426,7 +426,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       <div className="flex-1">
                         <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
                       </div>
-                      <div className="flex items-center flex-1 h-13 rounded-xl border border-slate-200 bg-[#faf8f5] overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
+                      <div className="flex items-center flex-1 h-13 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-slate-400 focus-within:bg-[#faf8f5] transition-all">
                         <span className="flex items-center justify-center w-11 shrink-0">
                           <Phone className="w-4 h-4 text-slate-400" />
                         </span>
@@ -466,7 +466,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
           {/* Scroll hint */}
           <div className="mt-10 mb-4 flex flex-col items-center gap-2 opacity-40">
-            <div className="w-px h-8 bg-white/40" />
+            <div className="w-px h-8 bg-[#faf8f5]/40" />
             <span className="text-[11px] text-white/60 uppercase tracking-widest font-medium">Scrolla</span>
           </div>
 
@@ -501,7 +501,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="how-it-works"
         data-animate
-        className={`bg-white py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('how-it-works') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        className={`bg-[#faf8f5] py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('how-it-works') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-5xl mx-auto">
           <div className="mb-16">
@@ -534,10 +534,10 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             ].map((c) => {
               const Icon = c.icon;
               return (
-                <div key={c.step} className="group bg-[#faf8f5] hover:bg-slate-900 rounded-xl p-8 transition-all duration-300 cursor-default">
+                <div key={c.step} className="group bg-slate-50 hover:bg-slate-900 rounded-xl p-8 transition-all duration-300 cursor-default">
                   <div className="flex items-start justify-between mb-8">
                     <span className="text-[13px] font-bold text-slate-300 group-hover:text-white/30 tabular-nums tracking-wider transition-colors">{c.step}</span>
-                    <div className="w-10 h-10 rounded-xl bg-white group-hover:bg-white/10 flex items-center justify-center transition-colors shadow-sm">
+                    <div className="w-10 h-10 rounded-xl bg-[#faf8f5] group-hover:bg-[#faf8f5]/10 flex items-center justify-center transition-colors shadow-sm">
                       <Icon className="w-5 h-5 text-slate-700 group-hover:text-white transition-colors" strokeWidth={1.8} />
                     </div>
                   </div>
@@ -600,8 +600,8 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             ].map((c) => {
               const Icon = c.icon;
               return (
-                <div key={c.title} className="rounded-xl border border-white/8 bg-white/4 p-8 hover:bg-white/8 transition-all duration-300">
-                  <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-6">
+                <div key={c.title} className="rounded-xl border border-white/8 bg-[#faf8f5]/4 p-8 hover:bg-[#faf8f5]/8 transition-all duration-300">
+                  <div className="w-10 h-10 rounded-xl bg-[#faf8f5]/10 flex items-center justify-center mb-6">
                     <Icon className="w-5 h-5 text-white" strokeWidth={1.8} />
                   </div>
                   <h3 className="text-[18px] font-bold mb-3 text-white">{c.title}</h3>
@@ -617,7 +617,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                 window.history.pushState({}, '', '/kop-bil');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="inline-flex items-center gap-2.5 h-12 px-8 rounded-xl bg-white text-slate-900 hover:bg-white/90 font-semibold text-[15px] transition group"
+              className="inline-flex items-center gap-2.5 h-12 px-8 rounded-xl bg-[#faf8f5] text-slate-900 hover:bg-[#faf8f5]/90 font-semibold text-[15px] transition group"
             >
               Prata med en mäklare
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
@@ -634,7 +634,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="benefits-section"
         data-animate
-        className={`bg-white py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('benefits-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        className={`bg-[#faf8f5] py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('benefits-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-5xl mx-auto">
           <div className="mb-16">
@@ -712,7 +712,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             {REVIEWS.map((r) => (
               <div
                 key={r.name}
-                className="rounded-xl border border-white/8 bg-white/4 p-7 hover:bg-white/8 transition-all duration-300"
+                className="rounded-xl border border-white/8 bg-[#faf8f5]/4 p-7 hover:bg-[#faf8f5]/8 transition-all duration-300"
               >
                 <div className="flex gap-0.5 mb-5">
                   {[...Array(r.stars)].map((_, i) => (
@@ -745,7 +745,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="cta-section"
         data-animate
-        className={`bg-white py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('cta-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        className={`bg-[#faf8f5] py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('cta-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-[12px] font-semibold text-slate-400 uppercase tracking-[0.2em] mb-6">Redo att sälja?</p>

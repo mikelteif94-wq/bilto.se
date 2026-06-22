@@ -251,7 +251,7 @@ export default function ConfirmationForm({
 
         <div className="bg-gradient-to-br from-[#0e6efe] to-[#0b5cd8] text-white rounded-xl p-5 sm:p-6 mb-6 shadow-sm">
           <div className="flex items-start gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#faf8f5]/15 flex items-center justify-center shrink-0">
               <Phone className="w-5 h-5" strokeWidth={2.2} />
             </div>
             <div>
@@ -516,7 +516,7 @@ export default function ConfirmationForm({
               <div className={`w-4 h-4 mt-0.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
                 dealReadiness === opt.value ? 'border-[#0e6efe] bg-[#0e6efe]' : 'border-slate-300'
               }`}>
-                {dealReadiness === opt.value && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                {dealReadiness === opt.value && <div className="w-1.5 h-1.5 rounded-full bg-[#faf8f5]" />}
               </div>
               <div>
                 <p className={`text-[13.5px] font-semibold leading-snug ${dealReadiness === opt.value ? 'text-slate-900' : 'text-slate-700'}`}>

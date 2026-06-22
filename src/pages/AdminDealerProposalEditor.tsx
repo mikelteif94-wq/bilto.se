@@ -397,8 +397,8 @@ export default function AdminDealerProposalEditor({
 
         {/* Sticky context bar */}
         {car && (
-          <div className="sticky top-0 z-10 bg-white border border-slate-200 rounded-xl shadow-sm mb-6 overflow-hidden">
-            <div className="px-4 py-2.5 bg-[#faf8f5] border-b border-slate-100">
+          <div className="sticky top-0 z-10 bg-[#faf8f5] border border-slate-200 rounded-xl shadow-sm mb-6 overflow-hidden">
+            <div className="px-4 py-2.5 bg-slate-50 border-b border-slate-100">
               <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Kundens bil</span>
             </div>
             <div className="px-4 py-3 flex flex-wrap gap-x-6 gap-y-1.5 items-center">
@@ -436,7 +436,7 @@ export default function AdminDealerProposalEditor({
                   <select
                     value={selectedDealerId}
                     onChange={(e) => handleDealerChange(e.target.value)}
-                    className="w-full appearance-none bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] pr-8"
+                    className="w-full appearance-none bg-[#faf8f5] border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] pr-8"
                   >
                     <option value="">Välj handlare...</option>
                     {dealers.map((d) => (
@@ -494,7 +494,7 @@ export default function AdminDealerProposalEditor({
               </FormGroup>
             </div>
             {inbytesprisNum > 0 && (
-              <div className="bg-[#faf8f5] rounded-lg border border-slate-100 p-4 space-y-2">
+              <div className="bg-slate-50 rounded-lg border border-slate-100 p-4 space-y-2">
                 <SummaryRow label="Inbytespris" value={`${formatKr(inbytesprisNum)} kr`} />
                 <SummaryRow
                   label="Lånerest som löses"
@@ -521,7 +521,7 @@ export default function AdminDealerProposalEditor({
                   className={`text-left px-4 py-3.5 rounded-xl border-2 transition ${
                     dealtyp === dt.value
                       ? 'border-[#0e6efe] bg-blue-50/60'
-                      : 'border-slate-200 bg-white hover:border-slate-300'
+                      : 'border-slate-200 bg-[#faf8f5] hover:border-slate-300'
                   }`}
                 >
                   <div className={`text-sm font-semibold mb-0.5 ${dealtyp === dt.value ? 'text-[#0e6efe]' : 'text-slate-800'}`}>
@@ -541,7 +541,7 @@ export default function AdminDealerProposalEditor({
                   <select
                     value={selectedInventoryId}
                     onChange={(e) => handleInventorySelect(e.target.value)}
-                    className="w-full appearance-none bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] pr-8"
+                    className="w-full appearance-none bg-[#faf8f5] border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] pr-8"
                   >
                     <option value="">Välj bil från lager...</option>
                     {inventoryCars.map((c) => (
@@ -569,7 +569,7 @@ export default function AdminDealerProposalEditor({
               </FormGroup>
               <FormGroup label="Skick">
                 <div className="relative">
-                  <select value={erbjudenSkick} onChange={(e) => setErbjudenSkick(e.target.value)} className="w-full appearance-none bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] pr-8">
+                  <select value={erbjudenSkick} onChange={(e) => setErbjudenSkick(e.target.value)} className="w-full appearance-none bg-[#faf8f5] border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] pr-8">
                     <option value="">Välj skick...</option>
                     {Object.entries(SKICK_LABELS).map(([k, v]) => (
                       <option key={k} value={k}>{v}</option>
@@ -580,7 +580,7 @@ export default function AdminDealerProposalEditor({
               </FormGroup>
               <FormGroup label="Däck">
                 <div className="relative">
-                  <select value={erbjudenDack} onChange={(e) => setErbjudenDack(e.target.value)} className="w-full appearance-none bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] pr-8">
+                  <select value={erbjudenDack} onChange={(e) => setErbjudenDack(e.target.value)} className="w-full appearance-none bg-[#faf8f5] border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] pr-8">
                     {DACK_OPTIONS.map((o) => (
                       <option key={o.value} value={o.value}>{o.label}</option>
                     ))}
@@ -600,7 +600,7 @@ export default function AdminDealerProposalEditor({
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition ${
-                  dragging ? 'border-[#0e6efe] bg-blue-50' : 'border-slate-200 hover:border-slate-300 bg-[#faf8f5]'
+                  dragging ? 'border-[#0e6efe] bg-blue-50' : 'border-slate-200 hover:border-slate-300 bg-slate-50'
                 }`}
               >
                 {uploadingImages ? (
@@ -660,7 +660,7 @@ export default function AdminDealerProposalEditor({
                     <select
                       value={garantiAr}
                       onChange={(e) => setGarantiAr(Number(e.target.value))}
-                      className="appearance-none bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-sm text-slate-900 pr-7 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30"
+                      className="appearance-none bg-[#faf8f5] border border-slate-200 rounded-lg px-3 py-1.5 text-sm text-slate-900 pr-7 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30"
                     >
                       <option value={1}>1 år</option>
                       <option value={2}>2 år</option>
@@ -820,7 +820,7 @@ export default function AdminDealerProposalEditor({
             <button
               onClick={handleSaveDraft}
               disabled={saving || sending}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-200 bg-white text-slate-700 font-semibold text-sm hover:bg-[#faf8f5] transition disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-200 bg-[#faf8f5] text-slate-700 font-semibold text-sm hover:bg-slate-50 transition disabled:opacity-50"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
               Spara utkast
@@ -844,7 +844,7 @@ export default function AdminDealerProposalEditor({
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 const inputCls =
-  'w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] transition';
+  'w-full bg-[#faf8f5] border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] transition';
 
 function StepCard({
   number,
@@ -858,7 +858,7 @@ function StepCard({
   accent?: string;
 }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-[#faf8f5] border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-100">
         <span className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center shrink-0">
           {number}
@@ -939,7 +939,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
       className={`relative w-10 h-6 rounded-xl transition ${checked ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
     >
       <span
-        className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+        className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-[#faf8f5] shadow transition-transform ${
           checked ? 'translate-x-4' : ''
         }`}
       />

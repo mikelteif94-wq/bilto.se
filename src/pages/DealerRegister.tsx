@@ -151,7 +151,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
   if (success) {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4 py-10">
-        <div className="max-w-lg w-full bg-white rounded-xl border border-slate-200 p-8 sm:p-10 text-center shadow-sm">
+        <div className="max-w-lg w-full bg-[#faf8f5] rounded-xl border border-slate-200 p-8 sm:p-10 text-center shadow-sm">
           <div className="w-16 h-16 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mx-auto mb-6">
             <Check className="w-8 h-8 text-[#0e6efe]" strokeWidth={2.5} />
           </div>
@@ -164,7 +164,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
 
           <div className="bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl p-5 mb-7 text-left">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 ring-1 ring-[#0e6efe]/15">
+              <div className="w-10 h-10 rounded-xl bg-[#faf8f5] flex items-center justify-center shrink-0 ring-1 ring-[#0e6efe]/15">
                 <Mail className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
               </div>
               <div>
@@ -234,7 +234,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
           <div className="flex items-center ml-auto">
             <a
               href="/handlare/logga-in"
-              className="inline-flex items-center gap-2 bg-white text-[#0e6efe] text-[14px] font-semibold px-5 h-10 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center gap-2 bg-[#faf8f5] text-[#0e6efe] text-[14px] font-semibold px-5 h-10 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               <User className="w-[18px] h-[18px]" strokeWidth={2.2} />
               Logga in
@@ -288,7 +288,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
                 <button
                   type="button"
                   onClick={goApply}
-                  className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl bg-white text-[#0e6efe] hover:bg-white/90 font-semibold text-[15px] transition"
+                  className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl bg-[#faf8f5] text-[#0e6efe] hover:bg-[#faf8f5]/90 font-semibold text-[15px] transition"
                 >
                   Förregistrera dig
                   <ArrowRight className="w-4 h-4" />
@@ -345,7 +345,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
                     {!isLast && (
                       <span aria-hidden className="absolute left-[19px] sm:left-[27px] top-10 sm:top-14 bottom-0 w-px bg-slate-200 lg:left-[54px] lg:right-0 lg:top-[27px] lg:bottom-auto lg:w-auto lg:h-px" />
                     )}
-                    <div className="absolute left-0 top-0 flex items-center justify-center w-10 h-10 sm:w-[54px] sm:h-[54px] rounded-full bg-white ring-1 ring-slate-200">
+                    <div className="absolute left-0 top-0 flex items-center justify-center w-10 h-10 sm:w-[54px] sm:h-[54px] rounded-full bg-[#faf8f5] ring-1 ring-slate-200">
                       <Icon className="w-4 h-4 sm:w-[22px] sm:h-[22px] text-[#0e6efe]" strokeWidth={2} />
                     </div>
                     <div className="flex items-baseline gap-3 mb-2">
@@ -366,7 +366,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
           </div>
         </section>
 
-        <section className="bg-white">
+        <section className="bg-[#faf8f5]">
           <div className="max-w-6xl mx-auto px-6 py-16 sm:py-24">
             <div className="grid md:grid-cols-12 gap-10 lg:gap-16 items-center">
               <div className="md:col-span-6">
@@ -416,7 +416,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
                     className="w-full h-[260px] sm:h-[380px] md:h-[480px] object-cover object-center"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-                  <div className="hidden sm:block absolute left-6 bottom-6 bg-white rounded-xl p-5 shadow-lg max-w-xs">
+                  <div className="hidden sm:block absolute left-6 bottom-6 bg-[#faf8f5] rounded-xl p-5 shadow-lg max-w-xs">
                     <div className="flex items-center gap-3 mb-1.5">
                       <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
                         <Phone className="w-5 h-5" strokeWidth={2} />
@@ -452,8 +452,8 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
               </p>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-xl shadow-slate-200/60 overflow-hidden">
-              <div className="bg-[#faf8f5] border-b border-slate-200 px-8 py-5 flex items-center gap-3">
+            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 shadow-xl shadow-slate-200/60 overflow-hidden">
+              <div className="bg-slate-50 border-b border-slate-200 px-8 py-5 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
                   <FileSignature className="w-5 h-5 text-[#0e6efe]" />
                 </div>
@@ -660,7 +660,7 @@ function TimeBlock({ value, label }: { value: number; label: string }) {
   const pad = (n: number) => n.toString().padStart(2, '0');
   return (
     <div className="flex flex-col items-center">
-      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-[#faf8f5]/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
         <span className="text-[22px] sm:text-[26px] font-bold text-white tabular-nums">
           {pad(value)}
         </span>

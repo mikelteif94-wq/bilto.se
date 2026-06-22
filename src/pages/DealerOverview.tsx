@@ -351,11 +351,11 @@ export default function DealerOverview({
         </div>
 
         {/* Main tab switcher */}
-        <div className="flex gap-1 bg-white border border-slate-200 rounded-xl p-1 w-fit">
+        <div className="flex gap-1 bg-[#faf8f5] border border-slate-200 rounded-xl p-1 w-fit">
           <button
             onClick={() => setMainTab('overview')}
             className={`px-5 h-9 rounded-lg text-sm font-semibold transition flex items-center gap-2 ${
-              mainTab === 'overview' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-[#faf8f5]'
+              mainTab === 'overview' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
             }`}
           >
             <LayoutDashboard className="w-3.5 h-3.5" />
@@ -364,7 +364,7 @@ export default function DealerOverview({
           <button
             onClick={() => setMainTab('invoices')}
             className={`px-5 h-9 rounded-lg text-sm font-semibold transition flex items-center gap-2 relative ${
-              mainTab === 'invoices' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-[#faf8f5]'
+              mainTab === 'invoices' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
             }`}
           >
             <Receipt className="w-3.5 h-3.5" />
@@ -521,7 +521,7 @@ function OverviewTab({
       </div>
 
       {/* Secondary stats */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-[#faf8f5] border border-slate-200 rounded-xl overflow-hidden shadow-sm">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-y sm:divide-y-0 divide-x-0 sm:divide-x divide-slate-100">
           {[
             { label: 'Leder', value: stats.leadingCount, icon: <TrendingUp className="w-3.5 h-3.5" />, iconCls: 'text-emerald-500', valCls: stats.leadingCount > 0 ? 'text-emerald-700' : 'text-slate-900' },
@@ -558,7 +558,7 @@ function OverviewTab({
                 className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition ${
                   leadTab === tab.key
                     ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-[#faf8f5]'
+                    : 'bg-[#faf8f5] text-slate-600 border-slate-200 hover:bg-slate-50'
                 }`}
               >
                 {tab.label}{' '}
@@ -566,7 +566,7 @@ function OverviewTab({
               </button>
             ))}
           </div>
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+          <div className="bg-[#faf8f5] border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
             {dispatchedLeads
               .filter((d) => leadTab === 'all' || d.lead_type === leadTab)
               .map((lead) => {
@@ -579,7 +579,7 @@ function OverviewTab({
                 return (
                   <div key={lead.id} className={`${isOverdue ? 'bg-red-50' : ''} transition`}>
                     <div
-                      className={`px-4 py-3.5 ${lead.car_id && !isActive ? 'cursor-pointer hover:bg-[#faf8f5]' : ''} transition`}
+                      className={`px-4 py-3.5 ${lead.car_id && !isActive ? 'cursor-pointer hover:bg-slate-50' : ''} transition`}
                       onClick={() => {
                         if (!isActive && lead.car_id) onOpenCar(lead.car_id);
                       }}
@@ -611,7 +611,7 @@ function OverviewTab({
                           {lead.response_status === 'sent' && (
                             <button
                               onClick={() => void updateDispatchStatus(lead.id, 'read')}
-                              className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-xl border border-slate-200 text-[11px] font-medium text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300 transition"
+                              className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-xl border border-slate-200 text-[11px] font-medium text-slate-600 bg-[#faf8f5] hover:bg-slate-50 hover:border-slate-300 transition"
                             >
                               <Eye className="w-3 h-3" />
                               Markera som läst
@@ -622,7 +622,7 @@ function OverviewTab({
                             className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-xl border text-[11px] font-medium transition ${
                               isActive && actionPanel?.mode === 'reply'
                                 ? 'bg-slate-900 text-white border-slate-900'
-                                : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300'
+                                : 'border-slate-200 text-slate-600 bg-[#faf8f5] hover:bg-slate-50 hover:border-slate-300'
                             }`}
                           >
                             <MessageSquare className="w-3 h-3" />
@@ -653,7 +653,7 @@ function OverviewTab({
 
                     {/* Inline action panel */}
                     {isActive && (
-                      <div className="px-4 pb-4 bg-[#faf8f5] border-t border-slate-100" onClick={(e) => e.stopPropagation()}>
+                      <div className="px-4 pb-4 bg-slate-50 border-t border-slate-100" onClick={(e) => e.stopPropagation()}>
                         {actionPanel?.mode === 'reply' ? (
                           <div className="pt-3 space-y-2">
                             <label className="text-[11px] font-semibold text-slate-600 uppercase tracking-wide">Ditt svar</label>
@@ -663,7 +663,7 @@ function OverviewTab({
                               onChange={(e) => setActionText(e.target.value)}
                               rows={3}
                               placeholder="Skriv ett meddelande till Bilto om detta lead..."
-                              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 resize-none"
+                              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-[#faf8f5] focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 resize-none"
                             />
                             <div className="flex justify-end gap-2">
                               <button
@@ -691,14 +691,14 @@ function OverviewTab({
                               value={actionAmount}
                               onChange={(e) => setActionAmount(e.target.value)}
                               placeholder="Ex: 185000"
-                              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30"
+                              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-[#faf8f5] focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30"
                             />
                             <textarea
                               value={actionText}
                               onChange={(e) => setActionText(e.target.value)}
                               rows={2}
                               placeholder="Valfri kommentar om offerten..."
-                              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 resize-none"
+                              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-[#faf8f5] focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 resize-none"
                             />
                             <div className="flex justify-end gap-2">
                               <button
@@ -737,7 +737,7 @@ function OverviewTab({
             icon={<Flame className="w-3.5 h-3.5 text-amber-500" />}
             action={endingCars.length > 0 ? <NavLink label="Visa alla" onClick={onNavigateCars} /> : undefined}
           />
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+          <div className="bg-[#faf8f5] border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
             {endingCars.length === 0 ? (
               <EmptyState icon={<CheckCircle2 className="w-5 h-5 text-emerald-400" />} text="Inga auktioner slutar inom 24 h" />
             ) : (
@@ -749,7 +749,7 @@ function OverviewTab({
                   <button
                     key={c.id}
                     onClick={() => onOpenCar(c.id)}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#faf8f5] transition group"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
                   >
                     <div className="relative shrink-0">
                       <div className={`w-2 h-8 rounded-xl ${critical ? 'bg-red-400' : urgent ? 'bg-amber-400' : 'bg-slate-200'}`} />
@@ -781,7 +781,7 @@ function OverviewTab({
             icon={<Gavel className="w-3.5 h-3.5 text-slate-400" />}
             action={stats.myBidsCount > 0 ? <NavLink label="Visa alla" onClick={onNavigateCars} /> : undefined}
           />
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+          <div className="bg-[#faf8f5] border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
             {myBids.length === 0 ? (
               <EmptyState icon={<Gavel className="w-5 h-5 text-slate-300" />} text="Du har inga aktiva bud just nu" />
             ) : (
@@ -829,7 +829,7 @@ function OverviewTab({
       {newCars.length > 0 && (
         <div>
           <SectionLabel text="Nyligen inlagda bilar" icon={<Zap className="w-3.5 h-3.5 text-sky-500" />} action={<NavLink label="Visa alla" onClick={onNavigateCars} />} />
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+          <div className="bg-[#faf8f5] border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
             {newCars.map((c) => (
               <button
                 key={c.id}
@@ -891,7 +891,7 @@ function InvoicesTab({
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div className="bg-[#faf8f5] border border-slate-200 rounded-xl p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center">
               <Receipt className="w-4 h-4 text-slate-500" />
@@ -900,7 +900,7 @@ function InvoicesTab({
           </div>
           <div className="text-2xl font-bold text-slate-900 tabular-nums">{invoices.length}</div>
         </div>
-        <div className={`bg-white border rounded-xl p-5 shadow-sm ${overdueCount > 0 ? 'border-red-200' : 'border-slate-200'}`}>
+        <div className={`bg-[#faf8f5] border rounded-xl p-5 shadow-sm ${overdueCount > 0 ? 'border-red-200' : 'border-slate-200'}`}>
           <div className="flex items-center gap-3 mb-3">
             <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${overdueCount > 0 ? 'bg-red-50' : 'bg-slate-100'}`}>
               <AlertTriangle className={`w-4 h-4 ${overdueCount > 0 ? 'text-red-500' : 'text-slate-400'}`} />
@@ -909,7 +909,7 @@ function InvoicesTab({
           </div>
           <div className={`text-2xl font-bold tabular-nums ${overdueCount > 0 ? 'text-red-600' : 'text-slate-900'}`}>{overdueCount}</div>
         </div>
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div className="bg-[#faf8f5] border border-slate-200 rounded-xl p-5 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center">
               <Receipt className="w-4 h-4 text-amber-600" />
@@ -937,7 +937,7 @@ function InvoicesTab({
       {wonDeals.length > 0 && (
         <div>
           <SectionLabel text="Vunna affärer" icon={<Trophy className="w-3.5 h-3.5 text-emerald-500" />} />
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+          <div className="bg-[#faf8f5] border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
             {wonDeals.map((deal) => {
               const inv = deal.invoice;
               const invStatus = inv ? (INVOICE_STATUS[inv.status] ?? INVOICE_STATUS.pending) : null;
@@ -946,7 +946,7 @@ function InvoicesTab({
               return (
                 <div
                   key={deal.bid_id}
-                  className={`flex items-center gap-3 px-4 py-3.5 ${isOverdue ? 'bg-red-50/60' : ''} ${deal.car?.id ? 'cursor-pointer hover:bg-[#faf8f5]' : ''} transition`}
+                  className={`flex items-center gap-3 px-4 py-3.5 ${isOverdue ? 'bg-red-50/60' : ''} ${deal.car?.id ? 'cursor-pointer hover:bg-slate-50' : ''} transition`}
                   onClick={() => deal.car?.id && onOpenCar(deal.car.id)}
                 >
                   <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
@@ -1000,7 +1000,7 @@ function InvoicesTab({
       {invoices.length > 0 ? (
         <div>
           <SectionLabel text="Alla fakturor" icon={<Receipt className="w-3.5 h-3.5 text-slate-400" />} />
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
+          <div className="bg-[#faf8f5] border border-slate-200 rounded-xl overflow-hidden shadow-sm divide-y divide-slate-100">
             {invoices.map((inv) => {
               const s = INVOICE_STATUS[inv.status] ?? INVOICE_STATUS.pending;
               const isOverdue = inv.due_date && new Date(inv.due_date) < new Date() && inv.status !== 'paid' && inv.status !== 'cancelled';
@@ -1046,7 +1046,7 @@ function InvoicesTab({
         </div>
       ) : (
         wonDeals.length === 0 && (
-          <div className="bg-white border border-slate-200 rounded-xl p-12 text-center">
+          <div className="bg-[#faf8f5] border border-slate-200 rounded-xl p-12 text-center">
             <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto mb-3">
               <Receipt className="w-5 h-5 text-slate-300" />
             </div>
@@ -1074,7 +1074,7 @@ function DealerKpiCard({
   return (
     <Tag
       onClick={onClick}
-      className={`relative text-left bg-white border rounded-xl overflow-hidden transition shadow-sm ${
+      className={`relative text-left bg-[#faf8f5] border rounded-xl overflow-hidden transition shadow-sm ${
         onClick ? 'hover:shadow-md cursor-pointer' : ''
       } ${highlight ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200'}`}
     >
@@ -1114,7 +1114,7 @@ function NavLink({ label, onClick }: { label: string; onClick?: () => void }) {
 function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
     <div className="flex flex-col items-center gap-2.5 px-4 py-10 text-center">
-      <div className="w-10 h-10 rounded-xl bg-[#faf8f5] border border-slate-100 flex items-center justify-center">
+      <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
         {icon}
       </div>
       <p className="text-sm text-slate-400">{text}</p>

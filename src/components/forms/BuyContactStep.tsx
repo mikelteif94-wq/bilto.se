@@ -166,7 +166,7 @@ export default function BuyContactStep({ initialData, onNext, submitting = false
               <div className={`w-4 h-4 mt-0.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
                 d.dealReadiness === opt.value ? 'border-[#0e6efe] bg-[#0e6efe]' : 'border-slate-300'
               }`}>
-                {d.dealReadiness === opt.value && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                {d.dealReadiness === opt.value && <div className="w-1.5 h-1.5 rounded-full bg-[#faf8f5]" />}
               </div>
               <div>
                 <p className={`text-[13.5px] font-semibold leading-snug ${d.dealReadiness === opt.value ? 'text-slate-900' : 'text-slate-700'}`}>

@@ -106,7 +106,7 @@ export default function CompactCarCard({
 
   return (
     <div
-      className={`group relative bg-white rounded-xl overflow-hidden transition-all duration-300 cursor-pointer ${ringClass}`}
+      className={`group relative bg-[#faf8f5] rounded-xl overflow-hidden transition-all duration-300 cursor-pointer ${ringClass}`}
     >
       {/* Mobile: horizontal layout */}
       <div className="flex sm:hidden" onClick={handleCardClick}>

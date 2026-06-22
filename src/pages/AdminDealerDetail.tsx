@@ -327,7 +327,7 @@ export default function AdminDealerDetail({
     return (
       <PortalLayout navItems={[]} identity="Admin" identityRole="Bilto" onLogout={handleLogout} breadcrumb={breadcrumbEl}>
         <div className="flex items-center justify-center px-4 py-20">
-          <div className="max-w-md w-full bg-white rounded-xl border border-slate-200 p-8 text-center">
+          <div className="max-w-md w-full bg-[#faf8f5] rounded-xl border border-slate-200 p-8 text-center">
             <p className="text-slate-700 mb-6">{error ?? 'Handlaren hittades inte.'}</p>
             <button onClick={onBack} className="text-slate-600 hover:text-slate-900 font-medium">Tillbaka</button>
           </div>
@@ -366,7 +366,7 @@ export default function AdminDealerDetail({
           </div>
 
           {/* Dealer info */}
-          <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-8 shadow-sm space-y-5 sm:space-y-6">
+          <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 sm:p-8 shadow-sm space-y-5 sm:space-y-6">
             <InfoRow icon={<Building2 className="w-4 h-4" />} label="Företag" value={dealer.foretagsnamn} />
             <InfoRow icon={<Hash className="w-4 h-4" />} label="Org.nr" value={dealer.moderbolag || dealer.orgnr} mono />
             {Array.isArray(dealer.organisationsnummer) && dealer.organisationsnummer.length > 0 && (
@@ -393,7 +393,7 @@ export default function AdminDealerDetail({
           </div>
 
           {/* Approval actions */}
-          <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-8 shadow-sm space-y-4">
+          <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 sm:p-8 shadow-sm space-y-4">
             {dealer.godkand ? (
               <>
                 <div className="flex items-start gap-3">
@@ -416,7 +416,7 @@ export default function AdminDealerDetail({
                 </div>
                 <button
                   onClick={() => setConfirmAction('revoke')}
-                  className="inline-flex items-center gap-2 h-9 px-4 rounded-xl border border-slate-300 text-slate-700 text-sm font-semibold hover:border-slate-400 hover:bg-[#faf8f5] transition"
+                  className="inline-flex items-center gap-2 h-9 px-4 rounded-xl border border-slate-300 text-slate-700 text-sm font-semibold hover:border-slate-400 hover:bg-slate-50 transition"
                 >
                   Återkalla godkännande
                 </button>
@@ -473,7 +473,7 @@ export default function AdminDealerDetail({
           </div>
 
           {/* Danger zone */}
-          <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6 shadow-sm">
+          <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 sm:p-6 shadow-sm">
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Farlig zon</p>
             <button
               onClick={() => setConfirmAction('delete')}
@@ -485,7 +485,7 @@ export default function AdminDealerDetail({
           </div>
 
           {/* Förmedlingsavgifter */}
-          <div className="bg-white rounded-md border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-[#faf8f5] rounded-md border border-slate-200 shadow-sm overflow-hidden">
             <div className="flex items-center justify-between px-5 sm:px-8 py-4 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center">
@@ -520,7 +520,7 @@ export default function AdminDealerDetail({
             )}
 
             {showAddInvoice && (
-              <div className="px-5 sm:px-8 py-5 bg-[#faf8f5] border-b border-slate-100 space-y-4">
+              <div className="px-5 sm:px-8 py-5 bg-slate-50 border-b border-slate-100 space-y-4">
                 <h3 className="text-sm font-semibold text-slate-800">Ny manuell faktura</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -537,7 +537,7 @@ export default function AdminDealerDetail({
                           className={`flex-1 text-left px-3 py-2.5 rounded-lg border text-sm transition ${
                             addForm.commission_type === opt.value
                               ? 'border-slate-900 bg-slate-900 text-white'
-                              : 'border-slate-200 bg-white text-slate-700 hover:bg-[#faf8f5]'
+                              : 'border-slate-200 bg-[#faf8f5] text-slate-700 hover:bg-slate-50'
                           }`}
                         >
                           <div className="font-semibold">{opt.label}</div>
@@ -593,7 +593,7 @@ export default function AdminDealerDetail({
               </div>
             ) : invoices.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-10 text-center px-6">
-                <div className="w-10 h-10 rounded-xl bg-[#faf8f5] border border-slate-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
                   <Receipt className="w-4 h-4 text-slate-300" />
                 </div>
                 <p className="text-sm text-slate-400">
@@ -695,7 +695,7 @@ export default function AdminDealerDetail({
             className="absolute inset-0 bg-black/50"
             onClick={() => { setConfirmAction(null); setActionError(null); }}
           />
-          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 space-y-4">
+          <div className="relative bg-[#faf8f5] rounded-xl shadow-2xl w-full max-w-sm p-6 space-y-4">
             <h2 className="text-lg font-bold text-slate-900">{CONFIRM_CONFIG[confirmAction].title}</h2>
             <p className="text-sm text-slate-600 leading-relaxed">{CONFIRM_CONFIG[confirmAction].body}</p>
             {actionError && (
@@ -704,7 +704,7 @@ export default function AdminDealerDetail({
             <div className="flex gap-2 pt-1">
               <button
                 onClick={() => { setConfirmAction(null); setActionError(null); }}
-                className="flex-1 h-10 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-[#faf8f5] transition"
+                className="flex-1 h-10 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition"
               >
                 Avbryt
               </button>

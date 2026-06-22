@@ -14,11 +14,11 @@ interface EquityFlowProps {
 
 function TeaserCard({ onStart }: { onStart: () => void }) {
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-sm">
+    <div className="rounded-2xl bg-[#faf8f5] border border-slate-200 overflow-hidden shadow-sm">
       {/* Header strip */}
       <div className="bg-gradient-to-r from-[#0e6efe] to-[#2a7fff] px-5 pt-5 pb-10">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
+          <div className="w-9 h-9 rounded-xl bg-[#faf8f5]/20 flex items-center justify-center shrink-0 mt-0.5">
             <Sparkles className="w-4.5 h-4.5 text-white" style={{ width: 18, height: 18 }} />
           </div>
           <div>
@@ -34,7 +34,7 @@ function TeaserCard({ onStart }: { onStart: () => void }) {
 
       {/* Floating benefit cards */}
       <div className="px-4 -mt-6 mb-4">
-        <div className="bg-white rounded-2xl shadow-md border border-slate-100 divide-y divide-slate-50">
+        <div className="bg-[#faf8f5] rounded-2xl shadow-md border border-slate-100 divide-y divide-slate-50">
           {[
             { icon: TrendingDown, color: '#16a34a', bg: '#f0fdf4', label: 'Sänk månadskostnaden', sub: 'Många sparar 1 500–3 000 kr/mån' },
             { icon: Wallet, color: '#0e6efe', bg: '#eff6ff', label: 'Frigör kapital', sub: 'Pengar du kan använda till annat' },
@@ -86,7 +86,7 @@ export function EquityFlow({ onNegotiate: _onNegotiate, compact, isEv }: EquityF
         type="button"
         onClick={() => setState('quiz')}
         whileTap={{ scale: 0.97 }}
-        className="w-full flex items-center gap-3 bg-white hover:bg-blue-50 border-2 border-[#0e6efe] rounded-2xl px-4 py-3.5 transition-all duration-200 group text-left shadow-sm"
+        className="w-full flex items-center gap-3 bg-[#faf8f5] hover:bg-blue-50 border-2 border-[#0e6efe] rounded-2xl px-4 py-3.5 transition-all duration-200 group text-left shadow-sm"
         style={{ boxShadow: '0 4px 14px #0e6efe18' }}
       >
         <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">

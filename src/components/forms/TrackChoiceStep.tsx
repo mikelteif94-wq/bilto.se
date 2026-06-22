@@ -101,7 +101,7 @@ export default function TrackChoiceStep({ regnummer, miltal, onChoose, onGuidanc
                 <select
                   value={tradeMiltal}
                   onChange={e => setTradeMiltal(Number(e.target.value))}
-                  className="w-full h-11 pl-4 pr-10 rounded-xl border border-slate-300 bg-white text-[14px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] appearance-none"
+                  className="w-full h-11 pl-4 pr-10 rounded-xl border border-slate-300 bg-[#faf8f5] text-[14px] font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/30 focus:border-[#0e6efe] appearance-none"
                 >
                   {MILTAL_OPTIONS.map(o => (
                     <option key={o.value} value={o.value} disabled={o.value === 0}>

@@ -57,7 +57,7 @@ export function SignupGate({ headline, subtext, bullets, onSent }: SignupGatePro
       <motion.div
         initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden"
+        className="rounded-xl bg-[#faf8f5] border border-slate-200 shadow-sm overflow-hidden"
       >
         <div className="px-6 py-8 flex flex-col items-center text-center gap-4">
           <div className="w-14 h-14 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
@@ -91,7 +91,7 @@ export function SignupGate({ headline, subtext, bullets, onSent }: SignupGatePro
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm"
+      className="rounded-xl overflow-hidden border border-slate-200 bg-[#faf8f5] shadow-sm"
     >
       {/* Top banner */}
       <div className="bg-gradient-to-r from-[#0e6efe] to-[#2a7fff] px-5 py-4 flex items-center gap-3">
@@ -121,7 +121,7 @@ export function SignupGate({ headline, subtext, bullets, onSent }: SignupGatePro
         </div>
 
         {/* Lock overlay */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/70 backdrop-blur-[2px] rounded-b-none">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#faf8f5]/70 backdrop-blur-[2px] rounded-b-none">
           <div className="w-10 h-10 rounded-xl bg-slate-900/8 border border-slate-200 flex items-center justify-center mb-2">
             <Lock className="w-4.5 h-4.5 text-slate-500" />
           </div>
@@ -153,7 +153,7 @@ export function SignupGate({ headline, subtext, bullets, onSent }: SignupGatePro
             onChange={(e) => { setEmail(e.target.value); setError(null); }}
             placeholder="din@mejl.se"
             autoComplete="email"
-            className="w-full h-11 px-4 rounded-xl border border-slate-300 text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] transition bg-white"
+            className="w-full h-11 px-4 rounded-xl border border-slate-300 text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] transition bg-[#faf8f5]"
           />
           {error && (
             <p className="mt-1.5 text-[12px] text-red-600 font-medium">{error}</p>
