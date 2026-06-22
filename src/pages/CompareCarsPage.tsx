@@ -1028,72 +1028,90 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       />
 
       {/* Hero */}
-      <section className="pt-28 sm:pt-36 pb-12 sm:pb-16 px-5 sm:px-6 bg-[#0e6efe] relative overflow-hidden">
+      <section className="pt-28 sm:pt-36 pb-0 px-5 sm:px-6 bg-[#0e6efe] relative overflow-hidden">
         <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60 pointer-events-none" />
         <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50 pointer-events-none" />
         <img
           src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
           alt=""
           aria-hidden="true"
-          className="absolute left-1/2 -translate-x-1/2 top-0 w-[600px] h-[600px] object-contain pointer-events-none select-none opacity-30"
+          className="absolute left-1/2 -translate-x-1/2 top-0 w-[600px] h-[600px] object-contain pointer-events-none select-none opacity-20"
         />
-        <div className="relative max-w-3xl mx-auto text-center">
-          <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
-            {heroTitle ?? 'Hitta din dr\u00f6mbil och f\u00f6rhandla priset'}
-          </h1>
-          <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto">
-            {heroSubtitle ?? 'J\u00e4mf\u00f6r bilar, hitta r\u00e4tt modell och l\u00e5t oss f\u00f6rhandla fram b\u00e4sta priset \u00e5t dig. Helt gratis och opartiskt.'}
-          </p>
 
-          <div className="mt-8 bg-white rounded-xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden max-w-md mx-auto text-left">
-            {(ctaOptions ?? [
-              {
-                icon: CheckCircle,
-                label: 'Jag har hittat en bil',
-                sub: 'Låt oss förhandla och granska åt dig',
-                track: 'found' as const,
-              },
-              {
-                icon: Search,
-                label: 'Jag letar efter bil',
-                sub: 'Utforska, jämför eller testa bilmatch',
-                track: 'searching' as const,
-              },
-              {
-                icon: ArrowLeftRight,
-                label: 'Jag vill byta bil',
-                sub: 'Vi hittar och förhandlar nästa bil åt dig',
-                track: 'trade' as const,
-              },
-            ]).map(({ label, sub, track }, i, arr) => {
-              const icons = { found: CheckCircle, searching: Search, trade: ArrowLeftRight };
-              const Icon = icons[track];
-              return (
-              <button
-                key={label}
-                type="button"
-                onClick={() => openBuyDrawer('', track, false, '', defaultFuelTypes)}
-                className={`group w-full flex items-center gap-4 px-5 py-4 hover:bg-[#0e6efe]/[0.03] transition-all text-left ${i < arr.length - 1 ? 'border-b border-slate-100' : ''}`}
-              >
-                <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/8 group-hover:bg-[#0e6efe]/15 flex items-center justify-center shrink-0 transition-colors">
-                  <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-semibold text-slate-900 leading-snug">{label}</p>
-                  <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{sub}</p>
-                </div>
-                <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] group-hover:translate-x-0.5 transition-all shrink-0" />
-              </button>
-            );
-            })}
+        {/* Desktop: two-column layout */}
+        <div className="relative max-w-6xl mx-auto">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16 pb-10 sm:pb-12 lg:pb-0">
+            {/* Left: text + CTA */}
+            <div className="flex-1 text-center lg:text-left lg:py-12">
+              <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
+                {heroTitle ?? 'Hitta din dr\u00f6mbil och f\u00f6rhandla priset'}
+              </h1>
+              <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto lg:mx-0">
+                {heroSubtitle ?? 'J\u00e4mf\u00f6r bilar, hitta r\u00e4tt modell och l\u00e5t oss f\u00f6rhandla fram b\u00e4sta priset \u00e5t dig. Helt gratis och opartiskt.'}
+              </p>
+
+              <div className="mt-8 bg-white rounded-xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden max-w-md mx-auto lg:mx-0 text-left">
+                {(ctaOptions ?? [
+                  {
+                    icon: CheckCircle,
+                    label: 'Jag har hittat en bil',
+                    sub: 'Låt oss förhandla och granska åt dig',
+                    track: 'found' as const,
+                  },
+                  {
+                    icon: Search,
+                    label: 'Jag letar efter bil',
+                    sub: 'Utforska, jämför eller testa bilmatch',
+                    track: 'searching' as const,
+                  },
+                  {
+                    icon: ArrowLeftRight,
+                    label: 'Jag vill byta bil',
+                    sub: 'Vi hittar och förhandlar nästa bil åt dig',
+                    track: 'trade' as const,
+                  },
+                ]).map(({ label, sub, track }, i, arr) => {
+                  const icons = { found: CheckCircle, searching: Search, trade: ArrowLeftRight };
+                  const Icon = icons[track];
+                  return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => openBuyDrawer('', track, false, '', defaultFuelTypes)}
+                    className={`group w-full flex items-center gap-4 px-5 py-4 hover:bg-[#0e6efe]/[0.03] transition-all text-left ${i < arr.length - 1 ? 'border-b border-slate-100' : ''}`}
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/8 group-hover:bg-[#0e6efe]/15 flex items-center justify-center shrink-0 transition-colors">
+                      <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-semibold text-slate-900 leading-snug">{label}</p>
+                      <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{sub}</p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] group-hover:translate-x-0.5 transition-all shrink-0" />
+                  </button>
+                );
+                })}
+              </div>
+            </div>
+
+            {/* Right: illustration — hidden on mobile, shown on desktop flush to bottom */}
+            <div className="hidden lg:flex lg:w-[480px] xl:w-[560px] shrink-0 items-end self-end pointer-events-none select-none">
+              <img
+                src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7.svg"
+                alt=""
+                aria-hidden="true"
+                className="w-full"
+              />
+            </div>
           </div>
 
-          <div className="mt-10 flex justify-center pointer-events-none select-none overflow-hidden">
+          {/* Mobile: illustration below CTA */}
+          <div className="lg:hidden mt-8 flex justify-center pointer-events-none select-none overflow-hidden -mx-5">
             <img
               src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7.svg"
               alt=""
               aria-hidden="true"
-              className="w-full max-w-2xl"
+              className="w-full max-w-sm"
             />
           </div>
         </div>
