@@ -727,8 +727,15 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const compDataForFuel = useMemo(() => {
-    if (!d.carBrand || !d.carModel || d.carBrand === 'Vet ej') return null;
-    return findComparisonCarByMakeModel(d.carBrand, d.carModel);
+    let brand = d.carBrand;
+    let model = d.carModel;
+    if (!brand || brand === 'Vet ej') {
+      const p = parseInitialBil(d.carModel);
+      brand = p.brand;
+      model = p.model;
+    }
+    if (!brand || !model) return null;
+    return findComparisonCarByMakeModel(brand, model);
   }, [d.carBrand, d.carModel]);
 
   const availableFuelValues = useMemo((): Set<string> | null => {
