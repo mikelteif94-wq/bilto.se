@@ -1192,7 +1192,7 @@ function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] 
         {steps.map((step, i) => (
           <div
             key={i}
-            className="snap-center shrink-0 w-[82vw] max-w-[340px]"
+            className="snap-center shrink-0 w-[68vw] max-w-[280px]"
           >
             {/* Image with step badge */}
             <div className="relative rounded-xl overflow-hidden aspect-[4/3] shadow-md">
