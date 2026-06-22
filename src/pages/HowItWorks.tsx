@@ -200,10 +200,12 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   const [fitQuizCar, setFitQuizCar] = useState<ComparisonCar | null>(null);
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
   const [buyDrawerEquity, setBuyDrawerEquity] = useState<string>('');
+  const [buyDrawerTrack, setBuyDrawerTrack] = useState<'found' | 'searching' | 'trade' | undefined>(undefined);
 
-  const openDrawer = (carLabel: string, equitySummary?: string) => {
+  const openDrawer = (carLabel: string, equitySummary?: string, track?: 'found' | 'searching' | 'trade') => {
     setBuyDrawerEquity(equitySummary ?? '');
-    setBuyDrawerCar(carLabel);
+    setBuyDrawerTrack(track);
+    setBuyDrawerCar(track === 'trade' && !carLabel ? '' : carLabel);
   };
 
   const { cars: dbCars } = useCatalogCars();
@@ -457,7 +459,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       <span className="text-[13px] text-slate-500">eller byt in din bil</span>
                       <button
                         type="button"
-                        onClick={() => openDrawer('')}
+                        onClick={() => openDrawer('', undefined, 'trade')}
                         className="px-4 py-1.5 rounded-xl border-2 border-slate-800 text-slate-800 text-[13px] font-bold hover:bg-slate-800 hover:text-white active:scale-[0.98] transition-all whitespace-nowrap"
                       >
                         Byta bil
@@ -1135,8 +1137,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <Suspense fallback={null}>
         <BuyDrawer
           car={buyDrawerCar}
+          initialTrack={buyDrawerTrack}
           initialAdditionalRequests={buyDrawerEquity || undefined}
-          onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); }}
+          onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); setBuyDrawerTrack(undefined); }}
         />
       </Suspense>
 
