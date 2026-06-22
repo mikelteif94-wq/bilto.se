@@ -264,7 +264,7 @@ function emptyEdit(entry: CatalogEntry): EditState {
 }
 
 const inputCls =
-  'w-full h-9 px-3 rounded-lg border border-slate-200 bg-[#faf8f5] text-sm text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition placeholder:text-slate-400';
+  'w-full h-9 px-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition placeholder:text-slate-400';
 
 export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogProps) {
   const [entries, setEntries] = useState<CatalogEntry[]>([]);
@@ -532,7 +532,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
   return (
     <div className="min-h-screen bg-[#faf8f5]">
       {/* Header */}
-      <header className="bg-[#faf8f5] border-b border-slate-200 sticky top-0 z-10">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
           <button onClick={onBack} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition">
             <ArrowLeft className="w-4 h-4" />
@@ -593,7 +593,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                 </ul>
               )}
               <p className="mt-1 text-xs text-slate-500">
-                Förväntat CSV-format: <code className="font-mono bg-[#faf8f5]/60 px-1 rounded">Märke,Modell,Kaross,Beskrivning,Drivmedel,Drivlina,Sittplatser,Styrkor,Svagheter,Passar för</code>
+                Förväntat CSV-format: <code className="font-mono bg-white/60 px-1 rounded">Märke,Modell,Kaross,Beskrivning,Drivmedel,Drivlina,Sittplatser,Styrkor,Svagheter,Passar för</code>
               </p>
             </div>
             <button onClick={() => setCsvResult(null)} className="shrink-0 text-slate-400 hover:text-slate-600">
@@ -610,7 +610,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
             { label: 'Saknar data', value: stats.missing, color: stats.missing > 0 ? 'text-amber-600' : 'text-slate-400' },
             { label: 'Möjliga dubbletter', value: stats.duplicates, color: stats.duplicates > 0 ? 'text-rose-600' : 'text-slate-400' },
           ].map(s => (
-            <div key={s.label} className="bg-[#faf8f5] rounded-xl border border-slate-200 px-4 py-3">
+            <div key={s.label} className="bg-white rounded-xl border border-slate-200 px-4 py-3">
               <p className="text-xs text-slate-400 mb-0.5">{s.label}</p>
               <p className={`text-xl font-bold ${s.color}`}>
                 {s.value}
@@ -621,17 +621,17 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
         </div>
 
         {/* Filters */}
-        <div className="bg-[#faf8f5] rounded-xl border border-slate-200 px-4 py-3 mb-4 flex flex-wrap items-center gap-3">
+        <div className="bg-white rounded-xl border border-slate-200 px-4 py-3 mb-4 flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[180px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Sök märke eller modell…"
-              className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition"
+              className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 bg-[#faf8f5] text-sm focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition"
             />
           </div>
-          <select value={filterMake} onChange={e => setFilterMake(e.target.value)} className="h-9 px-3 rounded-lg border border-slate-200 bg-[#faf8f5] text-sm text-slate-700 focus:outline-none">
+          <select value={filterMake} onChange={e => setFilterMake(e.target.value)} className="h-9 px-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none">
             <option value="">Alla märken</option>
             {makes.filter(Boolean).map(m => <option key={m} value={m}>{m}</option>)}
           </select>
@@ -662,10 +662,10 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
             <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
           </div>
         ) : (
-          <div className="bg-[#faf8f5] rounded-xl border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/50 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                <tr className="border-b border-slate-100 bg-[#faf8f5]/50 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                   <th className="px-4 py-3 text-left w-8"></th>
                   <th className="px-4 py-3 text-left">Bil</th>
                   <th className="px-4 py-3 text-left hidden sm:table-cell">Bränsle</th>
@@ -687,7 +687,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                   return (
                     <React.Fragment key={entry.id}>
                     <tr
-                      className={`transition-colors ${!entry.is_active ? 'opacity-50' : ''} ${isEditing ? 'bg-blue-50/40' : 'hover:bg-slate-50/60'}`}
+                      className={`transition-colors ${!entry.is_active ? 'opacity-50' : ''} ${isEditing ? 'bg-blue-50/40' : 'hover:bg-[#faf8f5]/60'}`}
                     >
                       {/* Image thumb */}
                       <td className="px-4 py-3">
@@ -729,7 +729,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                                 className={`px-2 py-0.5 rounded-lg text-[11px] font-semibold border transition ${
                                   editState.fuel_types.includes(f.value)
                                     ? 'bg-[#0e6efe] text-white border-[#0e6efe]'
-                                    : 'bg-[#faf8f5] text-slate-600 border-slate-200 hover:border-slate-400'
+                                    : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
                                 }`}
                               >
                                 {f.label}
@@ -754,7 +754,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                           <select
                             value={editState.body_type}
                             onChange={e => setEditState({ ...editState, body_type: e.target.value })}
-                            className="h-8 px-2 rounded-lg border border-slate-200 text-xs bg-[#faf8f5] focus:outline-none focus:border-[#0e6efe]"
+                            className="h-8 px-2 rounded-lg border border-slate-200 text-xs bg-white focus:outline-none focus:border-[#0e6efe]"
                           >
                             <option value="">Välj typ</option>
                             {BODY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -834,7 +834,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                             <select
                               value={editState?.segment ?? ''}
                               onChange={e => editState && setEditState({ ...editState, segment: e.target.value })}
-                              className="h-8 px-2 rounded-lg border border-slate-200 text-xs bg-[#faf8f5] focus:outline-none focus:border-[#0e6efe]"
+                              className="h-8 px-2 rounded-lg border border-slate-200 text-xs bg-white focus:outline-none focus:border-[#0e6efe]"
                             >
                               <option value="">Segment</option>
                               {SEGMENT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -855,7 +855,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => { openEdit(entry); searchImages(entry); }}
-                              className="inline-flex items-center gap-1 h-8 px-2 rounded-lg text-xs font-semibold border bg-[#faf8f5] text-slate-500 border-slate-200 hover:border-[#0e6efe] hover:text-[#0e6efe] transition"
+                              className="inline-flex items-center gap-1 h-8 px-2 rounded-lg text-xs font-semibold border bg-white text-slate-500 border-slate-200 hover:border-[#0e6efe] hover:text-[#0e6efe] transition"
                               title="Sök och matcha bild"
                             >
                               <Images className="w-3.5 h-3.5" />
@@ -865,7 +865,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                               className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold border transition ${
                                 wasSaved
                                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                  : 'bg-[#faf8f5] text-slate-600 border-slate-200 hover:border-[#0e6efe] hover:text-[#0e6efe]'
+                                  : 'bg-white text-slate-600 border-slate-200 hover:border-[#0e6efe] hover:text-[#0e6efe]'
                               }`}
                             >
                               {wasSaved ? <Check className="w-3 h-3" /> : <Pencil className="w-3 h-3" />}
@@ -891,7 +891,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                               value={editState.image_url}
                               onChange={e => setEditState({ ...editState, image_url: e.target.value })}
                               placeholder="Klistra in bild-URL (https://…) eller sök nedan"
-                              className="flex-1 h-8 px-3 rounded-lg border border-slate-200 bg-[#faf8f5] text-xs text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition placeholder:text-slate-400"
+                              className="flex-1 h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition placeholder:text-slate-400"
                             />
                             {/* File upload */}
                             <input
@@ -905,7 +905,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                               type="button"
                               onClick={() => imgUploadInputRef.current?.click()}
                               disabled={imgUploading}
-                              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold border bg-[#faf8f5] text-slate-600 border-slate-200 hover:border-emerald-400 hover:text-emerald-600 transition disabled:opacity-50"
+                              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold border bg-white text-slate-600 border-slate-200 hover:border-emerald-400 hover:text-emerald-600 transition disabled:opacity-50"
                               title="Ladda upp bild från din dator"
                             >
                               {imgUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
@@ -923,7 +923,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                               className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold border transition ${
                                 imgSearchId === entry.id
                                   ? 'bg-[#0e6efe] text-white border-[#0e6efe]'
-                                  : 'bg-[#faf8f5] text-slate-600 border-slate-200 hover:border-[#0e6efe] hover:text-[#0e6efe]'
+                                  : 'bg-white text-slate-600 border-slate-200 hover:border-[#0e6efe] hover:text-[#0e6efe]'
                               }`}
                               title="Sök bild automatiskt"
                             >
@@ -1004,14 +1004,14 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                                 value={editState?.expert_text ?? ''}
                                 onChange={e => editState && setEditState({ ...editState, expert_text: e.target.value })}
                                 placeholder="Bilens karaktär och expertens sammanfattning…"
-                                className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-[#faf8f5] text-sm text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition resize-none placeholder:text-slate-400"
+                                className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition resize-none placeholder:text-slate-400"
                               />
                             </div>
                           </div>
 
                           {/* Image search panel */}
                           {imgSearchId === entry.id && (
-                            <div className="rounded-xl border border-slate-200 bg-[#faf8f5] p-3">
+                            <div className="rounded-xl border border-slate-200 bg-white p-3">
                               <div className="flex items-center gap-2 mb-3">
                                 <div className="relative flex-1">
                                   <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
@@ -1021,7 +1021,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                                     onChange={e => setImgSearchQuery(e.target.value)}
                                     onKeyDown={e => { if (e.key === 'Enter') searchImages(entry, imgSearchQuery); }}
                                     placeholder={`Sök t.ex. "${entry.make} ${entry.model} car"`}
-                                    className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-900 focus:outline-none focus:border-[#0e6efe] transition"
+                                    className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 bg-[#faf8f5] text-xs text-slate-900 focus:outline-none focus:border-[#0e6efe] transition"
                                   />
                                 </div>
                                 <button

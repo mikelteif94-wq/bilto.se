@@ -244,7 +244,7 @@ export default function DealerCarDetail({
     return (
       <PortalLayout navItems={[]} identity={foretagsnamn} identityRole="Handlare" onLogout={handleLogout} breadcrumb={breadcrumbEl}>
         <div className="flex items-center justify-center px-4 py-20">
-          <div className="max-w-md w-full bg-[#faf8f5] rounded-xl border border-slate-200 p-8 text-center">
+          <div className="max-w-md w-full bg-white rounded-xl border border-slate-200 p-8 text-center">
             <p className="text-slate-700 mb-6">{error ?? 'Bilen hittades inte.'}</p>
             <button onClick={onBack} className="text-slate-600 hover:text-slate-900 font-medium">Tillbaka</button>
           </div>
@@ -317,7 +317,7 @@ export default function DealerCarDetail({
             </div>
           )}
 
-          <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6 shadow-sm">
+          <div className="bg-white rounded-md border border-slate-200 p-6 shadow-sm">
             <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-4">
               Bilinformation
             </h2>
@@ -381,7 +381,7 @@ export default function DealerCarDetail({
             }) || (historik && Object.values(historik).some(v => v !== '' && v !== null));
             if (!hasAny) return null;
             return (
-              <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6 shadow-sm">
+              <div className="bg-white rounded-md border border-slate-200 p-6 shadow-sm">
                 <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-4">
                   Skickrapport
                 </h2>
@@ -400,7 +400,7 @@ export default function DealerCarDetail({
                             const val = data[item.key];
                             if (!val) return null;
                             return (
-                              <div key={item.key} className="flex items-center gap-2 text-sm text-slate-700 bg-slate-50 rounded-lg px-3 py-2">
+                              <div key={item.key} className="flex items-center gap-2 text-sm text-slate-700 bg-[#faf8f5] rounded-lg px-3 py-2">
                                 {STATUS_ICON[val] ?? null}
                                 <span>{item.label}</span>
                                 <span className={`ml-auto text-xs font-medium ${val === 'ok' ? 'text-emerald-600' : val === 'anmark' ? 'text-amber-600' : 'text-red-600'}`}>
@@ -446,7 +446,7 @@ export default function DealerCarDetail({
             const utrustning = (car as Record<string, unknown>).utrustning as string[] | null;
             if (!utrustning || utrustning.length === 0) return null;
             return (
-              <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6 shadow-sm">
+              <div className="bg-white rounded-md border border-slate-200 p-6 shadow-sm">
                 <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-3">
                   Utrustning
                 </h2>
@@ -462,7 +462,7 @@ export default function DealerCarDetail({
           })()}
 
           {(car as Record<string, unknown>).skick_kommentar && (
-            <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6 shadow-sm">
+            <div className="bg-white rounded-md border border-slate-200 p-6 shadow-sm">
               <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-2">
                 Skickkommentar
               </h2>
@@ -472,7 +472,7 @@ export default function DealerCarDetail({
             </div>
           )}
 
-          <div className="bg-slate-50 border border-dashed border-slate-300 rounded-md p-5 flex items-start gap-3 text-sm text-slate-600">
+          <div className="bg-[#faf8f5] border border-dashed border-slate-300 rounded-md p-5 flex items-start gap-3 text-sm text-slate-600">
             <Lock className="w-4 h-4 mt-0.5 text-slate-400 shrink-0" />
             <p>
               Säljarens kontaktuppgifter visas först när auktionen är avslutad och
@@ -482,7 +482,7 @@ export default function DealerCarDetail({
         </section>
 
         <aside className="space-y-6">
-          <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6 shadow-sm">
+          <div className="bg-white rounded-md border border-slate-200 p-6 shadow-sm">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
               Tid kvar
             </p>
@@ -510,7 +510,7 @@ export default function DealerCarDetail({
           </div>
 
           {car.startbud != null && (
-            <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6 shadow-sm">
+            <div className="bg-white rounded-md border border-slate-200 p-6 shadow-sm">
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
                 Startbud
               </p>
@@ -523,7 +523,7 @@ export default function DealerCarDetail({
             </div>
           )}
 
-          <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6 shadow-sm">
+          <div className="bg-white rounded-md border border-slate-200 p-6 shadow-sm">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
               Ditt nuvarande bud
             </p>
@@ -584,7 +584,7 @@ export default function DealerCarDetail({
 
           <form
             onSubmit={handleSubmitBid}
-            className="bg-[#faf8f5] rounded-md border border-slate-200 p-6 shadow-sm space-y-4"
+            className="bg-white rounded-md border border-slate-200 p-6 shadow-sm space-y-4"
           >
             <div>
               <h2 className="text-lg font-bold text-slate-900">Lägg bud</h2>
@@ -605,7 +605,7 @@ export default function DealerCarDetail({
                   onChange={(e) => setBidInput(e.target.value)}
                   placeholder="0"
                   disabled={auctionClosed || submitting}
-                  className="w-full pl-4 pr-12 py-3 rounded-xl border-2 border-slate-200 bg-[#faf8f5] text-slate-900 text-lg font-semibold focus:outline-none focus:border-slate-400 disabled:bg-slate-50 disabled:text-slate-400 transition"
+                  className="w-full pl-4 pr-12 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-900 text-lg font-semibold focus:outline-none focus:border-slate-400 disabled:bg-[#faf8f5] disabled:text-slate-400 transition"
                 />
                 <span className="absolute inset-y-0 right-4 flex items-center text-slate-400 font-medium">
                   kr
@@ -623,7 +623,7 @@ export default function DealerCarDetail({
                 rows={3}
                 disabled={auctionClosed || submitting}
                 placeholder="T.ex. förutsatt att servicehistoriken stämmer…"
-                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-[#faf8f5] text-slate-900 focus:outline-none focus:border-slate-400 disabled:bg-slate-50 disabled:text-slate-400 transition resize-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-900 focus:outline-none focus:border-slate-400 disabled:bg-[#faf8f5] disabled:text-slate-400 transition resize-none"
               />
             </label>
 
@@ -661,7 +661,7 @@ export default function DealerCarDetail({
         >
           <button
             onClick={() => setLightboxIdx(null)}
-            className="absolute top-4 right-4 w-10 h-10 rounded-xl bg-[#faf8f5]/10 hover:bg-[#faf8f5]/20 text-white flex items-center justify-center transition"
+            className="absolute top-4 right-4 w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
           >
             <X className="w-5 h-5" />
           </button>

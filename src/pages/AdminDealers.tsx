@@ -114,7 +114,7 @@ export default function AdminDealers({
                 onClick={() => setActiveTab(key)}
                 className={`relative h-8 px-4 rounded-lg text-sm font-semibold transition-all ${
                   activeTab === key
-                    ? 'bg-[#faf8f5] text-slate-900 shadow-sm'
+                    ? 'bg-white text-slate-900 shadow-sm'
                     : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
@@ -138,7 +138,7 @@ export default function AdminDealers({
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Sök handlare…"
-              className="h-9 pl-8 pr-3 rounded-lg border border-slate-200 bg-[#faf8f5] text-sm text-slate-700 placeholder:text-slate-400 focus:border-slate-400 outline-none w-52"
+              className="h-9 pl-8 pr-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 placeholder:text-slate-400 focus:border-slate-400 outline-none w-52"
             />
           </div>
         </div>
@@ -148,20 +148,20 @@ export default function AdminDealers({
             <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-12 text-center">
+          <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
             <p className="text-slate-400 text-sm">
               {search ? 'Inga handlare matchar sökningen.' : 'Inga handlare här.'}
             </p>
           </div>
         ) : (
-          <div className="bg-[#faf8f5] rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Mobile list */}
             <ul className="sm:hidden divide-y divide-slate-100">
               {filtered.map(d => (
                 <li key={d.id}>
                   <button
                     onClick={() => onOpenDealer(d.id)}
-                    className="w-full text-left px-4 py-4 hover:bg-slate-50 transition flex items-center gap-3"
+                    className="w-full text-left px-4 py-4 hover:bg-[#faf8f5] transition flex items-center gap-3"
                   >
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-slate-900 truncate">{d.foretagsnamn || '–'}</p>
@@ -180,7 +180,7 @@ export default function AdminDealers({
             <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200">
+                  <tr className="bg-[#faf8f5] border-b border-slate-200">
                     <th className="text-left font-semibold text-slate-500 px-5 py-3">Företag</th>
                     <th className="text-left font-semibold text-slate-500 px-5 py-3">Kontaktperson</th>
                     <th className="text-left font-semibold text-slate-500 px-5 py-3">E-post</th>
@@ -193,7 +193,7 @@ export default function AdminDealers({
                     <tr
                       key={d.id}
                       onClick={() => onOpenDealer(d.id)}
-                      className="border-b border-slate-100 last:border-0 hover:bg-slate-50 cursor-pointer transition group"
+                      className="border-b border-slate-100 last:border-0 hover:bg-[#faf8f5] cursor-pointer transition group"
                     >
                       <td className="px-5 py-3.5 font-semibold text-slate-900">
                         {d.foretagsnamn || '–'}

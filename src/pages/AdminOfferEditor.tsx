@@ -321,7 +321,7 @@ export default function AdminOfferEditor({
 
   return (
     <div className="min-h-screen bg-[#faf8f5]">
-      <header className="bg-[#faf8f5] border-b border-slate-200 sticky top-0 z-10">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
           <button
             onClick={onBack}
@@ -334,7 +334,7 @@ export default function AdminOfferEditor({
             <button
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-medium transition disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg border border-slate-300 hover:bg-[#faf8f5] text-slate-700 text-sm font-medium transition disabled:opacity-50"
             >
               {saving ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -699,7 +699,7 @@ export default function AdminOfferEditor({
 
           {/* Sidebar – live deal calculator */}
           <div className="space-y-4">
-            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 overflow-hidden sticky top-20">
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden sticky top-20">
               {/* Header */}
               <div className="bg-slate-900 px-5 py-4 flex items-center gap-2">
                 <Calculator className="w-4 h-4 text-white/70 shrink-0" />
@@ -867,7 +867,7 @@ export default function AdminOfferEditor({
 }
 
 const inputClass =
-  'w-full h-10 px-3 rounded-lg border border-slate-300 bg-[#faf8f5] text-sm text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition placeholder:text-slate-400';
+  'w-full h-10 px-3 rounded-lg border border-slate-300 bg-white text-sm text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition placeholder:text-slate-400';
 
 function Section({
   title,
@@ -879,7 +879,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
+    <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
       <h2 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
         {Icon && <Icon className="w-4 h-4 text-slate-400" />}
         {title}

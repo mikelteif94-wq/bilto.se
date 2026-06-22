@@ -171,7 +171,7 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
   if (error && !quote) {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-[#faf8f5] rounded-xl border border-slate-200 p-10 text-center shadow-sm">
+        <div className="max-w-md w-full bg-white rounded-xl border border-slate-200 p-10 text-center shadow-sm">
           <h1 className="text-xl font-bold text-slate-900 mb-2">Länken är ogiltig</h1>
           <p className="text-slate-500 mb-6">{error}</p>
           <button
@@ -231,7 +231,7 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-7 sm:py-10 space-y-6 sm:space-y-8">
 
         {/* Hero greeting */}
-        <div className="bg-[#faf8f5] rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="bg-gradient-to-br from-[#0e6efe] to-[#1a7cff] px-6 py-6 sm:py-7">
             <p className="text-white/75 text-sm font-medium mb-0.5">Hej {fornamn || 'och välkommen'}!</p>
             <h1 className="text-[22px] sm:text-[26px] font-bold text-white leading-tight">
@@ -292,7 +292,7 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
         />
 
         {/* Summary card */}
-        <div className="bg-[#faf8f5] rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6">
           <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Din förfrågan</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <SummaryItem
@@ -356,7 +356,7 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
         )}
 
         {!hasContent && (
-          <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-10 text-center shadow-sm">
+          <div className="bg-white rounded-xl border border-slate-200 p-10 text-center shadow-sm">
             <Clock className="w-10 h-10 text-slate-300 mx-auto mb-3" />
             <h3 className="text-base font-semibold text-slate-900 mb-1">Inget att visa ännu</h3>
             <p className="text-sm text-slate-500 max-w-sm mx-auto">
@@ -369,7 +369,7 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
         <ExpertCard />
 
         {/* Contact */}
-        <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
             <MessageSquare className="w-5 h-5 text-slate-400" />
             <h3 className="text-base font-semibold text-slate-900">Frågor?</h3>
@@ -440,7 +440,7 @@ function QuoteLiveFeed({ dispatchCount, suggestionCount, offerCount, activities,
   ];
 
   return (
-    <div className="bg-[#faf8f5] rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
       <div className="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <h2 className="text-sm font-bold text-slate-700">Aktivitet</h2>
         <span className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600">
@@ -496,7 +496,7 @@ function SummaryItem({ icon: Icon, label, value }: { icon: typeof Car; label: st
 
 function ExpertCard() {
   return (
-    <div className="bg-[#faf8f5] rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
       <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-slate-100">
         <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">Din tilldelade expert</h2>
       </div>
@@ -539,7 +539,7 @@ function ExpertCard() {
 
 function SuggestionCard({ suggestion: s }: { suggestion: Suggestion }) {
   return (
-    <div className="bg-[#faf8f5] rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
       {s.car_image_url && (
         <img
           src={s.car_image_url}
@@ -558,7 +558,7 @@ function SuggestionCard({ suggestion: s }: { suggestion: Suggestion }) {
           )}
         </div>
         {s.admin_comment && (
-          <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-4">
+          <div className="bg-[#faf8f5] border border-slate-200 rounded-xl px-4 py-3 mb-4">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Biltos kommentar</p>
             <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{s.admin_comment}</p>
           </div>

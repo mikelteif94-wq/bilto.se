@@ -153,7 +153,7 @@ export default function AdminQuoteRequests({
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition whitespace-nowrap ${
                 searchFilter === f.key
                   ? 'bg-slate-900 text-white'
-                  : 'bg-[#faf8f5] border border-slate-200 text-slate-600 hover:border-slate-300'
+                  : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
               }`}
             >
               {f.label}
@@ -169,7 +169,7 @@ export default function AdminQuoteRequests({
             <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-12 text-center">
+          <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
             <p className="text-slate-500">Inga förfrågningar att visa.</p>
           </div>
         ) : (
@@ -182,7 +182,7 @@ export default function AdminQuoteRequests({
                   <li key={q.id}>
                     <button
                       onClick={() => onOpenQuote(q.id)}
-                      className="w-full text-left bg-[#faf8f5] rounded-xl border border-slate-200 p-4 flex items-start gap-3 active:bg-slate-50 transition"
+                      className="w-full text-left bg-white rounded-xl border border-slate-200 p-4 flex items-start gap-3 active:bg-[#faf8f5] transition"
                     >
                       <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
                         <Icon className="w-4 h-4" />
@@ -217,11 +217,11 @@ export default function AdminQuoteRequests({
             </ul>
 
             {/* Desktop table */}
-            <div className="hidden sm:block bg-[#faf8f5] rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+            <div className="hidden sm:block bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200">
+                    <tr className="bg-[#faf8f5] border-b border-slate-200">
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">Typ</th>
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">Kund</th>
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">Bil / Budget</th>
@@ -239,7 +239,7 @@ export default function AdminQuoteRequests({
                         <tr
                           key={q.id}
                           onClick={() => onOpenQuote(q.id)}
-                          className="border-b border-slate-100 last:border-0 hover:bg-slate-50 cursor-pointer transition group"
+                          className="border-b border-slate-100 last:border-0 hover:bg-[#faf8f5] cursor-pointer transition group"
                         >
                           <td className="px-4 lg:px-6 py-4">
                             <span className="inline-flex items-center gap-1.5 text-slate-700">

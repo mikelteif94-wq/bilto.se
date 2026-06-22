@@ -53,7 +53,7 @@ export default function InspectionGuideStep({ onNext }: InspectionGuideStepProps
       <div className="rounded-xl bg-[#0e6efe] text-white p-6 sm:p-7 relative overflow-hidden">
         <div className="absolute -right-10 -top-10 w-[180px] h-[180px] rounded-full bg-[#3d8cff] opacity-50" />
         <div className="relative">
-          <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] bg-[#faf8f5]/15 backdrop-blur px-2.5 py-1 rounded-xl">
+          <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] bg-white/15 backdrop-blur px-2.5 py-1 rounded-xl">
             <Camera className="w-3.5 h-3.5" />
             Fotoguide
           </div>
@@ -73,7 +73,7 @@ export default function InspectionGuideStep({ onNext }: InspectionGuideStepProps
         </h3>
         <div className="grid sm:grid-cols-2 gap-3">
           {TIPS.map((tip) => (
-            <div key={tip.t} className="rounded-xl border border-slate-200 bg-[#faf8f5] p-4 flex gap-3">
+            <div key={tip.t} className="rounded-xl border border-slate-200 bg-white p-4 flex gap-3">
               <div className="shrink-0 w-9 h-9 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center">
                 <tip.icon className="w-4.5 h-4.5 text-[#0e6efe]" />
               </div>
@@ -92,7 +92,7 @@ export default function InspectionGuideStep({ onNext }: InspectionGuideStepProps
         </h3>
         <div className="grid sm:grid-cols-2 gap-3">
           {SHOT_LIST.map((c) => (
-            <div key={c.title} className="rounded-xl border border-slate-200 bg-[#faf8f5] p-4">
+            <div key={c.title} className="rounded-xl border border-slate-200 bg-white p-4">
               <div className="flex items-center gap-2.5 mb-3">
                 <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center">
                   <c.icon className="w-4 h-4 text-[#0e6efe]" />
@@ -123,7 +123,7 @@ export default function InspectionGuideStep({ onNext }: InspectionGuideStepProps
         </div>
       </div>
 
-      <div className="rounded-xl bg-slate-50 border border-slate-200 p-5">
+      <div className="rounded-xl bg-[#faf8f5] border border-slate-200 p-5">
         <p className="text-[13.5px] text-slate-600 leading-[1.6]">
           <span className="font-semibold text-slate-900">Klar att ladda upp bilderna?</span>{' '}
           I nästa steg laddar du upp dina bilder. Du kan alltid gå tillbaka och

@@ -85,7 +85,7 @@ export default function CarEquipmentStep({
           disabled={unsure}
           placeholder="T.ex. elstolar, taklucka, dragkrok extra klass... (separera med komma)"
           rows={3}
-          className={`w-full rounded-xl border border-slate-200 bg-[#faf8f5] px-4 py-3 text-[13px] text-slate-800 placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition ${
+          className={`w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[13px] text-slate-800 placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition ${
             unsure ? 'opacity-40 cursor-not-allowed' : ''
           }`}
         />

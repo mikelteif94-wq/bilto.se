@@ -274,7 +274,7 @@ export default function AdminCarDetail({
           <div className="grid lg:grid-cols-3 gap-5 sm:gap-8">
             <div className="lg:col-span-2 space-y-5 sm:space-y-6">
               {car.car_images.length > 0 && (
-                <div className="bg-[#faf8f5] rounded-md border border-slate-200 overflow-hidden">
+                <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
                   <img
                     src={car.car_images[0].storage_url}
                     alt="Huvudbild"
@@ -297,7 +297,7 @@ export default function AdminCarDetail({
                 </div>
               )}
 
-              <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 sm:p-6">
+              <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
                 <h2 className="text-lg font-bold text-slate-900 mb-4 sm:mb-5">
                   Bilinformation
                 </h2>
@@ -393,11 +393,11 @@ export default function AdminCarDetail({
                   kommentarer: { ...EMPTY_CONDITION_REPORT.kommentarer, ...(raw.kommentarer as object ?? {}) },
                 };
                 return (
-                  <div className="bg-[#faf8f5] rounded-md border border-slate-200 overflow-hidden">
+                  <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
                     <button
                       type="button"
                       onClick={() => setReportOpen((v) => !v)}
-                      className="w-full flex items-center justify-between px-5 sm:px-6 py-4 hover:bg-slate-50 transition text-left"
+                      className="w-full flex items-center justify-between px-5 sm:px-6 py-4 hover:bg-[#faf8f5] transition text-left"
                     >
                       <h2 className="text-base font-bold text-slate-900">Skickrapport</h2>
                       <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${reportOpen ? 'rotate-180' : ''}`} />
@@ -422,7 +422,7 @@ export default function AdminCarDetail({
               />
 
               {/* CRM / Timeline / Dispatch tabs */}
-              <div className="bg-[#faf8f5] rounded-md border border-slate-200 overflow-hidden">
+              <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
                 {/* Tab strip */}
                 <div className="flex border-b border-slate-100">
                   {([
@@ -482,7 +482,7 @@ export default function AdminCarDetail({
             </div>
 
             <div className="space-y-5 sm:space-y-6">
-              <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 sm:p-6">
+              <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
                 <div className="flex items-center gap-2 mb-3">
                   <Gavel className="w-5 h-5 text-slate-500" />
                   <h2 className="text-lg font-bold text-slate-900">Startbud</h2>
@@ -501,7 +501,7 @@ export default function AdminCarDetail({
                         onChange={(e) => setStartbudInput(e.target.value)}
                         placeholder="0"
                         autoFocus
-                        className="w-full pl-3 pr-10 py-2.5 rounded-lg border border-slate-300 bg-[#faf8f5] text-slate-900 font-semibold focus:outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200 transition"
+                        className="w-full pl-3 pr-10 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 font-semibold focus:outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200 transition"
                       />
                       <span className="absolute inset-y-0 right-3 flex items-center text-slate-400 text-sm font-medium">
                         kr
@@ -523,7 +523,7 @@ export default function AdminCarDetail({
                       <button
                         onClick={() => setEditingStartbud(false)}
                         disabled={savingStartbud}
-                        className="h-9 px-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition"
+                        className="h-9 px-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-[#faf8f5] transition"
                       >
                         Avbryt
                       </button>
@@ -554,7 +554,7 @@ export default function AdminCarDetail({
                 )}
               </div>
 
-              <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 sm:p-6">
+              <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <Repeat className="w-5 h-5 text-slate-500" />
                   <h2 className="text-lg font-bold text-slate-900">Inbyte / Bytbil</h2>
@@ -674,7 +674,7 @@ export default function AdminCarDetail({
                       <button
                         onClick={() => setEditingTradeIn(false)}
                         disabled={savingTradeIn}
-                        className="h-9 px-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition"
+                        className="h-9 px-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-[#faf8f5] transition"
                       >
                         Avbryt
                       </button>
@@ -694,7 +694,7 @@ export default function AdminCarDetail({
                 };
                 const info = READINESS_LABELS[readiness];
                 return (
-                  <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 sm:p-6 flex items-center gap-3">
+                  <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6 flex items-center gap-3">
                     <Send className="w-5 h-5 text-slate-400 shrink-0" />
                     <div>
                       <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Affärsberedskap</p>
@@ -706,7 +706,7 @@ export default function AdminCarDetail({
                 );
               })()}
 
-              <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 sm:p-6">
+              <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
                 <h2 className="text-lg font-bold text-slate-900 mb-4">Synlighet</h2>
                 <div className="flex items-start gap-3">
                   <div className="flex-1">
@@ -743,7 +743,7 @@ export default function AdminCarDetail({
                 </div>
               </div>
 
-              <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 sm:p-6">
+              <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
                 <h2 className="text-lg font-bold text-slate-900 mb-4">Säljare</h2>
                 {car.customers ? (
                   <div className="space-y-3 text-sm">
@@ -792,7 +792,7 @@ export default function AdminCarDetail({
                 )}
               </div>
 
-              <div className="bg-[#faf8f5] rounded-md border border-red-200 p-5 sm:p-6">
+              <div className="bg-white rounded-md border border-red-200 p-5 sm:p-6">
                 <h2 className="text-sm font-bold text-red-700 uppercase tracking-wide mb-2">
                   Farozon
                 </h2>
@@ -839,7 +839,7 @@ export default function AdminCarDetail({
         >
           <button
             onClick={() => setLightboxUrl(null)}
-            className="absolute top-4 right-4 w-10 h-10 rounded-xl bg-[#faf8f5]/10 hover:bg-[#faf8f5]/20 text-white flex items-center justify-center transition"
+            className="absolute top-4 right-4 w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
             aria-label="Stäng"
           >
             <X className="w-5 h-5" />

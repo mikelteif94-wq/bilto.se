@@ -34,7 +34,7 @@ export default function FinancingCalc({ carPrice }: FinancingCalcProps) {
   const sliderPct = ((price - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100;
 
   return (
-    <div className="w-full rounded-xl border border-slate-200 bg-[#faf8f5] p-5 shadow-sm">
+    <div className="w-full rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       {/* Header */}
       <div className="mb-4">
         <h3 className="text-[15px] font-bold text-slate-800">Beräkna månadskostnad</h3>
@@ -95,7 +95,7 @@ export default function FinancingCalc({ carPrice }: FinancingCalcProps) {
               className={`flex-1 h-9 rounded-xl text-[13px] font-bold border transition-all duration-150 active:scale-[0.98] ${
                 residualPct === pctVal
                   ? 'bg-[#0e6efe] border-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
-                  : 'bg-[#faf8f5] border-slate-200 text-slate-600 hover:border-[#0e6efe]/40 hover:text-[#0e6efe]'
+                  : 'bg-white border-slate-200 text-slate-600 hover:border-[#0e6efe]/40 hover:text-[#0e6efe]'
               }`}
             >
               {pctVal === 0.50 ? '50%' : '55%'}

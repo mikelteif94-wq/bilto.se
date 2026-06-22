@@ -177,7 +177,7 @@ export default function EmailOtpStep({ email, onVerified, onChangeEmail }: Email
                 onKeyDown={(e) => handleKeyDown(i, e)}
                 onFocus={(e) => e.target.select()}
                 className={`w-11 h-14 text-center text-2xl font-bold rounded-xl border-2 outline-none transition-all
-                  ${d ? 'border-[#0e6efe] bg-[#0e6efe]/5 text-slate-900' : 'border-slate-200 bg-[#faf8f5] text-slate-900'}
+                  ${d ? 'border-[#0e6efe] bg-[#0e6efe]/5 text-slate-900' : 'border-slate-200 bg-white text-slate-900'}
                   focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20
                   disabled:opacity-50`}
               />

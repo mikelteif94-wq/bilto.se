@@ -106,7 +106,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
         className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
       />
 
-      <div className="relative w-full max-w-4xl bg-[#faf8f5] rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+      <div className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
         <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
             <span className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
@@ -141,7 +141,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
                 className="w-full h-full object-cover animate-[fadeIn_300ms_ease-out]"
               />
 
-              <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-[#faf8f5]/95 backdrop-blur-sm border border-slate-200 rounded-xl px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-slate-700 shadow-sm">
+              <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-sm border border-slate-200 rounded-xl px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-slate-700 shadow-sm">
                 Referensbild
               </span>
 
@@ -150,7 +150,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
                 onClick={() => setIndex((i) => Math.max(0, i - 1))}
                 disabled={index === 0}
                 aria-label="Föregående"
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#faf8f5]/95 hover:bg-[#faf8f5] shadow-lg flex items-center justify-center text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -159,7 +159,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
                 onClick={() => setIndex((i) => Math.min(VIEWS.length - 1, i + 1))}
                 disabled={isLast}
                 aria-label="Nästa"
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#faf8f5]/95 hover:bg-[#faf8f5] shadow-lg flex items-center justify-center text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -211,7 +211,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
                     className={`absolute bottom-0 inset-x-0 px-1.5 py-1 text-[10px] font-semibold leading-tight text-center truncate ${
                       i === index
                         ? 'bg-[#0e6efe] text-white'
-                        : 'bg-[#faf8f5]/90 text-slate-700'
+                        : 'bg-white/90 text-slate-700'
                     }`}
                   >
                     {v.title.split(' ')[0]}
@@ -222,12 +222,12 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-4 bg-slate-50 border-t border-slate-100">
+        <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-4 bg-[#faf8f5] border-t border-slate-100">
           <button
             type="button"
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
             disabled={index === 0}
-            className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-full text-sm font-semibold text-slate-700 hover:bg-[#faf8f5] disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-full text-sm font-semibold text-slate-700 hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             <ChevronLeft className="w-4 h-4" />
             Föregående

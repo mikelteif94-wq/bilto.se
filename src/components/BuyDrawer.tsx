@@ -330,7 +330,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 32, stiffness: 380 }}
-            className="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] flex flex-col bg-[#faf8f5] rounded-t-3xl shadow-2xl overflow-hidden"
+            className="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] flex flex-col bg-white rounded-t-3xl shadow-2xl overflow-hidden"
           >
             {/* Handle bar */}
             <div className="flex justify-center pt-3 pb-1 shrink-0">
@@ -463,7 +463,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       setStep('details');
                       setError(null);
                     }}
-                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-[#faf8f5] hover:bg-slate-50 transition-all text-left group"
+                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-[#faf8f5] transition-all text-left group"
                   >
                     <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
                       <Search className="w-5 h-5 text-slate-600" />
@@ -483,7 +483,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       setStep('details');
                       setError(null);
                     }}
-                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-[#faf8f5] hover:bg-slate-50 transition-all text-left group"
+                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-[#faf8f5] transition-all text-left group"
                   >
                     <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
                       <ArrowLeftRight className="w-5 h-5 text-slate-600" />
@@ -595,7 +595,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                     </button>
                   )}
 
-                  <div className="max-w-sm mx-auto bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-5 flex items-start gap-2.5 text-left">
+                  <div className="max-w-sm mx-auto bg-[#faf8f5] border border-slate-200 rounded-xl px-4 py-3 mb-5 flex items-start gap-2.5 text-left">
                     <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
                       <Check className="w-3 h-3 text-emerald-600" strokeWidth={3} />
                     </div>
@@ -610,7 +610,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
                       { label: 'Vi hör av oss', sub: preferredTimeLabel(contact.preferredTime, 'short'), done: false },
                       { label: 'Vi förhandlar och levererar', sub: 'Du lutar dig tillbaka – vi sköter resten.', done: false },
                     ].map((item, i) => (
-                      <div key={i} className="flex items-start gap-3 px-4 py-3 bg-slate-50 rounded-xl">
+                      <div key={i} className="flex items-start gap-3 px-4 py-3 bg-[#faf8f5] rounded-xl">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${item.done ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}>
                           {item.done
                             ? <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
@@ -650,7 +650,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
           {/* Guidance mini-modal */}
           {guidanceOpen && (
             <div className="fixed inset-0 z-60 flex items-end sm:items-center justify-center bg-slate-900/50 px-4 py-6">
-              <div className="w-full max-w-md bg-[#faf8f5] rounded-xl shadow-xl overflow-hidden">
+              <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
                 <div className="flex items-center justify-between px-5 sm:px-6 pt-5 pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2.5">
                     <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">

@@ -213,7 +213,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
   if (error && !car) {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-[#faf8f5] rounded-md border border-slate-200 p-10 text-center shadow-sm">
+        <div className="max-w-md w-full bg-white rounded-md border border-slate-200 p-10 text-center shadow-sm">
           <h1 className="text-xl font-bold text-slate-900 mb-2">Länken är ogiltig</h1>
           <p className="text-slate-500 mb-6">{error}</p>
           <button
@@ -278,7 +278,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
         />
 
         {car.images.length > 0 && (
-          <div className="bg-[#faf8f5] rounded-md border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
             <img
               src={car.images[0]}
               alt="Din bil"
@@ -301,7 +301,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
           </div>
         )}
 
-        <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6">
+        <div className="bg-white rounded-md border border-slate-200 p-6">
           <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">
             Bilens uppgifter
           </h2>
@@ -411,7 +411,7 @@ function CustomerLiveFeed({
   const hasActivity = bidCount > 0 || dispatchCount > 0 || activities.length > 0;
 
   return (
-    <div className="bg-[#faf8f5] rounded-md border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
         <div className="flex items-center gap-2.5">
@@ -550,7 +550,7 @@ function StatusCard({ car }: { car: CarResponse }) {
 
 type Tone = 'slate' | 'teal' | 'amber' | 'emerald';
 const TONES: Record<Tone, { bg: string; border: string; icon: string; title: string }> = {
-  slate: { bg: 'bg-slate-50', border: 'border-slate-200', icon: 'text-slate-500', title: 'text-slate-900' },
+  slate: { bg: 'bg-[#faf8f5]', border: 'border-slate-200', icon: 'text-slate-500', title: 'text-slate-900' },
   teal: { bg: 'bg-teal-50', border: 'border-teal-200', icon: 'text-teal-600', title: 'text-teal-900' },
   amber: { bg: 'bg-amber-50', border: 'border-amber-200', icon: 'text-amber-600', title: 'text-amber-900' },
   emerald: { bg: 'bg-emerald-50', border: 'border-emerald-200', icon: 'text-emerald-600', title: 'text-emerald-900' },
@@ -592,7 +592,7 @@ function DecisionCard({
 }) {
   if (car.kund_beslut === 'vill_salja') {
     return (
-      <div className="bg-[#faf8f5] rounded-md border border-emerald-200 p-6 text-center">
+      <div className="bg-white rounded-md border border-emerald-200 p-6 text-center">
         <Check className="w-10 h-10 text-emerald-500 mx-auto mb-3" />
         <h2 className="text-lg font-semibold text-slate-900 mb-1">
           Du har valt att sälja
@@ -605,7 +605,7 @@ function DecisionCard({
   }
   if (car.kund_beslut === 'vill_inte_salja') {
     return (
-      <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6 text-center">
+      <div className="bg-white rounded-md border border-slate-200 p-6 text-center">
         <h2 className="text-lg font-semibold text-slate-900 mb-1">
           Du har tackat nej
         </h2>
@@ -616,7 +616,7 @@ function DecisionCard({
     );
   }
   return (
-    <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-6">
+    <div className="bg-white rounded-md border border-slate-200 p-6">
       <h2 className="text-lg font-semibold text-slate-900 mb-1">
         Vill du sälja till det här budet?
       </h2>
@@ -637,7 +637,7 @@ function DecisionCard({
         <button
           onClick={() => onDecide('vill_inte_salja')}
           disabled={submitting}
-          className="flex items-center justify-center gap-2 h-11 rounded-full border border-slate-300 text-slate-700 font-semibold text-[14px] hover:bg-slate-50 disabled:opacity-60 disabled:cursor-not-allowed transition"
+          className="flex items-center justify-center gap-2 h-11 rounded-full border border-slate-300 text-slate-700 font-semibold text-[14px] hover:bg-[#faf8f5] disabled:opacity-60 disabled:cursor-not-allowed transition"
         >
           <ThumbsDown className="w-4 h-4" />
           Nej tack
@@ -763,7 +763,7 @@ function CompleteListingCard({
     const allDone = reportFilled && enoughImages;
     return (
       <div
-        className={`bg-[#faf8f5] rounded-md border p-5 sm:p-6 ${
+        className={`bg-white rounded-md border p-5 sm:p-6 ${
           allDone ? 'border-emerald-200' : 'border-[#0e6efe]/30'
         }`}
       >
@@ -818,7 +818,7 @@ function CompleteListingCard({
   }
 
   return (
-    <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 sm:p-6">
+    <div className="bg-white rounded-md border border-slate-200 p-5 sm:p-6">
       <div className="flex items-center justify-between mb-4 gap-3">
         <h2 className="text-lg font-semibold text-slate-900">
           Komplettera din bil
@@ -929,7 +929,7 @@ function SoftLoginPrompt({ token, email }: { token: string; email: string }) {
   const [open, setOpen] = useState(false);
   if (open) {
     return (
-      <div className="bg-[#faf8f5] rounded-md border border-[#0e6efe]/20 p-5 sm:p-6">
+      <div className="bg-white rounded-md border border-[#0e6efe]/20 p-5 sm:p-6">
         <button
           type="button"
           onClick={() => setOpen(false)}
@@ -942,7 +942,7 @@ function SoftLoginPrompt({ token, email }: { token: string; email: string }) {
     );
   }
   return (
-    <div className="bg-[#faf8f5] rounded-md border border-slate-200 p-5 flex items-center gap-4">
+    <div className="bg-white rounded-md border border-slate-200 p-5 flex items-center gap-4">
       <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
         <UserPlus className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
       </div>
@@ -1009,7 +1009,7 @@ function LoginOrCreateCard({ token: _token, prefillEmail = '' }: { token: string
 
   if (mode === 'create') {
     return (
-      <div className="bg-[#faf8f5] border border-[#0e6efe]/20 rounded-xl p-5 sm:p-6">
+      <div className="bg-white border border-[#0e6efe]/20 rounded-xl p-5 sm:p-6">
         <div className="flex items-start gap-3 mb-5">
           <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
             <Gavel className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />
@@ -1078,7 +1078,7 @@ function LoginOrCreateCard({ token: _token, prefillEmail = '' }: { token: string
   }
 
   return (
-    <div className="bg-[#faf8f5] border border-[#0e6efe]/20 rounded-xl p-5 sm:p-6">
+    <div className="bg-white border border-[#0e6efe]/20 rounded-xl p-5 sm:p-6">
       <div className="flex items-start gap-3 mb-5">
         <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
           <Lock className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.2} />

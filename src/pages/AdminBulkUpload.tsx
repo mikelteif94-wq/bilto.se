@@ -307,7 +307,7 @@ function UrlMatcherTab({ catalog }: { catalog: CatalogEntry[] }) {
             onChange={e => setRawInput(e.target.value)}
             rows={10}
             placeholder={"https://example.com/images/volvo-xc60.png\nhttps://example.com/images/bmw-3-series.png\nhttps://example.com/images/audi-a4.png"}
-            className="w-full rounded-xl border border-slate-300 bg-[#faf8f5] px-4 py-3 text-sm font-mono text-slate-700 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 resize-none"
+            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-mono text-slate-700 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 resize-none"
           />
           <button
             onClick={parseInput}
@@ -324,7 +324,7 @@ function UrlMatcherTab({ catalog }: { catalog: CatalogEntry[] }) {
       {rows.length > 0 && (
         <>
           {/* Stats + actions */}
-          <div className="flex flex-wrap items-center gap-3 bg-[#faf8f5] border border-slate-200 rounded-xl px-4 py-3">
+          <div className="flex flex-wrap items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-3">
             <span className="text-sm text-slate-500">{rows.length} URL:er</span>
             <span className="text-sm font-semibold text-emerald-700">{matchedCount} matchade</span>
             {rows.length - matchedCount > 0 && (
@@ -336,7 +336,7 @@ function UrlMatcherTab({ catalog }: { catalog: CatalogEntry[] }) {
             <div className="ml-auto flex gap-2">
               <button
                 onClick={() => { setRows([]); setRawInput(''); }}
-                className="h-8 px-3 text-xs rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition"
+                className="h-8 px-3 text-xs rounded-xl border border-slate-200 hover:bg-[#faf8f5] text-slate-600 transition"
               >
                 Börja om
               </button>
@@ -355,7 +355,7 @@ function UrlMatcherTab({ catalog }: { catalog: CatalogEntry[] }) {
             {rows.map((row, idx) => (
               <div
                 key={idx}
-                className={`flex items-center gap-3 bg-[#faf8f5] border rounded-xl p-3 transition ${
+                className={`flex items-center gap-3 bg-white border rounded-xl p-3 transition ${
                   row.status === 'done' ? 'border-emerald-200 bg-emerald-50/40' :
                   row.status === 'error' ? 'border-red-200 bg-red-50/40' :
                   row.status === 'saving' ? 'border-blue-200 bg-blue-50/30' :
@@ -636,13 +636,13 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
       <main className="max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-10">
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-[#faf8f5] border border-slate-200 rounded-lg p-1 mb-6 w-fit">
+        <div className="flex gap-1 bg-white border border-slate-200 rounded-lg p-1 mb-6 w-fit">
           <button
             onClick={() => setActiveTab('upload')}
             className={`px-5 h-9 rounded-lg text-sm font-semibold transition ${
               activeTab === 'upload'
                 ? 'bg-[#0e6efe] text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-50'
+                : 'text-slate-600 hover:bg-[#faf8f5]'
             }`}
           >
             <span className="flex items-center gap-2">
@@ -655,7 +655,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
             className={`px-5 h-9 rounded-lg text-sm font-semibold transition ${
               activeTab === 'urls'
                 ? 'bg-[#0e6efe] text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-50'
+                : 'text-slate-600 hover:bg-[#faf8f5]'
             }`}
           >
             <span className="flex items-center gap-2">
@@ -670,7 +670,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
           <>
             {/* Stats bar */}
             {queue.length > 0 && (
-              <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-4 mb-6 flex flex-wrap items-center gap-4 text-sm">
+              <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6 flex flex-wrap items-center gap-4 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-slate-900">{totalCount}</span>
                   <span className="text-slate-500">bilder totalt</span>
@@ -729,7 +729,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                 transition-all duration-200
                 ${dragOver
                   ? 'border-[#0e6efe] bg-[#0e6efe]/5 scale-[1.01]'
-                  : 'border-slate-300 bg-[#faf8f5] hover:border-[#0e6efe] hover:bg-slate-50'
+                  : 'border-slate-300 bg-white hover:border-[#0e6efe] hover:bg-[#faf8f5]'
                 }
               `}
             >
@@ -787,7 +787,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                   <button
                     onClick={retryFailed}
                     disabled={uploading}
-                    className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-slate-300 bg-[#faf8f5] hover:bg-slate-50 text-slate-700 font-medium text-sm transition"
+                    className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-slate-300 bg-white hover:bg-[#faf8f5] text-slate-700 font-medium text-sm transition"
                   >
                     <RefreshCw className="w-4 h-4" />
                     Försök igen ({errorCount})
@@ -796,7 +796,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                 {doneCount > 0 && (
                   <button
                     onClick={clearDone}
-                    className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-slate-300 bg-[#faf8f5] hover:bg-slate-50 text-slate-700 font-medium text-sm transition"
+                    className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-slate-300 bg-white hover:bg-[#faf8f5] text-slate-700 font-medium text-sm transition"
                   >
                     <CheckCircle2 className="w-4 h-4 text-green-600" />
                     Rensa klara
@@ -816,7 +816,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                     <div
                       key={`${item.name}-${idx}`}
                       className={`
-                        flex items-center gap-3 bg-[#faf8f5] border rounded-lg p-3 transition
+                        flex items-center gap-3 bg-white border rounded-lg p-3 transition
                         ${item.status === 'done' ? 'border-green-200 bg-green-50/50' : ''}
                         ${item.status === 'error' ? 'border-red-200 bg-red-50/50' : ''}
                         ${item.status === 'uploading' ? 'border-blue-200 bg-blue-50/30' : ''}
@@ -880,7 +880,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
 
             {/* Empty state */}
             {queue.length === 0 && (
-              <div className="mt-8 bg-[#faf8f5] border border-slate-200 rounded-xl p-6">
+              <div className="mt-8 bg-white border border-slate-200 rounded-xl p-6">
                 <h3 className="font-semibold text-slate-900 mb-2">Hur det fungerar</h3>
                 <ol className="text-sm text-slate-600 space-y-2 list-decimal list-inside">
                   <li>Namnge dina bildfiler med bilmärke och modell, t.ex. <code className="bg-slate-100 px-1.5 py-0.5 rounded text-xs font-mono">Volvo XC60.jpg</code></li>

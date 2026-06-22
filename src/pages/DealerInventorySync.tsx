@@ -402,7 +402,7 @@ export default function DealerInventorySync({
             { label: 'Reserverade',  val: counts.reserverad,  cls: 'text-amber-600' },
             { label: 'Sålda',        val: counts.såld,         cls: 'text-slate-500' },
           ].map((c) => (
-            <div key={c.label} className="bg-[#faf8f5] rounded-xl border border-slate-200 p-4 text-center">
+            <div key={c.label} className="bg-white rounded-xl border border-slate-200 p-4 text-center">
               <p className={`text-2xl font-bold ${c.cls}`}>{c.val}</p>
               <p className="text-xs text-slate-500 mt-0.5">{c.label}</p>
             </div>
@@ -410,7 +410,7 @@ export default function DealerInventorySync({
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-slate-200 bg-[#faf8f5] rounded-t-xl overflow-hidden">
+        <div className="flex border-b border-slate-200 bg-white rounded-t-xl overflow-hidden">
           {(['lager', 'import', 'matchning'] as Tab[]).map((t) => {
             const labels: Record<Tab, string> = { lager: 'Lager', import: 'CSV-import', matchning: 'Leadmatchning' };
             const icons: Record<Tab, React.ReactNode> = {
@@ -453,7 +453,7 @@ export default function DealerInventorySync({
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="h-10 px-3 rounded-lg border border-slate-200 text-sm outline-none focus:border-[#0e6efe] bg-[#faf8f5]"
+                className="h-10 px-3 rounded-lg border border-slate-200 text-sm outline-none focus:border-[#0e6efe] bg-white"
               >
                 <option value="">Alla statusar</option>
                 {Object.entries(STATUS_LABELS).map(([k, v]) => (
@@ -462,7 +462,7 @@ export default function DealerInventorySync({
               </select>
               <button
                 onClick={loadInventory}
-                className="h-10 px-4 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 flex items-center gap-2 transition"
+                className="h-10 px-4 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-[#faf8f5] flex items-center gap-2 transition"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 Uppdatera
@@ -481,7 +481,7 @@ export default function DealerInventorySync({
                 <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
               </div>
             ) : filtered.length === 0 ? (
-              <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-12 text-center">
+              <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
                 <Package className="w-10 h-10 text-slate-200 mx-auto mb-3" />
                 <p className="text-slate-500 font-medium mb-1">Inget lager</p>
                 <p className="text-sm text-slate-400">
@@ -502,7 +502,7 @@ export default function DealerInventorySync({
             ) : (
               <>
                 {/* Desktop table */}
-                <div className="hidden sm:block bg-[#faf8f5] rounded-xl border border-slate-200 overflow-hidden">
+                <div className="hidden sm:block bg-white rounded-xl border border-slate-200 overflow-hidden">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-slate-100 bg-slate-50">
@@ -519,7 +519,7 @@ export default function DealerInventorySync({
                       {filtered.map((row) => {
                         const st = STATUS_LABELS[row.status] ?? { label: row.status, cls: 'bg-slate-100 text-slate-500' };
                         return (
-                          <tr key={row.id} className="hover:bg-slate-50 transition-colors">
+                          <tr key={row.id} className="hover:bg-[#faf8f5] transition-colors">
                             <td className="px-4 py-3">
                               <p className="font-semibold text-slate-900">{row.marke} {row.modell}</p>
                               {row.regnummer && (
@@ -572,7 +572,7 @@ export default function DealerInventorySync({
                   {filtered.map((row) => {
                     const st = STATUS_LABELS[row.status] ?? { label: row.status, cls: 'bg-slate-100 text-slate-500' };
                     return (
-                      <div key={row.id} className="bg-[#faf8f5] rounded-xl border border-slate-200 p-4">
+                      <div key={row.id} className="bg-white rounded-xl border border-slate-200 p-4">
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <p className="font-semibold text-slate-900">{row.marke} {row.modell}</p>
@@ -660,7 +660,7 @@ export default function DealerInventorySync({
 
             {/* Preview */}
             {csvRows.length > 0 && (
-              <div className="bg-[#faf8f5] rounded-xl border border-slate-200 overflow-hidden">
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
                 <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
                   <p className="text-sm font-semibold text-slate-900">
                     {csvRows.length} bilar redo att importeras
@@ -675,7 +675,7 @@ export default function DealerInventorySync({
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs">
                     <thead>
-                      <tr className="bg-slate-50 border-b border-slate-100">
+                      <tr className="bg-[#faf8f5] border-b border-slate-100">
                         {['Marke', 'Modell', 'Ar', 'Miltal', 'Pris', 'Regnummer', 'Drivmedel'].map((h) => (
                           <th key={h} className="text-left px-3 py-2 font-semibold text-slate-500 uppercase tracking-wide">{h}</th>
                         ))}
@@ -683,7 +683,7 @@ export default function DealerInventorySync({
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {csvRows.slice(0, 10).map((r, i) => (
-                        <tr key={i} className="hover:bg-slate-50">
+                        <tr key={i} className="hover:bg-[#faf8f5]">
                           <td className="px-3 py-2 font-medium">{r.marke}</td>
                           <td className="px-3 py-2">{r.modell}</td>
                           <td className="px-3 py-2">{r.ar}</td>
@@ -734,7 +734,7 @@ export default function DealerInventorySync({
             )}
 
             {/* API info banner */}
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+            <div className="bg-[#faf8f5] border border-slate-200 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Zap className="w-4 h-4 text-slate-500" />
                 <p className="text-sm font-semibold text-slate-700">API-integration</p>
@@ -753,7 +753,7 @@ export default function DealerInventorySync({
         {/* ── TAB: LEADMATCHNING ── */}
         {tab === 'matchning' && (
           <div className="space-y-4">
-            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5">
+            <div className="bg-white rounded-xl border border-slate-200 p-5">
               <div className="flex items-start gap-3 mb-4">
                 <Target className="w-6 h-6 text-[#0e6efe] shrink-0 mt-0.5" />
                 <div>
@@ -782,7 +782,7 @@ export default function DealerInventorySync({
 
             {matchRan && !matchLoading && (
               matchedLeads.length === 0 ? (
-                <div className="bg-[#faf8f5] rounded-xl border border-slate-200 p-10 text-center">
+                <div className="bg-white rounded-xl border border-slate-200 p-10 text-center">
                   <Target className="w-10 h-10 text-slate-200 mx-auto mb-3" />
                   <p className="text-slate-500 font-medium">Inga matchande leads hittades</p>
                   <p className="text-xs text-slate-400 mt-1">
@@ -802,7 +802,7 @@ export default function DealerInventorySync({
                     return (
                       <div
                         key={lead.id + lead.matched_inv_id}
-                        className="bg-[#faf8f5] rounded-xl border border-slate-200 p-4"
+                        className="bg-white rounded-xl border border-slate-200 p-4"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1 min-w-0">
@@ -860,7 +860,7 @@ export default function DealerInventorySync({
       {/* ── Add single car modal ── */}
       {addOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 p-4">
-          <div className="bg-[#faf8f5] rounded-xl w-full max-w-lg shadow-2xl overflow-hidden">
+          <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
               <h3 className="text-base font-bold text-slate-900">Lägg till bil</h3>
               <button onClick={() => setAddOpen(false)} className="text-slate-400 hover:text-slate-700">

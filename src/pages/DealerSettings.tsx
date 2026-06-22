@@ -312,7 +312,7 @@ function RankingCard({ score }: RankingCardProps) {
       </div>
 
       {/* Breakdown bars */}
-      <div className="bg-[#faf8f5] px-5 sm:px-6 py-4 space-y-3.5">
+      <div className="bg-white px-5 sm:px-6 py-4 space-y-3.5">
         {breakdown.map((item) => (
           <div key={item.label}>
             <div className="flex items-center gap-2 mb-1">
@@ -725,13 +725,13 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
             Din Bilto-ranking
           </h2>
           {scoreLoading ? (
-            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 flex justify-center py-10">
+            <div className="bg-white rounded-xl border border-slate-200 flex justify-center py-10">
               <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
             </div>
           ) : dealerScore ? (
             <RankingCard score={dealerScore} />
           ) : (
-            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 px-5 py-8 text-center">
+            <div className="bg-white rounded-xl border border-slate-200 px-5 py-8 text-center">
               <p className="text-sm text-slate-500">Ranking ej tillgänglig ännu.</p>
             </div>
           )}
@@ -747,11 +747,11 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
             Berätta vilka bilar du vill köpa. Matchningsmotorn använder detta för att skicka rätt leads till dig.
           </p>
           {buyPrefsLoading ? (
-            <div className="bg-[#faf8f5] rounded-xl border border-slate-200 flex justify-center py-8">
+            <div className="bg-white rounded-xl border border-slate-200 flex justify-center py-8">
               <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
             </div>
           ) : (
-            <section className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6 space-y-5">
+            <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6 space-y-5">
 
               {/* Brands */}
               <div>
@@ -767,7 +767,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition ${
                         buyPrefs.marken.includes(b)
                           ? 'bg-[#0e6efe] text-white border-[#0e6efe]'
-                          : 'bg-[#faf8f5] text-slate-600 border-slate-200 hover:border-slate-300'
+                          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                       }`}
                     >
                       {b}
@@ -793,7 +793,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition ${
                         buyPrefs.segment.includes(s.value)
                           ? 'bg-slate-900 text-white border-slate-900'
-                          : 'bg-[#faf8f5] text-slate-600 border-slate-200 hover:border-slate-300'
+                          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                       }`}
                     >
                       {s.label}
@@ -817,7 +817,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition ${
                         buyPrefs.regions.includes(r)
                           ? 'bg-emerald-600 text-white border-emerald-600'
-                          : 'bg-[#faf8f5] text-slate-600 border-slate-200 hover:border-slate-300'
+                          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                       }`}
                     >
                       {r}
@@ -880,7 +880,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
         ) : (
           <>
             {/* Företag */}
-            <section className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
+            <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
               <header className="flex items-center gap-2 mb-4">
                 <Building2 className="w-4 h-4 text-slate-500" />
                 <h2 className="font-semibold text-slate-900">Företag</h2>
@@ -891,7 +891,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                     type="text"
                     value={info.foretagsnamn}
                     disabled
-                    className="w-full h-11 px-3 rounded-lg border border-slate-200 bg-slate-50 text-slate-500"
+                    className="w-full h-11 px-3 rounded-lg border border-slate-200 bg-[#faf8f5] text-slate-500"
                   />
                   <p className="mt-1 text-xs text-slate-500">
                     Kontakta supporten för att ändra företagsnamn.
@@ -913,7 +913,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       value={info.telefon}
                       onChange={(e) => setInfo({ ...info, telefon: e.target.value })}
                       disabled={!isOwner}
-                      className="w-full h-11 px-3 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none disabled:bg-slate-50 disabled:text-slate-500"
+                      className="w-full h-11 px-3 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none disabled:bg-[#faf8f5] disabled:text-slate-500"
                     />
                   </Field>
                   <Field label="Mejl" icon={<Mail className="w-4 h-4" />}>
@@ -922,7 +922,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       value={info.mejl}
                       onChange={(e) => setInfo({ ...info, mejl: e.target.value })}
                       disabled={!isOwner}
-                      className="w-full h-11 px-3 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none disabled:bg-slate-50 disabled:text-slate-500"
+                      className="w-full h-11 px-3 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none disabled:bg-[#faf8f5] disabled:text-slate-500"
                     />
                   </Field>
                 </div>
@@ -954,7 +954,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                   </div>
                 )}
                 {!isOwner && (
-                  <p className="text-xs text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5">
+                  <p className="text-xs text-slate-500 bg-[#faf8f5] border border-slate-200 rounded-lg px-3 py-2.5">
                     Bara kontoägaren kan ändra företagsinformation.
                   </p>
                 )}
@@ -962,7 +962,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
             </section>
 
             {/* Lösenord */}
-            <section className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
+            <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
               <header className="flex items-center gap-2 mb-4">
                 <Lock className="w-4 h-4 text-slate-500" />
                 <h2 className="font-semibold text-slate-900">Lösenord</h2>
@@ -1013,7 +1013,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
             </section>
 
             {/* Team */}
-            <section className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
+            <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
               <header className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-slate-500" />
@@ -1038,7 +1038,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
               )}
 
               {showInviteForm && (
-                <form onSubmit={handleInvite} className="mb-5 p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                <form onSubmit={handleInvite} className="mb-5 p-4 rounded-xl bg-[#faf8f5] border border-slate-200 space-y-3">
                   <p className="text-sm font-semibold text-slate-900">Bjud in ny teammedlem</p>
                   <div className="grid sm:grid-cols-2 gap-3">
                     <Field label="Förnamn">
@@ -1162,7 +1162,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
             </section>
 
             {/* Aviseringar */}
-            <section className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
+            <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
               <header className="flex items-center gap-2 mb-2">
                 <Bell className="w-4 h-4 text-slate-500" />
                 <h2 className="font-semibold text-slate-900">Aviseringar</h2>
@@ -1184,11 +1184,11 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                 Koppla din Blocket-butik så att ditt lager hålls automatiskt uppdaterat.
               </p>
               {blocketLoading ? (
-                <div className="bg-[#faf8f5] rounded-xl border border-slate-200 flex justify-center py-8">
+                <div className="bg-white rounded-xl border border-slate-200 flex justify-center py-8">
                   <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
                 </div>
               ) : (
-                <section className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6 space-y-5">
+                <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6 space-y-5">
                   {/* Info banner */}
                   <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-50 border border-blue-100">
                     <ExternalLink className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
@@ -1235,7 +1235,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       onClick={() => setBlocketSyncEnabled((v) => !v)}
                       className={`relative inline-flex h-6 w-11 items-center rounded-xl transition-colors ${blocketSyncEnabled ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
                     >
-                      <span className={`inline-block h-4 w-4 rounded-full bg-[#faf8f5] shadow transition-transform ${blocketSyncEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                      <span className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${blocketSyncEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
                     </button>
                     <span className="text-sm text-slate-700 font-medium">Aktivera automatisk synkronisering</span>
                   </div>

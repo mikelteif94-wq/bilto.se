@@ -103,7 +103,7 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
             { label: 'Genomförda', value: bookings.filter(b => b.status === 'done').length, color: 'text-green-600' },
             { label: 'Avbokade', value: bookings.filter(b => b.status === 'cancelled').length, color: 'text-slate-400' },
           ].map(s => (
-            <div key={s.label} className="bg-[#faf8f5] rounded-xl border border-slate-100 px-4 py-3">
+            <div key={s.label} className="bg-white rounded-xl border border-slate-100 px-4 py-3">
               <p className="text-xs text-slate-400 font-medium">{s.label}</p>
               <p className={`text-2xl font-bold mt-0.5 ${s.color}`}>{s.value}</p>
             </div>
@@ -150,18 +150,18 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
 
         {/* Table */}
         {loading ? (
-          <div className="bg-[#faf8f5] rounded-xl border border-slate-100 p-8 text-center text-slate-400 text-sm">
+          <div className="bg-white rounded-xl border border-slate-100 p-8 text-center text-slate-400 text-sm">
             Laddar bokningar...
           </div>
         ) : filtered.length === 0 ? (
-          <div className="bg-[#faf8f5] rounded-xl border border-slate-100 p-8 text-center text-slate-400 text-sm">
+          <div className="bg-white rounded-xl border border-slate-100 p-8 text-center text-slate-400 text-sm">
             Inga bokningar hittades.
           </div>
         ) : (
-          <div className="bg-[#faf8f5] rounded-xl border border-slate-100 overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
             <div className="divide-y divide-slate-50">
               {filtered.map(b => (
-                <div key={b.id} className="p-3 sm:p-5 hover:bg-slate-50/50 transition">
+                <div key={b.id} className="p-3 sm:p-5 hover:bg-[#faf8f5]/50 transition">
                   <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
                     {/* Date/time badge – inline on mobile */}
                     <div className="flex items-center gap-3 sm:block shrink-0">
@@ -177,7 +177,7 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
                           value={b.status}
                           onChange={e => updateStatus(b.id, e.target.value)}
                           disabled={updating === b.id}
-                          className="w-full appearance-none text-xs font-semibold border border-slate-200 rounded-lg px-3 py-2 pr-7 bg-[#faf8f5] outline-none cursor-pointer hover:border-slate-300 transition disabled:opacity-50"
+                          className="w-full appearance-none text-xs font-semibold border border-slate-200 rounded-lg px-3 py-2 pr-7 bg-white outline-none cursor-pointer hover:border-slate-300 transition disabled:opacity-50"
                         >
                           {STATUS_OPTIONS.map(s => (
                             <option key={s} value={s}>{STATUS_LABELS[s]}</option>
@@ -222,7 +222,7 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
                         value={b.status}
                         onChange={e => updateStatus(b.id, e.target.value)}
                         disabled={updating === b.id}
-                        className="appearance-none text-xs font-semibold border border-slate-200 rounded-lg px-3 py-2 pr-7 bg-[#faf8f5] outline-none cursor-pointer hover:border-slate-300 transition disabled:opacity-50"
+                        className="appearance-none text-xs font-semibold border border-slate-200 rounded-lg px-3 py-2 pr-7 bg-white outline-none cursor-pointer hover:border-slate-300 transition disabled:opacity-50"
                       >
                         {STATUS_OPTIONS.map(s => (
                           <option key={s} value={s}>{STATUS_LABELS[s]}</option>

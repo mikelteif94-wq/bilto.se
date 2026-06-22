@@ -194,7 +194,7 @@ function BudgetSelector({ answers, setAnswers }: { answers: QuizAnswers; setAnsw
           className={cn(
             'px-5 py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-200',
             budgetType === 'monthly'
-              ? 'bg-[#faf8f5] text-slate-900 shadow-sm'
+              ? 'bg-white text-slate-900 shadow-sm'
               : 'text-slate-500 hover:text-slate-700'
           )}
         >
@@ -206,7 +206,7 @@ function BudgetSelector({ answers, setAnswers }: { answers: QuizAnswers; setAnsw
           className={cn(
             'px-5 py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-200',
             budgetType === 'cash'
-              ? 'bg-[#faf8f5] text-slate-900 shadow-sm'
+              ? 'bg-white text-slate-900 shadow-sm'
               : 'text-slate-500 hover:text-slate-700'
           )}
         >
@@ -221,7 +221,7 @@ function BudgetSelector({ answers, setAnswers }: { answers: QuizAnswers; setAnsw
             value={answers.budget_min?.toString() || '0'}
             onValueChange={(val) => setAnswers({ ...answers, budget_min: parseInt(val) })}
           >
-            <SelectTrigger className="w-full h-11 rounded-xl border-slate-200 bg-[#faf8f5] text-[13px] sm:text-[14px] text-slate-900">
+            <SelectTrigger className="w-full h-11 rounded-xl border-slate-200 bg-white text-[13px] sm:text-[14px] text-slate-900">
               <SelectValue placeholder="Alla" />
             </SelectTrigger>
             <SelectContent>
@@ -237,7 +237,7 @@ function BudgetSelector({ answers, setAnswers }: { answers: QuizAnswers; setAnsw
             value={answers.budget_max?.toString() || '0'}
             onValueChange={(val) => setAnswers({ ...answers, budget_max: parseInt(val) })}
           >
-            <SelectTrigger className="w-full h-11 rounded-xl border-slate-200 bg-[#faf8f5] text-[13px] sm:text-[14px] text-slate-900">
+            <SelectTrigger className="w-full h-11 rounded-xl border-slate-200 bg-white text-[13px] sm:text-[14px] text-slate-900">
               <SelectValue placeholder="Alla" />
             </SelectTrigger>
             <SelectContent>
@@ -267,8 +267,8 @@ function OptionCard({ option, questionId, isSelected, isMultiSelect, onClick }: 
         'relative w-full flex items-center gap-3 px-4 py-3.5 sm:px-5 sm:py-4 rounded-xl border-2 transition-all duration-150 text-left',
         questionId === 'body_type' ? 'flex-col items-center justify-center py-4 sm:py-5 text-center' : '',
         isSelected
-          ? 'border-[#0e6efe] bg-[#faf8f5] shadow-sm'
-          : 'border-slate-200 bg-[#faf8f5] hover:border-slate-300'
+          ? 'border-[#0e6efe] bg-white shadow-sm'
+          : 'border-slate-200 bg-white hover:border-slate-300'
       )}
     >
       {isMultiSelect && (

@@ -10,7 +10,7 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 const variantStyles: Record<BadgeVariant, string> = {
   default: 'bg-[#0047B3] text-white border-transparent',
   secondary: 'bg-slate-100 text-slate-800 border-transparent',
-  outline: 'border-slate-300 text-slate-700 bg-[#faf8f5]',
+  outline: 'border-slate-300 text-slate-700 bg-white',
 };
 
 export function Badge({ className, variant = 'default', ...props }: BadgeProps) {

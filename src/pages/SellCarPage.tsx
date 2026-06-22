@@ -170,7 +170,7 @@ export default function SellCarPage({
                 window.history.pushState({}, '', '/gratis-konsultation');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="inline-flex items-center bg-[#faf8f5] text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </button>
@@ -299,7 +299,7 @@ export default function SellCarPage({
 
       {guidanceOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4 py-6">
-          <div className="w-full max-w-md bg-[#faf8f5] rounded-xl shadow-xl overflow-hidden">
+          <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
             <div className="flex items-center justify-between px-5 sm:px-6 pt-5 pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">

@@ -158,7 +158,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
             </div>
 
             {/* CTA card */}
-            <div className="bg-[#faf8f5] rounded-xl shadow-xl p-7">
+            <div className="bg-white rounded-xl shadow-xl p-7">
               <h2 className="text-[18px] font-bold text-slate-900 mb-2">{topic.ctaHeading}</h2>
               <p className="text-[13px] text-slate-500 mb-5">{topic.ctaBody}</p>
 
@@ -191,7 +191,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
       </section>
 
       {/* Hur det fungerar */}
-      <section className="bg-slate-50 py-16 px-5">
+      <section className="bg-[#faf8f5] py-16 px-5">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-[26px] font-bold text-slate-900 tracking-tight mb-10">Hur fungerar det?</h2>
           <ol className="grid sm:grid-cols-3 gap-8">
@@ -207,7 +207,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
       </section>
 
       {/* Varför Bilto */}
-      <section className="bg-[#faf8f5] py-16 px-5">
+      <section className="bg-white py-16 px-5">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-[26px] font-bold text-slate-900 tracking-tight mb-8">Varför välja Bilto?</h2>
           <div className="grid sm:grid-cols-3 gap-6">
@@ -232,18 +232,18 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
       </section>
 
       {/* FAQ */}
-      <section className="bg-slate-50 py-16 px-5">
+      <section className="bg-[#faf8f5] py-16 px-5">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-[26px] font-bold text-slate-900 tracking-tight mb-2">Vanliga frågor</h2>
           <p className="text-slate-500 text-[15px] mb-8">Har du fler frågor? Boka en gratis konsultation så svarar vi personligen.</p>
-          <div className="bg-[#faf8f5] rounded-xl border border-slate-100 divide-y divide-slate-100 px-6">
+          <div className="bg-white rounded-xl border border-slate-100 divide-y divide-slate-100 px-6">
             {topic.faqs.map(f => <FaqItem key={f.q} q={f.q} a={f.a} />)}
           </div>
         </div>
       </section>
 
       {/* Recensioner */}
-      <section className="bg-[#faf8f5] py-16 px-5">
+      <section className="bg-white py-16 px-5">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-[22px] font-bold text-slate-900 mb-8">Vad säger våra kunder?</h2>
           <div className="grid sm:grid-cols-3 gap-5">
@@ -281,7 +281,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
                 key={link.path}
                 href={link.path}
                 onClick={e => { e.preventDefault(); window.history.pushState({}, '', link.path); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 bg-[#faf8f5] text-[13px] font-medium text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe] transition"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 bg-white text-[13px] font-medium text-slate-700 hover:border-[#0e6efe] hover:text-[#0e6efe] transition"
               >
                 {link.label}
                 <ArrowRight className="w-3 h-3" />
@@ -301,7 +301,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
               <div className="flex-1">
                 <RegInput size="sm" value={regnummer} onChange={v => { setRegnummer(v); setFormError(''); }} />
               </div>
-              <button type="submit" className="h-11 px-6 rounded-xl bg-[#faf8f5] text-[#0e6efe] font-bold text-[14px] hover:bg-slate-100 transition whitespace-nowrap inline-flex items-center gap-2">
+              <button type="submit" className="h-11 px-6 rounded-xl bg-white text-[#0e6efe] font-bold text-[14px] hover:bg-slate-100 transition whitespace-nowrap inline-flex items-center gap-2">
                 {topic.ctaLabel}
                 <ArrowRight className="w-4 h-4" />
               </button>
@@ -310,7 +310,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
             <button
               type="button"
               onClick={onNavigateConsultation ?? (() => { window.history.pushState({}, '', topic.ctaPath); window.dispatchEvent(new PopStateEvent('popstate')); })}
-              className="inline-flex items-center gap-2 h-12 px-8 rounded-xl bg-[#faf8f5] text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg"
+              className="inline-flex items-center gap-2 h-12 px-8 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg"
             >
               {topic.ctaLabel}
               <ArrowRight className="w-4 h-4" />

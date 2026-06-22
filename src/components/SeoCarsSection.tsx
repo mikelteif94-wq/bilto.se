@@ -85,7 +85,7 @@ const CITIES = [
 
 export default function SeoCarsSection() {
   return (
-    <section className="bg-[#faf8f5] md:border-t md:border-slate-100 py-16 sm:py-20 px-6">
+    <section className="bg-white md:border-t md:border-slate-100 py-16 sm:py-20 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="mb-16">
           <h2 className="text-[24px] sm:text-[32px] font-semibold text-slate-900 tracking-tight mb-2">

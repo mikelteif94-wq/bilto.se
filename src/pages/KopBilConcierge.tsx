@@ -183,7 +183,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={onNavigateBuy}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-[#faf8f5]/20 border border-white/40 text-white text-[14px] font-semibold hover:bg-[#faf8f5]/30 transition backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white/20 border border-white/40 text-white text-[14px] font-semibold hover:bg-white/30 transition backdrop-blur-sm"
             >
               Köp bil med hjälp
             </button>
@@ -191,7 +191,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           <div className="flex items-center ml-auto">
             <a
               href="/gratis-konsultation"
-              className="inline-flex items-center bg-[#faf8f5] text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
@@ -225,7 +225,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             </p>
 
             {/* Card */}
-            <div className="bg-[#faf8f5] rounded-xl shadow-2xl overflow-hidden">
+            <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
               <div className="px-6 pt-6 pb-2">
                 <p className="text-[13px] font-bold text-slate-400 uppercase tracking-widest mb-4">Köp bil med expert</p>
                 <ul className="space-y-3 mb-5">
@@ -256,7 +256,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 </button>
                 <a
                   href="tel:+46855550200"
-                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-slate-50 transition inline-flex items-center justify-center gap-2"
+                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
                 >
                   <Phone className="w-4 h-4 shrink-0" />
                   Ring oss: 08-5555 0200
@@ -294,7 +294,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                   <div key={step.n} className="relative flex lg:flex-col items-start lg:items-center gap-4 lg:gap-0 lg:text-center">
                     <div className="relative z-10 w-16 h-16 lg:w-20 lg:h-20 rounded-xl bg-[#0e6efe] flex items-center justify-center shrink-0 lg:mb-5 shadow-lg shadow-[#0e6efe]/20">
                       <Icon className="w-7 h-7 lg:w-8 lg:h-8 text-white" strokeWidth={1.8} />
-                      <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#faf8f5] border-2 border-[#0e6efe] text-[#0e6efe] text-[10px] font-bold flex items-center justify-center">
+                      <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border-2 border-[#0e6efe] text-[#0e6efe] text-[10px] font-bold flex items-center justify-center">
                         {step.n}
                       </span>
                     </div>
@@ -340,8 +340,8 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {INCLUDED.map((item) => (
-              <div key={item.title} className="flex items-start gap-4 bg-[#faf8f5]/10 rounded-xl p-5 border border-white/15">
-                <div className="w-8 h-8 rounded-lg bg-[#faf8f5]/20 flex items-center justify-center shrink-0 mt-0.5">
+              <div key={item.title} className="flex items-start gap-4 bg-white/10 rounded-xl p-5 border border-white/15">
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-white" strokeWidth={2.5} />
                 </div>
                 <div>
@@ -356,7 +356,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-[#faf8f5] text-[#0e6efe] font-bold text-[15px] sm:text-[16px] hover:bg-slate-50 transition shadow-lg inline-flex items-center gap-2 group"
+              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[16px] hover:bg-[#faf8f5] transition shadow-lg inline-flex items-center gap-2 group"
             >
               Kom igång nu
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -379,14 +379,14 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
           <div className="grid sm:grid-cols-2 gap-5 sm:gap-6">
             {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="bg-slate-50 rounded-xl border border-slate-200 p-6 sm:p-8">
+              <div key={t.name} className="bg-[#faf8f5] rounded-xl border border-slate-200 p-6 sm:p-8">
                 <Quote className="w-7 h-7 text-[#0e6efe]/20 mb-4" />
                 <p className="text-[14px] sm:text-[15px] text-slate-700 leading-[1.7] mb-6 italic">
                   "{t.quote}"
                 </p>
                 <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5">
                   {t.saves.map((s) => (
-                    <div key={s.label} className="bg-[#faf8f5] rounded-xl px-3 py-3 text-center border border-slate-200">
+                    <div key={s.label} className="bg-white rounded-xl px-3 py-3 text-center border border-slate-200">
                       <p className="text-[14px] sm:text-[15px] font-bold text-[#0e6efe] leading-tight">{s.val}</p>
                       <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5">{s.label}</p>
                     </div>
@@ -410,7 +410,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Team ── */}
-      <section className="bg-slate-50 border-y border-slate-200 py-16 sm:py-24 px-5 sm:px-8">
+      <section className="bg-[#faf8f5] border-y border-slate-200 py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10 sm:mb-12">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
@@ -426,7 +426,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto">
             {EXPERTS.map((e) => (
-              <div key={e.name} className="flex items-center gap-5 bg-[#faf8f5] rounded-xl p-5 sm:p-6 border border-slate-200 shadow-sm">
+              <div key={e.name} className="flex items-center gap-5 bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-sm">
                 <div className="relative shrink-0">
                   <img
                     src={e.avatar}
@@ -450,7 +450,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           </div>
 
           <div className="mt-8 sm:mt-10 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#faf8f5] border border-slate-200 text-slate-600 text-[13px] sm:text-[14px] font-medium shadow-sm">
+            <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 text-[13px] sm:text-[14px] font-medium shadow-sm">
               <Users className="w-4 h-4 text-slate-400 shrink-0" />
               +3 ytterligare experter i teamet
             </div>
@@ -514,7 +514,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             </button>
             <a
               href="tel:+46855550200"
-              className="h-13 sm:h-14 px-6 sm:px-8 rounded-xl border-2 border-slate-300 text-slate-700 font-semibold text-[14px] sm:text-[15px] hover:border-slate-400 hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
+              className="h-13 sm:h-14 px-6 sm:px-8 rounded-xl border-2 border-slate-300 text-slate-700 font-semibold text-[14px] sm:text-[15px] hover:border-slate-400 hover:bg-white transition inline-flex items-center justify-center gap-2"
             >
               <Phone className="w-4 h-4 shrink-0" />
               Ring oss direkt

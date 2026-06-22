@@ -126,7 +126,7 @@ export default function ConditionReportForm({
             collapsible={collapsibleSections}
           />
 
-          <div className="bg-[#faf8f5] rounded-xl border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <div className="px-4 sm:px-5 py-3.5 flex items-center gap-2">
               <h3 className="text-sm font-bold text-slate-900 flex-1">Historik</h3>
             </div>
@@ -197,11 +197,11 @@ function Section({
   const serious = flags.filter((f) => f === 'allvarligt').length;
 
   return (
-    <div className="bg-[#faf8f5] rounded-xl border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
       <button
         type="button"
         onClick={() => collapsible && setExpanded((v) => !v)}
-        className={`w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 text-left ${collapsible ? 'hover:bg-slate-50 transition' : 'cursor-default'}`}
+        className={`w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 text-left ${collapsible ? 'hover:bg-[#faf8f5] transition' : 'cursor-default'}`}
       >
         <h3 className="text-sm font-bold text-slate-900 flex-1">{title}</h3>
         {/* Summary badges when collapsed */}
@@ -294,7 +294,7 @@ function StatusButtons({
             className={`inline-flex items-center gap-1 h-7 px-2.5 rounded-xl border text-[11px] font-semibold transition ${
               active
                 ? o.cls
-                : 'bg-[#faf8f5] border-slate-200 text-slate-500 hover:border-slate-300'
+                : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
             }`}
             aria-pressed={active}
             title={o.label}
@@ -331,7 +331,7 @@ function YesNo({
               className={`h-9 px-4 rounded-xl border text-xs font-semibold capitalize transition ${
                 active
                   ? 'bg-[#0e6efe] border-[#0e6efe] text-white'
-                  : 'bg-[#faf8f5] border-slate-200 text-slate-600 hover:border-slate-300'
+                  : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
               }`}
             >
               {v}

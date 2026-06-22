@@ -195,7 +195,7 @@ export default function DealerAddCar({
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          <section className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
+          <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-1">
               Säljare
             </h2>
@@ -234,7 +234,7 @@ export default function DealerAddCar({
             </div>
           </section>
 
-          <section className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
+          <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4">
               Bil
             </h2>
@@ -265,7 +265,7 @@ export default function DealerAddCar({
                     setMarke(e.target.value);
                     setModell('');
                   }}
-                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-[#faf8f5]"
+                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-white"
                 >
                   <option value="">Välj märke</option>
                   {POPULAR_BRANDS.map((b) => (
@@ -284,7 +284,7 @@ export default function DealerAddCar({
                   disabled={!marke}
                   placeholder={marke ? 'Välj eller skriv modell' : 'Välj märke först'}
                   autoComplete="off"
-                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-[#faf8f5] disabled:bg-slate-50 disabled:text-slate-400"
+                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-white disabled:bg-[#faf8f5] disabled:text-slate-400"
                 />
                 {marke && (
                   <datalist id={`dealer-models-${marke}`}>
@@ -309,7 +309,7 @@ export default function DealerAddCar({
                 <select
                   value={skick}
                   onChange={(e) => setSkick(e.target.value)}
-                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-[#faf8f5]"
+                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-white"
                 >
                   {SKICK_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>
@@ -337,7 +337,7 @@ export default function DealerAddCar({
             </div>
           </section>
 
-          <section className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
+          <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
             <div className="flex items-center justify-between mb-1">
               <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
                 Bilder
@@ -355,7 +355,7 @@ export default function DealerAddCar({
             />
           </section>
 
-          <section className="bg-[#faf8f5] rounded-xl border border-slate-200 p-5 sm:p-6">
+          <section className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
             <div className="flex items-center justify-between mb-1">
               <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
                 Skickrapport

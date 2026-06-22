@@ -1043,7 +1043,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             </a>
           </nav>
           <div className="flex items-center ml-auto">
-            <a href="/gratis-konsultation" className="inline-flex items-center bg-[#faf8f5] text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
+            <a href="/gratis-konsultation" className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
               Kostnadsfri konsultation
             </a>
           </div>
@@ -1080,7 +1080,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 {heroSubtitle ?? 'J\u00e4mf\u00f6r bilar, hitta r\u00e4tt modell och l\u00e5t oss f\u00f6rhandla fram b\u00e4sta priset \u00e5t dig. Helt gratis och opartiskt.'}
               </p>
 
-              <div className="mt-8 bg-[#faf8f5] rounded-xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden max-w-md mx-auto lg:mx-0 text-left">
+              <div className="mt-8 bg-white rounded-xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden max-w-md mx-auto lg:mx-0 text-left">
                 {(ctaOptions ?? [
                   {
                     icon: CheckCircle,
@@ -1148,7 +1148,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       </section>
 
       {/* Browse by budget */}
-      <section className="py-10 sm:py-16 bg-[#faf8f5]">
+      <section className="py-10 sm:py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-7 sm:mb-10">
             <h2 className="text-[26px] sm:text-[32px] font-extrabold text-slate-900 tracking-tight">
@@ -1181,8 +1181,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   }}
                   className={`flex flex-col rounded-xl overflow-hidden group transition-all duration-300 shrink-0 snap-start w-[140px] sm:w-auto ${
                     isActive
-                      ? 'shadow-[0_8px_28px_rgba(14,110,254,0.22)] bg-[#faf8f5]'
-                      : 'ring-1 ring-slate-100 hover:ring-slate-200 hover:shadow-lg bg-[#faf8f5]'
+                      ? 'shadow-[0_8px_28px_rgba(14,110,254,0.22)] bg-white'
+                      : 'ring-1 ring-slate-100 hover:ring-slate-200 hover:shadow-lg bg-white'
                   }`}
                 >
                   {/* Top accent bar */}
@@ -1319,7 +1319,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       <button
                         type="button"
                         onClick={() => setBudgetShowCount(prev => prev + 6)}
-                        className="inline-flex items-center gap-2 h-11 px-8 rounded-xl bg-[#faf8f5] ring-1 ring-slate-200 hover:ring-[#0e6efe] text-slate-700 hover:text-[#0e6efe] text-[13px] font-semibold transition-all duration-200 shadow-sm"
+                        className="inline-flex items-center gap-2 h-11 px-8 rounded-xl bg-white ring-1 ring-slate-200 hover:ring-[#0e6efe] text-slate-700 hover:text-[#0e6efe] text-[13px] font-semibold transition-all duration-200 shadow-sm"
                       >
                         Visa fler bilar
                         <ChevronDown className="w-4 h-4" />
@@ -1359,7 +1359,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                           'Vi hjälper dig köpa till bästa pris',
                         ]).map(item => (
                           <li key={item} className="flex items-center gap-2.5 text-[14px] text-white/90">
-                            <div className="w-[18px] h-[18px] rounded-full bg-[#faf8f5]/25 flex items-center justify-center shrink-0">
+                            <div className="w-[18px] h-[18px] rounded-full bg-white/25 flex items-center justify-center shrink-0">
                               <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
                             </div>
                             {item}
@@ -1369,7 +1369,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       <button
                         type="button"
                         onClick={() => setQuizStep('active')}
-                        className="w-full h-[52px] rounded-xl bg-[#faf8f5] text-[#0e6efe] font-bold text-[15px] flex items-center justify-center gap-2 group transition-all duration-200 active:scale-[0.98] shadow-lg shadow-black/10"
+                        className="w-full h-[52px] rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] flex items-center justify-center gap-2 group transition-all duration-200 active:scale-[0.98] shadow-lg shadow-black/10"
                       >
                         {isEvPage ? 'Hitta din elbilsmatch' : 'Hitta din bilmatch'}
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -1453,7 +1453,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                           initial={{ opacity: 0, y: 16 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.1 + i * 0.1 }}
-                          className="aspect-[4/3] rounded-xl bg-[#faf8f5] border border-slate-100 shadow-sm flex items-end justify-center overflow-hidden p-2"
+                          className="aspect-[4/3] rounded-xl bg-white border border-slate-100 shadow-sm flex items-end justify-center overflow-hidden p-2"
                         >
                           {img && <img src={img} alt={`${car.brand_display} ${car.model_display}`} className="w-full h-auto object-contain" />}
                         </motion.div>
@@ -1589,7 +1589,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                               {quizResults
                                 .filter(c => selectedQuizCars.has(`${c.make}-${c.model}`))
                                 .map(c => (
-                                  <span key={`${c.make}-${c.model}`} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#faf8f5]/10 text-[11px] font-medium text-white/90">
+                                  <span key={`${c.make}-${c.model}`} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/10 text-[11px] font-medium text-white/90">
                                     {c.make} {c.model}
                                   </span>
                                 ))}
@@ -1599,7 +1599,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                             <button
                               type="button"
                               onClick={() => setSelectedQuizCars(new Set())}
-                              className="h-10 px-3 rounded-xl text-[12px] font-medium text-white/60 hover:text-white hover:bg-[#faf8f5]/10 transition"
+                              className="h-10 px-3 rounded-xl text-[12px] font-medium text-white/60 hover:text-white hover:bg-white/10 transition"
                             >
                               Rensa
                             </button>
@@ -1659,7 +1659,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       </section>
 
       {/* How it works */}
-      <section id="sa-funkar-det" className="py-12 sm:py-16 px-4 sm:px-6 bg-[#faf8f5] border-b border-slate-100">
+      <section id="sa-funkar-det" className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-b border-slate-100">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 text-center mb-8 sm:mb-10">Din väg till rätt bil</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
@@ -1688,7 +1688,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       {/* Curated grid */}
       <section
         id="cars-grid"
-        className="py-8 sm:py-14 px-4 sm:px-6 bg-slate-50"
+        className="py-8 sm:py-14 px-4 sm:px-6 bg-[#faf8f5]"
       >
         <div className="max-w-6xl mx-auto">
 
@@ -1714,7 +1714,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               value={carSearchQuery}
               onChange={e => { setCarSearchQuery(e.target.value); setActiveCategory('alla'); setShowAllCars(false); }}
               placeholder="Sök märke eller modell…"
-              className="w-full h-12 pl-11 pr-10 rounded-xl bg-[#faf8f5] ring-1 ring-slate-200 focus:ring-2 focus:ring-[#0e6efe] outline-none text-[14px] text-slate-800 placeholder:text-slate-400 shadow-sm transition-all"
+              className="w-full h-12 pl-11 pr-10 rounded-xl bg-white ring-1 ring-slate-200 focus:ring-2 focus:ring-[#0e6efe] outline-none text-[14px] text-slate-800 placeholder:text-slate-400 shadow-sm transition-all"
             />
             {carSearchQuery && (
               <button
@@ -1739,7 +1739,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-200 whitespace-nowrap ${
                     isActive
                       ? 'bg-[#0e6efe] text-white shadow-md shadow-[#0e6efe]/25'
-                      : 'bg-[#faf8f5] text-slate-600 ring-1 ring-slate-200/80 hover:text-slate-900 hover:ring-slate-300 hover:shadow-sm'
+                      : 'bg-white text-slate-600 ring-1 ring-slate-200/80 hover:text-slate-900 hover:ring-slate-300 hover:shadow-sm'
                   }`}
                 >
                   <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
@@ -1834,11 +1834,11 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             onClick={() => openBuyDrawer(carSearchQuery.trim() || '', 'found')}
             className={`group w-full mt-4 flex items-center gap-4 px-5 py-4 rounded-xl border transition-all duration-200 text-left ${
               activeCategory === 'el'
-                ? 'bg-[#faf8f5]/5 border-white/15 hover:border-[#38bdf8]/50 hover:bg-[#38bdf8]/5'
-                : 'bg-[#faf8f5] border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/[0.03]'
+                ? 'bg-white/5 border-white/15 hover:border-[#38bdf8]/50 hover:bg-[#38bdf8]/5'
+                : 'bg-white border-slate-200 hover:border-[#0e6efe] hover:bg-[#0e6efe]/[0.03]'
             }`}
           >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${activeCategory === 'el' ? 'bg-[#faf8f5]/10 group-hover:bg-[#38bdf8]/15' : 'bg-slate-100 group-hover:bg-[#0e6efe]/10'}`}>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${activeCategory === 'el' ? 'bg-white/10 group-hover:bg-[#38bdf8]/15' : 'bg-slate-100 group-hover:bg-[#0e6efe]/10'}`}>
               <Search className={`w-5 h-5 transition-colors ${activeCategory === 'el' ? 'text-slate-500 group-hover:text-[#38bdf8]' : 'text-slate-400 group-hover:text-[#0e6efe]'}`} />
             </div>
             <div className="flex-1 min-w-0">
@@ -1863,8 +1863,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 }}
                 className={`inline-flex items-center gap-2 px-7 py-3 rounded-xl text-[14px] font-semibold ring-1 transition-all duration-200 ${
                   activeCategory === 'el'
-                    ? 'bg-[#faf8f5]/8 text-slate-200 ring-white/15 hover:ring-[#38bdf8]/40 hover:text-white'
-                    : 'bg-[#faf8f5] text-slate-700 ring-slate-200 hover:ring-slate-300 hover:shadow-sm'
+                    ? 'bg-white/8 text-slate-200 ring-white/15 hover:ring-[#38bdf8]/40 hover:text-white'
+                    : 'bg-white text-slate-700 ring-slate-200 hover:ring-slate-300 hover:shadow-sm'
                 }`}
               >
                 Visa fler bilar
@@ -1966,7 +1966,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               Ange registreringsnumret på din nuvarande bil. Vi hjälper dig förhandla bästa möjliga värde och hitta din nästa.
             </p>
 
-            <div className="bg-[#faf8f5]/10 backdrop-blur-sm border border-white/20 rounded-xl p-5 sm:p-6 max-w-md">
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-5 sm:p-6 max-w-md">
               <p className="text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-3">
                 Din nuvarande bil
               </p>
@@ -1997,7 +1997,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               <button
                 type="button"
                 onClick={scrollToQuiz}
-                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#faf8f5]/10 hover:bg-[#faf8f5]/20 border border-white/20 text-white text-[13px] font-medium transition"
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
               >
                 <Car className="w-3.5 h-3.5" />
                 Hitta nästa bil – bilmatch
@@ -2005,7 +2005,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               <button
                 type="button"
                 onClick={() => document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#faf8f5]/10 hover:bg-[#faf8f5]/20 border border-white/20 text-white text-[13px] font-medium transition"
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[13px] font-medium transition"
               >
                 <Search className="w-3.5 h-3.5" />
                 Utforska bilar
@@ -2016,7 +2016,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       </section>
 
       {/* Electric cars spotlight */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-[#faf8f5] overflow-hidden">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-[22px] sm:text-[32px] font-extrabold text-slate-900 tracking-tight uppercase">
             Populära elbilar just nu
@@ -2037,7 +2037,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               {scoreInfoOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setScoreInfoOpen(false)} />
-                  <div className="absolute right-0 top-full mt-2 z-50 w-72 sm:w-80 bg-[#faf8f5] rounded-xl shadow-xl ring-1 ring-slate-200 p-4">
+                  <div className="absolute right-0 top-full mt-2 z-50 w-72 sm:w-80 bg-white rounded-xl shadow-xl ring-1 ring-slate-200 p-4">
                     <div className="flex items-start justify-between mb-2">
                       <h4 className="text-[13px] font-bold text-slate-900">Bilto Score</h4>
                       <button onClick={() => setScoreInfoOpen(false)} className="text-slate-400 hover:text-slate-600">
@@ -2102,7 +2102,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     style={{ touchAction: 'pan-y' }}
                     className="flex flex-col rounded-xl overflow-hidden cursor-pointer group hover:shadow-lg transition-all duration-300 ring-1 ring-white hover:ring-slate-200"
                   >
-                    <div className="relative w-full aspect-[4/3] bg-[#faf8f5] flex items-end justify-center overflow-hidden">
+                    <div className="relative w-full aspect-[4/3] bg-white flex items-end justify-center overflow-hidden">
                       {img ? (
                         <img src={img} alt={`${car.brand_display} ${car.model_display}`} loading="lazy" className="w-full h-auto object-contain group-hover:scale-[1.04] transition-transform duration-500" />
                       ) : (
@@ -2114,7 +2114,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                         </div>
                       )}
                     </div>
-                    <div className="px-3 py-3 bg-[#faf8f5]">
+                    <div className="px-3 py-3 bg-white">
                       <h3 className="text-[13px] sm:text-[14px] font-bold text-slate-900 group-hover:text-[#0e6efe] transition-colors truncate">
                         {car.brand_display} {car.model_display}
                       </h3>
@@ -2139,7 +2139,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-[#0e1c2f]">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#faf8f5]/10 text-[13px] font-medium text-white mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-[13px] font-medium text-white mb-4">
               <Sparkles className="w-4 h-4 text-[#5b9bfe]" />
               AI-bilsökning
             </div>
@@ -2304,7 +2304,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     <button
                       key={label}
                       onClick={() => handleChatSubmit(query)}
-                      className="px-3 py-1.5 rounded-xl bg-[#faf8f5]/10 text-[13px] text-white font-medium hover:bg-[#0e6efe] transition-all border border-white/15 active:scale-95"
+                      className="px-3 py-1.5 rounded-xl bg-white/10 text-[13px] text-white font-medium hover:bg-[#0e6efe] transition-all border border-white/15 active:scale-95"
                     >
                       {label}
                     </button>
@@ -2318,7 +2318,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder='T.ex. "elbil för familj", "Toyota SUV" eller "bil med hund"...'
                   disabled={chatSearching}
-                  className="flex-1 h-11 px-4 rounded-xl border border-orange-300 bg-[#faf8f5] text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-700/40 focus:border-orange-700 transition placeholder:text-slate-400 disabled:opacity-60"
+                  className="flex-1 h-11 px-4 rounded-xl border border-orange-300 bg-white text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-700/40 focus:border-orange-700 transition placeholder:text-slate-400 disabled:opacity-60"
                 />
                 <button
                   type="submit"
@@ -2334,7 +2334,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       </section>
 
       {/* Johan testimonial */}
-      <section className="bg-[#faf8f5] relative overflow-hidden">
+      <section className="bg-white relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-5 sm:px-6 py-8 sm:py-12">
           <div className="grid md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-5 order-1">
@@ -2392,7 +2392,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   </div>
                 </div>
                 {i < arr.length - 1 && (
-                  <div className="w-px h-8 sm:h-10 bg-[#faf8f5]/25" />
+                  <div className="w-px h-8 sm:h-10 bg-white/25" />
                 )}
               </div>
             ))}
@@ -2440,9 +2440,9 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               return (
                 <div
                   key={item.title}
-                  className="group rounded-xl border border-slate-200 bg-[#faf8f5] p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
+                  className="group rounded-xl border border-slate-200 bg-white p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
                 >
-                  <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-slate-50 group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
+                  <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-[#faf8f5] group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
                     <img
                       src={item.svg}
                       alt=""
@@ -2511,7 +2511,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             </div>
           </div>
           <div className="mt-12 sm:mt-16 text-center">
-            <div className="inline-flex items-center gap-3 bg-[#faf8f5] border border-slate-200 rounded-xl px-5 sm:px-7 py-3 sm:py-4 shadow-sm">
+            <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-5 sm:px-7 py-3 sm:py-4 shadow-sm">
               <ShieldCheck className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
               <span className="text-[14px] sm:text-[15px] text-slate-700 font-medium">
                 Alla bilar vi rekommenderar har klarat vår 5-punktskontroll
@@ -2650,7 +2650,7 @@ function BilbyteVehicleInfo({ regnummer }: { regnummer: string }) {
     const { marke, modell, ar, miltal } = lookup.data;
     const label = [marke, modell, ar ? String(ar) : ''].filter(Boolean).join(' ');
     return (
-      <div className="mt-2 inline-flex flex-wrap items-center gap-x-2 gap-y-1 px-3 py-2 bg-[#faf8f5]/15 border border-white/25 rounded-lg">
+      <div className="mt-2 inline-flex flex-wrap items-center gap-x-2 gap-y-1 px-3 py-2 bg-white/15 border border-white/25 rounded-lg">
         <span className="text-[13px] font-bold text-white tracking-widest">{regnummer.toUpperCase()}</span>
         {label && (
           <>

@@ -46,12 +46,12 @@ export default function DarkCarCard({
 
   return (
     <div
-      className="group relative bg-[#faf8f5] rounded-xl transition-shadow duration-200 ring-1 ring-slate-100 hover:ring-slate-200 shadow-[0_1px_4px_rgba(0,0,0,0.07)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)]"
+      className="group relative bg-white rounded-xl transition-shadow duration-200 ring-1 ring-slate-100 hover:ring-slate-200 shadow-[0_1px_4px_rgba(0,0,0,0.07)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)]"
       style={{ touchAction: 'pan-y' }}
     >
       {/* Clickable card area */}
       <div className="cursor-pointer" onClick={() => onDetail?.()}>
-        <div className="relative aspect-[16/10] bg-[#faf8f5] overflow-hidden rounded-t-2xl" style={{ minHeight: 160 }}>
+        <div className="relative aspect-[16/10] bg-white overflow-hidden rounded-t-2xl" style={{ minHeight: 160 }}>
           {imageUrl ? (
             <img
               src={imageUrl} alt={name}
@@ -61,7 +61,7 @@ export default function DarkCarCard({
           ) : (
             <img src="/car-placeholder.svg" alt={name} className="w-full h-full object-contain p-6 opacity-50" />
           )}
-          <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#faf8f5]/60 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/60 to-transparent pointer-events-none" />
           {topBadge && (
             <div className="absolute top-3.5 left-3.5">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 text-[11px] font-bold text-[#0e6efe] shadow-sm">

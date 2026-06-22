@@ -126,7 +126,7 @@ export default function QuotePage({
           <div className="flex items-center ml-auto">
             <a
               href="/gratis-konsultation"
-              className="inline-flex items-center bg-[#faf8f5] text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
@@ -168,7 +168,7 @@ export default function QuotePage({
             </li>
           </ul>
 
-          <div className="mt-6 bg-[#faf8f5] rounded-xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] p-5">
+          <div className="mt-6 bg-white rounded-xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] p-5">
             <button
               type="button"
               onClick={() => navigateToBuy()}
@@ -194,7 +194,7 @@ export default function QuotePage({
         />
         <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#faf8f5]/20 backdrop-blur-sm text-white text-[13px] font-semibold mb-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/20 backdrop-blur-sm text-white text-[13px] font-semibold mb-6">
               <Sparkles className="w-4 h-4" />
               Gratis och opartiskt
             </span>
@@ -206,7 +206,7 @@ export default function QuotePage({
             </p>
           </div>
           <div className="justify-self-end w-full max-w-[440px]">
-            <div className="bg-[#faf8f5] rounded-xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden">
+            <div className="bg-white rounded-xl shadow-[0_30px_80px_-30px_rgba(15,23,42,0.35)] overflow-hidden">
               {/* Tab strip */}
               <div className="flex border-b border-slate-100">
                 {([
@@ -258,7 +258,7 @@ export default function QuotePage({
                     onClick={action}
                     className="group w-full flex items-center gap-4 p-3.5 rounded-xl border border-slate-100 hover:border-[#0e6efe]/40 hover:bg-[#0e6efe]/[0.03] transition-all text-left"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-[#faf8f5] group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition-colors">
                       <Icon className="w-4.5 h-4.5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" strokeWidth={2.2} />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -275,7 +275,7 @@ export default function QuotePage({
       </section>
 
       {/* Trade-in car cards */}
-      <section className="bg-[#faf8f5] border-t border-slate-100">
+      <section className="bg-white border-t border-slate-100">
         <div className="max-w-5xl mx-auto px-5 sm:px-6 py-12 sm:py-20">
           <div className="mb-8 sm:mb-10">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] text-[12px] font-semibold mb-4">
@@ -289,7 +289,7 @@ export default function QuotePage({
             </p>
           </div>
 
-          <div className="flex flex-col divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden bg-[#faf8f5] shadow-sm">
+          <div className="flex flex-col divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
             {[
               {
                 icon: Search,
@@ -357,7 +357,7 @@ export default function QuotePage({
       </section>
 
       {/* Johan testimonial */}
-      <section className="bg-[#faf8f5] relative overflow-hidden">
+      <section className="bg-white relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-5 sm:px-6 py-8 sm:py-12">
           <div className="grid md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-5 order-1">
@@ -429,7 +429,7 @@ export default function QuotePage({
                   </div>
                 </div>
                 {i < arr.length - 1 && (
-                  <div className="w-px h-8 sm:h-10 bg-[#faf8f5]/25" />
+                  <div className="w-px h-8 sm:h-10 bg-white/25" />
                 )}
               </div>
             ))}
@@ -438,7 +438,7 @@ export default function QuotePage({
       </section>
 
       {/* How it works */}
-      <section className="bg-[#faf8f5] py-16 sm:py-24 px-5 sm:px-6">
+      <section className="bg-white py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="mb-12 sm:mb-16 flex items-end justify-between flex-wrap gap-6">
             <div className="max-w-xl">
@@ -545,9 +545,9 @@ export default function QuotePage({
               return (
                 <div
                   key={item.title}
-                  className="group rounded-xl border border-slate-200 bg-[#faf8f5] p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
+                  className="group rounded-xl border border-slate-200 bg-white p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
                 >
-                  <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-slate-50 group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
+                  <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-[#faf8f5] group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
                     <img
                       src={item.svg}
                       alt=""
@@ -620,7 +620,7 @@ export default function QuotePage({
           </div>
 
           <div className="mt-12 sm:mt-16 text-center">
-            <div className="inline-flex items-center gap-3 bg-[#faf8f5] border border-slate-200 rounded-xl px-5 sm:px-7 py-3 sm:py-4 shadow-sm">
+            <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-5 sm:px-7 py-3 sm:py-4 shadow-sm">
               <ShieldCheck className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
               <span className="text-[14px] sm:text-[15px] text-slate-700 font-medium">
                 Alla bilar vi rekommenderar har klarat vår 5-punktskontroll
@@ -633,7 +633,7 @@ export default function QuotePage({
       <ReviewsSection variant="muted" />
 
       {/* Final CTA */}
-      <section className="bg-[#faf8f5] py-16 sm:py-24 px-5 sm:px-6">
+      <section className="bg-white py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-3xl mx-auto text-center">
           <h3 className="text-[28px] sm:text-[44px] font-semibold text-slate-900 leading-[1.08] tracking-tight">
             Redo att låta oss förhandla åt dig?
