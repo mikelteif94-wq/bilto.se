@@ -3,7 +3,7 @@ import { X, ChevronDown, ChevronUp, Star, ArrowRight, Search, Zap, RotateCcw, Me
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAllComparisonCars } from '../lib/comparison';
 import type { ComparisonCar } from '../lib/comparison/types';
-import { calcMonthlyTCO, calcCarMonthlyRange } from '../lib/utils';
+import { calcMonthlyTCO } from '../lib/utils';
 import { SiteFooter } from '../components/SiteFooter';
 import { setPageMeta } from '../lib/pageMeta';
 import { useCatalogCars } from '../hooks/useCatalogCars';
@@ -80,7 +80,9 @@ function CarPickCard({
   getCarImage: (b: string, m: string) => string | undefined;
 }) {
   const img = resolveImage(car.id, car.brand_display, car.model_display, getCarImage);
-  const range = car.pricing.new_from_sek ? calcCarMonthlyRange(car.pricing.new_from_sek, car.pricing.used_from_sek) : null;
+  const tco = car.pricing.new_from_sek
+    ? calcMonthlyTCO({ carPrice: car.pricing.new_from_sek, usedPrice: car.pricing.used_from_sek, fuelTypes: car.specs.fuel_types, make: car.brand_display })
+    : null;
   const isEl = car.specs.fuel_types.includes('el');
 
   return (
@@ -128,12 +130,12 @@ function CarPickCard({
         <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
           {BODY_LABELS[car.specs.body_type] ?? car.specs.body_type} · {car.specs.fuel_types.map(f => FUEL_LABELS[f] ?? f).join(', ')}
         </p>
-        {range && (
+        {tco && (
           <div className="mt-1.5 flex items-baseline gap-1">
             <span className="text-[15px] font-extrabold text-slate-900 tabular-nums leading-none">
-              {fmt(range.low)}–{fmt(range.high)}
+              {fmt(tco.total)}
             </span>
-            <span className="text-[10px] font-semibold text-slate-400">kr/mån</span>
+            <span className="text-[10px] font-semibold text-slate-400">kr/mån ägandekostnad</span>
           </div>
         )}
       </div>
@@ -436,6 +438,8 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
               {/* ─ Ratings ─ */}
               <CompareSection title="Betyg" sectionKey="ratings"
                 open={openSections.has('ratings')} onToggle={() => toggleSection('ratings')}>
+                <div className="overflow-x-auto">
+                  <div style={{ minWidth: `${110 + cars.length * 110}px` }}>
                 <CarHeaderRow cars={cars} getCarImage={getCarImage} />
                 {ratingKeys.map(({ key, label }) => {
                   const vals = cars.map(c => c.ratings[key]);
@@ -460,11 +464,15 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                     </CompareRow>
                   );
                 })}
+                  </div>
+                </div>
               </CompareSection>
 
               {/* ─ TCO ─ */}
               <CompareSection title="Ägandekostnad / mån" sectionKey="tco"
                 open={openSections.has('tco')} onToggle={() => toggleSection('tco')}>
+                <div className="overflow-x-auto">
+                  <div style={{ minWidth: `${110 + cars.length * 110}px` }}>
                 {tcoKeys.map(({ key, label }) => {
                   const vals = tcos.map(t => t[key] as number);
                   const best = Math.min(...vals);
@@ -499,11 +507,15 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                     </div>
                   ))}
                 </CompareRow>
+                  </div>
+                </div>
               </CompareSection>
 
               {/* ─ Specs ─ */}
               <CompareSection title="Specifikationer" sectionKey="specs"
                 open={openSections.has('specs')} onToggle={() => toggleSection('specs')}>
+                <div className="overflow-x-auto">
+                  <div style={{ minWidth: `${110 + cars.length * 110}px` }}>
                 <CompareRow label="Kaross">
                   {cars.map((c, i) => <Cell key={i}>{BODY_LABELS[c.specs.body_type] ?? c.specs.body_type}</Cell>)}
                 </CompareRow>
@@ -532,11 +544,15 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                     </div>
                   ))}
                 </CompareRow>
+                  </div>
+                </div>
               </CompareSection>
 
               {/* ─ Pros & Cons ─ */}
               <CompareSection title="Plus & minus" sectionKey="proscons"
                 open={openSections.has('proscons')} onToggle={() => toggleSection('proscons')}>
+                <div className="overflow-x-auto">
+                  <div style={{ minWidth: `${140 + cars.length * 140}px` }}>
                 <div className="grid" style={{ gridTemplateColumns: `140px repeat(${cars.length}, 1fr)` }}>
                   <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/80" />
                   {cars.map((c, i) => (
@@ -574,6 +590,8 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                       </ul>
                     </div>
                   ))}
+                </div>
+                  </div>
                 </div>
               </CompareSection>
 
@@ -614,7 +632,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
 function CarHeaderRow({ cars, getCarImage }: { cars: ComparisonCar[]; getCarImage: (b: string, m: string) => string | undefined }) {
   return (
     <div className="flex items-stretch border-b border-slate-100">
-      <div className="w-32 sm:w-40 shrink-0" />
+      <div className="w-[110px] sm:w-[140px] shrink-0" />
       {cars.map((c, i) => {
         const img = resolveImage(c.id, c.brand_display, c.model_display, getCarImage);
         return (
@@ -655,8 +673,8 @@ function CompareSection({ title, sectionKey, open, onToggle, children }: {
 function CompareRow({ label, children, highlight = false }: { label: string; children: React.ReactNode; highlight?: boolean }) {
   return (
     <div className={`flex items-stretch ${highlight ? 'bg-slate-50' : ''}`}>
-      <div className="w-32 sm:w-40 shrink-0 px-4 py-3 flex items-center">
-        <span className={`text-[11px] font-semibold ${highlight ? 'text-slate-800' : 'text-slate-500'} uppercase tracking-wide leading-tight`}>
+      <div className="w-[110px] sm:w-[140px] shrink-0 px-3 sm:px-4 py-3 flex items-center">
+        <span className={`text-[10px] sm:text-[11px] font-semibold ${highlight ? 'text-slate-800' : 'text-slate-500'} uppercase tracking-wide leading-tight`}>
           {label}
         </span>
       </div>
