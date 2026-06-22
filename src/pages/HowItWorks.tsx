@@ -836,7 +836,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <section className="bg-white px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <div className="order-2 md:order-1 min-h-[380px] flex items-center justify-center">
+            <div className="order-2 md:order-1 flex justify-center">
               <img
                 src="/ee2543a0-987e-446d-9c5e-edb20859e84d.png"
                 alt="Karta över Sverige med upphämtningsorter"
