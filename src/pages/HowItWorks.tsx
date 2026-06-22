@@ -916,7 +916,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       {/* ── CTA-band ──────────────────────────────────────── */}
       <section className="bg-white px-4 sm:px-6 py-12 sm:py-16">
         <div className="max-w-6xl mx-auto">
-          <div className="relative rounded-[24px] sm:rounded-[40px] bg-[#0e6efe] px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden">
+          <div className="relative rounded-[7px] bg-[#0e6efe] px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden">
             <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-white/5 pointer-events-none" />
             <div className="absolute -left-12 -bottom-16 w-[280px] h-[280px] rounded-full bg-white/5 pointer-events-none" />
 
