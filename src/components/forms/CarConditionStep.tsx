@@ -82,57 +82,8 @@ function VehicleFoundCard({ regnummer, data }: VehicleFoundCardProps) {
     data.miltal && data.miltal > 0 ? { icon: null, label: `${data.miltal.toLocaleString('sv-SE')} mil` } : null,
   ].filter(Boolean) as { icon: React.ReactNode; label: string }[];
 
-  return (
-    <div
-      className={`mt-4 rounded-xl overflow-hidden border transition-all duration-500 ${
-        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
-      } border-emerald-200 bg-gradient-to-br from-emerald-50 to-white shadow-sm`}
-    >
-      {/* Content */}
-      <div className="px-4 py-4">
-        <div
-          className={`transition-all duration-400 delay-100 ${
-            revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
-          }`}
-        >
-          {/* Car name */}
-          <div className="flex items-baseline gap-2 mb-3">
-            <h3 className="text-[19px] font-bold text-slate-900 leading-tight">
-              {[data.marke, data.modell, data.variant].filter(Boolean).join(' ')}
-            </h3>
-            {data.ar && (
-              <span className="text-[14px] text-slate-500 font-medium">{data.ar}</span>
-            )}
-          </div>
 
-          {/* Chips */}
-          {chips.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {chips.map((chip, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-1.5 h-7 px-3 rounded-xl bg-white border border-slate-200 text-[12px] font-medium text-slate-600 shadow-sm"
-                >
-                  {chip.icon}
-                  {chip.label}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="px-4 pb-3">
-        <div className="flex items-center gap-1.5 text-emerald-600 text-[12px] font-medium">
-          <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
-            <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
-          </div>
-          Uppgifter hämtade automatiskt från fordonsregistret
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 }
 
 interface CarConditionStepProps {
