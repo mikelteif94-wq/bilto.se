@@ -216,8 +216,10 @@ const FUEL_ALIASES: Record<string, string[]> = {
 };
 // Maps a query token to a predicate and its score weight
 const TRAIT_MAP: Array<{ keys: string[]; check: (c: ComparisonCar) => boolean; weight: number }> = [
-  { keys: ['familj', 'barn', 'barnfamilj', 'syskon'], check: c => c.specs.seats >= 5 && (c.specs.trunk_liters || 0) >= 400, weight: 20 },
-  { keys: ['hund', 'hundar', 'husdjur', 'djur'], check: c => (c.specs.trunk_liters || 0) >= 450 && (c.specs.body_type === 'suv' || c.specs.body_type === 'kombi'), weight: 22 },
+  { keys: ['familj', 'barnfamilj', 'syskon', 'familje', 'barnens'], check: c => c.specs.seats >= 5 && (c.specs.trunk_liters || 0) >= 420 && c.ratings.practicality >= 7, weight: 22 },
+  { keys: ['barn', 'barnstol', 'barnsäte', 'barnen'], check: c => c.specs.seats >= 5 && (c.specs.trunk_liters || 0) >= 380, weight: 18 },
+  { keys: ['barnvagn', 'baby', 'bebis', 'nyfödda', 'nyfödd', 'spädbarn'], check: c => (c.specs.trunk_liters || 0) >= 500 && (c.specs.body_type === 'suv' || c.specs.body_type === 'kombi' || c.specs.body_type === 'mpv'), weight: 28 },
+  { keys: ['hund', 'hundar', 'husdjur', 'djur', 'katt'], check: c => (c.specs.trunk_liters || 0) >= 450 && (c.specs.body_type === 'suv' || c.specs.body_type === 'kombi'), weight: 22 },
   { keys: ['stor bagage', 'stort bagageutrymme', 'bagageutrymme', 'bagage', 'lastförmåga', 'lastbar'], check: c => (c.specs.trunk_liters || 0) >= 450, weight: 18 },
   { keys: ['billig', 'prisvärd', 'budget', 'förmånlig', 'billigt', 'prisvä'], check: c => (c.pricing.new_from_sek != null && c.pricing.new_from_sek <= 400_000) || (c.pricing.used_from_sek != null && c.pricing.used_from_sek <= 250_000), weight: 22 },
   { keys: ['ekonomisk', 'snål', 'låg förbrukning', 'driftskostnad', 'drifts'], check: c => c.ratings.value >= 7, weight: 14 },
@@ -233,10 +235,17 @@ const TRAIT_MAP: Array<{ keys: string[]; check: (c: ComparisonCar) => boolean; w
   { keys: ['sju', 'sjusitsig', '7-sitsig', '7 sits', '7sits'], check: c => c.specs.seats >= 7, weight: 22 },
   { keys: ['sju sits', 'sjusits', '7sitsig'], check: c => c.specs.seats >= 7, weight: 22 },
   { keys: ['första bil', 'ny bil', 'nybörjar', 'ung', 'unga', 'ung bil'], check: c => c.ratings.value >= 8 && (c.specs.body_type === 'hatchback' || c.specs.body_type === 'suv'), weight: 20 },
+  { keys: ['tonåring', 'tonår', 'ungdom', 'student', 'körkort'], check: c => c.ratings.value >= 8 && (c.pricing.new_from_sek == null || c.pricing.new_from_sek <= 400_000), weight: 20 },
   { keys: ['pålitlig', 'tillförlitlig', 'driftsäker', 'robust'], check: c => c.ratings.value >= 7 && (c.safety.euro_ncap_stars || 0) >= 4, weight: 14 },
   { keys: ['lång räckvidd', 'räckvidd', 'lång trip', 'långkörning'], check: c => c.specs.fuel_types.includes('el') && c.ratings.comfort >= 7, weight: 16 },
   { keys: ['miljövänlig', 'grön', 'klimat', 'utsläpp', 'co2'], check: c => c.specs.fuel_types.some(f => f === 'el' || f === 'hybrid' || f === 'laddhybrid'), weight: 16 },
   { keys: ['bäst', 'bästa', 'topp', 'rekommendera', 'populär'], check: c => c.ratings.overall >= 8, weight: 12 },
+  { keys: ['liten', 'litet', 'smidig', 'enkel'], check: c => c.specs.body_type === 'hatchback' || (c.pricing.new_from_sek != null && c.pricing.new_from_sek <= 350_000), weight: 16 },
+  { keys: ['camping', 'tält', 'friluft', 'outdoor', 'äventyr', 'natur', 'terräng'], check: c => c.specs.drivetrain.some(d => d === 'awd') || ((c.specs.trunk_liters || 0) >= 500 && c.specs.body_type === 'suv'), weight: 18 },
+  { keys: ['vinter', 'snö', 'halka', 'norrland', 'fjäll'], check: c => c.specs.drivetrain.some(d => d === 'awd'), weight: 20 },
+  { keys: ['motorväg', 'lång resa', 'semest', 'roadtrip', 'europa'], check: c => c.ratings.comfort >= 8, weight: 14 },
+  { keys: ['tjänstebil', 'företag', 'förmånsbil', 'affärsresa'], check: c => (c.segment === 'premium' || c.segment === 'luxury') && c.ratings.comfort >= 7, weight: 16 },
+  { keys: ['vardag', 'vardagsbil', 'praktisk', 'allround'], check: c => c.ratings.practicality >= 8 && c.ratings.value >= 7, weight: 18 },
 ];
 
 // Detect which body types the query is asking for (may be multiple)
@@ -355,6 +364,19 @@ function searchScoreCar(car: ComparisonCar, query: string): SearchResult {
       else if (p > 400_000) score -= 8;
     }
   }
+
+  // Anti-sport penalty for family/practical queries
+  const isFamilySearch = ['familj', 'barn', 'barnvagn', 'baby', 'bebis', 'nyfödda', 'barnstol', 'barnfamilj', 'praktisk', 'syskon'].some(k => q.includes(k));
+  if (isFamilySearch) {
+    if (car.ratings.driving >= 9 && car.ratings.practicality <= 7) score -= 30;
+    else if (car.ratings.driving >= 8 && car.ratings.practicality <= 5) score -= 20;
+    if (car.segment === 'performance' || car.segment === 'sport') score -= 20;
+    if (car.specs.body_type === 'suv' || car.specs.body_type === 'kombi' || car.specs.body_type === 'mpv') score += 8;
+  }
+
+  // Anti-practical penalty for sport/performance queries
+  const isSportSearch = ['sportig', 'sport', 'snabb', 'prestanda', 'racing', 'kraft', 'perf'].some(k => q.includes(k));
+  if (isSportSearch && car.ratings.driving <= 5) score -= 15;
 
   // Price parsing
   let priceTarget: number | null = null;
