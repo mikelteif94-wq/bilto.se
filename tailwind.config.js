@@ -4,13 +4,13 @@ export default {
   theme: {
     borderRadius: {
       none: '0px',
-      sm: '4px',
-      DEFAULT: '6px',
-      md: '6px',
-      lg: '6px',
-      xl: '6px',
-      '2xl': '6px',
-      '3xl': '6px',
+      sm: '5px',
+      DEFAULT: '7px',
+      md: '7px',
+      lg: '7px',
+      xl: '7px',
+      '2xl': '7px',
+      '3xl': '7px',
       full: '9999px',
     },
     extend: {
