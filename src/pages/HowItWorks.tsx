@@ -262,13 +262,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
   const handleCarQueryChange = (q: string) => {
     setCarQuery(q);
-    if (carSearchTimer.current) clearTimeout(carSearchTimer.current);
-    const trimmed = q.trim();
-    if (!trimmed || trimmed.length < 2) { setCarSuggestions([]); setShowSuggestions(false); return; }
 
-    // Block generic Swedish descriptors and price adjectives
-    const genericWords = /^(billig|dyr|stor|liten|snabb|bra|ny|gammal|bil|bilar|auto|cheap|bäst|snygg|fin|enkel|lätt|tung)/i;
-    if (genericWords.test(trimmed)) {
+    if (carSearchTimer.current) {
+      clearTimeout(carSearchTimer.current);
+    }
+
+    const trimmed = q.trim();
+
+    if (!trimmed || trimmed.length < 2) {
       setCarSuggestions([]);
       setShowSuggestions(false);
       setCarSearchLoading(false);
@@ -276,21 +277,37 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
     }
 
     setCarSearchLoading(true);
+
     carSearchTimer.current = setTimeout(async () => {
-      // Strict prefix match on make OR model – never show random results
-      const { data } = await supabase
+      const search = `%${trimmed}%`;
+
+      const { data, error } = await supabase
         .from('car_catalog')
         .select('make, model')
-        .or(`make.ilike.${trimmed}%,model.ilike.${trimmed}%`)
-        .order('make', { ascending: true })
-        .limit(60);
+        .or(`make.ilike.${search},model.ilike.${search}`)
+        .order('make', { ascending: true });
+
+      if (error) {
+        console.error(error);
+        setCarSuggestions([]);
+        setShowSuggestions(false);
+        setCarSearchLoading(false);
+        return;
+      }
+
       const seen = new Set<string>();
+
       const results = (data || []).filter(({ make, model }) => {
         const key = `${make}|${model}`;
-        if (seen.has(key)) return false;
+
+        if (seen.has(key)) {
+          return false;
+        }
+
         seen.add(key);
         return true;
-      }).slice(0, 8);
+      });
+
       setCarSuggestions(results);
       setShowSuggestions(results.length > 0);
       setCarSearchLoading(false);
