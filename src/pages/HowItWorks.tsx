@@ -283,8 +283,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         .select('make, model')
         .or(`make.ilike.${trimmed}%,model.ilike.${trimmed}%`)
         .order('make', { ascending: true })
-        .limit(6);
-      const results = data || [];
+        .limit(60);
+      const seen = new Set<string>();
+      const results = (data || []).filter(({ make, model }) => {
+        const key = `${make}|${model}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      }).slice(0, 8);
       setCarSuggestions(results);
       setShowSuggestions(results.length > 0);
       setCarSearchLoading(false);
