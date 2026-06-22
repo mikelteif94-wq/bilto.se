@@ -539,8 +539,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       )}
                     </div>
                     {!carQuery.trim() && (
-                      <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.12em] mb-2">Populärt just nu</p>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-[0.13em]">
+                            <TrendingUp className="w-3 h-3 text-[#0e6efe]" />
+                            Populärt just nu
+                          </span>
+                          <span className="flex-1 h-px bg-slate-100" />
+                        </div>
                         <div className="flex flex-wrap gap-1.5">
                           {[
                             { label: 'Tesla Model Y', make: 'Tesla', model: 'Model Y' },
@@ -552,9 +558,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                               key={s.label}
                               type="button"
                               onClick={() => openDrawer(`${s.make} ${s.model}`)}
-                              className="inline-flex items-center gap-1.5 text-[12px] text-slate-600 hover:text-[#0e6efe] bg-white hover:bg-[#0e6efe]/[0.05] border border-slate-200/80 hover:border-[#0e6efe]/30 rounded-full px-3 py-1.5 font-semibold transition-all duration-150 shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+                              className="inline-flex items-center gap-1 text-[12px] text-slate-700 hover:text-[#0e6efe] bg-slate-50 hover:bg-[#0e6efe]/[0.06] border border-slate-200 hover:border-[#0e6efe]/40 rounded-lg px-2.5 py-1 font-semibold transition-all duration-150 active:scale-[0.97]"
                             >
-                              <TrendingUp className="w-3 h-3 text-[#0e6efe] opacity-70" />
                               {s.label}
                             </button>
                           ))}
@@ -564,9 +569,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     <button
                       type="button"
                       onClick={() => openDrawer('')}
-                      className="w-full h-10 rounded-xl bg-gradient-to-r from-[#0e6efe]/[0.07] to-[#0e6efe]/[0.03] hover:from-[#0e6efe]/[0.12] hover:to-[#0e6efe]/[0.07] border border-[#0e6efe]/20 hover:border-[#0e6efe]/35 active:scale-[0.98] text-[#0e6efe] text-[12.5px] font-semibold transition-all duration-150 inline-flex items-center justify-center gap-2"
+                      className="w-full rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-[0.98] text-white text-[12.5px] font-bold transition-all duration-150 inline-flex items-center justify-center gap-2 py-2.5 shadow-[0_2px_8px_rgba(0,0,0,0.12)]"
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#0e6efe]" />
                       Vet inte vad du vill ha? Vi hjälper dig
                     </button>
                   </div>
