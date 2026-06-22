@@ -467,9 +467,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     </div>
                   </>
                 ) : (
-                  <div ref={carSearchRef} className="relative space-y-3">
+                  <div ref={carSearchRef} className="relative space-y-3.5">
                     <div className="relative">
-                      <div className="flex items-center h-12 rounded-xl bg-[#faf8f5] border-2 border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:bg-white focus-within:shadow-[0_0_0_4px_rgba(14,110,254,0.08)] transition-all duration-200">
+                      <div className="flex items-center h-12 rounded-xl bg-slate-50 border border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(14,110,254,0.1)] transition-all duration-200">
                         <span className="flex items-center justify-center w-11 shrink-0">
                           {carSearchLoading
                             ? <div className="w-4 h-4 border-2 border-slate-300 border-t-[#0e6efe] rounded-full animate-spin" />
@@ -489,7 +489,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                           <button
                             type="button"
                             onClick={() => { setCarQuery(''); setCarSuggestions([]); setShowSuggestions(false); }}
-                            className="mr-1 w-6 h-6 flex items-center justify-center rounded-xl hover:bg-slate-200 text-slate-400 transition shrink-0"
+                            className="mr-1 w-6 h-6 flex items-center justify-center rounded-lg hover:bg-slate-200 text-slate-400 transition shrink-0"
                           >
                             <XCircle className="w-4 h-4" />
                           </button>
@@ -497,7 +497,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         <button
                           type="button"
                           onClick={handleCarSearch}
-                          className="h-9 mx-1.5 px-4 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.97] rounded-xl shrink-0 text-white font-bold text-[12px] tracking-wide transition-all shadow-[0_3px_12px_-3px_rgba(14,110,254,0.5)]"
+                          className="h-9 mx-1.5 px-4 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.97] rounded-lg shrink-0 text-white font-bold text-[12px] tracking-wide transition-all shadow-[0_3px_12px_-3px_rgba(14,110,254,0.45)]"
                         >
                           Sök
                         </button>
@@ -538,36 +538,35 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         </div>
                       )}
                     </div>
-                    {!carQuery.trim() && <div>
-                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.1em] mb-2">Populärt just nu</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {[
-                          { label: 'Tesla Model Y', make: 'Tesla', model: 'Model Y' },
-                          { label: 'Volvo XC60', make: 'Volvo', model: 'XC60' },
-                          { label: 'BMW 3-serie', make: 'BMW', model: '3-serie' },
-                          { label: 'Kia EV6', make: 'Kia', model: 'EV6' },
-                        ].map((s) => (
-                          <button
-                            key={s.label}
-                            type="button"
-                            onClick={() => openDrawer(`${s.make} ${s.model}`)}
-                            className="inline-flex items-center gap-1 text-[12px] text-slate-600 hover:text-[#0e6efe] bg-white hover:bg-blue-50 border border-slate-200 hover:border-[#0e6efe]/40 rounded-xl px-3 py-1.5 font-medium transition-all shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
-                          >
-                            <TrendingUp className="w-3 h-3 opacity-50" />
-                            {s.label}
-                          </button>
-                        ))}
+                    {!carQuery.trim() && (
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.12em] mb-2">Populärt just nu</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {[
+                            { label: 'Tesla Model Y', make: 'Tesla', model: 'Model Y' },
+                            { label: 'Volvo XC60', make: 'Volvo', model: 'XC60' },
+                            { label: 'BMW 3-serie', make: 'BMW', model: '3-serie' },
+                            { label: 'Kia EV6', make: 'Kia', model: 'EV6' },
+                          ].map((s) => (
+                            <button
+                              key={s.label}
+                              type="button"
+                              onClick={() => openDrawer(`${s.make} ${s.model}`)}
+                              className="inline-flex items-center gap-1.5 text-[12px] text-slate-600 hover:text-[#0e6efe] bg-white hover:bg-[#0e6efe]/[0.05] border border-slate-200/80 hover:border-[#0e6efe]/30 rounded-full px-3 py-1.5 font-semibold transition-all duration-150 shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+                            >
+                              <TrendingUp className="w-3 h-3 text-[#0e6efe] opacity-70" />
+                              {s.label}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </div>}
+                    )}
                     <button
                       type="button"
-                      onClick={() => {
-                        window.history.pushState({}, '', '/kop-bil/bestall');
-                        window.dispatchEvent(new PopStateEvent('popstate'));
-                      }}
-                      className="w-full h-10 rounded-xl border border-slate-200 bg-[#faf8f5] hover:bg-slate-100 active:scale-[0.98] text-slate-500 hover:text-slate-700 text-[12px] font-semibold transition-all inline-flex items-center justify-center gap-1.5"
+                      onClick={() => openDrawer('')}
+                      className="w-full h-10 rounded-xl bg-gradient-to-r from-[#0e6efe]/[0.07] to-[#0e6efe]/[0.03] hover:from-[#0e6efe]/[0.12] hover:to-[#0e6efe]/[0.07] border border-[#0e6efe]/20 hover:border-[#0e6efe]/35 active:scale-[0.98] text-[#0e6efe] text-[12.5px] font-semibold transition-all duration-150 inline-flex items-center justify-center gap-2"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-[#0e6efe]" />
+                      <Sparkles className="w-3.5 h-3.5" />
                       Vet inte vad du vill ha? Vi hjälper dig
                     </button>
                   </div>
