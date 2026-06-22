@@ -293,7 +293,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                   <select
                     value={selectedCarId}
                     onChange={handleCarSelect}
-                    className="w-full h-11 pl-10 pr-9 rounded-xl border border-slate-200 bg-slate-50 text-[13px] text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] appearance-none transition"
+                    className="w-full h-11 pl-10 pr-9 rounded-2xl border border-slate-200 bg-slate-50 text-[13px] text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] appearance-none transition"
                   >
                     <option value="">— Välj för att fylla i pris automatiskt —</option>
                     {QUICK_CARS.map(c => (
@@ -308,9 +308,9 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
 
               {/* Nybilspris slider */}
               <div>
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex flex-col gap-0.5 mb-3">
                   <label className="text-[12px] font-bold text-slate-500 uppercase tracking-wide">Nybilspris (inkl. moms)</label>
-                  <span className="text-[17px] font-extrabold text-slate-900 tabular-nums">{fmt(nybilspris)} kr</span>
+                  <span className="text-[22px] font-extrabold text-slate-900 tabular-nums leading-tight">{fmt(nybilspris)} <span className="text-[16px] font-bold text-slate-500">kr</span></span>
                 </div>
                 <input
                   type="range"
@@ -340,7 +340,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                     value={fordonsskattStr}
                     onChange={e => setFordonsskattStr(e.target.value.replace(/[^0-9]/g, ''))}
                     placeholder="t.ex. 4 000"
-                    className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
+                    className="w-full h-11 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] text-slate-400 pointer-events-none">kr</span>
                 </div>
@@ -369,7 +369,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                           value={extrautrustningStr}
                           onChange={e => setExtrautrustningStr(e.target.value.replace(/[^0-9]/g, ''))}
                           placeholder="t.ex. 25 000"
-                          className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
+                          className="w-full h-11 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
                         />
                         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] text-slate-400 pointer-events-none">kr</span>
                       </div>
@@ -415,7 +415,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
               </div>
 
               {/* Tjänstekörning reducering */}
-              <div className="flex items-center justify-between py-3.5 px-4 rounded-xl bg-slate-50 border border-slate-100">
+              <div className="flex items-center justify-between py-3.5 px-4 rounded-2xl bg-slate-50 border border-slate-100">
                 <div>
                   <p className="text-[13px] font-bold text-slate-700">Körs bilen minst 3 000 mil i tjänsten per år?</p>
                   <p className="text-[11px] text-slate-400 mt-0.5">Ger 25% reducering av förmånsvärdet</p>
@@ -467,7 +467,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                 {isElOrLaddhybrid && <span className="text-emerald-600 font-semibold"> × 0,60 (el/laddhybrid)</span>}
                 {tjanstekorsning && <span className="text-[#0e6efe] font-semibold"> × 0,75 (tjänstekörning)</span>}
               </p>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-2 sm:grid sm:grid-cols-3 sm:gap-3 sm:space-y-0">
                 {[
                   {
                     label: 'Nybilspris',
@@ -485,10 +485,15 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                     note: `Vid ${Math.round(marginalSkatt * 100)}% marginalskatt`,
                   },
                 ].map(({ label, val, note }) => (
-                  <div key={label} className="bg-slate-50 rounded-xl p-3 text-center">
-                    <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">{label}</p>
-                    <p className="text-[13px] sm:text-[15px] font-extrabold text-slate-800 tabular-nums leading-tight">{val}</p>
-                    <p className="text-[10px] text-slate-400 mt-1">{note}</p>
+                  <div key={label} className="flex items-center justify-between sm:flex-col sm:items-start bg-slate-50 rounded-2xl px-4 py-3 sm:p-3 sm:text-center">
+                    <div className="sm:w-full">
+                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide sm:text-center">{label}</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5 sm:hidden">{note}</p>
+                    </div>
+                    <div className="text-right sm:text-center sm:mt-1">
+                      <p className="text-[15px] font-extrabold text-slate-800 tabular-nums leading-tight">{val}</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5 hidden sm:block">{note}</p>
+                    </div>
                   </div>
                 ))}
               </div>

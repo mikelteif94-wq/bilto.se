@@ -14,6 +14,7 @@ interface BuyCarPageProps {
   initialTyp?: BuyTrack;
   initialReg?: string;
   source?: string;
+  hideNav?: boolean;
   onBack: () => void;
 }
 
@@ -24,6 +25,7 @@ export default function BuyCarPage({
   initialTyp,
   initialReg = '',
   source = '',
+  hideNav = false,
   onBack,
 }: BuyCarPageProps) {
   const skipTrack = !!initialTyp;
@@ -230,7 +232,8 @@ export default function BuyCarPage({
   };
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] flex flex-col">
+    <div className={hideNav ? 'bg-[#faf8f5] flex flex-col' : 'min-h-screen bg-[#faf8f5] flex flex-col'}>
+      {!hideNav && (
       <nav
         className="fixed top-0 left-0 right-0 z-50"
         style={{
@@ -261,8 +264,9 @@ export default function BuyCarPage({
           </button>
         </div>
       </nav>
+      )}
 
-      <div className="flex-1 flex flex-col items-center px-4 pt-28 sm:pt-32 pb-6 sm:pb-8">
+      <div className={`flex-1 flex flex-col items-center px-4 ${hideNav ? 'pt-4 pb-8' : 'pt-28 sm:pt-32 pb-6 sm:pb-8'}`}>
         <div className="w-full max-w-lg">
           {step !== 'done' && (
             <div className="mb-6 sm:mb-8">
