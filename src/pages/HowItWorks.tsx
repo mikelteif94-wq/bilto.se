@@ -338,7 +338,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   const activeBudgetPill = null;
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
@@ -470,7 +470,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 ) : (
                   <div ref={carSearchRef} className="relative space-y-3">
                     <div className="relative">
-                      <div className="flex items-center h-12 rounded-xl bg-slate-50 border-2 border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:bg-white focus-within:shadow-[0_0_0_4px_rgba(14,110,254,0.08)] transition-all duration-200">
+                      <div className="flex items-center h-12 rounded-xl bg-[#faf8f5] border-2 border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:bg-white focus-within:shadow-[0_0_0_4px_rgba(14,110,254,0.08)] transition-all duration-200">
                         <span className="flex items-center justify-center w-11 shrink-0">
                           {carSearchLoading
                             ? <div className="w-4 h-4 border-2 border-slate-300 border-t-[#0e6efe] rounded-full animate-spin" />
@@ -566,7 +566,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         window.history.pushState({}, '', '/kop-bil/bestall');
                         window.dispatchEvent(new PopStateEvent('popstate'));
                       }}
-                      className="w-full h-10 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 active:scale-[0.98] text-slate-500 hover:text-slate-700 text-[12px] font-semibold transition-all inline-flex items-center justify-center gap-1.5"
+                      className="w-full h-10 rounded-xl border border-slate-200 bg-[#faf8f5] hover:bg-slate-100 active:scale-[0.98] text-slate-500 hover:text-slate-700 text-[12px] font-semibold transition-all inline-flex items-center justify-center gap-1.5"
                     >
                       <Sparkles className="w-3.5 h-3.5 text-[#0e6efe]" />
                       Vet inte vad du vill ha? Vi hjälper dig
@@ -626,7 +626,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       </section>
 
       {/* ── Köpa / byta bil ───────────────────────────────── */}
-      <section className="bg-slate-50 px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
@@ -785,7 +785,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       </section>
 
       {/* ── Din personliga rådgivare ──────────────────────── */}
-      <section className="bg-slate-50 px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
@@ -871,7 +871,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       </section>
 
       {/* ── Trygghetsbadges ───────────────────────────────── */}
-      <section className="bg-slate-50 px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="mb-10 sm:mb-14 max-w-2xl">
             <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Trygghet</p>
@@ -976,7 +976,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       </section>
 
       {/* ── Josefin testimonial ───────────────────────────── */}
-      <section className="bg-slate-50 px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-12 gap-8 sm:gap-12 items-center">
             <div className="md:col-span-5">

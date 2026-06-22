@@ -63,7 +63,7 @@ export default function SeoLandingPage({ type, city, brand, onSell, onBack }: Se
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
       {/* Nav */}
       <header className="fixed top-0 inset-x-0 z-30 h-16 bg-[#0e6efe] shadow-md">
         <div className="max-w-5xl mx-auto h-full flex items-center px-5">
@@ -151,7 +151,7 @@ export default function SeoLandingPage({ type, city, brand, onSell, onBack }: Se
       </section>
 
       {/* Hur det fungerar */}
-      <section className="bg-slate-50 py-14 px-5">
+      <section className="bg-[#faf8f5] py-14 px-5">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-[26px] font-bold text-slate-900 tracking-tight mb-10">
             Hur fungerar det?

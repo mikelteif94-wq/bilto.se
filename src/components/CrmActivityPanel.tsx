@@ -204,7 +204,7 @@ export default function CrmActivityPanel({
       </div>
 
       {/* Summary row */}
-      <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 border-b border-slate-100 text-xs text-slate-500 shrink-0 flex-wrap">
+      <div className="flex items-center gap-3 px-4 py-2 bg-[#faf8f5] border-b border-slate-100 text-xs text-slate-500 shrink-0 flex-wrap">
         <span className="flex items-center gap-1">
           <Clock className="w-3 h-3" />
           <span className="font-medium text-slate-700">Senast aktivitet:</span>
@@ -236,7 +236,7 @@ export default function CrmActivityPanel({
                 className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-medium transition border ${
                   logType === lt.type
                     ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                    : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-[#faf8f5]'
                 }`}
               >
                 <span>{lt.emoji}</span>

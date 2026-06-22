@@ -31,7 +31,7 @@ export default function FinancingToggle({ carPrice, usedPrice, dark = false }: F
   const text = dark ? 'text-white' : 'text-slate-900';
   const subText = dark ? 'text-slate-400' : 'text-slate-500';
   const borderColor = dark ? 'border-white/10' : 'border-slate-200';
-  const bgCard = dark ? 'bg-white/5' : 'bg-slate-50';
+  const bgCard = dark ? 'bg-white/5' : 'bg-[#faf8f5]';
   const btnBase = dark
     ? 'border-white/10 text-slate-400 hover:border-[#0e6efe]/50 hover:text-[#0e6efe]'
     : 'border-slate-200 text-slate-500 hover:border-[#0e6efe]/50 hover:text-[#0e6efe]';

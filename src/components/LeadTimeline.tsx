@@ -300,7 +300,7 @@ export default function LeadTimeline({
       )}
 
       {/* Stats strip */}
-      <div className="flex items-center gap-4 px-5 py-2 bg-slate-50 border-b border-slate-100 text-xs text-slate-500 shrink-0 flex-wrap">
+      <div className="flex items-center gap-4 px-5 py-2 bg-[#faf8f5] border-b border-slate-100 text-xs text-slate-500 shrink-0 flex-wrap">
         <span className="flex items-center gap-1.5">
           <Clock className="w-3 h-3" />
           <span className="font-medium text-slate-600">Senast:</span>
@@ -479,7 +479,7 @@ export default function LeadTimeline({
                               type="button"
                               onClick={() => hasDetail && toggleExpand(activity.id)}
                               className={`w-full text-left group rounded-xl px-3 py-2.5 transition-colors ${
-                                hasDetail ? 'hover:bg-slate-50 cursor-pointer' : 'cursor-default'
+                                hasDetail ? 'hover:bg-[#faf8f5] cursor-pointer' : 'cursor-default'
                               }`}
                             >
                               <div className="flex items-start justify-between gap-2">

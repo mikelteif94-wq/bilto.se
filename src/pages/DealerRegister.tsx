@@ -453,7 +453,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
             </div>
 
             <div className="bg-white rounded-xl border border-slate-200 shadow-xl shadow-slate-200/60 overflow-hidden">
-              <div className="bg-slate-50 border-b border-slate-200 px-8 py-5 flex items-center gap-3">
+              <div className="bg-[#faf8f5] border-b border-slate-200 px-8 py-5 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
                   <FileSignature className="w-5 h-5 text-[#0e6efe]" />
                 </div>

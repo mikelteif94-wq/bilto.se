@@ -32,7 +32,7 @@ export default function WebbplatskartaPage({ onBack }: WebbplatskartaPageProps) 
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#faf8f5]">
       {/* Nav */}
       <header className="fixed top-0 inset-x-0 z-30 h-16 bg-[#0e6efe]">
         <div className="max-w-5xl mx-auto h-full flex items-center px-5">
@@ -57,7 +57,7 @@ export default function WebbplatskartaPage({ onBack }: WebbplatskartaPageProps) 
                 <li key={p.path}>
                   <button
                     onClick={() => navigate(p.path)}
-                    className="w-full text-left flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition group"
+                    className="w-full text-left flex items-start gap-3 p-3 rounded-lg hover:bg-[#faf8f5] transition group"
                   >
                     <ExternalLink className="w-3.5 h-3.5 text-slate-400 mt-1 shrink-0 group-hover:text-[#0e6efe] transition" />
                     <div>
@@ -82,7 +82,7 @@ export default function WebbplatskartaPage({ onBack }: WebbplatskartaPageProps) 
                 <li key={city.slug}>
                   <button
                     onClick={() => navigate(`/salj-din-bil-i-${city.slug}`)}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-[14px] text-slate-700 hover:text-[#0e6efe] transition font-medium"
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#faf8f5] text-[14px] text-slate-700 hover:text-[#0e6efe] transition font-medium"
                   >
                     {city.name}
                   </button>
@@ -103,7 +103,7 @@ export default function WebbplatskartaPage({ onBack }: WebbplatskartaPageProps) 
                 <li key={brand.slug}>
                   <button
                     onClick={() => navigate(`/salj-din-${brand.slug}`)}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-[14px] text-slate-700 hover:text-[#0e6efe] transition font-medium"
+                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#faf8f5] text-[14px] text-slate-700 hover:text-[#0e6efe] transition font-medium"
                   >
                     Sälj din {brand.name}
                   </button>

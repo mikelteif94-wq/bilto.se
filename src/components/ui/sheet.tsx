@@ -108,7 +108,7 @@ function SheetSkeleton() {
       </div>
 
       {/* Price card */}
-      <div className="relative rounded-xl bg-slate-50 border border-slate-100 p-4 space-y-2 overflow-hidden">
+      <div className="relative rounded-xl bg-[#faf8f5] border border-slate-100 p-4 space-y-2 overflow-hidden">
         <ShimmerOverlay />
         <div className="h-3 w-32 rounded bg-slate-200" />
         <div className="h-7 w-48 rounded-lg bg-slate-200" />
@@ -123,14 +123,14 @@ function SheetSkeleton() {
       {/* Spec grid */}
       <div className="grid grid-cols-2 gap-2.5">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="relative h-16 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden">
+          <div key={i} className="relative h-16 rounded-xl bg-[#faf8f5] border border-slate-100 overflow-hidden">
             <ShimmerOverlay />
           </div>
         ))}
       </div>
 
       {/* Ratings */}
-      <div className="relative rounded-xl bg-slate-50 p-4 space-y-3 overflow-hidden">
+      <div className="relative rounded-xl bg-[#faf8f5] p-4 space-y-3 overflow-hidden">
         <ShimmerOverlay />
         <div className="h-4 w-32 rounded bg-slate-200" />
         {[...Array(4)].map((_, i) => (

@@ -161,7 +161,7 @@ export default function AdminDealers({
                 <li key={d.id}>
                   <button
                     onClick={() => onOpenDealer(d.id)}
-                    className="w-full text-left px-4 py-4 hover:bg-slate-50 transition flex items-center gap-3"
+                    className="w-full text-left px-4 py-4 hover:bg-[#faf8f5] transition flex items-center gap-3"
                   >
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-slate-900 truncate">{d.foretagsnamn || '–'}</p>
@@ -180,7 +180,7 @@ export default function AdminDealers({
             <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200">
+                  <tr className="bg-[#faf8f5] border-b border-slate-200">
                     <th className="text-left font-semibold text-slate-500 px-5 py-3">Företag</th>
                     <th className="text-left font-semibold text-slate-500 px-5 py-3">Kontaktperson</th>
                     <th className="text-left font-semibold text-slate-500 px-5 py-3">E-post</th>
@@ -193,7 +193,7 @@ export default function AdminDealers({
                     <tr
                       key={d.id}
                       onClick={() => onOpenDealer(d.id)}
-                      className="border-b border-slate-100 last:border-0 hover:bg-slate-50 cursor-pointer transition group"
+                      className="border-b border-slate-100 last:border-0 hover:bg-[#faf8f5] cursor-pointer transition group"
                     >
                       <td className="px-5 py-3.5 font-semibold text-slate-900">
                         {d.foretagsnamn || '–'}

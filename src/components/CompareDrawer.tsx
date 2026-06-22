@@ -118,7 +118,7 @@ export default function CompareDrawer({ cars, open, onClose, onRemove, onNegotia
                       >
                         <X className="w-3 h-3" />
                       </button>
-                      <div className="w-16 h-11 sm:w-24 sm:h-16 rounded-lg bg-slate-50 overflow-hidden mx-auto">
+                      <div className="w-16 h-11 sm:w-24 sm:h-16 rounded-lg bg-[#faf8f5] overflow-hidden mx-auto">
                         {getImageUrl(car) ? (
                           <img src={getImageUrl(car)} alt={car.model_display} className="w-full h-full object-cover" />
                         ) : (
@@ -309,7 +309,7 @@ export default function CompareDrawer({ cars, open, onClose, onRemove, onNegotia
               <SectionHeader label="Styrkor & Svagheter" />
 
               {/* Pros */}
-              <div className="flex border-t border-slate-50 hover:bg-slate-50/50 transition-colors">
+              <div className="flex border-t border-slate-50 hover:bg-[#faf8f5]/50 transition-colors">
                 <div className={`${labelColClass} shrink-0 px-3 py-3`}>
                   <div className="flex items-center gap-1.5">
                     <Check className="w-3 h-3 text-emerald-500 shrink-0" />
@@ -331,7 +331,7 @@ export default function CompareDrawer({ cars, open, onClose, onRemove, onNegotia
               </div>
 
               {/* Cons */}
-              <div className="flex border-t border-slate-50 hover:bg-slate-50/50 transition-colors">
+              <div className="flex border-t border-slate-50 hover:bg-[#faf8f5]/50 transition-colors">
                 <div className={`${labelColClass} shrink-0 px-3 py-3`}>
                   <div className="flex items-center gap-1.5">
                     <XIcon className="w-3 h-3 text-red-400 shrink-0" />
@@ -378,7 +378,7 @@ export default function CompareDrawer({ cars, open, onClose, onRemove, onNegotia
 
 function SectionHeader({ label }: { label: string }) {
   return (
-    <div className="px-3 pt-4 pb-1.5 bg-slate-50/80">
+    <div className="px-3 pt-4 pb-1.5 bg-[#faf8f5]/80">
       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{label}</span>
     </div>
   );
@@ -393,7 +393,7 @@ function CompareRow({
   labelColClass: string;
 }) {
   return (
-    <div className="flex border-t border-slate-50 hover:bg-slate-50/50 transition-colors">
+    <div className="flex border-t border-slate-50 hover:bg-[#faf8f5]/50 transition-colors">
       <div className={`${labelColClass} shrink-0 px-3 py-2 flex items-center`}>
         <div className="flex items-center gap-1.5">
           <Icon className="w-3 h-3 text-slate-400 shrink-0" />

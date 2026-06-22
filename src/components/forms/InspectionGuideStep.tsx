@@ -123,7 +123,7 @@ export default function InspectionGuideStep({ onNext }: InspectionGuideStepProps
         </div>
       </div>
 
-      <div className="rounded-xl bg-slate-50 border border-slate-200 p-5">
+      <div className="rounded-xl bg-[#faf8f5] border border-slate-200 p-5">
         <p className="text-[13.5px] text-slate-600 leading-[1.6]">
           <span className="font-semibold text-slate-900">Klar att ladda upp bilderna?</span>{' '}
           I nästa steg laddar du upp dina bilder. Du kan alltid gå tillbaka och

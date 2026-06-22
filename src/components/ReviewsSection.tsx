@@ -64,7 +64,7 @@ interface Props {
 }
 
 export default function ReviewsSection({ variant = 'light' }: Props) {
-  const bg = variant === 'muted' ? 'bg-slate-50' : 'bg-white';
+  const bg = variant === 'muted' ? 'bg-[#faf8f5]' : 'bg-white';
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIdx, setActiveIdx] = useState(0);
 

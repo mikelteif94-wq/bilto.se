@@ -410,7 +410,7 @@ export default function BuyCarPage({
 
               {/* Steps */}
               <div className="max-w-sm mx-auto space-y-3 text-left mb-10">
-                <div className="flex items-start gap-3 px-4 py-3 bg-slate-50 rounded-xl">
+                <div className="flex items-start gap-3 px-4 py-3 bg-[#faf8f5] rounded-xl">
                   <div className="w-6 h-6 rounded-full bg-[#0e6efe] flex items-center justify-center shrink-0 mt-0.5">
                     <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
                   </div>
@@ -419,7 +419,7 @@ export default function BuyCarPage({
                     <p className="text-[13px] text-slate-500">Vi har all information vi behöver.</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 px-4 py-3 bg-slate-50 rounded-xl">
+                <div className="flex items-start gap-3 px-4 py-3 bg-[#faf8f5] rounded-xl">
                   <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-0.5">
                     <span className="text-[11px] font-bold text-slate-500">2</span>
                   </div>
@@ -430,7 +430,7 @@ export default function BuyCarPage({
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 px-4 py-3 bg-slate-50 rounded-xl">
+                <div className="flex items-start gap-3 px-4 py-3 bg-[#faf8f5] rounded-xl">
                   <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-0.5">
                     <span className="text-[11px] font-bold text-slate-500">3</span>
                   </div>

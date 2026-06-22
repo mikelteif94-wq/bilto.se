@@ -264,7 +264,7 @@ export default function DealerDispatchPanel({
         <div className="border border-slate-200 rounded-xl overflow-hidden">
           <button
             onClick={() => setExpanded((v) => !v)}
-            className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 text-sm font-medium text-slate-700 hover:bg-slate-100 transition"
+            className="w-full flex items-center justify-between px-4 py-3 bg-[#faf8f5] text-sm font-medium text-slate-700 hover:bg-slate-100 transition"
           >
             <span className="flex items-center gap-2">
               <Users className="w-4 h-4 text-slate-400" />
@@ -300,7 +300,7 @@ export default function DealerDispatchPanel({
                       {!['replied', 'offered'].includes(d.response_status) && (
                         <button
                           onClick={() => nudgeDealer(d.id, dealer?.foretagsnamn ?? '')}
-                          className="flex items-center gap-1 px-2 py-1 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50 transition"
+                          className="flex items-center gap-1 px-2 py-1 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-[#faf8f5] transition"
                           title="Skicka påminnelse"
                         >
                           <Bell className="w-3 h-3" />
@@ -356,7 +356,7 @@ export default function DealerDispatchPanel({
 
       {/* Send to new dealers */}
       <div className="border border-slate-200 rounded-xl overflow-hidden">
-        <div className="px-4 py-3 bg-slate-50 border-b border-slate-200">
+        <div className="px-4 py-3 bg-[#faf8f5] border-b border-slate-200">
           <div className="text-sm font-medium text-slate-700 flex items-center gap-2">
             <Send className="w-4 h-4 text-slate-400" />
             Skicka till handlare
@@ -382,7 +382,7 @@ export default function DealerDispatchPanel({
               </p>
             )}
             {available.map((d) => (
-              <label key={d.id} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+              <label key={d.id} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-[#faf8f5] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={selectedDealers.has(d.id)}

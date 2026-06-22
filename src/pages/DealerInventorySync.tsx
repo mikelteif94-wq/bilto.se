@@ -462,7 +462,7 @@ export default function DealerInventorySync({
               </select>
               <button
                 onClick={loadInventory}
-                className="h-10 px-4 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 flex items-center gap-2 transition"
+                className="h-10 px-4 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-[#faf8f5] flex items-center gap-2 transition"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 Uppdatera
@@ -519,7 +519,7 @@ export default function DealerInventorySync({
                       {filtered.map((row) => {
                         const st = STATUS_LABELS[row.status] ?? { label: row.status, cls: 'bg-slate-100 text-slate-500' };
                         return (
-                          <tr key={row.id} className="hover:bg-slate-50 transition-colors">
+                          <tr key={row.id} className="hover:bg-[#faf8f5] transition-colors">
                             <td className="px-4 py-3">
                               <p className="font-semibold text-slate-900">{row.marke} {row.modell}</p>
                               {row.regnummer && (
@@ -675,7 +675,7 @@ export default function DealerInventorySync({
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs">
                     <thead>
-                      <tr className="bg-slate-50 border-b border-slate-100">
+                      <tr className="bg-[#faf8f5] border-b border-slate-100">
                         {['Marke', 'Modell', 'Ar', 'Miltal', 'Pris', 'Regnummer', 'Drivmedel'].map((h) => (
                           <th key={h} className="text-left px-3 py-2 font-semibold text-slate-500 uppercase tracking-wide">{h}</th>
                         ))}
@@ -683,7 +683,7 @@ export default function DealerInventorySync({
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {csvRows.slice(0, 10).map((r, i) => (
-                        <tr key={i} className="hover:bg-slate-50">
+                        <tr key={i} className="hover:bg-[#faf8f5]">
                           <td className="px-3 py-2 font-medium">{r.marke}</td>
                           <td className="px-3 py-2">{r.modell}</td>
                           <td className="px-3 py-2">{r.ar}</td>
@@ -734,7 +734,7 @@ export default function DealerInventorySync({
             )}
 
             {/* API info banner */}
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+            <div className="bg-[#faf8f5] border border-slate-200 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Zap className="w-4 h-4 text-slate-500" />
                 <p className="text-sm font-semibold text-slate-700">API-integration</p>

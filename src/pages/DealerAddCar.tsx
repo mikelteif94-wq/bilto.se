@@ -284,7 +284,7 @@ export default function DealerAddCar({
                   disabled={!marke}
                   placeholder={marke ? 'Välj eller skriv modell' : 'Välj märke först'}
                   autoComplete="off"
-                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-white disabled:bg-slate-50 disabled:text-slate-400"
+                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-white disabled:bg-[#faf8f5] disabled:text-slate-400"
                 />
                 {marke && (
                   <datalist id={`dealer-models-${marke}`}>

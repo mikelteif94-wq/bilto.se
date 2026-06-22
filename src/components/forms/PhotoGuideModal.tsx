@@ -222,7 +222,7 @@ export default function PhotoGuideModal({ open, onClose }: PhotoGuideModalProps)
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-4 bg-slate-50 border-t border-slate-100">
+        <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-4 bg-[#faf8f5] border-t border-slate-100">
           <button
             type="button"
             onClick={() => setIndex((i) => Math.max(0, i - 1))}

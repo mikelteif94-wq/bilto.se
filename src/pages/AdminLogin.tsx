@@ -75,7 +75,7 @@ export default function AdminLogin({ onLoggedIn, onBack }: AdminLoginProps) {
             </div>
 
             <div className="bg-white rounded-xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
-              <div className="bg-slate-50 border-b border-slate-200 px-7 py-5">
+              <div className="bg-[#faf8f5] border-b border-slate-200 px-7 py-5">
                 <h2 className="text-[17px] font-semibold text-slate-900">Logga in</h2>
                 <p className="text-[12.5px] text-slate-500">Endast behörig personal har tillgång.</p>
               </div>

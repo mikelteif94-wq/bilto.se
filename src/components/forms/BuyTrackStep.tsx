@@ -27,7 +27,7 @@ const OptionButton = ({
     onClick={onClick}
     className="group w-full flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-[#0e6efe]/40 hover:bg-[#0e6efe]/[0.03] active:scale-[0.99] transition-all duration-150 text-left"
   >
-    <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition-colors">
+    <div className="w-10 h-10 rounded-xl bg-[#faf8f5] group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition-colors">
       <Icon className="w-5 h-5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" strokeWidth={2.2} />
     </div>
     <div className="flex-1 min-w-0">

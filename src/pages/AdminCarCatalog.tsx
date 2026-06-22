@@ -628,7 +628,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Sök märke eller modell…"
-              className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition"
+              className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 bg-[#faf8f5] text-sm focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition"
             />
           </div>
           <select value={filterMake} onChange={e => setFilterMake(e.target.value)} className="h-9 px-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none">
@@ -665,7 +665,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/50 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                <tr className="border-b border-slate-100 bg-[#faf8f5]/50 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                   <th className="px-4 py-3 text-left w-8"></th>
                   <th className="px-4 py-3 text-left">Bil</th>
                   <th className="px-4 py-3 text-left hidden sm:table-cell">Bränsle</th>
@@ -687,7 +687,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                   return (
                     <React.Fragment key={entry.id}>
                     <tr
-                      className={`transition-colors ${!entry.is_active ? 'opacity-50' : ''} ${isEditing ? 'bg-blue-50/40' : 'hover:bg-slate-50/60'}`}
+                      className={`transition-colors ${!entry.is_active ? 'opacity-50' : ''} ${isEditing ? 'bg-blue-50/40' : 'hover:bg-[#faf8f5]/60'}`}
                     >
                       {/* Image thumb */}
                       <td className="px-4 py-3">
@@ -1021,7 +1021,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                                     onChange={e => setImgSearchQuery(e.target.value)}
                                     onKeyDown={e => { if (e.key === 'Enter') searchImages(entry, imgSearchQuery); }}
                                     placeholder={`Sök t.ex. "${entry.make} ${entry.model} car"`}
-                                    className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-900 focus:outline-none focus:border-[#0e6efe] transition"
+                                    className="w-full h-8 pl-8 pr-3 rounded-lg border border-slate-200 bg-[#faf8f5] text-xs text-slate-900 focus:outline-none focus:border-[#0e6efe] transition"
                                   />
                                 </div>
                                 <button

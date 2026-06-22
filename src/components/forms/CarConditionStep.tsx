@@ -232,7 +232,7 @@ export default function CarConditionStep({
               </div>
             )}
             {lookup.status === 'error' && (
-              <div className="mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-[13px]">
+              <div className="mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[#faf8f5] border border-slate-200 text-slate-500 text-[13px]">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 Kunde inte hämta uppgifter – fyll i manuellt
               </div>
@@ -270,7 +270,7 @@ export default function CarConditionStep({
                 setModell('');
                 setErrors((prev) => ({ ...prev, marke: undefined, modell: undefined }));
               }}
-              className={`form-control ${errors.marke ? 'form-control-error' : ''} disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed`}
+              className={`form-control ${errors.marke ? 'form-control-error' : ''} disabled:bg-[#faf8f5] disabled:text-slate-400 disabled:cursor-not-allowed`}
             >
               <option value="">Välj märke</option>
               {POPULAR_BRANDS.map((b) => (
@@ -292,7 +292,7 @@ export default function CarConditionStep({
               disabled={!marke || lookup.status === 'loading'}
               placeholder={marke ? 'T.ex. 530, XC60, A4...' : 'Välj märke först'}
               autoComplete="off"
-              className={`form-control ${errors.modell ? 'form-control-error' : ''} disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed`}
+              className={`form-control ${errors.modell ? 'form-control-error' : ''} disabled:bg-[#faf8f5] disabled:text-slate-400 disabled:cursor-not-allowed`}
             />
             {marke && (
               <datalist id={`models-${marke}`}>
@@ -345,7 +345,7 @@ export default function CarConditionStep({
               setAr(e.target.value);
               setErrors((prev) => ({ ...prev, ar: undefined }));
             }}
-            className={`form-control ${errors.ar ? 'form-control-error' : ''} disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed`}
+            className={`form-control ${errors.ar ? 'form-control-error' : ''} disabled:bg-[#faf8f5] disabled:text-slate-400 disabled:cursor-not-allowed`}
           >
             <option value="">Välj årsmodell</option>
             {YEAR_OPTIONS.map((y) => (

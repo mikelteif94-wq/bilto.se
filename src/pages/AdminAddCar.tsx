@@ -384,7 +384,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
                   disabled={!marke}
                   placeholder={marke ? 'Välj eller skriv modell' : 'Välj märke först'}
                   autoComplete="off"
-                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-white disabled:bg-slate-50 disabled:text-slate-400"
+                  className="w-full px-3 h-11 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none bg-white disabled:bg-[#faf8f5] disabled:text-slate-400"
                 />
                 {marke && (
                   <datalist id={`admin-models-${marke}`}>
@@ -634,7 +634,7 @@ export default function AdminAddCar({ adminUserId, adminName, onBack, onCreated 
                         return (
                           <label
                             key={d.id}
-                            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-slate-50"
+                            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-[#faf8f5]"
                           >
                             <input
                               type="checkbox"

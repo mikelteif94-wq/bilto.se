@@ -407,7 +407,7 @@ function OptionCard({ option, selected, onClick, multi }: {
       style={{ borderColor: selected ? '#0e6efe' : '#e8edf2' }}
     >
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-        selected ? 'bg-[#0e6efe]' : 'bg-slate-50'
+        selected ? 'bg-[#0e6efe]' : 'bg-[#faf8f5]'
       }`}>
         <Icon
           className={`w-5 h-5 transition-colors ${selected ? 'text-white' : 'text-slate-400'}`}
@@ -683,7 +683,7 @@ function ResultScreen({ result, car, onNegotiate, onRedo, onClose }: {
         <button
           type="button"
           onClick={onRedo}
-          className="w-full h-10 rounded-xl text-[13px] font-medium text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all"
+          className="w-full h-10 rounded-xl text-[13px] font-medium text-slate-400 hover:text-slate-600 hover:bg-[#faf8f5] transition-all"
         >
           Gör om quizet
         </button>

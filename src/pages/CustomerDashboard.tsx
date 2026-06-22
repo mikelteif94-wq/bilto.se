@@ -344,7 +344,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                           {car.access_token && (
                             <button
                               onClick={() => onOpenCar(car.access_token!)}
-                              className="shrink-0 inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                              className="shrink-0 inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-[#faf8f5] transition"
                             >
                               Öppna <ExternalLink className="w-3 h-3" />
                             </button>
@@ -432,7 +432,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                                 {bids.slice(0, 5).map((b, idx) => (
                                   <div
                                     key={b.id}
-                                    className="flex items-center justify-between py-2 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition"
+                                    className="flex items-center justify-between py-2 px-3 rounded-lg bg-[#faf8f5] hover:bg-slate-100 transition"
                                   >
                                     <div className="flex items-center gap-2">
                                       {idx === 0 && (
@@ -456,7 +456,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
 
                         {/* Share link + open button footer */}
                         {car.access_token && (
-                          <div className="border-t border-slate-100 px-5 sm:px-6 py-3 flex items-center gap-3 bg-slate-50/60">
+                          <div className="border-t border-slate-100 px-5 sm:px-6 py-3 flex items-center gap-3 bg-[#faf8f5]/60">
                             <div className="flex-1 min-w-0">
                               <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Din personliga länk</span>
                               <p className="text-xs text-slate-500 font-mono truncate mt-0.5">
@@ -465,7 +465,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                             </div>
                             <button
                               onClick={() => handleCopyLink(car.id, car.access_token!)}
-                              className="shrink-0 inline-flex items-center gap-1.5 h-7 px-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:bg-slate-50 transition"
+                              className="shrink-0 inline-flex items-center gap-1.5 h-7 px-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:bg-[#faf8f5] transition"
                             >
                               {copiedId === car.id ? (
                                 <><Check className="w-3 h-3 text-emerald-600" /><span className="text-emerald-600">Kopierad</span></>
@@ -568,7 +568,7 @@ function EmptyState() {
           </a>
           <a
             href="/kop-bil"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-7 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-semibold text-[15px] transition"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-7 rounded-xl bg-white border border-slate-200 hover:bg-[#faf8f5] text-slate-800 font-semibold text-[15px] transition"
           >
             <Search className="w-4 h-4" />
             Hitta / köp bil

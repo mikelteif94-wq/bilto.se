@@ -110,7 +110,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
   const isSellCta = topic.ctaPath === '/';
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
       <header className="fixed top-0 inset-x-0 z-30 h-16 bg-[#0e6efe] shadow-md">
         <div className="max-w-5xl mx-auto h-full flex items-center px-5">
           <button onClick={onBack} className="flex items-center">
@@ -191,7 +191,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
       </section>
 
       {/* Hur det fungerar */}
-      <section className="bg-slate-50 py-16 px-5">
+      <section className="bg-[#faf8f5] py-16 px-5">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-[26px] font-bold text-slate-900 tracking-tight mb-10">Hur fungerar det?</h2>
           <ol className="grid sm:grid-cols-3 gap-8">
@@ -232,7 +232,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
       </section>
 
       {/* FAQ */}
-      <section className="bg-slate-50 py-16 px-5">
+      <section className="bg-[#faf8f5] py-16 px-5">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-[26px] font-bold text-slate-900 tracking-tight mb-2">Vanliga frågor</h2>
           <p className="text-slate-500 text-[15px] mb-8">Har du fler frågor? Boka en gratis konsultation så svarar vi personligen.</p>

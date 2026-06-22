@@ -122,7 +122,7 @@ function CarImagePreview({ brand, model }: { brand: string; model: string }) {
   if (!brand || (!compData && !imgUrl)) return null;
 
   return (
-    <div className="mt-3 flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+    <div className="mt-3 flex items-center gap-3 p-3 bg-[#faf8f5] rounded-xl border border-slate-200">
       {imgUrl && (
         <img
           src={imgUrl}
@@ -513,7 +513,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initi
                   selected
                     ? 'bg-[#0e6efe] text-white shadow-sm'
                     : disabled
-                    ? 'bg-slate-50 text-slate-300 cursor-not-allowed'
+                    ? 'bg-[#faf8f5] text-slate-300 cursor-not-allowed'
                     : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
                 }`}
               >
@@ -801,7 +801,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
                   : isCompatible
                   ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  : 'bg-slate-50 text-slate-300 line-through cursor-not-allowed'
+                  : 'bg-[#faf8f5] text-slate-300 line-through cursor-not-allowed'
               }`}
             >
               {f.label}
@@ -871,7 +871,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   className={`flex-1 h-12 rounded-xl text-[15px] font-semibold border-2 transition-all ${
                     d.hasQuote === opt.value
                       ? 'bg-[#0e6efe] border-[#0e6efe] text-white shadow-sm'
-                      : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                      : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-[#faf8f5]'
                   }`}
                 >
                   {opt.label}
@@ -1145,7 +1145,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             </label>
             <p className="text-sm text-slate-500 mb-3">Välj märke och modell, eller skriv fritt.</p>
             {lockedCar ? (
-              <div className="flex items-center h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium text-[14px]">
+              <div className="flex items-center h-11 px-4 bg-[#faf8f5] border border-slate-200 rounded-xl text-slate-700 font-medium text-[14px]">
                 {lockedCar}
               </div>
             ) : (

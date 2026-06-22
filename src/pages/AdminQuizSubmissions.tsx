@@ -166,7 +166,7 @@ export default function AdminQuizSubmissions({
               >
                 <button
                   onClick={() => setExpandedId(expandedId === sub.id ? null : sub.id)}
-                  className="w-full text-left px-4 sm:px-6 py-4 flex items-center gap-3 hover:bg-slate-50 transition"
+                  className="w-full text-left px-4 sm:px-6 py-4 flex items-center gap-3 hover:bg-[#faf8f5] transition"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 flex-wrap">
@@ -232,7 +232,7 @@ export default function AdminQuizSubmissions({
                         {Object.entries(sub.quiz_answers).map(([key, value]) => {
                           if (value === undefined || value === null || (Array.isArray(value) && value.length === 0)) return null;
                           return (
-                            <div key={key} className="flex items-start gap-2 p-2.5 bg-slate-50 rounded-lg">
+                            <div key={key} className="flex items-start gap-2 p-2.5 bg-[#faf8f5] rounded-lg">
                               <span className="text-xs font-semibold text-slate-500 min-w-[100px] shrink-0">
                                 {ANSWER_LABELS[key] || key}
                               </span>

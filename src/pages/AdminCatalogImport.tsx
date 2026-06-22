@@ -562,7 +562,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
               onDrop={onDrop}
               onClick={() => fileRef.current?.click()}
               className={`border-2 border-dashed rounded-xl p-12 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                dragging ? 'border-blue-400 bg-blue-50' : 'border-slate-200 hover:border-slate-400 hover:bg-slate-50'
+                dragging ? 'border-blue-400 bg-blue-50' : 'border-slate-200 hover:border-slate-400 hover:bg-[#faf8f5]'
               }`}
             >
               <FileJson className={`w-12 h-12 mb-4 ${dragging ? 'text-blue-400' : 'text-slate-300'}`} />
@@ -588,7 +588,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
 
             {/* Format guides */}
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+              <div className="bg-[#faf8f5] rounded-lg p-4 border border-slate-100">
                 <div className="flex items-center gap-2 mb-2">
                   <FileText className="w-4 h-4 text-slate-400" />
                   <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">CSV-format (bilradgivare.csv)</p>
@@ -603,7 +603,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
 "Hög säkerhet; Bekväm","Hög kostnad",
 "Familjependlaren","for_X: BMW X3"`}</pre>
               </div>
-              <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+              <div className="bg-[#faf8f5] rounded-lg p-4 border border-slate-100">
                 <div className="flex items-center gap-2 mb-2">
                   <FileJson className="w-4 h-4 text-slate-400" />
                   <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">JSON-format</p>
@@ -638,7 +638,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
                 <div className="flex gap-2">
                   <button
                     onClick={reset}
-                    className="h-9 px-4 text-sm text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition"
+                    className="h-9 px-4 text-sm text-slate-600 border border-slate-200 rounded-lg hover:bg-[#faf8f5] transition"
                   >
                     Avbryt
                   </button>
@@ -654,7 +654,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
 
               <div className="overflow-auto max-h-96 rounded-lg border border-slate-100">
                 <table className="w-full text-xs">
-                  <thead className="bg-slate-50 sticky top-0">
+                  <thead className="bg-[#faf8f5] sticky top-0">
                     <tr>
                       <th className="text-left px-3 py-2 font-semibold text-slate-600">Märke</th>
                       <th className="text-left px-3 py-2 font-semibold text-slate-600">Modell</th>
@@ -670,7 +670,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
                   </thead>
                   <tbody>
                     {rows.map((row, i) => (
-                      <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
+                      <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#faf8f5]/50'}>
                         <td className="px-3 py-1.5 text-slate-800">{row.make}</td>
                         <td className="px-3 py-1.5 text-slate-700">{row.model}</td>
                         <td className="px-3 py-1.5 text-slate-500">{row.kaross ?? '–'}</td>
@@ -701,7 +701,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
                   <summary className="text-[11px] text-slate-400 cursor-pointer hover:text-slate-600">
                     Visa rådata (rad 1) – felsök om priser saknas
                   </summary>
-                  <pre className="mt-2 text-[10px] bg-slate-50 border border-slate-100 rounded p-3 overflow-x-auto text-slate-500 max-h-48">
+                  <pre className="mt-2 text-[10px] bg-[#faf8f5] border border-slate-100 rounded p-3 overflow-x-auto text-slate-500 max-h-48">
                     {JSON.stringify(rows[0], null, 2)}
                   </pre>
                 </details>
@@ -733,7 +733,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
                 <h2 className="text-base font-semibold text-slate-900">Import klar</h2>
                 <button
                   onClick={reset}
-                  className="h-9 px-4 text-sm text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition flex items-center gap-2"
+                  className="h-9 px-4 text-sm text-slate-600 border border-slate-200 rounded-lg hover:bg-[#faf8f5] transition flex items-center gap-2"
                 >
                   <Upload className="w-4 h-4" />
                   Importera ny fil
@@ -767,7 +767,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
                   </p>
                   <div className="rounded-lg border border-slate-100 overflow-auto max-h-64">
                     <table className="w-full text-xs">
-                      <thead className="bg-slate-50 sticky top-0">
+                      <thead className="bg-[#faf8f5] sticky top-0">
                         <tr>
                           <th className="text-left px-3 py-2 font-semibold text-slate-600">Märke</th>
                           <th className="text-left px-3 py-2 font-semibold text-slate-600">Modell</th>
@@ -779,7 +779,7 @@ export default function AdminCatalogImport({ onBack }: Props) {
                         {results
                           .filter(r => r.status !== 'updated')
                           .map((r, i) => (
-                            <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
+                            <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#faf8f5]/50'}>
                               <td className="px-3 py-1.5 text-slate-800">{r.make}</td>
                               <td className="px-3 py-1.5 text-slate-700">{r.model}</td>
                               <td className="px-3 py-1.5">

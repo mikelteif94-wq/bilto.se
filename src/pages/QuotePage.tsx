@@ -258,7 +258,7 @@ export default function QuotePage({
                     onClick={action}
                     className="group w-full flex items-center gap-4 p-3.5 rounded-xl border border-slate-100 hover:border-[#0e6efe]/40 hover:bg-[#0e6efe]/[0.03] transition-all text-left"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-[#faf8f5] group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition-colors">
                       <Icon className="w-4.5 h-4.5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" strokeWidth={2.2} />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -547,7 +547,7 @@ export default function QuotePage({
                   key={item.title}
                   className="group rounded-xl border border-slate-200 bg-white p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
                 >
-                  <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-slate-50 group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
+                  <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-[#faf8f5] group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
                     <img
                       src={item.svg}
                       alt=""

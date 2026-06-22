@@ -56,7 +56,7 @@ export default function DealerProposalCard({ proposal: p }: DealerProposalCardPr
   return (
     <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       {/* Dealer + deal-type header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-[#faf8f5]">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-slate-200 flex items-center justify-center">
             <Building2 className="w-4 h-4 text-slate-500" />
@@ -180,7 +180,7 @@ export default function DealerProposalCard({ proposal: p }: DealerProposalCardPr
 
       {/* Personal message */}
       {p.personligt_meddelande && (
-        <div className="mx-5 mb-4 p-3.5 bg-slate-50 rounded-lg border border-slate-100 flex gap-2.5">
+        <div className="mx-5 mb-4 p-3.5 bg-[#faf8f5] rounded-lg border border-slate-100 flex gap-2.5">
           <MessageCircle className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
           <p className="text-sm text-slate-600 italic">"{p.personligt_meddelande}"</p>
         </div>

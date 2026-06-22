@@ -88,7 +88,7 @@ export function CalcPanel({ carPrice, usedPrice, dark = false }: CalcPanelProps)
   const sliderPct = ((price - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100;
   const slider = useCustomSlider(MIN_PRICE, MAX_PRICE, 5_000, setPrice);
 
-  const bg = dark ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-100';
+  const bg = dark ? 'bg-white/5 border-white/10' : 'bg-[#faf8f5] border-slate-100';
   const labelColor = dark ? 'text-slate-400' : 'text-slate-400';
   const valueColor = dark ? 'text-white' : 'text-slate-900';
   const subColor = dark ? 'text-slate-500' : 'text-slate-400';

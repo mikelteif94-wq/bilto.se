@@ -130,7 +130,7 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
-        className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border border-slate-200 bg-white/60 hover:bg-white active:bg-slate-50 transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border border-slate-200 bg-white/60 hover:bg-white active:bg-[#faf8f5] transition-colors"
       >
         <span className="text-[12px] font-semibold text-slate-600">Kostnaderna i detalj</span>
         <span className="text-[10px] text-slate-400">{open ? '▲' : '▼'}</span>
@@ -147,7 +147,7 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
           >
             <div className="mt-2 rounded-xl overflow-hidden border border-slate-100">
               {rows.map((row, i) => (
-                <div key={row.label} className={`px-3 py-2.5 ${i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}`}>
+                <div key={row.label} className={`px-3 py-2.5 ${i % 2 === 0 ? 'bg-[#faf8f5]' : 'bg-white'}`}>
                   <div className="flex items-center justify-between">
                     <span className="text-[12px] text-slate-500">{row.label}</span>
                     <span className="text-[13px] font-semibold text-slate-800 tabular-nums">~{fmt(row.value)} kr</span>
@@ -256,7 +256,7 @@ function MonthlyCostBlock({
 // ─── Spec pill ────────────────────────────────────────────────────────────────
 function SpecPill({ icon: Icon, label, value, highlight }: { icon: typeof Car; label: string; value: string; highlight?: boolean }) {
   return (
-    <div className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border ${highlight ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-50 border-slate-100'}`}>
+    <div className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border ${highlight ? 'bg-emerald-50 border-emerald-100' : 'bg-[#faf8f5] border-slate-100'}`}>
       <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${highlight ? 'bg-emerald-100' : 'bg-white border border-slate-200'}`}>
         <Icon className={`w-3.5 h-3.5 ${highlight ? 'text-emerald-700' : 'text-slate-400'}`} />
       </div>
@@ -486,7 +486,7 @@ function CarEquityCalc({ carPrice, usedPrice, carName, bodyType }: { carPrice: n
         </button>
       </div>
 
-      <div className="bg-slate-50 rounded-xl border border-slate-100 overflow-hidden">
+      <div className="bg-[#faf8f5] rounded-xl border border-slate-100 overflow-hidden">
         <div className="flex h-1">
           {(['car', 'debt', 'cash', 'result'] as EquityStep[]).map((s, i) => {
             const steps: EquityStep[] = ['car', 'debt', 'cash', 'result'];
@@ -605,7 +605,7 @@ function CarEquityCalc({ carPrice, usedPrice, carName, bodyType }: { carPrice: n
                     <p className="text-[11.5px] font-bold text-slate-700">Bilar du har råd med</p>
                     {affordableAlts.map(alt => (
                       <div key={`${alt.brand}-${alt.model}`} className="flex items-center gap-3 bg-white rounded-xl border border-slate-200 px-3 py-2.5">
-                        {alt.image ? <img src={alt.image} alt={`${alt.brand} ${alt.model}`} className="w-14 h-10 object-contain rounded-lg shrink-0 bg-slate-50 p-1" /> : <div className="w-14 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0"><Car className="w-5 h-5 text-slate-300" /></div>}
+                        {alt.image ? <img src={alt.image} alt={`${alt.brand} ${alt.model}`} className="w-14 h-10 object-contain rounded-lg shrink-0 bg-[#faf8f5] p-1" /> : <div className="w-14 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0"><Car className="w-5 h-5 text-slate-300" /></div>}
                         <div className="flex-1 min-w-0">
                           <p className="text-[12px] font-bold text-slate-800 truncate">{alt.brand} {alt.model}</p>
                           <p className="text-[10.5px] text-slate-500 mt-0.5">Insats: {fmt(alt.depositNeeded)} kr · {fmt(alt.monthly)} kr/mån</p>
@@ -632,7 +632,7 @@ function HowItWorksStrip() {
     { icon: BadgeCheck, label: 'Klart!', desc: 'Du hämtar bilen på dina villkor, vi sköter pappren' },
   ];
   return (
-    <div className="rounded-xl border border-slate-100 bg-slate-50 overflow-hidden">
+    <div className="rounded-xl border border-slate-100 bg-[#faf8f5] overflow-hidden">
       <div className="px-4 pt-3.5 pb-1">
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Så fungerar det</p>
       </div>
@@ -785,7 +785,7 @@ export function CarDetailSheet({ car, open, onClose, onSelect, onFitQuiz, quizAn
 function LoadingSkeleton() {
   return (
     <div className="space-y-4">
-      <div className="relative rounded-xl bg-slate-50 border border-slate-100 p-4 space-y-2.5 overflow-hidden">
+      <div className="relative rounded-xl bg-[#faf8f5] border border-slate-100 p-4 space-y-2.5 overflow-hidden">
         <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
         <div className="h-3 w-32 rounded bg-slate-200" />
         <div className="h-8 w-48 rounded-lg bg-slate-200" />
@@ -797,12 +797,12 @@ function LoadingSkeleton() {
       </div>
       <div className="grid grid-cols-2 gap-2.5">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="relative h-16 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden">
+          <div key={i} className="relative h-16 rounded-xl bg-[#faf8f5] border border-slate-100 overflow-hidden">
             <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
           </div>
         ))}
       </div>
-      <div className="relative rounded-xl bg-slate-50 p-4 space-y-3 overflow-hidden">
+      <div className="relative rounded-xl bg-[#faf8f5] p-4 space-y-3 overflow-hidden">
         <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
         {[...Array(4)].map((_, i) => (
           <div key={i} className="flex items-center gap-3">
@@ -891,7 +891,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
               <button
                 type="button"
                 onClick={() => setCalcOpen(v => !v)}
-                className={`flex items-center justify-center gap-2 h-12 rounded-xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.97] ${calcOpen ? 'bg-slate-900 border-slate-900 text-white' : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'}`}
+                className={`flex items-center justify-center gap-2 h-12 rounded-xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.97] ${calcOpen ? 'bg-slate-900 border-slate-900 text-white' : 'border-slate-200 bg-[#faf8f5] text-slate-700 hover:bg-slate-100'}`}
               >
                 <Gauge className="w-3.5 h-3.5" />
                 {calcOpen ? 'Stäng kalkyl' : 'Räkna kalkyl'}
@@ -901,7 +901,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
               <button
                 type="button"
                 onClick={onFitQuiz}
-                className="flex items-center justify-center gap-2 h-12 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-[12px] font-semibold transition-all duration-150 active:scale-[0.97]"
+                className="flex items-center justify-center gap-2 h-12 rounded-xl border border-slate-200 bg-[#faf8f5] text-slate-700 hover:bg-slate-100 text-[12px] font-semibold transition-all duration-150 active:scale-[0.97]"
               >
                 <Users className="w-3.5 h-3.5" />
                 Passar den mig?
@@ -969,7 +969,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
       {/* ── Ratings ── */}
       <section>
         <SectionTitle>Betyg</SectionTitle>
-        <div className="p-4 bg-slate-50 rounded-xl space-y-3.5">
+        <div className="p-4 bg-[#faf8f5] rounded-xl space-y-3.5">
           <RatingBar label="Körning" value={data.ratings.driving} icon={Gauge} />
           <RatingBar label="Komfort" value={data.ratings.comfort} icon={Armchair} />
           <RatingBar label="Praktiskt" value={data.ratings.practicality} icon={Briefcase} />
@@ -1050,12 +1050,12 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
         {(carPrice || onFitQuiz) && (
           <div className="grid grid-cols-2 gap-2">
             {carPrice && (
-              <button type="button" onClick={() => setCalcOpen(v => !v)} className={`flex items-center justify-center gap-2 h-12 rounded-xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.97] ${calcOpen ? 'bg-slate-900 border-slate-900 text-white' : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'}`}>
+              <button type="button" onClick={() => setCalcOpen(v => !v)} className={`flex items-center justify-center gap-2 h-12 rounded-xl border text-[12px] font-semibold transition-all duration-150 active:scale-[0.97] ${calcOpen ? 'bg-slate-900 border-slate-900 text-white' : 'border-slate-200 bg-[#faf8f5] text-slate-700 hover:bg-slate-100'}`}>
                 <Gauge className="w-3.5 h-3.5" /> {calcOpen ? 'Stäng kalkyl' : 'Räkna kalkyl'}
               </button>
             )}
             {onFitQuiz && (
-              <button type="button" onClick={onFitQuiz} className="flex items-center justify-center gap-2 h-12 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-[12px] font-semibold transition-all duration-150 active:scale-[0.97]">
+              <button type="button" onClick={onFitQuiz} className="flex items-center justify-center gap-2 h-12 rounded-xl border border-slate-200 bg-[#faf8f5] text-slate-700 hover:bg-slate-100 text-[12px] font-semibold transition-all duration-150 active:scale-[0.97]">
                 <Users className="w-3.5 h-3.5" /> Passar den mig?
               </button>
             )}
@@ -1070,7 +1070,7 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
         </AnimatePresence>
       </div>
 
-      <div className="flex items-start gap-2.5 p-4 bg-slate-50 rounded-xl border border-slate-100">
+      <div className="flex items-start gap-2.5 p-4 bg-[#faf8f5] rounded-xl border border-slate-100">
         <Info className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
         <p className="text-[13px] text-slate-500">Detaljerad data för denna modell läggs till löpande.</p>
       </div>

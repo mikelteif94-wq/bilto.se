@@ -126,8 +126,8 @@ export function SelectItem({ value, children }: SelectItemProps) {
       type="button"
       onClick={handleSelect}
       className={cn(
-        'w-full px-3 py-2 text-left text-sm transition-colors hover:bg-slate-50',
-        isSelected && 'bg-slate-50 font-medium text-[#0047B3]'
+        'w-full px-3 py-2 text-left text-sm transition-colors hover:bg-[#faf8f5]',
+        isSelected && 'bg-[#faf8f5] font-medium text-[#0047B3]'
       )}
     >
       {children}

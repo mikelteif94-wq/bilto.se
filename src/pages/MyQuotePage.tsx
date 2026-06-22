@@ -558,7 +558,7 @@ function SuggestionCard({ suggestion: s }: { suggestion: Suggestion }) {
           )}
         </div>
         {s.admin_comment && (
-          <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-4">
+          <div className="bg-[#faf8f5] border border-slate-200 rounded-xl px-4 py-3 mb-4">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Biltos kommentar</p>
             <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{s.admin_comment}</p>
           </div>

@@ -332,7 +332,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
   const selectedSyfte = SYFTE_OPTIONS.find(o => o.value === form.syfte);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
@@ -727,7 +727,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                         return (
                           <div
                             key={t}
-                            className="flex items-center justify-center gap-1.5 py-3 rounded-xl border border-slate-100 bg-slate-50 text-slate-300 cursor-not-allowed select-none"
+                            className="flex items-center justify-center gap-1.5 py-3 rounded-xl border border-slate-100 bg-[#faf8f5] text-slate-300 cursor-not-allowed select-none"
                           >
                             <Lock className="w-3 h-3 shrink-0" />
                             <span className="text-[13px] font-medium">{t}</span>
@@ -794,7 +794,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 {selectedDateLabel} kl. {form.booking_time}
               </p>
 
-              <div className="bg-slate-50 rounded-xl p-5 text-left mb-8 border border-slate-100 max-w-sm mx-auto">
+              <div className="bg-[#faf8f5] rounded-xl p-5 text-left mb-8 border border-slate-100 max-w-sm mx-auto">
                 <h3 className="font-semibold text-sm text-slate-700 mb-3">Din bokning</h3>
                 <div className="grid gap-2.5 text-sm">
                   {[

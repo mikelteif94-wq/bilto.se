@@ -252,7 +252,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
             </button>
             <a
               href="tel:+46855550200"
-              className="w-full h-10 rounded-xl border border-slate-200 text-slate-600 text-[13px] font-semibold hover:bg-slate-50 transition flex items-center justify-center gap-2"
+              className="w-full h-10 rounded-xl border border-slate-200 text-slate-600 text-[13px] font-semibold hover:bg-[#faf8f5] transition flex items-center justify-center gap-2"
             >
               <Phone className="w-3.5 h-3.5" />Ring oss
             </a>
@@ -360,7 +360,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
               }`}
             >
               {/* Image */}
-              <div className="relative aspect-[16/9] bg-slate-50 overflow-hidden">
+              <div className="relative aspect-[16/9] bg-[#faf8f5] overflow-hidden">
                 {imgUrl ? (
                   <img
                     src={imgUrl}
@@ -453,7 +453,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
                 {car.matchReasons.length > 0 && (
                   <div className="mt-2.5 flex flex-wrap gap-1">
                     {car.matchReasons.map(r => (
-                      <span key={r} className="px-2 py-0.5 rounded-xl bg-slate-50 border border-slate-100 text-[10px] text-slate-500 font-medium">
+                      <span key={r} className="px-2 py-0.5 rounded-xl bg-[#faf8f5] border border-slate-100 text-[10px] text-slate-500 font-medium">
                         {r}
                       </span>
                     ))}
@@ -520,7 +520,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
       />
 
       {/* How it works */}
-      <div className="rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 space-y-3">
+      <div className="rounded-2xl border border-blue-100 bg-[#faf8f5] px-5 py-4 space-y-3">
         <p className="text-[13px] font-bold text-slate-800">Hur fungerar insatsen?</p>
         <div className="space-y-2 text-[12px] text-slate-600 leading-relaxed">
           {equity.hasCurrentCar && (

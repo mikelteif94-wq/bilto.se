@@ -355,7 +355,7 @@ export default function DealerOverview({
           <button
             onClick={() => setMainTab('overview')}
             className={`px-5 h-9 rounded-lg text-sm font-semibold transition flex items-center gap-2 ${
-              mainTab === 'overview' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+              mainTab === 'overview' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-[#faf8f5]'
             }`}
           >
             <LayoutDashboard className="w-3.5 h-3.5" />
@@ -364,7 +364,7 @@ export default function DealerOverview({
           <button
             onClick={() => setMainTab('invoices')}
             className={`px-5 h-9 rounded-lg text-sm font-semibold transition flex items-center gap-2 relative ${
-              mainTab === 'invoices' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+              mainTab === 'invoices' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-[#faf8f5]'
             }`}
           >
             <Receipt className="w-3.5 h-3.5" />
@@ -558,7 +558,7 @@ function OverviewTab({
                 className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition ${
                   leadTab === tab.key
                     ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-[#faf8f5]'
                 }`}
               >
                 {tab.label}{' '}
@@ -579,7 +579,7 @@ function OverviewTab({
                 return (
                   <div key={lead.id} className={`${isOverdue ? 'bg-red-50' : ''} transition`}>
                     <div
-                      className={`px-4 py-3.5 ${lead.car_id && !isActive ? 'cursor-pointer hover:bg-slate-50' : ''} transition`}
+                      className={`px-4 py-3.5 ${lead.car_id && !isActive ? 'cursor-pointer hover:bg-[#faf8f5]' : ''} transition`}
                       onClick={() => {
                         if (!isActive && lead.car_id) onOpenCar(lead.car_id);
                       }}
@@ -653,7 +653,7 @@ function OverviewTab({
 
                     {/* Inline action panel */}
                     {isActive && (
-                      <div className="px-4 pb-4 bg-slate-50 border-t border-slate-100" onClick={(e) => e.stopPropagation()}>
+                      <div className="px-4 pb-4 bg-[#faf8f5] border-t border-slate-100" onClick={(e) => e.stopPropagation()}>
                         {actionPanel?.mode === 'reply' ? (
                           <div className="pt-3 space-y-2">
                             <label className="text-[11px] font-semibold text-slate-600 uppercase tracking-wide">Ditt svar</label>
@@ -749,7 +749,7 @@ function OverviewTab({
                   <button
                     key={c.id}
                     onClick={() => onOpenCar(c.id)}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#faf8f5] transition group"
                   >
                     <div className="relative shrink-0">
                       <div className={`w-2 h-8 rounded-xl ${critical ? 'bg-red-400' : urgent ? 'bg-amber-400' : 'bg-slate-200'}`} />
@@ -946,7 +946,7 @@ function InvoicesTab({
               return (
                 <div
                   key={deal.bid_id}
-                  className={`flex items-center gap-3 px-4 py-3.5 ${isOverdue ? 'bg-red-50/60' : ''} ${deal.car?.id ? 'cursor-pointer hover:bg-slate-50' : ''} transition`}
+                  className={`flex items-center gap-3 px-4 py-3.5 ${isOverdue ? 'bg-red-50/60' : ''} ${deal.car?.id ? 'cursor-pointer hover:bg-[#faf8f5]' : ''} transition`}
                   onClick={() => deal.car?.id && onOpenCar(deal.car.id)}
                 >
                   <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
@@ -1114,7 +1114,7 @@ function NavLink({ label, onClick }: { label: string; onClick?: () => void }) {
 function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
     <div className="flex flex-col items-center gap-2.5 px-4 py-10 text-center">
-      <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
+      <div className="w-10 h-10 rounded-xl bg-[#faf8f5] border border-slate-100 flex items-center justify-center">
         {icon}
       </div>
       <p className="text-sm text-slate-400">{text}</p>

@@ -398,7 +398,7 @@ export default function AdminDealerProposalEditor({
         {/* Sticky context bar */}
         {car && (
           <div className="sticky top-0 z-10 bg-white border border-slate-200 rounded-xl shadow-sm mb-6 overflow-hidden">
-            <div className="px-4 py-2.5 bg-slate-50 border-b border-slate-100">
+            <div className="px-4 py-2.5 bg-[#faf8f5] border-b border-slate-100">
               <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Kundens bil</span>
             </div>
             <div className="px-4 py-3 flex flex-wrap gap-x-6 gap-y-1.5 items-center">
@@ -494,7 +494,7 @@ export default function AdminDealerProposalEditor({
               </FormGroup>
             </div>
             {inbytesprisNum > 0 && (
-              <div className="bg-slate-50 rounded-lg border border-slate-100 p-4 space-y-2">
+              <div className="bg-[#faf8f5] rounded-lg border border-slate-100 p-4 space-y-2">
                 <SummaryRow label="Inbytespris" value={`${formatKr(inbytesprisNum)} kr`} />
                 <SummaryRow
                   label="Lånerest som löses"
@@ -600,7 +600,7 @@ export default function AdminDealerProposalEditor({
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition ${
-                  dragging ? 'border-[#0e6efe] bg-blue-50' : 'border-slate-200 hover:border-slate-300 bg-slate-50'
+                  dragging ? 'border-[#0e6efe] bg-blue-50' : 'border-slate-200 hover:border-slate-300 bg-[#faf8f5]'
                 }`}
               >
                 {uploadingImages ? (
@@ -820,7 +820,7 @@ export default function AdminDealerProposalEditor({
             <button
               onClick={handleSaveDraft}
               disabled={saving || sending}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-200 bg-white text-slate-700 font-semibold text-sm hover:bg-slate-50 transition disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-200 bg-white text-slate-700 font-semibold text-sm hover:bg-[#faf8f5] transition disabled:opacity-50"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
               Spara utkast

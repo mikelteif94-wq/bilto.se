@@ -240,7 +240,7 @@ export default function CustomerOfferCard({ offer }: { offer: Offer }) {
 
         {/* Admin comment */}
         {offer.admin_comment && (
-          <div className="mt-1 px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200">
+          <div className="mt-1 px-4 py-3.5 rounded-xl bg-[#faf8f5] border border-slate-200">
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">
               Biltos bedömning
             </p>

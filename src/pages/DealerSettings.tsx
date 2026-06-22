@@ -891,7 +891,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                     type="text"
                     value={info.foretagsnamn}
                     disabled
-                    className="w-full h-11 px-3 rounded-lg border border-slate-200 bg-slate-50 text-slate-500"
+                    className="w-full h-11 px-3 rounded-lg border border-slate-200 bg-[#faf8f5] text-slate-500"
                   />
                   <p className="mt-1 text-xs text-slate-500">
                     Kontakta supporten för att ändra företagsnamn.
@@ -913,7 +913,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       value={info.telefon}
                       onChange={(e) => setInfo({ ...info, telefon: e.target.value })}
                       disabled={!isOwner}
-                      className="w-full h-11 px-3 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none disabled:bg-slate-50 disabled:text-slate-500"
+                      className="w-full h-11 px-3 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none disabled:bg-[#faf8f5] disabled:text-slate-500"
                     />
                   </Field>
                   <Field label="Mejl" icon={<Mail className="w-4 h-4" />}>
@@ -922,7 +922,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                       value={info.mejl}
                       onChange={(e) => setInfo({ ...info, mejl: e.target.value })}
                       disabled={!isOwner}
-                      className="w-full h-11 px-3 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none disabled:bg-slate-50 disabled:text-slate-500"
+                      className="w-full h-11 px-3 rounded-lg border border-slate-200 focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/20 outline-none disabled:bg-[#faf8f5] disabled:text-slate-500"
                     />
                   </Field>
                 </div>
@@ -954,7 +954,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
                   </div>
                 )}
                 {!isOwner && (
-                  <p className="text-xs text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5">
+                  <p className="text-xs text-slate-500 bg-[#faf8f5] border border-slate-200 rounded-lg px-3 py-2.5">
                     Bara kontoägaren kan ändra företagsinformation.
                   </p>
                 )}
@@ -1038,7 +1038,7 @@ export default function DealerSettings({ dealerId, foretagsnamn, isOwner, onBack
               )}
 
               {showInviteForm && (
-                <form onSubmit={handleInvite} className="mb-5 p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                <form onSubmit={handleInvite} className="mb-5 p-4 rounded-xl bg-[#faf8f5] border border-slate-200 space-y-3">
                   <p className="text-sm font-semibold text-slate-900">Bjud in ny teammedlem</p>
                   <div className="grid sm:grid-cols-2 gap-3">
                     <Field label="Förnamn">

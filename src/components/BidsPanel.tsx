@@ -213,7 +213,7 @@ export default function BidsPanel({
               <button
                 onClick={() => setConfirmClear(false)}
                 disabled={clearing}
-                className="h-8 px-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-semibold hover:bg-slate-50 transition"
+                className="h-8 px-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-semibold hover:bg-[#faf8f5] transition"
               >
                 Avbryt
               </button>

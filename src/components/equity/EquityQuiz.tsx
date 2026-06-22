@@ -107,7 +107,7 @@ function SliderStep({ label, sublabel, value, min, max, step, onChange, formatVa
       </div>
 
       {/* Big number display */}
-      <div className="text-center py-4 px-4 rounded-2xl bg-slate-50 border border-slate-100">
+      <div className="text-center py-4 px-4 rounded-2xl bg-[#faf8f5] border border-slate-100">
         <motion.span
           key={value}
           initial={{ scale: 0.95, opacity: 0.7 }}

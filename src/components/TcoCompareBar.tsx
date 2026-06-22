@@ -145,7 +145,7 @@ export default function TcoCompareBar({ cars, onRemove, onGetHelp }: TcoCompareB
             </div>
 
             {/* Legend */}
-            <div className="flex items-center gap-3 px-4 py-1.5 bg-slate-50 border-b border-slate-100 overflow-x-auto scrollbar-hide">
+            <div className="flex items-center gap-3 px-4 py-1.5 bg-[#faf8f5] border-b border-slate-100 overflow-x-auto scrollbar-hide">
               {Object.entries(COST_LABELS).map(([key, label]) => (
                 <div key={key} className="flex items-center gap-1 shrink-0">
                   <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: COST_COLORS[key] }} />

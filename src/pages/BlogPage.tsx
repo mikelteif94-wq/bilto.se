@@ -129,7 +129,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
                 { titel: 'Hösten', text: 'Efterfrågan börjar minska och priserna kan bli något lägre.' },
                 { titel: 'Vintern', text: 'Fyrhjulsdrivna bilar och kombimodeller är mer attraktiva under vintern.' },
               ].map((s) => (
-                <div key={s.titel} className="rounded-xl border border-slate-200 bg-slate-50 p-5">
+                <div key={s.titel} className="rounded-xl border border-slate-200 bg-[#faf8f5] p-5">
                   <h3 className="font-semibold text-slate-900 mb-1.5">{s.titel}</h3>
                   <p className="text-[15px] text-slate-600 leading-[1.6]">{s.text}</p>
                 </div>
@@ -346,7 +346,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
             <p className="mb-5">Det finns fördelar och nackdelar med båda alternativen.</p>
             <div className="overflow-x-auto rounded-xl border border-slate-200">
               <table className="w-full text-left text-[15px]">
-                <thead className="bg-slate-50 text-slate-700">
+                <thead className="bg-[#faf8f5] text-slate-700">
                   <tr>
                     <th className="px-4 py-3 font-semibold">Faktor</th>
                     <th className="px-4 py-3 font-semibold">Sälja privat</th>
@@ -543,7 +543,7 @@ export default function BlogPage({ onBackHome }: BlogPageProps) {
         </article>
       </main>
 
-      <section className="bg-slate-50 py-14 sm:py-20">
+      <section className="bg-[#faf8f5] py-14 sm:py-20">
         <div className="max-w-2xl mx-auto px-6">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] mb-5">

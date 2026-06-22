@@ -1688,7 +1688,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       {/* Curated grid */}
       <section
         id="cars-grid"
-        className="py-8 sm:py-14 px-4 sm:px-6 bg-slate-50"
+        className="py-8 sm:py-14 px-4 sm:px-6 bg-[#faf8f5]"
       >
         <div className="max-w-6xl mx-auto">
 
@@ -2442,7 +2442,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   key={item.title}
                   className="group rounded-xl border border-slate-200 bg-white p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
                 >
-                  <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-slate-50 group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
+                  <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-[#faf8f5] group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
                     <img
                       src={item.svg}
                       alt=""

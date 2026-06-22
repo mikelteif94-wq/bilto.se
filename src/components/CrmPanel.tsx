@@ -611,7 +611,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                 className={`px-4 h-9 rounded-xl text-sm font-semibold ring-1 transition ${
                   active
                     ? 'bg-slate-900 text-white ring-slate-900'
-                    : 'bg-white text-slate-700 ring-slate-200 hover:bg-slate-50'
+                    : 'bg-white text-slate-700 ring-slate-200 hover:bg-[#faf8f5]'
                 }`}
               >
                 {o.label}
@@ -666,7 +666,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                 className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold ring-1 transition text-left ${
                   active
                     ? s.activeCls + ' ring-2'
-                    : 'bg-white text-slate-700 ring-slate-200 hover:bg-slate-50'
+                    : 'bg-white text-slate-700 ring-slate-200 hover:bg-[#faf8f5]'
                 }`}
               >
                 <Icon className={`w-4 h-4 shrink-0 ${active ? '' : s.iconCls}`} />
@@ -676,7 +676,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
           })}
         </div>
         {crmStatus === 'forlorad' && lostReason && (
-          <div className="mt-4 flex items-start gap-2 text-sm bg-slate-50 border border-slate-200 rounded-lg p-3">
+          <div className="mt-4 flex items-start gap-2 text-sm bg-[#faf8f5] border border-slate-200 rounded-lg p-3">
             <XCircle className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" />
             <div>
               <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
@@ -722,13 +722,13 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                   {!forMe && !isResponding && (
                     <button
                       onClick={() => cancelValuationRequest(v.id)}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-600 text-xs font-semibold transition"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-slate-300 hover:bg-[#faf8f5] text-slate-600 text-xs font-semibold transition"
                     >
                       Avbryt förfrågan
                     </button>
                   )}
                   {isResponding && (
-                    <div className="mt-2 space-y-2 bg-slate-50 rounded-lg p-3">
+                    <div className="mt-2 space-y-2 bg-[#faf8f5] rounded-lg p-3">
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
@@ -775,7 +775,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                         </button>
                         <button
                           onClick={() => setRespondingId(null)}
-                          className="inline-flex items-center gap-2 px-4 h-9 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-600 text-xs font-semibold transition"
+                          className="inline-flex items-center gap-2 px-4 h-9 rounded-xl bg-white border border-slate-300 hover:bg-[#faf8f5] text-slate-600 text-xs font-semibold transition"
                         >
                           Avbryt
                         </button>
@@ -1099,7 +1099,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                     const checked = selectedDealerIds.has(d.id);
                     return (
                       <li key={d.id}>
-                        <label className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 cursor-pointer">
+                        <label className="flex items-start gap-3 p-3 rounded-lg hover:bg-[#faf8f5] cursor-pointer">
                           <input
                             type="checkbox"
                             checked={checked}
@@ -1125,7 +1125,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
               <button
                 onClick={() => setDealerPickerOpen(false)}
                 disabled={sending}
-                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
+                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-[#faf8f5] text-slate-700 text-sm font-semibold transition"
               >
                 Avbryt
               </button>
@@ -1178,7 +1178,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
             <div className="p-5 border-t border-slate-200 flex justify-end gap-2">
               <button
                 onClick={() => setLostReasonOpen(false)}
-                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
+                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-[#faf8f5] text-slate-700 text-sm font-semibold transition"
               >
                 Avbryt
               </button>
@@ -1232,7 +1232,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
                           className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold ring-1 transition ${
                             active
                               ? 'bg-amber-500 text-white ring-amber-500'
-                              : 'bg-white text-slate-700 ring-slate-200 hover:bg-slate-50'
+                              : 'bg-white text-slate-700 ring-slate-200 hover:bg-[#faf8f5]'
                           }`}
                         >
                           <UserCircle2 className="w-4 h-4" />
@@ -1260,7 +1260,7 @@ export default function CrmPanel({ carId, customerName, adminUserId, adminName, 
               <button
                 onClick={() => setValuationOpen(false)}
                 disabled={submittingValuation}
-                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition"
+                className="px-4 h-10 rounded-xl bg-white border border-slate-300 hover:bg-[#faf8f5] text-slate-700 text-sm font-semibold transition"
               >
                 Avbryt
               </button>

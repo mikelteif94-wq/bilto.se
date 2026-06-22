@@ -627,7 +627,7 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
               </div>
 
               {showSuggestionForm && (
-                <div className="mb-5 p-4 rounded-lg border border-slate-200 bg-slate-50 space-y-3">
+                <div className="mb-5 p-4 rounded-lg border border-slate-200 bg-[#faf8f5] space-y-3">
                   <div>
                     <label className="block text-xs font-semibold text-slate-600 mb-1">Bil (t.ex. Volvo XC60 2023) *</label>
                     <input

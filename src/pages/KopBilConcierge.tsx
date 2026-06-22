@@ -144,7 +144,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
@@ -256,7 +256,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 </button>
                 <a
                   href="tel:+46855550200"
-                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-slate-50 transition inline-flex items-center justify-center gap-2"
+                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
                 >
                   <Phone className="w-4 h-4 shrink-0" />
                   Ring oss: 08-5555 0200
@@ -356,7 +356,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[16px] hover:bg-slate-50 transition shadow-lg inline-flex items-center gap-2 group"
+              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[16px] hover:bg-[#faf8f5] transition shadow-lg inline-flex items-center gap-2 group"
             >
               Kom igång nu
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -379,7 +379,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
           <div className="grid sm:grid-cols-2 gap-5 sm:gap-6">
             {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="bg-slate-50 rounded-xl border border-slate-200 p-6 sm:p-8">
+              <div key={t.name} className="bg-[#faf8f5] rounded-xl border border-slate-200 p-6 sm:p-8">
                 <Quote className="w-7 h-7 text-[#0e6efe]/20 mb-4" />
                 <p className="text-[14px] sm:text-[15px] text-slate-700 leading-[1.7] mb-6 italic">
                   "{t.quote}"
@@ -410,7 +410,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Team ── */}
-      <section className="bg-slate-50 border-y border-slate-200 py-16 sm:py-24 px-5 sm:px-8">
+      <section className="bg-[#faf8f5] border-y border-slate-200 py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10 sm:mb-12">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">

@@ -348,7 +348,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               <div className="p-4 sm:p-5">
                 {heroTab === 'hitta' ? (
                   <div ref={carSearchRef} className="relative">
-                    <div className="flex items-center h-13 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
+                    <div className="flex items-center h-13 rounded-xl border border-slate-200 bg-[#faf8f5] overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
                       <span className="flex items-center justify-center w-12 shrink-0">
                         <Search className="w-4.5 h-4.5 text-slate-400" />
                       </span>
@@ -390,7 +390,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                                 key={i}
                                 type="button"
                                 onClick={() => handleCarSelect(s.make, s.model)}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition group border-t border-slate-100 first:border-0"
+                                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#faf8f5] transition group border-t border-slate-100 first:border-0"
                               >
                                 <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
                                   <Car className="w-3.5 h-3.5 text-slate-500" />
@@ -426,7 +426,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       <div className="flex-1">
                         <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
                       </div>
-                      <div className="flex items-center flex-1 h-13 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
+                      <div className="flex items-center flex-1 h-13 rounded-xl border border-slate-200 bg-[#faf8f5] overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
                         <span className="flex items-center justify-center w-11 shrink-0">
                           <Phone className="w-4 h-4 text-slate-400" />
                         </span>
@@ -534,7 +534,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             ].map((c) => {
               const Icon = c.icon;
               return (
-                <div key={c.step} className="group bg-slate-50 hover:bg-slate-900 rounded-xl p-8 transition-all duration-300 cursor-default">
+                <div key={c.step} className="group bg-[#faf8f5] hover:bg-slate-900 rounded-xl p-8 transition-all duration-300 cursor-default">
                   <div className="flex items-start justify-between mb-8">
                     <span className="text-[13px] font-bold text-slate-300 group-hover:text-white/30 tabular-nums tracking-wider transition-colors">{c.step}</span>
                     <div className="w-10 h-10 rounded-xl bg-white group-hover:bg-white/10 flex items-center justify-center transition-colors shadow-sm">

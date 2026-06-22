@@ -124,7 +124,7 @@ export default function SaveToPortalBanner({
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="w-full flex items-center gap-3 px-5 py-3.5 hover:bg-slate-50 transition-colors text-left"
+          className="w-full flex items-center gap-3 px-5 py-3.5 hover:bg-[#faf8f5] transition-colors text-left"
         >
           <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
             <BookmarkPlus className="w-4 h-4 text-[#0e6efe]" />
@@ -178,7 +178,7 @@ export default function SaveToPortalBanner({
               <button
                 type="button"
                 onClick={() => setExpanded(false)}
-                className="h-10 px-4 rounded-xl border border-slate-200 text-slate-500 text-[13px] font-medium hover:bg-slate-50 transition"
+                className="h-10 px-4 rounded-xl border border-slate-200 text-slate-500 text-[13px] font-medium hover:bg-[#faf8f5] transition"
               >
                 Avbryt
               </button>

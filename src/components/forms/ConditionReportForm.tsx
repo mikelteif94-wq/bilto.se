@@ -201,7 +201,7 @@ function Section({
       <button
         type="button"
         onClick={() => collapsible && setExpanded((v) => !v)}
-        className={`w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 text-left ${collapsible ? 'hover:bg-slate-50 transition' : 'cursor-default'}`}
+        className={`w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 text-left ${collapsible ? 'hover:bg-[#faf8f5] transition' : 'cursor-default'}`}
       >
         <h3 className="text-sm font-bold text-slate-900 flex-1">{title}</h3>
         {/* Summary badges when collapsed */}

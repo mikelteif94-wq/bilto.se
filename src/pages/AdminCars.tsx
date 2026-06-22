@@ -190,7 +190,7 @@ export default function AdminCars({
                 <li key={v.id}>
                   <button
                     onClick={() => v.cars && onOpenCar(v.cars.id)}
-                    className="w-full flex items-center gap-3 bg-white hover:bg-slate-50 border border-amber-200 rounded-lg p-3 text-left transition"
+                    className="w-full flex items-center gap-3 bg-white hover:bg-[#faf8f5] border border-amber-200 rounded-lg p-3 text-left transition"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-slate-900 truncate">
@@ -226,7 +226,7 @@ export default function AdminCars({
                   <li key={r.id}>
                     <button
                       onClick={() => r.cars && onOpenCar(r.cars.id)}
-                      className="w-full flex items-center gap-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg p-3 text-left transition"
+                      className="w-full flex items-center gap-3 bg-[#faf8f5] hover:bg-slate-100 border border-slate-200 rounded-lg p-3 text-left transition"
                     >
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-semibold text-slate-900 truncate">
@@ -264,7 +264,7 @@ export default function AdminCars({
             {onNavigateCatalog && (
               <button
                 onClick={onNavigateCatalog}
-                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 font-medium text-sm transition"
+                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 bg-white hover:bg-[#faf8f5] text-slate-600 font-medium text-sm transition"
               >
                 <BookOpen className="w-4 h-4" />
                 <span className="hidden sm:inline">Bilkatalog</span>
@@ -273,7 +273,7 @@ export default function AdminCars({
             {onNavigateBulkUpload && (
               <button
                 onClick={onNavigateBulkUpload}
-                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 font-medium text-sm transition"
+                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 bg-white hover:bg-[#faf8f5] text-slate-600 font-medium text-sm transition"
               >
                 <Upload className="w-4 h-4" />
                 <span className="hidden sm:inline">Bulk-bilder</span>
@@ -302,7 +302,7 @@ export default function AdminCars({
                   <li key={car.id}>
                     <button
                       onClick={() => onOpenCar(car.id)}
-                      className="w-full text-left bg-white rounded-xl border border-slate-200 p-4 flex items-start gap-3 active:bg-slate-50 transition"
+                      className="w-full text-left bg-white rounded-xl border border-slate-200 p-4 flex items-start gap-3 active:bg-[#faf8f5] transition"
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-baseline gap-2 flex-wrap mb-1">
@@ -354,7 +354,7 @@ export default function AdminCars({
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200">
+                    <tr className="bg-[#faf8f5] border-b border-slate-200">
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3 whitespace-nowrap">
                         Regnummer
                       </th>
@@ -389,7 +389,7 @@ export default function AdminCars({
                         <tr
                           key={car.id}
                           onClick={() => onOpenCar(car.id)}
-                          className="border-b border-slate-100 last:border-0 hover:bg-slate-50 cursor-pointer transition group"
+                          className="border-b border-slate-100 last:border-0 hover:bg-[#faf8f5] cursor-pointer transition group"
                         >
                           <td className="px-4 lg:px-6 py-4 font-mono font-semibold text-slate-900 tracking-wider">
                             <span className="inline-flex items-center gap-1.5">

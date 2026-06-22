@@ -173,7 +173,7 @@ export default function TermsPage({ onBackHome }: TermsPageProps) {
           <div>
             <h2 className="text-[22px] font-semibold text-slate-900 mb-3">10. Kontakt</h2>
             <p>För frågor om tjänsten eller dessa användarvillkor kan du kontakta:</p>
-            <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-5">
+            <div className="mt-4 rounded-lg border border-slate-200 bg-[#faf8f5] p-5">
               <p className="font-semibold text-slate-900">ASA Consulting AB</p>
               <p className="mt-1">Org.nr: 559501-5263</p>
               <p className="mt-1">

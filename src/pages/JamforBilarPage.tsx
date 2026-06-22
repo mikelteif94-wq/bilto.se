@@ -637,7 +637,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                 <div className="overflow-x-auto">
                   <div style={{ minWidth: `${110 + cars.length * 150}px` }}>
                     <div className="grid" style={{ gridTemplateColumns: `110px repeat(${cars.length}, 1fr)` }}>
-                      <div className="px-3 py-3 border-b border-slate-100 bg-slate-50/80" />
+                      <div className="px-3 py-3 border-b border-slate-100 bg-[#faf8f5]/80" />
                       {cars.map((c, i) => (
                         <div key={i} className="px-3 py-3 text-center text-[12px] font-bold text-slate-700 border-b border-slate-100 bg-slate-50/80 border-l border-slate-100">
                           {c.brand_display} {c.model_display}
@@ -692,7 +692,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                     return (
                       <button key={c.id} type="button"
                         onClick={() => setBuyModalCar(`${c.brand_display} ${c.model_display}`)}
-                        className="inline-flex items-center gap-2.5 bg-white text-[#0e6efe] font-bold text-[13px] px-5 h-11 rounded-xl hover:bg-slate-50 transition">
+                        className="inline-flex items-center gap-2.5 bg-white text-[#0e6efe] font-bold text-[13px] px-5 h-11 rounded-xl hover:bg-[#faf8f5] transition">
                         {img && <img src={img} alt="" className="h-7 w-10 object-contain" />}
                         Hjälp med {c.model_display}
                         <ArrowRight className="w-4 h-4 ml-auto" />

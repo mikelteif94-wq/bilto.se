@@ -92,7 +92,7 @@ export default function SearchAlertModal({ open, onClose, filters, filterLabel }
                 </div>
 
                 {filterLabel && (
-                  <div className="bg-slate-50 rounded-xl px-3 py-2.5 mb-4">
+                  <div className="bg-[#faf8f5] rounded-xl px-3 py-2.5 mb-4">
                     <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wide mb-1">Dina filter</p>
                     <p className="text-[13px] font-semibold text-slate-700">{filterLabel}</p>
                   </div>

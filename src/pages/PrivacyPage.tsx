@@ -43,7 +43,7 @@ export default function PrivacyPage({ onBackHome }: PrivacyPageProps) {
 
           <div>
             <h2 className="text-[22px] font-semibold text-slate-900 mb-3">Personuppgiftsansvarig</h2>
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
+            <div className="rounded-lg border border-slate-200 bg-[#faf8f5] p-5">
               <p className="font-semibold text-slate-900">ASA Consulting AB</p>
               <p className="mt-1">Org.nr: 559501-5263</p>
               <p className="mt-1">

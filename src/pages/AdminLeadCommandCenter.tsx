@@ -366,14 +366,14 @@ export default function AdminLeadCommandCenter({
             <button
               onClick={load}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-600 hover:bg-slate-50 transition disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-600 hover:bg-[#faf8f5] transition disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline">Uppdatera</span>
             </button>
             <button
               onClick={exportCSV}
-              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-600 hover:bg-slate-50 transition"
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-600 hover:bg-[#faf8f5] transition"
             >
               <Download className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Exportera</span>
@@ -394,7 +394,7 @@ export default function AdminLeadCommandCenter({
                   flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-medium border transition shrink-0
                   ${active
                     ? 'bg-slate-900 text-white border-slate-900'
-                    : `bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 ${tab.color}`
+                    : `bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-[#faf8f5] ${tab.color}`
                   }
                 `}
               >
@@ -431,7 +431,7 @@ export default function AdminLeadCommandCenter({
               <div className="relative">
                 <button
                   onClick={() => setBulkAssignOpen((v) => !v)}
-                  className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-700 hover:bg-slate-50 transition"
+                  className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-700 hover:bg-[#faf8f5] transition"
                 >
                   <UserCheck className="w-3.5 h-3.5" />
                   Tilldela
@@ -443,7 +443,7 @@ export default function AdminLeadCommandCenter({
                       <button
                         key={a.id}
                         onClick={() => bulkAssign(a.id, a.name || a.email)}
-                        className="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-50"
+                        className="w-full text-left px-3 py-2 text-slate-700 hover:bg-[#faf8f5]"
                       >
                         {a.name || a.email}
                       </button>
@@ -454,14 +454,14 @@ export default function AdminLeadCommandCenter({
 
               <button
                 onClick={() => bulkHideFromDealers(true)}
-                className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-700 hover:bg-slate-50 transition"
+                className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-700 hover:bg-[#faf8f5] transition"
                 title="Dölj från handlare"
               >
                 <EyeOff className="w-3.5 h-3.5" /> Dölj
               </button>
               <button
                 onClick={() => bulkHideFromDealers(false)}
-                className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-700 hover:bg-slate-50 transition"
+                className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-700 hover:bg-[#faf8f5] transition"
                 title="Visa för handlare"
               >
                 <Eye className="w-3.5 h-3.5" /> Visa
@@ -502,7 +502,7 @@ export default function AdminLeadCommandCenter({
             <div className="hidden lg:block bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-100 bg-slate-50/80">
+                  <tr className="border-b border-slate-100 bg-[#faf8f5]/80">
                     <th className="w-10 px-4 py-3">
                       <input
                         type="checkbox"
@@ -534,7 +534,7 @@ export default function AdminLeadCommandCenter({
                       <tr
                         key={lead.id}
                         onClick={() => openLead(lead)}
-                        className={`hover:bg-slate-50/60 transition cursor-pointer ${isSelected ? 'bg-blue-50/60' : ''}`}
+                        className={`hover:bg-[#faf8f5]/60 transition cursor-pointer ${isSelected ? 'bg-blue-50/60' : ''}`}
                       >
                         <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
                           <input
@@ -577,7 +577,7 @@ export default function AdminLeadCommandCenter({
                               onClick={() => setBadgePopover(badgePopover === lead.id ? null : lead.id)}
                               className={`inline-flex items-center gap-1 h-6 px-2 rounded-xl border text-[10px] transition
                                 ${lead.quality_badges.length > 0
-                                  ? 'border-slate-300 bg-slate-50 text-slate-600 hover:bg-slate-100'
+                                  ? 'border-slate-300 bg-[#faf8f5] text-slate-600 hover:bg-slate-100'
                                   : 'border-slate-200 text-slate-300 hover:border-slate-300 hover:text-slate-500'
                                 }`}
                               title="Redigera badges"
@@ -638,7 +638,7 @@ export default function AdminLeadCommandCenter({
                               className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition border ${
                                 crmPanelId === lead.id
                                   ? 'bg-slate-900 text-white border-slate-900'
-                                  : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                                  : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-[#faf8f5]'
                               }`}
                               title="Öppna CRM-aktiviteter"
                             >
@@ -755,7 +755,7 @@ export default function AdminLeadCommandCenter({
           <div className="fixed right-0 top-0 h-full w-full max-w-md z-50 shadow-2xl border-l border-slate-200">
             <div className="h-full flex flex-col bg-white">
               {/* Panel header with close */}
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50 shrink-0">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-[#faf8f5] shrink-0">
                 <div className="flex items-center gap-2">
                   <MessageCircle className="w-4 h-4 text-slate-500" />
                   <span className="text-sm font-semibold text-slate-800">CRM-aktiviteter</span>

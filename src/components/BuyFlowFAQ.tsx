@@ -88,7 +88,7 @@ export default function BuyFlowFAQ({ variant = 'buy' }: BuyFlowFAQProps) {
               <button
                 type="button"
                 onClick={() => setOpenIdx(openIdx === i ? null : i)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-slate-50 transition"
+                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-[#faf8f5] transition"
               >
                 <span className="text-[14px] font-semibold text-slate-800 pr-4 leading-snug">{item.q}</span>
                 {openIdx === i

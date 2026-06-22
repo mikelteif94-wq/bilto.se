@@ -400,7 +400,7 @@ export default function DealerCarDetail({
                             const val = data[item.key];
                             if (!val) return null;
                             return (
-                              <div key={item.key} className="flex items-center gap-2 text-sm text-slate-700 bg-slate-50 rounded-lg px-3 py-2">
+                              <div key={item.key} className="flex items-center gap-2 text-sm text-slate-700 bg-[#faf8f5] rounded-lg px-3 py-2">
                                 {STATUS_ICON[val] ?? null}
                                 <span>{item.label}</span>
                                 <span className={`ml-auto text-xs font-medium ${val === 'ok' ? 'text-emerald-600' : val === 'anmark' ? 'text-amber-600' : 'text-red-600'}`}>
@@ -472,7 +472,7 @@ export default function DealerCarDetail({
             </div>
           )}
 
-          <div className="bg-slate-50 border border-dashed border-slate-300 rounded-md p-5 flex items-start gap-3 text-sm text-slate-600">
+          <div className="bg-[#faf8f5] border border-dashed border-slate-300 rounded-md p-5 flex items-start gap-3 text-sm text-slate-600">
             <Lock className="w-4 h-4 mt-0.5 text-slate-400 shrink-0" />
             <p>
               Säljarens kontaktuppgifter visas först när auktionen är avslutad och
@@ -605,7 +605,7 @@ export default function DealerCarDetail({
                   onChange={(e) => setBidInput(e.target.value)}
                   placeholder="0"
                   disabled={auctionClosed || submitting}
-                  className="w-full pl-4 pr-12 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-900 text-lg font-semibold focus:outline-none focus:border-slate-400 disabled:bg-slate-50 disabled:text-slate-400 transition"
+                  className="w-full pl-4 pr-12 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-900 text-lg font-semibold focus:outline-none focus:border-slate-400 disabled:bg-[#faf8f5] disabled:text-slate-400 transition"
                 />
                 <span className="absolute inset-y-0 right-4 flex items-center text-slate-400 font-medium">
                   kr
@@ -623,7 +623,7 @@ export default function DealerCarDetail({
                 rows={3}
                 disabled={auctionClosed || submitting}
                 placeholder="T.ex. förutsatt att servicehistoriken stämmer…"
-                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-900 focus:outline-none focus:border-slate-400 disabled:bg-slate-50 disabled:text-slate-400 transition resize-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-900 focus:outline-none focus:border-slate-400 disabled:bg-[#faf8f5] disabled:text-slate-400 transition resize-none"
               />
             </label>
 

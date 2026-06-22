@@ -336,7 +336,7 @@ function UrlMatcherTab({ catalog }: { catalog: CatalogEntry[] }) {
             <div className="ml-auto flex gap-2">
               <button
                 onClick={() => { setRows([]); setRawInput(''); }}
-                className="h-8 px-3 text-xs rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition"
+                className="h-8 px-3 text-xs rounded-xl border border-slate-200 hover:bg-[#faf8f5] text-slate-600 transition"
               >
                 Börja om
               </button>
@@ -642,7 +642,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
             className={`px-5 h-9 rounded-lg text-sm font-semibold transition ${
               activeTab === 'upload'
                 ? 'bg-[#0e6efe] text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-50'
+                : 'text-slate-600 hover:bg-[#faf8f5]'
             }`}
           >
             <span className="flex items-center gap-2">
@@ -655,7 +655,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
             className={`px-5 h-9 rounded-lg text-sm font-semibold transition ${
               activeTab === 'urls'
                 ? 'bg-[#0e6efe] text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-50'
+                : 'text-slate-600 hover:bg-[#faf8f5]'
             }`}
           >
             <span className="flex items-center gap-2">
@@ -729,7 +729,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                 transition-all duration-200
                 ${dragOver
                   ? 'border-[#0e6efe] bg-[#0e6efe]/5 scale-[1.01]'
-                  : 'border-slate-300 bg-white hover:border-[#0e6efe] hover:bg-slate-50'
+                  : 'border-slate-300 bg-white hover:border-[#0e6efe] hover:bg-[#faf8f5]'
                 }
               `}
             >
@@ -787,7 +787,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                   <button
                     onClick={retryFailed}
                     disabled={uploading}
-                    className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-medium text-sm transition"
+                    className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-slate-300 bg-white hover:bg-[#faf8f5] text-slate-700 font-medium text-sm transition"
                   >
                     <RefreshCw className="w-4 h-4" />
                     Försök igen ({errorCount})
@@ -796,7 +796,7 @@ export default function AdminBulkUpload({ onBack }: AdminBulkUploadProps) {
                 {doneCount > 0 && (
                   <button
                     onClick={clearDone}
-                    className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-medium text-sm transition"
+                    className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-slate-300 bg-white hover:bg-[#faf8f5] text-slate-700 font-medium text-sm transition"
                   >
                     <CheckCircle2 className="w-4 h-4 text-green-600" />
                     Rensa klara

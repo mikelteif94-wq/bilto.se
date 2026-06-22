@@ -78,7 +78,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
               onClose();
             }}
             className={`w-full text-left px-4 py-4 rounded-lg text-[20px] tracking-tight transition font-medium ${
-              isKopBilActive ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-slate-50'
+              isKopBilActive ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
             }`}
           >
             Bilköpshjälp
@@ -89,7 +89,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
             <button
               type="button"
               onClick={() => goToKopBilSection('quiz-section', onClose)}
-              className="w-full text-left px-3 py-2.5 rounded-md text-[15px] text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition flex items-center gap-2"
+              className="w-full text-left px-3 py-2.5 rounded-md text-[15px] text-slate-500 hover:text-slate-800 hover:bg-[#faf8f5] transition flex items-center gap-2"
             >
               <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-300" strokeWidth={2.5} />
               Bilquiz
@@ -97,7 +97,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
             <button
               type="button"
               onClick={() => goToKopBilSection('quiz-section', onClose)}
-              className="w-full text-left px-3 py-2.5 rounded-md text-[15px] text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition flex items-center gap-2"
+              className="w-full text-left px-3 py-2.5 rounded-md text-[15px] text-slate-500 hover:text-slate-800 hover:bg-[#faf8f5] transition flex items-center gap-2"
             >
               <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-300" strokeWidth={2.5} />
               Hur mycket kan min insats ge mig?
@@ -105,7 +105,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
             <button
               type="button"
               onClick={() => goToKopBilSection('cars-grid', onClose)}
-              className="w-full text-left px-3 py-2.5 rounded-md text-[15px] text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition flex items-center gap-2"
+              className="w-full text-left px-3 py-2.5 rounded-md text-[15px] text-slate-500 hover:text-slate-800 hover:bg-[#faf8f5] transition flex items-center gap-2"
             >
               <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-300" strokeWidth={2.5} />
               Experternas val
@@ -117,7 +117,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
                 window.dispatchEvent(new PopStateEvent('popstate'));
                 onClose();
               }}
-              className="w-full text-left px-3 py-2.5 rounded-md text-[15px] text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition flex items-center gap-2"
+              className="w-full text-left px-3 py-2.5 rounded-md text-[15px] text-slate-500 hover:text-slate-800 hover:bg-[#faf8f5] transition flex items-center gap-2"
             >
               <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-300" strokeWidth={2.5} />
               Jämför bilar
@@ -135,7 +135,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
               onClose();
             }}
             className={`w-full text-left px-4 py-4 rounded-lg text-[20px] tracking-tight transition font-medium ${
-              active === 'Sälj bil' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-slate-50'
+              active === 'Sälj bil' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
             }`}
           >
             Sälj bil
@@ -150,7 +150,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
               onClose();
             }}
             className={`w-full text-left px-4 py-4 rounded-lg text-[20px] tracking-tight transition font-medium ${
-              active === 'Om oss' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-slate-50'
+              active === 'Om oss' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
             }`}
           >
             Om oss

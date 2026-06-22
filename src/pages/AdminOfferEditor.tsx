@@ -334,7 +334,7 @@ export default function AdminOfferEditor({
             <button
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-medium transition disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg border border-slate-300 hover:bg-[#faf8f5] text-slate-700 text-sm font-medium transition disabled:opacity-50"
             >
               {saving ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />

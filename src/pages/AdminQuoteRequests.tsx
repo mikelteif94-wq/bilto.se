@@ -182,7 +182,7 @@ export default function AdminQuoteRequests({
                   <li key={q.id}>
                     <button
                       onClick={() => onOpenQuote(q.id)}
-                      className="w-full text-left bg-white rounded-xl border border-slate-200 p-4 flex items-start gap-3 active:bg-slate-50 transition"
+                      className="w-full text-left bg-white rounded-xl border border-slate-200 p-4 flex items-start gap-3 active:bg-[#faf8f5] transition"
                     >
                       <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
                         <Icon className="w-4 h-4" />
@@ -221,7 +221,7 @@ export default function AdminQuoteRequests({
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200">
+                    <tr className="bg-[#faf8f5] border-b border-slate-200">
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">Typ</th>
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">Kund</th>
                       <th className="text-left font-semibold text-slate-600 px-4 lg:px-6 py-3">Bil / Budget</th>
@@ -239,7 +239,7 @@ export default function AdminQuoteRequests({
                         <tr
                           key={q.id}
                           onClick={() => onOpenQuote(q.id)}
-                          className="border-b border-slate-100 last:border-0 hover:bg-slate-50 cursor-pointer transition group"
+                          className="border-b border-slate-100 last:border-0 hover:bg-[#faf8f5] cursor-pointer transition group"
                         >
                           <td className="px-4 lg:px-6 py-4">
                             <span className="inline-flex items-center gap-1.5 text-slate-700">

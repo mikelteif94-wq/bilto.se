@@ -161,7 +161,7 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
           <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
             <div className="divide-y divide-slate-50">
               {filtered.map(b => (
-                <div key={b.id} className="p-3 sm:p-5 hover:bg-slate-50/50 transition">
+                <div key={b.id} className="p-3 sm:p-5 hover:bg-[#faf8f5]/50 transition">
                   <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
                     {/* Date/time badge – inline on mobile */}
                     <div className="flex items-center gap-3 sm:block shrink-0">

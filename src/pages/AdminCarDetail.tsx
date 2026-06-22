@@ -397,7 +397,7 @@ export default function AdminCarDetail({
                     <button
                       type="button"
                       onClick={() => setReportOpen((v) => !v)}
-                      className="w-full flex items-center justify-between px-5 sm:px-6 py-4 hover:bg-slate-50 transition text-left"
+                      className="w-full flex items-center justify-between px-5 sm:px-6 py-4 hover:bg-[#faf8f5] transition text-left"
                     >
                       <h2 className="text-base font-bold text-slate-900">Skickrapport</h2>
                       <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${reportOpen ? 'rotate-180' : ''}`} />
@@ -523,7 +523,7 @@ export default function AdminCarDetail({
                       <button
                         onClick={() => setEditingStartbud(false)}
                         disabled={savingStartbud}
-                        className="h-9 px-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition"
+                        className="h-9 px-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-[#faf8f5] transition"
                       >
                         Avbryt
                       </button>
@@ -674,7 +674,7 @@ export default function AdminCarDetail({
                       <button
                         onClick={() => setEditingTradeIn(false)}
                         disabled={savingTradeIn}
-                        className="h-9 px-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition"
+                        className="h-9 px-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-[#faf8f5] transition"
                       >
                         Avbryt
                       </button>

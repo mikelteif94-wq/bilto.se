@@ -550,7 +550,7 @@ function StatusCard({ car }: { car: CarResponse }) {
 
 type Tone = 'slate' | 'teal' | 'amber' | 'emerald';
 const TONES: Record<Tone, { bg: string; border: string; icon: string; title: string }> = {
-  slate: { bg: 'bg-slate-50', border: 'border-slate-200', icon: 'text-slate-500', title: 'text-slate-900' },
+  slate: { bg: 'bg-[#faf8f5]', border: 'border-slate-200', icon: 'text-slate-500', title: 'text-slate-900' },
   teal: { bg: 'bg-teal-50', border: 'border-teal-200', icon: 'text-teal-600', title: 'text-teal-900' },
   amber: { bg: 'bg-amber-50', border: 'border-amber-200', icon: 'text-amber-600', title: 'text-amber-900' },
   emerald: { bg: 'bg-emerald-50', border: 'border-emerald-200', icon: 'text-emerald-600', title: 'text-emerald-900' },
@@ -637,7 +637,7 @@ function DecisionCard({
         <button
           onClick={() => onDecide('vill_inte_salja')}
           disabled={submitting}
-          className="flex items-center justify-center gap-2 h-11 rounded-full border border-slate-300 text-slate-700 font-semibold text-[14px] hover:bg-slate-50 disabled:opacity-60 disabled:cursor-not-allowed transition"
+          className="flex items-center justify-center gap-2 h-11 rounded-full border border-slate-300 text-slate-700 font-semibold text-[14px] hover:bg-[#faf8f5] disabled:opacity-60 disabled:cursor-not-allowed transition"
         >
           <ThumbsDown className="w-4 h-4" />
           Nej tack

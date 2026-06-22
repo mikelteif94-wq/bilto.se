@@ -195,7 +195,7 @@ export default function DealerLogin({
 
             <div className="relative">
               <div className="bg-white rounded-xl border border-slate-200 shadow-2xl shadow-slate-900/20 overflow-hidden">
-                <div className="bg-slate-50 border-b border-slate-200 px-7 py-5 flex items-center gap-3">
+                <div className="bg-[#faf8f5] border-b border-slate-200 px-7 py-5 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
                     <Building2 className="w-5 h-5 text-[#0e6efe]" />
                   </div>
@@ -304,7 +304,7 @@ export default function DealerLogin({
                 </div>
 
                 {!pending && (
-                  <div className="border-t border-slate-100 bg-slate-50 px-7 py-4 text-center">
+                  <div className="border-t border-slate-100 bg-[#faf8f5] px-7 py-4 text-center">
                     <p className="text-[13px] text-slate-600">
                       Har du inget konto?{' '}
                       <button
