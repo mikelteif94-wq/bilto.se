@@ -840,7 +840,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <img
                 src="/ee2543a0-987e-446d-9c5e-edb20859e84d.png"
                 alt="Karta över Sverige med upphämtningsorter"
-                className="w-4/5 max-w-sm object-contain block"
+                className="w-full max-w-sm object-contain block"
                 loading="lazy"
                 decoding="async"
               />
