@@ -551,7 +551,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                           <button
                             key={s.label}
                             type="button"
-                            onClick={() => handleCarSelect(s.make, s.model)}
+                            onClick={() => openDrawer(`${s.make} ${s.model}`)}
                             className="inline-flex items-center gap-1 text-[12px] text-slate-600 hover:text-[#0e6efe] bg-white hover:bg-blue-50 border border-slate-200 hover:border-[#0e6efe]/40 rounded-xl px-3 py-1.5 font-medium transition-all shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
                           >
                             <TrendingUp className="w-3 h-3 opacity-50" />
