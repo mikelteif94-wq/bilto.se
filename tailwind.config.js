@@ -2,16 +2,18 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    borderRadius: {
+      none: '0px',
+      sm: '4px',
+      DEFAULT: '4px',
+      md: '4px',
+      lg: '4px',
+      xl: '4px',
+      '2xl': '4px',
+      '3xl': '4px',
+      full: '9999px',
+    },
     extend: {
-      borderRadius: {
-        sm: '3px',
-        DEFAULT: '4px',
-        md: '6px',
-        lg: '8px',
-        xl: '10px',
-        '2xl': '12px',
-        '3xl': '16px',
-      },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
       },
