@@ -1,6 +1,7 @@
-import { useState, useMemo, useEffect, lazy, Suspense } from 'react';
-import { X, ChevronDown, ChevronUp, Star, ArrowRight, Search, Zap, RotateCcw, Menu, CheckCircle2, XCircle, Check, Loader2 } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { X, ChevronDown, ChevronUp, Star, ArrowRight, Search, Zap, RotateCcw, Menu, CheckCircle2, XCircle, Check } from 'lucide-react';
 import CompactCarCard from '../components/CompactCarCard';
+import BuyDrawer from '../components/BuyDrawer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAllComparisonCars } from '../lib/comparison';
 import type { ComparisonCar } from '../lib/comparison/types';
@@ -11,7 +12,6 @@ import { useCatalogCars } from '../hooks/useCatalogCars';
 import { useCarImages } from '../hooks/useCarImages';
 import MobileMenu from '../components/MobileMenu';
 
-const BuyCarPage = lazy(() => import('./BuyCarPage'));
 
 interface JamforBilarPageProps {
   onBack: () => void;
@@ -708,57 +708,8 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
 
       <SiteFooter onNavigate={() => onBack()} />
 
-      {/* ── Buy flow modal ── */}
-      <AnimatePresence>
-        {buyModalCar !== null && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-              onClick={() => setBuyModalCar(null)}
-            />
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-2xl bg-[#faf8f5] shadow-2xl"
-            >
-              <div className="sticky top-0 z-10 flex items-center justify-between px-5 pt-4 pb-3 bg-[#faf8f5] border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-10 w-auto object-contain" />
-                  <span className="text-[13px] font-semibold text-slate-500">Bilto-expert tillgänglig</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setBuyModalCar(null)}
-                  className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 transition text-slate-500"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="px-5 pt-2 pb-1 bg-[#faf8f5]">
-                <p className="text-[11px] text-slate-400">Vi hör av oss inom en arbetsdag</p>
-              </div>
-              <Suspense fallback={
-                <div className="flex items-center justify-center py-20">
-                  <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-                </div>
-              }>
-                <BuyCarPage
-                  initialBil={buyModalCar}
-                  source="Jämför-sida"
-                  hideNav
-                  onBack={() => setBuyModalCar(null)}
-                />
-              </Suspense>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* ── Buy drawer ── */}
+      <BuyDrawer car={buyModalCar} onClose={() => setBuyModalCar(null)} />
     </div>
   );
 }
