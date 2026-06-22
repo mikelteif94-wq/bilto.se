@@ -838,7 +838,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div className="order-2 md:order-1 flex justify-center">
               <img
-                src="/ee2543a0-987e-446d-9c5e-edb20859e84d.png"
+                src="/3c4ee06c-25d5-4c3f-ae5b-354bef7f043c.png"
                 alt="Karta över Sverige med upphämtningsorter"
                 className="max-w-full h-auto block"
                 loading="lazy"
