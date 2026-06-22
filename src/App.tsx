@@ -50,7 +50,6 @@ const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
 const JamforBilarPage = lazy(() => import('./pages/JamforBilarPage'));
-const FormansbildsKalkylator = lazy(() => import('./pages/FormansbildsKalkylator'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -393,17 +392,6 @@ function App() {
             window.history.pushState({}, '', `/kop-bil/bestall?${p.toString()}`);
             setPath('/kop-bil/bestall');
           }}
-        />
-      </Suspense>
-    );
-  }
-
-  if (path === '/formansbilar') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <FormansbildsKalkylator
-          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
-          onNavigateConsultation={() => { window.history.pushState({}, '', '/gratis-konsultation'); setPath('/gratis-konsultation'); }}
         />
       </Suspense>
     );

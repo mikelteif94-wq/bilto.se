@@ -122,18 +122,6 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
               <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-300" strokeWidth={2.5} />
               Jämför bilar
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                window.history.pushState({}, '', '/formansbilar');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-                onClose();
-              }}
-              className="w-full text-left px-3 py-2.5 rounded-md text-[15px] text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition flex items-center gap-2"
-            >
-              <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-300" strokeWidth={2.5} />
-              Förmånsbilskalkylator
-            </button>
           </div>
 
           <div className="mx-2 my-2 border-t border-slate-100" />
