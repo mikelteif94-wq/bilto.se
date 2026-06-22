@@ -262,21 +262,21 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 mt-6">
           {/* ── Inputs — left on desktop, first on mobile ── */}
           <div className="lg:col-span-3 space-y-4">
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-6 space-y-6">
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden divide-y divide-slate-100">
 
               {/* Income year */}
-              <div>
-                <label className="text-[12px] font-bold text-slate-500 uppercase tracking-wide block mb-2.5">Inkomstår</label>
+              <div className="p-5 sm:p-6">
+                <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Inkomstår</label>
                 <div className="flex flex-wrap gap-2">
                   {INCOME_YEARS.map(y => (
                     <button
                       key={y}
                       type="button"
                       onClick={() => setIncomeYear(y)}
-                      className={`h-9 px-4 rounded-xl text-[13px] font-semibold transition-all ${
+                      className={`h-9 px-4 rounded-xl text-[13.5px] font-medium transition-all ${
                         incomeYear === y
-                          ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/30'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          ? 'bg-[#0e6efe] text-white shadow-sm'
+                          : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
                       }`}
                     >
                       {y}
@@ -286,16 +286,17 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
               </div>
 
               {/* Quick pick from catalog */}
-              <div>
-                <label className="text-[12px] font-bold text-slate-500 uppercase tracking-wide block mb-2.5">Välj bil från katalog</label>
+              <div className="p-5 sm:p-6">
+                <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">Välj bil från katalog</label>
+                <p className="text-[13.5px] text-slate-500 mb-3">Fyller i nybilspris automatiskt.</p>
                 <div className="relative">
                   <Car className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0e6efe] pointer-events-none" />
                   <select
                     value={selectedCarId}
                     onChange={handleCarSelect}
-                    className="w-full h-11 pl-10 pr-9 rounded-2xl border border-slate-200 bg-slate-50 text-[13px] text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] appearance-none transition"
+                    className="form-control pl-10 appearance-none pr-10"
                   >
-                    <option value="">— Välj för att fylla i pris automatiskt —</option>
+                    <option value="">— Välj modell —</option>
                     {QUICK_CARS.map(c => (
                       <option key={c.id} value={c.id}>
                         {c.brand_display} {c.model_display} — {fmt(c.pricing.new_from_sek ?? 0)} kr
@@ -307,10 +308,10 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
               </div>
 
               {/* Nybilspris slider */}
-              <div>
-                <div className="flex flex-col gap-0.5 mb-3">
-                  <label className="text-[12px] font-bold text-slate-500 uppercase tracking-wide">Nybilspris (inkl. moms)</label>
-                  <span className="text-[22px] font-extrabold text-slate-900 tabular-nums leading-tight">{fmt(nybilspris)} <span className="text-[16px] font-bold text-slate-500">kr</span></span>
+              <div className="p-5 sm:p-6">
+                <div className="flex items-end justify-between mb-3">
+                  <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900">Nybilspris (inkl. moms)</label>
+                  <span className="text-[20px] font-extrabold text-slate-900 tabular-nums leading-none">{fmt(nybilspris)} <span className="text-[14px] font-semibold text-slate-400">kr</span></span>
                 </div>
                 <input
                   type="range"
@@ -323,38 +324,41 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                   style={{ background: `linear-gradient(to right, #0e6efe ${sliderPct}%, #e2e8f0 ${sliderPct}%)` }}
                 />
                 <div className="flex justify-between mt-1.5">
-                  <span className="text-[10px] text-slate-400">100 000 kr</span>
-                  <span className="text-[10px] text-slate-400">1 200 000 kr</span>
+                  <span className="text-[11px] text-slate-400">100 000 kr</span>
+                  <span className="text-[11px] text-slate-400">1 200 000 kr</span>
                 </div>
               </div>
 
               {/* Fordonsskatt */}
-              <div>
-                <label className="text-[12px] font-bold text-slate-500 uppercase tracking-wide block mb-2.5">
-                  Fordonsskatt {incomeYear} (kr/år)
+              <div className="p-5 sm:p-6">
+                <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+                  Fordonsskatt {incomeYear}
                 </label>
-                <div className="relative">
+                <p className="text-[13.5px] text-slate-500 mb-3">Finns på Transportstyrelsen eller i bilens dokument.</p>
+                <div className="relative sm:max-w-xs">
                   <input
                     type="text"
                     inputMode="numeric"
                     value={fordonsskattStr}
                     onChange={e => setFordonsskattStr(e.target.value.replace(/[^0-9]/g, ''))}
                     placeholder="t.ex. 4 000"
-                    className="w-full h-11 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
+                    className="form-control pr-12"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] text-slate-400 pointer-events-none">kr</span>
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none font-medium">kr/år</span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1.5">Finns på Transportstyrelsen eller i bilens dokument.</p>
               </div>
 
               {/* Extrautrustning toggle */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-[12px] font-bold text-slate-500 uppercase tracking-wide">Extrautrustning</label>
+              <div className="p-5 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[16px] sm:text-[17px] font-bold text-slate-900">Extrautrustning</p>
+                    <p className="text-[13.5px] text-slate-500 mt-0.5">Lägg till om bilen har tillvalsutrustning.</p>
+                  </div>
                   <button
                     type="button"
                     onClick={() => { setHasExtrautrustning(v => !v); if (hasExtrautrustning) setExtrautrustningStr(''); }}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none ${hasExtrautrustning ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
+                    className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none ${hasExtrautrustning ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
                   >
                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${hasExtrautrustning ? 'translate-x-6' : 'translate-x-1'}`} />
                   </button>
@@ -362,29 +366,26 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                 <AnimatePresence initial={false}>
                   {hasExtrautrustning && (
                     <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                      <div className="relative mt-1">
+                      <div className="relative mt-3 sm:max-w-xs">
                         <input
                           type="text"
                           inputMode="numeric"
                           value={extrautrustningStr}
                           onChange={e => setExtrautrustningStr(e.target.value.replace(/[^0-9]/g, ''))}
                           placeholder="t.ex. 25 000"
-                          className="w-full h-11 px-4 rounded-2xl border border-slate-200 bg-slate-50 text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/40 focus:border-[#0e6efe] transition"
+                          className="form-control pr-8"
                         />
-                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[12px] text-slate-400 pointer-events-none">kr</span>
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none font-medium">kr</span>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-                {!hasExtrautrustning && (
-                  <p className="text-[11px] text-slate-400">Lägg till om bilen har tillvalsutrustning.</p>
-                )}
               </div>
 
               {/* Drivmedel */}
-              <div>
-                <label className="text-[12px] font-bold text-slate-500 uppercase tracking-wide block mb-2.5">Drivmedel</label>
-                <div className="grid grid-cols-3 gap-2">
+              <div className="p-5 sm:p-6">
+                <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Drivmedel</label>
+                <div className="flex flex-wrap gap-2">
                   {BRANSLE_TYPES.map(b => {
                     const active = bransledTyp === b.id;
                     return (
@@ -392,22 +393,21 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
                         key={b.id}
                         type="button"
                         onClick={() => setBransledTyp(b.id as typeof bransledTyp)}
-                        className={`flex flex-col items-center gap-1.5 py-3.5 rounded-xl text-[11.5px] font-semibold transition-all ${
+                        className={`px-4 h-9 rounded-xl text-[13.5px] font-medium transition-all ${
                           active
-                            ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/30'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            ? 'bg-[#0e6efe] text-white shadow-sm'
+                            : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
                         }`}
                       >
-                        <b.Icon className={`w-5 h-5 ${active ? 'text-white' : 'text-slate-400'}`} />
-                        <span className="leading-tight text-center px-1">{b.label}</span>
+                        {b.label}
                       </button>
                     );
                   })}
                 </div>
                 {isElOrLaddhybrid && (
-                  <div className="mt-2.5 flex items-start gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2.5">
+                  <div className="mt-3 flex items-start gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2.5">
                     <Zap className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                    <p className="text-[11.5px] text-emerald-700 leading-relaxed">
+                    <p className="text-[12.5px] text-emerald-700 leading-relaxed">
                       Elbilar &amp; laddhybrider har <strong>40% reducerat</strong> förmånsvärde – ett starkt skatteavdrag.
                     </p>
                   </div>
@@ -415,41 +415,39 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
               </div>
 
               {/* Tjänstekörning reducering */}
-              <div className="flex items-center justify-between py-3.5 px-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <div>
-                  <p className="text-[13px] font-bold text-slate-700">Körs bilen minst 3 000 mil i tjänsten per år?</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Ger 25% reducering av förmånsvärdet</p>
+              <div className="p-5 sm:p-6">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-[16px] sm:text-[17px] font-bold text-slate-900">Körs bilen minst 3 000 mil i tjänsten per år?</p>
+                    <p className="text-[13.5px] text-slate-500 mt-0.5">Ger 25% reducering av förmånsvärdet</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setTjanstekorsning(v => !v)}
+                    className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none ${tjanstekorsning ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
+                  >
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${tjanstekorsning ? 'translate-x-6' : 'translate-x-1'}`} />
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setTjanstekorsning(v => !v)}
-                  className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none ${tjanstekorsning ? 'bg-[#0e6efe]' : 'bg-slate-200'}`}
-                >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${tjanstekorsning ? 'translate-x-6' : 'translate-x-1'}`} />
-                </button>
               </div>
 
               {/* Marginalskatt */}
-              <div>
-                <label className="text-[12px] font-bold text-slate-500 uppercase tracking-wide block mb-2.5">Din marginalskatt</label>
-                <div className="grid grid-cols-4 gap-2">
+              <div className="p-5 sm:p-6">
+                <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Din marginalskatt</label>
+                <div className="flex flex-wrap gap-2">
                   {MARGINALSKATTER.map(m => (
                     <button
                       key={m.value}
                       type="button"
                       onClick={() => setMarginalSkatt(m.value)}
-                      className={`flex flex-col items-center py-2.5 rounded-xl transition-all ${
+                      className={`px-4 sm:px-5 h-10 rounded-xl text-[14px] font-medium transition-all ${
                         marginalSkatt === m.value
-                          ? 'bg-[#0e6efe] shadow-sm shadow-[#0e6efe]/30'
-                          : 'bg-slate-100 hover:bg-slate-200'
+                          ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
+                          : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
                       }`}
                     >
-                      <span className={`text-[14px] font-extrabold tabular-nums ${marginalSkatt === m.value ? 'text-white' : 'text-slate-700'}`}>
-                        {m.label}
-                      </span>
-                      <span className={`text-[9px] font-medium mt-0.5 ${marginalSkatt === m.value ? 'text-white/70' : 'text-slate-400'}`}>
-                        {m.desc}
-                      </span>
+                      {m.label}
+                      <span className={`ml-1.5 text-[11px] font-normal ${marginalSkatt === m.value ? 'text-white/70' : 'text-slate-400'}`}>{m.desc}</span>
                     </button>
                   ))}
                 </div>
