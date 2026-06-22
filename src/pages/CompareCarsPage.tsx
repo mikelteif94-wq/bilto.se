@@ -688,6 +688,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   // Chat state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState('');
+  const [chatSearching, setChatSearching] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
@@ -851,65 +852,72 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   // Chat
   const handleChatSubmit = (overrideInput?: string) => {
     const q = (overrideInput ?? chatInput).trim();
-    if (!q) return;
+    if (!q || chatSearching) return;
+
     const userMsg: ChatMessage = { role: 'user', text: q };
-
-    const allScored = allCarsRaw
-      .map(car => {
-        const result = searchScoreCar(car, q);
-        return { car, ...result };
-      })
-      .sort((a, b) => (b.score + b.qualityBonus * 0.3) - (a.score + a.qualityBonus * 0.3));
-
-    // Primary: score >= 15 (meaningful match)
-    let candidates = allScored.filter(r => r.score >= 15);
-
-    // Ensure brand diversity: max 2 per brand
-    const brandCount: Record<string, number> = {};
-    const diverse = candidates.filter(r => {
-      const b = r.car.brand_display;
-      brandCount[b] = (brandCount[b] || 0) + 1;
-      return brandCount[b] <= 2;
-    });
-    candidates = diverse.slice(0, 6);
-
-    let isFuzzy = false;
-    if (candidates.length === 0) {
-      // Fuzzy fallback: best 4 by quality+score
-      candidates = allScored.filter(r => r.score >= 5).slice(0, 4);
-      isFuzzy = candidates.length > 0;
-    }
-
-    // Zero-result reformulation hints
-    let reformulationSuggestions: string[] = [];
-    if (candidates.length === 0) {
-      const qLower = q.toLowerCase();
-      const rb = detectBrandInQuery(qLower);
-      const rbt = parseBodyTypes(qLower);
-      const rft = parseFuelTypes(qLower);
-      if (rb && (rbt.length > 0 || rft.length > 0)) {
-        if (rbt.length > 0) reformulationSuggestions.push(`Bästa ${rbt[0]}`);
-        if (rft.length > 0) reformulationSuggestions.push(`Bästa ${rft[0] === 'el' ? 'elbilen' : rft[0]}`);
-        reformulationSuggestions.push(`${rb.charAt(0).toUpperCase() + rb.slice(1)} ${rbt[0] || rft[0] || 'SUV'}`);
-      } else {
-        reformulationSuggestions = ['Familje-SUV under 400k', 'Bästa elbilen', 'Sportig kombi'];
-      }
-    }
-
-    const responseText = buildResponseText(q, candidates.length, isFuzzy);
-    const assistantMsg: ChatMessage = {
-      role: 'assistant',
-      text: responseText,
-      cars: candidates.map(r => r.car),
-      reformulations: reformulationSuggestions,
-    };
-    setChatMessages(prev => [...prev, userMsg, assistantMsg]);
+    setChatMessages(prev => [...prev, userMsg]);
     setChatInput('');
+    setChatSearching(true);
+
+    // Scroll user message into view immediately
     setTimeout(() => {
-      if (chatScrollRef.current) {
-        chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+      chatEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 40);
+
+    // Simulate AI processing delay for better UX feel
+    setTimeout(() => {
+      const allScored = allCarsRaw
+        .map(car => {
+          const result = searchScoreCar(car, q);
+          return { car, ...result };
+        })
+        .sort((a, b) => (b.score + b.qualityBonus * 0.3) - (a.score + a.qualityBonus * 0.3));
+
+      let candidates = allScored.filter(r => r.score >= 15);
+
+      const brandCount: Record<string, number> = {};
+      const diverse = candidates.filter(r => {
+        const b = r.car.brand_display;
+        brandCount[b] = (brandCount[b] || 0) + 1;
+        return brandCount[b] <= 2;
+      });
+      candidates = diverse.slice(0, 6);
+
+      let isFuzzy = false;
+      if (candidates.length === 0) {
+        candidates = allScored.filter(r => r.score >= 5).slice(0, 4);
+        isFuzzy = candidates.length > 0;
       }
-    }, 100);
+
+      let reformulationSuggestions: string[] = [];
+      if (candidates.length === 0) {
+        const qLower = q.toLowerCase();
+        const rb = detectBrandInQuery(qLower);
+        const rbt = parseBodyTypes(qLower);
+        const rft = parseFuelTypes(qLower);
+        if (rb && (rbt.length > 0 || rft.length > 0)) {
+          if (rbt.length > 0) reformulationSuggestions.push(`Bästa ${rbt[0]}`);
+          if (rft.length > 0) reformulationSuggestions.push(`Bästa ${rft[0] === 'el' ? 'elbilen' : rft[0]}`);
+          reformulationSuggestions.push(`${rb.charAt(0).toUpperCase() + rb.slice(1)} ${rbt[0] || rft[0] || 'SUV'}`);
+        } else {
+          reformulationSuggestions = ['Familje-SUV under 400k', 'Bästa elbilen', 'Sportig kombi'];
+        }
+      }
+
+      const responseText = buildResponseText(q, candidates.length, isFuzzy);
+      const assistantMsg: ChatMessage = {
+        role: 'assistant',
+        text: responseText,
+        cars: candidates.map(r => r.car),
+        reformulations: reformulationSuggestions,
+      };
+      setChatMessages(prev => [...prev, assistantMsg]);
+      setChatSearching(false);
+
+      setTimeout(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 120);
+    }, 700);
   };
 
   const openContactForCar = (car: ComparisonCar | null) => {
@@ -2132,47 +2140,66 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-[13px] font-medium text-white mb-4">
-              <Search className="w-4 h-4 text-white" />
-              Smart bilsökning
+              <Sparkles className="w-4 h-4 text-[#5b9bfe]" />
+              AI-bilsökning
             </div>
             <h2 className="text-[22px] sm:text-[32px] font-bold text-white mb-2">
               Hittar du inte rätt bil?
             </h2>
             <p className="text-slate-300 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
-              Beskriv vad du söker så hjälper vi dig hitta rätt bil.
+              Beskriv vad du söker – "barnvagn och stor bagage", "elbil för pendling" eller "sportig kombi under 500k".
             </p>
           </div>
 
-          <div className="bg-slate-900 rounded-xl ring-1 ring-white/10 overflow-hidden">
-            {chatMessages.length > 0 && (
-              <div ref={chatScrollRef} className="max-h-[400px] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
-                <div className="p-4 sm:p-6 space-y-4">
-                  {chatMessages.map((msg, i) => (
-                    <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className="max-w-[90%] sm:max-w-[85%]">
-                        {msg.role === 'assistant' && (
-                          <div className="flex items-center gap-2 mb-1.5">
-                            <div className="w-6 h-6 rounded-full bg-[#0e6efe] flex items-center justify-center">
-                              <span className="text-[11px] font-bold text-white leading-none">B</span>
-                            </div>
-                            <span className="text-[11px] font-medium text-slate-400">Bilto</span>
+          <div className="bg-slate-900 rounded-2xl ring-1 ring-white/10 overflow-hidden">
+            {/* Chat messages */}
+            <div
+              ref={chatScrollRef}
+              className="overflow-y-auto overscroll-contain"
+              style={{
+                WebkitOverflowScrolling: 'touch',
+                maxHeight: (chatMessages.length > 0 || chatSearching) ? '520px' : '0px',
+                transition: 'max-height 0.3s ease',
+              }}
+            >
+              <div className="p-4 sm:p-6 space-y-5">
+                {chatMessages.map((msg, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div className="max-w-[92%] sm:max-w-[88%]">
+                      {msg.role === 'assistant' && (
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 rounded-full bg-[#0e6efe] flex items-center justify-center shrink-0">
+                            <Sparkles className="w-3 h-3 text-white" />
                           </div>
-                        )}
-                        <div className={`px-4 py-2.5 rounded-xl text-[14px] leading-relaxed ${
-                          msg.role === 'user'
-                            ? 'bg-[#0e6efe] text-white rounded-br-md'
-                            : 'bg-slate-800 text-slate-200 ring-1 ring-white/10 rounded-bl-md'
-                        }`}>
-                          {msg.text}
+                          <span className="text-[11px] font-semibold text-[#5b9bfe] tracking-wide uppercase">Bilto AI</span>
                         </div>
-                        {msg.cars && msg.cars.length > 0 && (
-                          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {msg.cars.map((car, ci) => {
-                              const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
-                              if (car.specs.fuel_types.includes('el')) {
-                                return (
+                      )}
+                      <div className={`px-4 py-2.5 rounded-xl text-[14px] leading-relaxed ${
+                        msg.role === 'user'
+                          ? 'bg-[#0e6efe] text-white rounded-br-sm'
+                          : 'bg-slate-800 text-slate-200 ring-1 ring-white/10 rounded-bl-sm'
+                      }`}>
+                        {msg.text}
+                      </div>
+                      {msg.cars && msg.cars.length > 0 && (
+                        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          {msg.cars.map((car, ci) => {
+                            const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
+                            return (
+                              <motion.div
+                                key={car.id}
+                                initial={{ opacity: 0, y: 16 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: ci * 0.09, ease: 'easeOut' }}
+                              >
+                                {car.specs.fuel_types.includes('el') ? (
                                   <ElCarCard
-                                    key={car.id}
                                     name={`${car.brand_display} ${car.model_display}`}
                                     imageUrl={imgUrl}
                                     rating={car.ratings.overall}
@@ -2187,66 +2214,97 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                                     onDetail={() => setDetailCar(car)}
                                     onCompare={() => toggleSelect(car.id)}
                                   />
-                                );
-                              }
-                              return (
-                                <CompactCarCard
-                                  key={car.id}
-                                  name={`${car.brand_display} ${car.model_display}`}
-                                  imageUrl={imgUrl}
-                                  rating={car.ratings.overall}
-                                  fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                                  bodyType={car.specs.body_type}
-                                  drivetrain={car.specs.drivetrain}
-                                  seats={car.specs.seats}
-                                  pros={car.pros}
-                                  onNegotiate={() => openContactForCar(car)}
-                                  onDetail={() => setDetailCar(car)}
-                                  onCompare={() => toggleSelect(car.id)}
-                                  isCompared={selectedIds.has(car.id)}
-                                  index={ci}
-                                  disableMotion={isMobile}
-                                />
-                              );
-                            })}
-                          </div>
-                        )}
-                        {msg.role === 'assistant' && msg.reformulations && msg.reformulations.length > 0 && (
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {msg.reformulations.map(r => (
-                              <button
-                                key={r}
-                                onClick={() => handleChatSubmit(r)}
-                                className="px-3 py-1.5 rounded-xl bg-slate-700 text-[12px] text-slate-200 font-medium hover:bg-[#0e6efe] hover:text-white transition-all"
-                              >
-                                {r}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                                ) : (
+                                  <CompactCarCard
+                                    name={`${car.brand_display} ${car.model_display}`}
+                                    imageUrl={imgUrl}
+                                    rating={car.ratings.overall}
+                                    fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                                    bodyType={car.specs.body_type}
+                                    drivetrain={car.specs.drivetrain}
+                                    seats={car.specs.seats}
+                                    pros={car.pros}
+                                    onNegotiate={() => openContactForCar(car)}
+                                    onDetail={() => setDetailCar(car)}
+                                    onCompare={() => toggleSelect(car.id)}
+                                    isCompared={selectedIds.has(car.id)}
+                                    index={ci}
+                                  />
+                                )}
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      )}
+                      {msg.role === 'assistant' && msg.reformulations && msg.reformulations.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {msg.reformulations.map(r => (
+                            <button
+                              key={r}
+                              onClick={() => handleChatSubmit(r)}
+                              className="px-3 py-1.5 rounded-xl bg-slate-700 text-[12px] text-slate-200 font-medium hover:bg-[#0e6efe] hover:text-white transition-all active:scale-95"
+                            >
+                              {r}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  ))}
-                  <div ref={chatEndRef} />
-                </div>
-              </div>
-            )}
+                  </motion.div>
+                ))}
 
+                {/* Typing indicator */}
+                <AnimatePresence>
+                  {chatSearching && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex justify-start"
+                    >
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 rounded-full bg-[#0e6efe] flex items-center justify-center shrink-0">
+                            <Sparkles className="w-3 h-3 text-white" />
+                          </div>
+                          <span className="text-[11px] font-semibold text-[#5b9bfe] tracking-wide uppercase">Bilto AI</span>
+                        </div>
+                        <div className="px-4 py-3.5 rounded-xl bg-slate-800 ring-1 ring-white/10 rounded-bl-sm inline-flex items-center gap-1.5">
+                          {[0, 1, 2].map(i => (
+                            <motion.div
+                              key={i}
+                              className="w-2 h-2 rounded-full bg-slate-400"
+                              animate={{ opacity: [0.3, 1, 0.3], y: [0, -4, 0] }}
+                              transition={{ duration: 0.85, repeat: Infinity, delay: i * 0.16, ease: 'easeInOut' }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div ref={chatEndRef} />
+              </div>
+            </div>
+
+            {/* Input area */}
             <div className="p-3 sm:p-4 border-t border-white/10 bg-slate-900">
-              {chatMessages.length === 0 && (
+              {chatMessages.length === 0 && !chatSearching && (
                 <div className="mb-3 flex flex-wrap gap-2">
                   {[
-                    { label: 'Familje-SUV under 400k', query: 'Familje-SUV under 400k' },
+                    { label: 'Familje-SUV', query: 'Familje-SUV under 500k' },
                     { label: 'Bästa elbilen', query: 'Bästa elbilen' },
                     { label: 'Sportig kombi', query: 'Sportig kombi' },
-                    { label: 'Billig första bil', query: 'Billig första bil' },
-                    { label: 'SUV med stor bagage', query: 'SUV med stor bagage' },
+                    { label: 'Bil med barnvagn', query: 'Bil med barnvagn' },
                     { label: 'Bil för hund', query: 'Bil för hund' },
+                    { label: 'SUV med AWD', query: 'SUV med AWD' },
                   ].map(({ label, query }) => (
                     <button
                       key={label}
                       onClick={() => handleChatSubmit(query)}
-                      className="px-3 py-1.5 rounded-xl bg-white/10 text-[13px] text-white font-medium hover:bg-[#0e6efe] hover:text-white transition-all border border-white/15 active:scale-95"
+                      className="px-3 py-1.5 rounded-xl bg-white/10 text-[13px] text-white font-medium hover:bg-[#0e6efe] transition-all border border-white/15 active:scale-95"
                     >
                       {label}
                     </button>
@@ -2259,10 +2317,15 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder='T.ex. "elbil för familj", "Toyota SUV" eller "bil med hund"...'
-                  className="flex-1 h-11 px-4 rounded-xl border border-orange-300 bg-white text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-700/40 focus:border-orange-700 transition placeholder:text-slate-400"
+                  disabled={chatSearching}
+                  className="flex-1 h-11 px-4 rounded-xl border border-orange-300 bg-white text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-700/40 focus:border-orange-700 transition placeholder:text-slate-400 disabled:opacity-60"
                 />
-                <button type="submit" disabled={!chatInput.trim()} className="h-11 w-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:opacity-40 text-white flex items-center justify-center transition shrink-0">
-                  <Send className="w-4 h-4" />
+                <button
+                  type="submit"
+                  disabled={!chatInput.trim() || chatSearching}
+                  className="h-11 w-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:opacity-40 text-white flex items-center justify-center transition shrink-0 active:scale-95"
+                >
+                  {chatSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </button>
               </form>
             </div>
