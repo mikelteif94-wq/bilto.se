@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, ChevronLeft, Check, Phone, Search, ArrowLeftRight, CheckCircle, Star } from 'lucide-react';
+import { X, ChevronLeft, Check, Phone, Search, ArrowLeftRight, CheckCircle } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ErrorBanner from './ErrorBanner';
 import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
@@ -7,7 +7,6 @@ import BuyDetailsStep, { type BuyDetailsData } from './forms/BuyDetailsStep';
 import BuyTradeInStep, { type BuyTradeInData } from './forms/BuyTradeInStep';
 import BuyContactStep, { type BuyContactData } from './forms/BuyContactStep';
 import { supabase } from '../lib/supabase';
-import { useCarCatalogLookup } from '../lib/comparison/useCarCatalogLookup';
 
 interface BuyDrawerProps {
   car: string | null;
@@ -78,12 +77,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
   const [guidanceSubmitting, setGuidanceSubmitting] = useState(false);
   const [guidanceDone, setGuidanceDone] = useState(false);
   const [guidanceError, setGuidanceError] = useState<string | null>(null);
-
-  // Parse make/model from car label for catalog lookup on carIntent step
-  const carParts = (car ?? '').trim().split(' ');
-  const catalogMake = step === 'carIntent' && carParts.length >= 2 ? carParts[0] : '';
-  const catalogModel = step === 'carIntent' && carParts.length >= 2 ? carParts.slice(1).join(' ') : '';
-  const { data: catalogCar } = useCarCatalogLookup(catalogMake, catalogModel);
 
   const preferredTimeLabel = (time: string, format: 'inline' | 'short') => {
     if (time === 'morning') return format === 'inline' ? ' på förmiddagen' : 'Förmiddag';
@@ -439,51 +432,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
 
               {step === 'carIntent' && car && (
                 <div className="py-2 space-y-3">
-                  {/* Car hero card */}
-                  {catalogCar && (catalogCar.image_url || catalogCar.ratings.overall > 0 || catalogCar.pricing.monthly_used) && (
-                    <div className="rounded-xl overflow-hidden border border-slate-100 bg-slate-50 mb-1">
-                      {catalogCar.image_url && (
-                        <div className="h-36 bg-slate-100 relative overflow-hidden">
-                          <img
-                            src={catalogCar.image_url}
-                            alt={car}
-                            className="w-full h-full object-contain object-center p-2"
-                            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-                          />
-                        </div>
-                      )}
-                      <div className="flex items-center gap-4 px-4 py-3">
-                        {catalogCar.ratings.overall > 0 && (
-                          <div className="flex items-center gap-1.5 shrink-0">
-                            <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                            <span className="text-[14px] font-bold text-slate-800">{catalogCar.ratings.overall.toFixed(1)}</span>
-                            <span className="text-[11px] text-slate-400 font-medium">/ 5</span>
-                          </div>
-                        )}
-                        {catalogCar.ratings.overall > 0 && (catalogCar.pricing.monthly_used || catalogCar.pricing.monthly_used_min) && (
-                          <span className="w-px h-4 bg-slate-200 shrink-0" />
-                        )}
-                        {(catalogCar.pricing.monthly_used || catalogCar.pricing.monthly_used_min) && (
-                          <div className="flex items-baseline gap-1 min-w-0">
-                            <span className="text-[11px] text-slate-400 shrink-0">Ca</span>
-                            <span className="text-[14px] font-bold text-slate-800 truncate">
-                              {(catalogCar.pricing.monthly_used_min
-                                ? Math.round(catalogCar.pricing.monthly_used_min / 100) * 100
-                                : catalogCar.pricing.monthly_used
-                              )?.toLocaleString('sv-SE')}
-                            </span>
-                            <span className="text-[11px] text-slate-400 shrink-0">kr/mån</span>
-                          </div>
-                        )}
-                        {catalogCar.pros.length > 0 && (
-                          <span className="ml-auto text-[11px] text-emerald-600 font-semibold bg-emerald-50 rounded-lg px-2 py-0.5 shrink-0 truncate max-w-[120px]">
-                            {catalogCar.pros[0]}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
                   <p className="text-[14.5px] text-slate-500 leading-[1.55]">
                     Välj det som passar dig bäst.
                   </p>
