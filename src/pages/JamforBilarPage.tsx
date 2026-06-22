@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { X, ChevronDown, ChevronUp, Star, ArrowRight, Search, Zap, RotateCcw, Plus, GitCompareArrows, CheckCircle2, XCircle, ChevronLeft } from 'lucide-react';
+import { X, ChevronDown, ChevronUp, Star, ArrowRight, Search, Zap, RotateCcw, Plus, Columns2, CheckCircle2, XCircle, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAllComparisonCars } from '../lib/comparison';
 import type { ComparisonCar } from '../lib/comparison/types';
@@ -186,8 +186,8 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #060e1e 0%, #0a1628 6%, #f8f9fb 18%)' }}>
-      {/* Sticky nav */}
+    <div className="min-h-screen bg-[#f8f9fb]">
+      {/* Nav — matches site style */}
       <nav className="sticky top-0 z-40" style={{
         background: 'linear-gradient(180deg, #0a57cc 0%, #0e6efe 100%)',
         boxShadow: '0 1px 0 rgba(255,255,255,0.08), 0 4px 24px rgba(10,87,204,0.28)',
@@ -205,10 +205,6 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
           </button>
           <div className="w-px h-5 bg-white/20 mx-1" />
           <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-10 w-auto object-contain" />
-          <div className="flex items-center gap-2 ml-1">
-            <GitCompareArrows className="w-4 h-4 text-white/60" />
-            <span className="text-[14px] font-bold text-white">Jämför bilar</span>
-          </div>
           {cars.length > 0 && (
             <button
               type="button"
@@ -222,23 +218,27 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
         </div>
       </nav>
 
-      {/* Hero */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-64 rounded-full opacity-20"
-            style={{ background: 'radial-gradient(circle, rgba(14,110,254,0.6) 0%, transparent 70%)' }} />
-        </div>
-        <div className="relative max-w-5xl mx-auto px-4 pt-10 pb-12 sm:pt-14 sm:pb-16 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/10 text-white/80 text-[12px] font-semibold px-4 py-1.5 rounded-full mb-5 backdrop-blur-sm border border-white/10">
-            <GitCompareArrows className="w-3.5 h-3.5" />
-            Upp till 3 bilar sida vid sida
+      {/* Hero — its own dark block so text is always readable */}
+      <div className="bg-[#060e1e]">
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-1/4 w-96 h-64 rounded-full opacity-25"
+              style={{ background: 'radial-gradient(circle, rgba(14,110,254,0.6) 0%, transparent 70%)' }} />
+            <div className="absolute bottom-0 right-1/4 w-64 h-48 rounded-full opacity-15"
+              style={{ background: 'radial-gradient(circle, rgba(56,189,248,0.5) 0%, transparent 70%)' }} />
           </div>
-          <h1 className="text-[26px] sm:text-[36px] lg:text-[42px] font-extrabold text-white mb-3 leading-tight">
-            Jämför bilar sida vid sida
-          </h1>
-          <p className="text-[14px] sm:text-[16px] text-white/60 max-w-xl mx-auto">
-            Välj modeller nedan och jämför betyg, ägandekostnader och specifikationer.
-          </p>
+          <div className="relative max-w-5xl mx-auto px-4 pt-10 pb-10 sm:pt-12 sm:pb-12 text-center">
+            <div className="inline-flex items-center gap-2 bg-white/10 text-white/70 text-[12px] font-semibold px-4 py-1.5 rounded-full mb-4 border border-white/10">
+              <Columns2 className="w-3.5 h-3.5" />
+              Upp till 3 bilar sida vid sida
+            </div>
+            <h1 className="text-[26px] sm:text-[34px] lg:text-[40px] font-extrabold text-white mb-3 leading-tight">
+              Jämför bilar sida vid sida
+            </h1>
+            <p className="text-[14px] sm:text-[16px] text-white/50 max-w-xl mx-auto">
+              Välj modeller nedan och jämför betyg, ägandekostnader och specifikationer.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -351,7 +351,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
 
         {cars.length === 0 && (
           <div className="text-center py-12">
-            <GitCompareArrows className="w-10 h-10 mx-auto mb-3 text-slate-300" />
+            <Columns2 className="w-10 h-10 mx-auto mb-3 text-slate-300" />
             <p className="text-[16px] font-semibold text-slate-500">Välj bilar ovan för att börja jämföra.</p>
             <p className="text-[13px] text-slate-400 mt-1">Du kan jämföra upp till 3 bilar sida vid sida.</p>
           </div>

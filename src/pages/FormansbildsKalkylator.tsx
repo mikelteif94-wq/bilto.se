@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { ChevronDown, ChevronUp, ArrowRight, Info, Briefcase, Car, Zap, Fuel, ChevronLeft, Calculator } from 'lucide-react';
+import { ChevronDown, ChevronUp, ArrowRight, Info, Briefcase, Car, Zap, Fuel, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SiteFooter } from '../components/SiteFooter';
 import { setPageMeta } from '../lib/pageMeta';
@@ -134,8 +134,8 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #060e1e 0%, #0a1628 6%, #f8f9fb 18%)' }}>
-      {/* Nav */}
+    <div className="min-h-screen bg-[#f8f9fb]">
+      {/* Nav — matches site style */}
       <nav className="sticky top-0 z-40" style={{
         background: 'linear-gradient(180deg, #0a57cc 0%, #0e6efe 100%)',
         boxShadow: '0 1px 0 rgba(255,255,255,0.08), 0 4px 24px rgba(10,87,204,0.28)',
@@ -153,39 +153,37 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
           </button>
           <div className="w-px h-5 bg-white/20 mx-1" />
           <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-10 w-auto object-contain" />
-          <div className="flex items-center gap-2 ml-1">
-            <Calculator className="w-4 h-4 text-white/60" />
-            <span className="text-[14px] font-bold text-white">Förmånsbilskalkylator</span>
-          </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-1/4 w-96 h-64 rounded-full opacity-20"
-            style={{ background: 'radial-gradient(circle, rgba(14,110,254,0.6) 0%, transparent 70%)' }} />
-        </div>
-        <div className="relative max-w-4xl mx-auto px-4 pt-10 pb-12 sm:pt-14 sm:pb-16">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-white/10 text-white/80 text-[12px] font-semibold px-4 py-1.5 rounded-full mb-4 backdrop-blur-sm border border-white/10">
-                <Briefcase className="w-3.5 h-3.5" />
-                Tjänstebil &amp; förmånsbil 2025
+      {/* Hero — its own dark block */}
+      <div className="bg-[#060e1e]">
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 right-1/4 w-96 h-64 rounded-full opacity-25"
+              style={{ background: 'radial-gradient(circle, rgba(14,110,254,0.6) 0%, transparent 70%)' }} />
+          </div>
+          <div className="relative max-w-4xl mx-auto px-4 pt-10 pb-10 sm:pt-12 sm:pb-12">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+              <div>
+                <div className="inline-flex items-center gap-2 bg-white/10 text-white/70 text-[12px] font-semibold px-4 py-1.5 rounded-full mb-4 border border-white/10">
+                  <Briefcase className="w-3.5 h-3.5" />
+                  Tjänstebil &amp; förmånsbil 2025
+                </div>
+                <h1 className="text-[26px] sm:text-[34px] font-extrabold text-white mb-2 leading-tight">
+                  Förmånsbilskalkylator
+                </h1>
+                <p className="text-[14px] sm:text-[16px] text-white/50 max-w-lg leading-relaxed">
+                  Räkna ut exakt vad din förmånsbil kostar i skatt – och jämför mot privat billån.
+                </p>
               </div>
-              <h1 className="text-[26px] sm:text-[36px] font-extrabold text-white mb-2 leading-tight">
-                Förmånsbilskalkylator
-              </h1>
-              <p className="text-[14px] sm:text-[16px] text-white/60 max-w-lg leading-relaxed">
-                Räkna ut exakt vad din förmånsbil kostar i skatt – och jämför mot privat billån.
-              </p>
+              {selectedImg && selectedCar && (
+                <div className="shrink-0 hidden sm:block">
+                  <p className="text-[11px] text-white/40 text-center mb-1">{selectedCar.brand_display} {selectedCar.model_display}</p>
+                  <img src={selectedImg} alt="" className="h-20 object-contain drop-shadow-lg" />
+                </div>
+              )}
             </div>
-            {selectedImg && selectedCar && (
-              <div className="shrink-0 hidden sm:block">
-                <p className="text-[11px] text-white/40 text-center mb-1">{selectedCar.brand_display} {selectedCar.model_display}</p>
-                <img src={selectedImg} alt="" className="h-20 object-contain drop-shadow-lg" />
-              </div>
-            )}
           </div>
         </div>
       </div>
