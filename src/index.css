@@ -144,7 +144,7 @@
 @layer components {
   /* Primary CTA button */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white transition-all duration-200 active:scale-[0.97];
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md font-semibold text-white transition-all duration-200 active:scale-[0.97];
     background: linear-gradient(135deg, #1a7fff 0%, #0e6efe 50%, #0a57cc 100%);
     box-shadow: 0 4px 14px rgba(14,110,254,0.30);
   }
@@ -155,17 +155,17 @@
 
   /* Secondary outlined button */
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-bilto-600 border border-bilto-200 bg-bilto-50 hover:bg-bilto-100 transition-all duration-200 active:scale-[0.97];
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md font-semibold text-bilto-600 border border-bilto-200 bg-bilto-50 hover:bg-bilto-100 transition-all duration-200 active:scale-[0.97];
   }
 
   /* Ghost button */
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 active:scale-[0.97];
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 active:scale-[0.97];
   }
 
   /* Gold accent button */
   .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white transition-all duration-200 active:scale-[0.97];
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md font-semibold text-white transition-all duration-200 active:scale-[0.97];
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
     box-shadow: 0 4px 14px rgba(245,158,11,0.28);
   }
@@ -175,11 +175,11 @@
   }
 
   .input-base {
-    @apply px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-bilto-500/30 focus:border-bilto-500;
+    @apply px-4 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-bilto-500/30 focus:border-bilto-500;
   }
 
   .form-control {
-    @apply w-full h-12 px-4 text-[15px] bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-bilto-500 focus:ring-2 focus:ring-bilto-500/15 transition-all duration-200;
+    @apply w-full h-12 px-4 text-[15px] bg-white border border-slate-200 rounded-md text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-bilto-500 focus:ring-2 focus:ring-bilto-500/15 transition-all duration-200;
     box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
   .form-control:hover {
@@ -205,7 +205,7 @@
 
   /* Premium card base */
   .card-base {
-    @apply bg-white rounded-xl ring-1 ring-slate-100;
+    @apply bg-white rounded-md ring-1 ring-slate-100;
     box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
   }
 
