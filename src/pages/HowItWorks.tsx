@@ -561,10 +561,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     </div>}
                     <button
                       type="button"
-                      onClick={() => {
-                        window.history.pushState({}, '', '/kop-bil/bestall');
-                        window.dispatchEvent(new PopStateEvent('popstate'));
-                      }}
+                      onClick={() => openDrawer('', undefined, 'searching')}
                       className="w-full h-10 rounded-xl border border-slate-200 bg-[#faf8f5] hover:bg-slate-100 active:scale-[0.98] text-slate-500 hover:text-slate-700 text-[12px] font-semibold transition-all inline-flex items-center justify-center gap-1.5"
                     >
                       <Sparkles className="w-3.5 h-3.5 text-[#0e6efe]" />
