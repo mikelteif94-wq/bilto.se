@@ -1117,10 +1117,21 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       {scrolled && (
         <a
           href="tel:+46855550200"
-          className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-center justify-center gap-2.5 h-14 rounded-xl bg-[#0e6efe] hover:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_10px_30px_rgba(14,110,254,0.4)] transition animate-[slideUp_0.3s_ease-out]"
+          className="md:hidden fixed bottom-4 left-3 right-3 z-40 flex items-center gap-3 px-4 h-[58px] rounded bg-[#0e6efe] active:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_8px_24px_rgba(14,110,254,0.45)] transition-all duration-200 animate-[slideUp_0.3s_ease-out] overflow-hidden"
+          style={{ background: 'linear-gradient(135deg,#1a7fff 0%,#0e6efe 50%,#0a57cc 100%)' }}
         >
-          <img src="/Man_in_car_showroom_portrait.png" alt="Expert" className="w-8 h-8 rounded-xl object-cover border-2 border-white/40 shrink-0" />
-          <span>Ring expert &middot; bud direkt</span>
+          <div className="relative shrink-0">
+            <img src="/Man_in_car_showroom_portrait.png" alt="Expert" className="w-9 h-9 rounded object-cover border-2 border-white/30" />
+            <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-white" />
+          </div>
+          <div className="flex flex-col leading-tight min-w-0">
+            <span className="text-[15px] font-bold tracking-[-0.01em] truncate">Ring expert nu</span>
+            <span className="text-[11px] text-white/70 font-normal">Gratis &middot; svar direkt</span>
+          </div>
+          <div className="ml-auto shrink-0 flex items-center gap-1.5 bg-white/15 rounded px-3 py-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.77 12.17 19.79 19.79 0 0 1 1.72 3.58 2 2 0 0 1 3.68 1.4h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.06a16 16 0 0 0 6.02 6.02l2.02-2.02a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span className="text-[13px] font-semibold">Ring</span>
+          </div>
         </a>
       )}
 
