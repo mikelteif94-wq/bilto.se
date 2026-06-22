@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, lazy, Suspense } from 'react';
 import { X, ChevronDown, ChevronUp, Star, ArrowRight, Search, Zap, RotateCcw, Menu, CheckCircle2, XCircle, Check, Loader2 } from 'lucide-react';
+import CompactCarCard from '../components/CompactCarCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAllComparisonCars } from '../lib/comparison';
 import type { ComparisonCar } from '../lib/comparison/types';
@@ -312,10 +313,10 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
 
   const quickPick = useMemo(() =>
     ALL_CARS
-      .filter(c => c.is_active && !excludeIds.has(c.id))
+      .filter(c => c.is_active)
       .sort((a, b) => b.ratings.overall - a.ratings.overall)
-      .slice(0, 8),
-    [excludeIds],
+      .slice(0, 12),
+    [],
   );
 
   return (
@@ -389,69 +390,82 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
         {/* ── Car picker section ── */}
         <section className="bg-white border-b border-slate-200 py-6 sm:py-8 mb-8 shadow-sm">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
-            {/* Selected cars or empty slots */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
-              {[0, 1].map(slot => {
-                const car = cars[slot];
-                if (car) {
-                  return (
-                    <CarPickCard
-                      key={car.id}
-                      car={car}
-                      selected
-                      onSelect={() => {}}
-                      onRemove={() => setCars(prev => prev.filter((_, j) => j !== slot))}
-                      onNegotiate={() => setBuyModalCar(`${car.brand_display} ${car.model_display}`)}
-                      getCarImage={getCarImage}
-                    />
-                  );
-                }
+
+            {/* Selected cars chips */}
+            {cars.length > 0 && (
+              <div className="flex items-center flex-wrap gap-2 mb-5 pb-5 border-b border-slate-100">
+                <span className="text-[12px] font-semibold text-slate-500 shrink-0">Valda:</span>
+                {cars.map(car => (
+                  <div key={car.id} className="flex items-center gap-1.5 h-8 pl-3 pr-1 rounded-full bg-[#0e6efe] text-white text-[12px] font-semibold shadow-sm">
+                    {car.brand_display} {car.model_display}
+                    <button
+                      type="button"
+                      onClick={() => setCars(prev => prev.filter(c => c.id !== car.id))}
+                      className="ml-0.5 w-5 h-5 rounded-full bg-white/20 hover:bg-white/35 flex items-center justify-center transition-colors"
+                    >
+                      <X className="w-2.5 h-2.5" />
+                    </button>
+                  </div>
+                ))}
+                {cars.length === MAX_CARS && (
+                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-full">
+                    Scrolla ned för jämförelse
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* Header row */}
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-[14px] font-bold text-slate-800">
+                {cars.length === 0
+                  ? 'Välj 2 bilar att jämföra'
+                  : cars.length === 1
+                  ? 'Välj ytterligare en bil'
+                  : 'Byt ut en bil nedan'}
+              </p>
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                className="inline-flex items-center gap-1.5 h-8 px-3 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[11px] font-semibold transition shadow-sm"
+              >
+                <Search className="w-3 h-3" /> Sök alla bilar
+              </button>
+            </div>
+
+            {/* Quick pick grid with CompactCarCard */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+              {quickPick.map(c => {
+                const imgUrl = resolveImage(c.id, c.brand_display, c.model_display, getCarImage);
+                const fuelLabel = c.specs.fuel_types.map(f => FUEL_LABELS[f] ?? f).join(' / ');
+                const isCarSelected = cars.some(sel => sel.id === c.id);
+                const canAdd = cars.length < MAX_CARS;
                 return (
-                  <button
-                    key={slot}
-                    type="button"
-                    onClick={() => setSearchOpen(true)}
-                    className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-200 hover:border-[#0e6efe]/40 hover:bg-[#0e6efe]/3 transition-all text-slate-400 hover:text-[#0e6efe] min-h-[160px] sm:min-h-[200px]"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-[#0e6efe]/10 flex items-center justify-center transition-colors">
-                      <Search className="w-5 h-5" />
-                    </div>
-                    <span className="text-[12px] sm:text-[13px] font-semibold">Välj bil {slot + 1}</span>
-                    <span className="text-[10px] sm:text-[11px] text-slate-400">Klicka för att söka</span>
-                  </button>
+                  <CompactCarCard
+                    key={c.id}
+                    name={`${c.brand_display} ${c.model_display}`}
+                    imageUrl={imgUrl}
+                    rating={c.ratings.overall}
+                    fuelLabel={fuelLabel}
+                    bodyType={c.specs.body_type}
+                    drivetrain={c.specs.drivetrain}
+                    seats={c.specs.seats}
+                    pros={c.pros}
+                    carPrice={c.pricing.new_from_sek ?? undefined}
+                    usedPrice={c.pricing.used_from_sek ?? undefined}
+                    isSelected={isCarSelected}
+                    onSelect={
+                      isCarSelected
+                        ? () => setCars(prev => prev.filter(sel => sel.id !== c.id))
+                        : canAdd
+                        ? () => setCars(prev => [...prev, c])
+                        : undefined
+                    }
+                    onNegotiate={() => setBuyModalCar(`${c.brand_display} ${c.model_display}`)}
+                  />
                 );
               })}
             </div>
-
-            {/* Quick pick */}
-            {cars.length < MAX_CARS && (
-              <>
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Populära val</p>
-                  <button
-                    type="button"
-                    onClick={() => setSearchOpen(true)}
-                    className="inline-flex items-center gap-1.5 h-8 px-3 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[11px] font-semibold transition shadow-sm"
-                  >
-                    <Search className="w-3 h-3" /> Sök alla bilar
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
-                  {quickPick.map(c => (
-                    <CarPickCard
-                      key={c.id}
-                      car={c}
-                      selected={false}
-                      small
-                      onSelect={() => setCars(prev => [...prev, c])}
-                      onRemove={() => {}}
-                      onNegotiate={() => setBuyModalCar(`${c.brand_display} ${c.model_display}`)}
-                      getCarImage={getCarImage}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
           </div>
         </section>
 
