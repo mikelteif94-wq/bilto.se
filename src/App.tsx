@@ -50,7 +50,6 @@ const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
-const JamforBilarPage = lazy(() => import('./pages/JamforBilarPage'));
 const NyaBilarPage = lazy(() => import('./pages/NyaBilarPage'));
 
 const PageLoader = () => (
@@ -397,25 +396,6 @@ function App() {
     );
   }
 
-  if (path === '/jamfor-bilar') {
-    const ids = params.get('ids')?.split(',').filter(Boolean) ?? [];
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <JamforBilarPage
-          initialIds={ids}
-          onBack={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
-          onNavigateBuy={(bil) => {
-            const p = new URLSearchParams();
-            if (bil) p.set('bil', bil);
-            p.set('source', 'Jämför-sida');
-            window.history.pushState({}, '', `/kop-bil/bestall?${p.toString()}`);
-            setPath('/kop-bil/bestall');
-          }}
-        />
-      </Suspense>
-    );
-  }
-
   if (path === '/kop-bil-hjalp') {
     return (
       <Suspense fallback={<PageLoader />}>
@@ -483,7 +463,7 @@ function App() {
     );
   }
 
-  if (path === '/hitta-bil' || path === '/jamfor-bilar') {
+  if (path === '/hitta-bil') {
     window.history.replaceState({}, '', '/kop-bil');
     setPath('/kop-bil');
     return null;
