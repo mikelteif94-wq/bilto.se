@@ -831,6 +831,8 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
   const usedPrice = data.pricing.used_from_sek ?? undefined;
   const [calcOpen, setCalcOpen] = useState(false);
   const [showEquity, setShowEquity] = useState(false);
+  const [mode, setMode] = useState<'ny' | 'beg'>('beg');
+  const effectivePrice = (mode === 'beg' && usedPrice && carPrice) ? usedPrice : (carPrice ?? usedPrice ?? 0);
   useEffect(() => {
     const t = setTimeout(() => setShowEquity(true), 400);
     return () => clearTimeout(t);
@@ -840,8 +842,26 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
     <div className="space-y-6">
       {/* ── Price + expert text ── */}
       <section className="p-4 bg-gradient-to-br from-[#0047B3]/5 to-[#0047B3]/[0.03] rounded-xl border border-[#0047B3]/10">
-        {carPrice ? (
-          <OwnershipMeter tco={calcMonthlyTCO({ carPrice, usedPrice, fuelTypes: data.specs.fuel_types, make: data.brand_display })} />
+        {carPrice && usedPrice && (
+          <div className="flex items-center gap-0 rounded-lg border border-slate-200 overflow-hidden w-fit mb-3">
+            <button
+              type="button"
+              onClick={() => setMode('beg')}
+              className={`px-4 h-8 text-[12px] font-semibold transition-colors ${mode === 'beg' ? 'bg-slate-900 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'}`}
+            >
+              Begagnad
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('ny')}
+              className={`px-4 h-8 text-[12px] font-semibold transition-colors ${mode === 'ny' ? 'bg-slate-900 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'}`}
+            >
+              Ny bil
+            </button>
+          </div>
+        )}
+        {effectivePrice > 0 ? (
+          <OwnershipMeter tco={calcMonthlyTCO({ carPrice: effectivePrice, fuelTypes: data.specs.fuel_types, make: data.brand_display })} />
         ) : (
           <p className="text-[13px] text-slate-400 italic">Pris ej tillgängligt</p>
         )}
