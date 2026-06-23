@@ -1,0 +1,380 @@
+﻿Marke,Modell,Drivmedel,Pris_SEK,Uppskattad
+Alfa Romeo,Alfa Romeo Tonale,"Bensin, Laddhybrid",från ~460 000,ja
+Audi,Audi A1,Bensin,274 300 – 306 300,nej
+Audi,Audi A3,"Bensin, Diesel, Laddhybrid",332 200 – 754 400,nej
+Audi,Audi A4 Avant,Diesel,~494 500,ja
+Audi,Audi A5,"Bensin, Diesel",582 100 – 669 000,nej
+Audi,Audi A5 Avant,"Bensin, Diesel, Laddhybrid",~579 000 – 719 000,ja
+Audi,Audi A6,"Diesel, Laddhybrid",511 500 – 769 000,nej
+Audi,Audi A6 Avant e-tron,El,699 000 – 1 232 900,nej
+Audi,Audi A7,"Bensin, Diesel",869 500 – 1 390 700,nej
+Audi,Audi A8,"Bensin, Diesel",1 049 000 – 1 603 100,nej
+Audi,Audi e-tron GT,El,1 258 900 – 1 919 000,nej
+Audi,Audi Q2,Bensin,322 900 – 382 300,nej
+Audi,Audi Q3,"Bensin, Laddhybrid",381 300 – 784 500,nej
+Audi,Audi Q3 Sportback,"Bensin, Laddhybrid",~599 000 – 716 200,ja
+Audi,Audi Q4 e-tron,El,570 000 – 735 000,nej
+Audi,Audi Q4 e-tron Sportback,El,~592 700 – 756 900,ja
+Audi,Audi Q5,"Bensin, Diesel, Laddhybrid",599 000 – 749 700,nej
+Audi,Audi Q6 e-tron,El,749 000 – 1 179 900,nej
+Audi,Audi Q7,"Bensin, Diesel",från 872 300,nej
+Audi,Audi Q8,"Bensin, Diesel",~1 049 000 – 1 391 400,ja
+Audi,Audi Q8 e-tron,El,från 865 900,nej
+Audi,Audi RS Q3,Bensin,~763 100,ja
+Audi,Audi RS3,Bensin,754 400 – 1 209 300,nej
+Audi,Audi S3,Bensin,~494 700,ja
+BMW,BMW 1-serie,Bensin,från 499 200,nej
+BMW,BMW 2-serie Gran Coupe,Bensin,från 492 800,nej
+BMW,BMW 3-serie,"Bensin, Diesel",från 515 900,nej
+BMW,BMW 3-serie Touring,"Bensin, Diesel",från 515 900,nej
+BMW,BMW 4-serie Coupe,"Bensin, Diesel",~663 100 – 730 200,ja
+BMW,BMW 4-serie Gran Coupe,"Bensin, Diesel",~500 000 – 700 000,ja
+BMW,BMW 5-serie,"Bensin, Diesel, Laddhybrid",från 590 900,nej
+BMW,BMW 5-serie Touring,"Bensin, Laddhybrid",från 559 900,nej
+BMW,BMW 6-serie GT,"Bensin, Diesel",~523 000 – 928 000,ja
+BMW,BMW 7-serie,"Bensin, Laddhybrid",~1 172 600,ja
+BMW,BMW i3 (Neue Klasse),El,från 679 900,nej
+BMW,BMW i4,El,från 672 500,nej
+BMW,BMW i5,El,~679 900 – 855 400,ja
+BMW,BMW i7,El,1 425 000 – 1 895 000,nej
+BMW,BMW iX,El,999 000 – 1 136 000,nej
+BMW,BMW iX1,El,~629 000 – 670 000,ja
+BMW,BMW iX2,El,518 700 – 519 000,nej
+BMW,BMW iX3,El,från 749 000,nej
+BMW,BMW M2,Bensin,879 000 – 1 189 000,nej
+BMW,BMW M240i,Bensin,~622 000,ja
+BMW,BMW M3,Bensin,1 172 600 – 1 199 900,nej
+BMW,BMW M3 Touring,Bensin,från 1 199 200,nej
+BMW,BMW M4,Bensin,1 159 700 – 1 463 700,nej
+BMW,BMW X1,"Bensin, Laddhybrid",399 900 – 629 400,nej
+BMW,BMW X2,"Bensin, El",519 900 – 555 000,nej
+BMW,BMW X3,"Bensin, Diesel",609 900 – 823 300,nej
+BMW,BMW X4,"Bensin, Diesel",575 700 – 699 100,nej
+BMW,BMW X5,"Bensin, Diesel, Laddhybrid",1 019 900 – 1 222 500,nej
+BMW,BMW X6,"Bensin, Diesel",929 000 – 1 049 900,nej
+BMW,BMW X7,"Bensin, Diesel",1 219 900 – 1 484 900,nej
+BMW,BMW Z4,Bensin,544 000 – 585 800,nej
+BYD,BYD Atto 3,El,från 494 900,nej
+BYD,BYD Dolphin,El,359 900 – 399 900,nej
+BYD,BYD Han,El,~797 500 – 816 900,ja
+BYD,BYD Seagull,El,~230 000,ja
+BYD,BYD Seal,El,från 469 900,nej
+BYD,BYD Seal U,"Bensin, Laddhybrid",från 469 900,nej
+BYD,BYD Tang,El,~799 900 – 866 600,ja
+BYD,BYD Yuan Plus,El,~494 900,ja
+Citroën,Citroën C3 Aircross,"Bensin, Hybrid",228 700 – 329 100,nej
+Citroën,Citroën C4,"Bensin, Hybrid, El",262 700 – 389 600,nej
+Citroën,Citroën C5 Aircross,"Bensin, Laddhybrid, El",379 900 – 489 900,nej
+Citroën,Citroën ë-C4,El,~389 700,ja
+Cupra,Cupra Ateca,Bensin,~426 900 – 502 400,ja
+Cupra,Cupra Born,El,~485 900,ja
+Cupra,Cupra Formentor,"Bensin, Laddhybrid",422 900 – 484 500,nej
+Cupra,Cupra Leon,"Bensin, Laddhybrid",~300 000 – 400 000,ja
+Cupra,Cupra Raval,El,~300 000 – 400 000,ja
+Cupra,Cupra Tavascan,El,~500 000 – 600 000,ja
+Cupra,Cupra Terramar,"Bensin, Laddhybrid",~450 000 – 550 000,ja
+Dacia,Dacia Duster,"Bensin, Laddhybrid",269 900 – 337 400,nej
+Dacia,Dacia Jogger,"Bensin, Laddhybrid",~259 900 – 329 600,ja
+Dacia,Dacia Sandero,Bensin,~160 000 – 200 000,ja
+Dacia,Dacia Spring,El,~250 000 – 300 000,ja
+DS,DS 3 Crossback,"Bensin, Diesel, El",~249 900,ja
+DS,DS 4,"Bensin, Laddhybrid",~300 000 – 400 000,ja
+DS,DS 7 Crossback,"Bensin, Diesel, Laddhybrid",~400 000 – 500 000,ja
+DS,DS N°7 (N8),"Bensin Mildhybrid, El",551 200 – 906 500,nej
+Fiat,Fiat 124 Spider,Bensin,~300 000 – 400 000,ja
+Fiat,Fiat 500,Bensin,~200 000 – 300 000,ja
+Fiat,Fiat 500e,El,från 354 900,nej
+Fiat,Fiat 500L,Bensin,~200 000 – 300 000,ja
+Fiat,Fiat 500X,Bensin,från 261 900,nej
+Fiat,Fiat 600,"Bensin, El",~300 000 – 400 000,ja
+Fiat,Fiat Doblo,Diesel,~300 000 – 400 000,ja
+Fiat,Fiat Ducato,Diesel,~500 000 – 600 000,ja
+Fiat,Fiat Grande Panda,"Bensin, Hybrid, El",leasing från ~2 795/mån,ja
+Fiat,Fiat Panda,"Bensin, Laddhybrid",~150 000 – 200 000,ja
+Fiat,Fiat Scudo,Diesel,~400 000 – 500 000,ja
+Fiat,Fiat Tipo Cross,Bensin,~250 000 – 300 000,ja
+Ford,Ford Explorer,El,~500 000 – 600 000,ja
+Ford,Ford Focus,Bensin,från 322 900,nej
+Ford,Ford Focus Kombi,Bensin,~320 000 – 400 000,ja
+Ford,Ford Focus RS,Bensin,~500 000 – 600 000,ja
+Ford,Ford Focus ST,Bensin,~400 000 – 500 000,ja
+Ford,Ford Focus ST Kombi,Bensin,~400 000 – 500 000,ja
+Ford,Ford Kuga,"Bensin, Laddhybrid",479 900 – 554 000,nej
+Ford,Ford Mustang,Bensin,~500 000 – 700 000,ja
+Ford,Ford Mustang Mach-E,El,669 000 – 748 000,nej
+Ford,Ford Puma,"Bensin, Laddhybrid",~300 000 – 400 000,ja
+Ford,Ford Ranger,Diesel,~500 000 – 700 000,ja
+Genesis,Genesis GV60,El,~500 000 – 600 000,ja
+Genesis,Genesis GV70,El,~600 000 – 700 000,ja
+Honda,Honda Civic,Bensin (Hybrid),349 900 – 629 900,nej
+Honda,Honda Civic Type R,Bensin,~500 000 – 600 000,ja
+Honda,Honda CR-V,Bensin (Hybrid/Laddhybrid),469 000 – 584 900,nej
+Honda,Honda e,El,~300 000 – 400 000,ja
+Honda,Honda e:Ny1,El,~400 000 – 500 000,ja
+Honda,Honda HR-V,Bensin (Hybrid),~300 000 – 400 000,ja
+Honda,Honda Jazz,Bensin (Hybrid),~250 000 – 300 000,ja
+Honda,Honda Prelude,Bensin (Hybrid),~400 000 – 500 000,ja
+Honda,Honda ZR-V,Bensin (Hybrid),~350 000 – 450 000,ja
+Hyundai,Hyundai Bayon,Bensin,~200 000 – 300 000,ja
+Hyundai,Hyundai i10,Bensin,179 900 – 211 900,nej
+Hyundai,Hyundai i20,Bensin,221 900 – 286 900,nej
+Hyundai,Hyundai i20 N,Bensin,~300 000 – 400 000,ja
+Hyundai,Hyundai i30,Bensin,254 900 – 319 900,nej
+Hyundai,Hyundai i30 SW,Bensin,~250 000 – 300 000,ja
+Hyundai,Hyundai i40 SW,Diesel,~250 000 – 300 000,ja
+Hyundai,Hyundai Inster,El,~250 000 – 300 000,ja
+Hyundai,Hyundai IONIQ,El,~300 000 – 400 000,ja
+Hyundai,Hyundai IONIQ 5,El,från 624 900,nej
+Hyundai,Hyundai IONIQ 5 N,El,~700 000 – 800 000,ja
+Hyundai,Hyundai IONIQ 6,El,~500 000 – 600 000,ja
+Hyundai,Hyundai ix20,Bensin,~200 000 – 300 000,ja
+Hyundai,Hyundai ix35,Diesel,~250 000 – 300 000,ja
+Hyundai,Hyundai Kona,"Bensin, Laddhybrid",~300 000 – 400 000,ja
+Hyundai,Hyundai Kona Electric,El,~400 000 – 500 000,ja
+Hyundai,Hyundai Kona N,Bensin,~400 000 – 500 000,ja
+Hyundai,Hyundai Santa Fe,"Bensin, Laddhybrid",~500 000 – 600 000,ja
+Hyundai,Hyundai Staria,Diesel,~500 000 – 600 000,ja
+Hyundai,Hyundai Tucson,"Bensin, Laddhybrid",~350 000 – 450 000,ja
+Jaguar,Jaguar I-Pace,El,från 1 065 900,nej
+Jeep,Jeep Avenger,"Bensin, El",303 900 – 409 900,nej
+Kia,Kia Ceed,Bensin,~250 000 – 300 000,ja
+Kia,Kia Ceed SW,Bensin,~250 000 – 300 000,ja
+Kia,Kia EV3,El,~400 000 – 500 000,ja
+Kia,Kia EV4,El,~400 000 – 500 000,ja
+Kia,Kia EV5,El,~450 000 – 550 000,ja
+Kia,Kia EV6,El,594 900 – 631 400,nej
+Kia,Kia EV9,El,~700 000 – 800 000,ja
+Kia,Kia K4,Bensin,~250 000 – 300 000,ja
+Kia,Kia Niro,"Bensin, Laddhybrid, El",339 900 – 461 400,nej
+Kia,Kia Optima SW,"Bensin, Laddhybrid",~350 000 – 450 000,ja
+Kia,Kia Picanto,Bensin,~150 000 – 200 000,ja
+Kia,Kia ProCeed,Bensin,~300 000 – 400 000,ja
+Kia,Kia PV5,El,~500 000 – 600 000,ja
+Kia,Kia Rio,Bensin,~200 000 – 300 000,ja
+Kia,Kia Sorento,"Bensin, Laddhybrid",~500 000 – 600 000,ja
+Kia,Kia Soul,El,~300 000 – 400 000,ja
+Kia,Kia Sportage,"Bensin, Laddhybrid",~350 000 – 450 000,ja
+Kia,Kia Stinger,Bensin,~500 000 – 600 000,ja
+Kia,Kia Stonic,Bensin,från 266 900,nej
+Kia,Kia XCeed,"Bensin, Laddhybrid",~300 000 – 400 000,ja
+Lamborghini,Lamborghini Aventador SVJ,Bensin,~8 000 000 – 10 000 000,ja
+Lamborghini,Lamborghini Huracan,Bensin,~3 000 000 – 5 000 000,ja
+Lamborghini,Lamborghini Revuelto,"Bensin, Laddhybrid",~5 000 000 – 7 000 000,ja
+Lamborghini,Lamborghini Urus,Bensin,från 3 699 000,nej
+Land Rover,Land Rover Defender,"Bensin, Diesel, Laddhybrid",1 177 600 – 2 399 000,nej
+Land Rover,Land Rover Discovery Sport,Diesel,~500 000 – 600 000,ja
+Land Rover,Land Rover Range Rover,Diesel,~1 500 000 – 2 500 000,ja
+Land Rover,Land Rover Range Rover Evoque,"Bensin, Laddhybrid",~600 000 – 800 000,ja
+Land Rover,Land Rover Range Rover Sport,"Bensin, Laddhybrid",~1 000 000 – 1 500 000,ja
+Land Rover,Land Rover Range Rover Velar,Diesel,~700 000 – 900 000,ja
+Lexus,Lexus CT,Bensin (Hybrid),~300 000 – 400 000,ja
+Lexus,Lexus ES,Bensin (Hybrid),~400 000 – 500 000,ja
+Lexus,Lexus GS,Bensin (Hybrid),~500 000 – 600 000,ja
+Lexus,Lexus IS,Bensin (Hybrid),~400 000 – 500 000,ja
+Lexus,Lexus LC,Bensin (Hybrid),~1 000 000 – 1 500 000,ja
+Lexus,Lexus LM,Bensin (Hybrid),~1 000 000 – 1 200 000,ja
+Lexus,Lexus LS,Bensin (Hybrid),~1 000 000 – 1 500 000,ja
+Lexus,Lexus NX,Bensin (Hybrid/Laddhybrid),471 200 – 679 000,nej
+Lexus,Lexus RC,Bensin (Hybrid),~500 000 – 600 000,ja
+Lexus,Lexus RX,Bensin (Hybrid),~500 000 – 700 000,ja
+Lexus,Lexus UX,Bensin (Hybrid),~400 000 – 500 000,ja
+Mazda,Mazda CX-30,Bensin,~332 600 – 397 600,ja
+Mazda,Mazda CX-5,"Bensin, Diesel",369 900 – 453 400,nej
+Mazda,Mazda CX-60,"Bensin, Diesel, Laddhybrid",529 000 – 659 900,nej
+Mazda,Mazda Mazda3,Bensin,~250 000 – 300 000,ja
+Mazda,Mazda MX-30,El,~300 000 – 400 000,ja
+Mazda,Mazda MX-5,Bensin,~300 000 – 400 000,ja
+Mercedes-Benz,Mercedes-Benz A-Klass,"Bensin, Diesel, Laddhybrid",414 000 – 478 000,nej
+Mercedes-Benz,Mercedes-Benz A45 AMG,Bensin,~600 000 – 700 000,ja
+Mercedes-Benz,Mercedes-Benz AMG CLE 53,Bensin,~800 000 – 900 000,ja
+Mercedes-Benz,Mercedes-Benz B-Klass,Bensin,~300 000 – 400 000,ja
+Mercedes-Benz,Mercedes-Benz C-Klass,"Bensin, Diesel, Laddhybrid",från 589 000,nej
+Mercedes-Benz,Mercedes-Benz C-Klass Kombi,"Bensin, Laddhybrid",~600 000 – 700 000,ja
+Mercedes-Benz,Mercedes-Benz CLA,"Bensin, Diesel, El",från 615 000,nej
+Mercedes-Benz,Mercedes-Benz CLA Electric,El,~500 000 – 600 000,ja
+Mercedes-Benz,Mercedes-Benz CLE Cabriolet,Bensin,~700 000 – 800 000,ja
+Mercedes-Benz,Mercedes-Benz CLE Coupe,Bensin,~700 000 – 800 000,ja
+Mercedes-Benz,Mercedes-Benz CLS,Diesel,~700 000 – 900 000,ja
+Mercedes-Benz,Mercedes-Benz E-Klass,"Bensin, Diesel, Laddhybrid",~500 000 – 700 000,ja
+Mercedes-Benz,Mercedes-Benz E-Klass Coupe,Bensin,~600 000 – 800 000,ja
+Mercedes-Benz,Mercedes-Benz E-Klass Kombi,"Bensin, Laddhybrid",~600 000 – 700 000,ja
+Mercedes-Benz,Mercedes-Benz EQA,El,~429 000,ja
+Mercedes-Benz,Mercedes-Benz EQB,El,från 619 000,nej
+Mercedes-Benz,Mercedes-Benz EQC,El,~600 000 – 700 000,ja
+Mercedes-Benz,Mercedes-Benz EQE,El,~700 000 – 900 000,ja
+Mercedes-Benz,Mercedes-Benz EQE SUV,El,~800 000 – 1 000 000,ja
+Mercedes-Benz,Mercedes-Benz EQS SUV,El,~1 000 000 – 1 200 000,ja
+Mercedes-Benz,Mercedes-Benz G-Class Electric,El,~2 000 000 – 2 500 000,ja
+Mercedes-Benz,Mercedes-Benz G-Klass,Bensin,~1 500 000 – 2 000 000,ja
+Mercedes-Benz,Mercedes-Benz GLA,"Bensin, Diesel",~400 000 – 500 000,ja
+Mercedes-Benz,Mercedes-Benz GLB,"Bensin, Diesel, El",från 619 000,nej
+Mercedes-Benz,Mercedes-Benz GLB Electric,El,~600 000 – 700 000,ja
+Mercedes-Benz,Mercedes-Benz GLC,"Bensin, Diesel, Laddhybrid",~600 000 – 800 000,ja
+Mercedes-Benz,Mercedes-Benz GLC Coupe,"Bensin, Laddhybrid",~700 000 – 900 000,ja
+Mercedes-Benz,Mercedes-Benz GLC Electric,El,~700 000 – 800 000,ja
+Mercedes-Benz,Mercedes-Benz GLE,"Bensin, Diesel, Laddhybrid",~800 000 – 1 000 000,ja
+Mercedes-Benz,Mercedes-Benz GLS,Diesel,~1 000 000 – 1 500 000,ja
+Mercedes-Benz,Mercedes-Benz S-Klass,"Bensin, Laddhybrid",från 1 586 200,nej
+Mercedes-Benz,Mercedes-Benz V-Klass,Diesel,~900 000 – 1 000 000,ja
+Mercedes-Benz,Mercedes-Benz VLE,El,från 947 700,nej
+MG,MG 4,El,299 990 – 349 990,nej
+MG,MG ZS EV,El,439 000 – 543 000,nej
+MINI,MINI 5-door,Bensin,~250 000 – 300 000,ja
+MINI,MINI Convertible,Bensin,~300 000 – 400 000,ja
+MINI,MINI Cooper,El,~300 000 – 400 000,ja
+MINI,MINI Countryman,"Bensin, El",363 600 – 615 600,nej
+MINI,MINI JCW,Bensin,~400 000 – 500 000,ja
+Nissan,Nissan Ariya,El,från 382 500,nej
+Nissan,Nissan Interstar,Diesel,~500 000 – 600 000,ja
+Nissan,Nissan Juke,"Bensin, Laddhybrid",~300 000 – 400 000,ja
+Nissan,Nissan Leaf,El,429 900 – 499 900,nej
+Nissan,Nissan Qashqai,"Bensin, Laddhybrid",från 574 562,nej
+Nissan,Nissan Townstar,El,~300 000 – 400 000,ja
+Nissan,Nissan X-Trail,"Bensin, Laddhybrid",~400 000 – 500 000,ja
+Opel,Opel Astra,"Bensin, Laddhybrid",~300 000 – 400 000,ja
+Opel,Opel Corsa,"Bensin, El",från 299 900,nej
+Opel,Opel Crossland,Bensin,~250 000 – 300 000,ja
+Opel,Opel Grandland,"Bensin, Laddhybrid, El",399 900 – 480 780,nej
+Opel,Opel Mokka-e,El,~300 000 – 400 000,ja
+Peugeot,Peugeot 208 / e-208,"Bensin, El",från 199 900 / ~300 000,ja
+Peugeot,Peugeot 2008 / e-2008,"Bensin, El",~300 000 – 400 000,ja
+Peugeot,Peugeot 308 / e-308,"Bensin, Laddhybrid, El",~300 000 – 400 000,ja
+Peugeot,Peugeot 3008 / e-3008,"Bensin, Laddhybrid, El",399 900 – 479 900,nej
+Peugeot,Peugeot 408 / e-408,"Bensin, Laddhybrid, El",~400 000 – 500 000,ja
+Peugeot,Peugeot 5008 / e-5008,"Bensin, Laddhybrid, El",~400 000 – 500 000,ja
+Peugeot,Peugeot 508 / 508 SW,"Bensin, Laddhybrid",~400 000 – 500 000,ja
+Peugeot,Peugeot Boxer,Diesel,~500 000 – 600 000,ja
+Peugeot,Peugeot Expert,Diesel,~400 000 – 500 000,ja
+Peugeot,Peugeot Partner,Diesel,~300 000 – 400 000,ja
+Peugeot,Peugeot Rifter,Bensin,~300 000 – 400 000,ja
+Peugeot,Peugeot Traveller,Diesel,~400 000 – 500 000,ja
+Polestar,Polestar 2,El,534 900 – 594 900,nej
+Polestar,Polestar 3,El,~800 000 – 900 000,ja
+Polestar,Polestar 4,El,från 692 000,nej
+Polestar,Polestar 5,El,~1 000 000 – 1 200 000,ja
+Porsche,Porsche 718 Boxster,Bensin,~700 000 – 900 000,ja
+Porsche,Porsche 718 Cayman,Bensin,~700 000 – 900 000,ja
+Porsche,Porsche 718 Spyder,Bensin,~800 000 – 1 000 000,ja
+Porsche,Porsche 911,Bensin,~1 000 000 – 2 000 000,ja
+Porsche,Porsche Cayenne,"Bensin, Laddhybrid",~1 000 000 – 1 500 000,ja
+Porsche,Porsche Macan,El,~1 000 000 – 1 200 000,ja
+Porsche,Porsche Panamera,"Bensin, Laddhybrid",~1 000 000 – 1 500 000,ja
+Porsche,Porsche Taycan,El,~1 000 000 – 1 500 000,ja
+Renault,Renault 4 E-Tech,El,~300 000 – 400 000,ja
+Renault,Renault 5 E-Tech,El,~300 000 – 400 000,ja
+Renault,Renault Arkana,"Bensin, Laddhybrid",~300 000 – 400 000,ja
+Renault,Renault Austral,"Bensin, Laddhybrid",~350 000 – 450 000,ja
+Renault,Renault Captur,"Bensin, Laddhybrid",~250 000 – 350 000,ja
+Renault,Renault Clio,"Bensin, Laddhybrid",från 299 900,nej
+Renault,Renault Grand Scenic,Bensin,~350 000 – 450 000,ja
+Renault,Renault Kadjar,Bensin,~250 000 – 350 000,ja
+Renault,Renault Kangoo,Diesel,~300 000 – 400 000,ja
+Renault,Renault Koleos,Diesel,~350 000 – 450 000,ja
+Renault,Renault Master,Diesel,~500 000 – 600 000,ja
+Renault,Renault Megane E-Tech,El,~400 000 – 500 000,ja
+Renault,Renault Megane RS,Bensin,~400 000 – 500 000,ja
+Renault,Renault Megane Sport Tourer,Bensin,~300 000 – 400 000,ja
+Renault,Renault Scenic,El,419 900 – 599 900,nej
+Renault,Renault Trafic,Diesel,~400 000 – 500 000,ja
+Renault,Renault Twingo,Bensin,~150 000 – 200 000,ja
+Renault,Renault Zoe,El,~200 000 – 300 000,ja
+Seat,Seat Alhambra,Diesel,~400 000 – 500 000,ja
+Seat,Seat Ateca,Bensin,från 409 900,nej
+Seat,Seat Ibiza,Bensin,~200 000 – 300 000,ja
+Seat,Seat Leon,Bensin,~250 000 – 350 000,ja
+Seat,Seat Mii,El,~200 000 – 300 000,ja
+Seat,Seat Tarraco,"Bensin, Laddhybrid",~400 000 – 500 000,ja
+Seat,Seat Toledo,Bensin,~250 000 – 300 000,ja
+Skoda,Skoda Citigo,Bensin,~150 000 – 200 000,ja
+Skoda,Skoda Enyaq,El,529 900 – 679 800,nej
+Skoda,Skoda Fabia,Bensin,från 278 900,nej
+Skoda,Skoda Kamiq,Bensin,~250 000 – 300 000,ja
+Skoda,Skoda Karoq,"Bensin, Diesel",~300 000 – 400 000,ja
+Skoda,Skoda Kodiaq,"Bensin, Diesel, Laddhybrid",~400 000 – 500 000,ja
+Skoda,Skoda Octavia,"Bensin, Diesel, Laddhybrid",339 000 – 499 900,nej
+Skoda,Skoda Octavia Combi,Bensin,~300 000 – 400 000,ja
+Skoda,Skoda Roomster,Bensin,~200 000 – 300 000,ja
+Skoda,Skoda Superb,"Bensin, Diesel, Laddhybrid",~400 000 – 500 000,ja
+Skoda,Skoda Superb Combi,"Bensin, Laddhybrid",~400 000 – 500 000,ja
+Skoda,Skoda Yeti,Bensin,~250 000 – 300 000,ja
+smart,smart #1,El,517 410 – 548 700,nej
+Subaru,Subaru Uncharted,El,~400 000 – 500 000,ja
+Suzuki,Suzuki Across,"Bensin, Laddhybrid",~500 000 – 600 000,ja
+Suzuki,Suzuki Alto,Bensin,~150 000 – 200 000,ja
+Suzuki,Suzuki Baleno,Bensin,~150 000 – 200 000,ja
+Suzuki,Suzuki Celerio,Bensin,~150 000 – 200 000,ja
+Suzuki,Suzuki Jimny,Bensin,~250 000 – 300 000,ja
+Suzuki,Suzuki S-Cross,"Bensin, Laddhybrid",~250 000 – 350 000,ja
+Suzuki,Suzuki Swace,Bensin (Hybrid),~300 000 – 400 000,ja
+Suzuki,Suzuki Swift,Bensin (Hybrid),~200 000 – 300 000,ja
+Suzuki,Suzuki SX4,Bensin,~250 000 – 300 000,ja
+Suzuki,Suzuki Vitara,"Bensin, Laddhybrid",296 800 – 339 900,nej
+Tesla,Tesla Model 3,El,från 449 990,nej
+Tesla,Tesla Model S,El,~1 000 000 – 1 200 000,ja
+Tesla,Tesla Model X,El,~1 000 000 – 1 200 000,ja
+Tesla,Tesla Model Y,El,från 449 990,nej
+Toyota,Toyota Aygo X,Bensin,~200 000 – 250 000,ja
+Toyota,Toyota bZ4X,El,från 564 900,nej
+Toyota,Toyota C-HR,Bensin (Hybrid),från 469 900,nej
+Toyota,Toyota Corolla Hybrid,Bensin (Hybrid),~300 000 – 350 000,ja
+Toyota,Toyota Corolla Touring Sports,Bensin (Hybrid),~300 000 – 350 000,ja
+Toyota,Toyota GR Yaris,Bensin,~400 000 – 500 000,ja
+Toyota,Toyota Highlander,Bensin (Hybrid),~500 000 – 600 000,ja
+Toyota,Toyota Hilux,Diesel,497 400 – 849 800,nej
+Toyota,Toyota Land Cruiser,Diesel,~800 000 – 1 000 000,ja
+Toyota,Toyota Prius,Bensin (Hybrid),~350 000 – 450 000,ja
+Toyota,Toyota ProAce,Diesel,~400 000 – 500 000,ja
+Toyota,Toyota ProAce City,Diesel,~300 000 – 400 000,ja
+Toyota,Toyota ProAce City Verso,Diesel,~300 000 – 400 000,ja
+Toyota,Toyota ProAce Verso,Diesel,~400 000 – 500 000,ja
+Toyota,Toyota RAV4,Bensin (Hybrid/Laddhybrid),419 900 – 626 800,nej
+Toyota,Toyota Supra,Bensin,~600 000 – 700 000,ja
+Toyota,Toyota Urban Cruiser,El,~400 000 – 500 000,ja
+Toyota,Toyota Yaris,Bensin (Hybrid),från 269 900,nej
+Toyota,Toyota Yaris Cross,Bensin (Hybrid),från 329 900,nej
+Volkswagen,Volkswagen Arteon,Bensin,~400 000 – 500 000,ja
+Volkswagen,Volkswagen Caddy,Diesel,~300 000 – 400 000,ja
+Volkswagen,Volkswagen Golf,"Bensin, Diesel, Laddhybrid",319 900 – 369 700,nej
+Volkswagen,Volkswagen Golf GTE,"Bensin, Laddhybrid",~400 000 – 500 000,ja
+Volkswagen,Volkswagen Golf GTI,Bensin,~400 000 – 500 000,ja
+Volkswagen,Volkswagen Golf R,Bensin,~500 000 – 600 000,ja
+Volkswagen,Volkswagen ID. Buzz,El,~600 000 – 700 000,ja
+Volkswagen,Volkswagen ID.3,El,från 409 900,nej
+Volkswagen,Volkswagen ID.4,El,~500 000 – 600 000,ja
+Volkswagen,Volkswagen ID.5,El,~500 000 – 600 000,ja
+Volkswagen,Volkswagen ID.7,El,från 623 000,nej
+Volkswagen,Volkswagen ID.7 Tourer,El,från ~665 900,ja
+Volkswagen,Volkswagen Multivan,"Bensin, Laddhybrid",~500 000 – 600 000,ja
+Volkswagen,Volkswagen Passat Variant,"Bensin, Diesel, Laddhybrid",~400 000 – 500 000,ja
+Volkswagen,Volkswagen Polo,Bensin,~200 000 – 300 000,ja
+Volkswagen,Volkswagen T-Cross,Bensin,~250 000 – 300 000,ja
+Volkswagen,Volkswagen T-Roc,Bensin,~300 000 – 400 000,ja
+Volkswagen,Volkswagen T-Roc Cabriolet,Bensin,~300 000 – 400 000,ja
+Volkswagen,Volkswagen Taigo,Bensin,~250 000 – 300 000,ja
+Volkswagen,Volkswagen Tayron,"Bensin, Laddhybrid",~400 000 – 500 000,ja
+Volkswagen,Volkswagen Tiguan,"Bensin, Diesel, Laddhybrid",~350 000 – 450 000,ja
+Volkswagen,Volkswagen Touareg,"Bensin, Laddhybrid",~700 000 – 900 000,ja
+Volkswagen,Volkswagen Touran,Bensin,~300 000 – 400 000,ja
+Volkswagen,Volkswagen Transporter,Diesel,~400 000 – 500 000,ja
+Volvo,Volvo EC40,El,~469 900 – 599 000,ja
+Volvo,Volvo ES90,El,~700 000 – 800 000,ja
+Volvo,Volvo EX30,El,419 900 – 615 100,nej
+Volvo,Volvo EX30 Cross Country,El,~450 000 – 550 000,ja
+Volvo,Volvo EX40,El,459 900 – 599 000,nej
+Volvo,Volvo EX60,El,~500 000 – 600 000,ja
+Volvo,Volvo EX90,El,från 1 027 900,nej
+Volvo,Volvo S60,"Bensin (MHEV), Laddhybrid",från 434 900,nej
+Volvo,Volvo S90,"Bensin (MHEV), Laddhybrid",från 569 900,nej
+Volvo,Volvo V40,Bensin,~250 000 – 300 000,ja
+Volvo,Volvo V40 Cross Country,Bensin,~250 000 – 300 000,ja
+Volvo,Volvo V60,"Bensin (MHEV), Diesel (MHEV), Laddhybrid",från 449 900,nej
+Volvo,Volvo V60 Cross Country,"Bensin (MHEV), Laddhybrid",från 519 900,nej
+Volvo,Volvo V70,Diesel,~300 000 – 400 000,ja
+Volvo,Volvo V90,"Bensin (MHEV), Laddhybrid",från 549 900,nej
+Volvo,Volvo V90 Cross Country,"Bensin (MHEV), Diesel (MHEV)",från 619 900,nej
+Volvo,Volvo XC40,Bensin (MHEV),414 900 – 525 600,nej
+Volvo,Volvo XC40 Recharge,El,~500 000 – 600 000,ja
+Volvo,Volvo XC60,"Bensin (MHEV), Diesel (MHEV), Laddhybrid",539 900 – 739 000,nej
+Volvo,Volvo XC70,"Bensin, Laddhybrid",~500 000 – 600 000,ja
+Volvo,Volvo XC90,"Bensin (MHEV), Laddhybrid",från 1 059 500,nej
+Xpeng,Xpeng G6,El,~500 000 – 600 000,ja
