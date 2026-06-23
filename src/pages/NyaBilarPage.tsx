@@ -318,12 +318,12 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
               >
                 <div className={`max-w-7xl mx-auto flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                   {/* Car image */}
-                  <div className="md:w-1/2 bg-[#eceae5] flex items-center justify-center p-8 md:p-14 min-h-[260px] md:min-h-[380px]">
+                  <div className="md:w-1/2 flex items-center justify-center p-8 md:p-14 min-h-[260px] md:min-h-[380px]">
                     {img ? (
                       <img
                         src={img}
                         alt={`${fd.make} ${fd.model}`}
-                        className="w-full max-w-md object-contain drop-shadow-xl"
+                        className="w-full max-w-md object-contain"
                         loading="lazy"
                       />
                     ) : (
@@ -430,7 +430,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
                     className="group text-left bg-[#f9f8f6] rounded-2xl overflow-hidden border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all duration-200"
                   >
                     {/* Image area */}
-                    <div className="aspect-[16/10] bg-[#eceae5] flex items-center justify-center p-3 overflow-hidden">
+                    <div className="aspect-[16/10] flex items-center justify-center p-3 overflow-hidden">
                       {img ? (
                         <img
                           src={img}
