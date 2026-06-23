@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import {
   ArrowLeft,
+  CalendarDays,
   Check,
   ClipboardCheck,
   Clock,
-  Eye,
   Gavel,
   ImagePlus,
   Loader2,
   PhoneCall,
+  RefreshCw,
   Sparkles,
   ThumbsDown,
   ThumbsUp,
@@ -509,14 +510,7 @@ function StatusCard({ car }: { car: CarResponse }) {
     );
   }
   if (car.status === 'inga_bud') {
-    return (
-      <Banner
-        icon={<PhoneCall className="w-5 h-5" />}
-        tone="amber"
-        title="Inga bud den här gången"
-        text="Tyvärr kom inga bud in. Din bilmäklare hör av sig för att diskutera nästa steg."
-      />
-    );
+    return <NoBidsCard />;
   }
   if (car.status === 'auktion_avslutad' && car.winning_bid) {
     return (
@@ -545,6 +539,50 @@ function StatusCard({ car }: { car: CarResponse }) {
       title="Avslutad"
       text="Denna förfrågan är avslutad."
     />
+  );
+}
+
+function NoBidsCard() {
+  return (
+    <div className="rounded-md border border-amber-200 bg-amber-50 p-6 space-y-5">
+      <div className="flex gap-4">
+        <div className="text-amber-600 mt-0.5 shrink-0">
+          <PhoneCall className="w-5 h-5" />
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold text-amber-900 mb-1">
+            Vi fick inga bud den här gången – men vi ger inte upp
+          </h2>
+          <p className="text-sm text-slate-700 leading-relaxed">
+            Det händer ibland att marknadsläget eller tidpunkten inte passar. Din bilmäklare kontaktar dig för att hitta bästa vägen framåt.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-3">
+        <a
+          href="tel:+46855550200"
+          className="group flex items-center gap-3 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] px-5 py-4 transition"
+        >
+          <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+            <CalendarDays className="w-4 h-4 text-white" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[14px] font-semibold text-white leading-tight">Boka samtal med din mäklare</p>
+            <p className="text-[12px] text-white/70 mt-0.5">Ring 08-5555 0200</p>
+          </div>
+        </a>
+        <div className="flex items-center gap-3 rounded-xl bg-white border border-amber-200 px-5 py-4">
+          <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
+            <RefreshCw className="w-4 h-4 text-amber-700" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[14px] font-semibold text-slate-900 leading-tight">Ny auktionsrunda</p>
+            <p className="text-[12px] text-slate-500 mt-0.5">Din mäklare beslutar om upplägg</p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

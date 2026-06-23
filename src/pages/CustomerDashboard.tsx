@@ -20,6 +20,7 @@ import {
   BookmarkPlus,
   Wallet,
   CreditCard,
+  ShoppingCart,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import CustomerOfferCard from '../components/CustomerOfferCard';
@@ -101,6 +102,7 @@ interface QuoteRequestRow {
   firstname: string;
   lastname: string;
   quiz_answers: Record<string, unknown> | null;
+  access_token: string | null;
 }
 
 export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: CustomerDashboardProps) {
@@ -133,11 +135,10 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
       const offerList = (offerRows ?? []) as unknown as OfferRow[];
       setOffers(offerList);
 
-      // Fetch quiz/equity requests saved by this user (matched by user_id or email via RLS)
+      // Fetch ALL buy quote requests for this user (full buy cases + quiz/equity)
       const { data: qrRows } = await supabase
         .from('quote_requests')
-        .select('id, created_at, source, car_model, target_car, status, firstname, lastname, quiz_answers')
-        .in('source', ['bilmatch-quiz', 'equity-calculator'])
+        .select('id, created_at, source, car_model, target_car, status, firstname, lastname, quiz_answers, access_token')
         .order('created_at', { ascending: false });
       setQuoteRequests((qrRows ?? []) as QuoteRequestRow[]);
 
@@ -210,23 +211,23 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
   const soldCars = cars.filter((c) => c.status === 'sald' || c.status === 'godkand').length;
 
   const navItems = [
-    { icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Min portal', active: true, onClick: undefined },
+    { icon: <LayoutDashboard className="w-[18px] h-[18px]" />, label: 'Mitt Bilto', active: true, onClick: undefined },
   ];
 
   return (
     <PortalLayout
       navItems={navItems}
-      identity="Min portal"
+      identity="Mitt Bilto"
       identityRole="Kund"
       onLogout={handleLogout}
-      pageTitle="Min portal"
+      pageTitle="Mitt Bilto"
     >
       <div className="max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-8 space-y-6">
 
         {/* Page header */}
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Min portal</h1>
-          <p className="text-sm text-slate-400 mt-0.5">Dina bilar, bud och erbjudanden i realtid.</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Mitt Bilto</h1>
+          <p className="text-sm text-slate-400 mt-0.5">Dina bilar, köpärenden, bud och erbjudanden i realtid.</p>
         </div>
 
         {loading ? (
@@ -286,18 +287,38 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
               </div>
             )}
 
-            {/* Quiz / equity searches saved by this user */}
-            {quoteRequests.length > 0 && (
+            {/* Buy quote requests – full buy cases */}
+            {quoteRequests.filter(qr => !['bilmatch-quiz', 'equity-calculator'].includes(qr.source)).length > 0 && (
+              <div>
+                <SectionLabel
+                  text="Min sökning"
+                  icon={<ShoppingCart className="w-3.5 h-3.5 text-[#0e6efe]" />}
+                  badge={quoteRequests.filter(qr => !['bilmatch-quiz', 'equity-calculator'].includes(qr.source)).length}
+                />
+                <div className="space-y-3">
+                  {quoteRequests
+                    .filter(qr => !['bilmatch-quiz', 'equity-calculator'].includes(qr.source))
+                    .map((qr) => (
+                      <BuyQuoteCard key={qr.id} qr={qr} />
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {/* Quiz / equity searches */}
+            {quoteRequests.filter(qr => ['bilmatch-quiz', 'equity-calculator'].includes(qr.source)).length > 0 && (
               <div>
                 <SectionLabel
                   text="Dina bilsökningar"
                   icon={<Search className="w-3.5 h-3.5 text-[#0e6efe]" />}
-                  badge={quoteRequests.length}
+                  badge={quoteRequests.filter(qr => ['bilmatch-quiz', 'equity-calculator'].includes(qr.source)).length}
                 />
                 <div className="space-y-3">
-                  {quoteRequests.map((qr) => (
-                    <QuoteRequestCard key={qr.id} qr={qr} />
-                  ))}
+                  {quoteRequests
+                    .filter(qr => ['bilmatch-quiz', 'equity-calculator'].includes(qr.source))
+                    .map((qr) => (
+                      <QuoteRequestCard key={qr.id} qr={qr} />
+                    ))}
                 </div>
               </div>
             )}
@@ -551,7 +572,7 @@ function EmptyState() {
           <CarIcon className="w-8 h-8 text-slate-300" />
         </div>
         <h2 className="text-xl font-bold text-slate-900 mb-2">
-          Du har inget aktivt ärende ännu
+          Välkommen till Mitt Bilto
         </h2>
         <p className="text-[15px] text-slate-500 leading-relaxed max-w-sm mx-auto mb-8">
           Kom igång genom att sälja din bil eller låt oss hjälpa dig hitta rätt bil – helt utan förpliktelser.
@@ -600,6 +621,72 @@ function EmptyState() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function BuyQuoteCard({ qr, onOpen }: { qr: QuoteRequestRow; onOpen?: (token: string) => void }) {
+  const label = qr.car_model || qr.target_car || 'Bilköp';
+  const date = new Date(qr.created_at).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  const STATUS_META: Record<string, { label: string; cls: string }> = {
+    new:       { label: 'Ny',          cls: 'bg-sky-50 border-sky-200 text-sky-700' },
+    contacted: { label: 'Kontaktad',   cls: 'bg-blue-50 border-blue-200 text-blue-700' },
+    working:   { label: 'Pågår',       cls: 'bg-amber-50 border-amber-200 text-amber-700' },
+    converted: { label: 'Konverterad', cls: 'bg-purple-50 border-purple-200 text-purple-700' },
+    won:       { label: 'Vunnen',      cls: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
+    lost:      { label: 'Avslutat',    cls: 'bg-slate-100 border-slate-200 text-slate-600' },
+  };
+
+  const meta = STATUS_META[qr.status] ?? STATUS_META['new'];
+
+  const handleOpen = () => {
+    if (qr.access_token) {
+      if (onOpen) onOpen(qr.access_token);
+      else window.history.pushState({}, '', `/min-forfragan/${qr.access_token}`);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  };
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="h-0.5 w-full bg-[#0e6efe]" />
+      <div className="px-5 py-4 flex items-start gap-3">
+        <div className="w-10 h-10 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+          <ShoppingCart className="w-4.5 h-4.5 text-[#0e6efe]" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2 mb-1">
+            <div>
+              <p className="text-[14px] font-bold text-slate-900 truncate">{label}</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">Köpärende · {date}</p>
+            </div>
+            <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-xl text-[10px] font-semibold border ${meta.cls}`}>
+              {meta.label}
+            </span>
+          </div>
+
+          <p className="text-[12px] text-slate-500 leading-relaxed mt-1">
+            {qr.status === 'new' || qr.status === 'contacted'
+              ? 'Din rådgivare söker matchande bilar åt dig.'
+              : qr.status === 'won'
+              ? 'Din affär är klar!'
+              : 'Din rådgivare jobbar med din förfrågan.'}
+          </p>
+        </div>
+      </div>
+
+      {qr.access_token && (
+        <div className="border-t border-slate-100 px-5 py-3 flex items-center justify-end bg-[#faf8f5]/60">
+          <button
+            onClick={handleOpen}
+            className="inline-flex items-center gap-1.5 h-7 px-3 rounded-lg bg-[#0e6efe] text-white text-xs font-semibold hover:bg-[#0a57cc] transition"
+          >
+            Öppna förfrågan <ChevronRight className="w-3 h-3" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

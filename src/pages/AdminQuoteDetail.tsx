@@ -20,6 +20,11 @@ import {
   Image,
   ShieldCheck,
   ShieldAlert,
+  AlertTriangle,
+  Gavel,
+  Handshake,
+  Zap,
+  Info,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import PortalLayout from '../components/PortalLayout';
@@ -84,6 +89,11 @@ interface QuoteRequest {
   email_verified: boolean;
   email_verified_at: string | null;
   deal_readiness: string;
+  has_trade_in?: boolean;
+  trade_in_reg?: string;
+  current_loan?: string;
+  current_interest_rate?: string;
+  linked_sell_car_id?: string | null;
 }
 
 interface SuggestionRow {
@@ -794,6 +804,12 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
               </select>
             </div>
 
+            {/* 48h varning – inga svar från handlare */}
+            <NoDealerReplyWarning createdAt={quote.created_at} status={status} />
+
+            {/* Adminregler – rekommenderat spår */}
+            <AdminTrackRecommendation quote={quote} />
+
             {/* Customer portal link */}
             <div className="bg-white rounded-xl border border-slate-200 p-5">
               <h3 className="text-sm font-bold text-slate-900 mb-2">Kundportal</h3>
@@ -866,6 +882,75 @@ export default function AdminQuoteDetail({ quoteId, onBack, onConvertToCar, onCr
       </div>
       </div>
     </PortalLayout>
+  );
+}
+
+function NoDealerReplyWarning({ createdAt, status }: { createdAt: string; status: string }) {
+  const hoursOld = (Date.now() - new Date(createdAt).getTime()) / 3_600_000;
+  const isNew = status === 'new' || status === 'contacted';
+  if (!isNew || hoursOld < 48) return null;
+
+  const days = Math.floor(hoursOld / 24);
+  const label = days >= 2 ? `${days} dagar` : `${Math.round(hoursOld)} timmar`;
+
+  return (
+    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+      <div className="flex items-start gap-2.5">
+        <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+        <div>
+          <p className="text-sm font-bold text-amber-900">Inga svar – {label} gammal</p>
+          <p className="text-xs text-amber-700 mt-1 leading-relaxed">
+            Förfrågan har inte fått svar från handlare inom 48h. Ring kunden och bestäm nästa steg.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AdminTrackRecommendation({ quote }: { quote: QuoteRequest }) {
+  const budget = parseInt((quote.budget || '0').replace(/\D/g, '')) || 0;
+
+  type Track = 'auktion' | 'makleri' | 'direktbud';
+  let recommended: Track = 'auktion';
+  let reasons: string[] = [];
+
+  if (budget >= 400_000) {
+    recommended = 'makleri';
+    reasons = ['Budget ≥ 400 000 kr'];
+  } else if (quote.search_option === 'found') {
+    recommended = 'direktbud';
+    reasons = ['Kunden har redan hittat en bil'];
+  } else {
+    reasons = ['Budget < 400 000 kr', 'Kunden letar aktivt'];
+  }
+
+  const TRACKS: Record<Track, { label: string; icon: typeof Gavel; color: string; bg: string; border: string; desc: string }> = {
+    auktion:   { label: 'Auktion',    icon: Gavel,      color: 'text-[#0e6efe]',   bg: 'bg-[#0e6efe]/5',   border: 'border-[#0e6efe]/20', desc: 'Skicka till flera handlare – marknaden sätter priset.' },
+    makleri:   { label: 'Mäkleri',    icon: Handshake,  color: 'text-emerald-700', bg: 'bg-emerald-50',    border: 'border-emerald-200',  desc: 'Personlig förhandling, lämplig för premiumbilar.' },
+    direktbud: { label: 'Direktbud',  icon: Zap,        color: 'text-amber-700',   bg: 'bg-amber-50',      border: 'border-amber-200',    desc: 'Snabbt svar på en specifik bil kunden redan hittat.' },
+  };
+
+  const t = TRACKS[recommended];
+  const Icon = t.icon;
+
+  return (
+    <div className={`rounded-xl border ${t.border} ${t.bg} p-4`}>
+      <div className="flex items-center gap-2 mb-2">
+        <Info className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+        <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Rekommenderat spår</p>
+      </div>
+      <div className="flex items-center gap-2.5 mb-2">
+        <Icon className={`w-4 h-4 ${t.color} shrink-0`} />
+        <span className={`text-sm font-bold ${t.color}`}>{t.label}</span>
+      </div>
+      <p className="text-xs text-slate-600 leading-relaxed mb-2">{t.desc}</p>
+      <div className="flex flex-wrap gap-1">
+        {reasons.map(r => (
+          <span key={r} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/80 border border-slate-200 text-slate-600">{r}</span>
+        ))}
+      </div>
+    </div>
   );
 }
 
