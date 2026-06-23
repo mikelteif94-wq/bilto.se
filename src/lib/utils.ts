@@ -96,14 +96,14 @@ export function calcMonthlyTCO({
   const service = isEl ? 200 : isPremium ? 750 : isDiesel ? 500 : 380;
 
   // Fordonsskatt (fordonsskatt.se) – månadsvis
-  // El: ~1 000 kr/år → 83 kr/mån
+  // El: grundavgift 360 kr/år → 30 kr/mån
   // Laddhybrid/mildhybrid: ~2 400 kr/år → 200 kr/mån
   // Hybrid: ~2 800 kr/år → 233 kr/mån
   // Diesel med lågt CO2: +500 kr/år premium → räkna upp
   // Bensin medel (130-160 g CO2): ~2 400 kr/år → 200 kr/mån
   // Stor bensin/SUV (>180 g): ~4 800 kr/år → 400 kr/mån
   const tax = isEl
-    ? 83
+    ? 30
     : isLaddhybrid || isMildhybrid
     ? 200
     : isHybrid
