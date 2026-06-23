@@ -52,24 +52,17 @@ function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make, mode }: { carPri
   const tco = calcMonthlyTCO({ carPrice: effectivePrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
   const { total } = tco;
   const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
-  const label = level <= 1 ? 'mycket billig' : level === 2 ? 'billig' : level === 3 ? 'måttlig' : level === 4 ? 'dyr' : 'mycket dyr';
-  const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
+  const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#d97706' : '#dc2626';
   const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   return (
-    <div className="mt-1.5">
-      <div className="flex items-center gap-2">
-        <span className="text-[9px] text-slate-400 font-medium">{fmt(effectivePrice)} kr</span>
+    <div className="mt-1.5 flex items-center gap-1.5 mt-0.5">
+      <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
+      <div className="flex items-center gap-[3px]">
+        {[1,2,3,4,5].map(s => (
+          <div key={s} className="rounded-[2px]" style={{ width: 10, height: 6, backgroundColor: s <= level ? activeColor : '#e2e8f0' }} />
+        ))}
       </div>
-      <div className="flex items-center gap-2 mt-1">
-        <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
-        <div className="flex items-center gap-[3px]">
-          {[1,2,3,4,5].map(s => (
-            <div key={s} className="rounded-sm" style={{ width: 13, height: 7, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.45 + (s / level) * 0.55) : 1 }} />
-          ))}
-        </div>
-        <span className="text-[10px] text-slate-400">~{fmt(Math.round(total / 100) * 100)} kr/mån</span>
-      </div>
-      <p className="text-[9px] text-slate-400 mt-0.5 leading-snug">({label} · finansiering + bränsle + service)</p>
+      <span className="text-[10px] text-slate-500 tabular-nums whitespace-nowrap">~{fmt(Math.round(total / 100) * 100)} kr/mån</span>
     </div>
   );
 }
@@ -275,7 +268,7 @@ export default function CompactCarCard({
           {displayComment && (
             <p className="mt-1 text-[11px] text-slate-500 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
-          {range && <div className="mt-1"><OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} /></div>}
+          {range && <div className="mt-1"><OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} /></div>}
           {monthlySaving != null && monthlySaving > 0 && (
             <p className="mt-1 text-[10.5px] font-semibold text-emerald-600">Sparar {formatSEK(monthlySaving)} kr/mån</p>
           )}
