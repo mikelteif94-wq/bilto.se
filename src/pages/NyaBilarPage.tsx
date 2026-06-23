@@ -6,6 +6,7 @@ import {
 import { useCatalogCars, CatalogCarFull } from '@/hooks/useCatalogCars';
 import { SiteFooter } from '@/components/SiteFooter';
 import { findComparisonCarByMakeModel } from '@/lib/comparison/lookup';
+import BuyDrawer from '@/components/BuyDrawer';
 
 interface Props {
   onBack: () => void;
@@ -116,6 +117,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
   const { cars, loading } = useCatalogCars();
   const [activeCategory, setActiveCategory] = useState<Category>('alla');
   const [searchQuery, setSearchQuery] = useState('');
+  const [drawerCar, setDrawerCar] = useState<string | null>(null);
 
   const featuredCars = useMemo(() =>
     FEATURED.map(fd => ({
@@ -362,7 +364,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
                     )}
 
                     <button
-                      onClick={() => onNavigateBuy(`${fd.make} ${fd.model}`)}
+                      onClick={() => setDrawerCar(`${fd.make} ${fd.model}`)}
                       className="self-start inline-flex items-center gap-2 h-12 px-7 bg-black text-white font-semibold rounded-xl hover:bg-slate-800 transition-all text-sm group"
                     >
                       {fd.make} {fd.model} – Få hjälp att köpa
@@ -427,7 +429,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
                 return (
                   <button
                     key={car.id}
-                    onClick={() => onNavigateBuy(`${car.make} ${car.model}`)}
+                    onClick={() => setDrawerCar(`${car.make} ${car.model}`)}
                     className="group text-left bg-[#f9f8f6] rounded-2xl overflow-hidden border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all duration-200"
                   >
                     {/* Image area */}
@@ -525,6 +527,12 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
       </section>
 
       <SiteFooter />
+
+      <BuyDrawer
+        car={drawerCar}
+        initialTrack="searching"
+        onClose={() => setDrawerCar(null)}
+      />
     </div>
   );
 }
