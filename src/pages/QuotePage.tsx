@@ -388,7 +388,7 @@ export default function QuotePage({
               </p>
             </div>
             <div className="md:col-span-7 order-2">
-              <div className="relative rounded-xl overflow-hidden bg-[#0e6efe] h-[300px] sm:h-[460px] md:h-[520px]">
+              <div className="relative rounded-xl overflow-hidden bg-[#0e6efe] h-[420px] sm:h-[460px] md:h-[520px]">
                 <img
                   src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(Instagram_Post_(45))_copy_copy_copy_copy_copy.jpg"
                   alt="Johan framför sin Toyota RAV4"
