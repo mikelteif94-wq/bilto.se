@@ -11,7 +11,7 @@ import { type ComparisonCar, getAllComparisonCars } from '@/lib/comparison';
 import { useCarCatalogLookup } from '@/lib/comparison/useCarCatalogLookup';
 import type { QuizAnswers } from './QuizTypes';
 import { inferPersona, type Persona } from './persona';
-import { calcCarMonthly, calcMonthlyTCO } from '@/lib/utils';
+import { calcOwnershipLevel } from '@/lib/utils';
 
 export interface DetailCarData {
   make: string;
@@ -89,11 +89,8 @@ function getFuelLabel(fuelTypes: string[]): string {
 }
 
 // ─── Ownership cost meter ─────────────────────────────────────────────────────
-function OwnershipMeter({ carPrice, fuelTypes, make }: { carPrice: number; fuelTypes: string[]; make?: string }) {
-  if (!carPrice || carPrice < 10000) return null;
-  const tco = calcMonthlyTCO({ carPrice, fuelTypes, make });
-  const { total } = tco;
-  const level = total < 5000 ? 1 : total < 8000 ? 2 : total < 12000 ? 3 : total < 17000 ? 4 : 5;
+function OwnershipMeter({ fuelTypes, make }: { carPrice: number; fuelTypes: string[]; make?: string }) {
+  const level = calcOwnershipLevel(make ?? '', fuelTypes);
   const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
   return (
@@ -710,11 +707,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
     <div className="space-y-6">
       {/* ── Ownership cost + expert text ── */}
       <section className="p-4 bg-gradient-to-br from-[#0047B3]/5 to-[#0047B3]/[0.03] rounded-xl border border-[#0047B3]/10">
-        {carPrice ? (
-          <OwnershipMeter carPrice={carPrice} fuelTypes={data.specs.fuel_types} make={data.brand_display} />
-        ) : (
-          <p className="text-[13px] text-slate-400 italic">Ägarkostnad ej tillgänglig</p>
-        )}
+        <OwnershipMeter carPrice={0} fuelTypes={data.specs.fuel_types} make={data.brand_display} />
         {data.meta_description && (
           <p className="text-[12.5px] text-slate-600 leading-relaxed mt-3 pt-3 border-t border-[#0047B3]/10">{data.meta_description}</p>
         )}

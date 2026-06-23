@@ -122,6 +122,27 @@ export function calcMonthlyTCO({
   return { financing, fuel, insurance, service, tax, total: financing + fuel + insurance + service + tax };
 }
 
+// Brand tiers for ownership cost (1=cheapest, 5=most expensive)
+const SUPERCAR_BRANDS = new Set(['lamborghini', 'ferrari', 'bugatti', 'mclaren', 'aston martin', 'koenigsegg', 'pagani', 'rolls-royce', 'rolls royce', 'bentley', 'maserati']);
+const LUXURY_BRANDS = new Set(['bmw', 'mercedes', 'mercedes-benz', 'audi', 'porsche', 'lexus', 'jaguar', 'land rover', 'landrover', 'range rover', 'tesla', 'polestar', 'genesis', 'cadillac', 'lincoln', 'volvo', 'infinity', 'infiniti']);
+const BUDGET_BRANDS = new Set(['dacia', 'mg', 'byd', 'citroën', 'citroen', 'lada', 'ssangyong', 'chery', 'omoda', 'jaecoo']);
+
+export function calcOwnershipLevel(make: string, fuelTypes: string[]): number {
+  const m = make.toLowerCase().trim();
+  let base: number;
+  if (SUPERCAR_BRANDS.has(m)) base = 5;
+  else if (LUXURY_BRANDS.has(m)) base = 4;
+  else if (BUDGET_BRANDS.has(m)) base = 2;
+  else base = 3;
+
+  const isEv = fuelTypes.includes('el') && !fuelTypes.includes('bensin') && !fuelTypes.includes('diesel');
+  const isPhev = fuelTypes.includes('laddhybrid');
+
+  if (isEv || isPhev) base = Math.max(1, base - 1);
+
+  return base;
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

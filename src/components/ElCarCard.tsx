@@ -1,5 +1,5 @@
 import { Zap, Star, Check, ChevronRight, Info, Scale } from 'lucide-react';
-import { calcMonthlyTCO } from '../lib/utils';
+import { calcOwnershipLevel } from '../lib/utils';
 
 const BODY_LABELS: Record<string, string> = {
   sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
@@ -31,26 +31,8 @@ interface ElCarCardProps {
   cardMode?: 'ny' | 'beg';
 }
 
-function fuelLabelToTypes(fuelLabel?: string): string[] {
-  if (!fuelLabel) return [];
-  const l = fuelLabel.toLowerCase();
-  const types: string[] = [];
-  if (l.includes('laddhybrid') || l.includes('plug')) types.push('laddhybrid');
-  else if (l.includes('mildhybrid')) types.push('mildhybrid');
-  else if (l.includes('hybrid')) types.push('hybrid');
-  if (l.includes(' el') || l.startsWith('el') || l.includes('electric')) types.push('el');
-  if (l.includes('diesel')) types.push('diesel');
-  if (l.includes('bensin')) types.push('bensin');
-  return types.length > 0 ? types : ['el'];
-}
-
-function OwnershipMeter({ carPrice, usedPrice, fuelTypes, fuelLabel, make, mode }: { carPrice: number; usedPrice?: number; fuelTypes?: string[]; fuelLabel?: string; make?: string; mode: 'ny' | 'beg' }) {
-  const effectivePrice = (mode === 'beg' && usedPrice) ? usedPrice : carPrice;
-  if (!effectivePrice || effectivePrice < 10000) return null;
-  const resolvedFuelTypes = (fuelTypes && fuelTypes.length > 0) ? fuelTypes : fuelLabelToTypes(fuelLabel);
-  const tco = calcMonthlyTCO({ carPrice: effectivePrice, fuelTypes: resolvedFuelTypes, make });
-  const { total } = tco;
-  const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
+function OwnershipMeter({ make, fuelTypes }: { make: string; fuelTypes?: string[] }) {
+  const level = calcOwnershipLevel(make, fuelTypes ?? []);
   const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
   return (
@@ -92,8 +74,7 @@ export default function ElCarCard({
   isSelected, topBadge, cardMode = 'beg',
   onNegotiate, onDetail, onTcoCompare, isTcoCompared,
 }: ElCarCardProps) {
-  const mode: 'ny' | 'beg' = (cardMode === 'beg' && usedPrice) ? 'beg' : 'ny';
-  const showMeter = !!(carPrice || usedPrice);
+  const make = name.split(' ')[0];
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
   const bodyLabel = bodyType ? BODY_LABELS[bodyType] : null;
 
@@ -154,7 +135,7 @@ export default function ElCarCard({
           {displayComment && (
             <p className="text-[10px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
-          {showMeter && <OwnershipMeter carPrice={carPrice ?? usedPrice!} usedPrice={usedPrice} fuelTypes={fuelTypes} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} />}
+          <OwnershipMeter make={make} fuelTypes={fuelTypes} />
           <div className="flex items-center gap-1.5 mt-auto pt-1">
             <button
               type="button"
@@ -239,7 +220,7 @@ export default function ElCarCard({
             {displayComment && (
               <p className="mt-1 text-[11px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
             )}
-            {showMeter && <div className="mt-1.5"><OwnershipMeter carPrice={carPrice ?? usedPrice!} usedPrice={usedPrice} fuelTypes={fuelTypes} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} /></div>}
+            <div className="mt-1.5"><OwnershipMeter make={make} fuelTypes={fuelTypes} /></div>
           </div>
         </div>
 
