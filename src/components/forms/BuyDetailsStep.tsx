@@ -726,24 +726,6 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const compDataForFuel = useMemo(() => {
-    let brand = d.carBrand;
-    let model = d.carModel;
-    if (!brand || brand === 'Vet ej') {
-      const p = parseInitialBil(d.carModel);
-      brand = p.brand;
-      model = p.model;
-    }
-    if (!brand || !model) return null;
-    return findComparisonCarByMakeModel(brand, model);
-  }, [d.carBrand, d.carModel]);
-
-  const availableFuelValues = useMemo((): Set<string> | null => {
-    if (!compDataForFuel) return null;
-    const mapped = new Set(compDataForFuel.specs.fuel_types.map(f => FUEL_TYPE_MAP[f.toLowerCase()] ?? '').filter(Boolean));
-    return mapped.size > 0 ? mapped : null;
-  }, [compDataForFuel]);
-
   if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} />;
   if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} />;
 
@@ -783,25 +765,18 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   const fuelTypeSelector = hideFuel ? null : (
     <div className="py-7">
       <label className="block text-[15px] font-bold text-slate-900 mb-1">Drivmedel</label>
-      {availableFuelValues && availableFuelValues.size <= 2 && (
-        <p className="text-[12.5px] text-slate-400 mb-2.5">Baserat på vald modell – välj om du vill.</p>
-      )}
       <div className="flex flex-wrap gap-2">
         {FUEL_TYPES.map(f => {
-          const isCompatible = !availableFuelValues || f.value === 'no_pref' || availableFuelValues.has(f.value);
           const isSelected = d.fuelType === f.value;
           return (
             <button
               key={f.value}
               type="button"
-              onClick={() => isCompatible && set('fuelType', isSelected ? '' : f.value)}
-              disabled={!isCompatible}
+              onClick={() => set('fuelType', isSelected ? '' : f.value)}
               className={`px-4 h-9 rounded-xl text-[13.5px] font-medium transition-all active:scale-[0.97] ${
                 isSelected
                   ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
-                  : isCompatible
-                  ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  : 'bg-[#faf8f5] text-slate-300 line-through cursor-not-allowed'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
               {f.label}
@@ -951,23 +926,17 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
-                <div className="relative">
-                  <select value={d.yearFrom} onChange={e => set('yearFrom', e.target.value)} className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]">
-                    <option value="">Välj år</option>
-                    {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-                </div>
+                <select value={d.yearFrom} onChange={e => set('yearFrom', e.target.value)} className="form-control text-[13px] sm:text-[14px]">
+                  <option value="">Välj år</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
               </div>
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Till</p>
-                <div className="relative">
-                  <select value={d.yearTo} onChange={e => set('yearTo', e.target.value)} className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]">
-                    <option value="">Välj år</option>
-                    {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-                </div>
+                <select value={d.yearTo} onChange={e => set('yearTo', e.target.value)} className="form-control text-[13px] sm:text-[14px]">
+                  <option value="">Välj år</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
               </div>
             </div>
           </div>
@@ -1083,23 +1052,17 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
-                <div className="relative">
-                  <select value={d.yearFrom} onChange={e => set('yearFrom', e.target.value)} className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]">
-                    <option value="">Välj år</option>
-                    {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-                </div>
+                <select value={d.yearFrom} onChange={e => set('yearFrom', e.target.value)} className="form-control text-[13px] sm:text-[14px]">
+                  <option value="">Välj år</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
               </div>
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Till</p>
-                <div className="relative">
-                  <select value={d.yearTo} onChange={e => set('yearTo', e.target.value)} className="form-control appearance-none pr-7 text-[13px] sm:text-[14px]">
-                    <option value="">Välj år</option>
-                    {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-                </div>
+                <select value={d.yearTo} onChange={e => set('yearTo', e.target.value)} className="form-control text-[13px] sm:text-[14px]">
+                  <option value="">Välj år</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
               </div>
             </div>
           </div>
