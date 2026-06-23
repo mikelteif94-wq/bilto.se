@@ -50,13 +50,12 @@ export function useCatalogCars() {
             rating_overall, rating_driving, rating_comfort, rating_practicality, rating_value,
             expert_comment, seats,
             baggage_liters,
-            price_new_from, price_used_from,
-            monthly_cost_new_min, monthly_cost_used_min,
+            price_used_min,
             strengths, weaknesses,
             drivetrain_type, is_active, slug,
             pris_ny_fran, pris_ny_till, pris_begagnat,
             manadskostnad_ny, manadskostnad_begagnad,
-            drivmedel, drivlina, fuel_types
+            drivmedel, drivlina
           `)
           .eq('is_active', true)
           .order('make', { ascending: true })
@@ -70,12 +69,11 @@ export function useCatalogCars() {
 
         const merged = (data || []).map((c: Record<string, unknown>) => ({
           ...c,
-          // Swedish columns override English if they have data
-          price_new_from: (c.pris_ny_fran as number | null) ?? (c.price_new_from as number | null),
+          price_new_from: (c.pris_ny_fran as number | null) ?? null,
           price_new_till: (c.pris_ny_till as number | null) ?? null,
-          price_used_from: (c.pris_begagnat as number | null) ?? (c.price_used_from as number | null),
-          monthly_cost_new_min: (c.manadskostnad_ny as number | null) ?? (c.monthly_cost_new_min as number | null),
-          monthly_cost_used_min: (c.manadskostnad_begagnad as number | null) ?? (c.monthly_cost_used_min as number | null),
+          price_used_from: (c.pris_begagnat as number | null) ?? (c.price_used_min as number | null),
+          monthly_cost_new_min: (c.manadskostnad_ny as number | null) ?? null,
+          monthly_cost_used_min: (c.manadskostnad_begagnad as number | null) ?? null,
         }));
 
         setCars(merged.filter((c) => c.image_url || c.cleaned_image_url) as CatalogCarFull[]);

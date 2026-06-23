@@ -57,8 +57,9 @@ interface CatalogEntry {
   expert_text: string | null;
   betyg_totalt: number | null;
   // Price fields
-  price_new_from?: number | null;
-  price_new_to?: number | null;
+  pris_ny_fran: number | null;
+  pris_ny_till: number | null;
+  pris_begagnat: number | null;
   price_used_min: number | null;
   price_used_max: number | null;
   price_verified?: boolean;
@@ -275,9 +276,9 @@ function emptyEdit(entry: CatalogEntry): EditState {
     svagheter: toStr(entry.svagheter),
     passar_for: toStr(entry.passar_for),
     expert_text: entry.expert_text ?? entry.expert_comment ?? '',
-    price_new_from: '',
-    price_new_to: '',
-    price_used_min: entry.price_used_min != null ? String(entry.price_used_min) : '',
+    price_new_from: (entry.pris_ny_fran ?? entry.pris_ny_till) != null ? String(entry.pris_ny_fran ?? '') : '',
+    price_new_to: entry.pris_ny_till != null ? String(entry.pris_ny_till) : '',
+    price_used_min: (entry.pris_begagnat ?? entry.price_used_min) != null ? String(entry.pris_begagnat ?? entry.price_used_min ?? '') : '',
     price_used_max: entry.price_used_max != null ? String(entry.price_used_max) : '',
     price_verified: false,
     price_source: '',
@@ -320,7 +321,7 @@ export default function AdminCarCatalog({ onBack, onImport, onPriceUpdate }: Adm
     setLoading(true);
     const { data, error } = await supabase
       .from('car_catalog')
-      .select('id, make, model, image_url, cleaned_image_url, fuel_types, body_type, segment, rating_overall, expert_comment, seats, is_active, updated_at, kaross, drivmedel, drivlina_kort, styrkor, svagheter, passar_for, expert_text, betyg_totalt, price_used_min, price_used_max')
+      .select('id, make, model, image_url, cleaned_image_url, fuel_types, body_type, segment, rating_overall, expert_comment, seats, is_active, updated_at, kaross, drivmedel, drivlina_kort, styrkor, svagheter, passar_for, expert_text, betyg_totalt, pris_ny_fran, pris_ny_till, pris_begagnat, price_used_min, price_used_max')
       .order('make', { ascending: true })
       .order('model', { ascending: true });
     if (error) {
@@ -400,8 +401,16 @@ export default function AdminCarCatalog({ onBack, onImport, onPriceUpdate }: Adm
     setSaving(true);
     const splitList = (s: string) => s.split(';').map(x => x.trim()).filter(Boolean);
     const toInt = (s: string) => { const n = parseInt(s.replace(/\s/g, '')); return isNaN(n) ? null : n; };
+    const FUEL_TO_DRIVMEDEL: Record<string, string> = {
+      bensin: 'Bensin', diesel: 'Diesel', mildhybrid: 'Mildhybrid',
+      hybrid: 'Hybrid', laddhybrid: 'Laddhybrid', el: 'El',
+    };
+    const drivmedelText = editState.fuel_types.length > 0
+      ? editState.fuel_types.map(f => FUEL_TO_DRIVMEDEL[f] ?? f).join(', ')
+      : null;
     const payload = {
       fuel_types: editState.fuel_types.length > 0 ? editState.fuel_types : null,
+      drivmedel: drivmedelText,
       body_type: editState.body_type || null,
       segment: editState.segment || null,
       rating_overall: editState.rating_overall ? parseFloat(editState.rating_overall) : null,
@@ -416,12 +425,15 @@ export default function AdminCarCatalog({ onBack, onImport, onPriceUpdate }: Adm
       svagheter: splitList(editState.svagheter).length > 0 ? splitList(editState.svagheter) : null,
       passar_for: splitList(editState.passar_for).length > 0 ? splitList(editState.passar_for) : null,
       expert_text: editState.expert_text || null,
+      pris_ny_fran: toInt(editState.price_new_from),
+      pris_ny_till: toInt(editState.price_new_to),
+      pris_begagnat: toInt(editState.price_used_min),
       price_used_min: toInt(editState.price_used_min),
       price_used_max: toInt(editState.price_used_max),
       updated_at: new Date().toISOString(),
     };
     await supabase.from('car_catalog').update(payload).eq('id', editId);
-    setEntries(prev => prev.map(e => e.id === editId ? { ...e, ...payload } : e));
+    setEntries(prev => prev.map(e => e.id === editId ? { ...e, ...payload, pris_ny_fran: payload.pris_ny_fran, pris_ny_till: payload.pris_ny_till, pris_begagnat: payload.pris_begagnat } : e));
     setSavedId(editId);
     setTimeout(() => setSavedId(null), 2000);
     setSaving(false);
