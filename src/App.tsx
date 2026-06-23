@@ -50,6 +50,7 @@ const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
 const JamforBilarPage = lazy(() => import('./pages/JamforBilarPage'));
+const NyaBilarPage = lazy(() => import('./pages/NyaBilarPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -377,8 +378,25 @@ function App() {
     );
   }
 
+  if (path === '/nya-bilar') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <NyaBilarPage
+          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
+          onNavigateBuy={(bil) => {
+            const p = new URLSearchParams();
+            if (bil) p.set('bil', bil);
+            p.set('source', 'Nya bilar sida');
+            window.history.pushState({}, '', `/kop-bil/bestall?${p.toString()}`);
+            setPath('/kop-bil/bestall');
+          }}
+          onNavigateConsultation={() => { window.history.pushState({}, '', '/gratis-konsultation'); setPath('/gratis-konsultation'); }}
+        />
+      </Suspense>
+    );
+  }
+
   if (path === '/jamfor-bilar') {
-    const params = new URLSearchParams(window.location.search);
     const ids = params.get('ids')?.split(',').filter(Boolean) ?? [];
     return (
       <Suspense fallback={<PageLoader />}>
