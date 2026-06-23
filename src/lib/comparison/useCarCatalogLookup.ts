@@ -174,7 +174,20 @@ export function useCarCatalogLookup(make: string, model: string): {
         if (row && !error) {
           const mapped = dbRowToComparisonCar(row as DbRow);
           const local = findComparisonCarByMakeModel(make, model);
-          setData(local?.ev_specs ? { ...mapped, ev_specs: local.ev_specs } : mapped);
+          const pricingOverride = local?.pricing ? {
+            new_from_sek: local.pricing.new_from_sek ?? mapped.pricing.new_from_sek,
+            new_to_sek: local.pricing.new_to_sek ?? mapped.pricing.new_to_sek,
+            used_from_sek: local.pricing.used_from_sek ?? mapped.pricing.used_from_sek,
+            monthly_used: mapped.pricing.monthly_used,
+            monthly_used_min: mapped.pricing.monthly_used_min,
+            monthly_used_max: mapped.pricing.monthly_used_max,
+          } : mapped.pricing;
+          const merged: ComparisonCar = {
+            ...mapped,
+            pricing: pricingOverride,
+            ...(local?.ev_specs ? { ev_specs: local.ev_specs } : {}),
+          };
+          setData(merged);
         }
       } catch {
         // ignore
