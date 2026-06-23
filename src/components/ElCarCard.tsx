@@ -8,6 +8,7 @@ const BODY_LABELS: Record<string, string> = {
 
 interface ElCarCardProps {
   name: string;
+  make?: string;
   imageUrl?: string | null;
   rating?: number;
   expertComment?: string;
@@ -69,12 +70,12 @@ function ScoreBadge({ value }: { value: number }) {
 }
 
 export default function ElCarCard({
-  name, imageUrl, rating, expertComment,
+  name, make: makeProp, imageUrl, rating, expertComment,
   carPrice, usedPrice, fuelLabel, fuelTypes, bodyType, drivetrain, pros,
   isSelected, topBadge, cardMode = 'beg',
   onNegotiate, onDetail, onTcoCompare, isTcoCompared,
 }: ElCarCardProps) {
-  const make = name.split(' ')[0];
+  const make = makeProp ?? name.split(' ')[0];
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
   const bodyLabel = bodyType ? BODY_LABELS[bodyType] : null;
 

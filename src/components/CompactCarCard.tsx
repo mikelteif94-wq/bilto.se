@@ -8,6 +8,7 @@ const BODY_LABELS: Record<string, string> = {
 
 interface CompactCarCardProps {
   name: string;
+  make?: string;
   imageUrl?: string | null;
   rating?: number;
   topBadge?: boolean;
@@ -70,13 +71,13 @@ function ScoreBadge({ value }: { value: number }) {
 }
 
 export default function CompactCarCard({
-  name, imageUrl, rating, topBadge, expertComment,
+  name, make: makeProp, imageUrl, rating, topBadge, expertComment,
   fuelLabel, fuelTypes, bodyType, drivetrain, seats, pros,
   carPrice, usedPrice, monthlySaving, equityFreed,
   isSelected,
   onSelect, onNegotiate, onDetail, onTcoCompare, isTcoCompared,
 }: CompactCarCardProps) {
-  const make = name.split(' ')[0];
+  const make = makeProp ?? name.split(' ')[0];
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
   const bodyLabel = bodyType ? BODY_LABELS[bodyType] : null;
 

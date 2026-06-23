@@ -489,6 +489,18 @@ interface QuizRecommendation {
   carPrice?: number;
 }
 
+function parseFuelLabel(label?: string): string[] {
+  if (!label) return ['bensin'];
+  const l = label.toLowerCase();
+  const types: string[] = [];
+  if (l.includes('laddhybrid')) types.push('laddhybrid');
+  else if (l.includes('hybrid')) types.push('hybrid');
+  if (l.includes('el')) types.push('el');
+  if (l.includes('diesel')) types.push('diesel');
+  if (l.includes('bensin')) types.push('bensin');
+  return types.length > 0 ? types : ['bensin'];
+}
+
 function detectBodyType(model: string): string | null {
   const modelLower = model.toLowerCase();
   let bestMatch: string | null = null;
@@ -1264,6 +1276,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                           <ElCarCard
                             key={car.id}
                             name={`${car.brand_display} ${car.model_display}`}
+                            make={car.brand_display}
                             imageUrl={imgUrl}
                             rating={car.ratings.overall}
                             pros={car.pros}
@@ -1287,6 +1300,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                         <CompactCarCard
                           key={car.id}
                           name={`${car.brand_display} ${car.model_display}`}
+                          make={car.brand_display}
                           imageUrl={imgUrl}
                           rating={car.ratings.overall}
                           fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
@@ -1528,6 +1542,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                             {isElbil ? (
                               <ElCarCard
                                 name={`${car.make} ${car.model}`}
+                                make={car.make}
                                 imageUrl={car.image_url || car.cleaned_image_url}
                                 rating={car.rating}
                                 topBadge={i === 0 && !isMobile}
@@ -1535,7 +1550,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                                 bodyType={compData?.specs.body_type}
                                 drivetrain={compData?.specs.drivetrain}
                                 seats={compData?.specs.seats}
-                                fuelTypes={compData?.specs.fuel_types}
+                                fuelTypes={compData?.specs.fuel_types ?? ['el']}
                                 carPrice={car.carPrice}
                                 usedPrice={car.usedPrice}
                                 isSelected={isSelected}
@@ -1546,12 +1561,13 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                             ) : (
                               <CompactCarCard
                                 name={`${car.make} ${car.model}`}
+                                make={car.make}
                                 imageUrl={car.image_url || car.cleaned_image_url}
                                 rating={car.rating}
                                 topBadge={i === 0 && !isMobile}
                                 expertComment={car.matchReasons.join(' · ') || undefined}
                                 fuelLabel={car.fuelLabel}
-                                fuelTypes={compData?.specs.fuel_types}
+                                fuelTypes={compData?.specs.fuel_types ?? parseFuelLabel(car.fuelLabel)}
                                 bodyType={compData?.specs.body_type}
                                 drivetrain={compData?.specs.drivetrain}
                                 seats={compData?.specs.seats}
