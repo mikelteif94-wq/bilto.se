@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home, Repeat, CalendarClock, ShoppingCart } from 'lucide-react';
+import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home, Repeat, CalendarClock } from 'lucide-react';
 import { CustomerData, CarData, ImageFile } from '../../pages/SellCarPage';
 import type { TradeInData } from './CarConditionStep';
 import { supabase } from '../../lib/supabase';
@@ -46,7 +46,6 @@ export default function ConfirmationForm({
   const [stage, setStage] = useState<UploadStage>('idle');
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [savedToken, setSavedToken] = useState<string>('');
-  const [quoteToken, setQuoteToken] = useState<string>('');
   const [dealReadiness, setDealReadiness] = useState<DealReadiness>('');
 
   const submitting = stage !== 'idle' && stage !== 'done';
@@ -173,45 +172,6 @@ export default function ConfirmationForm({
     const origin = typeof window !== 'undefined' ? window.location.origin : (import.meta.env.VITE_APP_URL ?? 'https://bilto.se');
     const trackingUrl = `${origin.replace(/\/$/, '')}/min-bil/${accessToken}`;
 
-    // If customer wants trade-in, auto-create a linked buy request
-    let createdQuoteToken = '';
-    if (tradeDetails) {
-      const nameParts = customer.namn.trim().split(/\s+/);
-      const firstname = nameParts[0] ?? '';
-      const lastname = nameParts.slice(1).join(' ') ?? '';
-      const qToken = generateToken();
-      const { error: quoteError } = await supabase
-        .from('quote_requests')
-        .insert([{
-          search_option: 'trade',
-          firstname,
-          lastname,
-          email: customer.mejl,
-          phone: customer.telefon,
-          car_model: [tradeDetails.carBrand, tradeDetails.carModel].filter(Boolean).join(' ') || tradeDetails.targetCar || '',
-          target_car: tradeDetails.targetCar || '',
-          budget: tradeDetails.carPrice || '',
-          fuel_type: tradeDetails.fuelType || '',
-          payment_type: tradeDetails.paymentType || '',
-          has_trade_in: true,
-          trade_in_reg: car.regnummer.toUpperCase(),
-          status: 'new',
-          access_token: qToken,
-          // linked_car_id requires migration 107; insert will succeed once column exists
-          ...(carRow.id ? { linked_car_id: carRow.id } : {}),
-        } as never]);
-      if (!quoteError) {
-        createdQuoteToken = qToken;
-        setQuoteToken(qToken);
-        // Notify admin about the linked buy request
-        void fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-quote-request`, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ quote_token: qToken, linked_car_id: carRow.id }),
-        }).catch(() => {});
-      }
-    }
-
     const headers = {
       Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
       Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
@@ -249,7 +209,6 @@ export default function ConfirmationForm({
     }).catch(() => {});
 
     setSavedToken(accessToken);
-    if (createdQuoteToken) setQuoteToken(createdQuoteToken);
     setStage('done');
   };
 
@@ -266,7 +225,6 @@ export default function ConfirmationForm({
     const maskedPhone = maskPhone(customer.telefon);
     const reg = car.regnummer.toUpperCase();
     const trackUrl = savedToken ? `/min-bil/${savedToken}` : '';
-    const quoteUrl = quoteToken ? `/min-forfragan/${quoteToken}` : '';
 
     return (
       <div className="py-2 sm:py-4">
@@ -388,29 +346,6 @@ export default function ConfirmationForm({
               className="shrink-0 inline-flex items-center gap-1.5 h-9 px-4 bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[12.5px] rounded-xl transition whitespace-nowrap"
             >
               Öppna
-              <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.2} />
-            </a>
-          </div>
-        )}
-
-        {quoteUrl && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-4 flex items-center justify-between gap-3 mb-4">
-            <div className="flex items-start gap-3 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
-                <ShoppingCart className="w-4.5 h-4.5 text-amber-600" strokeWidth={2} />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[13px] font-semibold text-slate-800">Köpärende öppnat</p>
-                <p className="text-[12px] text-slate-600 mt-0.5 leading-relaxed">
-                  Vi har också öppnat ett ärende för din nästa bil. Följ det i din portal.
-                </p>
-              </div>
-            </div>
-            <a
-              href={quoteUrl}
-              className="shrink-0 inline-flex items-center gap-1.5 h-9 px-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-[12.5px] rounded-xl transition whitespace-nowrap"
-            >
-              Se förfrågan
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.2} />
             </a>
           </div>

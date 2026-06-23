@@ -14,9 +14,6 @@ import {
   ThumbsUp,
   MessageSquare,
   UserPlus,
-  RefreshCw,
-  CalendarDays,
-  XCircle,
 } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
 import ConditionReportForm, {
@@ -75,7 +72,6 @@ interface CarResponse {
   winning_bid: { belopp: number; foretagsnamn: string } | null;
   bid_count: number;
   dispatch_count: number;
-  highest_current_bid: number | null;
   activities: ActivityItem[];
 }
 
@@ -277,8 +273,6 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
         <CustomerLiveFeed
           bidCount={car.bid_count ?? 0}
           dispatchCount={car.dispatch_count ?? 0}
-          highestCurrentBid={car.highest_current_bid ?? null}
-          isActive={car.status === 'aktiv'}
           activities={car.activities ?? []}
           carCreatedAt={car.created_at}
         />
@@ -406,15 +400,11 @@ const ACTIVITY_ICONS: Record<string, string> = {
 function CustomerLiveFeed({
   bidCount,
   dispatchCount,
-  highestCurrentBid,
-  isActive,
   activities,
   carCreatedAt,
 }: {
   bidCount: number;
   dispatchCount: number;
-  highestCurrentBid: number | null;
-  isActive: boolean;
   activities: ActivityItem[];
   carCreatedAt: string;
 }) {
@@ -434,7 +424,7 @@ function CustomerLiveFeed({
       </div>
 
       {/* Stats row */}
-      <div className={`grid divide-x divide-slate-100 border-b border-slate-100 ${isActive && highestCurrentBid ? 'grid-cols-4' : 'grid-cols-3'}`}>
+      <div className="grid grid-cols-3 divide-x divide-slate-100 border-b border-slate-100">
         <div className="px-4 py-3 text-center">
           <p className="text-xl font-bold text-slate-900">{bidCount}</p>
           <p className="text-[11px] text-slate-500 font-medium mt-0.5">
@@ -449,12 +439,6 @@ function CustomerLiveFeed({
           <p className="text-xl font-bold text-slate-900">{activities.length}</p>
           <p className="text-[11px] text-slate-500 font-medium mt-0.5">Händelser</p>
         </div>
-        {isActive && highestCurrentBid && (
-          <div className="px-4 py-3 text-center bg-teal-50">
-            <p className="text-xl font-bold text-teal-700">{formatKr(highestCurrentBid)}</p>
-            <p className="text-[11px] text-teal-600 font-medium mt-0.5">Högsta bud just nu</p>
-          </div>
-        )}
       </div>
 
       {/* Timeline */}
@@ -525,7 +509,14 @@ function StatusCard({ car }: { car: CarResponse }) {
     );
   }
   if (car.status === 'inga_bud') {
-    return <IngaBudCard regnummer={car.regnummer} />;
+    return (
+      <Banner
+        icon={<PhoneCall className="w-5 h-5" />}
+        tone="amber"
+        title="Inga bud den här gången"
+        text="Tyvärr kom inga bud in. Din bilmäklare hör av sig för att diskutera nästa steg."
+      />
+    );
   }
   if (car.status === 'auktion_avslutad' && car.winning_bid) {
     return (
@@ -554,98 +545,6 @@ function StatusCard({ car }: { car: CarResponse }) {
       title="Avslutad"
       text="Denna förfrågan är avslutad."
     />
-  );
-}
-
-function IngaBudCard({ regnummer }: { regnummer: string }) {
-  const [cancelConfirm, setCancelConfirm] = useState(false);
-
-  const goConsultation = () => {
-    const params = new URLSearchParams({ arende: 'salja', reg: regnummer });
-    window.history.pushState({}, '', `/gratis-konsultation?${params}`);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  };
-
-  return (
-    <div className="bg-white rounded-md border border-amber-200 p-6">
-      <div className="flex items-start gap-3 mb-5">
-        <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
-          <PhoneCall className="w-5 h-5 text-amber-600" />
-        </div>
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900 mb-1">Inga bud den här gången</h2>
-          <p className="text-sm text-slate-600 leading-relaxed">
-            Tyvärr kom inga bud in. Välj hur du vill gå vidare – vi hjälper dig oavsett väg.
-          </p>
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <button
-          type="button"
-          onClick={goConsultation}
-          className="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-[#0e6efe] bg-[#0e6efe]/[0.03] hover:bg-[#0e6efe]/[0.07] transition text-left group"
-        >
-          <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
-            <CalendarDays className="w-4.5 h-4.5 text-[#0e6efe]" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-900">Boka samtal med din mäklare</p>
-            <p className="text-xs text-slate-500 mt-0.5">Vi diskuterar alternativ och nästa steg</p>
-          </div>
-        </button>
-
-        <button
-          type="button"
-          onClick={goConsultation}
-          className="w-full flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition text-left"
-        >
-          <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
-            <RefreshCw className="w-4.5 h-4.5 text-slate-600" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-900">Prova en ny auktionsrunda</p>
-            <p className="text-xs text-slate-500 mt-0.5">Vi justerar och skickar ut till fler handlare</p>
-          </div>
-        </button>
-
-        {!cancelConfirm ? (
-          <button
-            type="button"
-            onClick={() => setCancelConfirm(true)}
-            className="w-full flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-red-200 hover:bg-red-50 transition text-left"
-          >
-            <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
-              <XCircle className="w-4.5 h-4.5 text-slate-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-slate-700">Jag vill avsluta</p>
-              <p className="text-xs text-slate-400 mt-0.5">Avsluta ärendet utan åtgärd</p>
-            </div>
-          </button>
-        ) : (
-          <div className="p-4 rounded-xl border border-red-200 bg-red-50">
-            <p className="text-sm font-semibold text-slate-900 mb-3">Är du säker på att du vill avsluta?</p>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={goConsultation}
-                className="flex-1 h-9 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition"
-              >
-                Ja, avsluta
-              </button>
-              <button
-                type="button"
-                onClick={() => setCancelConfirm(false)}
-                className="flex-1 h-9 rounded-xl border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-white transition"
-              >
-                Tillbaka
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
   );
 }
 
