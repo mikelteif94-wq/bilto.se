@@ -732,6 +732,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   const [budgetShowCount, setBudgetShowCount] = useState(6);
   const budgetGridRef = useRef<HTMLDivElement>(null);
   const [expertShowCount, setExpertShowCount] = useState(6);
+  const [expertCardMode, setExpertCardMode] = useState<'ny' | 'beg'>('beg');
   const [alertModalOpen, setAlertModalOpen] = useState(false);
 
 
@@ -1688,17 +1689,35 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         <div className="max-w-6xl mx-auto">
 
           {/* Header row */}
-          <div className="flex items-baseline justify-between gap-3 mb-4">
+          <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
             <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 tracking-tight">
               {carSearchQuery
                 ? `Resultat för "${carSearchQuery}"`
                 : activeCategory === 'el' ? 'Elbilar' : 'Experternas val'}
             </h2>
-            {(carSearchQuery || activeCategory !== 'alla') && (
-              <span className="text-[12px] font-medium text-slate-400 shrink-0">
-                {visibleCars.length} bilar
-              </span>
-            )}
+            <div className="flex items-center gap-3">
+              {(carSearchQuery || activeCategory !== 'alla') && (
+                <span className="text-[12px] font-medium text-slate-400">
+                  {visibleCars.length} bilar
+                </span>
+              )}
+              <div className="flex items-center gap-0 rounded-lg border border-slate-200 overflow-hidden bg-white">
+                <button
+                  type="button"
+                  onClick={() => setExpertCardMode('beg')}
+                  className={`px-3 h-8 text-[12px] font-semibold transition-colors ${expertCardMode === 'beg' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
+                >
+                  Begagnad
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setExpertCardMode('ny')}
+                  className={`px-3 h-8 text-[12px] font-semibold transition-colors ${expertCardMode === 'ny' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
+                >
+                  Ny bil
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Full-width search bar */}
@@ -1783,6 +1802,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       seats={compCar?.specs.seats}
                       pros={compCar?.pros}
                       isCompared={!!(compCar && selectedIds.has(compCar.id))}
+                      cardMode={expertCardMode}
                       onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
                       onDetail={() => { if (compCar) setDetailCar(compCar); }}
                       onCompare={compCar ? () => toggleSelect(compCar.id) : () => {}}
@@ -1807,6 +1827,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     pros={compCar?.pros}
                     carPrice={car.price_new_from ?? undefined}
                     usedPrice={car.price_used_from ?? undefined}
+                    cardMode={expertCardMode}
                     onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
                     onDetail={() => { if (compCar) setDetailCar(compCar); }}
                     onCompare={compCar ? () => toggleSelect(compCar.id) : () => {}}

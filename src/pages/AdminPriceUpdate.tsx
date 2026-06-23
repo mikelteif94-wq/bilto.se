@@ -20,6 +20,7 @@ type Status = 'idle' | 'parsing' | 'previewing' | 'importing' | 'done';
 interface PriceRow {
   make: string;
   model: string;
+  uppskattad?: boolean;
   // Priser
   pris_ny_fran: number | null;
   pris_ny_till: number | null;
@@ -45,22 +46,26 @@ interface ImportResult {
   error?: string;
 }
 
+// Accepts both "Bensin; Diesel" and "Bensin, Diesel" (CSV may use either)
 const FUEL_MAP: Record<string, string[]> = {
   'el': ['el'],
   'bensin': ['bensin'],
   'diesel': ['diesel'],
-  'hybrid': ['bensin', 'hybrid'],
-  'laddhybrid': ['bensin', 'laddhybrid'],
-  'mildhybrid bensin': ['bensin', 'hybrid'],
-  'mildhybrid diesel': ['diesel', 'hybrid'],
+  'laddhybrid': ['laddhybrid'],
+  'hybrid': ['hybrid'],
+  'mildhybrid': ['hybrid'],
+  'vätgas': ['vätgas'],
+  'hydrogen': ['vätgas'],
   'bensin + el': ['bensin', 'laddhybrid'],
   'diesel + el': ['diesel', 'laddhybrid'],
-  'vätgas': ['vätgas'],
+  'mildhybrid bensin': ['bensin', 'hybrid'],
+  'mildhybrid diesel': ['diesel', 'hybrid'],
 };
 
 function parseFuelTypes(raw: string): string[] | null {
   if (!raw.trim()) return null;
-  const parts = raw.split(';').map(s => s.trim().toLowerCase()).filter(Boolean);
+  // Support both comma and semicolon as separator
+  const parts = raw.split(/[,;]/).map(s => s.trim().toLowerCase()).filter(Boolean);
   const result = new Set<string>();
   for (const p of parts) {
     const mapped = FUEL_MAP[p];
@@ -71,6 +76,31 @@ function parseFuelTypes(raw: string): string[] | null {
     }
   }
   return result.size > 0 ? Array.from(result) : null;
+}
+
+// Extract a number from Swedish price text like "från ~460 000", "~494 500", "274 300"
+function extractNum(s: string): number | null {
+  // Remove non-numeric chars except spaces (used as thousands sep) and decimal separators
+  const cleaned = s.replace(/[^\d\s]/g, ' ').trim();
+  // Collapse spaces and take first contiguous number block
+  const firstNum = cleaned.trim().replace(/\s+/g, '');
+  if (!firstNum) return null;
+  const n = Number(firstNum);
+  return isNaN(n) || n === 0 ? null : n;
+}
+
+// Parse a price that might be a range: "274 300 – 306 300", "från ~460 000", "~494 500"
+function parsePriceRange(raw: string): { min: number | null; max: number | null } {
+  // Split on en-dash (–) which Swedish price ranges use
+  if (raw.includes('–')) {
+    const parts = raw.split('–').map(p => p.trim());
+    return { min: extractNum(parts[0]), max: extractNum(parts[1] ?? '') };
+  }
+  return { min: extractNum(raw), max: null };
+}
+
+function numOrNull(s: string): number | null {
+  return extractNum(s);
 }
 
 function parseLine(line: string): string[] {
@@ -90,13 +120,6 @@ function parseLine(line: string): string[] {
   }
   fields.push(cur);
   return fields;
-}
-
-function numOrNull(s: string): number | null {
-  const cleaned = s.trim().replace(/\s/g, '').replace(',', '.');
-  if (!cleaned) return null;
-  const n = Number(cleaned);
-  return isNaN(n) ? null : n;
 }
 
 function parseRows(text: string): PriceRow[] {
@@ -122,13 +145,18 @@ function parseRows(text: string): PriceRow[] {
 
   for (let r = 1; r < lines.length; r++) {
     const cols = parseLine(lines[r]);
-    const make = get(['marke', 'make', 'märke'], cols);
+    const make = get(['marke', 'make', 'marke'], cols);
     const model = get(['modell', 'model'], cols);
     if (!make || !model) continue;
 
     const drivmedel = get(['drivmedel', 'bransle', 'fuel'], cols);
     const drivlina = get(['drivlina', 'drivetrain'], cols);
-    const drivlinaKort = get(['drivlina_kort', 'drivlina_kort'], cols);
+    const drivlinaKort = get(['drivlina_kort'], cols);
+    const uppskattadRaw = get(['uppskattad', 'estimated'], cols);
+
+    // Parse pris_sek column (e.g. "274 300 – 306 300", "från ~460 000", "~494 500")
+    const prisSekRaw = get(['pris_sek', 'pris', 'price_sek', 'price'], cols);
+    const prisSekRange = prisSekRaw ? parsePriceRange(prisSekRaw) : { min: null, max: null };
 
     // Derive drivetrain_type from Swedish drivlina
     let drivetrain_type: string | null = null;
@@ -144,17 +172,22 @@ function parseRows(text: string): PriceRow[] {
     }
     if (drivlinaKort) drivetrain_type = drivlinaKort;
 
+    // Explicit price columns take priority; fall back to pris_sek range
+    const prisNyFran = numOrNull(get(['pris_ny_fran', 'ny_fran', 'nypris_fran'], cols)) ?? prisSekRange.min;
+    const prisNyTill = numOrNull(get(['pris_ny_till', 'ny_till', 'nypris_till'], cols)) ?? prisSekRange.max;
+
     rows.push({
       make,
       model,
-      pris_ny_fran: numOrNull(get(['pris_ny_fran', 'ny_fran', 'nypris_fran'], cols)),
-      pris_ny_till: numOrNull(get(['pris_ny_till', 'ny_till', 'nypris_till'], cols)),
+      uppskattad: uppskattadRaw.toLowerCase() === 'ja',
+      pris_ny_fran: prisNyFran,
+      pris_ny_till: prisNyTill,
       pris_begagnat: numOrNull(get(['pris_begagnat', 'begagnatpris', 'beg_pris'], cols)),
       pris_begagnat_spann_min: numOrNull(get(['pris_begagnat_spann_min', 'beg_min'], cols)),
       pris_begagnat_spann_max: numOrNull(get(['pris_begagnat_spann_max', 'beg_max'], cols)),
       pris_billigast: numOrNull(get(['pris_billigast', 'billigast'], cols)),
-      manadskostnad_ny: numOrNull(get(['manadskostnad_ny', 'man_ny', 'mån_ny', 'maned_ny'], cols)),
-      manadskostnad_begagnad: numOrNull(get(['manadskostnad_begagnad', 'man_beg', 'mån_beg', 'maned_beg'], cols)),
+      manadskostnad_ny: numOrNull(get(['manadskostnad_ny', 'man_ny', 'maned_ny'], cols)),
+      manadskostnad_begagnad: numOrNull(get(['manadskostnad_begagnad', 'man_beg', 'maned_beg'], cols)),
       drivlina: drivlina || null,
       drivlina_kort: drivlinaKort || drivetrain_type,
       drivetrain_type,
@@ -346,6 +379,7 @@ export default function AdminPriceUpdate({ onBack }: Props) {
                 <p className="text-sm text-slate-500 leading-relaxed">
                   Filen matchas mot katalogen på <strong>märke + modell</strong>.
                   Bara de kolumner som finns i CSV:en uppdateras — övriga fält (bilder, texter, betyg etc.) påverkas <strong>inte</strong>.
+                  Stöder <code className="bg-slate-100 px-1 rounded text-xs">bilpriser_2026.csv</code>-formatet med <code className="bg-slate-100 px-1 rounded text-xs">Pris_SEK</code>-kolumn.
                 </p>
               </div>
 
@@ -392,17 +426,16 @@ export default function AdminPriceUpdate({ onBack }: Props) {
                       <tr><td className="py-1 font-mono pr-4 text-slate-800">modell</td><td>XC60, X5, Model 3 …</td></tr>
                     </tbody>
                   </table>
+
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mt-4 mb-2">Priskolumner (valfria)</p>
                   <table className="w-full text-xs text-slate-600">
                     <tbody>
-                      <tr><td className="py-1 font-mono pr-4 text-slate-800">pris_ny_fran</td><td>Nypris från (kr)</td></tr>
-                      <tr><td className="py-1 font-mono pr-4 text-slate-800">pris_ny_till</td><td>Nypris till (kr)</td></tr>
-                      <tr><td className="py-1 font-mono pr-4 text-slate-800">pris_begagnat</td><td>Typiskt begpris (kr)</td></tr>
-                      <tr><td className="py-1 font-mono pr-4 text-slate-800">pris_begagnat_spann_min</td><td>Beg. spann min (kr)</td></tr>
-                      <tr><td className="py-1 font-mono pr-4 text-slate-800">pris_begagnat_spann_max</td><td>Beg. spann max (kr)</td></tr>
-                      <tr><td className="py-1 font-mono pr-4 text-slate-800">pris_billigast</td><td>Billigaste begagnade (kr)</td></tr>
-                      <tr><td className="py-1 font-mono pr-4 text-slate-800">manadskostnad_ny</td><td>Mån.kostnad ny (kr)</td></tr>
-                      <tr><td className="py-1 font-mono pr-4 text-slate-800">manadskostnad_begagnad</td><td>Mån.kostnad beg. (kr)</td></tr>
+                      <tr><td className="py-1 font-mono pr-3 text-slate-800">Pris_SEK</td><td>Nypris – stöder spann: <code className="bg-slate-100 px-0.5 rounded">274 300 – 306 300</code> och text: <code className="bg-slate-100 px-0.5 rounded">från ~460 000</code></td></tr>
+                      <tr><td className="py-1 font-mono pr-3 text-slate-800">pris_ny_fran</td><td>Nypris från (kr)</td></tr>
+                      <tr><td className="py-1 font-mono pr-3 text-slate-800">pris_ny_till</td><td>Nypris till (kr)</td></tr>
+                      <tr><td className="py-1 font-mono pr-3 text-slate-800">pris_begagnat</td><td>Typiskt begpris (kr)</td></tr>
+                      <tr><td className="py-1 font-mono pr-3 text-slate-800">manadskostnad_ny</td><td>Mån.kostnad ny (kr)</td></tr>
+                      <tr><td className="py-1 font-mono pr-3 text-slate-800">manadskostnad_begagnad</td><td>Mån.kostnad beg. (kr)</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -411,17 +444,17 @@ export default function AdminPriceUpdate({ onBack }: Props) {
                   <table className="w-full text-xs text-slate-600">
                     <tbody>
                       <tr><td className="py-1 font-mono pr-4 text-slate-800">drivlina</td><td>Fyrhjulsdrift; Framhjulsdrift …</td></tr>
-                      <tr><td className="py-1 font-mono pr-4 text-slate-800">drivmedel</td><td>Bensin; Diesel; El; Laddhybrid …</td></tr>
+                      <tr><td className="py-1 font-mono pr-4 text-slate-800">drivmedel</td><td>Bensin, Diesel, El, Laddhybrid …</td></tr>
                     </tbody>
                   </table>
-                  <div className="mt-4 bg-[#faf8f5] rounded-lg p-3 border border-slate-100">
-                    <p className="text-xs font-semibold text-slate-500 mb-1.5">Separera flera alternativ med semikolon:</p>
-                    <pre className="text-[11px] text-slate-500 whitespace-pre-wrap">{`drivlina: "Framhjulsdrift;Fyrhjulsdrift"
-drivmedel: "Bensin;Mildhybrid bensin;Laddhybrid"`}</pre>
+                  <div className="mt-3 bg-[#faf8f5] rounded-lg p-3 border border-slate-100">
+                    <p className="text-xs font-semibold text-slate-500 mb-1.5">Bränsle separeras med komma eller semikolon:</p>
+                    <pre className="text-[11px] text-slate-500 whitespace-pre-wrap">{`"Bensin, Diesel, Laddhybrid"
+"Bensin; Mildhybrid bensin; Laddhybrid"`}</pre>
                   </div>
                   <div className="mt-3 bg-amber-50 border border-amber-100 rounded-lg p-3">
                     <p className="text-[11px] text-amber-700 font-medium mb-1">Viktigt: enbart angivna kolumner ändras</p>
-                    <p className="text-[11px] text-amber-600">Bilder, texter, betyg och övriga fält i katalogen rörs inte alls av denna import.</p>
+                    <p className="text-[11px] text-amber-600">Bilder, texter, betyg och övriga fält rörs inte alls av denna import.</p>
                   </div>
                 </div>
               </div>
@@ -440,6 +473,9 @@ drivmedel: "Bensin;Mildhybrid bensin;Laddhybrid"`}</pre>
                   </h2>
                   <p className="text-sm text-slate-500 mt-0.5">
                     Granska listan och klicka på "Starta uppdatering" när du är redo.
+                    {rows.some(r => r.uppskattad) && (
+                      <span className="ml-2 text-amber-600">~ = uppskattade priser</span>
+                    )}
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -468,7 +504,6 @@ drivmedel: "Bensin;Mildhybrid bensin;Laddhybrid"`}</pre>
                       <th className="text-left px-3 py-2 font-semibold text-slate-600 whitespace-nowrap">Nypris fr.</th>
                       <th className="text-left px-3 py-2 font-semibold text-slate-600 whitespace-nowrap">Nypris till</th>
                       <th className="text-left px-3 py-2 font-semibold text-slate-600 whitespace-nowrap">Beg.pris</th>
-                      <th className="text-left px-3 py-2 font-semibold text-slate-600 whitespace-nowrap">Beg. min–max</th>
                       <th className="text-left px-3 py-2 font-semibold text-slate-600 whitespace-nowrap">Mån/ny</th>
                       <th className="text-left px-3 py-2 font-semibold text-slate-600 whitespace-nowrap">Mån/beg</th>
                       <th className="text-left px-3 py-2 font-semibold text-slate-600 whitespace-nowrap">Drivlina</th>
@@ -480,15 +515,14 @@ drivmedel: "Bensin;Mildhybrid bensin;Laddhybrid"`}</pre>
                       <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#faf8f5]/50'}>
                         <td className="px-3 py-1.5 text-slate-800 font-medium">{row.make}</td>
                         <td className="px-3 py-1.5 text-slate-700">{row.model}</td>
-                        <td className="px-3 py-1.5 text-slate-600">{fmtK(row.pris_ny_fran)}</td>
-                        <td className="px-3 py-1.5 text-slate-600">{fmtK(row.pris_ny_till)}</td>
+                        <td className={`px-3 py-1.5 font-medium ${row.pris_ny_fran ? 'text-slate-800' : 'text-slate-300'}`}>
+                          {row.uppskattad && row.pris_ny_fran ? '~' : ''}{fmtK(row.pris_ny_fran)}
+                        </td>
+                        <td className={`px-3 py-1.5 ${row.pris_ny_till ? 'text-slate-600' : 'text-slate-300'}`}>
+                          {row.uppskattad && row.pris_ny_till ? '~' : ''}{fmtK(row.pris_ny_till)}
+                        </td>
                         <td className={`px-3 py-1.5 font-medium ${row.pris_begagnat ? 'text-slate-800' : 'text-slate-300'}`}>
                           {fmtK(row.pris_begagnat)}
-                        </td>
-                        <td className="px-3 py-1.5 text-slate-500">
-                          {row.pris_begagnat_spann_min || row.pris_begagnat_spann_max
-                            ? `${fmtK(row.pris_begagnat_spann_min)} – ${fmtK(row.pris_begagnat_spann_max)}`
-                            : '–'}
                         </td>
                         <td className={`px-3 py-1.5 font-medium ${row.manadskostnad_ny ? 'text-slate-800' : 'text-slate-300'}`}>
                           {fmtK(row.manadskostnad_ny)}
@@ -499,8 +533,12 @@ drivmedel: "Bensin;Mildhybrid bensin;Laddhybrid"`}</pre>
                         <td className="px-3 py-1.5 text-slate-500 max-w-[140px] truncate" title={row.drivlina ?? undefined}>
                           {row.drivlina ?? '–'}
                         </td>
-                        <td className="px-3 py-1.5 text-slate-500 max-w-[160px] truncate" title={row.drivmedel ?? undefined}>
-                          {row.drivmedel ?? '–'}
+                        <td className="px-3 py-1.5 max-w-[180px] truncate" title={row.drivmedel ?? undefined}>
+                          {row.fuel_types ? (
+                            <span className="text-emerald-700 font-medium">{row.fuel_types.join(', ')}</span>
+                          ) : (
+                            <span className="text-slate-300">–</span>
+                          )}
                         </td>
                       </tr>
                     ))}

@@ -18,7 +18,9 @@ export interface CatalogCarFull {
   expert_comment: string | null;
   seats: number | null;
   baggage_liters: number | null;
+  // Prefer Swedish columns, fall back to English originals
   price_new_from: number | null;
+  price_new_till: number | null;
   price_used_from: number | null;
   monthly_cost_new_min: number | null;
   monthly_cost_used_min: number | null;
@@ -27,6 +29,9 @@ export interface CatalogCarFull {
   drivetrain_type: string | null;
   is_active: boolean;
   slug: string | null;
+  // Swedish columns
+  drivmedel: string | null;
+  drivlina: string | null;
 }
 
 export function useCatalogCars() {
@@ -48,7 +53,10 @@ export function useCatalogCars() {
             price_new_from, price_used_from,
             monthly_cost_new_min, monthly_cost_used_min,
             strengths, weaknesses,
-            drivetrain_type, is_active, slug
+            drivetrain_type, is_active, slug,
+            pris_ny_fran, pris_ny_till, pris_begagnat,
+            manadskostnad_ny, manadskostnad_begagnad,
+            drivmedel, drivlina, fuel_types
           `)
           .eq('is_active', true)
           .order('make', { ascending: true })
@@ -60,7 +68,17 @@ export function useCatalogCars() {
           return;
         }
 
-        setCars((data || []).filter((c: { image_url: string | null; cleaned_image_url: string | null }) => c.image_url || c.cleaned_image_url) as unknown as CatalogCarFull[]);
+        const merged = (data || []).map((c: Record<string, unknown>) => ({
+          ...c,
+          // Swedish columns override English if they have data
+          price_new_from: (c.pris_ny_fran as number | null) ?? (c.price_new_from as number | null),
+          price_new_till: (c.pris_ny_till as number | null) ?? null,
+          price_used_from: (c.pris_begagnat as number | null) ?? (c.price_used_from as number | null),
+          monthly_cost_new_min: (c.manadskostnad_ny as number | null) ?? (c.monthly_cost_new_min as number | null),
+          monthly_cost_used_min: (c.manadskostnad_begagnad as number | null) ?? (c.monthly_cost_used_min as number | null),
+        }));
+
+        setCars(merged.filter((c) => c.image_url || c.cleaned_image_url) as CatalogCarFull[]);
       } catch (err) {
         console.error('useCatalogCars failed:', err);
       } finally {
