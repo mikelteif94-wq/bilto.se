@@ -44,8 +44,9 @@ function fuelLabelToTypes(fuelLabel?: string): string[] {
   return ['bensin'];
 }
 
-function OwnershipMeter({ carPrice, fuelLabel, make, mode }: { carPrice: number; fuelLabel?: string; make?: string; mode?: 'ny' | 'beg' }) {
-  const tco = calcMonthlyTCO({ carPrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
+function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make, mode }: { carPrice: number; usedPrice?: number; fuelLabel?: string; make?: string; mode: 'ny' | 'beg' }) {
+  const effectivePrice = (mode === 'beg' && usedPrice) ? usedPrice : carPrice;
+  const tco = calcMonthlyTCO({ carPrice: effectivePrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
   const { total } = tco;
   const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
   const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
@@ -54,7 +55,7 @@ function OwnershipMeter({ carPrice, fuelLabel, make, mode }: { carPrice: number;
   return (
     <div className="mt-1">
       <div className="flex items-center gap-1.5">
-        <span className="text-[8px] text-slate-400">{fmt(carPrice)} kr</span>
+        <span className="text-[8px] text-slate-400">{fmt(effectivePrice)} kr</span>
       </div>
       <div className="flex items-center gap-1.5 mt-0.5">
         <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
@@ -95,9 +96,8 @@ export default function ElCarCard({
   isSelected, topBadge, cardMode = 'beg',
   onNegotiate, onDetail, onTcoCompare, isTcoCompared,
 }: ElCarCardProps) {
-  const mode: 'ny' | 'beg' = cardMode === 'beg' ? 'beg' : 'ny';
-  const effectivePrice = mode === 'beg' ? (usedPrice ?? carPrice) : carPrice;
-  const range = effectivePrice ? calcCarMonthlyRange(effectivePrice, undefined) : null;
+  const mode: 'ny' | 'beg' = (cardMode === 'beg' && usedPrice) ? 'beg' : 'ny';
+  const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
   const bodyLabel = bodyType ? BODY_LABELS[bodyType] : null;
 
@@ -158,7 +158,7 @@ export default function ElCarCard({
           {displayComment && (
             <p className="text-[10px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
-          {carPrice && <OwnershipMeter carPrice={effectivePrice!} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} />}
+          {carPrice && <OwnershipMeter carPrice={carPrice} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} />}
           <div className="flex items-center gap-1.5 mt-auto pt-1">
             <button
               type="button"
@@ -243,7 +243,7 @@ export default function ElCarCard({
             {displayComment && (
               <p className="mt-1 text-[11px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
             )}
-            {carPrice && <div className="mt-1.5"><OwnershipMeter carPrice={effectivePrice!} fuelLabel={fuelLabel} make={name.split(' ')[0]} /></div>}
+            {carPrice && <div className="mt-1.5"><OwnershipMeter carPrice={carPrice} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} /></div>}
           </div>
         </div>
 

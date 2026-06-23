@@ -1761,15 +1761,10 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   : undefined;
                 const compCar = findComparisonCarByMakeModel(car.make, car.model);
                 const rating = car.rating_overall ?? compCar?.ratings.overall ?? undefined;
-                const newPriceFrom = compCar?.pricing.new_from_sek ?? car.price_new_from ?? undefined;
-                const newPriceTo = compCar?.pricing.new_to_sek ?? car.price_new_to ?? undefined;
-                const usedPriceFrom = compCar?.pricing.used_from_sek ?? car.price_used_from ?? undefined;
-                const usedPriceTo = car.price_used_to ?? undefined;
-                const drivetrainArr = compCar?.specs.drivetrain ?? car.drivlina ?? undefined;
                 const tcoItem: TcoCompareCar = {
                   id: car.id, name: `${car.make} ${car.model}`,
-                  imageUrl: imgUrl, carPrice: newPriceFrom,
-                  usedPrice: usedPriceFrom, fuelTypes: car.fuel_types ?? [],
+                  imageUrl: imgUrl, carPrice: car.price_new_from ?? undefined,
+                  usedPrice: car.price_used_from ?? undefined, fuelTypes: car.fuel_types ?? [],
                 };
                 if (isEl) {
                   return (
@@ -1780,11 +1775,11 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       rating={rating}
                       topBadge={i < 3}
                       expertComment={car.expert_comment ?? undefined}
-                      carPrice={newPriceFrom}
-                      usedPrice={usedPriceFrom}
+                      carPrice={car.price_new_from ?? undefined}
+                      usedPrice={car.price_used_from ?? undefined}
                       fuelLabel={fuelLabel}
                       bodyType={compCar?.specs.body_type}
-                      drivetrain={drivetrainArr}
+                      drivetrain={compCar?.specs.drivetrain}
                       seats={compCar?.specs.seats}
                       pros={compCar?.pros}
                       isCompared={!!(compCar && selectedIds.has(compCar.id))}
@@ -1807,13 +1802,11 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     expertComment={car.expert_comment ?? undefined}
                     fuelLabel={fuelLabel}
                     bodyType={compCar?.specs.body_type}
-                    drivetrain={drivetrainArr}
+                    drivetrain={compCar?.specs.drivetrain}
                     seats={compCar?.specs.seats}
                     pros={compCar?.pros}
-                    carPrice={newPriceFrom}
-                    carPriceTo={newPriceTo}
-                    usedPrice={usedPriceFrom}
-                    usedPriceTo={usedPriceTo}
+                    carPrice={car.price_new_from ?? undefined}
+                    usedPrice={car.price_used_from ?? undefined}
                     onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
                     onDetail={() => { if (compCar) setDetailCar(compCar); }}
                     onCompare={compCar ? () => toggleSelect(compCar.id) : () => {}}

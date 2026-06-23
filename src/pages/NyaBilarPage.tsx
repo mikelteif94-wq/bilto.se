@@ -53,16 +53,10 @@ const FEATURED = [
   },
 ];
 
-function getPriceRange(car: CatalogCarFull): { from: number; to: number | null } | null {
-  const local = findComparisonCarByMakeModel(car.make, car.model);
-  const from = local?.pricing.new_from_sek ?? car.price_new_from ?? null;
-  const to = local?.pricing.new_to_sek ?? car.price_new_to ?? null;
-  if (!from) return null;
-  return { from, to };
-}
-
 function getNewPrice(car: CatalogCarFull): number | null {
-  return getPriceRange(car)?.from ?? null;
+  const local = findComparisonCarByMakeModel(car.make, car.model);
+  if (local?.pricing.new_from_sek) return local.pricing.new_from_sek;
+  return car.price_new_from ?? null;
 }
 
 function estimateSavings(price: number): number {
@@ -342,8 +336,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
 
           {featuredCars.map((fd, idx) => {
             const img = fd.car?.cleaned_image_url ?? fd.car?.image_url;
-            const priceRange = fd.car ? getPriceRange(fd.car) : null;
-            const price = priceRange?.from ?? null;
+            const price = fd.car ? getNewPrice(fd.car) : null;
             const savings = price ? estimateSavings(price) : 55000;
             const isEven = idx % 2 === 0;
 
@@ -404,11 +397,9 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
 
                     {price && (
                       <p className="text-sm text-slate-500 mb-6">
-                        Ny{' '}
+                        Ny från{' '}
                         <span className="font-bold text-slate-900 text-base">
-                          {priceRange?.to
-                            ? `${price.toLocaleString('sv-SE')} – ${priceRange.to.toLocaleString('sv-SE')} kr`
-                            : `från ${price.toLocaleString('sv-SE')} kr`}
+                          {price.toLocaleString('sv-SE')} kr
                         </span>
                       </p>
                     )}
@@ -473,8 +464,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
               {gridCars.map(car => {
                 const img = car.cleaned_image_url ?? car.image_url;
-                const priceRange = getPriceRange(car);
-                const price = priceRange?.from ?? null;
+                const price = getNewPrice(car);
                 const savings = price ? estimateSavings(price) : null;
                 const tag = getTag(car);
                 return (
@@ -516,21 +506,10 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
 
                       {price ? (
                         <p className="text-sm text-slate-600">
-                          {priceRange?.to ? (
-                            <>
-                              Ny{' '}
-                              <span className="font-semibold text-slate-900">
-                                {price.toLocaleString('sv-SE')}–{priceRange.to.toLocaleString('sv-SE')} kr
-                              </span>
-                            </>
-                          ) : (
-                            <>
-                              Ny fr.{' '}
-                              <span className="font-semibold text-slate-900">
-                                {price.toLocaleString('sv-SE')} kr
-                              </span>
-                            </>
-                          )}
+                          Ny fr.{' '}
+                          <span className="font-semibold text-slate-900">
+                            {price.toLocaleString('sv-SE')} kr
+                          </span>
                         </p>
                       ) : null}
 

@@ -18,9 +18,7 @@ interface CompactCarCardProps {
   seats?: number;
   pros?: string[];
   carPrice?: number;
-  carPriceTo?: number;
   usedPrice?: number;
-  usedPriceTo?: number;
   monthlySaving?: number;
   equityFreed?: number;
   isSelected?: boolean;
@@ -49,8 +47,9 @@ function fuelLabelToTypes(fuelLabel?: string): string[] {
   return ['bensin'];
 }
 
-function OwnershipMeter({ carPrice, fuelLabel, make, mode }: { carPrice: number; fuelLabel?: string; make?: string; mode: 'ny' | 'beg' }) {
-  const tco = calcMonthlyTCO({ carPrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
+function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make, mode }: { carPrice: number; usedPrice?: number; fuelLabel?: string; make?: string; mode: 'ny' | 'beg' }) {
+  const effectivePrice = (mode === 'beg' && usedPrice) ? usedPrice : carPrice;
+  const tco = calcMonthlyTCO({ carPrice: effectivePrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
   const { total } = tco;
   const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#d97706' : '#dc2626';
@@ -89,31 +88,14 @@ function ScoreBadge({ value }: { value: number }) {
 export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
   fuelLabel, bodyType, drivetrain, seats, pros,
-  carPrice, carPriceTo, usedPrice, usedPriceTo, monthlySaving, equityFreed,
+  carPrice, usedPrice, monthlySaving, equityFreed,
   isSelected, cardMode = 'beg',
   onSelect, onNegotiate, onDetail, onTcoCompare, isTcoCompared,
 }: CompactCarCardProps) {
-  const mode: 'ny' | 'beg' = cardMode === 'beg' ? 'beg' : 'ny';
-  const effectivePrice = mode === 'beg' ? (usedPrice ?? carPrice) : carPrice;
-  const effectivePriceTo = mode === 'beg' ? (usedPriceTo ?? usedPrice ?? carPriceTo) : carPriceTo;
-  const range = effectivePrice ? calcCarMonthlyRange(effectivePrice, undefined) : null;
+  const mode: 'ny' | 'beg' = (cardMode === 'beg' && usedPrice) ? 'beg' : 'ny';
+  const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
   const bodyLabel = bodyType ? BODY_LABELS[bodyType] : null;
-
-  function PriceDisplay({ className = '' }: { className?: string }) {
-    if (!effectivePrice) return null;
-    const modeLabel = mode === 'ny' ? 'Ny' : 'Beg';
-    return (
-      <div className={`flex items-baseline gap-1 ${className}`}>
-        <span className="text-[10px] font-semibold text-slate-400">{modeLabel}</span>
-        <span className="text-[12px] font-bold text-slate-800 tabular-nums">
-          {effectivePriceTo && effectivePriceTo !== effectivePrice
-            ? `${formatSEK(effectivePrice)}–${formatSEK(effectivePriceTo)} kr`
-            : `${formatSEK(effectivePrice)} kr`}
-        </span>
-      </div>
-    );
-  }
 
   const handleCardClick = () => {
     if (onSelect) { onSelect(); return; }
@@ -183,8 +165,7 @@ export default function CompactCarCard({
           {displayComment && (
             <p className="text-[10px] text-slate-500 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
-          <PriceDisplay />
-          {range && <OwnershipMeter carPrice={effectivePrice!} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} />}
+          {range && <OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} />}
           {monthlySaving != null && monthlySaving > 0 && (
             <p className="text-[9px] font-semibold text-emerald-600">Sparar {formatSEK(monthlySaving)} kr/mån</p>
           )}
@@ -287,8 +268,7 @@ export default function CompactCarCard({
           {displayComment && (
             <p className="mt-1 text-[11px] text-slate-500 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
-          <PriceDisplay className="mt-1" />
-          {range && <div className="mt-1"><OwnershipMeter carPrice={effectivePrice!} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} /></div>}
+          {range && <div className="mt-1"><OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} /></div>}
           {monthlySaving != null && monthlySaving > 0 && (
             <p className="mt-1 text-[10.5px] font-semibold text-emerald-600">Sparar {formatSEK(monthlySaving)} kr/mån</p>
           )}

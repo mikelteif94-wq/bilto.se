@@ -471,7 +471,6 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                     seats={c.specs.seats}
                     pros={c.pros}
                     carPrice={c.pricing.new_from_sek ?? undefined}
-                    carPriceTo={c.pricing.new_to_sek ?? undefined}
                     usedPrice={c.pricing.used_from_sek ?? undefined}
                     isSelected={isCarSelected}
                     cardMode={cardMode}
