@@ -506,20 +506,20 @@ export default function QuotePage({
       </section>
 
       {/* What you get */}
-      <section className="bg-[#f5f8fc] py-16 sm:py-24 px-5 sm:px-6">
+      <section className="bg-[#f5f8fc] py-12 sm:py-24 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10 sm:mb-14 max-w-2xl mx-auto">
+          <div className="text-center mb-8 sm:mb-14 max-w-2xl mx-auto px-2">
             <span className="text-[12px] font-medium text-slate-500 mb-3 block">
               &mdash; Vad ingår
             </span>
-            <h2 className="text-[28px] sm:text-[44px] font-semibold leading-[1.1] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
+            <h2 className="text-[24px] sm:text-[44px] font-semibold leading-[1.15] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
               En personlig bilförhandlare i fickan
             </h2>
-            <p className="text-slate-600 mt-5 text-[15px] sm:text-[17px] leading-[1.6]">
+            <p className="text-slate-600 mt-4 text-[15px] sm:text-[17px] leading-[1.6]">
               Tjänsten är gjord för dig som inte vill spendera dagar på att jaga bilar, ringa annonser eller känna dig pressad i en handlares showroom.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-5 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {[
               {
                 icon: Search,
@@ -545,23 +545,23 @@ export default function QuotePage({
               return (
                 <div
                   key={item.title}
-                  className="group rounded-xl border border-slate-200 bg-white p-5 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
+                  className="group rounded-xl border border-slate-200 bg-white p-4 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
                 >
-                  <div className="w-full h-[140px] sm:h-[160px] flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-[#faf8f5] group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
+                  <div className="w-full h-[120px] sm:h-[160px] flex items-center justify-center mb-4 sm:mb-5 overflow-hidden rounded-xl bg-[#faf8f5] group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
                     <img
                       src={item.svg}
                       alt=""
                       aria-hidden="true"
-                      className={item.imgClass || "w-auto h-[110px] sm:h-[130px] object-contain group-hover:scale-105 transition-transform duration-300"}
+                      className={item.imgClass || "w-auto h-[90px] sm:h-[130px] object-contain group-hover:scale-105 transition-transform duration-300"}
                     />
                   </div>
-                  <div className="w-11 h-11 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center mb-4">
-                    <Icon className="w-5 h-5" strokeWidth={2.2} />
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center mb-3 sm:mb-4">
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={2.2} />
                   </div>
-                  <h3 className="text-[18px] font-semibold text-slate-900 mb-2 leading-tight tracking-tight">
+                  <h3 className="text-[17px] sm:text-[18px] font-semibold text-slate-900 mb-2 leading-tight tracking-tight">
                     {item.title}
                   </h3>
-                  <p className="text-[14.5px] text-slate-600 leading-[1.6]">{item.text}</p>
+                  <p className="text-[14px] sm:text-[14.5px] text-slate-600 leading-[1.6]">{item.text}</p>
                 </div>
               );
             })}

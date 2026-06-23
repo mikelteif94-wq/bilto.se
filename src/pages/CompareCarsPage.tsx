@@ -2161,11 +2161,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       <p className="text-[11px] text-slate-400 mt-0.5 truncate">
                         {ev.tagline}
                       </p>
-                      {car.pricing.new_from_sek && (
-                        <p className="text-[11px] text-slate-500 mt-1">
-                          Ny från <span className="font-bold text-slate-900">{formatSEK(car.pricing.new_from_sek)}</span>
-                        </p>
-                      )}
                     </div>
                   </motion.div>
                 );
