@@ -570,13 +570,13 @@ export default function QuotePage({
       </section>
 
       {/* Vehicle inspection infographic */}
-      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-16 sm:py-28 px-5 sm:px-6 overflow-hidden">
+      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-12 sm:py-28 px-4 sm:px-6 overflow-hidden">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10 sm:mb-16 max-w-3xl mx-auto">
+          <div className="text-center mb-8 sm:mb-16 max-w-3xl mx-auto px-2">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
               Grundlig genomgång
             </span>
-            <h2 className="text-[26px] sm:text-[48px] font-semibold leading-[1.1] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
+            <h2 className="text-[24px] sm:text-[48px] font-semibold leading-[1.15] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
               Vi granskar varje detalj – så slipper du oroa dig
             </h2>
             <p className="text-slate-600 mt-4 sm:mt-6 text-[15px] sm:text-[18px] leading-[1.6] max-w-2xl mx-auto">
@@ -584,45 +584,71 @@ export default function QuotePage({
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-5 gap-8 lg:gap-12 items-center">
-            <div className="lg:col-span-1 space-y-6 sm:space-y-8 order-2 lg:order-1">
+          {/* Mobile: image first, then 2-col grid of points */}
+          <div className="lg:hidden">
+            <div className="flex items-center justify-center mb-6">
+              <img
+                src="/infographic_antal_agare.svg"
+                alt="Infografik: antal ägare och bilhistorik"
+                className="w-full max-w-[340px] h-auto"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
+                { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
+                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket, inte bara foton i annonsen.' },
+                { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
+                { label: 'Bilalternativ', desc: 'Vi jämför att din bil ligger rätt till i marknaden så att du inte betalar för mycket.' },
+              ].map((point) => (
+                <div key={point.label}>
+                  <h4 className="text-[14px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[12px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: original 5-col layout */}
+          <div className="hidden lg:grid lg:grid-cols-5 gap-12 items-center">
+            <div className="lg:col-span-1 space-y-8">
               {[
                 { label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
                 { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
               ].map((point) => (
-                <div key={point.label} className="text-right lg:text-right">
-                  <h4 className="text-[16px] sm:text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
-                  <p className="text-[13px] sm:text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                <div key={point.label} className="text-right">
+                  <h4 className="text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
                 </div>
               ))}
             </div>
 
-            <div className="lg:col-span-3 order-1 lg:order-2 flex items-center justify-center">
+            <div className="lg:col-span-3 flex items-center justify-center">
               <img
                 src="/infographic_antal_agare.svg"
                 alt="Infografik: antal ägare och bilhistorik"
-                className="w-full max-w-[600px] sm:max-w-[700px] h-auto"
+                className="w-full max-w-[700px] h-auto"
               />
             </div>
 
-            <div className="lg:col-span-1 space-y-6 sm:space-y-8 order-3">
+            <div className="lg:col-span-1 space-y-8">
               {[
                 { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket, inte bara foton i annonsen.' },
                 { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
                 { label: 'Bilalternativ', desc: 'Vi jämför att din bil ligger rätt till i marknaden så att du inte betalar för mycket.' },
               ].map((point) => (
                 <div key={point.label}>
-                  <h4 className="text-[16px] sm:text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
-                  <p className="text-[13px] sm:text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                  <h4 className="text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="mt-12 sm:mt-16 text-center">
+          <div className="mt-10 sm:mt-16 text-center">
             <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-5 sm:px-7 py-3 sm:py-4 shadow-sm">
               <ShieldCheck className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
-              <span className="text-[14px] sm:text-[15px] text-slate-700 font-medium">
+              <span className="text-[13px] sm:text-[15px] text-slate-700 font-medium">
                 Alla bilar vi rekommenderar har klarat vår 5-punktskontroll
               </span>
             </div>
