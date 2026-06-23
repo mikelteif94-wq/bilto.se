@@ -90,11 +90,11 @@ export default function ElCarCard({
       {/* Mobile: horizontal layout */}
       <div className="flex sm:hidden" onClick={() => onDetail?.()}>
         {/* Image */}
-        <div className="relative w-[110px] shrink-0 bg-[#f4f4f4] self-stretch flex items-center">
+        <div className="relative w-[110px] shrink-0 bg-gradient-to-b from-slate-50 to-white self-stretch flex items-center">
           {imageUrl && (
             <img
               src={imageUrl} alt={name} loading="lazy" decoding="async"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain p-2"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           )}
@@ -172,15 +172,15 @@ export default function ElCarCard({
       {/* Desktop: vertical layout */}
       <div className="hidden sm:block">
         <div className="cursor-pointer" onClick={() => onDetail?.()}>
-          <div className="relative aspect-[16/9] bg-[#f4f4f4] overflow-hidden">
+          <div className="relative aspect-[16/9] bg-gradient-to-b from-slate-50 to-white overflow-hidden">
             {imageUrl && (
               <img
                 src={imageUrl} alt={name} loading="lazy" decoding="async"
-                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.05]"
+                className="w-full h-full object-contain p-3 transition-transform duration-500 group-hover:scale-[1.05]"
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
             )}
-            <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#f4f4f4]/70 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/70 to-transparent pointer-events-none" />
             <div className="absolute top-2.5 left-2.5">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold"
                 style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)', color: '#fff', boxShadow: '0 2px 8px rgba(14,165,233,0.35)' }}>
