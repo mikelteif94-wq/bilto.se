@@ -190,7 +190,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   const [scrolled, setScrolled] = useState(false);
   const [heroTab, setHeroTab] = useState<'salj' | 'hitta'>('salj');
   const [carQuery, setCarQuery] = useState('');
-  const [carSuggestions, setCarSuggestions] = useState<{ make: string; model: string }[]>([]);
+  const [carSuggestions, setCarSuggestions] = useState<{ make: string; model: string; image_url?: string | null; cleaned_image_url?: string | null }[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [carSearchLoading, setCarSearchLoading] = useState(false);
   const carSearchRef = useRef<HTMLDivElement>(null);
@@ -283,7 +283,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
       const { data, error } = await supabase
         .from('car_catalog')
-        .select('make, model')
+        .select('make, model, image_url, cleaned_image_url')
         .or(`make.ilike.${search},model.ilike.${search}`)
         .order('make', { ascending: true });
 
@@ -526,21 +526,27 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         </button>
                       </div>
                       {showSuggestions && carSuggestions.length > 0 && (
-                        <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-[0_8px_32px_-8px_rgba(15,23,42,0.18)] border border-slate-100 overflow-hidden z-50">
-                          {carSuggestions.map((s, i) => (
-                            <button
-                              key={i}
-                              type="button"
-                              onClick={() => handleCarSelect(s.make, s.model)}
-                              className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#0e6efe]/[0.04] transition-colors border-b border-slate-50 last:border-0 group"
-                            >
-                              <span className="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition-colors">
-                                <CarIcon className="w-3.5 h-3.5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" />
-                              </span>
-                              <span className="text-[13px] text-slate-900 font-semibold">{s.make}</span>
-                              <span className="text-[13px] text-slate-500">{s.model}</span>
-                            </button>
-                          ))}
+                        <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-[0_8px_32px_-8px_rgba(15,23,42,0.18)] border border-slate-100 overflow-hidden z-50 max-h-64 overflow-y-auto">
+                          {carSuggestions.map((s, i) => {
+                            const img = s.cleaned_image_url || s.image_url;
+                            return (
+                              <button
+                                key={i}
+                                type="button"
+                                onClick={() => handleCarSelect(s.make, s.model)}
+                                className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-[#0e6efe]/[0.04] transition-colors border-b border-slate-50 last:border-0 group"
+                              >
+                                <span className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
+                                  {img
+                                    ? <img src={img} alt={`${s.make} ${s.model}`} className="w-full h-full object-cover" loading="lazy" />
+                                    : <CarIcon className="w-4 h-4 text-slate-400" />
+                                  }
+                                </span>
+                                <span className="text-[13px] text-slate-900 font-semibold">{s.make}</span>
+                                <span className="text-[13px] text-slate-500">{s.model}</span>
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                       {carQuery.trim().length >= 2 && !carSearchLoading && carSuggestions.length === 0 && (
