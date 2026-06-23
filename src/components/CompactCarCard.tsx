@@ -50,18 +50,17 @@ function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make }: { carPrice: nu
   const tco = calcMonthlyTCO({ carPrice, usedPrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
   const { total } = tco;
   const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
-  const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
+  const label = level <= 1 ? 'mycket billig' : level === 2 ? 'billig' : level === 3 ? 'måttlig' : level === 4 ? 'dyr' : 'mycket dyr';
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
-  const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   return (
-    <div className="flex items-center gap-1.5 mt-1">
-      <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
-      <div className="flex items-center gap-[2px]">
+    <div className="flex items-center gap-2 mt-1.5">
+      <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
+      <div className="flex items-center gap-[3px]">
         {[1,2,3,4,5].map(s => (
-          <div key={s} className="rounded-sm" style={{ width: 11, height: 5, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1 }} />
+          <div key={s} className="rounded-sm" style={{ width: 13, height: 7, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.45 + (s / level) * 0.55) : 1 }} />
         ))}
       </div>
-      <span className="text-[9px] text-slate-400">({label.toLowerCase()})</span>
+      <span className="text-[10px] text-slate-400">({label})</span>
     </div>
   );
 }
@@ -151,17 +150,22 @@ export default function CompactCarCard({
         <div className="flex-1 min-w-0 flex flex-col p-3 gap-1">
           <h3 className="text-[13px] font-bold text-slate-900 leading-snug truncate">{name}</h3>
           <div className="flex flex-wrap items-center gap-1">
-            {fuelLabel && <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide">{fuelLabel}</span>}
-            {bodyLabel && <span className="px-1 py-0.5 rounded text-[8px] font-semibold bg-slate-100 text-slate-500">{bodyLabel}</span>}
-            {drivetrain?.includes('awd') && <span className="px-1 py-0.5 rounded text-[8px] font-semibold bg-blue-50 text-blue-600">AWD</span>}
+            {fuelLabel && <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">{fuelLabel}</span>}
+            {bodyLabel && <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-600">{bodyLabel}</span>}
+            {drivetrain?.includes('awd') && <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-blue-50 text-blue-600">AWD</span>}
             {seats != null && seats > 0 && (
-              <span className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[8px] font-semibold bg-slate-100 text-slate-500">
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-600">
                 <Users className="w-2 h-2" />{seats}
               </span>
             )}
           </div>
           {displayComment && (
-            <p className="text-[10px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
+            <p className="text-[10px] text-slate-500 leading-snug line-clamp-1 italic">{displayComment}</p>
+          )}
+          {carPrice && (
+            <p className="text-[10px] text-slate-500">
+              Ny fr. <span className="font-semibold text-slate-700">{formatSEK(carPrice)} kr</span>
+            </p>
           )}
           {range && <OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} />}
           {monthlySaving != null && monthlySaving > 0 && (
@@ -250,23 +254,28 @@ export default function CompactCarCard({
             {name}
           </h3>
           <div className="mt-1 flex flex-wrap items-center gap-1">
-            {fuelLabel && <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">{fuelLabel}</span>}
+            {fuelLabel && <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">{fuelLabel}</span>}
             {bodyType && BODY_LABELS[bodyType] && (
-              <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-500">{BODY_LABELS[bodyType]}</span>
+              <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-600">{BODY_LABELS[bodyType]}</span>
             )}
             {drivetrain?.includes('awd') && (
               <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-blue-50 text-blue-600">AWD</span>
             )}
             {seats != null && seats > 0 && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-500">
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-600">
                 <Users className="w-2.5 h-2.5" />{seats}
               </span>
             )}
           </div>
           {displayComment && (
-            <p className="mt-1 text-[11px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
+            <p className="mt-1 text-[11px] text-slate-500 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
-          {range && <div className="mt-1.5"><OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} /></div>}
+          {carPrice && (
+            <p className="mt-1 text-[11px] text-slate-500">
+              Ny fr. <span className="font-semibold text-slate-700">{formatSEK(carPrice)} kr</span>
+            </p>
+          )}
+          {range && <div className="mt-1"><OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} /></div>}
           {monthlySaving != null && monthlySaving > 0 && (
             <p className="mt-1 text-[10.5px] font-semibold text-emerald-600">Sparar {formatSEK(monthlySaving)} kr/mån</p>
           )}
