@@ -19,12 +19,15 @@ export interface CatalogCarFull {
   seats: number | null;
   baggage_liters: number | null;
   price_new_from: number | null;
+  price_new_to: number | null;
   price_used_from: number | null;
+  price_used_to: number | null;
   monthly_cost_new_min: number | null;
   monthly_cost_used_min: number | null;
   strengths: string[] | null;
   weaknesses: string[] | null;
   drivetrain_type: string | null;
+  drivlina: string[] | null;
   is_active: boolean;
   slug: string | null;
 }
@@ -45,10 +48,11 @@ export function useCatalogCars() {
             rating_overall, rating_driving, rating_comfort, rating_practicality, rating_value,
             expert_comment, seats,
             baggage_liters,
-            price_new_from, price_used_from,
+            price_new_from, price_new_to,
+            price_used_from, price_used_to,
             monthly_cost_new_min, monthly_cost_used_min,
             strengths, weaknesses,
-            drivetrain_type, is_active, slug
+            drivetrain_type, drivlina, is_active, slug
           `)
           .eq('is_active', true)
           .order('make', { ascending: true })
