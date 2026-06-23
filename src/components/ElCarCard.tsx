@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Zap, Star, Check, ChevronRight, Info, Scale } from 'lucide-react';
 import { calcCarMonthlyRange, calcMonthlyTCO } from '../lib/utils';
 
@@ -44,21 +45,46 @@ function fuelLabelToTypes(fuelLabel?: string): string[] {
 }
 
 function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make }: { carPrice: number; usedPrice?: number; fuelLabel?: string; make?: string }) {
-  const tco = calcMonthlyTCO({ carPrice, usedPrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
+  const [mode, setMode] = useState<'ny' | 'beg'>('beg');
+  const effectivePrice = (mode === 'beg' && usedPrice) ? usedPrice : carPrice;
+  const tco = calcMonthlyTCO({ carPrice: effectivePrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
   const { total } = tco;
   const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
   const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
   const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   return (
-    <div className="flex items-center gap-1.5 mt-1">
-      <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
-      <div className="flex items-center gap-[2px]">
-        {[1,2,3,4,5].map(s => (
-          <div key={s} className="rounded-sm" style={{ width: 11, height: 5, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1 }} />
-        ))}
+    <div className="mt-1" onClick={e => e.stopPropagation()}>
+      <div className="flex items-center gap-1.5 flex-wrap">
+        {usedPrice ? (
+          <div className="flex items-center gap-0 rounded border border-slate-200 overflow-hidden shrink-0">
+            <button
+              type="button"
+              onClick={() => setMode('ny')}
+              className={`px-1.5 py-0.5 text-[8px] font-bold transition-colors ${mode === 'ny' ? 'bg-slate-800 text-white' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
+            >
+              Ny
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('beg')}
+              className={`px-1.5 py-0.5 text-[8px] font-bold transition-colors ${mode === 'beg' ? 'bg-slate-800 text-white' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
+            >
+              Beg
+            </button>
+          </div>
+        ) : null}
+        <span className="text-[8px] text-slate-400">{fmt(effectivePrice)} kr</span>
       </div>
-      <span className="text-[9px] text-slate-400">({label.toLowerCase()})</span>
+      <div className="flex items-center gap-1.5 mt-0.5">
+        <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
+        <div className="flex items-center gap-[2px]">
+          {[1,2,3,4,5].map(s => (
+            <div key={s} className="rounded-sm" style={{ width: 11, height: 5, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1 }} />
+          ))}
+        </div>
+        <span className="text-[9px] text-slate-400">~{fmt(Math.round(total / 100) * 100)} kr/mån ({label.toLowerCase()})</span>
+      </div>
     </div>
   );
 }

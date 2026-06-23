@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Star, Check, ChevronRight, Users, Info, Scale } from 'lucide-react';
 import { calcCarMonthlyRange, calcMonthlyTCO } from '../lib/utils';
 
@@ -47,20 +48,47 @@ function fuelLabelToTypes(fuelLabel?: string): string[] {
 }
 
 function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make }: { carPrice: number; usedPrice?: number; fuelLabel?: string; make?: string }) {
-  const tco = calcMonthlyTCO({ carPrice, usedPrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
+  const [mode, setMode] = useState<'ny' | 'beg'>('beg');
+  const effectivePrice = (mode === 'beg' && usedPrice) ? usedPrice : carPrice;
+  const tco = calcMonthlyTCO({ carPrice: effectivePrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
   const { total } = tco;
   const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
   const label = level <= 1 ? 'mycket billig' : level === 2 ? 'billig' : level === 3 ? 'måttlig' : level === 4 ? 'dyr' : 'mycket dyr';
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
+  const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   return (
-    <div className="flex items-center gap-2 mt-1.5">
-      <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
-      <div className="flex items-center gap-[3px]">
-        {[1,2,3,4,5].map(s => (
-          <div key={s} className="rounded-sm" style={{ width: 13, height: 7, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.45 + (s / level) * 0.55) : 1 }} />
-        ))}
+    <div className="mt-1.5" onClick={e => e.stopPropagation()}>
+      <div className="flex items-center gap-2 flex-wrap">
+        {usedPrice ? (
+          <div className="flex items-center gap-0.5 rounded-lg border border-slate-200 overflow-hidden shrink-0">
+            <button
+              type="button"
+              onClick={() => setMode('ny')}
+              className={`px-1.5 py-0.5 text-[9px] font-bold transition-colors ${mode === 'ny' ? 'bg-slate-800 text-white' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
+            >
+              Ny
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('beg')}
+              className={`px-1.5 py-0.5 text-[9px] font-bold transition-colors ${mode === 'beg' ? 'bg-slate-800 text-white' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
+            >
+              Beg
+            </button>
+          </div>
+        ) : null}
+        <span className="text-[9px] text-slate-400 font-medium">{fmt(effectivePrice)} kr</span>
       </div>
-      <span className="text-[10px] text-slate-400">({label})</span>
+      <div className="flex items-center gap-2 mt-1">
+        <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
+        <div className="flex items-center gap-[3px]">
+          {[1,2,3,4,5].map(s => (
+            <div key={s} className="rounded-sm" style={{ width: 13, height: 7, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.45 + (s / level) * 0.55) : 1 }} />
+          ))}
+        </div>
+        <span className="text-[10px] text-slate-400">~{fmt(Math.round(total / 100) * 100)} kr/mån</span>
+      </div>
+      <p className="text-[9px] text-slate-400 mt-0.5 leading-snug">({label} · finansiering + bränsle + service)</p>
     </div>
   );
 }
@@ -161,11 +189,6 @@ export default function CompactCarCard({
           </div>
           {displayComment && (
             <p className="text-[10px] text-slate-500 leading-snug line-clamp-1 italic">{displayComment}</p>
-          )}
-          {carPrice && (
-            <p className="text-[10px] text-slate-500">
-              Ny fr. <span className="font-semibold text-slate-700">{formatSEK(carPrice)} kr</span>
-            </p>
           )}
           {range && <OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} />}
           {monthlySaving != null && monthlySaving > 0 && (
@@ -269,11 +292,6 @@ export default function CompactCarCard({
           </div>
           {displayComment && (
             <p className="mt-1 text-[11px] text-slate-500 leading-snug line-clamp-1 italic">{displayComment}</p>
-          )}
-          {carPrice && (
-            <p className="mt-1 text-[11px] text-slate-500">
-              Ny fr. <span className="font-semibold text-slate-700">{formatSEK(carPrice)} kr</span>
-            </p>
           )}
           {range && <div className="mt-1"><OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} /></div>}
           {monthlySaving != null && monthlySaving > 0 && (
