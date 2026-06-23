@@ -216,7 +216,7 @@ export default function CompactCarCard({
           {imageUrl && (
             <img
               src={imageUrl} alt={name} loading="lazy" decoding="async"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+              className="w-full h-full object-contain p-3 transition-transform duration-500 group-hover:scale-[1.05]"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           )}
