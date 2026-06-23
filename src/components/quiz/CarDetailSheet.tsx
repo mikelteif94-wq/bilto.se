@@ -528,15 +528,8 @@ function HowItWorksStrip() {
 }
 
 
-function getPersonaCTA(persona: Persona | null, brand: string, model: string): { headline: string; sub: string } {
-  switch (persona) {
-    case 'first_time_buyer': return { headline: 'Köp tryggt – vi guidar dig hela vägen', sub: `Rådgivare hjälper dig med ${brand} ${model} från provkörning till kontrakt` };
-    case 'family': return { headline: `Vi hittar rätt ${brand} ${model} för familjen`, sub: 'Förhandlar pris, checkar historik och ser till att bilen håller' };
-    case 'researcher': return { headline: 'Vi pressar priset – du har gjort research', sub: `Låt oss förhandla ${brand} ${model} och spara 15 000–40 000 kr` };
-    case 'enthusiast': return { headline: 'Du vet vad du vill – vi ser till rätt pris', sub: `Vi förhandlar ${brand} ${model} baserat på marknadsdata` };
-    case 'pragmatist': return { headline: `Bästa priset på ${brand} ${model}`, sub: 'Fast avgift 1 995 kr. Snitt besparing 15 000–40 000 kr.' };
-    default: return { headline: 'Låt oss hitta bästa priset', sub: `Vi förhandlar ${brand} ${model} åt dig – gratis att testa` };
-  }
+function getPersonaCTA(_persona: Persona | null, _brand: string, _model: string): { headline: string; sub: string } {
+  return { headline: 'Boka kostnadsfri konsultation', sub: 'Gratis rådgivning – vi hjälper dig hela vägen' };
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
@@ -857,8 +850,8 @@ function BasicContent({ car, onSelect, onFitQuiz }: { car: DetailCarData; onSele
       <div className="space-y-2.5">
         {onSelect && (
           <button type="button" onClick={onSelect} className="w-full flex flex-col items-center gap-0.5 py-3.5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.99] text-white transition-all duration-200 shadow-lg shadow-[#0e6efe]/25">
-            <span className="text-[14px] font-bold inline-flex items-center gap-2">Låt oss hitta bästa priset <ArrowRight className="w-4 h-4" /></span>
-            <span className="text-[11px] text-white/65">Vi förhandlar {car.make} {car.model} åt dig – gratis att testa</span>
+            <span className="text-[14px] font-bold inline-flex items-center gap-2">Boka kostnadsfri konsultation <ArrowRight className="w-4 h-4" /></span>
+            <span className="text-[11px] text-white/65">Gratis rådgivning – vi hjälper dig hela vägen</span>
           </button>
         )}
         {onFitQuiz && (
