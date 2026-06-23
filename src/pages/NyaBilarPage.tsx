@@ -530,7 +530,8 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
 
       <BuyDrawer
         car={drawerCar}
-        initialTrack="searching"
+        initialTrack="know"
+        skipIntent={true}
         onClose={() => setDrawerCar(null)}
       />
     </div>
