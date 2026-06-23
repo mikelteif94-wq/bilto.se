@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, ChevronLeft, Check, Phone, Search, ArrowLeftRight, CheckCircle } from 'lucide-react';
+import { X, ChevronLeft, Check, Phone, Search, ArrowLeftRight, CheckCircle, Sparkles, Clock } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ErrorBanner from './ErrorBanner';
 import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
@@ -20,7 +20,7 @@ interface BuyDrawerProps {
   onClose: () => void;
 }
 
-type FormStep = 'track' | 'carIntent' | 'details' | 'tradeIn' | 'contact' | 'done';
+type FormStep = 'track' | 'carIntent' | 'condition' | 'details' | 'tradeIn' | 'contact' | 'done';
 
 export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact, initialAdditionalRequests, initialDesiredMonthlyCost, fuelTypes, initialReg = '', onClose }: BuyDrawerProps) {
   const open = car !== null;
@@ -70,6 +70,8 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
     mejl: '',
     preferredTime: '',
   });
+
+  const [carCondition, setCarCondition] = useState<'ny' | 'begagnad' | null>(null);
 
   const [guidanceOpen, setGuidanceOpen] = useState(false);
   const [guidanceName, setGuidanceName] = useState('');
@@ -138,6 +140,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
         interestRate: '',
       });
       setContact({ namn: '', telefon: '', mejl: '', preferredTime: '' });
+      setCarCondition(null);
     }
   }, [car]);
 
@@ -160,10 +163,10 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
     }
     if (hasSpecificCar) {
       if (track === 'trade') return ['carIntent', 'details', 'contact'];
-      return ['carIntent', 'details', 'tradeIn', 'contact'];
+      return ['carIntent', 'condition', 'details', 'tradeIn', 'contact'];
     }
     if (track === 'trade') return skipTrack ? ['details', 'tradeIn', 'contact'] : ['track', 'details', 'tradeIn', 'contact'];
-    return skipTrack ? ['details', 'tradeIn', 'contact'] : ['track', 'details', 'tradeIn', 'contact'];
+    return skipTrack ? ['condition', 'details', 'tradeIn', 'contact'] : ['track', 'condition', 'details', 'tradeIn', 'contact'];
   };
 
   const stepFlow = step === 'done' ? ['done'] as FormStep[] : buildStepFlow();
@@ -174,6 +177,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
   const titles: Record<FormStep, string> = {
     track: 'Hur vill du gå vidare?',
     carIntent: car || 'Hur vill du gå vidare?',
+    condition: 'Ny eller begagnad?',
     details: skipIntent
       ? (track === 'searching' ? `Hitta en ${car}` : `Förhandla – ${car}`)
       : isSearchingWithPrefill
@@ -223,6 +227,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
           details.additionalRequests,
           details.maxMiltal ? `Max mil: ${details.maxMiltal}` : '',
           details.yearFrom || details.yearTo ? `Årsmodell: ${details.yearFrom || '?'}–${details.yearTo || '?'}` : '',
+          carCondition ? `Önskat skick: ${carCondition === 'ny' ? 'Ny bil' : 'Begagnad bil'}` : '',
           car ? `[Källa: Bilkort – ${car}]` : '',
         ].filter(Boolean).join(' | '),
         desired_monthly_cost: details.paymentType === 'cash' ? '' : details.desiredMonthlyCost,
@@ -392,7 +397,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                   )}
                 </div>
                 <div className="flex items-center gap-2 shrink-0 mt-1">
-                  {step !== 'done' && step !== 'track' && step !== 'carIntent' && !(skipTrack && !hasSpecificCar && step === 'details') && (
+                  {step !== 'done' && step !== 'track' && step !== 'carIntent' && step !== 'condition' && !(skipTrack && !hasSpecificCar && step === 'details') && (
                     <button
                       type="button"
                       onClick={handleBack}
@@ -498,6 +503,66 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                         Vi sköter inbytet och hjälper dig hitta ny bil.
                       </p>
                     </div>
+                  </button>
+                </div>
+              )}
+
+              {step === 'condition' && (
+                <div className="py-2 space-y-3">
+                  <p className="text-[14.5px] text-slate-500 leading-[1.55]">
+                    Vad letar du efter?
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCarCondition('ny');
+                      goNext();
+                      setError(null);
+                    }}
+                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-[#0e6efe] bg-white hover:bg-[#0e6efe]/5 transition-all text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                      <Sparkles className="w-5 h-5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" />
+                    </div>
+                    <div>
+                      <p className="text-[15px] font-bold text-slate-900">Ny bil</p>
+                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
+                        Vi förhandlar direkt med återförsäljaren och pressar nypriset.
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCarCondition('begagnad');
+                      goNext();
+                      setError(null);
+                    }}
+                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-[#0e6efe] bg-white hover:bg-[#0e6efe]/5 transition-all text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                      <Clock className="w-5 h-5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" />
+                    </div>
+                    <div>
+                      <p className="text-[15px] font-bold text-slate-900">Begagnad bil</p>
+                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
+                        Vi söker hela marknaden, kontrollerar historik och förhandlar priset.
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCarCondition(null);
+                      goNext();
+                      setError(null);
+                    }}
+                    className="w-full text-center py-3 text-[13px] text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    Spelar ingen roll – ni avgör
                   </button>
                 </div>
               )}
