@@ -56,12 +56,12 @@ interface CatalogEntry {
   expert_text: string | null;
   betyg_totalt: number | null;
   // Price fields
-  price_new_from: number | null;
-  price_new_to: number | null;
+  price_new_from?: number | null;
+  price_new_to?: number | null;
   price_used_min: number | null;
   price_used_max: number | null;
-  price_verified: boolean;
-  price_source: string | null;
+  price_verified?: boolean;
+  price_source?: string | null;
 }
 
 type SortKey = 'make' | 'enriched' | 'active';
@@ -274,12 +274,12 @@ function emptyEdit(entry: CatalogEntry): EditState {
     svagheter: toStr(entry.svagheter),
     passar_for: toStr(entry.passar_for),
     expert_text: entry.expert_text ?? entry.expert_comment ?? '',
-    price_new_from: entry.price_new_from != null ? String(entry.price_new_from) : '',
-    price_new_to: entry.price_new_to != null ? String(entry.price_new_to) : '',
+    price_new_from: '',
+    price_new_to: '',
     price_used_min: entry.price_used_min != null ? String(entry.price_used_min) : '',
     price_used_max: entry.price_used_max != null ? String(entry.price_used_max) : '',
-    price_verified: entry.price_verified ?? false,
-    price_source: entry.price_source ?? '',
+    price_verified: false,
+    price_source: '',
   };
 }
 
@@ -317,11 +317,14 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
 
   const load = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('car_catalog')
-      .select('id, make, model, image_url, cleaned_image_url, fuel_types, body_type, segment, rating_overall, expert_comment, seats, is_active, updated_at, kaross, drivmedel, drivlina_kort, styrkor, svagheter, passar_for, expert_text, betyg_totalt, price_new_from, price_new_to, price_used_min, price_used_max, price_verified, price_source')
+      .select('id, make, model, image_url, cleaned_image_url, fuel_types, body_type, segment, rating_overall, expert_comment, seats, is_active, updated_at, kaross, drivmedel, drivlina_kort, styrkor, svagheter, passar_for, expert_text, betyg_totalt, price_used_min, price_used_max')
       .order('make', { ascending: true })
       .order('model', { ascending: true });
+    if (error) {
+      console.error('car_catalog load error:', error.message);
+    }
     setEntries((data as CatalogEntry[]) ?? []);
     setLoading(false);
   }, []);
@@ -412,13 +415,8 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
       svagheter: splitList(editState.svagheter).length > 0 ? splitList(editState.svagheter) : null,
       passar_for: splitList(editState.passar_for).length > 0 ? splitList(editState.passar_for) : null,
       expert_text: editState.expert_text || null,
-      price_new_from: toInt(editState.price_new_from),
-      price_new_to: toInt(editState.price_new_to),
       price_used_min: toInt(editState.price_used_min),
       price_used_max: toInt(editState.price_used_max),
-      price_verified: editState.price_verified,
-      price_source: editState.price_source || null,
-      price_verified_at: editState.price_verified ? new Date().toISOString() : null,
       updated_at: new Date().toISOString(),
     };
     await supabase.from('car_catalog').update(payload).eq('id', editId);
