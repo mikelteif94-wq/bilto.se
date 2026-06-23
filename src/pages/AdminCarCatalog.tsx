@@ -23,6 +23,7 @@ import {
   XCircle,
   Images,
   RefreshCw,
+  TrendingUp,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -310,6 +311,10 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
   const [imgUploading, setImgUploading] = useState(false);
   const imgUploadInputRef = useRef<HTMLInputElement>(null);
 
+  const [scrapeLoadingId, setScrapeLoadingId] = useState<string | null>(null);
+  const [scrapeResultId, setScrapeResultId] = useState<string | null>(null);
+  const [scrapeError, setScrapeError] = useState<string | null>(null);
+
   const load = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase
@@ -496,6 +501,46 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
     }
   };
 
+  const handleScrapePrice = async (entry: CatalogEntry) => {
+    setScrapeLoadingId(entry.id);
+    setScrapeError(null);
+    try {
+      const { data, error } = await supabase.functions.invoke('scrape-car-prices', {
+        body: { catalog_id: entry.id, make: entry.make, model: entry.model, type: 'both' },
+      });
+      if (error) throw new Error(error.message);
+      if (!data?.success) throw new Error(data?.message ?? 'Inga priser hittades');
+      const s = data.scraped;
+      setEntries(prev => prev.map(e => e.id === entry.id ? {
+        ...e,
+        price_new_from: s.price_new_from ?? e.price_new_from,
+        price_new_to: s.price_new_to ?? e.price_new_to,
+        price_used_min: s.price_used_min ?? e.price_used_min,
+        price_used_max: s.price_used_max ?? e.price_used_max,
+        price_source: s.source ?? e.price_source,
+        price_verified: false,
+      } : e));
+      setScrapeResultId(entry.id);
+      setTimeout(() => setScrapeResultId(null), 4000);
+      // If edit panel is open for this entry, also refresh edit state
+      if (editId === entry.id) {
+        setEditState(prev => prev ? {
+          ...prev,
+          price_new_from: s.price_new_from ? String(s.price_new_from) : prev.price_new_from,
+          price_new_to: s.price_new_to ? String(s.price_new_to) : prev.price_new_to,
+          price_used_min: s.price_used_min ? String(s.price_used_min) : prev.price_used_min,
+          price_used_max: s.price_used_max ? String(s.price_used_max) : prev.price_used_max,
+          price_source: s.source ?? prev.price_source,
+        } : prev);
+      }
+    } catch (err) {
+      setScrapeError(err instanceof Error ? err.message : String(err));
+      setTimeout(() => setScrapeError(null), 6000);
+    } finally {
+      setScrapeLoadingId(null);
+    }
+  };
+
   const handleCsvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -626,6 +671,15 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
             <button onClick={() => setCsvResult(null)} className="shrink-0 text-slate-400 hover:text-slate-600">
               <X className="w-4 h-4" />
             </button>
+          </div>
+        )}
+
+        {/* Stats bar */}
+        {scrapeError && (
+          <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 flex items-start gap-3">
+            <AlertTriangle className="w-4 h-4 text-rose-500 mt-0.5 shrink-0" />
+            <p className="text-sm text-rose-700 flex-1">Prissökning misslyckades: {scrapeError}</p>
+            <button onClick={() => setScrapeError(null)} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
           </div>
         )}
 
@@ -910,6 +964,24 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                             >
                               {wasSaved ? <Check className="w-3 h-3" /> : <Pencil className="w-3 h-3" />}
                               {wasSaved ? 'Sparat' : 'Enrichera'}
+                            </button>
+                            <button
+                              onClick={() => handleScrapePrice(entry)}
+                              disabled={scrapeLoadingId === entry.id}
+                              title="Hämta priser automatiskt via Firecrawl"
+                              className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold border transition disabled:opacity-50 ${
+                                scrapeResultId === entry.id
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                  : 'bg-white text-slate-600 border-slate-200 hover:border-teal-400 hover:text-teal-600'
+                              }`}
+                            >
+                              {scrapeLoadingId === entry.id
+                                ? <Loader2 className="w-3 h-3 animate-spin" />
+                                : scrapeResultId === entry.id
+                                  ? <Check className="w-3 h-3" />
+                                  : <TrendingUp className="w-3 h-3" />
+                              }
+                              {scrapeLoadingId === entry.id ? 'Hämtar…' : scrapeResultId === entry.id ? 'Klart' : 'Hämta pris'}
                             </button>
                           </div>
                         )}
