@@ -1,5 +1,5 @@
 import { Zap, Star, Check, ChevronRight, Info, Scale } from 'lucide-react';
-import { calcCarMonthlyRange, calcMonthlyTCO } from '../lib/utils';
+import { calcMonthlyTCO } from '../lib/utils';
 
 const BODY_LABELS: Record<string, string> = {
   sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
@@ -30,10 +30,6 @@ interface ElCarCardProps {
   cardMode?: 'ny' | 'beg';
 }
 
-function formatSEK(n: number) {
-  return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
-}
-
 function fuelLabelToTypes(fuelLabel?: string): string[] {
   if (!fuelLabel) return [];
   const l = fuelLabel.toLowerCase();
@@ -51,21 +47,15 @@ function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make, mode }: { carPri
   const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
   const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
-  const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   return (
-    <div className="mt-1">
-      <div className="flex items-center gap-1.5">
-        <span className="text-[8px] text-slate-400">{fmt(effectivePrice)} kr</span>
+    <div className="mt-1 flex items-center gap-1.5">
+      <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
+      <div className="flex items-center gap-[2px]">
+        {[1,2,3,4,5].map(s => (
+          <div key={s} className="rounded-sm" style={{ width: 11, height: 5, backgroundColor: s <= level ? activeColor : '#e2e8f0' }} />
+        ))}
       </div>
-      <div className="flex items-center gap-1.5 mt-0.5">
-        <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
-        <div className="flex items-center gap-[2px]">
-          {[1,2,3,4,5].map(s => (
-            <div key={s} className="rounded-sm" style={{ width: 11, height: 5, backgroundColor: s <= level ? activeColor : '#e2e8f0', opacity: s <= level ? (0.5 + (s / level) * 0.5) : 1 }} />
-          ))}
-        </div>
-        <span className="text-[9px] text-slate-400">~{fmt(Math.round(total / 100) * 100)} kr/mån ({label.toLowerCase()})</span>
-      </div>
+      <span className="text-[9px] font-semibold whitespace-nowrap" style={{ color: activeColor }}>{label}</span>
     </div>
   );
 }
@@ -97,7 +87,7 @@ export default function ElCarCard({
   onNegotiate, onDetail, onTcoCompare, isTcoCompared,
 }: ElCarCardProps) {
   const mode: 'ny' | 'beg' = (cardMode === 'beg' && usedPrice) ? 'beg' : 'ny';
-  const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
+  const showMeter = !!(carPrice || usedPrice);
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
   const bodyLabel = bodyType ? BODY_LABELS[bodyType] : null;
 
@@ -158,7 +148,7 @@ export default function ElCarCard({
           {displayComment && (
             <p className="text-[10px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
-          {carPrice && <OwnershipMeter carPrice={carPrice} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} />}
+          {showMeter && <OwnershipMeter carPrice={carPrice ?? usedPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} />}
           <div className="flex items-center gap-1.5 mt-auto pt-1">
             <button
               type="button"
@@ -243,7 +233,7 @@ export default function ElCarCard({
             {displayComment && (
               <p className="mt-1 text-[11px] text-slate-400 leading-snug line-clamp-1 italic">{displayComment}</p>
             )}
-            {carPrice && <div className="mt-1.5"><OwnershipMeter carPrice={carPrice} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} /></div>}
+            {showMeter && <div className="mt-1.5"><OwnershipMeter carPrice={carPrice ?? usedPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} /></div>}
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import { Star, Check, ChevronRight, Users, Info, Scale } from 'lucide-react';
-import { calcCarMonthlyRange, calcMonthlyTCO } from '../lib/utils';
+import { calcMonthlyTCO } from '../lib/utils';
 
 const BODY_LABELS: Record<string, string> = {
   sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
@@ -33,10 +33,6 @@ interface CompactCarCardProps {
   cardMode?: 'ny' | 'beg';
 }
 
-function formatSEK(n: number) {
-  return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
-}
-
 function fuelLabelToTypes(fuelLabel?: string): string[] {
   if (!fuelLabel) return [];
   const l = fuelLabel.toLowerCase();
@@ -52,8 +48,8 @@ function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make, mode }: { carPri
   const tco = calcMonthlyTCO({ carPrice: effectivePrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
   const { total } = tco;
   const level = total < 6000 ? 1 : total < 9000 ? 2 : total < 13000 ? 3 : total < 18000 ? 4 : 5;
+  const label = level <= 1 ? 'Mycket billig' : level === 2 ? 'Billig' : level === 3 ? 'Måttlig' : level === 4 ? 'Dyr' : 'Mycket dyr';
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#d97706' : '#dc2626';
-  const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   return (
     <div className="mt-1.5 flex items-center gap-1.5 mt-0.5">
       <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">Ägarkostnad</span>
@@ -62,7 +58,7 @@ function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make, mode }: { carPri
           <div key={s} className="rounded-[2px]" style={{ width: 10, height: 6, backgroundColor: s <= level ? activeColor : '#e2e8f0' }} />
         ))}
       </div>
-      <span className="text-[10px] text-slate-500 tabular-nums whitespace-nowrap">~{fmt(Math.round(total / 100) * 100)} kr/mån</span>
+      <span className="text-[10px] font-semibold whitespace-nowrap" style={{ color: activeColor }}>{label}</span>
     </div>
   );
 }
@@ -93,7 +89,7 @@ export default function CompactCarCard({
   onSelect, onNegotiate, onDetail, onTcoCompare, isTcoCompared,
 }: CompactCarCardProps) {
   const mode: 'ny' | 'beg' = (cardMode === 'beg' && usedPrice) ? 'beg' : 'ny';
-  const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
+  const showMeter = !!(carPrice || usedPrice);
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
   const bodyLabel = bodyType ? BODY_LABELS[bodyType] : null;
 
@@ -137,13 +133,7 @@ export default function CompactCarCard({
               {isSelected && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
             </div>
           )}
-          {monthlySaving != null && monthlySaving > 0 && (
-            <div className="absolute top-1.5 right-1.5 text-white px-1 py-0.5 rounded text-[8px] font-bold"
-              style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>
-              -{formatSEK(monthlySaving)}
-            </div>
-          )}
-          {rating != null && !(monthlySaving && monthlySaving > 0) && !(equityFreed && equityFreed > 0) && !isSelected && (
+          {rating != null && !(equityFreed && equityFreed > 0) && !isSelected && (
             <ScoreBadge value={rating} />
           )}
           {/* no isCompared state */}
@@ -165,10 +155,7 @@ export default function CompactCarCard({
           {displayComment && (
             <p className="text-[10px] text-slate-500 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
-          {range && <OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} />}
-          {monthlySaving != null && monthlySaving > 0 && (
-            <p className="text-[9px] font-semibold text-emerald-600">Sparar {formatSEK(monthlySaving)} kr/mån</p>
-          )}
+          {showMeter && <OwnershipMeter carPrice={carPrice ?? usedPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} />}
           {!onSelect && (
             <div className="flex items-center gap-1.5 mt-auto pt-1">
               <button
@@ -230,19 +217,13 @@ export default function CompactCarCard({
               {isSelected && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
             </div>
           )}
-          {monthlySaving != null && monthlySaving > 0 && (
+          {equityFreed != null && equityFreed > 0 && (
             <div className="absolute top-2.5 right-2.5 text-white px-2 py-0.5 rounded-lg text-[10px] font-bold"
               style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', boxShadow: '0 2px 8px rgba(16,185,129,0.35)' }}>
-              -{formatSEK(monthlySaving)} kr/mån
+              +{new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(equityFreed)} kr
             </div>
           )}
-          {equityFreed != null && equityFreed > 0 && !(monthlySaving && monthlySaving > 0) && (
-            <div className="absolute top-2.5 right-2.5 text-white px-2 py-0.5 rounded-lg text-[10px] font-bold"
-              style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', boxShadow: '0 2px 8px rgba(16,185,129,0.35)' }}>
-              +{formatSEK(equityFreed)} kr
-            </div>
-          )}
-          {rating != null && !(monthlySaving && monthlySaving > 0) && !(equityFreed && equityFreed > 0) && !isSelected && (
+          {rating != null && !(equityFreed && equityFreed > 0) && !isSelected && (
             <ScoreBadge value={rating} />
           )}
         </div>
@@ -268,13 +249,7 @@ export default function CompactCarCard({
           {displayComment && (
             <p className="mt-1 text-[11px] text-slate-500 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
-          {range && <div className="mt-1"><OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} /></div>}
-          {monthlySaving != null && monthlySaving > 0 && (
-            <p className="mt-1 text-[10.5px] font-semibold text-emerald-600">Sparar {formatSEK(monthlySaving)} kr/mån</p>
-          )}
-          {equityFreed != null && equityFreed > 0 && (
-            <p className="mt-1 text-[10.5px] font-semibold text-emerald-600">+{formatSEK(equityFreed)} kr frigörs</p>
-          )}
+          {showMeter && <div className="mt-1"><OwnershipMeter carPrice={carPrice ?? usedPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} /></div>}
         </div>
       </div>
 
