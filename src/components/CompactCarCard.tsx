@@ -97,11 +97,11 @@ export default function CompactCarCard({
       {/* Mobile: horizontal layout */}
       <div className="flex sm:hidden" onClick={handleCardClick}>
         {/* Image */}
-        <div className="relative w-[110px] shrink-0 bg-gradient-to-b from-slate-50 to-white self-stretch flex items-center">
+        <div className="relative w-[110px] shrink-0 bg-[#f4f4f4] self-stretch flex items-center">
           {imageUrl && (
             <img
               src={imageUrl} alt={name} loading="lazy" decoding="async"
-              className="w-full h-full object-contain p-2"
+              className="w-full h-full object-contain"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           )}
@@ -180,15 +180,15 @@ export default function CompactCarCard({
 
       {/* Desktop: vertical layout */}
       <div className="hidden sm:block" onClick={handleCardClick}>
-        <div className="relative aspect-[16/9] bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+        <div className="relative aspect-[16/9] overflow-hidden bg-[#f4f4f4]">
           {imageUrl && (
             <img
               src={imageUrl} alt={name} loading="lazy" decoding="async"
-              className="w-full h-full object-contain p-3 transition-transform duration-500 group-hover:scale-[1.05]"
+              className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.05]"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           )}
-          <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/70 to-transparent pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#f4f4f4]/70 to-transparent pointer-events-none" />
           {topBadge && !isSelected && (
             <div className="absolute top-2.5 left-2.5">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold"
