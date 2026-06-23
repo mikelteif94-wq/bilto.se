@@ -90,6 +90,7 @@ function getFuelLabel(fuelTypes: string[]): string {
 
 // ─── Ownership cost meter ─────────────────────────────────────────────────────
 function OwnershipMeter({ carPrice, fuelTypes, make }: { carPrice: number; fuelTypes: string[]; make?: string }) {
+  if (!carPrice || carPrice < 10000) return null;
   const tco = calcMonthlyTCO({ carPrice, fuelTypes, make });
   const { total } = tco;
   const level = total < 5000 ? 1 : total < 8000 ? 2 : total < 12000 ? 3 : total < 17000 ? 4 : 5;

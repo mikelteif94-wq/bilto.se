@@ -51,7 +51,12 @@ export function calcMonthlyTCO({
   fuelTypes?: string[];
   make?: string;
 }): TCOBreakdown {
-  const range = calcCarMonthlyRange(carPrice, usedPrice);
+  const safePrice = (!carPrice || isNaN(carPrice) || carPrice < 10000) ? 0 : carPrice;
+  const safeUsed = (!usedPrice || isNaN(usedPrice) || usedPrice < 10000) ? undefined : usedPrice;
+  if (safePrice === 0 && !safeUsed) {
+    return { financing: 0, fuel: 0, insurance: 0, service: 0, tax: 0, total: 0 };
+  }
+  const range = calcCarMonthlyRange(safePrice || safeUsed!, safeUsed);
   const financing = range.low;
   const basePrice = range.basePrice;
   const isPremium = make ? PREMIUM_MAKES.has(make.toLowerCase()) : basePrice > 450_000;
