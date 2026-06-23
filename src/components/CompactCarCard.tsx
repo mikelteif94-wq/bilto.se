@@ -212,7 +212,7 @@ export default function CompactCarCard({
 
       {/* Desktop: vertical layout */}
       <div className="hidden sm:block" onClick={handleCardClick}>
-        <div className="relative aspect-[16/9] overflow-hidden">
+        <div className="relative aspect-[16/9] bg-gradient-to-b from-slate-50 to-white overflow-hidden">
           {imageUrl && (
             <img
               src={imageUrl} alt={name} loading="lazy" decoding="async"
