@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Phone, ChevronRight, ArrowRight, Star, TrendingUp, CheckCircle,
-  Zap, Car, Search,
+  Zap, Car, Search, Menu, User,
 } from 'lucide-react';
 import { useCatalogCars, CatalogCarFull } from '@/hooks/useCatalogCars';
 import { SiteFooter } from '@/components/SiteFooter';
@@ -118,6 +118,13 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
   const [activeCategory, setActiveCategory] = useState<Category>('alla');
   const [searchQuery, setSearchQuery] = useState('');
   const [drawerCar, setDrawerCar] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const featuredCars = useMemo(() =>
     FEATURED.map(fd => ({
@@ -144,44 +151,73 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
 
   return (
     <div className="min-h-screen bg-white font-sans">
-      {/* Sticky navigation */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-          <button onClick={onBack} className="flex-none">
+      {/* Navigation – same style as rest of site */}
+      <header
+        className={`fixed top-0 inset-x-0 z-30 h-[53px] lg:h-16 transition-all duration-300 ${
+          scrolled
+            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100'
+            : 'bg-transparent'
+        }`}
+      >
+        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-10">
+          <button
+            type="button"
+            aria-label="Meny"
+            onClick={onBack}
+            className={`lg:hidden -ml-2 w-11 h-11 flex items-center justify-center ${scrolled ? 'text-slate-900' : 'text-white'}`}
+          >
+            <Menu className="w-6 h-6" strokeWidth={2} />
+          </button>
+          <button type="button" onClick={onBack} className="shrink-0 lg:mr-10 flex items-center">
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
-              className="h-8 w-auto object-contain"
+              fetchPriority="high"
+              decoding="async"
+              className="hidden lg:block h-24 w-auto object-contain"
+              style={{ filter: scrolled ? 'none' : 'brightness(0) invert(1)' }}
             />
           </button>
-          <nav className="hidden md:flex items-center gap-5">
-            {[
-              { label: 'Startsida', action: onBack },
-              { label: 'Köp bil', action: () => onNavigateBuy() },
-              { label: 'Gratis konsultation', action: onNavigateConsultation },
-            ].map(({ label, action }) => (
-              <button
-                key={label}
-                onClick={action}
-                className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors"
-              >
-                {label}
-              </button>
-            ))}
-          </nav>
-          <div className="flex items-center gap-3">
-            <a
-              href="tel:+46855550200"
-              className="hidden sm:flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors"
+          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+            <button
+              type="button"
+              onClick={() => onNavigateBuy()}
+              className={`text-[15px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
             >
-              <Phone className="w-3.5 h-3.5" />
-              08-5555 0200
+              Bilköpshjälpen
+            </button>
+            <button
+              type="button"
+              onClick={onBack}
+              className={`text-[15px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
+            >
+              Sälj bil
+            </button>
+            <a
+              href="/sa-funkar-det"
+              className={`text-[15px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
+            >
+              Så funkar det
+            </a>
+          </nav>
+          <div className="ml-auto flex items-center gap-3">
+            <a
+              href="/logga-in"
+              className={`hidden lg:inline-flex items-center gap-2 text-[14px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
+            >
+              <User className="w-4 h-4" strokeWidth={2} />
+              Logga in
             </a>
             <button
-              onClick={() => onNavigateBuy()}
-              className="h-8 px-4 bg-black text-white text-sm font-semibold rounded-full hover:bg-slate-800 transition-colors"
+              type="button"
+              onClick={onNavigateConsultation}
+              className={`inline-flex items-center px-5 py-2.5 rounded-xl text-[12px] lg:text-[13px] font-semibold transition whitespace-nowrap ${
+                scrolled
+                  ? 'bg-slate-900 text-white hover:bg-slate-700'
+                  : 'bg-white text-slate-900 hover:bg-white/90'
+              }`}
             >
-              Kom igång
+              Kostnadsfri konsultation
             </button>
           </div>
         </div>
@@ -189,7 +225,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
 
       {/* Hero */}
       <section
-        className="relative overflow-hidden"
+        className="relative overflow-hidden pt-[53px] lg:pt-16"
         style={{ background: 'linear-gradient(160deg, #060e1e 0%, #0a1628 60%, #0e1f3a 100%)' }}
       >
         {/* Blue glow */}
