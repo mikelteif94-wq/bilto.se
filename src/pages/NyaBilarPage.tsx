@@ -146,16 +146,9 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
     <div className="min-h-screen bg-white font-sans">
       {/* Navigation – same style as rest of site */}
       <header
-        className="fixed top-0 inset-x-0 z-30 h-[53px] lg:h-16"
-        style={{
-          background: 'linear-gradient(180deg, #0a57cc 0%, #0e6efe 100%)',
-          boxShadow: '0 1px 0 rgba(255,255,255,0.08), 0 4px 24px rgba(10,87,204,0.28)',
-        }}
+        className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe] backdrop-blur-md"
       >
-        <div className="h-[2px] w-full" style={{
-          background: 'linear-gradient(90deg, rgba(251,191,36,0.7) 0%, rgba(255,255,255,0.4) 40%, rgba(56,189,248,0.6) 100%)',
-        }} />
-        <div className="max-w-[1400px] mx-auto h-[calc(100%-2px)] flex items-center px-5 lg:px-10">
+        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
             aria-label="Meny"
@@ -217,7 +210,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
 
       {/* Hero */}
       <section
-        className="relative overflow-hidden pt-[53px] lg:pt-16"
+        className="relative overflow-hidden pt-[72px] lg:pt-[80px]"
         style={{ background: 'linear-gradient(160deg, #060e1e 0%, #0a1628 60%, #0e1f3a 100%)' }}
       >
         {/* Blue glow */}
