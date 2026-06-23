@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import {
   Phone, ChevronRight, ArrowRight, Star, TrendingUp, CheckCircle,
-  Zap, Car, Search, Menu, User,
+  Zap, Car, Search, Menu, User, Shield, Clock, Award,
 } from 'lucide-react';
 import { useCatalogCars, CatalogCarFull } from '@/hooks/useCatalogCars';
 import { SiteFooter } from '@/components/SiteFooter';
@@ -32,18 +32,24 @@ const FEATURED = [
     headline: 'Spara upp till 45\u00a0000 kr på en ny Tesla Model Y',
     description: 'Model Y är den mest eftersökta bilen i Sverige. Med Biltos förhandlingsexperter säkrar du rätt pris utan att behöva göra jobbet själv. Perfekt för familjen som vill gå electric.',
     tag: 'Elbil',
+    facts: ['533 km räckvidd (WLTP)', '5 säten', '7,9 s 0–100', 'Gratis OTA-uppdateringar'],
+    dealScore: 94,
   },
   {
     make: 'Volvo', model: 'XC60',
     headline: 'Spara upp till 55\u00a0000 kr på en ny Volvo XC60',
     description: 'XC60 är en av Europas mest populära premium-SUV:ar. Bilto förhandlar fram ett pris som annars kräver månaders research och flera återbesök till återförsäljaren.',
     tag: 'Hybrid',
+    facts: ['87 km el-räckvidd (WLTP)', '5 säten', 'Luftfjädring tillval', '5 års garanti'],
+    dealScore: 91,
   },
   {
     make: 'Kia', model: 'EV9',
     headline: 'Spara upp till 75\u00a0000 kr på en ny Kia EV9',
     description: 'EV9 är en av de mest imponerande el-SUV:arna just nu. Enormt bagageutrymme, lång räckvidd och 7 säten – med rätt förhandlare kan du spara rejält.',
     tag: 'Elbil',
+    facts: ['561 km räckvidd (WLTP)', '6 eller 7 säten', '800V ultrasnabbladdning', '7 års garanti'],
+    dealScore: 97,
   },
 ];
 
@@ -367,13 +373,27 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
                       <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${tagStyle(fd.tag)}`}>
                         {fd.tag}
                       </span>
+                      <span className="ml-auto flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full">
+                        <Award className="w-3 h-3" />
+                        Deal Score {fd.dealScore}/100
+                      </span>
                     </div>
 
                     <h3 className="text-2xl md:text-[1.75rem] font-black text-slate-950 leading-tight mb-4">
                       {fd.headline}
                     </h3>
 
-                    <p className="text-slate-600 leading-relaxed mb-6">{fd.description}</p>
+                    <p className="text-slate-600 leading-relaxed mb-5">{fd.description}</p>
+
+                    {/* Quick facts */}
+                    <ul className="grid grid-cols-2 gap-x-4 gap-y-2 mb-6">
+                      {fd.facts.map(fact => (
+                        <li key={fact} className="flex items-center gap-1.5 text-sm text-slate-700">
+                          <CheckCircle className="w-3.5 h-3.5 shrink-0 text-emerald-500" />
+                          {fact}
+                        </li>
+                      ))}
+                    </ul>
 
                     {price && (
                       <p className="text-sm text-slate-500 mb-6">
@@ -480,6 +500,10 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
                         </span>
                       </div>
 
+                      {car.body_type && (
+                        <p className="text-[11px] text-slate-400 mb-1.5 capitalize">{car.body_type}</p>
+                      )}
+
                       {price ? (
                         <p className="text-sm text-slate-600">
                           Ny fr.{' '}
@@ -495,6 +519,14 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
                           Spara upp till {Math.round(savings / 1000)}&nbsp;000 kr*
                         </div>
                       ) : null}
+
+                      <div className="mt-2.5 flex items-center gap-1.5 text-[11px] text-slate-500">
+                        <Shield className="w-3 h-3 shrink-0 text-blue-500" />
+                        Bilto-godkänd bilaffär
+                        <span className="mx-1 text-slate-200">·</span>
+                        <Clock className="w-3 h-3 shrink-0" />
+                        48 h
+                      </div>
 
                       <div className="mt-3 w-full h-8 bg-slate-900 text-white text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 group-hover:bg-black transition-colors">
                         Få hjälp att köpa
