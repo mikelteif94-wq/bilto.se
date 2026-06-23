@@ -1034,10 +1034,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <div className="md:col-span-5">
               <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-4">Kundberättelse</p>
               <h2 className="text-[28px] sm:text-[34px] font-semibold leading-[1.12] text-slate-900 tracking-[-0.02em]">
-                "Jag visste ingenting om bilar – Bilto skötte allt och jag fick mer än jag vågat hoppas på."
+                "Jag visste ingenting om bilar – Bilto guidade mig hela vägen och jag hittade rätt bil till ett pris jag aldrig klarat förhandla fram själv."
               </h2>
               <p className="text-[13px] text-slate-400 mt-5 font-medium">
-                Josefin L. – sålde sin Volvo XC40, 2022
+                Josefin L. – köpte sin Volvo XC40, 2022
               </p>
             </div>
             <div className="md:col-span-7">

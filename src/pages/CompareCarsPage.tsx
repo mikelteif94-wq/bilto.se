@@ -1082,10 +1082,10 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             {/* Left: text + CTA */}
             <div className="flex-1 text-center lg:text-left lg:py-12">
               <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
-                {heroTitle ?? 'Hitta din dr\u00f6mbil och f\u00f6rhandla priset'}
+                {heroTitle ?? 'Hitta din drömbil – spara tid och pengar'}
               </h1>
               <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto lg:mx-0">
-                {heroSubtitle ?? 'J\u00e4mf\u00f6r bilar, hitta r\u00e4tt modell och l\u00e5t oss f\u00f6rhandla fram b\u00e4sta priset \u00e5t dig. Helt gratis och opartiskt.'}
+                {heroSubtitle ?? 'Jämför bilar, hitta rätt modell och låt oss förhandla fram bästa priset åt dig. Boka en gratis konsultation och se hur mycket du kan spara.'}
               </p>
 
               <div className="mt-8 bg-white rounded-xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden max-w-md mx-auto lg:mx-0 text-left">
