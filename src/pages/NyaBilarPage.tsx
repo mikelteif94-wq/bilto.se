@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Phone, ChevronRight, ArrowRight, Star, TrendingUp, CheckCircle,
   Zap, Car, Search, Menu, User,
@@ -118,13 +118,6 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
   const [activeCategory, setActiveCategory] = useState<Category>('alla');
   const [searchQuery, setSearchQuery] = useState('');
   const [drawerCar, setDrawerCar] = useState<string | null>(null);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
   const featuredCars = useMemo(() =>
     FEATURED.map(fd => ({
@@ -153,18 +146,21 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
     <div className="min-h-screen bg-white font-sans">
       {/* Navigation – same style as rest of site */}
       <header
-        className={`fixed top-0 inset-x-0 z-30 h-[53px] lg:h-16 transition-all duration-300 ${
-          scrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100'
-            : 'bg-transparent'
-        }`}
+        className="fixed top-0 inset-x-0 z-30 h-[53px] lg:h-16"
+        style={{
+          background: 'linear-gradient(180deg, #0a57cc 0%, #0e6efe 100%)',
+          boxShadow: '0 1px 0 rgba(255,255,255,0.08), 0 4px 24px rgba(10,87,204,0.28)',
+        }}
       >
-        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-10">
+        <div className="h-[2px] w-full" style={{
+          background: 'linear-gradient(90deg, rgba(251,191,36,0.7) 0%, rgba(255,255,255,0.4) 40%, rgba(56,189,248,0.6) 100%)',
+        }} />
+        <div className="max-w-[1400px] mx-auto h-[calc(100%-2px)] flex items-center px-5 lg:px-10">
           <button
             type="button"
             aria-label="Meny"
             onClick={onBack}
-            className={`lg:hidden -ml-2 w-11 h-11 flex items-center justify-center ${scrolled ? 'text-slate-900' : 'text-white'}`}
+            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white"
           >
             <Menu className="w-6 h-6" strokeWidth={2} />
           </button>
@@ -175,27 +171,27 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
               fetchPriority="high"
               decoding="async"
               className="hidden lg:block h-24 w-auto object-contain"
-              style={{ filter: scrolled ? 'none' : 'brightness(0) invert(1)' }}
+              style={{ filter: 'brightness(0) invert(1)' }}
             />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className={`text-[15px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
+              className="text-[15px] font-medium text-white/70 hover:text-white transition"
             >
               Bilköpshjälpen
             </button>
             <button
               type="button"
               onClick={onBack}
-              className={`text-[15px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
+              className="text-[15px] font-medium text-white/70 hover:text-white transition"
             >
               Sälj bil
             </button>
             <a
               href="/sa-funkar-det"
-              className={`text-[15px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
+              className="text-[15px] font-medium text-white/70 hover:text-white transition"
             >
               Så funkar det
             </a>
@@ -203,7 +199,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
           <div className="ml-auto flex items-center gap-3">
             <a
               href="/logga-in"
-              className={`hidden lg:inline-flex items-center gap-2 text-[14px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
+              className="hidden lg:inline-flex items-center gap-2 text-[14px] font-medium text-white/70 hover:text-white transition"
             >
               <User className="w-4 h-4" strokeWidth={2} />
               Logga in
@@ -211,11 +207,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
             <button
               type="button"
               onClick={onNavigateConsultation}
-              className={`inline-flex items-center px-5 py-2.5 rounded-xl text-[12px] lg:text-[13px] font-semibold transition whitespace-nowrap ${
-                scrolled
-                  ? 'bg-slate-900 text-white hover:bg-slate-700'
-                  : 'bg-white text-slate-900 hover:bg-white/90'
-              }`}
+              className="inline-flex items-center px-5 py-2.5 rounded-xl text-[12px] lg:text-[13px] font-semibold transition whitespace-nowrap bg-white text-slate-900 hover:bg-white/90"
             >
               Kostnadsfri konsultation
             </button>
