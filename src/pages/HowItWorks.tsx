@@ -230,6 +230,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   };
 
   const [showAllCars, setShowAllCars] = useState(false);
+  const [cardMode, setCardMode] = useState<'ny' | 'beg'>('beg');
 
   useEffect(() => {
     const onScroll = () => {
@@ -719,12 +720,32 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-14">
             <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Bilkatalogen</p>
-              <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
-                Vad våra kunder bytt till senast
-              </h2>
-              <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
-                Populäraste modellerna just nu. Berätta vad du söker – vi hittar den och förhandlar priset.
-              </p>
+              <div className="flex items-start justify-between gap-4 flex-wrap">
+                <div>
+                  <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
+                    Vad våra kunder bytt till senast
+                  </h2>
+                  <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
+                    Populäraste modellerna just nu. Berätta vad du söker – vi hittar den och förhandlar priset.
+                  </p>
+                </div>
+                <div className="flex items-center gap-0 rounded-xl border border-slate-200 overflow-hidden shrink-0 self-start mt-1">
+                  <button
+                    type="button"
+                    onClick={() => setCardMode('beg')}
+                    className={`px-4 h-9 text-[13px] font-semibold transition-colors ${cardMode === 'beg' ? 'bg-slate-900 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'}`}
+                  >
+                    Begagnad
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCardMode('ny')}
+                    className={`px-4 h-9 text-[13px] font-semibold transition-colors ${cardMode === 'ny' ? 'bg-slate-900 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'}`}
+                  >
+                    Ny bil
+                  </button>
+                </div>
+              </div>
           </div>
 
           {(() => {
@@ -753,6 +774,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                           seats={car.specs.seats}
                           carPrice={car.pricing.new_from_sek ?? undefined}
                           usedPrice={car.pricing.used_from_sek ?? undefined}
+                          cardMode={cardMode}
                           onNegotiate={() => openDrawer(`${car.brand_display} ${car.model_display}`)}
                           onDetail={() => setDetailCar(car)}
                           onFitQuiz={() => setFitQuizCar(car)}
@@ -770,6 +792,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         fuelLabel={fuelLabelStr}
                         carPrice={car.pricing.new_from_sek ?? undefined}
                         usedPrice={car.pricing.used_from_sek ?? undefined}
+                        cardMode={cardMode}
                         onNegotiate={() => openDrawer(`${car.brand_display} ${car.model_display}`)}
                         onDetail={() => setDetailCar(car)}
                         onFitQuiz={() => setFitQuizCar(car)}

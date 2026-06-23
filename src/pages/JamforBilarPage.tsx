@@ -267,6 +267,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [buyModalCar, setBuyModalCar] = useState<string | null>(null);
+  const [cardMode, setCardMode] = useState<'ny' | 'beg'>('beg');
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20);
@@ -416,7 +417,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
             )}
 
             {/* Header row */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
               <p className="text-[14px] font-bold text-slate-800">
                 {cars.length === 0
                   ? 'Välj 2 bilar att jämföra'
@@ -424,13 +425,31 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                   ? 'Välj ytterligare en bil'
                   : 'Byt ut en bil nedan'}
               </p>
-              <button
-                type="button"
-                onClick={() => setSearchOpen(true)}
-                className="inline-flex items-center gap-1.5 h-8 px-3 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[11px] font-semibold transition shadow-sm"
-              >
-                <Search className="w-3 h-3" /> Sök alla bilar
-              </button>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-0 rounded-lg border border-slate-200 overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setCardMode('beg')}
+                    className={`px-3 h-8 text-[12px] font-semibold transition-colors ${cardMode === 'beg' ? 'bg-slate-900 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'}`}
+                  >
+                    Begagnad
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCardMode('ny')}
+                    className={`px-3 h-8 text-[12px] font-semibold transition-colors ${cardMode === 'ny' ? 'bg-slate-900 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'}`}
+                  >
+                    Ny bil
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSearchOpen(true)}
+                  className="inline-flex items-center gap-1.5 h-8 px-3 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[11px] font-semibold transition shadow-sm"
+                >
+                  <Search className="w-3 h-3" /> Sök alla bilar
+                </button>
+              </div>
             </div>
 
             {/* Quick pick grid with CompactCarCard */}
@@ -454,6 +473,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                     carPrice={c.pricing.new_from_sek ?? undefined}
                     usedPrice={c.pricing.used_from_sek ?? undefined}
                     isSelected={isCarSelected}
+                    cardMode={cardMode}
                     onSelect={
                       isCarSelected
                         ? () => setCars(prev => prev.filter(sel => sel.id !== c.id))

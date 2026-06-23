@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Star, Check, ChevronRight, Users, Info, Scale } from 'lucide-react';
 import { calcCarMonthlyRange, calcMonthlyTCO } from '../lib/utils';
 
@@ -31,6 +30,7 @@ interface CompactCarCardProps {
   isTcoCompared?: boolean;
   index?: number;
   disableMotion?: boolean;
+  cardMode?: 'ny' | 'beg';
 }
 
 function formatSEK(n: number) {
@@ -47,8 +47,7 @@ function fuelLabelToTypes(fuelLabel?: string): string[] {
   return ['bensin'];
 }
 
-function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make }: { carPrice: number; usedPrice?: number; fuelLabel?: string; make?: string }) {
-  const [mode, setMode] = useState<'ny' | 'beg'>('beg');
+function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make, mode }: { carPrice: number; usedPrice?: number; fuelLabel?: string; make?: string; mode: 'ny' | 'beg' }) {
   const effectivePrice = (mode === 'beg' && usedPrice) ? usedPrice : carPrice;
   const tco = calcMonthlyTCO({ carPrice: effectivePrice, fuelTypes: fuelLabelToTypes(fuelLabel), make });
   const { total } = tco;
@@ -57,26 +56,8 @@ function OwnershipMeter({ carPrice, usedPrice, fuelLabel, make }: { carPrice: nu
   const activeColor = level <= 2 ? '#16a34a' : level === 3 ? '#ea580c' : '#dc2626';
   const fmt = (n: number) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
   return (
-    <div className="mt-1.5" onClick={e => e.stopPropagation()}>
-      <div className="flex items-center gap-2 flex-wrap">
-        {usedPrice ? (
-          <div className="flex items-center gap-0.5 rounded-lg border border-slate-200 overflow-hidden shrink-0">
-            <button
-              type="button"
-              onClick={() => setMode('ny')}
-              className={`px-1.5 py-0.5 text-[9px] font-bold transition-colors ${mode === 'ny' ? 'bg-slate-800 text-white' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
-            >
-              Ny
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode('beg')}
-              className={`px-1.5 py-0.5 text-[9px] font-bold transition-colors ${mode === 'beg' ? 'bg-slate-800 text-white' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
-            >
-              Beg
-            </button>
-          </div>
-        ) : null}
+    <div className="mt-1.5">
+      <div className="flex items-center gap-2">
         <span className="text-[9px] text-slate-400 font-medium">{fmt(effectivePrice)} kr</span>
       </div>
       <div className="flex items-center gap-2 mt-1">
@@ -115,9 +96,10 @@ export default function CompactCarCard({
   name, imageUrl, rating, topBadge, expertComment,
   fuelLabel, bodyType, drivetrain, seats, pros,
   carPrice, usedPrice, monthlySaving, equityFreed,
-  isSelected,
+  isSelected, cardMode = 'beg',
   onSelect, onNegotiate, onDetail, onTcoCompare, isTcoCompared,
 }: CompactCarCardProps) {
+  const mode: 'ny' | 'beg' = (cardMode === 'beg' && usedPrice) ? 'beg' : 'ny';
   const range = carPrice ? calcCarMonthlyRange(carPrice, usedPrice) : null;
   const displayComment = (pros && pros.length > 0) ? pros[0] : expertComment;
   const bodyLabel = bodyType ? BODY_LABELS[bodyType] : null;
@@ -190,7 +172,7 @@ export default function CompactCarCard({
           {displayComment && (
             <p className="text-[10px] text-slate-500 leading-snug line-clamp-1 italic">{displayComment}</p>
           )}
-          {range && <OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} />}
+          {range && <OwnershipMeter carPrice={carPrice!} usedPrice={usedPrice} fuelLabel={fuelLabel} make={name.split(' ')[0]} mode={mode} />}
           {monthlySaving != null && monthlySaving > 0 && (
             <p className="text-[9px] font-semibold text-emerald-600">Sparar {formatSEK(monthlySaving)} kr/mån</p>
           )}
