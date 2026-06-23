@@ -54,6 +54,13 @@ interface CatalogEntry {
   passar_for: string[] | null;
   expert_text: string | null;
   betyg_totalt: number | null;
+  // Price fields
+  price_new_from: number | null;
+  price_new_to: number | null;
+  price_used_min: number | null;
+  price_used_max: number | null;
+  price_verified: boolean;
+  price_source: string | null;
 }
 
 type SortKey = 'make' | 'enriched' | 'active';
@@ -242,6 +249,12 @@ interface EditState {
   svagheter: string;
   passar_for: string;
   expert_text: string;
+  price_new_from: string;
+  price_new_to: string;
+  price_used_min: string;
+  price_used_max: string;
+  price_verified: boolean;
+  price_source: string;
 }
 
 function emptyEdit(entry: CatalogEntry): EditState {
@@ -260,6 +273,12 @@ function emptyEdit(entry: CatalogEntry): EditState {
     svagheter: toStr(entry.svagheter),
     passar_for: toStr(entry.passar_for),
     expert_text: entry.expert_text ?? entry.expert_comment ?? '',
+    price_new_from: entry.price_new_from != null ? String(entry.price_new_from) : '',
+    price_new_to: entry.price_new_to != null ? String(entry.price_new_to) : '',
+    price_used_min: entry.price_used_min != null ? String(entry.price_used_min) : '',
+    price_used_max: entry.price_used_max != null ? String(entry.price_used_max) : '',
+    price_verified: entry.price_verified ?? false,
+    price_source: entry.price_source ?? '',
   };
 }
 
@@ -295,7 +314,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
     setLoading(true);
     const { data } = await supabase
       .from('car_catalog')
-      .select('id, make, model, image_url, cleaned_image_url, fuel_types, body_type, segment, rating_overall, expert_comment, seats, is_active, updated_at, kaross, drivmedel, drivlina_kort, styrkor, svagheter, passar_for, expert_text, betyg_totalt')
+      .select('id, make, model, image_url, cleaned_image_url, fuel_types, body_type, segment, rating_overall, expert_comment, seats, is_active, updated_at, kaross, drivmedel, drivlina_kort, styrkor, svagheter, passar_for, expert_text, betyg_totalt, price_new_from, price_new_to, price_used_min, price_used_max, price_verified, price_source')
       .order('make', { ascending: true })
       .order('model', { ascending: true });
     setEntries((data as CatalogEntry[]) ?? []);
@@ -371,6 +390,7 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
     if (!editId || !editState) return;
     setSaving(true);
     const splitList = (s: string) => s.split(';').map(x => x.trim()).filter(Boolean);
+    const toInt = (s: string) => { const n = parseInt(s.replace(/\s/g, '')); return isNaN(n) ? null : n; };
     const payload = {
       fuel_types: editState.fuel_types.length > 0 ? editState.fuel_types : null,
       body_type: editState.body_type || null,
@@ -387,6 +407,13 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
       svagheter: splitList(editState.svagheter).length > 0 ? splitList(editState.svagheter) : null,
       passar_for: splitList(editState.passar_for).length > 0 ? splitList(editState.passar_for) : null,
       expert_text: editState.expert_text || null,
+      price_new_from: toInt(editState.price_new_from),
+      price_new_to: toInt(editState.price_new_to),
+      price_used_min: toInt(editState.price_used_min),
+      price_used_max: toInt(editState.price_used_max),
+      price_verified: editState.price_verified,
+      price_source: editState.price_source || null,
+      price_verified_at: editState.price_verified ? new Date().toISOString() : null,
       updated_at: new Date().toISOString(),
     };
     await supabase.from('car_catalog').update(payload).eq('id', editId);
@@ -714,6 +741,19 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                               Saknar data
                             </span>
                           )}
+                          {entry.price_verified ? (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                              Pris ✓
+                            </span>
+                          ) : (entry.price_new_from || entry.price_used_min) ? (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-600 border border-amber-100">
+                              Pris ej verif.
+                            </span>
+                          ) : (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-50 text-slate-400 border border-slate-200">
+                              Saknar pris
+                            </span>
+                          )}
                         </div>
                       </td>
 
@@ -1007,6 +1047,84 @@ export default function AdminCarCatalog({ onBack, onImport }: AdminCarCatalogPro
                                 className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 focus:outline-none focus:border-[#0e6efe] focus:ring-2 focus:ring-[#0e6efe]/10 transition resize-none placeholder:text-slate-400"
                               />
                             </div>
+                          </div>
+
+                          {/* Price fields */}
+                          <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 mb-3">
+                            <div className="flex items-center justify-between mb-3">
+                              <p className="text-[11px] font-semibold text-slate-700 uppercase tracking-wide">Priser (SEK)</p>
+                              <label className="flex items-center gap-2 cursor-pointer">
+                                <span className={`text-xs font-semibold ${editState.price_verified ? 'text-emerald-600' : 'text-amber-600'}`}>
+                                  {editState.price_verified ? 'Verifierat' : 'Ej verifierat'}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => editState && setEditState({ ...editState, price_verified: !editState.price_verified })}
+                                  className={`relative w-9 h-5 rounded-full transition-colors ${editState.price_verified ? 'bg-emerald-500' : 'bg-slate-200'}`}
+                                >
+                                  <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${editState.price_verified ? 'translate-x-4.5' : 'translate-x-0.5'}`} />
+                                </button>
+                              </label>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                              <div>
+                                <label className="block text-[10px] font-semibold text-slate-500 mb-1">Ny från (kr)</label>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  value={editState.price_new_from}
+                                  onChange={e => editState && setEditState({ ...editState, price_new_from: e.target.value })}
+                                  placeholder="t.ex. 849900"
+                                  className={inputCls}
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-semibold text-slate-500 mb-1">Ny till (kr)</label>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  value={editState.price_new_to}
+                                  onChange={e => editState && setEditState({ ...editState, price_new_to: e.target.value })}
+                                  placeholder="t.ex. 999900"
+                                  className={inputCls}
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-semibold text-slate-500 mb-1">Beg. från (kr)</label>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  value={editState.price_used_min}
+                                  onChange={e => editState && setEditState({ ...editState, price_used_min: e.target.value })}
+                                  placeholder="t.ex. 600000"
+                                  className={inputCls}
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-semibold text-slate-500 mb-1">Beg. till (kr)</label>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  value={editState.price_used_max}
+                                  onChange={e => editState && setEditState({ ...editState, price_used_max: e.target.value })}
+                                  placeholder="t.ex. 750000"
+                                  className={inputCls}
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-semibold text-slate-500 mb-1">Källa (t.ex. kia.com/se, blocket.se median jun-2025)</label>
+                              <input
+                                type="text"
+                                value={editState.price_source}
+                                onChange={e => editState && setEditState({ ...editState, price_source: e.target.value })}
+                                placeholder="Ange var priset hämtades från"
+                                className={inputCls}
+                              />
+                            </div>
+                            {!editState.price_verified && (editState.price_new_from || editState.price_used_min) && (
+                              <p className="text-[10px] text-amber-600 mt-2">Priser är sparade men markerade som <strong>ej verifierade</strong> — de visas med riktvärdesvarning för kunden.</p>
+                            )}
                           </div>
 
                           {/* Image search panel */}

@@ -316,7 +316,7 @@ function PersonaInsightSection({ persona, data }: { persona: Persona; data: Comp
     researcher: {
       title: 'Marknadsjämförelse',
       items: [
-        data.pricing.used_from_sek ? `Begagnad från ${formatPriceSEK(data.pricing.used_from_sek)} – förhandla mot detta` : 'Jämför mot marknadssnittet',
+        data.pricing.used_from_sek ? `Beg. ca ${formatPriceSEK(data.pricing.used_from_sek)} (riktvärde – förhandla)` : 'Jämför mot marknadssnittet',
         `Expertbetyg ${data.ratings.overall}/10 – ${data.ratings.overall >= 8 ? 'toppklass i segmentet' : 'bra alternativ'}`,
         data.ratings.value >= 8 ? 'Högt värdebetyg – priset är rätt' : 'Utrymme att pressa priset',
       ],
@@ -334,7 +334,7 @@ function PersonaInsightSection({ persona, data }: { persona: Persona; data: Comp
       items: [
         `Värdebetyg: ${data.ratings.value}/10`,
         data.specs.fuel_types.includes('el') ? 'El – låg driftskostnad ~1–2 kr/mil' : data.specs.fuel_types.includes('hybrid') ? 'Hybrid – sänker bränslekostnad' : 'Jämför driftskostnad mot alternativ',
-        data.pricing.used_from_sek ? `Begagnad från ${formatPriceSEK(data.pricing.used_from_sek)}` : 'Se marknadsdata för pris',
+        data.pricing.used_from_sek ? `Ca ${formatPriceSEK(data.pricing.used_from_sek)} beg. (riktvärde)` : 'Se marknadsdata för pris',
       ],
     },
   };
@@ -845,21 +845,25 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
         ) : (
           <p className="text-[13px] text-slate-400 italic">Pris ej tillgängligt</p>
         )}
-        {carPrice && usedPrice && (
+        {(carPrice || usedPrice) && (
           <div className="mt-3 pt-3 border-t border-[#0047B3]/10">
-            <div className="flex items-center gap-4">
-              <div>
-                <p className="text-[10px] text-slate-400">Ny från</p>
-                <p className="text-[13px] font-bold text-slate-700 tabular-nums">{formatSEK(carPrice)} kr</p>
-              </div>
-              <div className="w-px h-8 bg-slate-200" />
-              <div>
-                <p className="text-[10px] text-slate-400">Begagnad från</p>
-                <p className="text-[13px] font-bold text-slate-700 tabular-nums">{formatSEK(usedPrice)} kr</p>
-              </div>
+            <div className="flex items-center gap-4 flex-wrap">
+              {carPrice && (
+                <div>
+                  <p className="text-[10px] text-slate-400">Ny från (riktp.)</p>
+                  <p className="text-[13px] font-bold text-slate-700 tabular-nums">{formatSEK(carPrice)} kr</p>
+                </div>
+              )}
+              {carPrice && usedPrice && <div className="w-px h-8 bg-slate-200" />}
+              {usedPrice && (
+                <div>
+                  <p className="text-[10px] text-slate-400">Begagnad från (riktp.)</p>
+                  <p className="text-[13px] font-bold text-slate-700 tabular-nums">{formatSEK(usedPrice)} kr</p>
+                </div>
+              )}
             </div>
-            <p className="text-[10.5px] text-slate-400 mt-2 leading-snug">
-              Faktiska priser varierar beroende på årsmodell, miltal och utrustning
+            <p className="text-[10.5px] text-amber-600 font-medium mt-2 leading-snug">
+              Riktvärden — faktiska priser varierar. Kontakta oss för aktuellt marknadspris.
             </p>
           </div>
         )}
