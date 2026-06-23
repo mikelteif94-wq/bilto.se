@@ -212,11 +212,11 @@ export default function CompactCarCard({
 
       {/* Desktop: vertical layout */}
       <div className="hidden sm:block" onClick={handleCardClick}>
-        <div className="relative aspect-[16/9] bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+        <div className="relative aspect-[16/9] overflow-hidden">
           {imageUrl && (
             <img
               src={imageUrl} alt={name} loading="lazy" decoding="async"
-              className="w-full h-full object-contain p-3 transition-transform duration-500 group-hover:scale-[1.05]"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           )}
