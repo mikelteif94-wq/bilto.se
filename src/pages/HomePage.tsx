@@ -73,6 +73,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
   const [carQuery, setCarQuery] = useState('');
   const [carSuggestions, setCarSuggestions] = useState<{ make: string; model: string }[]>([]);
+  const [allCars, setAllCars] = useState<{ make: string; model: string }[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [carSearchLoading, setCarSearchLoading] = useState(false);
   const carSearchRef = useRef<HTMLDivElement>(null);
@@ -113,21 +114,30 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    supabase.from('car_catalog').select('make, model').order('make').limit(200).then(({ data }) => {
+      setAllCars(data || []);
+    });
+  }, []);
+
   const handleCarQueryChange = (q: string) => {
     setCarQuery(q);
     if (carSearchTimer.current) clearTimeout(carSearchTimer.current);
-    if (!q.trim()) { setCarSuggestions([]); setShowSuggestions(false); return; }
+    if (!q.trim()) {
+      setCarSuggestions(allCars);
+      setShowSuggestions(allCars.length > 0);
+      return;
+    }
     setCarSearchLoading(true);
     carSearchTimer.current = setTimeout(async () => {
-      const { data } = await supabase
-        .from('car_catalog')
-        .select('make, model')
-        .or(`make.ilike.%${q.trim()}%,model.ilike.%${q.trim()}%`)
-        .limit(8);
-      setCarSuggestions(data || []);
+      const lower = q.trim().toLowerCase();
+      const filtered = allCars.filter(
+        (c) => c.make.toLowerCase().includes(lower) || c.model.toLowerCase().includes(lower)
+      );
+      setCarSuggestions(filtered.length > 0 ? filtered : []);
       setShowSuggestions(true);
       setCarSearchLoading(false);
-    }, 250);
+    }, 150);
   };
 
   const handleCarSelect = (make: string, model: string) => {
@@ -356,7 +366,14 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                         type="text"
                         value={carQuery}
                         onChange={(e) => handleCarQueryChange(e.target.value)}
-                        onFocus={() => carQuery.trim() && setShowSuggestions(true)}
+                        onFocus={() => {
+                          if (!carQuery.trim()) {
+                            setCarSuggestions(allCars);
+                            setShowSuggestions(allCars.length > 0);
+                          } else {
+                            setShowSuggestions(true);
+                          }
+                        }}
                         onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
                         placeholder="Sök märke, modell..."
                         className="flex-1 min-w-0 w-0 h-full text-[15px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
@@ -373,39 +390,41 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       </button>
                     </div>
 
-                    {showSuggestions && !carSearchLoading && (
-                      <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-50">
-                        {carSuggestions.length === 0 ? (
-                          <div className="flex items-center gap-3 px-4 py-4 text-[14px] text-slate-400">
-                            <Search className="w-4 h-4 shrink-0" />
-                            <span>Inga träffar för <span className="font-semibold text-slate-600">"{carQuery}"</span></span>
+                        {showSuggestions && !carSearchLoading && (
+                          <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-50 max-h-72 overflow-y-auto">
+                            {carSuggestions.length === 0 ? (
+                              <div className="flex items-center gap-3 px-4 py-4 text-[14px] text-slate-400">
+                                <Search className="w-4 h-4 shrink-0" />
+                                <span>Inga träffar för <span className="font-semibold text-slate-600">"{carQuery}"</span></span>
+                              </div>
+                            ) : (
+                              <>
+                                <div className="px-4 pt-2.5 pb-1">
+                                  <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                                    {carQuery.trim() ? `${carSuggestions.length} träffar` : 'Alla bilar i katalogen'}
+                                  </p>
+                                </div>
+                                {carSuggestions.map((s, i) => (
+                                  <button
+                                    key={i}
+                                    type="button"
+                                    onClick={() => handleCarSelect(s.make, s.model)}
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#faf8f5] transition group border-t border-slate-100 first:border-0"
+                                  >
+                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                                      <Car className="w-3.5 h-3.5 text-slate-500" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <span className="font-semibold text-slate-800 text-[14px]">{s.make} </span>
+                                      <span className="text-slate-500 text-[14px]">{s.model}</span>
+                                    </div>
+                                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 shrink-0 transition" />
+                                  </button>
+                                ))}
+                              </>
+                            )}
                           </div>
-                        ) : (
-                          <>
-                            <div className="px-4 pt-2.5 pb-1">
-                              <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{carSuggestions.length} träffar</p>
-                            </div>
-                            {carSuggestions.map((s, i) => (
-                              <button
-                                key={i}
-                                type="button"
-                                onClick={() => handleCarSelect(s.make, s.model)}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#faf8f5] transition group border-t border-slate-100 first:border-0"
-                              >
-                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
-                                  <Car className="w-3.5 h-3.5 text-slate-500" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <span className="font-semibold text-slate-800 text-[14px]">{s.make} </span>
-                                  <span className="text-slate-500 text-[14px]">{s.model}</span>
-                                </div>
-                                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 shrink-0 transition" />
-                              </button>
-                            ))}
-                          </>
                         )}
-                      </div>
-                    )}
 
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       {['Elbilar', 'SUV', 'Hybrid', 'Familjebil'].map((f) => (
