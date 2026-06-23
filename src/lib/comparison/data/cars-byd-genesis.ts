@@ -5,7 +5,7 @@ export const CARS_BYD_GENESIS: ComparisonCar[] = [
     id: 'byd_atto3', brand_id: 'byd', brand_display: 'BYD', model_display: 'ATTO 3',
     generation: '2022-present', slug: 'byd-atto-3',
     ratings: { overall: 6, driving: 7, comfort: 8, practicality: 8, value: 9 },
-    pricing: { new_to_sek: 449900, used_from_sek: 271600 },
+    pricing: { new_from_sek: 379900, new_to_sek: 449900, used_from_sek: 271600 },
     specs: { body_type: 'suv', fuel_types: ['el'], drivetrain: ['fwd'], seats: 5, trunk_liters: 440, trunk_liters_max: 1338 },
     safety: { euro_ncap_stars: 5, euro_ncap_year: 2022 },
     pros: ['Välutrustad för priset', 'Blade-batteriteknik', 'Rymlig interiör', 'Bra garanti'],
