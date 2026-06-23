@@ -347,6 +347,19 @@ Deno.serve(async (req: Request) => {
       .select("id", { count: "exact", head: true })
       .eq("car_id", car.id);
 
+    // Highest current bid – shown to customer during active auction (no dealer identity)
+    let highestCurrentBid: number | null = null;
+    if (car.status === "aktiv" || car.status === "auktion_avslutad") {
+      const { data: topBid } = await supabase
+        .from("bids")
+        .select("belopp")
+        .eq("car_id", car.id)
+        .order("belopp", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (topBid) highestCurrentBid = topBid.belopp;
+    }
+
     return jsonResp({
       car: {
         id: car.id,
@@ -373,6 +386,7 @@ Deno.serve(async (req: Request) => {
         brokerage_offers: brokerageOffers,
         bid_count: bidCount ?? 0,
         dispatch_count: dispatchCount ?? 0,
+        highest_current_bid: highestCurrentBid,
         activities,
       },
     }, 200);
