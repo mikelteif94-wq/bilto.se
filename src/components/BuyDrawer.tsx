@@ -12,6 +12,7 @@ interface BuyDrawerProps {
   car: string | null;
   initialTrack?: BuyTrack;
   skipIntent?: boolean;
+  skipToContact?: boolean;
   initialAdditionalRequests?: string;
   initialDesiredMonthlyCost?: string;
   fuelTypes?: string[];
@@ -21,7 +22,7 @@ interface BuyDrawerProps {
 
 type FormStep = 'track' | 'carIntent' | 'details' | 'tradeIn' | 'contact' | 'done';
 
-export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditionalRequests, initialDesiredMonthlyCost, fuelTypes, initialReg = '', onClose }: BuyDrawerProps) {
+export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact, initialAdditionalRequests, initialDesiredMonthlyCost, fuelTypes, initialReg = '', onClose }: BuyDrawerProps) {
   const open = car !== null;
   // When initialTrack is 'searching', car is a pre-filled target (possibly multiple), not a specific single car
   const isSearchingWithPrefill = (initialTrack === 'searching' || skipIntent) && !!car;
@@ -30,7 +31,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
 
   const [track, setTrack] = useState<BuyTrack>(initialTrack || 'found');
   const [step, setStep] = useState<FormStep>(
-    skipIntent ? 'details' : isSearchingWithPrefill ? 'details' : hasSpecificCar ? 'carIntent' : skipTrack ? 'details' : 'track'
+    skipToContact ? 'contact' : skipIntent ? 'details' : isSearchingWithPrefill ? 'details' : hasSpecificCar ? 'carIntent' : skipTrack ? 'details' : 'track'
   );
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -105,7 +106,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
       const resolvedTrack = initialTrack || 'found';
       const searchingPrefill = (resolvedTrack === 'searching' || skipIntent) && !!car;
       setTrack(resolvedTrack);
-      setStep(skipIntent ? 'details' : searchingPrefill ? 'details' : car ? 'carIntent' : initialTrack ? 'details' : 'track');
+      setStep(skipToContact ? 'contact' : skipIntent ? 'details' : searchingPrefill ? 'details' : car ? 'carIntent' : initialTrack ? 'details' : 'track');
       setError(null);
       trackEvent('drawer_opened', { track: resolvedTrack });
       setDetails({
@@ -151,6 +152,9 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
   }, [open]);
 
   const buildStepFlow = (): FormStep[] => {
+    if (skipToContact) {
+      return ['contact'];
+    }
     if (isSearchingWithPrefill) {
       return ['details', 'tradeIn', 'contact'];
     }
@@ -180,7 +184,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, initialAdditi
       : track === 'searching' ? 'Berätta vad du söker'
       : 'Berätta om bilen',
     tradeIn: 'Inbytesbil',
-    contact: 'Dina uppgifter',
+    contact: skipToContact ? `Boka konsultation – ${car}` : 'Dina uppgifter',
     done: 'Tack!',
   };
 
