@@ -108,11 +108,11 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
   ];
   return (
     <div>
-      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Uppskattad total ägarkostnad / mån</p>
+      <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Uppskattad total ägarkostnad / mån</p>
       <p className="text-[26px] font-extrabold text-slate-900 tabular-nums leading-none">
         ~{fmt(total)}<span className="text-[14px] font-semibold text-slate-400 ml-1.5">kr/mån</span>
       </p>
-      <p className="text-[10.5px] text-slate-400 mt-1 mb-3">Inkl. finansiering (lån 60 mån) · bränsle/el (1 500 mil/år) · helförsäkring · service · fordonsskatt – <span className="italic">ungefärliga riktvärden</span></p>
+      <p className="text-[11px] text-slate-500 mt-1 mb-3">Inkl. finansiering (lån 60 mån) · bränsle/el (1 500 mil/år) · helförsäkring · service · fordonsskatt – <span className="italic">ungefärliga riktvärden</span></p>
       <div className="relative h-3 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
         <motion.div
           className="absolute left-0 top-0 h-full rounded-xl"
@@ -123,9 +123,9 @@ function OwnershipMeter({ tco }: { tco: TCOBreakdown }) {
         />
       </div>
       <div className="flex justify-between mt-1.5 mb-3">
-        <span className="text-[9px] text-slate-400">Billig att äga</span>
-        <span className="text-[10px] font-bold" style={{ color: activeColor }}>{label}</span>
-        <span className="text-[9px] text-slate-400">Dyr att äga</span>
+        <span className="text-[10px] text-slate-500">Billig att äga</span>
+        <span className="text-[11px] font-bold" style={{ color: activeColor }}>{label}</span>
+        <span className="text-[10px] text-slate-500">Dyr att äga</span>
       </div>
       <button
         type="button"
@@ -237,7 +237,7 @@ function MonthlyCostBlock({
   return (
     <div>
       <div className="flex items-center gap-1.5 mb-1">
-        <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Uppskattad månadskostnad</p>
+        <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Uppskattad månadskostnad</p>
         <div className="relative">
           <button type="button" onClick={() => setShowTooltip(v => !v)} className="text-slate-300 hover:text-slate-500 transition-colors">
             <HelpCircle className="w-3 h-3" />
@@ -261,8 +261,8 @@ function SpecPill({ icon: Icon, label, value, highlight }: { icon: typeof Car; l
         <Icon className={`w-3.5 h-3.5 ${highlight ? 'text-emerald-700' : 'text-slate-400'}`} />
       </div>
       <div className="min-w-0">
-        <p className="text-[10px] text-slate-400 leading-none mb-0.5">{label}</p>
-        <p className={`text-[12px] font-semibold leading-tight truncate ${highlight ? 'text-emerald-700' : 'text-slate-800'}`}>{value}</p>
+        <p className="text-[11px] text-slate-500 leading-none mb-0.5">{label}</p>
+        <p className={`text-[13px] font-semibold leading-tight truncate ${highlight ? 'text-emerald-700' : 'text-slate-800'}`}>{value}</p>
       </div>
     </div>
   );
@@ -634,7 +634,7 @@ function HowItWorksStrip() {
   return (
     <div className="rounded-xl border border-slate-100 bg-[#faf8f5] overflow-hidden">
       <div className="px-4 pt-3.5 pb-1">
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Så fungerar det</p>
+        <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Så fungerar det</p>
       </div>
       <div className="divide-y divide-slate-100">
         {steps.map((s, i) => (
@@ -644,7 +644,7 @@ function HowItWorksStrip() {
             </div>
             <div className="min-w-0">
               <p className="text-[12px] font-semibold text-slate-800">{i + 1}. {s.label}</p>
-              <p className="text-[11px] text-slate-400 leading-snug mt-0.5">{s.desc}</p>
+              <p className="text-[12px] text-slate-500 leading-snug mt-0.5">{s.desc}</p>
             </div>
           </div>
         ))}
@@ -819,7 +819,7 @@ function LoadingSkeleton() {
 
 // ─── Section title ─────────────────────────────────────────────────────────────
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">{children}</h3>;
+  return <h3 className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3">{children}</h3>;
 }
 
 // ─── Comparison content ───────────────────────────────────────────────────────
