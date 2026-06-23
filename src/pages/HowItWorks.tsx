@@ -764,11 +764,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         <ElCarCard
                           key={car.id}
                           name={`${car.brand_display} ${car.model_display}`}
+                          make={car.brand_display}
                           imageUrl={imageUrl}
                           rating={car.ratings.overall}
                           topBadge={i === 0}
                           pros={car.pros}
                           fuelLabel={fuelLabelStr}
+                          fuelTypes={car.specs.fuel_types}
                           bodyType={car.specs.body_type}
                           drivetrain={car.specs.drivetrain}
                           seats={car.specs.seats}
@@ -785,11 +787,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       <CompactCarCard
                         key={car.id}
                         name={`${car.brand_display} ${car.model_display}`}
+                        make={car.brand_display}
                         imageUrl={imageUrl}
                         rating={car.ratings.overall}
                         topBadge={i === 0 && activeBudgetPill === null}
                         expertComment={car.pros[0]}
                         fuelLabel={fuelLabelStr}
+                        fuelTypes={car.specs.fuel_types}
                         carPrice={car.pricing.new_from_sek ?? undefined}
                         usedPrice={car.pricing.used_from_sek ?? undefined}
                         cardMode={cardMode}

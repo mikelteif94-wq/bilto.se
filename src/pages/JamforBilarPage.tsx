@@ -463,9 +463,11 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
                   <CompactCarCard
                     key={c.id}
                     name={`${c.brand_display} ${c.model_display}`}
+                    make={c.brand_display}
                     imageUrl={imgUrl}
                     rating={c.ratings.overall}
                     fuelLabel={fuelLabel}
+                    fuelTypes={c.specs.fuel_types}
                     bodyType={c.specs.body_type}
                     drivetrain={c.specs.drivetrain}
                     seats={c.specs.seats}
