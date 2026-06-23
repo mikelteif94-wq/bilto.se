@@ -130,13 +130,13 @@ function RatingBar({ label, value, icon: Icon }: { label: string; value: number;
 // ─── Spec pill ────────────────────────────────────────────────────────────────
 function SpecPill({ icon: Icon, label, value, highlight }: { icon: typeof Car; label: string; value: string; highlight?: boolean }) {
   return (
-    <div className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border ${highlight ? 'bg-emerald-50 border-emerald-100' : 'bg-[#faf8f5] border-slate-100'}`}>
-      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${highlight ? 'bg-emerald-100' : 'bg-white border border-slate-200'}`}>
-        <Icon className={`w-3.5 h-3.5 ${highlight ? 'text-emerald-700' : 'text-slate-400'}`} />
+    <div className={`flex items-center gap-3 px-3.5 py-3 rounded-2xl border ${highlight ? 'bg-emerald-50 border-emerald-100' : 'bg-white border-slate-100'}`}>
+      <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${highlight ? 'bg-emerald-100' : 'bg-slate-50'}`}>
+        <Icon className={`w-4 h-4 ${highlight ? 'text-emerald-600' : 'text-slate-500'}`} />
       </div>
-      <div className="min-w-0">
-        <p className="text-[11px] text-slate-500 leading-none mb-0.5">{label}</p>
-        <p className={`text-[13px] font-semibold leading-tight truncate ${highlight ? 'text-emerald-700' : 'text-slate-800'}`}>{value}</p>
+      <div className="min-w-0 flex-1">
+        <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wide leading-none mb-1">{label}</p>
+        <p className={`text-[13px] font-bold leading-tight truncate ${highlight ? 'text-emerald-700' : 'text-slate-800'}`}>{value}</p>
       </div>
     </div>
   );
@@ -736,7 +736,7 @@ function ComparisonContent({ data, persona, onSelect, onFitQuiz, carName }: { da
       </div>
 
       {/* ── Specs grid ── */}
-      <section>
+      <section className="rounded-2xl bg-[#faf8f5] border border-slate-100 p-3">
         <SectionTitle>Specifikationer</SectionTitle>
         <div className="grid grid-cols-2 gap-2">
           <SpecPill icon={Car} label="Kaross" value={getBodyLabel(data.specs.body_type)} />
