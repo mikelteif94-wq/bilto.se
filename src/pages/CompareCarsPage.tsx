@@ -1810,6 +1810,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     <ElCarCard
                       key={car.id}
                       name={`${car.make} ${car.model}`}
+                      make={car.make}
                       imageUrl={imgUrl}
                       rating={rating}
                       topBadge={i < 3}
@@ -1817,6 +1818,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       carPrice={car.price_new_from ?? undefined}
                       usedPrice={car.price_used_from ?? undefined}
                       fuelLabel={fuelLabel}
+                      fuelTypes={car.fuel_types ?? []}
                       bodyType={compCar?.specs.body_type}
                       drivetrain={compCar?.specs.drivetrain}
                       seats={compCar?.specs.seats}
@@ -1836,11 +1838,13 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   <CompactCarCard
                     key={car.id}
                     name={`${car.make} ${car.model}`}
+                    make={car.make}
                     imageUrl={imgUrl}
                     rating={rating}
                     topBadge={i < 3 && activeCategory === 'popular'}
                     expertComment={car.expert_comment ?? undefined}
                     fuelLabel={fuelLabel}
+                    fuelTypes={car.fuel_types ?? []}
                     bodyType={compCar?.specs.body_type}
                     drivetrain={compCar?.specs.drivetrain}
                     seats={compCar?.specs.seats}
@@ -2237,8 +2241,10 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                                 {car.specs.fuel_types.includes('el') ? (
                                   <ElCarCard
                                     name={`${car.brand_display} ${car.model_display}`}
+                                    make={car.brand_display}
                                     imageUrl={imgUrl}
                                     rating={car.ratings.overall}
+                                    fuelTypes={car.specs.fuel_types}
                                     pros={car.pros}
                                     bodyType={car.specs.body_type}
                                     drivetrain={car.specs.drivetrain}
@@ -2253,9 +2259,11 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                                 ) : (
                                   <CompactCarCard
                                     name={`${car.brand_display} ${car.model_display}`}
+                                    make={car.brand_display}
                                     imageUrl={imgUrl}
                                     rating={car.ratings.overall}
                                     fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
+                                    fuelTypes={car.specs.fuel_types}
                                     bodyType={car.specs.body_type}
                                     drivetrain={car.specs.drivetrain}
                                     seats={car.specs.seats}
