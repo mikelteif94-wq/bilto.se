@@ -441,9 +441,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               Gratis värdering • Fri upphämtning • Pengar direkt på kontot
             </p>
 
-            <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
+            <div className="bg-white rounded-xl shadow-2xl overflow-visible">
               {/* Tab strip */}
-              <div className="flex border-b border-slate-100">
+              <div className="flex border-b border-slate-100 rounded-t-xl overflow-hidden">
                 {(['salj', 'hitta'] as const).map((t) => (
                   <button
                     key={t}
@@ -459,7 +459,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 ))}
               </div>
 
-              <div className="px-5 pb-5 pt-4">
+              <div className="px-5 pb-5 pt-4 rounded-b-xl bg-white">
                 {heroTab === 'salj' ? (
                   <>
                     <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
