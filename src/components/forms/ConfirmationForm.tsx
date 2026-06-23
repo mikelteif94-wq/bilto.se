@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home, Repeat, CalendarClock } from 'lucide-react';
+import { ArrowRight, Check, Loader2, Gavel, Phone, Clock, Mail, Home, Repeat, CalendarClock, ShoppingCart } from 'lucide-react';
 import { CustomerData, CarData, ImageFile } from '../../pages/SellCarPage';
 import type { TradeInData } from './CarConditionStep';
 import { supabase } from '../../lib/supabase';
@@ -46,6 +46,7 @@ export default function ConfirmationForm({
   const [stage, setStage] = useState<UploadStage>('idle');
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [savedToken, setSavedToken] = useState<string>('');
+  const [savedQuoteToken, setSavedQuoteToken] = useState<string>('');
   const [dealReadiness, setDealReadiness] = useState<DealReadiness>('');
 
   const submitting = stage !== 'idle' && stage !== 'done';
@@ -210,6 +211,36 @@ export default function ConfirmationForm({
 
     setSavedToken(accessToken);
     setStage('done');
+
+    // Auto-create a linked buy quote_request if customer chose trade-in
+    if (tradeDetails) {
+      const targetCar = [tradeDetails.carBrand, tradeDetails.carModel].filter(Boolean).join(' ') || tradeDetails.targetCar || '';
+      const quoteToken = generateToken();
+      setSavedQuoteToken(quoteToken);
+      void supabase.from('quote_requests').insert([{
+        firstname: customer.namn.trim().split(/\s+/)[0] ?? customer.namn,
+        lastname: customer.namn.trim().split(/\s+/).slice(1).join(' ') ?? '',
+        email: customer.mejl,
+        phone: customer.telefon,
+        search_option: 'trade',
+        car_model: targetCar,
+        budget: tradeDetails.carPrice ? `${tradeDetails.carPrice} kr` : '',
+        payment_type: tradeDetails.paymentType ?? '',
+        regnummer: car.regnummer.toUpperCase(),
+        miltal: car.miltal,
+        status: 'new',
+        source: 'sell-flow-trade-in',
+        access_token: quoteToken,
+        access_token_created_at: new Date().toISOString(),
+        linked_sell_car_id: carId,
+      } as never]).then(() => {
+        void fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-quote-request`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ quote_token: quoteToken, source: 'sell-flow-trade-in' }),
+        }).catch(() => {});
+      });
+    }
   };
 
   function generateToken(): string {
@@ -338,12 +369,33 @@ export default function ConfirmationForm({
         {trackUrl && (
           <div className="bg-[#0e6efe]/5 border border-[#0e6efe]/20 rounded-xl px-4 py-4 flex items-center justify-between gap-3 mb-4">
             <div className="min-w-0">
-              <p className="text-[13px] font-semibold text-slate-800">Din personliga portal</p>
+              <p className="text-[13px] font-semibold text-slate-800">Din personliga portal – försäljning</p>
               <p className="text-[12px] text-slate-500 mt-0.5 truncate">{trackUrl}</p>
             </div>
             <a
               href={trackUrl}
               className="shrink-0 inline-flex items-center gap-1.5 h-9 px-4 bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[12.5px] rounded-xl transition whitespace-nowrap"
+            >
+              Öppna
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.2} />
+            </a>
+          </div>
+        )}
+
+        {savedQuoteToken && (
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-4 flex items-center justify-between gap-3 mb-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+                <ShoppingCart className="w-4 h-4 text-emerald-700" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[13px] font-semibold text-slate-800">Din portal – bilsökning</p>
+                <p className="text-[12px] text-slate-500 mt-0.5">Vi söker din nästa bil parallellt</p>
+              </div>
+            </div>
+            <a
+              href={`/min-forfragan/${savedQuoteToken}`}
+              className="shrink-0 inline-flex items-center gap-1.5 h-9 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[12.5px] rounded-xl transition whitespace-nowrap"
             >
               Öppna
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.2} />

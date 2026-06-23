@@ -73,6 +73,7 @@ interface CarResponse {
   winning_bid: { belopp: number; foretagsnamn: string } | null;
   bid_count: number;
   dispatch_count: number;
+  highest_bid_amount: number | null;
   activities: ActivityItem[];
 }
 
@@ -274,6 +275,8 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
         <CustomerLiveFeed
           bidCount={car.bid_count ?? 0}
           dispatchCount={car.dispatch_count ?? 0}
+          highestBidAmount={car.highest_bid_amount ?? null}
+          carStatus={car.status}
           activities={car.activities ?? []}
           carCreatedAt={car.created_at}
         />
@@ -401,15 +404,20 @@ const ACTIVITY_ICONS: Record<string, string> = {
 function CustomerLiveFeed({
   bidCount,
   dispatchCount,
+  highestBidAmount,
+  carStatus,
   activities,
   carCreatedAt,
 }: {
   bidCount: number;
   dispatchCount: number;
+  highestBidAmount: number | null;
+  carStatus: string;
   activities: ActivityItem[];
   carCreatedAt: string;
 }) {
   const hasActivity = bidCount > 0 || dispatchCount > 0 || activities.length > 0;
+  const showBidStats = carStatus === 'aktiv' || carStatus === 'auktion_avslutad';
 
   return (
     <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
@@ -425,21 +433,26 @@ function CustomerLiveFeed({
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-3 divide-x divide-slate-100 border-b border-slate-100">
+      <div className={`grid divide-x divide-slate-100 border-b border-slate-100 ${showBidStats && highestBidAmount ? 'grid-cols-3' : 'grid-cols-3'}`}>
         <div className="px-4 py-3 text-center">
           <p className="text-xl font-bold text-slate-900">{bidCount}</p>
-          <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-            {bidCount === 1 ? 'Bud' : 'Bud'}
-          </p>
+          <p className="text-[11px] text-slate-500 font-medium mt-0.5">Bud</p>
         </div>
         <div className="px-4 py-3 text-center">
           <p className="text-xl font-bold text-slate-900">{dispatchCount}</p>
           <p className="text-[11px] text-slate-500 font-medium mt-0.5">Handlare kontaktade</p>
         </div>
-        <div className="px-4 py-3 text-center">
-          <p className="text-xl font-bold text-slate-900">{activities.length}</p>
-          <p className="text-[11px] text-slate-500 font-medium mt-0.5">Händelser</p>
-        </div>
+        {showBidStats && highestBidAmount ? (
+          <div className="px-4 py-3 text-center bg-teal-50">
+            <p className="text-xl font-bold text-teal-700">{formatKr(highestBidAmount)} kr</p>
+            <p className="text-[11px] text-teal-600 font-medium mt-0.5">Högsta bud just nu</p>
+          </div>
+        ) : (
+          <div className="px-4 py-3 text-center">
+            <p className="text-xl font-bold text-slate-900">{activities.length}</p>
+            <p className="text-[11px] text-slate-500 font-medium mt-0.5">Händelser</p>
+          </div>
+        )}
       </div>
 
       {/* Timeline */}
