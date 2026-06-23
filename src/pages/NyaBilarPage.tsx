@@ -186,62 +186,87 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
       </header>
 
       {/* Hero */}
-      <section className="relative bg-[#f5f3ef] overflow-hidden">
+      <section
+        className="relative overflow-hidden"
+        style={{ background: 'linear-gradient(160deg, #060e1e 0%, #0a1628 60%, #0e1f3a 100%)' }}
+      >
+        {/* Blue glow */}
+        <div
+          aria-hidden
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse, rgba(14,110,254,0.18) 0%, transparent 70%)' }}
+        />
+        {/* Subtle top accent line */}
+        <div
+          aria-hidden
+          className="absolute top-0 inset-x-0 h-[2px] pointer-events-none"
+          style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(14,110,254,0.7) 40%, rgba(56,189,248,0.5) 60%, transparent 100%)' }}
+        />
+
         {/* Faint car imagery on sides */}
         <div
           aria-hidden
-          className="absolute inset-y-0 left-0 w-64 md:w-80 opacity-[0.08] pointer-events-none"
-          style={{ maskImage: 'linear-gradient(to right, transparent, black)' }}
+          className="absolute inset-y-0 left-0 w-64 md:w-96 opacity-[0.07] pointer-events-none"
+          style={{ maskImage: 'linear-gradient(to right, transparent 10%, black 60%, transparent 100%)' }}
         >
           <img src="/getImage_(1).webp" alt="" className="w-full h-full object-cover object-right" />
         </div>
         <div
           aria-hidden
-          className="absolute inset-y-0 right-0 w-64 md:w-80 opacity-[0.08] pointer-events-none"
-          style={{ maskImage: 'linear-gradient(to left, transparent, black)' }}
+          className="absolute inset-y-0 right-0 w-64 md:w-96 opacity-[0.07] pointer-events-none"
+          style={{ maskImage: 'linear-gradient(to left, transparent 10%, black 60%, transparent 100%)' }}
         >
           <img src="/getImage_(2).webp" alt="" className="w-full h-full object-cover object-left scale-x-[-1]" />
         </div>
 
         <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 py-16 md:py-24 text-center">
-          <div className="inline-flex items-center gap-2 bg-black/90 text-white text-[11px] font-bold px-3.5 py-1.5 rounded-full mb-6 uppercase tracking-widest">
+          <div
+            className="inline-flex items-center gap-2 text-[11px] font-bold px-3.5 py-1.5 rounded-full mb-6 uppercase tracking-widest"
+            style={{ background: 'rgba(14,110,254,0.18)', border: '1px solid rgba(14,110,254,0.35)', color: '#60a5fa' }}
+          >
             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
             Biltos bästa erbjudanden 2025
           </div>
 
-          <h1 className="text-[clamp(3.2rem,11vw,7.5rem)] font-black leading-[0.92] tracking-tighter text-slate-950 uppercase mb-5">
+          <h1 className="text-[clamp(3.2rem,11vw,7.5rem)] font-black leading-[0.92] tracking-tighter uppercase mb-5 text-white">
             Bästa
             <br />
-            <span className="text-slate-700">Bilaffärerna</span>
+            <span style={{ color: '#0e6efe' }}>Bilaffärerna</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-600 max-w-lg mx-auto leading-relaxed mb-8">
+          <p className="text-lg md:text-xl max-w-lg mx-auto leading-relaxed mb-8" style={{ color: 'rgba(255,255,255,0.65)' }}>
             Hitta din nästa bil och låt Biltos experter förhandla fram marknadens bästa pris – helt gratis.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
             <button
               onClick={() => onNavigateBuy()}
-              className="h-12 px-8 bg-black text-white font-semibold rounded-xl hover:bg-slate-800 transition-all text-sm shadow-sm hover:shadow-md"
+              className="h-12 px-8 font-semibold rounded-xl transition-all text-sm text-white"
+              style={{ background: '#0e6efe' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#0d5fe0')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#0e6efe')}
             >
               Välj en bil
             </button>
             <button
               onClick={onNavigateConsultation}
-              className="h-12 px-8 bg-white text-slate-900 font-semibold rounded-xl border border-slate-300 hover:border-slate-400 hover:bg-slate-50 transition-all text-sm"
+              className="h-12 px-8 font-semibold rounded-xl transition-all text-sm"
+              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.85)' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.12)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.07)')}
             >
               Vet du inte vad du vill ha?
             </button>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-500">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>
             {[
               'Kostnadsfritt för dig',
               'Sparar i snitt 42\u00a0000 kr',
               'Ingen bindningstid',
             ].map(t => (
               <span key={t} className="flex items-center gap-1.5">
-                <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                <CheckCircle className="w-4 h-4 shrink-0" style={{ color: '#0e6efe' }} />
                 {t}
               </span>
             ))}
