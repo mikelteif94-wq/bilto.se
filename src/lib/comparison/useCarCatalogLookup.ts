@@ -185,6 +185,11 @@ export function useCarCatalogLookup(make: string, model: string): {
           const merged: ComparisonCar = {
             ...mapped,
             pricing: pricingOverride,
+            specs: local?.specs ? {
+              ...mapped.specs,
+              fuel_types: local.specs.fuel_types ?? mapped.specs.fuel_types,
+              drivetrain: local.specs.drivetrain ?? mapped.specs.drivetrain,
+            } : mapped.specs,
             ...(local?.ev_specs ? { ev_specs: local.ev_specs } : {}),
           };
           setData(merged);
