@@ -1036,11 +1036,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             >
               Sälj bil
             </button>
-            <a href="/sa-funkar-det"
-              className="text-[15px] text-white/70 hover:text-white transition font-medium"
-            >
-              Så funkar det
-            </a>
           </nav>
           <div className="flex items-center ml-auto">
             <a href="/gratis-konsultation" className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
