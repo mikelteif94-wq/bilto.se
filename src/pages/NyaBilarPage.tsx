@@ -324,6 +324,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
                         src={img}
                         alt={`${fd.make} ${fd.model}`}
                         className="w-full max-w-md object-contain"
+                        style={{ mixBlendMode: 'multiply' }}
                         loading="lazy"
                       />
                     ) : (
@@ -436,6 +437,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
                           src={img}
                           alt={`${car.make} ${car.model}`}
                           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                          style={{ mixBlendMode: 'multiply' }}
                           loading="lazy"
                         />
                       ) : (
