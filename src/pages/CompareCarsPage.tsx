@@ -1978,20 +1978,20 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           className="absolute inset-0 w-full h-full object-cover object-center opacity-30"
           aria-hidden="true"
         />
-        <div className="relative max-w-4xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-10 sm:py-24">
           <div className="max-w-xl">
-            <span className="inline-flex items-center gap-2 text-[11px] font-bold text-white/60 uppercase tracking-[0.18em] mb-5">
+            <span className="inline-flex items-center gap-2 text-[11px] font-bold text-white/60 uppercase tracking-[0.18em] mb-4 sm:mb-5">
               <ArrowLeftRight className="w-3.5 h-3.5" />
               Byta bil
             </span>
-            <h2 className="text-[36px] sm:text-[52px] font-bold text-white leading-[1.05] tracking-tight mb-4">
+            <h2 className="text-[30px] sm:text-[52px] font-bold text-white leading-[1.05] tracking-tight mb-3 sm:mb-4">
               Bilbyte?<br className="sm:hidden" /> Bilto.
             </h2>
-            <p className="text-white/70 text-[15px] sm:text-[17px] leading-relaxed mb-8 max-w-md">
+            <p className="text-white/70 text-[14px] sm:text-[17px] leading-relaxed mb-6 sm:mb-8 max-w-md">
               Ange registreringsnumret på din nuvarande bil. Vi hjälper dig förhandla bästa möjliga värde och hitta din nästa.
             </p>
 
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-5 sm:p-6 max-w-md">
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 sm:p-6 max-w-md">
               <p className="text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-3">
                 Din nuvarande bil
               </p>
@@ -2018,7 +2018,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               </button>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-5 sm:mt-6 flex flex-col xs:flex-row flex-wrap gap-2 sm:gap-3">
               <button
                 type="button"
                 onClick={scrollToQuiz}
