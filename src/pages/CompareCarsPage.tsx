@@ -1068,10 +1068,10 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       {/* Hero */}
       <section className="pt-28 sm:pt-36 pb-0 px-5 sm:px-6 relative overflow-hidden">
         <img
-          src="/BSM_car_sale_key_woman_handover_101122.jpg"
+          src="/hero/image.png"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-[50%_40%] pointer-events-none select-none"
+          className="absolute inset-0 w-full h-full object-cover object-[50%_30%] pointer-events-none select-none"
           fetchPriority="high"
           decoding="async"
         />
