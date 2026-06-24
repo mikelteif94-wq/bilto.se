@@ -504,6 +504,27 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                       </p>
                     </div>
                   </button>
+
+                  <div className="mt-2 pt-4 border-t border-slate-100">
+                    <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Hur går det till?</p>
+                    <div className="space-y-2.5">
+                      {[
+                        { n: '1', title: 'Välj vad du behöver', desc: 'Berätta om din situation — hittat bil, letar, eller inbyte.' },
+                        { n: '2', title: 'Vi tar kontakt', desc: 'En bilexpert hör av sig och vi lägger upp en plan.' },
+                        { n: '3', title: 'Vi sköter det åt dig', desc: 'Förhandling, koll av bilen och hela köpprocessen.' },
+                      ].map(item => (
+                        <div key={item.n} className="flex items-start gap-3">
+                          <div className="w-6 h-6 rounded-lg bg-[#0e6efe]/8 flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-[11px] font-bold text-[#0e6efe]">{item.n}</span>
+                          </div>
+                          <div>
+                            <div className="text-[13px] font-semibold text-slate-800 leading-snug">{item.title}</div>
+                            <div className="text-[12px] text-slate-500 mt-0.5 leading-snug">{item.desc}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
 
