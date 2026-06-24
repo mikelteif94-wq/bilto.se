@@ -337,6 +337,17 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
             brandError={errors.carBrand}
           />
         )}
+        {!lockedCar && (
+          <div className="mt-3">
+            <textarea
+              value={d.additionalRequests}
+              onChange={e => set('additionalRequests', e.target.value)}
+              placeholder="Hittade du inte bilen? Beskriv önskemål eller utrustning..."
+              rows={2}
+              className="form-control resize-none text-[13px] sm:text-[14px]"
+            />
+          </div>
+        )}
       </div>
 
       {carCondition === 'begagnad' && (
