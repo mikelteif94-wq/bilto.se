@@ -1061,34 +1061,32 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   <button
                     type="button"
                     onClick={onExplore}
-                    className="group relative flex items-center gap-3.5 p-4 rounded-xl bg-white border border-slate-200 hover:border-[#0e6efe]/50 hover:shadow-lg hover:shadow-[#0e6efe]/8 active:scale-[0.98] transition-all duration-200 text-left overflow-hidden"
+                    className="group relative flex items-center gap-4 p-4 rounded-2xl bg-[#0e6efe]/[0.06] border border-[#0e6efe]/15 hover:bg-[#0e6efe]/[0.10] hover:border-[#0e6efe]/30 active:scale-[0.98] transition-all duration-150 text-left min-h-[72px]"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#0e6efe]/0 to-[#0e6efe]/0 group-hover:from-[#0e6efe]/[0.03] group-hover:to-[#0e6efe]/[0.06] transition-all duration-300 rounded-xl" />
-                    <div className="w-11 h-11 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/18 flex items-center justify-center shrink-0 transition-colors duration-200 relative">
-                      <Search className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
+                    <div className="w-12 h-12 rounded-xl bg-[#0e6efe] flex items-center justify-center shrink-0 shadow-md shadow-[#0e6efe]/30">
+                      <Search className="w-5 h-5 text-white" strokeWidth={2.2} />
                     </div>
-                    <div className="min-w-0 flex-1 relative">
+                    <div className="min-w-0 flex-1">
                       <p className="text-[14px] font-bold text-slate-900 leading-tight">Utforska och jämför bilar</p>
-                      <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">Se spec och priser sida vid sida</p>
+                      <p className="text-[12px] text-slate-500 mt-0.5 leading-snug">Se spec och priser sida vid sida</p>
                     </div>
-                    <ChevronDown className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] -rotate-90 shrink-0 transition-colors duration-200 relative" />
+                    <ChevronDown className="w-4 h-4 text-[#0e6efe] -rotate-90 shrink-0 opacity-60" />
                   </button>
                 )}
                 {onQuiz && (
                   <button
                     type="button"
                     onClick={onQuiz}
-                    className="group relative flex items-center gap-3.5 p-4 rounded-xl bg-white border border-slate-200 hover:border-amber-300/60 hover:shadow-lg hover:shadow-amber-500/8 active:scale-[0.98] transition-all duration-200 text-left overflow-hidden"
+                    className="group relative flex items-center gap-4 p-4 rounded-2xl bg-amber-50 border border-amber-200/70 hover:bg-amber-100/80 hover:border-amber-300 active:scale-[0.98] transition-all duration-150 text-left min-h-[72px]"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-50/0 to-amber-50/0 group-hover:from-amber-50 group-hover:to-amber-50/60 transition-all duration-300 rounded-xl" />
-                    <div className="w-11 h-11 rounded-xl bg-amber-50 group-hover:bg-amber-100 flex items-center justify-center shrink-0 transition-colors duration-200 relative">
-                      <Sparkles className="w-5 h-5 text-amber-500" strokeWidth={2} />
+                    <div className="w-12 h-12 rounded-xl bg-amber-400 flex items-center justify-center shrink-0 shadow-md shadow-amber-400/30">
+                      <Sparkles className="w-5 h-5 text-white" strokeWidth={2.2} />
                     </div>
-                    <div className="min-w-0 flex-1 relative">
+                    <div className="min-w-0 flex-1">
                       <p className="text-[14px] font-bold text-slate-900 leading-tight">Testa bilmatch</p>
-                      <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">Hitta rätt modell på 2 minuter</p>
+                      <p className="text-[12px] text-slate-500 mt-0.5 leading-snug">Hitta rätt modell på 2 minuter</p>
                     </div>
-                    <ChevronDown className="w-4 h-4 text-slate-300 group-hover:text-amber-400 -rotate-90 shrink-0 transition-colors duration-200 relative" />
+                    <ChevronDown className="w-4 h-4 text-amber-400 -rotate-90 shrink-0 opacity-70" />
                   </button>
                 )}
               </div>
