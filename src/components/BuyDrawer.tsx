@@ -513,6 +513,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                   initialBil={car ?? ''}
                   lockedCar={hasSpecificCar ? car! : isSearchingWithPrefill ? car! : undefined}
                   knownFuelTypes={fuelTypes}
+                  carCondition={carCondition}
                   onNext={(data) => {
                     setDetails(data);
                     goNext();

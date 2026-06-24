@@ -56,6 +56,7 @@ interface BuyDetailsStepProps {
   initialBil?: string;
   lockedCar?: string;
   knownFuelTypes?: string[];
+  carCondition?: 'ny' | 'begagnad' | null;
   onNext: (data: BuyDetailsData) => void;
   onExplore?: () => void;
   onQuiz?: () => void;
@@ -287,7 +288,7 @@ function LinkField({
   );
 }
 
-function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void; hideFuel?: boolean; autoFuel?: string }) {
+function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void; hideFuel?: boolean; autoFuel?: string; carCondition?: 'ny' | 'begagnad' | null }) {
   const [d, setD] = useState<BuyDetailsData>({ ...initialData, fuelType: autoFuel || initialData.fuelType || '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -328,6 +329,45 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initialD
           brandError={errors.carBrand}
         />
       </div>
+
+      {carCondition === 'begagnad' && (
+        <>
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Årsmodell</label>
+            <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
+              <div>
+                <p className="text-xs text-slate-500 mb-1.5">Från</p>
+                <select value={d.yearFrom} onChange={e => set('yearFrom', e.target.value)} className="form-control text-[13px] sm:text-[14px]">
+                  <option value="">Välj år</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 mb-1.5">Till</p>
+                <select value={d.yearTo} onChange={e => set('yearTo', e.target.value)} className="form-control text-[13px] sm:text-[14px]">
+                  <option value="">Välj år</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-0.5">Max miltal</label>
+            <p className="text-[13.5px] text-slate-500 mb-3">Hur många mil får bilen max ha gått?</p>
+            <div className="sm:max-w-xs relative">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.maxMiltal}
+                onChange={e => set('maxMiltal', e.target.value)}
+                placeholder="T.ex. 5 000"
+                className="form-control pr-14"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none">mil</span>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
@@ -432,7 +472,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initialD
   );
 }
 
-function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void; hideFuel?: boolean; autoFuel?: string }) {
+function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void; hideFuel?: boolean; autoFuel?: string; carCondition?: 'ny' | 'begagnad' | null }) {
   const [d, setD] = useState<BuyDetailsData>({ ...initialData, fuelType: autoFuel || initialData.fuelType || '' });
   const [mustHaves, setMustHaves] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -493,6 +533,45 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel }: { initi
           ))}
         </div>
       </div>
+
+      {carCondition === 'begagnad' && (
+        <>
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Årsmodell</label>
+            <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
+              <div>
+                <p className="text-xs text-slate-500 mb-1.5">Från</p>
+                <select value={d.yearFrom} onChange={e => set('yearFrom', e.target.value)} className="form-control text-[13px] sm:text-[14px]">
+                  <option value="">Välj år</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 mb-1.5">Till</p>
+                <select value={d.yearTo} onChange={e => set('yearTo', e.target.value)} className="form-control text-[13px] sm:text-[14px]">
+                  <option value="">Välj år</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="py-6 sm:py-7">
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-0.5">Max miltal</label>
+            <p className="text-[13.5px] text-slate-500 mb-3">Hur många mil får bilen max ha gått?</p>
+            <div className="sm:max-w-xs relative">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.maxMiltal}
+                onChange={e => set('maxMiltal', e.target.value)}
+                placeholder="T.ex. 5 000"
+                className="form-control pr-14"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none">mil</span>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
@@ -706,7 +785,7 @@ function TradeCarLookupSection({
   );
 }
 
-export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, knownFuelTypes, onNext, onExplore, onQuiz }: BuyDetailsStepProps) {
+export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, knownFuelTypes, carCondition, onNext, onExplore, onQuiz }: BuyDetailsStepProps) {
   const autoFuel = knownFuelTypes ? inferFuelType(knownFuelTypes) : '';
   const hideFuel = !!autoFuel && autoFuel !== '';
 
@@ -726,8 +805,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} />;
-  if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} />;
+  if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} carCondition={carCondition} />;
+  if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} carCondition={carCondition} />;
 
   const set = (key: keyof BuyDetailsData, value: string) => {
     setD(prev => {
