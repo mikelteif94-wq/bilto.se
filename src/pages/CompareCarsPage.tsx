@@ -1071,7 +1071,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           src="/hero/ChatGPT_Image_24_juni_2026_23_35_19.png"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none select-none"
+          className="absolute inset-0 w-full h-full object-cover object-[center_95%] sm:object-bottom pointer-events-none select-none"
           fetchPriority="high"
           decoding="async"
         />
