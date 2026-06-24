@@ -1721,22 +1721,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   {visibleCars.length} bilar
                 </span>
               )}
-              <div className="flex items-center gap-0 rounded-lg border border-slate-200 overflow-hidden bg-white">
-                <button
-                  type="button"
-                  onClick={() => setExpertCardMode('beg')}
-                  className={`px-3 h-8 text-[12px] font-semibold transition-colors ${expertCardMode === 'beg' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
-                >
-                  Begagnad
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setExpertCardMode('ny')}
-                  className={`px-3 h-8 text-[12px] font-semibold transition-colors ${expertCardMode === 'ny' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
-                >
-                  Ny bil
-                </button>
-              </div>
             </div>
           </div>
 

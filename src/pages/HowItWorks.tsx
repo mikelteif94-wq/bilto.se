@@ -729,22 +729,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     Populäraste modellerna just nu. Berätta vad du söker – vi hittar den och förhandlar priset.
                   </p>
                 </div>
-                <div className="flex items-center gap-0 rounded-xl border border-slate-200 overflow-hidden shrink-0 self-start mt-1">
-                  <button
-                    type="button"
-                    onClick={() => setCardMode('beg')}
-                    className={`px-4 h-9 text-[13px] font-semibold transition-colors ${cardMode === 'beg' ? 'bg-slate-900 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'}`}
-                  >
-                    Begagnad
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCardMode('ny')}
-                    className={`px-4 h-9 text-[13px] font-semibold transition-colors ${cardMode === 'ny' ? 'bg-slate-900 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'}`}
-                  >
-                    Ny bil
-                  </button>
-                </div>
               </div>
           </div>
 
