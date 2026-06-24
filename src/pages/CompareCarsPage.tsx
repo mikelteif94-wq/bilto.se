@@ -1066,7 +1066,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       />
 
       {/* Hero */}
-      <section className="pt-28 sm:pt-36 pb-0 px-5 sm:px-6 relative overflow-hidden min-h-[100svh] lg:min-h-0 flex flex-col justify-center lg:justify-start">
+      <section className="relative min-h-[100svh] flex flex-col overflow-hidden">
         <img
           src="/hero/ChatGPT_Image_8_maj_2026_09_33_53.png"
           alt=""
@@ -1075,76 +1075,65 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/40 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-transparent pointer-events-none" />
 
         {/* Hero content */}
-        <div className="relative max-w-6xl mx-auto w-full flex-1 flex items-center py-16 lg:py-20">
-          <div className="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-16">
+        <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
+          <div className="w-full max-w-md">
+            <h1 className="text-white text-[clamp(22px,6.5vw,50px)] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
+              {heroTitle ?? 'Hitta drömbilen – spara tid och pengar'}
+            </h1>
+            <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
+              {heroSubtitle ?? 'Gratis hjälp • Vi förhandlar • Utan förpliktelser'}
+            </p>
 
-            {/* Left: heading + subtitle */}
-            <div className="flex-1 text-center lg:text-left">
-              <h1 className="text-[28px] sm:text-[52px] font-bold leading-[1.1] tracking-tight text-white">
-                {heroTitle ?? <>Hitta drömbilen –<br />spara tid och pengar</>}
-              </h1>
-              <p className="mt-4 text-white/80 text-[14px] sm:text-[18px] leading-[1.6] max-w-lg mx-auto lg:mx-0">
-                {heroSubtitle ?? 'Vi jämför, förhandlar och hittar rätt bil åt dig. Boka gratis konsultation.'}
-              </p>
-              <div className="mt-5 flex items-center justify-center lg:justify-start gap-5 text-white/60 text-[13px]">
-                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-white/50" strokeWidth={2} />Helt kostnadsfritt</span>
-                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-white/50" strokeWidth={2} />Utan förpliktelser</span>
-              </div>
-            </div>
-
-            {/* Right: CTA card — stacks below heading on mobile, floats right on desktop */}
-            <div className="mt-8 lg:mt-0 lg:w-[400px] xl:w-[440px] shrink-0">
-              <p className="text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-3 text-center lg:text-left">
-                Välj hur du vill ha hjälp
-              </p>
-              <div className="bg-white rounded-2xl shadow-[0_32px_80px_-16px_rgba(15,23,42,0.5)] overflow-hidden text-left">
-                {(ctaOptions ?? [
-                  {
-                    icon: CheckCircle,
-                    label: 'Jag har hittat en bil',
-                    sub: 'Låt oss förhandla och granska åt dig',
-                    track: 'found' as const,
-                  },
-                  {
-                    icon: Search,
-                    label: 'Jag letar efter bil',
-                    sub: 'Utforska, jämför eller testa bilmatch',
-                    track: 'searching' as const,
-                  },
-                  {
-                    icon: ArrowLeftRight,
-                    label: 'Jag vill byta bil',
-                    sub: 'Vi hittar och förhandlar nästa bil åt dig',
-                    track: 'trade' as const,
-                  },
-                ]).map(({ label, sub, track }, i, arr) => {
-                  const icons = { found: CheckCircle, searching: Search, trade: ArrowLeftRight };
-                  const Icon = icons[track];
-                  return (
-                    <button
-                      key={label}
-                      type="button"
-                      onClick={() => openBuyDrawer('', track, false, '', defaultFuelTypes)}
-                      className={`group w-full flex items-center gap-4 px-5 py-[18px] hover:bg-[#0e6efe]/[0.04] active:bg-[#0e6efe]/[0.07] transition-all text-left ${i < arr.length - 1 ? 'border-b border-slate-100' : ''}`}
-                    >
-                      <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors">
-                        <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[14px] font-semibold text-slate-900 group-hover:text-[#0e6efe] leading-snug transition-colors">{label}</p>
-                        <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{sub}</p>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] group-hover:translate-x-1 transition-all shrink-0" />
-                    </button>
-                  );
-                })}
-                <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  <p className="text-[11px] text-slate-400">Gratis &amp; utan förpliktelser</p>
-                </div>
+            <p className="text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-3 text-center">
+              Välj hur du vill ha hjälp
+            </p>
+            <div className="bg-white rounded-xl shadow-2xl overflow-hidden text-left">
+              {(ctaOptions ?? [
+                {
+                  icon: CheckCircle,
+                  label: 'Jag har hittat en bil',
+                  sub: 'Låt oss förhandla och granska åt dig',
+                  track: 'found' as const,
+                },
+                {
+                  icon: Search,
+                  label: 'Jag letar efter bil',
+                  sub: 'Utforska, jämför eller testa bilmatch',
+                  track: 'searching' as const,
+                },
+                {
+                  icon: ArrowLeftRight,
+                  label: 'Jag vill byta bil',
+                  sub: 'Vi hittar och förhandlar nästa bil åt dig',
+                  track: 'trade' as const,
+                },
+              ]).map(({ label, sub, track }, i, arr) => {
+                const icons = { found: CheckCircle, searching: Search, trade: ArrowLeftRight };
+                const Icon = icons[track];
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => openBuyDrawer('', track, false, '', defaultFuelTypes)}
+                    className={`group w-full flex items-center gap-4 px-5 py-[18px] hover:bg-[#0e6efe]/[0.04] active:bg-[#0e6efe]/[0.07] transition-all text-left ${i < arr.length - 1 ? 'border-b border-slate-100' : ''}`}
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors">
+                      <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-semibold text-slate-900 group-hover:text-[#0e6efe] leading-snug transition-colors">{label}</p>
+                      <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{sub}</p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] group-hover:translate-x-1 transition-all shrink-0" />
+                  </button>
+                );
+              })}
+              <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <p className="text-[11px] text-slate-400">Gratis &amp; utan förpliktelser</p>
               </div>
             </div>
           </div>
