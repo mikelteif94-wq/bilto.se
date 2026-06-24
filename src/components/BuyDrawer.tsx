@@ -393,9 +393,20 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                           {currentStepNum} / {totalSteps}
                         </span>
                       </div>
-                      <h2 className="text-[19px] font-bold text-slate-900 leading-tight">
-                        {titles[step]}
-                      </h2>
+                      <div className="flex items-center gap-3">
+                        {track === 'trade' && (
+                          <img src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7 copy.svg" alt="" className="w-9 h-9 object-contain shrink-0" />
+                        )}
+                        {track === 'searching' && (
+                          <img src="/benefit3.d9e1ec2e_(1) copy.svg" alt="" className="w-9 h-9 object-contain shrink-0" />
+                        )}
+                        {track === 'found' && (
+                          <img src="/benefit2.e5b8ac47_(1) copy.svg" alt="" className="w-9 h-9 object-contain shrink-0" />
+                        )}
+                        <h2 className="text-[19px] font-bold text-slate-900 leading-tight">
+                          {titles[step]}
+                        </h2>
+                      </div>
                     </>
                   )}
                 </div>
