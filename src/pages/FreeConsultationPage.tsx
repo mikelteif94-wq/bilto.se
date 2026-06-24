@@ -491,6 +491,16 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
         sellUtrustning.length ? `Utrustning: ${sellUtrustning.join(', ')}` : '',
       ].filter(Boolean).join(' | ') : '';
 
+      const fullMeddelande = [
+        form.meddelande,
+        buyContext,
+        sellContext,
+        form.kop_status === 'hittat' && form.bil_link ? `Bil-länk: ${form.bil_link}` : '',
+        form.kop_status === 'letar' ? 'Letar efter bil' : '',
+        form.regnummer ? `Regnummer: ${form.regnummer}` : '',
+        form.bil_marke ? `Bil: ${form.bil_marke} ${form.bil_modell} (${form.bil_ar})` : '',
+      ].filter(Boolean).join('\n');
+
       const { error } = await supabase.from('consultation_bookings').insert({
         booking_date: form.booking_date,
         booking_time: form.booking_time,
@@ -498,15 +508,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
         namn: form.namn,
         telefon: form.telefon,
         email: form.email,
-        meddelande: [
-          form.meddelande,
-          buyContext,
-          sellContext,
-          form.kop_status === 'hittat' && form.bil_link ? `Bil-länk: ${form.bil_link}` : '',
-          form.kop_status === 'letar' ? 'Letar efter bil' : '',
-          form.regnummer ? `Regnummer: ${form.regnummer}` : '',
-          form.bil_marke ? `Bil: ${form.bil_marke} ${form.bil_modell} (${form.bil_ar})` : '',
-        ].filter(Boolean).join('\n'),
+        meddelande: fullMeddelande,
         status: 'pending',
       });
       if (error) throw error;
@@ -519,7 +521,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
           syfte: form.syfte,
           booking_date: form.booking_date,
           booking_time: form.booking_time,
-          meddelande: form.meddelande,
+          meddelande: fullMeddelande,
         },
       }).catch(() => {});
 

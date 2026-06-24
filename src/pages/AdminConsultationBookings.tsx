@@ -212,7 +212,9 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
                         </span>
                       </div>
                       {b.meddelande && (
-                        <p className="mt-1.5 text-xs text-slate-500 italic line-clamp-2">"{b.meddelande}"</p>
+                        <div className="mt-2 text-xs text-slate-500 bg-slate-50 rounded-lg px-3 py-2 whitespace-pre-line">
+                          {b.meddelande}
+                        </div>
                       )}
                     </div>
 

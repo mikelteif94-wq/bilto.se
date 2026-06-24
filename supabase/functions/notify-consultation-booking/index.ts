@@ -42,6 +42,18 @@ Deno.serve(async (req: Request) => {
       ? `${dayNames[dateObj.getDay()]} ${dateObj.getDate()} ${monthNames[dateObj.getMonth()]}`
       : booking_date ?? "–";
 
+    // Format meddelande lines as table rows for admin email
+    const meddelandeLines = (meddelande ?? "").split("\n").filter((l: string) => l.trim());
+    const meddelandeRows = meddelandeLines.length
+      ? meddelandeLines.map((line: string) => {
+          const colonIdx = line.indexOf(":");
+          if (colonIdx > 0 && colonIdx < 30) {
+            return row(line.slice(0, colonIdx).trim(), line.slice(colonIdx + 1).trim());
+          }
+          return `<tr><td colspan="2" style="padding:7px 0;color:#0f172a;font-size:13px;border-bottom:1px solid #f1f5f9;">${escHtml(line)}</td></tr>`;
+        }).join("")
+      : "";
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
@@ -66,7 +78,7 @@ Deno.serve(async (req: Request) => {
         ${row("Ärende", syfteLabel)}
         ${row("Datum", dateLabel)}
         ${row("Tid", `kl. ${booking_time ?? "–"}`)}
-        ${meddelande ? row("Meddelande", meddelande) : ""}
+        ${meddelandeRows ? `<tr><td colspan="2" style="padding:12px 0 4px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.06em;">Detaljer från kunden</td></tr>${meddelandeRows}` : ""}
       </table>
     </td></tr>
     <tr><td style="padding:0 24px 16px;color:#94a3b8;font-size:12px;">Bilto AB · hej@bilto.se</td></tr>
