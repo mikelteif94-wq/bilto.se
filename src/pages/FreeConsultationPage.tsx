@@ -29,6 +29,8 @@ import { useVehicleLookup } from '../lib/useVehicleLookup';
 import BuyTrackStep, { type BuyTrack } from '../components/forms/BuyTrackStep';
 import BuyDetailsStep, { type BuyDetailsData } from '../components/forms/BuyDetailsStep';
 import BuyTradeInStep, { type BuyTradeInData } from '../components/forms/BuyTradeInStep';
+import CarConditionStep from '../components/forms/CarConditionStep';
+import CarEquipmentStep from '../components/forms/CarEquipmentStep';
 
 interface FreeConsultationPageProps {
   onBack: () => void;
@@ -95,7 +97,7 @@ function getAvailableDates(): { date: Date; dateStr: string; label: string; day:
 
 // kop_sub = sub-step for kop_bil (hittat / letar)
 // salj_reg = sub-step for salj_bil / inbyte (regnummer)
-type Step = 'syfte' | 'kop_sub' | 'kop_track' | 'kop_details' | 'kop_tradein' | 'salj_reg' | 'kontakt' | 'tid' | 'bekraftelse';
+type Step = 'syfte' | 'kop_sub' | 'kop_track' | 'kop_details' | 'kop_tradein' | 'salj_reg' | 'salj_condition' | 'salj_equipment' | 'kontakt' | 'tid' | 'bekraftelse';
 
 interface FormData {
   syfte: Syfte | '';
@@ -136,10 +138,10 @@ const INITIAL: FormData = {
 const STEP_LABELS = ['Ärende', 'Uppgifter', 'Tid'];
 
 function ProgressBar({ step }: { step: Step }) {
-  const orderedSteps: Step[] = ['syfte', 'kop_sub', 'kop_track', 'kop_details', 'kop_tradein', 'salj_reg', 'kontakt', 'tid', 'bekraftelse'];
+  const orderedSteps: Step[] = ['syfte', 'kop_sub', 'kop_track', 'kop_details', 'kop_tradein', 'salj_reg', 'salj_condition', 'salj_equipment', 'kontakt', 'tid', 'bekraftelse'];
   const visibleSteps: Step[] = ['syfte', 'kontakt', 'tid'];
   const idx = Math.max(visibleSteps.indexOf(step as Step), orderedSteps.indexOf(step) >= orderedSteps.indexOf('kontakt') ? 1 : 0);
-  const displayIdx = (step === 'syfte' || step === 'kop_sub' || step === 'kop_track' || step === 'kop_details' || step === 'kop_tradein' || step === 'salj_reg') ? 0 : step === 'kontakt' ? 1 : step === 'tid' ? 2 : 3;
+  const displayIdx = (step === 'syfte' || step === 'kop_sub' || step === 'kop_track' || step === 'kop_details' || step === 'kop_tradein' || step === 'salj_reg' || step === 'salj_condition' || step === 'salj_equipment') ? 0 : step === 'kontakt' ? 1 : step === 'tid' ? 2 : 3;
 
   return (
     <div className="flex items-center gap-0 mb-10">
@@ -228,6 +230,10 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
     hasTradeIn: null, tradeInReg: '', hasLoan: null, loanAmount: '', interestRate: '',
   });
 
+  // Sell car sub-steps state
+  const [sellCar, setSellCar] = useState({ regnummer: '', marke: '', modell: '', ar: 0, miltal: 0, skick: '', skickKommentar: '' });
+  const [sellUtrustning, setSellUtrustning] = useState<string[]>([]);
+
   const availableDates = useMemo(() => getAvailableDates(), []);
 
   const bookedSlots = useMemo(
@@ -278,7 +284,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
     if (s === 'kop_bil') {
       setStep('kop_track');
     } else if (s === 'salj_bil' || s === 'inbyte') {
-      setStep('salj_reg');
+      setStep('salj_condition');
     } else {
       setStep('kontakt');
     }
@@ -310,6 +316,15 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
         buyDetails.additionalRequests,
       ].filter(Boolean).join(' | ') : '';
 
+      const sellContext = (form.syfte === 'salj_bil' || form.syfte === 'inbyte') && sellCar.regnummer ? [
+        sellCar.regnummer ? `Regnummer: ${sellCar.regnummer}` : '',
+        sellCar.marke || sellCar.modell ? `Bil: ${[sellCar.marke, sellCar.modell].filter(Boolean).join(' ')}${sellCar.ar ? ` (${sellCar.ar})` : ''}` : '',
+        sellCar.miltal ? `Miltal: ${sellCar.miltal} mil` : '',
+        sellCar.skick ? `Skick: ${sellCar.skick}` : '',
+        sellCar.skickKommentar ? `Kommentar: ${sellCar.skickKommentar}` : '',
+        sellUtrustning.length ? `Utrustning: ${sellUtrustning.join(', ')}` : '',
+      ].filter(Boolean).join(' | ') : '';
+
       const { error } = await supabase.from('consultation_bookings').insert({
         booking_date: form.booking_date,
         booking_time: form.booking_time,
@@ -320,6 +335,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
         meddelande: [
           form.meddelande,
           buyContext,
+          sellContext,
           form.kop_status === 'hittat' && form.bil_link ? `Bil-länk: ${form.bil_link}` : '',
           form.kop_status === 'letar' ? 'Letar efter bil' : '',
           form.regnummer ? `Regnummer: ${form.regnummer}` : '',
@@ -522,8 +538,8 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
             </div>
           )}
 
-          {/* Step salj_reg: Regnummer för sälja/inbyte */}
-          {step === 'salj_reg' && (
+          {/* Step salj_condition: car details */}
+          {(step === 'salj_reg' || step === 'salj_condition') && (
             <div>
               <button
                 type="button"
@@ -533,50 +549,41 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Ändra ämne
               </button>
-              <h2 className="text-[22px] font-bold text-slate-900 mb-1">
-                {form.syfte === 'inbyte' ? 'Vilken bil vill du byta in?' : 'Vilken bil vill du sälja?'}
-              </h2>
-              <p className="text-slate-500 text-[14px] mb-6">
-                Ange regnummer så hämtar vi uppgifter automatiskt.
-              </p>
+              <CarConditionStep
+                regnummer={sellCar.regnummer}
+                initialMarke={sellCar.marke}
+                initialModell={sellCar.modell}
+                initialAr={sellCar.ar || null}
+                initialMiltal={sellCar.miltal}
+                initialSkick={sellCar.skick}
+                initialSkickKommentar={sellCar.skickKommentar}
+                showTradeIn={false}
+                onNext={(miltal, skick, regnummer, skickKommentar, marke, modell, ar) => {
+                  setSellCar({ regnummer: regnummer ?? '', marke, modell, ar, miltal, skick, skickKommentar });
+                  setStep('salj_equipment');
+                }}
+              />
+            </div>
+          )}
 
-              <div className="mb-2">
-                <RegInput
-                  value={form.regnummer}
-                  onChange={v => setForm(f => ({ ...f, regnummer: v, bil_marke: '', bil_modell: '', bil_ar: '', bil_miltal: '' }))}
-                />
-              </div>
-              <VehicleCard regnummer={form.regnummer} />
-
-              {vehicleLookup.status === 'found' && (
-                <div className="mt-4 space-y-3">
-                  <div>
-                    <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">Miltal (mil)</label>
-                    <input
-                      type="number"
-                      inputMode="numeric"
-                      value={form.bil_miltal}
-                      onChange={e => setForm(f => ({ ...f, bil_miltal: e.target.value }))}
-                      placeholder="t.ex. 8500"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div className="mt-6 flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setStep('kontakt')}
-                  className="flex-1 btn-primary h-12 text-[15px]"
-                >
-                  Fortsätt
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-              <p className="text-center text-[12px] text-slate-400 mt-3">
-                Inget regnummer? Du kan lämna fältet tomt och berätta mer i meddelandet.
-              </p>
+          {/* Step salj_equipment: equipment checklist */}
+          {step === 'salj_equipment' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setStep('salj_condition')}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Tillbaka
+              </button>
+              <CarEquipmentStep
+                initialUtrustning={sellUtrustning}
+                onNext={(utrustning) => {
+                  setSellUtrustning(utrustning);
+                  setStep('kontakt');
+                }}
+              />
             </div>
           )}
 
@@ -587,7 +594,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 type="button"
                 onClick={() => {
                   if (form.syfte === 'kop_bil') setStep('kop_tradein');
-                  else if (form.syfte === 'salj_bil' || form.syfte === 'inbyte') setStep('salj_reg');
+                  else if (form.syfte === 'salj_bil' || form.syfte === 'inbyte') setStep('salj_equipment');
                   else setStep('syfte');
                 }}
                 className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
