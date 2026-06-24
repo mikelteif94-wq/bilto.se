@@ -521,6 +521,28 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
                         Fortsätt <ArrowRight className="w-4 h-4" />
                       </button>
                     )}
+
+                    {/* How it works */}
+                    <div className="mt-5 pt-5 border-t border-slate-100">
+                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Hur går det till?</p>
+                      <div className="space-y-3">
+                        {[
+                          { n: '1', title: 'Boka konsultation', desc: 'Välj vad du behöver hjälp med och välj en tid som passar.' },
+                          { n: '2', title: 'Vi ringer dig', desc: 'En expert ringer upp — vi går igenom bilen, priset och dina alternativ.' },
+                          { n: '3', title: 'Vi förhandlar åt dig', desc: 'Du sitter still. Vi sköter kontakten och pressar priset.' },
+                        ].map(item => (
+                          <div key={item.n} className="flex items-start gap-3">
+                            <div className="w-6 h-6 rounded-lg bg-[#0e6efe]/8 flex items-center justify-center shrink-0 mt-0.5">
+                              <span className="text-[11px] font-bold text-[#0e6efe]">{item.n}</span>
+                            </div>
+                            <div>
+                              <div className="text-[13px] font-semibold text-slate-800 leading-snug">{item.title}</div>
+                              <div className="text-[12px] text-slate-500 mt-0.5 leading-snug">{item.desc}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
 
