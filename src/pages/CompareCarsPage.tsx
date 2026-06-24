@@ -1068,7 +1068,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       {/* Hero */}
       <section className="pt-28 sm:pt-36 pb-0 px-5 sm:px-6 relative overflow-hidden min-h-[100svh] flex flex-col justify-start">
         <img
-          src="/image copy copy copy copy copy.png"
+          src="/hero/ChatGPT_Image_8_maj_2026_09_33_53.png"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover object-[50%_30%] pointer-events-none select-none"
