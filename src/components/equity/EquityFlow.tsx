@@ -90,7 +90,7 @@ export function EquityFlow({ onNegotiate: _onNegotiate, compact, isEv }: EquityF
         style={{ boxShadow: '0 4px 14px #0e6efe18' }}
       >
         <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
-          <Sparkles className="w-4 h-4 text-[#0e6efe]" />
+          <img src="/benefit4.dfeb51b1_(1) copy copy.svg" alt="" className="w-7 h-7 object-contain" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[13px] font-bold text-[#0e6efe]">Beräkna vad din insats ger dig</p>
