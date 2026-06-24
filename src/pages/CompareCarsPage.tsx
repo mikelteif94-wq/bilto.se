@@ -1083,7 +1083,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             {/* Left: text + CTA */}
             <div className="flex-1 text-center lg:text-left lg:py-16">
               <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
-                {heroTitle ?? 'Hitta drömbilen – spara tid och pengar'}
+                {heroTitle ?? <>Hitta drömbilen –<br />spara tid och pengar</>}
               </h1>
               <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto lg:mx-0">
                 {heroSubtitle ?? 'Vi jämför, förhandlar och hittar rätt bil åt dig. Boka gratis konsultation.'}
