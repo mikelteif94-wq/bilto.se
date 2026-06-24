@@ -83,7 +83,7 @@ function getAvailableDates(): { date: Date; dateStr: string; label: string; day:
   return days;
 }
 
-type Step = 'syfte' | 'kop_sub' | 'kop_track' | 'kop_details' | 'kop_tradein' | 'salj_reg' | 'salj_condition' | 'kontakt' | 'tid' | 'bekraftelse';
+type Step = 'syfte' | 'kop_sub' | 'kop_track' | 'kop_details' | 'kop_tradein' | 'salj_reg' | 'salj_condition' | 'inbyte_details' | 'kontakt' | 'tid' | 'bekraftelse';
 
 interface FormData {
   syfte: Syfte | '';
@@ -122,7 +122,7 @@ const INITIAL: FormData = {
 const STEP_LABELS = ['Ärende', 'Uppgifter', 'Tid'];
 
 function ProgressBar({ step }: { step: Step }) {
-  const displayIdx = (step === 'syfte' || step === 'kop_sub' || step === 'kop_track' || step === 'kop_details' || step === 'kop_tradein' || step === 'salj_reg' || step === 'salj_condition') ? 0 : step === 'kontakt' ? 1 : step === 'tid' ? 2 : 3;
+  const displayIdx = (step === 'syfte' || step === 'kop_sub' || step === 'kop_track' || step === 'kop_details' || step === 'kop_tradein' || step === 'salj_reg' || step === 'salj_condition' || step === 'inbyte_details') ? 0 : step === 'kontakt' ? 1 : step === 'tid' ? 2 : 3;
 
   return (
     <div className="flex items-center gap-0 mb-8">
@@ -149,6 +149,185 @@ function ProgressBar({ step }: { step: Step }) {
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+const SKICK_OPTS = [
+  { value: 'mycket_bra', label: 'Mycket bra', desc: 'Inga synliga defekter' },
+  { value: 'bra',        label: 'Bra',        desc: 'Mindre brister, välskött' },
+  { value: 'okej',       label: 'Okej',       desc: 'Normalt slitage för åldern' },
+  { value: 'slitet',     label: 'Slitet',     desc: 'Tydligt slitage, behöver service' },
+  { value: 'skadat',     label: 'Skadat',     desc: 'Skador som påverkar funktion/utseende' },
+];
+
+interface SellCarData {
+  regnummer: string;
+  marke: string;
+  modell: string;
+  ar: number;
+  miltal: number;
+  skick: string;
+  skickKommentar: string;
+}
+
+function SellCarMiniForm({
+  initialData,
+  onNext,
+  onBack,
+  compact,
+}: {
+  initialData: SellCarData;
+  onNext: (data: SellCarData) => void;
+  onBack: () => void;
+  compact?: boolean;
+}) {
+  const [reg, setReg] = useState(initialData.regnummer);
+  const [miltal, setMiltal] = useState<string>(initialData.miltal ? String(initialData.miltal) : '');
+  const [skick, setSkick] = useState(initialData.skick);
+  const [autoData, setAutoData] = useState<{ marke: string; modell: string; ar: number } | null>(
+    initialData.marke ? { marke: initialData.marke, modell: initialData.modell, ar: initialData.ar } : null
+  );
+  const [errors, setErrors] = useState<{ regnummer?: string; skick?: string }>({});
+  const lookup = useVehicleLookup(reg);
+
+  useEffect(() => {
+    if (lookup.status === 'found') {
+      const d = lookup.data;
+      setAutoData({ marke: d.marke, modell: d.modell, ar: d.ar ?? 0 });
+      if (d.miltal && d.miltal > 0) setMiltal(String(d.miltal));
+    }
+  }, [lookup.status]);
+
+  const handleNext = () => {
+    const errs: { regnummer?: string; skick?: string } = {};
+    const regClean = reg.trim().toUpperCase().replace(/\s/g, '');
+    if (!/^[A-Z0-9]{6}$/.test(regClean)) errs.regnummer = 'Ange ett giltigt regnummer (6 tecken)';
+    if (!skick) errs.skick = 'Välj ett skick';
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+    onNext({
+      regnummer: regClean,
+      marke: autoData?.marke ?? '',
+      modell: autoData?.modell ?? '',
+      ar: autoData?.ar ?? 0,
+      miltal: Number(miltal) || 0,
+      skick,
+      skickKommentar: '',
+    });
+  };
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={onBack}
+        className={`inline-flex items-center gap-1.5 text-slate-400 hover:text-slate-700 transition ${compact ? 'text-[12px] mb-5' : 'text-[13px] mb-6'}`}
+      >
+        <ArrowLeft className="w-3.5 h-3.5" />
+        Ändra ämne
+      </button>
+
+      <h3 className={`font-bold text-slate-900 mb-1 ${compact ? 'text-[18px]' : 'text-[18px]'}`}>Din bil</h3>
+      <p className="text-slate-500 text-[13px] mb-5">Ange regnummer så hämtar vi uppgifterna automatiskt.</p>
+
+      {/* Regnummer */}
+      <div className="mb-5">
+        <label className="block text-[13px] font-semibold text-slate-900 mb-2">Registreringsnummer *</label>
+        <RegInput
+          value={reg}
+          onChange={(v) => {
+            setReg(v);
+            setAutoData(null);
+            setErrors(e => ({ ...e, regnummer: undefined }));
+          }}
+          error={!!errors.regnummer}
+        />
+        {errors.regnummer && <p className="mt-1 text-[11px] text-red-500">{errors.regnummer}</p>}
+
+        {/* Lookup status */}
+        {lookup.status === 'loading' && (
+          <div className="flex items-center gap-2 mt-3 px-3 py-2.5 bg-blue-50 rounded-xl border border-blue-100 text-blue-700 text-[13px]">
+            <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+            Hämtar uppgifter...
+          </div>
+        )}
+        {lookup.status === 'found' && autoData && (
+          <div className="mt-3 px-3 py-2.5 bg-emerald-50 rounded-xl border border-emerald-100">
+            <div className="flex items-center gap-2 mb-1">
+              <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" strokeWidth={2.5} />
+              <span className="text-[12px] font-semibold text-emerald-800">Bilen hittad</span>
+            </div>
+            <p className="text-[14px] font-bold text-slate-900">
+              {autoData.marke} {autoData.modell}{autoData.ar ? ` · ${autoData.ar}` : ''}
+            </p>
+            {lookup.data.bransle && (
+              <p className="text-[12px] text-slate-500 mt-0.5">
+                {[lookup.data.bransle, lookup.data.farg].filter(Boolean).join(' · ')}
+              </p>
+            )}
+          </div>
+        )}
+        {(lookup.status === 'not_found' || lookup.status === 'error') && (
+          <div className="flex items-center gap-2 mt-3 px-3 py-2.5 bg-amber-50 rounded-xl border border-amber-100 text-amber-800 text-[13px]">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            Kunde inte hämta uppgifter – du kan ändå fortsätta.
+          </div>
+        )}
+      </div>
+
+      {/* Miltal */}
+      <div className="mb-5">
+        <label className="block text-[13px] font-semibold text-slate-900 mb-2">
+          Miltal <span className="text-slate-400 font-normal">(valfritt)</span>
+        </label>
+        <div className="relative">
+          <input
+            type="text"
+            inputMode="numeric"
+            value={miltal}
+            onChange={e => setMiltal(e.target.value.replace(/\D/g, ''))}
+            placeholder="T.ex. 850"
+            className="form-control"
+          />
+          {lookup.status === 'found' && miltal && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-[11px] text-emerald-600 font-medium pointer-events-none">
+              <Check className="w-3 h-3" strokeWidth={2.5} />
+              Fyllt i automatiskt
+            </div>
+          )}
+        </div>
+        <p className="mt-1 text-[11px] text-slate-400">Antal mil · fylls i automatiskt från regnumret</p>
+      </div>
+
+      {/* Skick */}
+      <div className="mb-6">
+        <label className="block text-[13px] font-semibold text-slate-900 mb-2">Vilket skick är bilen i? *</label>
+        <div className="flex flex-wrap gap-2">
+          {SKICK_OPTS.map(opt => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { setSkick(opt.value); setErrors(e => ({ ...e, skick: undefined })); }}
+              className={`px-4 h-9 rounded-xl text-[13px] font-medium transition-all ${
+                skick === opt.value
+                  ? 'bg-[#0e6efe] text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+        {skick && (
+          <p className="text-[11px] text-slate-500 mt-2">{SKICK_OPTS.find(o => o.value === skick)?.desc}</p>
+        )}
+        {errors.skick && <p className="mt-1 text-[11px] text-red-500">{errors.skick}</p>}
+      </div>
+
+      <button type="button" onClick={handleNext} className="btn-primary w-full h-12 text-[15px]">
+        Fortsätt <ArrowRight className="w-4 h-4" />
+      </button>
     </div>
   );
 }
@@ -210,15 +389,15 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
     buyingStage: '', fuelType: '', regnummer: '', miltal: '',
     targetCar: '', desiredMonthlyCost: '', leasingType: '',
     additionalRequests: '', carPrice: '', yearFrom: '', yearTo: '', maxMiltal: '',
+    hasQuote: null,
   });
   const [buyTradeIn, setBuyTradeIn] = useState<BuyTradeInData>({
     hasTradeIn: null, tradeInReg: '', hasLoan: null, loanAmount: '', interestRate: '',
   });
 
   // Sell car sub-steps state
-  const [sellCar, setSellCar] = useState({ regnummer: '', marke: '', modell: '', ar: 0, miltal: 0, skick: '', skickKommentar: '' });
+  const [sellCar, setSellCar] = useState<SellCarData>({ regnummer: '', marke: '', modell: '', ar: 0, miltal: 0, skick: '', skickKommentar: '' });
   const [sellUtrustning, setSellUtrustning] = useState<string[]>([]);
-  const [sellErrors, setSellErrors] = useState<{ regnummer?: string; skick?: string }>({});
 
   const availableDates = useMemo(() => getAvailableDates(), []);
   const bookedSlots = useMemo(
@@ -236,7 +415,7 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
       setForm({ ...INITIAL, syfte: initialSyfte ?? '' });
       setErrors({});
       setBuyTrack('found');
-      setBuyDetails({ linkOrSeller: '', carModel: '', carBrand: '', paymentType: '', buyingStage: '', fuelType: '', regnummer: '', miltal: '', targetCar: '', desiredMonthlyCost: '', leasingType: '', additionalRequests: '', carPrice: '', yearFrom: '', yearTo: '', maxMiltal: '' });
+      setBuyDetails({ linkOrSeller: '', carModel: '', carBrand: '', paymentType: '', buyingStage: '', fuelType: '', regnummer: '', miltal: '', targetCar: '', desiredMonthlyCost: '', leasingType: '', additionalRequests: '', carPrice: '', yearFrom: '', yearTo: '', maxMiltal: '', hasQuote: null });
       setBuyTradeIn({ hasTradeIn: null, tradeInReg: '', hasLoan: null, loanAmount: '', interestRate: '' });
       setSellCar({ regnummer: '', marke: '', modell: '', ar: 0, miltal: 0, skick: '', skickKommentar: '' });
       setSellUtrustning([]);
@@ -294,7 +473,9 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
     setForm(f => ({ ...f, syfte: s }));
     if (s === 'kop_bil') {
       setStep('kop_track');
-    } else if (s === 'salj_bil' || s === 'inbyte') {
+    } else if (s === 'salj_bil') {
+      setStep('salj_condition');
+    } else if (s === 'inbyte') {
       setStep('salj_condition');
     } else {
       setStep('kontakt');
@@ -563,104 +744,42 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
                 )}
 
                 {/* Step salj_condition: reg + miltal + skick */}
-                {(step === 'salj_reg' || step === 'salj_condition') && (() => {
-                  const SKICK_OPTS = [
-                    { value: 'mycket_bra', label: 'Mycket bra', desc: 'Inga synliga defekter' },
-                    { value: 'bra',        label: 'Bra',        desc: 'Mindre brister, välskött' },
-                    { value: 'okej',       label: 'Okej',       desc: 'Normalt slitage för åldern' },
-                    { value: 'slitet',     label: 'Slitet',     desc: 'Tydligt slitage, behöver service' },
-                    { value: 'skadat',     label: 'Skadat',     desc: 'Skador som påverkar funktion/utseende' },
-                  ];
-                  const handleSaljNext = () => {
-                    const errs: { regnummer?: string; skick?: string } = {};
-                    const regClean = sellCar.regnummer.trim().toUpperCase().replace(/\s/g, '');
-                    if (!/^[A-Z0-9]{6}$/.test(regClean)) errs.regnummer = 'Ange ett giltigt regnummer (6 tecken)';
-                    if (!sellCar.skick) errs.skick = 'Välj ett skick';
-                    setSellErrors(errs);
-                    if (Object.keys(errs).length === 0) setStep('kontakt');
-                  };
-                  return (
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => setStep('syfte')}
-                        className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-slate-700 mb-5 transition"
-                      >
-                        <ArrowLeft className="w-3.5 h-3.5" />
-                        Ändra ämne
-                      </button>
+                {(step === 'salj_reg' || step === 'salj_condition') && (
+                  <SellCarMiniForm
+                    compact
+                    initialData={sellCar}
+                    onBack={() => setStep('syfte')}
+                    onNext={(data) => {
+                      setSellCar(data);
+                      setStep(form.syfte === 'inbyte' ? 'inbyte_details' : 'kontakt');
+                    }}
+                  />
+                )}
 
-                      <h3 className="text-[18px] font-bold text-slate-900 mb-1">Din bil</h3>
-                      <p className="text-slate-500 text-[13px] mb-5">Ange regnummer så hämtar vi uppgifterna automatiskt.</p>
-
-                      {/* Regnummer */}
-                      <div className="mb-5">
-                        <label className="block text-[13px] font-semibold text-slate-900 mb-2">Registreringsnummer *</label>
-                        <RegInput
-                          value={sellCar.regnummer}
-                          onChange={(v) => {
-                            setSellCar(c => ({ ...c, regnummer: v }));
-                            setSellErrors(e => ({ ...e, regnummer: undefined }));
-                          }}
-                          error={!!sellErrors.regnummer}
-                        />
-                        {sellErrors.regnummer && <p className="mt-1 text-[11px] text-red-500">{sellErrors.regnummer}</p>}
-                        <VehicleCard regnummer={sellCar.regnummer} />
-                      </div>
-
-                      {/* Miltal */}
-                      <div className="mb-5">
-                        <label className="block text-[13px] font-semibold text-slate-900 mb-2">
-                          Miltal <span className="text-slate-400 font-normal">(valfritt)</span>
-                        </label>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          value={sellCar.miltal || ''}
-                          onChange={e => setSellCar(c => ({ ...c, miltal: Number(e.target.value.replace(/\D/g, '')) || 0 }))}
-                          placeholder="T.ex. 850"
-                          className="form-control"
-                        />
-                        <p className="mt-1 text-[11px] text-slate-400">Antal mil (hämtas automatiskt om möjligt)</p>
-                      </div>
-
-                      {/* Skick */}
-                      <div className="mb-6">
-                        <label className="block text-[13px] font-semibold text-slate-900 mb-2">Vilket skick är bilen i? *</label>
-                        <div className="flex flex-wrap gap-2">
-                          {SKICK_OPTS.map(opt => (
-                            <button
-                              key={opt.value}
-                              type="button"
-                              onClick={() => { setSellCar(c => ({ ...c, skick: opt.value })); setSellErrors(e => ({ ...e, skick: undefined })); }}
-                              className={`px-4 h-9 rounded-xl text-[13px] font-medium transition-all ${
-                                sellCar.skick === opt.value
-                                  ? 'bg-[#0e6efe] text-white shadow-sm'
-                                  : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
-                              }`}
-                            >
-                              {opt.label}
-                            </button>
-                          ))}
-                        </div>
-                        {sellCar.skick && (
-                          <p className="text-[11px] text-slate-500 mt-2">
-                            {SKICK_OPTS.find(o => o.value === sellCar.skick)?.desc}
-                          </p>
-                        )}
-                        {sellErrors.skick && <p className="mt-1 text-[11px] text-red-500">{sellErrors.skick}</p>}
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={handleSaljNext}
-                        className="btn-primary w-full h-12 text-[15px]"
-                      >
-                        Fortsätt <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  );
-                })()}
+                {/* Step inbyte_details: target car for inbyte */}
+                {step === 'inbyte_details' && (
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setStep('salj_condition')}
+                      className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-slate-700 mb-5 transition"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      Tillbaka
+                    </button>
+                    <BuyDetailsStep
+                      track="trade"
+                      initialData={buyDetails}
+                      initialBil=""
+                      onNext={(data) => {
+                        setBuyDetails(data);
+                        setStep('kontakt');
+                      }}
+                      onExplore={() => setStep('kontakt')}
+                      onQuiz={() => setStep('kontakt')}
+                    />
+                  </div>
+                )}
 
                 {/* Step kontakt */}
                 {step === 'kontakt' && (
@@ -669,7 +788,8 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
                       type="button"
                       onClick={() => {
                         if (form.syfte === 'kop_bil') setStep('kop_tradein');
-                        else if (form.syfte === 'salj_bil' || form.syfte === 'inbyte') setStep('salj_condition');
+                        else if (form.syfte === 'inbyte') setStep('inbyte_details');
+                        else if (form.syfte === 'salj_bil') setStep('salj_condition');
                         else setStep('syfte');
                       }}
                       className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-slate-700 mb-5 transition"
