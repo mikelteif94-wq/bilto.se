@@ -95,7 +95,7 @@ export default function BuyTrackStep({ initialBil, onChoose, onGuidance }: BuyTr
         icon={Search}
         title={initialBil ? `Jag letar efter en ${initialBil}` : 'Jag söker en bil'}
         sub="Vi hittar, kollar och förhandlar åt dig."
-        onClick={() => setMainChoice('searching')}
+        onClick={() => initialBil ? onChoose('know') : setMainChoice('searching')}
       />
 
       <OptionButton

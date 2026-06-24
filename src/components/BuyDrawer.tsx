@@ -162,11 +162,12 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
       return ['details', 'tradeIn', 'contact'];
     }
     if (hasSpecificCar) {
-      // carIntent is now handled by 'track' step with car name pre-filled
       if (track === 'trade') return ['track', 'details', 'contact'];
+      if (track === 'found') return ['track', 'details', 'tradeIn', 'contact'];
       return ['track', 'condition', 'details', 'tradeIn', 'contact'];
     }
     if (track === 'trade') return skipTrack ? ['details', 'tradeIn', 'contact'] : ['track', 'details', 'tradeIn', 'contact'];
+    if (track === 'found') return skipTrack ? ['details', 'tradeIn', 'contact'] : ['track', 'details', 'tradeIn', 'contact'];
     return skipTrack ? ['condition', 'details', 'tradeIn', 'contact'] : ['track', 'condition', 'details', 'tradeIn', 'contact'];
   };
 
@@ -429,8 +430,13 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                   initialBil={car ?? ''}
                   onChoose={(t) => {
                     setTrack(t);
-                    goNext();
                     setError(null);
+                    // Explicitly set next step so we don't rely on stale stepFlow
+                    if (t === 'found' || t === 'trade') {
+                      setStep('details');
+                    } else {
+                      setStep('condition');
+                    }
                   }}
                   onGuidance={() => {
                     setGuidanceOpen(true);
