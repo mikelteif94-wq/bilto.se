@@ -49,6 +49,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
     miltal: '',
     targetCar: '',
     desiredMonthlyCost: initialDesiredMonthlyCost ?? '',
+    monthlyCostExMoms: false,
     leasingType: '',
     additionalRequests: initialAdditionalRequests ?? '',
     carPrice: '',

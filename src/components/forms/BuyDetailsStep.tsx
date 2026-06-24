@@ -44,6 +44,7 @@ export interface BuyDetailsData {
   miltal: string;
   targetCar: string;
   desiredMonthlyCost: string;
+  monthlyCostExMoms: boolean;
   leasingType: string;
   additionalRequests: string;
   carPrice: string;
@@ -445,20 +446,6 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
         <FieldError message={errors.paymentType} />
         {(d.paymentType === 'finance' || d.paymentType === 'leasing') && (
           <div className="mt-4 space-y-4">
-            <div className="sm:max-w-xs">
-              <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
-                Max månadskostnad (kr)
-                <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
-              </label>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.desiredMonthlyCost}
-                onChange={e => set('desiredMonthlyCost', formatThousands(e.target.value))}
-                placeholder="T.ex. 4 000"
-                className="form-control"
-              />
-            </div>
             {d.paymentType === 'leasing' && (
               <div>
                 <p className="text-[13px] font-semibold text-slate-700 mb-2">
@@ -483,6 +470,31 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
                 </div>
               </div>
             )}
+            <div className="sm:max-w-xs">
+              <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
+                Max månadskostnad (kr)
+                <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.desiredMonthlyCost}
+                onChange={e => set('desiredMonthlyCost', formatThousands(e.target.value))}
+                placeholder="T.ex. 4 000"
+                className="form-control"
+              />
+              {d.paymentType === 'leasing' && d.leasingType === 'Företag' && (
+                <label className="mt-2.5 flex items-center gap-2.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={d.monthlyCostExMoms}
+                    onChange={e => setD(prev => ({ ...prev, monthlyCostExMoms: e.target.checked }))}
+                    className="w-4 h-4 rounded accent-[#0e6efe]"
+                  />
+                  <span className="text-[13px] text-slate-600">Priset är exkl. moms</span>
+                </label>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -700,20 +712,6 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
         <FieldError message={errors.paymentType} />
         {(d.paymentType === 'finance' || d.paymentType === 'leasing') && (
           <div className="mt-4 space-y-4">
-            <div className="sm:max-w-xs">
-              <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
-                Max månadskostnad (kr)
-                <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
-              </label>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.desiredMonthlyCost}
-                onChange={e => set('desiredMonthlyCost', formatThousands(e.target.value))}
-                placeholder="T.ex. 4 000"
-                className="form-control"
-              />
-            </div>
             {d.paymentType === 'leasing' && (
               <div>
                 <p className="text-[13px] font-semibold text-slate-700 mb-2">
@@ -738,6 +736,31 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
                 </div>
               </div>
             )}
+            <div className="sm:max-w-xs">
+              <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
+                Max månadskostnad (kr)
+                <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.desiredMonthlyCost}
+                onChange={e => set('desiredMonthlyCost', formatThousands(e.target.value))}
+                placeholder="T.ex. 4 000"
+                className="form-control"
+              />
+              {d.paymentType === 'leasing' && d.leasingType === 'Företag' && (
+                <label className="mt-2.5 flex items-center gap-2.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={d.monthlyCostExMoms}
+                    onChange={e => setD(prev => ({ ...prev, monthlyCostExMoms: e.target.checked }))}
+                    className="w-4 h-4 rounded accent-[#0e6efe]"
+                  />
+                  <span className="text-[13px] text-slate-600">Priset är exkl. moms</span>
+                </label>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -983,20 +1006,57 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         ))}
       </div>
       <FieldError message={errors.paymentType} />
-      {d.paymentType === 'finance' && (
-        <div className="mt-4 sm:max-w-xs">
-          <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
-            Max månadskostnad (kr)
-            <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
-          </label>
-          <input
-            type="text"
-            inputMode="numeric"
-            value={d.desiredMonthlyCost}
-            onChange={e => set('desiredMonthlyCost', formatThousands(e.target.value))}
-            placeholder="T.ex. 4 000"
-            className="form-control"
-          />
+      {(d.paymentType === 'finance' || d.paymentType === 'leasing') && (
+        <div className="mt-4 space-y-4">
+          {d.paymentType === 'leasing' && (
+            <div>
+              <p className="text-[13px] font-semibold text-slate-700 mb-2">
+                Privat- eller företagsleasing?
+                <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
+              </p>
+              <div className="flex gap-2">
+                {['Privat', 'Företag'].map(t => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => set('leasingType', d.leasingType === t ? '' : t)}
+                    className={`px-4 h-9 rounded-xl text-[13.5px] font-medium transition-all active:scale-[0.97] ${
+                      d.leasingType === t
+                        ? 'bg-[#0e6efe] text-white shadow-sm'
+                        : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="sm:max-w-xs">
+            <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
+              Max månadskostnad (kr)
+              <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
+            </label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={d.desiredMonthlyCost}
+              onChange={e => set('desiredMonthlyCost', formatThousands(e.target.value))}
+              placeholder="T.ex. 4 000"
+              className="form-control"
+            />
+            {d.paymentType === 'leasing' && d.leasingType === 'Företag' && (
+              <label className="mt-2.5 flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={d.monthlyCostExMoms}
+                  onChange={e => setD(prev => ({ ...prev, monthlyCostExMoms: e.target.checked }))}
+                  className="w-4 h-4 rounded accent-[#0e6efe]"
+                />
+                <span className="text-[13px] text-slate-600">Priset är exkl. moms</span>
+              </label>
+            )}
+          </div>
         </div>
       )}
     </div>
