@@ -29,7 +29,7 @@ const EXPERTS = [
     name: 'Marcus Holm',
     title: 'Seniorförhandlare',
     years: '12 år i branschen',
-    avatar: '/Man_in_car_showroom_portrait.png',
+    avatar: '/image copy copy.png',
     spec: 'Premium & tyska märken',
   },
   {

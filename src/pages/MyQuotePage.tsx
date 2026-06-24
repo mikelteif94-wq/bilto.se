@@ -503,7 +503,7 @@ function ExpertCard() {
       <div className="p-5 sm:p-6 flex items-center gap-5">
         <div className="relative shrink-0">
           <img
-            src="/Man_in_car_showroom_portrait.png"
+            src="/image copy copy.png"
             alt="Marcus Holm"
             className="w-16 h-16 rounded-xl object-cover object-top border-2 border-slate-200"
           />
