@@ -284,6 +284,7 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
 
   const handleSubmit = async () => {
     const errs: Partial<Record<keyof FormData, string>> = {};
+    if (!form.syfte) errs.syfte = 'Välj ett ärende';
     if (!form.booking_date) errs.booking_date = 'Välj ett datum';
     if (!form.booking_time) errs.booking_time = 'Välj en tid';
     if (Object.keys(errs).length) { setErrors(errs); return; }
