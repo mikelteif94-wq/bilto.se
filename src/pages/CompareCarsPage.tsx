@@ -1066,7 +1066,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       />
 
       {/* Hero */}
-      <section className="pt-28 sm:pt-36 pb-0 px-5 sm:px-6 relative overflow-hidden min-h-[100svh] flex flex-col justify-center lg:justify-start">
+      <section className="pt-28 sm:pt-36 pb-0 px-5 sm:px-6 relative overflow-hidden min-h-[100svh] lg:min-h-0 flex flex-col justify-center lg:justify-start">
         <img
           src="/hero/ChatGPT_Image_8_maj_2026_09_33_53.png"
           alt=""
@@ -1078,7 +1078,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/40 pointer-events-none" />
 
         {/* Hero content */}
-        <div className="relative max-w-6xl mx-auto w-full flex-1 flex items-center py-16 lg:py-0 lg:min-h-[100svh]">
+        <div className="relative max-w-6xl mx-auto w-full flex-1 flex items-center py-16 lg:py-20">
           <div className="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-16">
 
             {/* Left: heading + subtitle */}
