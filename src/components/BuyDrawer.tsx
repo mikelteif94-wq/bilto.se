@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, ChevronLeft, Check, Phone, Search, ArrowLeftRight, CheckCircle, Sparkles, Clock, Calendar } from 'lucide-react';
+import { X, ChevronLeft, Check, Phone, Search, ArrowLeftRight, CheckCircle, Sparkles, Clock } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ErrorBanner from './ErrorBanner';
 import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
@@ -501,25 +501,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                       <p className="text-[15px] font-bold text-slate-900">Jag vill byta in</p>
                       <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
                         Vi sköter inbytet och hjälper dig hitta ny bil.
-                      </p>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onClose();
-                      window.location.href = '/gratis-konsultation';
-                    }}
-                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-[#faf8f5] transition-all text-left group"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
-                      <Calendar className="w-5 h-5 text-slate-600" />
-                    </div>
-                    <div>
-                      <p className="text-[15px] font-bold text-slate-900">Boka gratis konsultation</p>
-                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
-                        Prata med en bilexpert – vi hjälper dig hitta rätt och spara pengar.
                       </p>
                     </div>
                   </button>
