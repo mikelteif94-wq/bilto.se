@@ -288,7 +288,7 @@ function LinkField({
   );
 }
 
-function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void; hideFuel?: boolean; autoFuel?: string; carCondition?: 'ny' | 'begagnad' | null }) {
+function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition, lockedCar }: { initialData: BuyDetailsData; onNext: (data: BuyDetailsData) => void; hideFuel?: boolean; autoFuel?: string; carCondition?: 'ny' | 'begagnad' | null; lockedCar?: string }) {
   const [d, setD] = useState<BuyDetailsData>({ ...initialData, fuelType: autoFuel || initialData.fuelType || '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -303,7 +303,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!d.carBrand) e.carBrand = 'Välj ett märke';
+    if (!lockedCar && !d.carBrand) e.carBrand = 'Välj ett märke';
     if (!d.buyingStage) e.buyingStage = 'Välj var du är i processen';
     if (!d.paymentType) e.paymentType = 'Välj hur du vill betala';
     setErrors(e);
@@ -321,13 +321,19 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
           Märke och modell
         </label>
-        <BrandModelSelector
-          brand={d.carBrand}
-          model={d.carModel}
-          onBrandChange={v => set('carBrand', v)}
-          onModelChange={v => set('carModel', v)}
-          brandError={errors.carBrand}
-        />
+        {lockedCar ? (
+          <div className="flex items-center h-11 px-4 bg-[#faf8f5] border border-slate-200 rounded-xl text-slate-700 font-medium text-[14px]">
+            {lockedCar}
+          </div>
+        ) : (
+          <BrandModelSelector
+            brand={d.carBrand}
+            model={d.carModel}
+            onBrandChange={v => set('carBrand', v)}
+            onModelChange={v => set('carModel', v)}
+            brandError={errors.carBrand}
+          />
+        )}
       </div>
 
       {carCondition === 'begagnad' && (
@@ -805,7 +811,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} carCondition={carCondition} />;
+  if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} carCondition={carCondition} lockedCar={lockedCar} />;
   if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} carCondition={carCondition} />;
 
   const set = (key: keyof BuyDetailsData, value: string) => {
@@ -1253,7 +1259,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         </>
       )}
 
-  /* ── Var i processen ── */
+      {/* ── Var i processen ── */}
   <div className="py-6">
     <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
       Var i processen är du?
