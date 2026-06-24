@@ -831,6 +831,3 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
     </AnimatePresence>
   );
 }
-
-
-export default ConsultationDrawer
