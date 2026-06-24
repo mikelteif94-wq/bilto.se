@@ -2426,14 +2426,14 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       {/* What you get */}
       <section className="bg-[#f5f8fc] py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10 sm:mb-14 max-w-2xl mx-auto">
+          <div className="text-left mb-10 sm:mb-14 max-w-2xl">
             <span className="text-[12px] font-medium text-slate-500 mb-3 block">
               &mdash; Vad ingår
             </span>
-            <h2 className="text-[28px] sm:text-[44px] font-semibold leading-[1.1] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
+            <h2 className="text-[26px] sm:text-[44px] font-semibold leading-[1.15] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
               En personlig bilförhandlare i fickan
             </h2>
-            <p className="text-slate-600 mt-5 text-[15px] sm:text-[17px] leading-[1.6]">
+            <p className="text-slate-600 mt-4 text-[15px] sm:text-[17px] leading-[1.6]">
               Tjänsten är gjord för dig som inte vill spendera dagar på att jaga bilar, ringa annonser eller känna dig pressad i en handlares showroom.
             </p>
           </div>
@@ -2533,10 +2533,10 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               ))}
             </div>
           </div>
-          <div className="mt-12 sm:mt-16 text-center">
-            <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-5 sm:px-7 py-3 sm:py-4 shadow-sm">
-              <ShieldCheck className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
-              <span className="text-[14px] sm:text-[15px] text-slate-700 font-medium">
+          <div className="mt-12 sm:mt-16 flex justify-start">
+            <div className="flex items-start gap-3 bg-white border border-slate-200 rounded-xl px-4 sm:px-7 py-3 sm:py-4 shadow-sm max-w-xs sm:max-w-none">
+              <ShieldCheck className="w-5 h-5 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2} />
+              <span className="text-[13px] sm:text-[15px] text-slate-700 font-medium leading-snug">
                 Alla bilar vi rekommenderar har klarat vår 5-punktskontroll
               </span>
             </div>
