@@ -25,6 +25,9 @@ import { validateSwedishPhone } from '../lib/utils';
 import RegInput from './RegInput';
 import { useVehicleLookup } from '../lib/useVehicleLookup';
 import { Video as LucideIcon } from 'lucide-react';
+import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
+import BuyDetailsStep, { type BuyDetailsData } from './forms/BuyDetailsStep';
+import BuyTradeInStep, { type BuyTradeInData } from './forms/BuyTradeInStep';
 
 type Syfte = 'kop_bil' | 'salj_bil' | 'inbyte' | 'finansiering' | 'ovrig';
 
@@ -81,7 +84,7 @@ function getAvailableDates(): { date: Date; dateStr: string; label: string; day:
   return days;
 }
 
-type Step = 'syfte' | 'kop_sub' | 'salj_reg' | 'kontakt' | 'tid' | 'bekraftelse';
+type Step = 'syfte' | 'kop_sub' | 'kop_track' | 'kop_details' | 'kop_tradein' | 'salj_reg' | 'kontakt' | 'tid' | 'bekraftelse';
 
 interface FormData {
   syfte: Syfte | '';
@@ -120,7 +123,7 @@ const INITIAL: FormData = {
 const STEP_LABELS = ['Ärende', 'Uppgifter', 'Tid'];
 
 function ProgressBar({ step }: { step: Step }) {
-  const displayIdx = step === 'syfte' || step === 'kop_sub' || step === 'salj_reg' ? 0 : step === 'kontakt' ? 1 : step === 'tid' ? 2 : 3;
+  const displayIdx = (step === 'syfte' || step === 'kop_sub' || step === 'kop_track' || step === 'kop_details' || step === 'kop_tradein' || step === 'salj_reg') ? 0 : step === 'kontakt' ? 1 : step === 'tid' ? 2 : 3;
 
   return (
     <div className="flex items-center gap-0 mb-8">
@@ -201,6 +204,18 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [submitting, setSubmitting] = useState(false);
 
+  // Buy sub-steps state
+  const [buyTrack, setBuyTrack] = useState<BuyTrack>('found');
+  const [buyDetails, setBuyDetails] = useState<BuyDetailsData>({
+    linkOrSeller: '', carModel: '', carBrand: '', paymentType: '',
+    buyingStage: '', fuelType: '', regnummer: '', miltal: '',
+    targetCar: '', desiredMonthlyCost: '', leasingType: '',
+    additionalRequests: '', carPrice: '', yearFrom: '', yearTo: '', maxMiltal: '',
+  });
+  const [buyTradeIn, setBuyTradeIn] = useState<BuyTradeInData>({
+    hasTradeIn: null, tradeInReg: '', hasLoan: null, loanAmount: '', interestRate: '',
+  });
+
   const availableDates = useMemo(() => getAvailableDates(), []);
   const bookedSlots = useMemo(
     () => form.booking_date ? getBookedSlots(form.booking_date) : new Set<string>(),
@@ -211,9 +226,14 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
   // Reset form when opened
   useEffect(() => {
     if (open) {
-      setStep(initialSyfte ? (initialSyfte === 'kop_bil' ? 'kop_sub' : initialSyfte === 'salj_bil' || initialSyfte === 'inbyte' ? 'salj_reg' : 'kontakt') : 'syfte');
+      setStep(initialSyfte
+        ? (initialSyfte === 'kop_bil' ? 'kop_track' : initialSyfte === 'salj_bil' || initialSyfte === 'inbyte' ? 'salj_reg' : 'kontakt')
+        : 'syfte');
       setForm({ ...INITIAL, syfte: initialSyfte ?? '' });
       setErrors({});
+      setBuyTrack('found');
+      setBuyDetails({ linkOrSeller: '', carModel: '', carBrand: '', paymentType: '', buyingStage: '', fuelType: '', regnummer: '', miltal: '', targetCar: '', desiredMonthlyCost: '', leasingType: '', additionalRequests: '', carPrice: '', yearFrom: '', yearTo: '', maxMiltal: '' });
+      setBuyTradeIn({ hasTradeIn: null, tradeInReg: '', hasLoan: null, loanAmount: '', interestRate: '' });
     }
   }, [open, initialSyfte]);
 
@@ -267,7 +287,7 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
   const handleSyfteSelect = (s: Syfte) => {
     setForm(f => ({ ...f, syfte: s }));
     if (s === 'kop_bil') {
-      setStep('kop_sub');
+      setStep('kop_track');
     } else if (s === 'salj_bil' || s === 'inbyte') {
       setStep('salj_reg');
     } else {
@@ -291,6 +311,18 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
 
     setSubmitting(true);
     try {
+      // Build extra context from buy sub-steps
+      const buyContext = form.syfte === 'kop_bil' ? [
+        buyTrack === 'found' ? 'Hittat bil' : buyTrack === 'trade' ? 'Inbyte' : 'Letar',
+        buyDetails.carBrand || buyDetails.carModel ? `Bil: ${[buyDetails.carBrand, buyDetails.carModel].filter(Boolean).join(' ')}` : '',
+        buyDetails.linkOrSeller ? `Länk: ${buyDetails.linkOrSeller}` : '',
+        buyDetails.paymentType ? `Betalning: ${buyDetails.paymentType}` : '',
+        buyDetails.desiredMonthlyCost ? `Månadskostnad: ${buyDetails.desiredMonthlyCost} kr` : '',
+        buyDetails.carPrice ? `Budget: ${buyDetails.carPrice}` : '',
+        buyTradeIn.hasTradeIn ? `Inbytesbil: ${buyTradeIn.tradeInReg || 'Ja'}` : '',
+        buyDetails.additionalRequests,
+      ].filter(Boolean).join(' | ') : '';
+
       const { error } = await supabase.from('consultation_bookings').insert({
         booking_date: form.booking_date,
         booking_time: form.booking_time,
@@ -300,6 +332,7 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
         email: form.email,
         meddelande: [
           form.meddelande,
+          buyContext,
           form.kop_status === 'hittat' && form.bil_link ? `Bil-länk: ${form.bil_link}` : '',
           form.kop_status === 'letar' ? 'Letar efter bil' : '',
           form.regnummer ? `Regnummer: ${form.regnummer}` : '',
@@ -440,109 +473,76 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
                   </div>
                 )}
 
-                {/* Step kop_sub */}
-                {step === 'kop_sub' && (
+                {/* Step kop_track: track selection (found/searching/trade) */}
+                {step === 'kop_track' && (
+                  <div>
+                    {form.syfte && (
+                      <button
+                        type="button"
+                        onClick={() => setStep('syfte')}
+                        className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-slate-700 mb-5 transition"
+                      >
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                        Ändra ämne
+                      </button>
+                    )}
+                    <BuyTrackStep
+                      onChoose={(t) => {
+                        setBuyTrack(t);
+                        setStep('kop_details');
+                      }}
+                      onGuidance={() => setStep('kontakt')}
+                    />
+                  </div>
+                )}
+
+                {/* Step kop_details: car details */}
+                {step === 'kop_details' && (
                   <div>
                     <button
                       type="button"
-                      onClick={() => setStep('syfte')}
+                      onClick={() => setStep('kop_track')}
                       className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-slate-700 mb-5 transition"
                     >
                       <ArrowLeft className="w-3.5 h-3.5" />
-                      Ändra ämne
+                      Tillbaka
                     </button>
-                    <h3 className="text-[18px] font-bold text-slate-900 mb-1">Har du hittat en bil?</h3>
-                    <p className="text-slate-500 text-[13px] mb-5">Svaret hjälper oss förbereda rätt hjälp inför samtalet.</p>
-                    <div className="space-y-3">
-                      <button
-                        type="button"
-                        onClick={() => setForm(f => ({ ...f, kop_status: 'hittat' }))}
-                        className={`group w-full flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all duration-150 text-left ${
-                          form.kop_status === 'hittat'
-                            ? 'border-[#0e6efe] bg-[#0e6efe]/5 shadow-sm'
-                            : 'border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50'
-                        }`}
-                      >
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${form.kop_status === 'hittat' ? 'bg-[#0e6efe] text-white' : 'bg-[#0e6efe]/8 text-[#0e6efe]'}`}>
-                          <LinkIcon style={{ width: 18, height: 18 }} strokeWidth={1.8} />
-                        </div>
-                        <div className="min-w-0">
-                          <div className="font-semibold text-slate-900 text-[14px]">Ja, jag har hittat en bil</div>
-                          <div className="text-slate-500 text-[12px] mt-0.5">Jag vill ha hjälp att förhandla och granska den</div>
-                        </div>
-                        {form.kop_status === 'hittat' ? <Check className="w-4 h-4 text-[#0e6efe] ml-auto shrink-0" strokeWidth={2.5} /> : <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] ml-auto shrink-0 transition-colors" />}
-                      </button>
+                    <BuyDetailsStep
+                      track={buyTrack}
+                      initialData={buyDetails}
+                      initialBil=""
+                      onNext={(data) => {
+                        setBuyDetails(data);
+                        if (buyTrack === 'found' || buyTrack === 'trade') {
+                          setStep('kop_tradein');
+                        } else {
+                          setStep('kop_tradein');
+                        }
+                      }}
+                      onExplore={() => setStep('kontakt')}
+                      onQuiz={() => setStep('kontakt')}
+                    />
+                  </div>
+                )}
 
-                      {form.kop_status === 'hittat' && (
-                        <div className="pl-[52px] pr-1 -mt-1 pb-1">
-                          <label className="block text-[12px] font-semibold text-slate-700 mb-1.5">
-                            Länk till annonsen <span className="text-slate-400 font-normal">(valfritt)</span>
-                          </label>
-                          <div className="relative">
-                            <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                            <input
-                              type="url"
-                              inputMode="url"
-                              value={form.bil_link}
-                              onChange={e => setForm(f => ({ ...f, bil_link: e.target.value }))}
-                              placeholder="https://www.blocket.se/annons/..."
-                              className="form-control pl-9 text-[13px]"
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      <button
-                        type="button"
-                        onClick={() => setForm(f => ({ ...f, kop_status: 'letar' }))}
-                        className={`group w-full flex items-center gap-4 px-4 py-3.5 rounded-xl border transition-all duration-150 text-left ${
-                          form.kop_status === 'letar'
-                            ? 'border-[#0e6efe] bg-[#0e6efe]/5 shadow-sm'
-                            : 'border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50'
-                        }`}
-                      >
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${form.kop_status === 'letar' ? 'bg-[#0e6efe] text-white' : 'bg-[#0e6efe]/8 text-[#0e6efe]'}`}>
-                          <Search style={{ width: 18, height: 18 }} strokeWidth={1.8} />
-                        </div>
-                        <div className="min-w-0">
-                          <div className="font-semibold text-slate-900 text-[14px]">Nej, jag letar fortfarande</div>
-                          <div className="text-slate-500 text-[12px] mt-0.5">Jag vill ha hjälp att hitta och jämföra alternativ</div>
-                        </div>
-                        {form.kop_status === 'letar' ? <Check className="w-4 h-4 text-[#0e6efe] ml-auto shrink-0" strokeWidth={2.5} /> : <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] ml-auto shrink-0 transition-colors" />}
-                      </button>
-                    </div>
-
-                    {form.kop_status && (
-                      <button
-                        type="button"
-                        onClick={() => setStep('kontakt')}
-                        className="btn-primary w-full mt-5 h-12 text-[15px]"
-                      >
-                        Fortsätt <ArrowRight className="w-4 h-4" />
-                      </button>
-                    )}
-
-                    {/* How it works */}
-                    <div className="mt-5 pt-5 border-t border-slate-100">
-                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Hur går det till?</p>
-                      <div className="space-y-3">
-                        {[
-                          { n: '1', title: 'Boka konsultation', desc: 'Välj vad du behöver hjälp med och välj en tid som passar.' },
-                          { n: '2', title: 'Vi ringer dig', desc: 'En expert ringer upp — vi går igenom bilen, priset och dina alternativ.' },
-                          { n: '3', title: 'Vi förhandlar åt dig', desc: 'Du sitter still. Vi sköter kontakten och pressar priset.' },
-                        ].map(item => (
-                          <div key={item.n} className="flex items-start gap-3">
-                            <div className="w-6 h-6 rounded-lg bg-[#0e6efe]/8 flex items-center justify-center shrink-0 mt-0.5">
-                              <span className="text-[11px] font-bold text-[#0e6efe]">{item.n}</span>
-                            </div>
-                            <div>
-                              <div className="text-[13px] font-semibold text-slate-800 leading-snug">{item.title}</div>
-                              <div className="text-[12px] text-slate-500 mt-0.5 leading-snug">{item.desc}</div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                {/* Step kop_tradein: trade-in */}
+                {step === 'kop_tradein' && (
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setStep('kop_details')}
+                      className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-slate-700 mb-5 transition"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      Tillbaka
+                    </button>
+                    <BuyTradeInStep
+                      initialData={buyTradeIn}
+                      onNext={(data) => {
+                        setBuyTradeIn(data);
+                        setStep('kontakt');
+                      }}
+                    />
                   </div>
                 )}
 
@@ -604,7 +604,7 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
                     <button
                       type="button"
                       onClick={() => {
-                        if (form.syfte === 'kop_bil') setStep('kop_sub');
+                        if (form.syfte === 'kop_bil') setStep('kop_tradein');
                         else if (form.syfte === 'salj_bil' || form.syfte === 'inbyte') setStep('salj_reg');
                         else setStep('syfte');
                       }}

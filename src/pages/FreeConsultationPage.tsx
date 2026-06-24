@@ -26,6 +26,9 @@ import FieldError from '../components/forms/FieldError';
 import { validateSwedishPhone } from '../lib/utils';
 import RegInput from '../components/RegInput';
 import { useVehicleLookup } from '../lib/useVehicleLookup';
+import BuyTrackStep, { type BuyTrack } from '../components/forms/BuyTrackStep';
+import BuyDetailsStep, { type BuyDetailsData } from '../components/forms/BuyDetailsStep';
+import BuyTradeInStep, { type BuyTradeInData } from '../components/forms/BuyTradeInStep';
 
 interface FreeConsultationPageProps {
   onBack: () => void;
@@ -92,7 +95,7 @@ function getAvailableDates(): { date: Date; dateStr: string; label: string; day:
 
 // kop_sub = sub-step for kop_bil (hittat / letar)
 // salj_reg = sub-step for salj_bil / inbyte (regnummer)
-type Step = 'syfte' | 'kop_sub' | 'salj_reg' | 'kontakt' | 'tid' | 'bekraftelse';
+type Step = 'syfte' | 'kop_sub' | 'kop_track' | 'kop_details' | 'kop_tradein' | 'salj_reg' | 'kontakt' | 'tid' | 'bekraftelse';
 
 interface FormData {
   syfte: Syfte | '';
@@ -133,10 +136,10 @@ const INITIAL: FormData = {
 const STEP_LABELS = ['Ärende', 'Uppgifter', 'Tid'];
 
 function ProgressBar({ step }: { step: Step }) {
-  const orderedSteps: Step[] = ['syfte', 'kop_sub', 'salj_reg', 'kontakt', 'tid', 'bekraftelse'];
+  const orderedSteps: Step[] = ['syfte', 'kop_sub', 'kop_track', 'kop_details', 'kop_tradein', 'salj_reg', 'kontakt', 'tid', 'bekraftelse'];
   const visibleSteps: Step[] = ['syfte', 'kontakt', 'tid'];
   const idx = Math.max(visibleSteps.indexOf(step as Step), orderedSteps.indexOf(step) >= orderedSteps.indexOf('kontakt') ? 1 : 0);
-  const displayIdx = step === 'syfte' || step === 'kop_sub' || step === 'salj_reg' ? 0 : step === 'kontakt' ? 1 : step === 'tid' ? 2 : 3;
+  const displayIdx = (step === 'syfte' || step === 'kop_sub' || step === 'kop_track' || step === 'kop_details' || step === 'kop_tradein' || step === 'salj_reg') ? 0 : step === 'kontakt' ? 1 : step === 'tid' ? 2 : 3;
 
   return (
     <div className="flex items-center gap-0 mb-10">
@@ -213,6 +216,18 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
   const [submitting, setSubmitting] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Buy sub-steps state
+  const [buyTrack, setBuyTrack] = useState<BuyTrack>('found');
+  const [buyDetails, setBuyDetails] = useState<BuyDetailsData>({
+    linkOrSeller: '', carModel: '', carBrand: '', paymentType: '',
+    buyingStage: '', fuelType: '', regnummer: '', miltal: '',
+    targetCar: '', desiredMonthlyCost: '', leasingType: '',
+    additionalRequests: '', carPrice: '', yearFrom: '', yearTo: '', maxMiltal: '',
+  });
+  const [buyTradeIn, setBuyTradeIn] = useState<BuyTradeInData>({
+    hasTradeIn: null, tradeInReg: '', hasLoan: null, loanAmount: '', interestRate: '',
+  });
+
   const availableDates = useMemo(() => getAvailableDates(), []);
 
   const bookedSlots = useMemo(
@@ -261,7 +276,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
   const handleSyfteSelect = (s: Syfte) => {
     setForm(f => ({ ...f, syfte: s }));
     if (s === 'kop_bil') {
-      setStep('kop_sub');
+      setStep('kop_track');
     } else if (s === 'salj_bil' || s === 'inbyte') {
       setStep('salj_reg');
     } else {
@@ -284,6 +299,17 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
 
     setSubmitting(true);
     try {
+      const buyContext = form.syfte === 'kop_bil' ? [
+        buyTrack === 'found' ? 'Hittat bil' : buyTrack === 'trade' ? 'Inbyte' : 'Letar',
+        buyDetails.carBrand || buyDetails.carModel ? `Bil: ${[buyDetails.carBrand, buyDetails.carModel].filter(Boolean).join(' ')}` : '',
+        buyDetails.linkOrSeller ? `Länk: ${buyDetails.linkOrSeller}` : '',
+        buyDetails.paymentType ? `Betalning: ${buyDetails.paymentType}` : '',
+        buyDetails.desiredMonthlyCost ? `Månadskostnad: ${buyDetails.desiredMonthlyCost} kr` : '',
+        buyDetails.carPrice ? `Budget: ${buyDetails.carPrice}` : '',
+        buyTradeIn.hasTradeIn ? `Inbytesbil: ${buyTradeIn.tradeInReg || 'Ja'}` : '',
+        buyDetails.additionalRequests,
+      ].filter(Boolean).join(' | ') : '';
+
       const { error } = await supabase.from('consultation_bookings').insert({
         booking_date: form.booking_date,
         booking_time: form.booking_time,
@@ -293,6 +319,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
         email: form.email,
         meddelande: [
           form.meddelande,
+          buyContext,
           form.kop_status === 'hittat' && form.bil_link ? `Bil-länk: ${form.bil_link}` : '',
           form.kop_status === 'letar' ? 'Letar efter bil' : '',
           form.regnummer ? `Regnummer: ${form.regnummer}` : '',
@@ -428,8 +455,8 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
             </div>
           )}
 
-          {/* Step kop_sub: Har du hittat en bil? */}
-          {step === 'kop_sub' && (
+          {/* Step kop_track */}
+          {step === 'kop_track' && (
             <div>
               <button
                 type="button"
@@ -439,85 +466,59 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Ändra ämne
               </button>
-              <h2 className="text-[22px] font-bold text-slate-900 mb-1">Har du hittat en bil?</h2>
-              <p className="text-slate-500 text-[14px] mb-6">
-                Svaret hjälper oss förbereda rätt hjälp inför samtalet.
-              </p>
-              <div className="space-y-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setForm(f => ({ ...f, kop_status: 'hittat' }));
-                  }}
-                  className={`group w-full flex items-center gap-4 px-5 py-4 rounded-xl border transition-all duration-150 text-left ${
-                    form.kop_status === 'hittat'
-                      ? 'border-[#0e6efe] bg-[#0e6efe]/5 shadow-sm'
-                      : 'border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50'
-                  }`}
-                >
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${form.kop_status === 'hittat' ? 'bg-[#0e6efe] text-white' : 'bg-[#0e6efe]/8 text-[#0e6efe]'}`}>
-                    <LinkIcon style={{ width: 18, height: 18 }} strokeWidth={1.8} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="font-semibold text-slate-900 text-[15px]">Ja, jag har hittat en bil</div>
-                    <div className="text-slate-500 text-[13px] mt-0.5">Jag vill ha hjälp att förhandla och granska den</div>
-                  </div>
-                  {form.kop_status === 'hittat' && <Check className="w-4 h-4 text-[#0e6efe] ml-auto shrink-0" strokeWidth={2.5} />}
-                  {form.kop_status !== 'hittat' && <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] ml-auto shrink-0 transition-colors" />}
-                </button>
+              <BuyTrackStep
+                onChoose={(t) => {
+                  setBuyTrack(t);
+                  setStep('kop_details');
+                }}
+                onGuidance={() => setStep('kontakt')}
+              />
+            </div>
+          )}
 
-                {form.kop_status === 'hittat' && (
-                  <div className="pl-[52px] pr-1 -mt-1 pb-1">
-                    <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">
-                      Länk till annonsen <span className="text-slate-400 font-normal">(valfritt)</span>
-                    </label>
-                    <div className="relative">
-                      <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                      <input
-                        type="url"
-                        inputMode="url"
-                        value={form.bil_link}
-                        onChange={e => setForm(f => ({ ...f, bil_link: e.target.value }))}
-                        placeholder="https://www.blocket.se/annons/..."
-                        className="form-control pl-9 text-[13px]"
-                      />
-                    </div>
-                  </div>
-                )}
+          {/* Step kop_details */}
+          {step === 'kop_details' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setStep('kop_track')}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Tillbaka
+              </button>
+              <BuyDetailsStep
+                track={buyTrack}
+                initialData={buyDetails}
+                initialBil=""
+                onNext={(data) => {
+                  setBuyDetails(data);
+                  setStep('kop_tradein');
+                }}
+                onExplore={() => setStep('kontakt')}
+                onQuiz={() => setStep('kontakt')}
+              />
+            </div>
+          )}
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setForm(f => ({ ...f, kop_status: 'letar' }));
-                  }}
-                  className={`group w-full flex items-center gap-4 px-5 py-4 rounded-xl border transition-all duration-150 text-left ${
-                    form.kop_status === 'letar'
-                      ? 'border-[#0e6efe] bg-[#0e6efe]/5 shadow-sm'
-                      : 'border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50'
-                  }`}
-                >
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${form.kop_status === 'letar' ? 'bg-[#0e6efe] text-white' : 'bg-[#0e6efe]/8 text-[#0e6efe]'}`}>
-                    <Search style={{ width: 18, height: 18 }} strokeWidth={1.8} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="font-semibold text-slate-900 text-[15px]">Nej, jag letar fortfarande</div>
-                    <div className="text-slate-500 text-[13px] mt-0.5">Jag vill ha hjälp att hitta och jämföra alternativ</div>
-                  </div>
-                  {form.kop_status === 'letar' && <Check className="w-4 h-4 text-[#0e6efe] ml-auto shrink-0" strokeWidth={2.5} />}
-                  {form.kop_status !== 'letar' && <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] ml-auto shrink-0 transition-colors" />}
-                </button>
-              </div>
-
-              {form.kop_status && (
-                <button
-                  type="button"
-                  onClick={() => setStep('kontakt')}
-                  className="btn-primary w-full mt-6 h-12 text-[15px]"
-                >
-                  Fortsätt
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              )}
+          {/* Step kop_tradein */}
+          {step === 'kop_tradein' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setStep('kop_details')}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Tillbaka
+              </button>
+              <BuyTradeInStep
+                initialData={buyTradeIn}
+                onNext={(data) => {
+                  setBuyTradeIn(data);
+                  setStep('kontakt');
+                }}
+              />
             </div>
           )}
 
@@ -585,7 +586,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
               <button
                 type="button"
                 onClick={() => {
-                  if (form.syfte === 'kop_bil') setStep('kop_sub');
+                  if (form.syfte === 'kop_bil') setStep('kop_tradein');
                   else if (form.syfte === 'salj_bil' || form.syfte === 'inbyte') setStep('salj_reg');
                   else setStep('syfte');
                 }}
