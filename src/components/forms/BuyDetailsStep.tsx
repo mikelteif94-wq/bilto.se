@@ -8,6 +8,7 @@ import { findComparisonCarByMakeModel } from '../../lib/comparison/lookup';
 import { useCarImages } from '../../hooks/useCarImages';
 import { useCatalogCars } from '../../hooks/useCatalogCars';
 import { useVehicleLookup } from '../../lib/useVehicleLookup';
+import { formatThousands } from '../../lib/utils';
 
 const BUYING_STAGES = [
   { value: 'just_started', label: 'Precis börjat kolla' },
@@ -65,7 +66,7 @@ interface BuyDetailsStepProps {
 }
 
 function parsePriceInput(raw: string): number {
-  const clean = raw.replace(/\s/g, '').replace(/,/g, '.');
+  const clean = raw.replace(/[\s\u00a0]/g, '').replace(/,/g, '.');
   const n = parseFloat(clean);
   return isNaN(n) ? 0 : n;
 }
@@ -367,7 +368,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
                 type="text"
                 inputMode="numeric"
                 value={d.maxMiltal}
-                onChange={e => set('maxMiltal', e.target.value)}
+                onChange={e => set('maxMiltal', formatThousands(e.target.value))}
                 placeholder="T.ex. 5 000"
                 className="form-control pr-14"
               />
@@ -388,7 +389,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
             type="text"
             inputMode="numeric"
             value={d.carPrice}
-            onChange={e => set('carPrice', e.target.value)}
+            onChange={e => set('carPrice', formatThousands(e.target.value))}
             placeholder="T.ex. 350 000"
             className="form-control"
           />
@@ -453,7 +454,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
                 type="text"
                 inputMode="numeric"
                 value={d.desiredMonthlyCost}
-                onChange={e => set('desiredMonthlyCost', e.target.value)}
+                onChange={e => set('desiredMonthlyCost', formatThousands(e.target.value))}
                 placeholder="T.ex. 4 000"
                 className="form-control"
               />
@@ -613,7 +614,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
                 type="text"
                 inputMode="numeric"
                 value={d.maxMiltal}
-                onChange={e => set('maxMiltal', e.target.value)}
+                onChange={e => set('maxMiltal', formatThousands(e.target.value))}
                 placeholder="T.ex. 5 000"
                 className="form-control pr-14"
               />
@@ -668,7 +669,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
             type="text"
             inputMode="numeric"
             value={d.carPrice}
-            onChange={e => set('carPrice', e.target.value)}
+            onChange={e => set('carPrice', formatThousands(e.target.value))}
             placeholder="T.ex. 350 000"
             className="form-control"
           />
@@ -708,7 +709,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
                 type="text"
                 inputMode="numeric"
                 value={d.desiredMonthlyCost}
-                onChange={e => set('desiredMonthlyCost', e.target.value)}
+                onChange={e => set('desiredMonthlyCost', formatThousands(e.target.value))}
                 placeholder="T.ex. 4 000"
                 className="form-control"
               />
@@ -992,7 +993,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             type="text"
             inputMode="numeric"
             value={d.desiredMonthlyCost}
-            onChange={e => set('desiredMonthlyCost', e.target.value)}
+            onChange={e => set('desiredMonthlyCost', formatThousands(e.target.value))}
             placeholder="T.ex. 4 000"
             className="form-control"
           />
@@ -1075,7 +1076,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 type="text"
                 inputMode="numeric"
                 value={d.carPrice}
-                onChange={e => set('carPrice', e.target.value)}
+                onChange={e => set('carPrice', formatThousands(e.target.value))}
                 placeholder="T.ex. 350 000"
                 className="form-control"
               />
@@ -1099,7 +1100,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 type="text"
                 inputMode="numeric"
                 value={d.maxMiltal}
-                onChange={e => set('maxMiltal', e.target.value)}
+                onChange={e => set('maxMiltal', formatThousands(e.target.value))}
                 placeholder="T.ex. 5 000"
                 className="form-control pr-14"
               />
@@ -1144,7 +1145,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 type="text"
                 inputMode="numeric"
                 value={d.carPrice}
-                onChange={e => set('carPrice', e.target.value)}
+                onChange={e => set('carPrice', formatThousands(e.target.value))}
                 placeholder="T.ex. 350 000"
                 className="form-control"
               />
@@ -1225,7 +1226,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 type="text"
                 inputMode="numeric"
                 value={d.maxMiltal}
-                onChange={e => set('maxMiltal', e.target.value)}
+                onChange={e => set('maxMiltal', formatThousands(e.target.value))}
                 placeholder="T.ex. 5 000"
                 className="form-control pr-14"
               />
@@ -1268,7 +1269,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 type="text"
                 inputMode="numeric"
                 value={d.carPrice}
-                onChange={e => set('carPrice', e.target.value)}
+                onChange={e => set('carPrice', formatThousands(e.target.value))}
                 placeholder="T.ex. 350 000"
                 className="form-control"
               />
@@ -1328,7 +1329,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 type="text"
                 inputMode="numeric"
                 value={d.maxMiltal}
-                onChange={e => set('maxMiltal', e.target.value)}
+                onChange={e => set('maxMiltal', formatThousands(e.target.value))}
                 placeholder="T.ex. 5 000"
                 className="form-control pr-14"
               />
@@ -1351,7 +1352,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 type="text"
                 inputMode="numeric"
                 value={d.carPrice}
-                onChange={e => set('carPrice', e.target.value)}
+                onChange={e => set('carPrice', formatThousands(e.target.value))}
                 placeholder="T.ex. 350 000"
                 className="form-control"
               />

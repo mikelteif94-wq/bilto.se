@@ -147,6 +147,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function formatThousands(raw: string): string {
+  const digits = raw.replace(/\s/g, '').replace(/[^0-9]/g, '');
+  if (!digits) return '';
+  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0');
+}
+
 /**
  * Validates a Swedish phone number.
  * Accepts: 07X XXX XX XX, +46 7X XXX XX XX, 0046 7X XXX XX XX
