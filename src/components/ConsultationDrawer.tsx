@@ -380,14 +380,14 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
                 {step === 'syfte' && (
                   <div>
                     <h3 className="text-[18px] font-bold text-slate-900 mb-1">Vad behöver du hjälp med?</h3>
-                    <p className="text-slate-500 text-[13px] mb-5">Välj det alternativ som passar bäst.</p>
-                    <div className="space-y-2.5">
+                    <p className="text-slate-500 text-[13px] mb-4">Välj det alternativ som passar bäst.</p>
+                    <div className="space-y-2">
                       {SYFTE_OPTIONS.map(opt => (
                         <button
                           key={opt.value}
                           type="button"
                           onClick={() => handleSyfteSelect(opt.value)}
-                          className="group w-full flex items-center gap-4 px-4 py-3.5 rounded-xl border border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50 active:scale-[0.99] transition-all duration-150 text-left"
+                          className="group w-full flex items-center gap-4 px-4 py-3 rounded-xl border border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50 active:scale-[0.99] transition-all duration-150 text-left"
                         >
                           <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/8 group-hover:bg-[#0e6efe]/12 flex items-center justify-center shrink-0 transition-colors">
                             <opt.icon className="text-[#0e6efe]" strokeWidth={1.8} style={{ width: 18, height: 18 }} />
@@ -401,10 +401,10 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
                       ))}
                     </div>
 
-                    {/* How it works */}
-                    <div className="mt-5 pt-5 border-t border-slate-100">
+                    {/* How it works + trust row */}
+                    <div className="mt-4 pt-4 border-t border-slate-100">
                       <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Så funkar det</p>
-                      <div className="space-y-3">
+                      <div className="space-y-2.5">
                         {[
                           { n: '1', title: 'Boka konsultation', desc: 'Välj ärende, fyll i dina uppgifter och välj en tid.' },
                           { n: '2', title: 'Vi ringer dig', desc: 'En av våra bilexperter ringer upp vid vald tid.' },
@@ -421,21 +421,20 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
                           </div>
                         ))}
                       </div>
-                    </div>
-
-                    {/* Trust row */}
-                    <div className="mt-5 pt-5 border-t border-slate-100 grid grid-cols-3 gap-3">                      {[
-                        { icon: Check,       color: 'text-emerald-600', bg: 'bg-emerald-50', title: 'Kostnadsfritt' },
-                        { icon: Phone,       color: 'text-[#0e6efe]',   bg: 'bg-blue-50',    title: 'Vi ringer dig' },
-                        { icon: ShieldCheck, color: 'text-slate-600',   bg: 'bg-slate-100',  title: 'Inga förpliktelser' },
-                      ].map(item => (
-                        <div key={item.title} className="flex flex-col items-center gap-1.5 text-center">
-                          <div className={`w-8 h-8 rounded-xl ${item.bg} flex items-center justify-center`}>
-                            <item.icon className={`${item.color}`} strokeWidth={2} style={{ width: 16, height: 16 }} />
+                      <div className="mt-4 grid grid-cols-3 gap-3 pt-4 border-t border-slate-100">
+                        {[
+                          { icon: Check,       color: 'text-emerald-600', bg: 'bg-emerald-50', title: 'Kostnadsfritt' },
+                          { icon: Phone,       color: 'text-[#0e6efe]',   bg: 'bg-blue-50',    title: 'Vi ringer dig' },
+                          { icon: ShieldCheck, color: 'text-slate-600',   bg: 'bg-slate-100',  title: 'Inga förpliktelser' },
+                        ].map(item => (
+                          <div key={item.title} className="flex flex-col items-center gap-1.5 text-center">
+                            <div className={`w-8 h-8 rounded-xl ${item.bg} flex items-center justify-center`}>
+                              <item.icon className={`${item.color}`} strokeWidth={2} style={{ width: 16, height: 16 }} />
+                            </div>
+                            <span className="text-[11px] font-medium text-slate-600 leading-tight">{item.title}</span>
                           </div>
-                          <span className="text-[11px] font-medium text-slate-600 leading-tight">{item.title}</span>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
