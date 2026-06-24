@@ -401,9 +401,30 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
                       ))}
                     </div>
 
+                    {/* How it works */}
+                    <div className="mt-5 pt-5 border-t border-slate-100">
+                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Så funkar det</p>
+                      <div className="space-y-3">
+                        {[
+                          { n: '1', title: 'Boka konsultation', desc: 'Välj ärende, fyll i dina uppgifter och välj en tid.' },
+                          { n: '2', title: 'Vi ringer dig', desc: 'En av våra bilexperter ringer upp vid vald tid.' },
+                          { n: '3', title: 'Få konkreta råd', desc: 'Gratis rådgivning utan säljtricks eller förpliktelser.' },
+                        ].map(item => (
+                          <div key={item.n} className="flex items-start gap-3">
+                            <div className="w-6 h-6 rounded-lg bg-[#0e6efe]/8 flex items-center justify-center shrink-0 mt-0.5">
+                              <span className="text-[11px] font-bold text-[#0e6efe]">{item.n}</span>
+                            </div>
+                            <div>
+                              <div className="text-[13px] font-semibold text-slate-800 leading-snug">{item.title}</div>
+                              <div className="text-[12px] text-slate-500 mt-0.5 leading-snug">{item.desc}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
                     {/* Trust row */}
-                    <div className="mt-6 pt-5 border-t border-slate-100 grid grid-cols-3 gap-3">
-                      {[
+                    <div className="mt-5 pt-5 border-t border-slate-100 grid grid-cols-3 gap-3">                      {[
                         { icon: Check,       color: 'text-emerald-600', bg: 'bg-emerald-50', title: 'Kostnadsfritt' },
                         { icon: Phone,       color: 'text-[#0e6efe]',   bg: 'bg-blue-50',    title: 'Vi ringer dig' },
                         { icon: ShieldCheck, color: 'text-slate-600',   bg: 'bg-slate-100',  title: 'Inga förpliktelser' },
@@ -810,3 +831,6 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
     </AnimatePresence>
   );
 }
+
+
+export default ConsultationDrawer
