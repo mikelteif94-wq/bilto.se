@@ -176,6 +176,14 @@ function App() {
   }, [path]);
 
   useEffect(() => {
+    if (path === '/gratis-konsultation') {
+      window.history.replaceState({}, '', '/');
+      setPath('/');
+      setConsultationOpen(true);
+    }
+  }, [path]);
+
+  useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setAuthLoading(false);
@@ -397,10 +405,7 @@ function App() {
   }
 
   if (path === '/gratis-konsultation') {
-    // Redirect to home and open drawer
-    window.history.replaceState({}, '', '/');
-    setPath('/');
-    setConsultationOpen(true);
+    // Open drawer and redirect — handled via useEffect to avoid render-time state mutation
     return null;
   }
 
