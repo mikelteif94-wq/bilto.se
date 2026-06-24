@@ -440,6 +440,22 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
           ))}
         </div>
         <FieldError message={errors.paymentType} />
+        {d.paymentType === 'finance' && (
+          <div className="mt-4 sm:max-w-xs">
+            <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
+              Max månadskostnad (kr)
+              <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
+            </label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={d.desiredMonthlyCost}
+              onChange={e => set('desiredMonthlyCost', e.target.value)}
+              placeholder="T.ex. 4 000"
+              className="form-control"
+            />
+          </div>
+        )}
       </div>
 
       <div className="py-6 sm:py-7">
@@ -653,6 +669,22 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
           ))}
         </div>
         <FieldError message={errors.paymentType} />
+        {d.paymentType === 'finance' && (
+          <div className="mt-4 sm:max-w-xs">
+            <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
+              Max månadskostnad (kr)
+              <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
+            </label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={d.desiredMonthlyCost}
+              onChange={e => set('desiredMonthlyCost', e.target.value)}
+              placeholder="T.ex. 4 000"
+              className="form-control"
+            />
+          </div>
+        )}
       </div>
 
       <div className="py-6 sm:py-7">
@@ -895,6 +927,22 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         ))}
       </div>
       <FieldError message={errors.paymentType} />
+      {d.paymentType === 'finance' && (
+        <div className="mt-4 sm:max-w-xs">
+          <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
+            Max månadskostnad (kr)
+            <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
+          </label>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={d.desiredMonthlyCost}
+            onChange={e => set('desiredMonthlyCost', e.target.value)}
+            placeholder="T.ex. 4 000"
+            className="form-control"
+          />
+        </div>
+      )}
     </div>
   );
 
