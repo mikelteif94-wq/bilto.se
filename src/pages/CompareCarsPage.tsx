@@ -1122,11 +1122,11 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   >
                     <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors overflow-hidden">
                       {track === 'trade' ? (
-                        <img src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7 copy.svg" alt="" className="w-8 h-8 object-contain" />
+                        <img src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7.svg" alt="" className="w-8 h-8 object-contain" />
                       ) : track === 'searching' ? (
-                        <img src="/benefit3.d9e1ec2e_(1) copy.svg" alt="" className="w-8 h-8 object-contain" />
+                        <img src="/benefit3.d9e1ec2e_(1).svg" alt="" className="w-8 h-8 object-contain" />
                       ) : track === 'found' ? (
-                        <img src="/benefit2.e5b8ac47_(1) copy.svg" alt="" className="w-8 h-8 object-contain" />
+                        <img src="/benefit2.e5b8ac47_(1).svg" alt="" className="w-8 h-8 object-contain" />
                       ) : (
                         <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
                       )}

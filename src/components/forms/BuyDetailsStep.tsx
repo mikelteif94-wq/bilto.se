@@ -1222,7 +1222,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                     className="group relative flex items-center gap-4 p-4 rounded-2xl bg-[#0e6efe]/[0.06] border border-[#0e6efe]/15 hover:bg-[#0e6efe]/[0.10] hover:border-[#0e6efe]/30 active:scale-[0.98] transition-all duration-150 text-left min-h-[72px]"
                   >
                     <div className="w-12 h-12 rounded-xl bg-[#0e6efe] flex items-center justify-center shrink-0 shadow-md shadow-[#0e6efe]/30 overflow-hidden">
-                      <img src="/certified-pre-own.75373bb7 copy.svg" alt="" className="w-9 h-9 object-contain" />
+                      <img src="/certified-pre-own.75373bb7.svg" alt="" className="w-9 h-9 object-contain" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-[14px] font-bold text-slate-900 leading-tight">Utforska och jämför bilar</p>
@@ -1238,7 +1238,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                     className="group relative flex items-center gap-4 p-4 rounded-2xl bg-amber-50 border border-amber-200/70 hover:bg-amber-100/80 hover:border-amber-300 active:scale-[0.98] transition-all duration-150 text-left min-h-[72px]"
                   >
                     <div className="w-12 h-12 rounded-xl bg-amber-400 flex items-center justify-center shrink-0 shadow-md shadow-amber-400/30 overflow-hidden">
-                      <img src="/certified-pre-own.75373bb7 copy.svg" alt="" className="w-9 h-9 object-contain" />
+                      <img src="/certified-pre-own.75373bb7.svg" alt="" className="w-9 h-9 object-contain" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-[14px] font-bold text-slate-900 leading-tight">Testa bilmatch</p>
