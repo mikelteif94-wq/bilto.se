@@ -1071,17 +1071,17 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           src="/hero/image.png"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-[50%_30%] pointer-events-none select-none"
+          className="absolute inset-0 w-full h-full object-cover object-[50%_15%] pointer-events-none select-none"
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/40 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/65 pointer-events-none" />
 
         {/* Desktop: two-column layout */}
         <div className="relative max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16 pb-16 sm:pb-20 lg:pb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16 pt-20 sm:pt-28 pb-16 sm:pb-20 lg:pb-8 lg:pt-32">
             {/* Left: text + CTA */}
-            <div className="flex-1 text-center lg:text-left lg:py-16">
+            <div className="flex-1 text-center lg:text-left">
               <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
                 {heroTitle ?? 'Hitta drömbilen – spara tid och pengar'}
               </h1>
