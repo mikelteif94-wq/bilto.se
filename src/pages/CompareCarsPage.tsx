@@ -1078,12 +1078,12 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-transparent pointer-events-none" />
 
         {/* Hero content */}
-        <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
-          <div className="w-full max-w-md">
-            <h1 className="text-white text-[clamp(22px,6.5vw,50px)] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
+        <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-36 pb-10 px-5 sm:px-8">
+          <div className="w-full max-w-md sm:max-w-lg">
+            <h1 className="text-white text-[clamp(26px,4vw,52px)] font-bold leading-[1.15] tracking-tight text-center drop-shadow-lg mb-4 sm:mb-5">
               {heroTitle ?? 'Hitta drömbilen – spara tid och pengar'}
             </h1>
-            <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
+            <p className="text-white/80 text-center text-[15px] sm:text-[17px] leading-relaxed mb-8 sm:mb-10 drop-shadow">
               {heroSubtitle ?? 'Gratis hjälp • Vi förhandlar • Utan förpliktelser'}
             </p>
 
