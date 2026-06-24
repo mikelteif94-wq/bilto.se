@@ -6,10 +6,6 @@ import {
   Clock,
   Lock,
   Phone,
-  Search,
-  Tag,
-  RefreshCw,
-  HelpCircle,
   ShieldCheck,
   Car,
   Loader2,
@@ -22,18 +18,17 @@ import FieldError from './forms/FieldError';
 import { validateSwedishPhone } from '../lib/utils';
 import RegInput from './RegInput';
 import { useVehicleLookup } from '../lib/useVehicleLookup';
-import { Video as LucideIcon } from 'lucide-react';
 import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
 import BuyDetailsStep, { type BuyDetailsData } from './forms/BuyDetailsStep';
 import BuyTradeInStep, { type BuyTradeInData } from './forms/BuyTradeInStep';
 
 type Syfte = 'kop_bil' | 'salj_bil' | 'inbyte' | 'ovrig';
 
-const SYFTE_OPTIONS: { value: Syfte; label: string; desc: string; icon: LucideIcon }[] = [
-  { value: 'kop_bil',      label: 'Köpa bil',      desc: 'Jag vill ha hjälp att hitta rätt bil',    icon: Search },
-  { value: 'salj_bil',     label: 'Sälja bil',      desc: 'Jag vill sälja min bil till bästa pris',  icon: Tag },
-  { value: 'inbyte',       label: 'Inbyte',         desc: 'Jag vill byta in min bil mot en ny',      icon: RefreshCw },
-  { value: 'ovrig',        label: 'Annat',          desc: 'Jag har en annan fråga',                  icon: HelpCircle },
+const SYFTE_OPTIONS: { value: Syfte; label: string; desc: string; img: string }[] = [
+  { value: 'kop_bil',  label: 'Köpa bil',  desc: 'Jag vill ha hjälp att hitta rätt bil',   img: '/benefit1.f6fa1ca3.svg' },
+  { value: 'salj_bil', label: 'Sälja bil', desc: 'Jag vill sälja min bil till bästa pris', img: '/benefit2.e5b8ac47.svg' },
+  { value: 'inbyte',   label: 'Inbyte',    desc: 'Jag vill byta in min bil mot en ny',     img: '/benefit3.d9e1ec2e_(1).svg' },
+  { value: 'ovrig',    label: 'Annat',     desc: 'Jag har en annan fråga',                 img: '/benefit4.dfeb51b1_(1).svg' },
 ];
 
 const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
@@ -619,7 +614,7 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
                           className="group w-full flex items-center gap-4 px-4 py-3 rounded-xl border border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50 active:scale-[0.99] transition-all duration-150 text-left"
                         >
                           <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/8 group-hover:bg-[#0e6efe]/12 flex items-center justify-center shrink-0 transition-colors">
-                            <opt.icon className="text-[#0e6efe]" strokeWidth={1.8} style={{ width: 18, height: 18 }} />
+                            <img src={opt.img} alt={opt.label} className="w-5 h-5 object-contain" />
                           </div>
                           <div className="min-w-0">
                             <div className="font-semibold text-slate-900 text-[14px] leading-snug">{opt.label}</div>
