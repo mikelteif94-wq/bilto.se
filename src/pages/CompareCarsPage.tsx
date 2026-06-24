@@ -1089,10 +1089,17 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               <p className="mt-4 text-white/80 text-[14px] sm:text-[18px] leading-[1.6] max-w-lg mx-auto lg:mx-0">
                 {heroSubtitle ?? 'Vi jämför, förhandlar och hittar rätt bil åt dig. Boka gratis konsultation.'}
               </p>
+              <div className="mt-5 flex items-center justify-center lg:justify-start gap-5 text-white/60 text-[13px]">
+                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-white/50" strokeWidth={2} />Helt kostnadsfritt</span>
+                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-white/50" strokeWidth={2} />Utan förpliktelser</span>
+              </div>
             </div>
 
             {/* Right: CTA card — stacks below heading on mobile, floats right on desktop */}
             <div className="mt-8 lg:mt-0 lg:w-[400px] xl:w-[440px] shrink-0">
+              <p className="text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-3 text-center lg:text-left">
+                Välj hur du vill ha hjälp
+              </p>
               <div className="bg-white rounded-2xl shadow-[0_32px_80px_-16px_rgba(15,23,42,0.5)] overflow-hidden text-left">
                 {(ctaOptions ?? [
                   {
@@ -1121,19 +1128,23 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       key={label}
                       type="button"
                       onClick={() => openBuyDrawer('', track, false, '', defaultFuelTypes)}
-                      className={`group w-full flex items-center gap-4 px-5 py-5 hover:bg-[#0e6efe]/[0.03] transition-all text-left ${i < arr.length - 1 ? 'border-b border-slate-100' : ''}`}
+                      className={`group w-full flex items-center gap-4 px-5 py-[18px] hover:bg-[#0e6efe]/[0.04] active:bg-[#0e6efe]/[0.07] transition-all text-left ${i < arr.length - 1 ? 'border-b border-slate-100' : ''}`}
                     >
-                      <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/8 group-hover:bg-[#0e6efe]/15 flex items-center justify-center shrink-0 transition-colors">
+                      <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors">
                         <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[14px] font-semibold text-slate-900 leading-snug">{label}</p>
+                        <p className="text-[14px] font-semibold text-slate-900 group-hover:text-[#0e6efe] leading-snug transition-colors">{label}</p>
                         <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{sub}</p>
                       </div>
-                      <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] group-hover:translate-x-0.5 transition-all shrink-0" />
+                      <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] group-hover:translate-x-1 transition-all shrink-0" />
                     </button>
                   );
                 })}
+                <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <p className="text-[11px] text-slate-400">Gratis &amp; utan förpliktelser</p>
+                </div>
               </div>
             </div>
           </div>
