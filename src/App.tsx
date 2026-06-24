@@ -4,6 +4,7 @@ import { supabase } from './lib/supabase';
 import type { Session } from '@supabase/supabase-js';
 import { slugToCity, slugToBrand } from './lib/seo-pages';
 import { slugToTopic } from './lib/seo-topics';
+import ConsultationDrawer from './components/ConsultationDrawer';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
@@ -49,7 +50,6 @@ const KopBilConcierge = lazy(() => import('./pages/KopBilConcierge'));
 const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
-const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
 const NyaBilarPage = lazy(() => import('./pages/NyaBilarPage'));
 
 const PageLoader = () => (
@@ -128,17 +128,47 @@ function detectRecovery(): boolean {
 
 function App() {
   const [publicRoute, setPublicRoute] = useState<PublicRoute>({ page: 'home' });
-  const [path, setPath] = useState(window.location.pathname);
+  const [path, setPath] = useState(() => {
+    const p = window.location.pathname;
+    return p === '/gratis-konsultation' ? '/' : p;
+  });
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [recoveryMode, setRecoveryMode] = useState<boolean>(detectRecovery());
   const [recoveryTarget, setRecoveryTarget] = useState<string>('/handlare/oversikt');
   const [adminVerified, setAdminVerified] = useState<boolean | null>(null);
+  const [consultationOpen, setConsultationOpen] = useState(() => window.location.pathname === '/gratis-konsultation');
+
+  const openConsultation = () => setConsultationOpen(true);
 
   useEffect(() => {
-    const onPop = () => setPath(window.location.pathname);
+    const onPop = () => {
+      const p = window.location.pathname;
+      if (p === '/gratis-konsultation') {
+        setConsultationOpen(true);
+        window.history.replaceState({}, '', document.referrer ? document.referrer : '/');
+        setPath(window.location.pathname);
+        return;
+      }
+      setPath(p);
+    };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  // Intercept anchor clicks to /gratis-konsultation and open drawer instead
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const anchor = (e.target as Element).closest('a');
+      if (!anchor) return;
+      const href = anchor.getAttribute('href');
+      if (href === '/gratis-konsultation') {
+        e.preventDefault();
+        setConsultationOpen(true);
+      }
+    };
+    document.addEventListener('click', onClick, { capture: true });
+    return () => document.removeEventListener('click', onClick, { capture: true });
   }, []);
 
   useEffect(() => {
@@ -367,31 +397,30 @@ function App() {
   }
 
   if (path === '/gratis-konsultation') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <FreeConsultationPage
-          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
-          onNavigateBuy={() => { window.history.pushState({}, '', '/kop-bil-hjalp'); setPath('/kop-bil-hjalp'); }}
-          onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
-        />
-      </Suspense>
-    );
+    // Redirect to home and open drawer
+    window.history.replaceState({}, '', '/');
+    setPath('/');
+    setConsultationOpen(true);
+    return null;
   }
 
   if (path === '/nya-bilar') {
     return (
       <Suspense fallback={<PageLoader />}>
-        <NyaBilarPage
-          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
-          onNavigateBuy={(bil) => {
-            const p = new URLSearchParams();
-            if (bil) p.set('bil', bil);
-            p.set('source', 'Nya bilar sida');
-            window.history.pushState({}, '', `/kop-bil/bestall?${p.toString()}`);
-            setPath('/kop-bil/bestall');
-          }}
-          onNavigateConsultation={() => { window.history.pushState({}, '', '/gratis-konsultation'); setPath('/gratis-konsultation'); }}
-        />
+        <>
+          <NyaBilarPage
+            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
+            onNavigateBuy={(bil) => {
+              const p = new URLSearchParams();
+              if (bil) p.set('bil', bil);
+              p.set('source', 'Nya bilar sida');
+              window.history.pushState({}, '', `/kop-bil/bestall?${p.toString()}`);
+              setPath('/kop-bil/bestall');
+            }}
+            onNavigateConsultation={openConsultation}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+        </>
       </Suspense>
     );
   }
@@ -399,17 +428,20 @@ function App() {
   if (path === '/kop-bil-hjalp') {
     return (
       <Suspense fallback={<PageLoader />}>
-        <KopBilConcierge
-          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
-          onNavigateBuy={(bil) => {
-            const params = new URLSearchParams();
-            if (bil) params.set('bil', bil);
-            params.set('source', 'Köp-hjälp-sida');
-            window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
-            setPath('/kop-bil/bestall');
-          }}
-          onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
-        />
+        <>
+          <KopBilConcierge
+            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
+            onNavigateBuy={(bil) => {
+              const params = new URLSearchParams();
+              if (bil) params.set('bil', bil);
+              params.set('source', 'Köp-hjälp-sida');
+              window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
+              setPath('/kop-bil/bestall');
+            }}
+            onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+        </>
       </Suspense>
     );
   }
@@ -422,13 +454,16 @@ function App() {
     const buySource = buyParams.get('source') || '';
     return (
       <Suspense fallback={<PageLoader />}>
-        <BuyCarPage
-          initialBil={buyBil}
-          initialTyp={buyTyp === 'found' || buyTyp === 'searching' || buyTyp === 'trade' ? buyTyp : undefined}
-          initialReg={buyReg}
-          source={buySource}
-          onBack={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
-        />
+        <>
+          <BuyCarPage
+            initialBil={buyBil}
+            initialTyp={buyTyp === 'found' || buyTyp === 'searching' || buyTyp === 'trade' ? buyTyp : undefined}
+            initialReg={buyReg}
+            source={buySource}
+            onBack={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+        </>
       </Suspense>
     );
   }
@@ -436,14 +471,17 @@ function App() {
   if (path === '/kop-bil') {
     return (
       <Suspense fallback={<PageLoader />}>
-        <CompareCarsPage
-          onBackHome={() => {
-            window.history.pushState({}, '', '/');
-            setPath('/');
-            setPublicRoute({ page: 'home' });
-          }}
-          pageSlug="kop-bil"
-        />
+        <>
+          <CompareCarsPage
+            onBackHome={() => {
+              window.history.pushState({}, '', '/');
+              setPath('/');
+              setPublicRoute({ page: 'home' });
+            }}
+            pageSlug="kop-bil"
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+        </>
       </Suspense>
     );
   }
@@ -532,12 +570,15 @@ function App() {
     if (topic) {
       return (
         <Suspense fallback={<PageLoader />}>
-          <SeoTopicPage
-            topic={topic}
-            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-            onNavigateConsultation={() => { window.history.pushState({}, '', '/gratis-konsultation'); setPath('/gratis-konsultation'); }}
-            onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
-          />
+          <>
+            <SeoTopicPage
+              topic={topic}
+              onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+              onNavigateConsultation={openConsultation}
+              onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
+            />
+            <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          </>
         </Suspense>
       );
     }
@@ -580,12 +621,15 @@ function App() {
   if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
     return (
       <Suspense fallback={<PageLoader />}>
-        <HowItWorks
-          showSeo={path === '/salj-din-bil'}
-          pageTitle={path === '/salj-din-bil' ? 'Sälj din bil | Bilto' : undefined}
-          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-          onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
-        />
+        <>
+          <HowItWorks
+            showSeo={path === '/salj-din-bil'}
+            pageTitle={path === '/salj-din-bil' ? 'Sälj din bil | Bilto' : undefined}
+            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+        </>
       </Suspense>
     );
   }
@@ -630,6 +674,7 @@ function App() {
             }}
           />
         )}
+        <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
       </>
     </Suspense>
   );
