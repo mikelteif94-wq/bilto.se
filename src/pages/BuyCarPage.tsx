@@ -45,6 +45,7 @@ export default function BuyCarPage({
     miltal: '',
     targetCar: '',
     desiredMonthlyCost: '',
+    leasingType: '',
     additionalRequests: '',
     carPrice: '',
     yearFrom: '',

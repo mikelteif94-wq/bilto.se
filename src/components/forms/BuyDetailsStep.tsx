@@ -26,6 +26,7 @@ const FUEL_TYPES = [
 const PAYMENT_TYPES = [
   { value: 'cash', label: 'Kontant' },
   { value: 'finance', label: 'Finansiering' },
+  { value: 'leasing', label: 'Leasing' },
 ];
 
 const currentYear = new Date().getFullYear();
@@ -42,6 +43,7 @@ export interface BuyDetailsData {
   miltal: string;
   targetCar: string;
   desiredMonthlyCost: string;
+  leasingType: string;
   additionalRequests: string;
   carPrice: string;
   yearFrom: string;
@@ -440,20 +442,46 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
           ))}
         </div>
         <FieldError message={errors.paymentType} />
-        {d.paymentType === 'finance' && (
-          <div className="mt-4 sm:max-w-xs">
-            <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
-              Max månadskostnad (kr)
-              <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
-            </label>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={d.desiredMonthlyCost}
-              onChange={e => set('desiredMonthlyCost', e.target.value)}
-              placeholder="T.ex. 4 000"
-              className="form-control"
-            />
+        {(d.paymentType === 'finance' || d.paymentType === 'leasing') && (
+          <div className="mt-4 space-y-4">
+            <div className="sm:max-w-xs">
+              <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
+                Max månadskostnad (kr)
+                <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.desiredMonthlyCost}
+                onChange={e => set('desiredMonthlyCost', e.target.value)}
+                placeholder="T.ex. 4 000"
+                className="form-control"
+              />
+            </div>
+            {d.paymentType === 'leasing' && (
+              <div>
+                <p className="text-[13px] font-semibold text-slate-700 mb-2">
+                  Privat- eller företagsleasing?
+                  <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
+                </p>
+                <div className="flex gap-2">
+                  {['Privat', 'Företag'].map(t => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => set('leasingType', d.leasingType === t ? '' : t)}
+                      className={`px-4 h-9 rounded-xl text-[13.5px] font-medium transition-all active:scale-[0.97] ${
+                        d.leasingType === t
+                          ? 'bg-[#0e6efe] text-white shadow-sm'
+                          : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+                      }`}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -669,20 +697,46 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
           ))}
         </div>
         <FieldError message={errors.paymentType} />
-        {d.paymentType === 'finance' && (
-          <div className="mt-4 sm:max-w-xs">
-            <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
-              Max månadskostnad (kr)
-              <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
-            </label>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={d.desiredMonthlyCost}
-              onChange={e => set('desiredMonthlyCost', e.target.value)}
-              placeholder="T.ex. 4 000"
-              className="form-control"
-            />
+        {(d.paymentType === 'finance' || d.paymentType === 'leasing') && (
+          <div className="mt-4 space-y-4">
+            <div className="sm:max-w-xs">
+              <label className="block text-[13.5px] font-semibold text-slate-700 mb-1.5">
+                Max månadskostnad (kr)
+                <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={d.desiredMonthlyCost}
+                onChange={e => set('desiredMonthlyCost', e.target.value)}
+                placeholder="T.ex. 4 000"
+                className="form-control"
+              />
+            </div>
+            {d.paymentType === 'leasing' && (
+              <div>
+                <p className="text-[13px] font-semibold text-slate-700 mb-2">
+                  Privat- eller företagsleasing?
+                  <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
+                </p>
+                <div className="flex gap-2">
+                  {['Privat', 'Företag'].map(t => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => set('leasingType', d.leasingType === t ? '' : t)}
+                      className={`px-4 h-9 rounded-xl text-[13.5px] font-medium transition-all active:scale-[0.97] ${
+                        d.leasingType === t
+                          ? 'bg-[#0e6efe] text-white shadow-sm'
+                          : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+                      }`}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -850,7 +904,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     setD(prev => {
       const next = { ...prev, [key]: value };
       if (key === 'carBrand') next.carModel = '';
-      if (key === 'paymentType' && value === 'cash') next.desiredMonthlyCost = '';
+      if (key === 'paymentType' && value === 'cash') { next.desiredMonthlyCost = ''; next.leasingType = ''; }
+      if (key === 'paymentType' && value === 'finance') next.leasingType = '';
       return next;
     });
     setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
