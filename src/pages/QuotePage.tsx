@@ -135,10 +135,10 @@ export default function QuotePage({
       </header>
 
       {/* Mobile hero */}
-      <section className="lg:hidden pt-16 relative bg-[#0e6efe] overflow-hidden">
+      <section className="lg:hidden relative min-h-[100svh] flex flex-col overflow-hidden bg-[#0e6efe]">
         <div className="absolute -right-20 top-80 w-[240px] h-[240px] rounded-full bg-[#3d8cff] opacity-40" />
 
-        <div className="relative px-6 pt-4 pb-10">
+        <div className="relative flex-1 flex flex-col items-center justify-start pt-28 px-6 pb-10">
           <div className="flex items-center justify-center mb-3">
             <img
               src="/files_10012721-2026-05-15T15-21-45-058Z-module-1-img.74fe1fb9_(1).svg"
@@ -168,7 +168,7 @@ export default function QuotePage({
             </li>
           </ul>
 
-          <div className="mt-6 bg-white rounded-xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] p-5">
+          <div className="mt-6 bg-white rounded-xl shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)] p-5 w-full max-w-sm">
             <button
               type="button"
               onClick={() => navigateToBuy()}
@@ -183,7 +183,7 @@ export default function QuotePage({
       </section>
 
       {/* Desktop hero */}
-      <section className="hidden lg:block relative bg-[#0e6efe] pt-28 pb-32 overflow-hidden">
+      <section className="hidden lg:flex relative bg-[#0e6efe] min-h-[100svh] flex-col overflow-hidden">
         <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60" />
         <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50" />
         <img
@@ -192,7 +192,7 @@ export default function QuotePage({
           aria-hidden="true"
           className="absolute left-1/2 -translate-x-1/2 top-0 w-[780px] h-[780px] object-contain pointer-events-none select-none opacity-40"
         />
-        <div className="relative max-w-[1280px] mx-auto px-6 grid grid-cols-[1.1fr_0.9fr] gap-14 items-center">
+        <div className="relative flex-1 flex items-center max-w-[1280px] mx-auto px-6 w-full pt-28 pb-16 grid grid-cols-[1.1fr_0.9fr] gap-14">
           <div>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/20 backdrop-blur-sm text-white text-[13px] font-semibold mb-6">
               <Sparkles className="w-4 h-4" />
