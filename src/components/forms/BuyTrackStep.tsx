@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Handshake, ArrowLeftRight, ArrowRight, Phone, CheckSquare, HelpCircle } from 'lucide-react';
+import { Search, Handshake, ArrowLeftRight, ArrowRight, Phone, CheckSquare, HelpCircle, Check } from 'lucide-react';
 
 export type BuyTrack = 'found' | 'searching' | 'know' | 'explore' | 'trade';
 
@@ -114,6 +114,41 @@ export default function BuyTrackStep({ initialBil, onChoose, onGuidance }: BuyTr
           <Phone className="w-3.5 h-3.5" strokeWidth={2} />
           <span>Osäker? <span className="font-semibold">Vi ringer och guidar dig</span></span>
         </button>
+      </div>
+
+      <div className="mt-2 pt-4 border-t border-slate-100">
+        <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Hur går det till?</p>
+        <div className="space-y-2.5">
+          {([
+            { n: '1', title: 'Välj vad du behöver', desc: 'Berätta om din situation — hittat bil, letar, eller inbyte.' },
+            { n: '2', title: 'Vi tar kontakt', desc: 'En bilexpert hör av sig och vi lägger upp en plan.' },
+            { n: '3', title: 'Vi sköter det åt dig', desc: 'Förhandling, koll av bilen och hela köpprocessen.' },
+          ] as const).map(item => (
+            <div key={item.n} className="flex items-start gap-3">
+              <div className="w-6 h-6 rounded-lg bg-[#0e6efe]/8 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-[11px] font-bold text-[#0e6efe]">{item.n}</span>
+              </div>
+              <div>
+                <div className="text-[13px] font-semibold text-slate-800 leading-snug">{item.title}</div>
+                <div className="text-[12px] text-slate-500 mt-0.5 leading-snug">{item.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {([
+            { icon: Check, color: 'text-emerald-600', bg: 'bg-emerald-50', label: 'Kostnadsfritt' },
+            { icon: Phone, color: 'text-[#0e6efe]',   bg: 'bg-blue-50',    label: 'Vi ringer dig' },
+            { icon: Handshake, color: 'text-slate-600', bg: 'bg-slate-100', label: 'Inga förpliktelser' },
+          ] as const).map(item => (
+            <div key={item.label} className="flex flex-col items-center gap-1 text-center">
+              <div className={`w-7 h-7 rounded-lg ${item.bg} flex items-center justify-center`}>
+                <item.icon className={`w-3.5 h-3.5 ${item.color}`} strokeWidth={2} />
+              </div>
+              <span className="text-[10.5px] font-medium text-slate-500 leading-tight">{item.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
