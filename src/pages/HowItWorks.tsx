@@ -1157,7 +1157,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           style={{ background: 'linear-gradient(135deg,#1a7fff 0%,#0e6efe 50%,#0a57cc 100%)' }}
         >
           <div className="relative shrink-0">
-            <img src="/image copy copy.png" alt="Expert" className="w-9 h-9 rounded object-cover border-2 border-white/30" />
+            <img src="/image copy copy copy.png" alt="Expert" className="w-9 h-9 rounded object-cover border-2 border-white/30" />
             <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-white" />
           </div>
           <div className="flex flex-col leading-tight min-w-0">

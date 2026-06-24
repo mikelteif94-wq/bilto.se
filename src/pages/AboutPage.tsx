@@ -155,7 +155,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
 
                 <div className="mt-8 relative rounded-xl overflow-hidden aspect-[4/3] bg-slate-100">
                   <img
-                    src="/image copy copy.png"
+                    src="/image copy copy copy.png"
                     alt="Alexander, VD och medgrundare"
                     className="w-full h-full object-cover object-top"
                   />
