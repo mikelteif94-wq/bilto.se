@@ -1075,18 +1075,18 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-black/60 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/40 pointer-events-none" />
 
         {/* Desktop: two-column layout */}
         <div className="relative max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16 pb-10 sm:pb-12 lg:pb-0">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16 pb-16 sm:pb-20 lg:pb-8">
             {/* Left: text + CTA */}
-            <div className="flex-1 text-center lg:text-left lg:py-12">
+            <div className="flex-1 text-center lg:text-left lg:py-16">
               <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
-                {heroTitle ?? 'Hitta din drömbil – spara tid och pengar'}
+                {heroTitle ?? 'Hitta drömbilen – spara tid och pengar'}
               </h1>
               <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto lg:mx-0">
-                {heroSubtitle ?? 'Jämför bilar, hitta rätt modell och låt oss förhandla fram bästa priset åt dig. Boka en gratis konsultation och se hur mycket du kan spara.'}
+                {heroSubtitle ?? 'Vi jämför, förhandlar och hittar rätt bil åt dig. Boka gratis konsultation.'}
               </p>
 
               <div className="mt-8 bg-white rounded-xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden max-w-md mx-auto lg:mx-0 text-left">
