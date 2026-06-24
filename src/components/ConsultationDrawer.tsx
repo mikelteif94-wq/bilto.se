@@ -9,7 +9,6 @@ import {
   Search,
   Tag,
   RefreshCw,
-  CreditCard,
   HelpCircle,
   ShieldCheck,
   Car,
@@ -28,13 +27,12 @@ import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
 import BuyDetailsStep, { type BuyDetailsData } from './forms/BuyDetailsStep';
 import BuyTradeInStep, { type BuyTradeInData } from './forms/BuyTradeInStep';
 
-type Syfte = 'kop_bil' | 'salj_bil' | 'inbyte' | 'finansiering' | 'ovrig';
+type Syfte = 'kop_bil' | 'salj_bil' | 'inbyte' | 'ovrig';
 
 const SYFTE_OPTIONS: { value: Syfte; label: string; desc: string; icon: LucideIcon }[] = [
   { value: 'kop_bil',      label: 'Köpa bil',      desc: 'Jag vill ha hjälp att hitta rätt bil',    icon: Search },
   { value: 'salj_bil',     label: 'Sälja bil',      desc: 'Jag vill sälja min bil till bästa pris',  icon: Tag },
   { value: 'inbyte',       label: 'Inbyte',         desc: 'Jag vill byta in min bil mot en ny',      icon: RefreshCw },
-  { value: 'finansiering', label: 'Finansiering',   desc: 'Jag har frågor om lån eller leasing',     icon: CreditCard },
   { value: 'ovrig',        label: 'Annat',          desc: 'Jag har en annan fråga',                  icon: HelpCircle },
 ];
 
