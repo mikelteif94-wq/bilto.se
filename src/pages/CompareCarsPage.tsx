@@ -1066,15 +1066,16 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       />
 
       {/* Hero */}
-      <section className="pt-28 sm:pt-36 pb-0 px-5 sm:px-6 bg-[#0e6efe] relative overflow-hidden">
-        <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60 pointer-events-none" />
-        <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50 pointer-events-none" />
+      <section className="pt-28 sm:pt-36 pb-0 px-5 sm:px-6 relative overflow-hidden">
         <img
-          src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
+          src="/files_2615643-2026-06-20T00-26-02-459Z-header8.jpg"
           alt=""
           aria-hidden="true"
-          className="absolute left-1/2 -translate-x-1/2 top-0 w-[600px] h-[600px] object-contain pointer-events-none select-none opacity-20"
+          className="absolute inset-0 w-full h-full object-cover object-[50%_40%] pointer-events-none select-none"
+          fetchPriority="high"
+          decoding="async"
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-black/60 pointer-events-none" />
 
         {/* Desktop: two-column layout */}
         <div className="relative max-w-6xl mx-auto">
@@ -1144,7 +1145,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           </div>
 
           {/* Mobile: illustration below CTA */}
-          <div className="lg:hidden mt-8 flex justify-center pointer-events-none select-none overflow-hidden -mx-5">
+          <div className="lg:hidden mt-8 flex justify-center pointer-events-none select-none overflow-hidden -mx-5 opacity-0 h-0">
             <img
               src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7.svg"
               alt=""
