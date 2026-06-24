@@ -44,7 +44,6 @@ export interface BuyDetailsData {
   miltal: string;
   targetCar: string;
   desiredMonthlyCost: string;
-  monthlyCostExMoms: boolean;
   leasingType: string;
   additionalRequests: string;
   carPrice: string;
@@ -484,15 +483,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
                 className="form-control"
               />
               {d.paymentType === 'leasing' && d.leasingType === 'Företag' && (
-                <label className="mt-2.5 flex items-center gap-2.5 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={d.monthlyCostExMoms}
-                    onChange={e => setD(prev => ({ ...prev, monthlyCostExMoms: e.target.checked }))}
-                    className="w-4 h-4 rounded accent-[#0e6efe]"
-                  />
-                  <span className="text-[13px] text-slate-600">Priset är exkl. moms</span>
-                </label>
+                <p className="mt-1.5 text-[12px] text-slate-400">Exkl. moms</p>
               )}
             </div>
           </div>
@@ -750,15 +741,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
                 className="form-control"
               />
               {d.paymentType === 'leasing' && d.leasingType === 'Företag' && (
-                <label className="mt-2.5 flex items-center gap-2.5 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={d.monthlyCostExMoms}
-                    onChange={e => setD(prev => ({ ...prev, monthlyCostExMoms: e.target.checked }))}
-                    className="w-4 h-4 rounded accent-[#0e6efe]"
-                  />
-                  <span className="text-[13px] text-slate-600">Priset är exkl. moms</span>
-                </label>
+                <p className="mt-1.5 text-[12px] text-slate-400">Exkl. moms</p>
               )}
             </div>
           </div>
