@@ -1066,7 +1066,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       />
 
       {/* Hero */}
-      <section className="pt-28 sm:pt-36 pb-0 px-5 sm:px-6 relative overflow-hidden min-h-[100svh] flex flex-col justify-start">
+      <section className="pt-28 sm:pt-36 pb-0 px-5 sm:px-6 relative overflow-hidden min-h-[100svh] flex flex-col justify-center lg:justify-start">
         <img
           src="/hero/ChatGPT_Image_8_maj_2026_09_33_53.png"
           alt=""
@@ -1077,42 +1077,40 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/40 pointer-events-none" />
 
-        {/* Desktop: two-column layout */}
-        <div className="relative max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16 pb-16 sm:pb-20 lg:pb-8">
-            {/* Left: text + CTA */}
-            <div className="flex-1 text-center lg:text-left lg:py-16">
-              <h1 className="text-[26px] sm:text-[44px] font-bold leading-[1.1] tracking-tight text-white">
-                {heroTitle ?? <>Hitta drömbilen –<br />spara tid och pengar</>}
-              </h1>
-              <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[17px] leading-[1.6] max-w-xl mx-auto lg:mx-0">
-                {heroSubtitle ?? 'Vi jämför, förhandlar och hittar rätt bil åt dig. Boka gratis konsultation.'}
-              </p>
+        {/* Hero content */}
+        <div className="relative max-w-6xl mx-auto w-full flex-1 flex items-center py-16 lg:py-0 lg:min-h-[100svh]">
+          <div className="w-full lg:max-w-[560px]">
+            <h1 className="text-[28px] sm:text-[48px] font-bold leading-[1.1] tracking-tight text-white text-center lg:text-left">
+              {heroTitle ?? <>Hitta drömbilen –<br />spara tid och pengar</>}
+            </h1>
+            <p className="mt-3 sm:mt-4 text-white/80 text-[14px] sm:text-[18px] leading-[1.6] text-center lg:text-left max-w-xl mx-auto lg:mx-0">
+              {heroSubtitle ?? 'Vi jämför, förhandlar och hittar rätt bil åt dig. Boka gratis konsultation.'}
+            </p>
 
-              <div className="mt-8 bg-white rounded-xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.4)] overflow-hidden max-w-md mx-auto lg:mx-0 text-left">
-                {(ctaOptions ?? [
-                  {
-                    icon: CheckCircle,
-                    label: 'Jag har hittat en bil',
-                    sub: 'Låt oss förhandla och granska åt dig',
-                    track: 'found' as const,
-                  },
-                  {
-                    icon: Search,
-                    label: 'Jag letar efter bil',
-                    sub: 'Utforska, jämför eller testa bilmatch',
-                    track: 'searching' as const,
-                  },
-                  {
-                    icon: ArrowLeftRight,
-                    label: 'Jag vill byta bil',
-                    sub: 'Vi hittar och förhandlar nästa bil åt dig',
-                    track: 'trade' as const,
-                  },
-                ]).map(({ label, sub, track }, i, arr) => {
-                  const icons = { found: CheckCircle, searching: Search, trade: ArrowLeftRight };
-                  const Icon = icons[track];
-                  return (
+            <div className="mt-8 bg-white rounded-xl shadow-[0_24px_64px_-16px_rgba(15,23,42,0.45)] overflow-hidden max-w-md mx-auto lg:mx-0 text-left">
+              {(ctaOptions ?? [
+                {
+                  icon: CheckCircle,
+                  label: 'Jag har hittat en bil',
+                  sub: 'Låt oss förhandla och granska åt dig',
+                  track: 'found' as const,
+                },
+                {
+                  icon: Search,
+                  label: 'Jag letar efter bil',
+                  sub: 'Utforska, jämför eller testa bilmatch',
+                  track: 'searching' as const,
+                },
+                {
+                  icon: ArrowLeftRight,
+                  label: 'Jag vill byta bil',
+                  sub: 'Vi hittar och förhandlar nästa bil åt dig',
+                  track: 'trade' as const,
+                },
+              ]).map(({ label, sub, track }, i, arr) => {
+                const icons = { found: CheckCircle, searching: Search, trade: ArrowLeftRight };
+                const Icon = icons[track];
+                return (
                   <button
                     key={label}
                     type="button"
@@ -1129,29 +1127,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] group-hover:translate-x-0.5 transition-all shrink-0" />
                   </button>
                 );
-                })}
-              </div>
+              })}
             </div>
-
-            {/* Right: illustration — hidden on mobile, shown on desktop flush to bottom */}
-            <div className="hidden lg:flex lg:w-[480px] xl:w-[560px] shrink-0 items-end self-end pointer-events-none select-none">
-              <img
-                src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7.svg"
-                alt=""
-                aria-hidden="true"
-                className="w-full"
-              />
-            </div>
-          </div>
-
-          {/* Mobile: illustration below CTA */}
-          <div className="lg:hidden mt-8 flex justify-center pointer-events-none select-none overflow-hidden -mx-5 opacity-0 h-0">
-            <img
-              src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7.svg"
-              alt=""
-              aria-hidden="true"
-              className="w-full max-w-sm"
-            />
           </div>
         </div>
       </section>
