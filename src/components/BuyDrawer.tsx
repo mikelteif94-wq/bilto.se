@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, ChevronLeft, Check, Phone, Search, ArrowLeftRight, CheckCircle, Sparkles, Clock } from 'lucide-react';
+import { X, ChevronLeft, Check, Phone, CheckCircle, Sparkles, Clock } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ErrorBanner from './ErrorBanner';
 import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
@@ -31,7 +31,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
 
   const [track, setTrack] = useState<BuyTrack>(initialTrack || 'found');
   const [step, setStep] = useState<FormStep>(
-    skipToContact ? 'contact' : skipIntent ? 'details' : isSearchingWithPrefill ? 'details' : hasSpecificCar ? 'carIntent' : skipTrack ? 'details' : 'track'
+    skipToContact ? 'contact' : skipIntent ? 'details' : isSearchingWithPrefill ? 'details' : initialTrack ? 'details' : 'track'
   );
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -108,7 +108,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
       const resolvedTrack = initialTrack || 'found';
       const searchingPrefill = (resolvedTrack === 'searching' || skipIntent) && !!car;
       setTrack(resolvedTrack);
-      setStep(skipToContact ? 'contact' : skipIntent ? 'details' : searchingPrefill ? 'details' : car ? 'carIntent' : initialTrack ? 'details' : 'track');
+      setStep(skipToContact ? 'contact' : skipIntent ? 'details' : searchingPrefill ? 'details' : initialTrack ? 'details' : 'track');
       setError(null);
       trackEvent('drawer_opened', { track: resolvedTrack });
       setDetails({
@@ -162,8 +162,9 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
       return ['details', 'tradeIn', 'contact'];
     }
     if (hasSpecificCar) {
-      if (track === 'trade') return ['carIntent', 'details', 'contact'];
-      return ['carIntent', 'condition', 'details', 'tradeIn', 'contact'];
+      // carIntent is now handled by 'track' step with car name pre-filled
+      if (track === 'trade') return ['track', 'details', 'contact'];
+      return ['track', 'condition', 'details', 'tradeIn', 'contact'];
     }
     if (track === 'trade') return skipTrack ? ['details', 'tradeIn', 'contact'] : ['track', 'details', 'tradeIn', 'contact'];
     return skipTrack ? ['condition', 'details', 'tradeIn', 'contact'] : ['track', 'condition', 'details', 'tradeIn', 'contact'];
@@ -176,14 +177,14 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
 
   const titles: Record<FormStep, string> = {
     track: 'Hur vill du gå vidare?',
-    carIntent: car || 'Hur vill du gå vidare?',
+    carIntent: 'Hur vill du gå vidare?',
     condition: 'Ny eller begagnad?',
     details: skipIntent
       ? (track === 'searching' ? `Hitta en ${car}` : `Förhandla – ${car}`)
       : isSearchingWithPrefill
       ? 'Berätta lite mer om dig'
       : hasSpecificCar
-      ? (track === 'searching' ? `Hitta en ${car}` : `Förhandla – ${car}`)
+      ? (track === 'searching' ? `Hitta en ${car}` : track === 'trade' ? 'Berätta om ditt byte' : `Förhandla – ${car}`)
       : track === 'trade' ? 'Berätta om ditt byte'
       : track === 'searching' ? 'Berätta vad du söker'
       : 'Berätta om bilen',
@@ -397,7 +398,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                   )}
                 </div>
                 <div className="flex items-center gap-2 shrink-0 mt-1">
-                  {step !== 'done' && step !== 'track' && step !== 'carIntent' && step !== 'condition' && !(skipTrack && !hasSpecificCar && step === 'details') && (
+                  {step !== 'done' && currentIndex > 0 && (
                     <button
                       type="button"
                       onClick={handleBack}
@@ -423,12 +424,12 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
             <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5">
               <ErrorBanner message={error} className="mb-5" />
 
-              {step === 'track' && (
+              {(step === 'track' || step === 'carIntent') && (
                 <BuyTrackStep
                   initialBil={car ?? ''}
                   onChoose={(t) => {
                     setTrack(t);
-                    setStep('details');
+                    goNext();
                     setError(null);
                   }}
                   onGuidance={() => {
@@ -437,95 +438,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                     setGuidanceError(null);
                   }}
                 />
-              )}
-
-              {step === 'carIntent' && car && (
-                <div className="py-2 space-y-3">
-                  <p className="text-[14.5px] text-slate-500 leading-[1.55]">
-                    Välj det som passar dig bäst.
-                  </p>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTrack('found');
-                      setStep('details');
-                      setError(null);
-                    }}
-                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-[#0e6efe] bg-[#0e6efe]/5 hover:bg-[#0e6efe]/10 transition-all text-left group"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-[#0e6efe] flex items-center justify-center shrink-0 mt-0.5">
-                      <CheckCircle className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-[15px] font-bold text-slate-900">Jag har hittat en {car}</p>
-                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
-                        Vi förhandlar med säljaren åt dig och pressar priset.
-                      </p>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTrack('searching');
-                      setStep('details');
-                      setError(null);
-                    }}
-                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-[#faf8f5] transition-all text-left group"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
-                      <Search className="w-5 h-5 text-slate-600" />
-                    </div>
-                    <div>
-                      <p className="text-[15px] font-bold text-slate-900">Jag letar efter en {car}</p>
-                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
-                        Vi hittar, kollar och förhandlar åt dig.
-                      </p>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTrack('trade');
-                      setStep('details');
-                      setError(null);
-                    }}
-                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-[#faf8f5] transition-all text-left group"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
-                      <ArrowLeftRight className="w-5 h-5 text-slate-600" />
-                    </div>
-                    <div>
-                      <p className="text-[15px] font-bold text-slate-900">Jag vill byta in</p>
-                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
-                        Vi sköter inbytet och hjälper dig hitta ny bil.
-                      </p>
-                    </div>
-                  </button>
-
-                  <div className="mt-2 pt-4 border-t border-slate-100">
-                    <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Hur går det till?</p>
-                    <div className="space-y-2.5">
-                      {[
-                        { n: '1', title: 'Välj vad du behöver', desc: 'Berätta om din situation — hittat bil, letar, eller inbyte.' },
-                        { n: '2', title: 'Vi tar kontakt', desc: 'En bilexpert hör av sig och vi lägger upp en plan.' },
-                        { n: '3', title: 'Vi sköter det åt dig', desc: 'Förhandling, koll av bilen och hela köpprocessen.' },
-                      ].map(item => (
-                        <div key={item.n} className="flex items-start gap-3">
-                          <div className="w-6 h-6 rounded-lg bg-[#0e6efe]/8 flex items-center justify-center shrink-0 mt-0.5">
-                            <span className="text-[11px] font-bold text-[#0e6efe]">{item.n}</span>
-                          </div>
-                          <div>
-                            <div className="text-[13px] font-semibold text-slate-800 leading-snug">{item.title}</div>
-                            <div className="text-[12px] text-slate-500 mt-0.5 leading-snug">{item.desc}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
               )}
 
               {step === 'condition' && (
@@ -602,33 +514,25 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                   }}
                   onExplore={() => {
                     onClose();
-                    const onBuyPage = window.location.pathname === '/kop-bil';
-                    if (onBuyPage) {
-                      setTimeout(() => {
-                        document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth' });
-                      }, 200);
+                    const goToCarsGrid = () => document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth' });
+                    if (window.location.pathname === '/kop-bil') {
+                      setTimeout(goToCarsGrid, 200);
                     } else {
                       window.history.pushState({}, '', '/kop-bil');
                       window.dispatchEvent(new PopStateEvent('popstate'));
                       window.scrollTo({ top: 0, behavior: 'auto' });
-                      setTimeout(() => {
-                        document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth' });
-                      }, 400);
+                      setTimeout(goToCarsGrid, 400);
                     }
                   }}
                   onQuiz={() => {
                     onClose();
-                    const onBuyPage = window.location.pathname === '/kop-bil';
-                    if (onBuyPage) {
-                      setTimeout(() => {
-                        document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
-                      }, 200);
+                    const goToQuiz = () => document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
+                    if (window.location.pathname === '/kop-bil') {
+                      setTimeout(goToQuiz, 200);
                     } else {
                       window.history.pushState({}, '', '/kop-bil');
                       window.dispatchEvent(new PopStateEvent('popstate'));
-                      setTimeout(() => {
-                        document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
-                      }, 400);
+                      setTimeout(goToQuiz, 400);
                     }
                   }}
                 />

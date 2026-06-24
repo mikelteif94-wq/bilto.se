@@ -763,7 +763,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   };
 
   const fuelTypeSelector = hideFuel ? null : (
-    <div className="py-7">
+    <div className="py-6">
       <label className="block text-[15px] font-bold text-slate-900 mb-1">Drivmedel</label>
       <div className="flex flex-wrap gap-2">
         {FUEL_TYPES.map(f => {
@@ -788,7 +788,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   );
 
   const paymentSection = (
-    <div className="py-7">
+    <div className="py-6">
       <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
         Hur vill du betala?
       </label>
@@ -814,12 +814,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   );
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
+    <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-100">
 
       {/* ── FOUND track ── */}
       {track === 'found' && (
         <>
-          <div className="pb-6 sm:pb-7">
+          <div className="pb-5">
             <LinkField
               value={d.linkOrSeller}
               onChange={v => set('linkOrSeller', v)}
@@ -827,14 +827,14 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             />
           </div>
 
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          <div className="py-5">
+            <label className="block text-[15px] font-bold text-slate-900 mb-1">
               Har du fått en offert på bilen?
             </label>
-            <p className="text-sm text-slate-500 mb-4">
+            <p className="text-[13px] text-slate-500 mb-3">
               Det hjälper oss att veta om vi ska förhandla ett bättre pris.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-3 sm:max-w-xs">
               {([{ value: true, label: 'Ja' }, { value: false, label: 'Nej' }] as const).map(opt => (
                 <button
                   key={String(opt.value)}
@@ -843,7 +843,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                     setD(prev => ({ ...prev, hasQuote: opt.value }));
                     setErrors(prev => { const n = { ...prev }; delete n.hasQuote; return n; });
                   }}
-                  className={`flex-1 h-12 rounded-xl text-[15px] font-semibold border-2 transition-all ${
+                  className={`flex-1 h-11 rounded-xl text-[15px] font-semibold border-2 transition-all ${
                     d.hasQuote === opt.value
                       ? 'bg-[#0e6efe] border-[#0e6efe] text-white shadow-sm'
                       : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-[#faf8f5]'
@@ -856,8 +856,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           </div>
 
           {!lockedCar && (
-            <div className="py-6 sm:py-7">
-              <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+            <div className="py-5">
+              <label className="block text-[15px] font-bold text-slate-900 mb-3">
                 Vilken bil?
               </label>
               <BrandModelSelector
@@ -874,12 +874,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           {paymentSection}
 
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          <div className="py-5">
+            <label className="block text-[15px] font-bold text-slate-900 mb-1">
               Bilens pris (kr)
-              <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+              <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-sm text-slate-500 mb-3">
+            <p className="text-[13px] text-slate-500 mb-3">
               Används för att visa ett finansieringsexempel.
             </p>
             <div className="w-full sm:max-w-xs">
@@ -899,11 +899,11 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       {/* ── SEARCHING – locked car ── */}
       {track === 'searching' && lockedCar && (
         <>
-          <div className="pb-6 sm:pb-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          <div className="pb-5">
+            <label className="block text-[15px] font-bold text-slate-900 mb-1">
               Max miltal
             </label>
-            <p className="text-sm text-slate-500 mb-3">
+            <p className="text-[13px] text-slate-500 mb-3">
               Hur många mil får bilen max ha gått?
             </p>
             <div className="w-full sm:max-w-xs relative">
@@ -919,8 +919,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             </div>
           </div>
 
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+          <div className="py-5">
+            <label className="block text-[15px] font-bold text-slate-900 mb-3">
               Årsmodell
             </label>
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
@@ -945,12 +945,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           {paymentSection}
 
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          <div className="py-5">
+            <label className="block text-[15px] font-bold text-slate-900 mb-1">
               Max budget (kr)
-              <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+              <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-sm text-slate-500 mb-3">Totalpris för bilen.</p>
+            <p className="text-[13px] text-slate-500 mb-3">Totalpris för bilen.</p>
             <div className="w-full sm:max-w-xs">
               <input
                 type="text"
@@ -969,7 +969,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       {track === 'searching' && !lockedCar && (
         <>
           {(onExplore || onQuiz) && (
-            <div className="mb-8">
+            <div className="mb-6">
               <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 mb-3">Inte redo att fylla i? Du kan också:</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {onExplore && (
@@ -1007,7 +1007,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   </button>
                 )}
               </div>
-              <div className="mt-6 flex items-center gap-3">
+              <div className="mt-5 flex items-center gap-3">
                 <div className="flex-1 h-px bg-slate-100" />
                 <span className="text-[11.5px] text-slate-400 font-medium px-1">eller fortsätt nedan</span>
                 <div className="flex-1 h-px bg-slate-100" />
@@ -1015,7 +1015,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             </div>
           )}
 
-          <div className="pb-7">
+          <div className="pb-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
               Vilket märke och modell?
             </label>
@@ -1031,7 +1031,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             />
           </div>
 
-          <div className="py-7">
+          <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-0.5">Max miltal</label>
             <p className="text-[13px] text-slate-500 mb-3 leading-snug">Hur många mil får bilen max ha gått?</p>
             <div className="w-full sm:max-w-xs relative">
@@ -1047,8 +1047,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             </div>
           </div>
 
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Årsmodell</label>
+          <div className="py-5">
+            <label className="block text-[15px] font-bold text-slate-900 mb-3">Årsmodell</label>
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
@@ -1071,12 +1071,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           {paymentSection}
 
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          <div className="py-5">
+            <label className="block text-[15px] font-bold text-slate-900 mb-1">
               Max budget (kr)
-              <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+              <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-sm text-slate-500 mb-3">Totalpris för bilen.</p>
+            <p className="text-[13px] text-slate-500 mb-3">Totalpris för bilen.</p>
             <div className="w-full sm:max-w-xs">
               <input
                 type="text"
@@ -1102,11 +1102,11 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             onMiltalChange={v => set('miltal', v)}
           />
 
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          <div className="py-5">
+            <label className="block text-[15px] font-bold text-slate-900 mb-1">
               Vilken bil vill du ha istället?
             </label>
-            <p className="text-sm text-slate-500 mb-3">Välj märke och modell, eller skriv fritt.</p>
+            <p className="text-[13px] text-slate-500 mb-3">Välj märke och modell, eller skriv fritt.</p>
             {lockedCar ? (
               <div className="flex items-center h-11 px-4 bg-[#faf8f5] border border-slate-200 rounded-xl text-slate-700 font-medium text-[14px]">
                 {lockedCar}
@@ -1131,12 +1131,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             )}
           </div>
 
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          <div className="py-5">
+            <label className="block text-[15px] font-bold text-slate-900 mb-1">
               Max miltal
-              <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+              <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-sm text-slate-500 mb-3">Hur många mil får nästa bil max ha gått?</p>
+            <p className="text-[13px] text-slate-500 mb-3">Hur många mil får nästa bil max ha gått?</p>
             <div className="w-full sm:max-w-xs relative">
               <input
                 type="text"
@@ -1154,12 +1154,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           {paymentSection}
 
-          <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          <div className="py-5">
+            <label className="block text-[15px] font-bold text-slate-900 mb-1">
               Budget för nästa bil (kr)
-              <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
+              <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-sm text-slate-500 mb-3">Totalpris eller finansiering – vi hjälper dig hitta rätt upplägg.</p>
+            <p className="text-[13px] text-slate-500 mb-3">Totalpris eller finansiering – vi hjälper dig hitta rätt upplägg.</p>
             <div className="w-full sm:max-w-xs">
               <input
                 type="text"
@@ -1174,33 +1174,33 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
         </>
       )}
 
-      {/* ── Var i processen ── */}
-      <div className="py-7">
-        <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
-          Var i processen är du?
-        </label>
-        <p className="text-[13px] text-slate-500 mb-3 leading-snug">Välj det alternativ som bäst beskriver dig.</p>
-        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2">
-          {BUYING_STAGES.map(s => (
-            <button
-              key={s.value}
-              type="button"
-              onClick={() => set('buyingStage', s.value)}
-              className={`w-full sm:w-auto px-5 h-10 rounded-xl text-[14px] font-medium transition-all active:scale-[0.97] text-left sm:text-center ${
-                d.buyingStage === s.value
-                  ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
-                  : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
-        <FieldError message={errors.buyingStage} />
-      </div>
+  /* ── Var i processen ── */
+  <div className="py-6">
+    <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
+      Var i processen är du?
+    </label>
+    <p className="text-[13px] text-slate-500 mb-3 leading-snug">Välj det alternativ som bäst beskriver dig.</p>
+    <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2">
+      {BUYING_STAGES.map(s => (
+        <button
+          key={s.value}
+          type="button"
+          onClick={() => set('buyingStage', s.value)}
+          className={`w-full sm:w-auto px-5 h-11 rounded-xl text-[14px] font-medium transition-all active:scale-[0.97] text-left sm:text-center ${
+            d.buyingStage === s.value
+              ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
+              : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+          }`}
+        >
+          {s.label}
+        </button>
+      ))}
+    </div>
+    <FieldError message={errors.buyingStage} />
+  </div>
 
       {/* ── Övriga önskemål ── */}
-      <div className="py-7">
+      <div className="py-6">
         <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
           Övriga önskemål
           <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
