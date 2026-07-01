@@ -772,14 +772,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
     }
   }, []);
 
-  useEffect(() => {
-    if (defaultCategory === 'el') {
-      setTimeout(() => {
-        document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 350);
-    }
-  }, [defaultCategory]);
-
   const allCarsMap = useMemo(() => {
     const map = new Map<string, ComparisonCar>();
     allCarsRaw.forEach(c => map.set(c.id, c));
@@ -1128,13 +1120,13 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     onClick={() => openBuyDrawer('', track, false, '', defaultFuelTypes)}
                     className={`group w-full flex items-center gap-4 px-5 py-[18px] hover:bg-[#0e6efe]/[0.04] active:bg-[#0e6efe]/[0.07] transition-all text-left ${i < arr.length - 1 ? 'border-b border-slate-100' : ''}`}
                   >
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors overflow-hidden">
+                    <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors overflow-hidden">
                       {track === 'trade' ? (
-                        <img src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7.svg" alt="" className="w-10 h-10 object-contain" style={{ mixBlendMode: 'multiply' }} />
+                        <img src="/hero/files_2615643-2026-06-21T12-42-37-274Z-module-4-img.ce21cba7.svg" alt="" className="w-8 h-8 object-contain" />
                       ) : track === 'searching' ? (
-                        <img src="/benefit3.d9e1ec2e_(1).svg" alt="" className="w-10 h-10 object-contain" style={{ mixBlendMode: 'multiply' }} />
+                        <img src="/benefit3.d9e1ec2e_(1).svg" alt="" className="w-8 h-8 object-contain" />
                       ) : track === 'found' ? (
-                        <img src="/benefit2.e5b8ac47_(1).svg" alt="" className="w-10 h-10 object-contain" style={{ mixBlendMode: 'multiply' }} />
+                        <img src="/benefit2.e5b8ac47_(1).svg" alt="" className="w-8 h-8 object-contain" />
                       ) : (
                         <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
                       )}

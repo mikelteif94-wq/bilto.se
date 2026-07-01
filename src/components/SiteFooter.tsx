@@ -53,7 +53,6 @@ export function SiteFooter() {
                 { label: 'Värdera din bil', href: '/' },
                 { label: 'Sälj din bil', href: '/salj-din-bil' },
                 { label: 'Köp bil med hjälp', href: '/kop-bil' },
-                { label: 'Byt till El', href: '/byt-till-el' },
 
               ].map(({ label, href }) => (
                 <li key={label}>

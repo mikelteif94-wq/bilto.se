@@ -408,17 +408,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             >
               Sälj bil
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                window.history.pushState({}, '', '/byt-till-el');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-              }}
-              className="text-[15px] text-white/70 font-medium transition hover:text-white flex items-center gap-1.5"
-            >
-              Byt till El
-              <span className="text-[10px] font-bold bg-yellow-400/20 text-yellow-200 px-1.5 py-0.5 rounded-md tracking-wide uppercase">Nytt</span>
-            </button>
           </nav>
           <div className="flex items-center ml-auto">
             <a

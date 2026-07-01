@@ -8,8 +8,7 @@ export type MobileMenuItem =
   | 'Köp bil'
   | 'Köp bil med hjälp'
   | 'Om oss'
-  | 'Vi förhandlar åt dig'
-  | 'Byt till El';
+  | 'Vi förhandlar åt dig';
 
 interface MobileMenuProps {
   open: boolean;
@@ -143,24 +142,6 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
             }`}
           >
             Om oss
-          </button>
-
-          {/* Byt till El */}
-          <button
-            type="button"
-            onClick={() => {
-              window.history.pushState({}, '', '/byt-till-el');
-              window.dispatchEvent(new PopStateEvent('popstate'));
-              onClose();
-            }}
-            className={`w-full text-left px-4 py-4 rounded-lg text-[20px] tracking-tight transition font-medium ${
-              active === 'Byt till El' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
-            }`}
-          >
-            <span className="flex items-center gap-2">
-              Byt till El
-              <span className="text-[11px] font-bold bg-[#0e6efe]/10 text-[#0e6efe] px-2 py-0.5 rounded-lg tracking-wide uppercase">Nytt</span>
-            </span>
           </button>
 
           <div className="mx-2 my-2 border-t border-slate-100" />
