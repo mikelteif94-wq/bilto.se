@@ -51,6 +51,7 @@ const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 const NyaBilarPage = lazy(() => import('./pages/NyaBilarPage'));
+const BytTillElPage = lazy(() => import('./pages/BytTillElPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -423,6 +424,28 @@ function App() {
               setPath('/kop-bil/bestall');
             }}
             onNavigateConsultation={openConsultation}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+        </>
+      </Suspense>
+    );
+  }
+
+  if (path === '/byt-till-el') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <>
+          <BytTillElPage
+            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
+            onNavigateBuy={(bil) => {
+              const p = new URLSearchParams();
+              if (bil) p.set('bil', bil);
+              p.set('source', 'Byt till El sida');
+              window.history.pushState({}, '', `/kop-bil/bestall?${p.toString()}`);
+              setPath('/kop-bil/bestall');
+            }}
+            onNavigateConsultation={openConsultation}
+            onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
           />
           <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
         </>
