@@ -11,6 +11,7 @@ import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 interface BytTillElPageProps {
   onBack: () => void;
   onNavigateBuy?: (bil?: string) => void;
+  onNavigateElCars?: () => void;
   onNavigateConsultation?: () => void;
   onNavigateHowItWorks?: () => void;
 }
@@ -130,6 +131,7 @@ const FAQ = [
 export default function BytTillElPage({
   onBack,
   onNavigateBuy,
+  onNavigateElCars,
   onNavigateConsultation,
   onNavigateHowItWorks,
 }: BytTillElPageProps) {
@@ -190,8 +192,15 @@ export default function BytTillElPage({
             <button type="button" onClick={onBack} className="text-[15px] text-white/80 hover:text-white transition font-medium">
               Sälj bil
             </button>
-            <button type="button" onClick={() => onNavigateBuy?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">
+            <button type="button" onClick={() => onNavigateElCars?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">
               Köp bil
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigateHowItWorks?.()}
+              className="text-[15px] text-white/80 hover:text-white transition font-medium"
+            >
+              Så funkar det
             </button>
             <span className="text-[15px] text-white font-semibold border-b-2 border-white/50 pb-0.5">
               Byt till El
@@ -262,7 +271,7 @@ export default function BytTillElPage({
             </button>
             <button
               type="button"
-              onClick={() => onNavigateBuy?.()}
+              onClick={() => onNavigateElCars?.()}
               className="w-full sm:w-auto flex items-center justify-center gap-2.5 h-14 px-8 bg-white/10 border border-white/20 backdrop-blur-sm text-white text-[15px] font-semibold rounded-2xl hover:bg-white/20 active:scale-[0.98] transition-all duration-150"
             >
               Utforska elbilar
@@ -424,7 +433,7 @@ export default function BytTillElPage({
                 viewport={{ once: true }}
                 transition={{ duration: 0.35, delay: i * 0.07 }}
                 className="group bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
-                onClick={() => onNavigateBuy?.(`${car.make} ${car.model}`)}
+                onClick={() => onNavigateElCars?.()}
               >
                 <div className="aspect-[4/3] bg-slate-50 overflow-hidden">
                   <img
@@ -454,7 +463,7 @@ export default function BytTillElPage({
           <div className="mt-8 text-center">
             <button
               type="button"
-              onClick={() => onNavigateBuy?.()}
+              onClick={() => onNavigateElCars?.()}
               className="inline-flex items-center gap-2 text-[14px] font-semibold text-[#0e6efe] hover:text-blue-700 transition-colors"
             >
               Se alla elbilar

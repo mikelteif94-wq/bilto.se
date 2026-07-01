@@ -444,6 +444,7 @@ function App() {
               window.history.pushState({}, '', `/kop-bil/bestall?${p.toString()}`);
               setPath('/kop-bil/bestall');
             }}
+            onNavigateElCars={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
             onNavigateConsultation={openConsultation}
             onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
           />
