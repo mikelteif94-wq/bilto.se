@@ -444,7 +444,13 @@ function App() {
               window.history.pushState({}, '', `/kop-bil/bestall?${p.toString()}`);
               setPath('/kop-bil/bestall');
             }}
-            onNavigateElCars={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
+            onNavigateElCars={() => {
+              window.history.pushState({}, '', '/kop-bil?kategori=el');
+              setPath('/kop-bil');
+              setTimeout(() => {
+                document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 400);
+            }}
             onNavigateConsultation={openConsultation}
             onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
           />
@@ -498,6 +504,8 @@ function App() {
   }
 
   if (path === '/kop-bil') {
+    const kopBilParams = new URLSearchParams(window.location.search);
+    const kopBilKategori = kopBilParams.get('kategori');
     return (
       <Suspense fallback={<PageLoader />}>
         <>
@@ -508,6 +516,7 @@ function App() {
               setPublicRoute({ page: 'home' });
             }}
             pageSlug="kop-bil"
+            defaultCategory={kopBilKategori === 'el' ? 'el' : undefined}
           />
           <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
         </>

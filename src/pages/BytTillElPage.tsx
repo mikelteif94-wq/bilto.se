@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   ArrowRight, Check, Zap, ArrowLeftRight, Wrench, CalendarDays,
   ChevronRight, Menu, ArrowLeft, Star, Shield, TrendingDown, Leaf,
@@ -7,6 +7,8 @@ import {
 import { motion } from 'framer-motion';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
+import { useCatalogCars } from '../hooks/useCatalogCars';
+import { useCarImages } from '../hooks/useCarImages';
 
 interface BytTillElPageProps {
   onBack: () => void;
@@ -75,10 +77,10 @@ const STEPS = [
 ];
 
 const POPULAR_EVS = [
-  { make: 'Volvo', model: 'EX30', range: '480 km', price: '3 990 kr/mån', img: '/getImage_polestar2.webp' },
-  { make: 'Tesla', model: 'Model 3', range: '513 km', price: '4 490 kr/mån', img: '/getImage_ioniq5.webp' },
-  { make: 'Hyundai', model: 'IONIQ 5', range: '507 km', price: '4 290 kr/mån', img: '/getImage_ioniq5.webp' },
-  { make: 'Polestar', model: '2', range: '635 km', price: '4 790 kr/mån', img: '/getImage_polestar2.webp' },
+  { make: 'Volvo', model: 'EX30', range: '480 km', price: '3 990 kr/mån' },
+  { make: 'Tesla', model: 'Model 3', range: '513 km', price: '4 490 kr/mån' },
+  { make: 'Hyundai', model: 'IONIQ 5', range: '507 km', price: '4 290 kr/mån' },
+  { make: 'Polestar', model: '2', range: '635 km', price: '4 790 kr/mån' },
 ];
 
 const REVIEWS = [
@@ -138,6 +140,24 @@ export default function BytTillElPage({
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
+
+  const { cars: dbCars } = useCatalogCars();
+  const { getCarImage } = useCarImages(dbCars);
+
+  const evImages = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const ev of POPULAR_EVS) {
+      const key = `${ev.make.toLowerCase()} ${ev.model.toLowerCase()}`;
+      const dbCar = dbCars.find(c =>
+        c.make.toLowerCase() === ev.make.toLowerCase() &&
+        c.model.toLowerCase() === ev.model.toLowerCase()
+      );
+      if (dbCar) {
+        map[key] = getCarImage(dbCar) ?? '';
+      }
+    }
+    return map;
+  }, [dbCars, getCarImage]);
 
   useEffect(() => {
     document.title = 'Byt till Elbil – Vi sköter hela övergången | Bilto';
@@ -425,7 +445,10 @@ export default function BytTillElPage({
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {POPULAR_EVS.map((car, i) => (
+            {POPULAR_EVS.map((car, i) => {
+              const imgKey = `${car.make.toLowerCase()} ${car.model.toLowerCase()}`;
+              const imgSrc = evImages[imgKey];
+              return (
               <motion.div
                 key={`${car.make}-${car.model}`}
                 initial={{ opacity: 0, y: 16 }}
@@ -435,14 +458,20 @@ export default function BytTillElPage({
                 className="group bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
                 onClick={() => onNavigateElCars?.()}
               >
-                <div className="aspect-[4/3] bg-slate-50 overflow-hidden">
-                  <img
-                    src={car.img}
-                    alt={`${car.make} ${car.model}`}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
-                  />
+                <div className="aspect-[4/3] bg-slate-50 overflow-hidden flex items-end justify-center p-2">
+                  {imgSrc ? (
+                    <img
+                      src={imgSrc}
+                      alt={`${car.make} ${car.model}`}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-auto object-contain group-hover:scale-[1.04] transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Car className="w-16 h-16 text-slate-200" strokeWidth={1} />
+                    </div>
+                  )}
                 </div>
                 <div className="p-4">
                   <div className="flex items-center gap-1.5 mb-1">
@@ -457,7 +486,8 @@ export default function BytTillElPage({
                   </div>
                 </div>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="mt-8 text-center">
@@ -547,7 +577,7 @@ export default function BytTillElPage({
               <div className="absolute top-0 right-0 w-48 h-48 rounded-full opacity-10 pointer-events-none"
                 style={{ background: 'radial-gradient(circle, #fff 0%, transparent 70%)' }} />
               <Plug className="w-12 h-12 text-yellow-300 mb-5" strokeWidth={1.8} />
-              <h3 className="text-[24px] font-black leading-tight mb-3">Laddbox installerad<br />innan du kör hem</h3>
+              <h3 className="text-[24px] font-black leading-tight mb-3 text-white">Laddbox installerad<br />innan du kör hem</h3>
               <p className="text-blue-100 text-[14px] leading-relaxed mb-6">
                 Vi koordinerar hela processen – val av modell, elektriker och installation. Allt klart när du hämtar din nya elbil.
               </p>

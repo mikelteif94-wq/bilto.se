@@ -772,6 +772,14 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
     }
   }, []);
 
+  useEffect(() => {
+    if (defaultCategory === 'el') {
+      setTimeout(() => {
+        document.getElementById('cars-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 350);
+    }
+  }, [defaultCategory]);
+
   const allCarsMap = useMemo(() => {
     const map = new Map<string, ComparisonCar>();
     allCarsRaw.forEach(c => map.set(c.id, c));
