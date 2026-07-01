@@ -248,83 +248,74 @@ export default function BytTillElPage({
       </header>
 
       {/* ── HERO ──────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#0e6efe] pt-32 lg:pt-40 pb-24 px-4">
-        {/* Decorative circles */}
-        <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full opacity-10 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #38bdf8 0%, transparent 70%)' }} />
-        <div className="absolute bottom-0 left-0 w-96 h-48 opacity-[0.07] pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #ffffff 0%, transparent 70%)' }} />
+      <section className="relative min-h-[100svh] flex flex-col overflow-hidden">
+        <img
+          src="/getImage_ioniq5.webp"
+          alt=""
+          aria-hidden
+          className="absolute inset-0 w-full h-full object-cover object-[50%_60%]"
+          fetchPriority="high"
+          decoding="async"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-transparent pointer-events-none" />
 
-        <div className="max-w-4xl mx-auto text-center relative">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-xs font-bold px-4 py-2 rounded-xl mb-6 tracking-wide uppercase">
-              <Zap className="w-3.5 h-3.5 text-yellow-300" />
-              Vi sköter hela övergången
-            </div>
-            <h1 className="text-[34px] sm:text-5xl lg:text-[58px] font-black text-white leading-[1.08] tracking-tight mb-5">
-              Byt till elbil –{' '}
-              <span className="text-yellow-300">vi fixar allt</span>
+        <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
+          <div className="w-full max-w-md">
+            <h1 className="text-white text-[clamp(22px,6.5vw,50px)] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2 whitespace-nowrap">
+              Byt till elbil – vi fixar allt
             </h1>
-            <p className="text-blue-100 text-[17px] sm:text-xl max-w-2xl mx-auto leading-relaxed mb-10">
-              Inbyte, förhandling och laddbox. En kontakt, en process – och du kör fossilfritt.
+            <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
+              Inbyte, förhandling och laddbox • En kontakt, en process
             </p>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <button
-              type="button"
-              onClick={() => onNavigateConsultation?.()}
-              className="group w-full sm:w-auto flex items-center justify-center gap-2.5 h-14 px-8 bg-white text-[#0e6efe] text-[16px] font-black rounded-2xl shadow-xl shadow-black/20 hover:bg-blue-50 active:scale-[0.98] transition-all duration-150"
-            >
-              <Zap className="w-5 h-5 text-yellow-500 shrink-0" />
-              Boka gratis rådgivning
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-            <button
-              type="button"
-              onClick={() => onNavigateElCars?.()}
-              className="w-full sm:w-auto flex items-center justify-center gap-2.5 h-14 px-8 bg-white/10 border border-white/20 backdrop-blur-sm text-white text-[15px] font-semibold rounded-2xl hover:bg-white/20 active:scale-[0.98] transition-all duration-150"
-            >
-              Utforska elbilar
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </motion.div>
+            <div className="bg-white rounded-xl shadow-2xl overflow-hidden text-left">
+              {[
+                {
+                  icon: Zap,
+                  label: 'Jag vill byta till elbil',
+                  sub: 'Vi hittar rätt elbil och förhandlar åt dig',
+                  onClick: () => onNavigateConsultation?.(),
+                },
+                {
+                  icon: ArrowLeftRight,
+                  label: 'Jag har en bil att byta in',
+                  sub: 'Vi värderar din bil och sköter hela bytet',
+                  onClick: () => onNavigateConsultation?.(),
+                },
+                {
+                  icon: Car,
+                  label: 'Utforska elbilar',
+                  sub: 'Jämför modeller, räckvidd och pris',
+                  onClick: () => onNavigateElCars?.(),
+                },
+              ].map(({ icon: Icon, label, sub, onClick }, i, arr) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={onClick}
+                  className={`group w-full flex items-center gap-4 px-5 py-[18px] hover:bg-[#0e6efe]/[0.04] active:bg-[#0e6efe]/[0.07] transition-all text-left ${i < arr.length - 1 ? 'border-b border-slate-100' : ''}`}
+                >
+                  <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/20 flex items-center justify-center shrink-0 transition-colors">
+                    <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-semibold text-slate-900 group-hover:text-[#0e6efe] leading-snug transition-colors">{label}</p>
+                    <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{sub}</p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] group-hover:translate-x-1 transition-all shrink-0" />
+                </button>
+              ))}
+              <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <p className="text-[11px] text-slate-400">Gratis &amp; utan förpliktelser</p>
+              </div>
+            </div>
 
-          {/* Trust strip */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-10 flex flex-wrap items-center justify-center gap-x-7 gap-y-2"
-          >
-            {[
-              'Gratis & utan bindning',
-              'Inbyte ingår',
-              'Laddbox-hjälp',
-              'Vi förhandlar priset',
-            ].map(t => (
-              <span key={t} className="flex items-center gap-1.5 text-[13px] text-blue-100/80">
-                <Check className="w-3.5 h-3.5 text-yellow-300 shrink-0" strokeWidth={2.5} />
-                {t}
-              </span>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Wave bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none">
-          <svg viewBox="0 0 1440 48" fill="none" preserveAspectRatio="none" className="w-full h-full">
-            <path d="M0 48 L0 24 Q360 0 720 24 Q1080 48 1440 24 L1440 48 Z" fill="#faf8f5" />
-          </svg>
+            <div className="flex items-center justify-center gap-1.5 mt-5">
+              <Zap className="w-4 h-4 text-yellow-300/80 shrink-0" />
+              <p className="text-white/70 text-[13px] drop-shadow text-center">Inbyte ingår · Laddbox-hjälp · Vi förhandlar priset</p>
+            </div>
+          </div>
         </div>
       </section>
 
