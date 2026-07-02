@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { QuizAnswers, QUIZ_QUESTIONS, QuizOption, MONTHLY_BUDGET_OPTIONS, CASH_BUDGET_OPTIONS, BRAND_CATEGORIES } from './QuizTypes';
+import { QuizAnswers, QUIZ_QUESTIONS, QuizOption, MONTHLY_BUDGET_OPTIONS, CASH_BUDGET_OPTIONS, BRAND_CATEGORIES, isElectricCar } from './QuizTypes';
 
 interface QuizFlowProps {
   onComplete: (answers: QuizAnswers) => void;
@@ -22,18 +22,25 @@ function inferBrandCategory(car: string): QuizAnswers['brand_preference'] | unde
 
 export default function QuizFlow({ onComplete, onBack, preselectedCar }: QuizFlowProps) {
   const inferredBrand = useMemo(() => preselectedCar ? inferBrandCategory(preselectedCar) : undefined, [preselectedCar]);
+  const isEV = useMemo(() => preselectedCar ? isElectricCar(preselectedCar) : false, [preselectedCar]);
 
-  const visibleQuestions = useMemo(() =>
-    inferredBrand
-      ? QUIZ_QUESTIONS.filter(q => q.id !== 'brand_preference')
-      : QUIZ_QUESTIONS,
-    [inferredBrand]
-  );
+  const visibleQuestions = useMemo(() => {
+    return QUIZ_QUESTIONS.filter(q => {
+      if (q.id === 'brand_preference' && inferredBrand) return false;
+      if (q.id === 'fuel_type' && isEV) return false;
+      return true;
+    });
+  }, [inferredBrand, isEV]);
+
+  const initialAnswers = useMemo<QuizAnswers>(() => {
+    const a: QuizAnswers = {};
+    if (inferredBrand) a.brand_preference = inferredBrand;
+    if (isEV) a.fuel_type = ['electric'];
+    return a;
+  }, [inferredBrand, isEV]);
 
   const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState<QuizAnswers>(
-    inferredBrand ? { brand_preference: inferredBrand } : {}
-  );
+  const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers);
 
   const currentQuestion = visibleQuestions[currentStep];
   const progress = ((currentStep + 1) / visibleQuestions.length) * 100;

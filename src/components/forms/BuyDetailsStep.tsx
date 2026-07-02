@@ -9,6 +9,13 @@ import { useCarImages } from '../../hooks/useCarImages';
 import { useCatalogCars } from '../../hooks/useCatalogCars';
 import { useVehicleLookup } from '../../lib/useVehicleLookup';
 import { formatThousands } from '../../lib/utils';
+import { FUEL_TYPE_KEYWORDS } from '../quiz/QuizTypes';
+
+function isElectricCarName(name: string): boolean {
+  if (!name) return false;
+  const lower = name.toLowerCase();
+  return FUEL_TYPE_KEYWORDS.electric.some(k => lower.includes(k.toLowerCase()));
+}
 
 const BUYING_STAGES = [
   { value: 'just_started', label: 'Precis börjat kolla' },
@@ -69,6 +76,62 @@ function parsePriceInput(raw: string): number {
   const clean = raw.replace(/[\s\u00a0]/g, '').replace(/,/g, '.');
   const n = parseFloat(clean);
   return isNaN(n) ? 0 : n;
+}
+
+function SliderInput({
+  value,
+  onChange,
+  min,
+  max,
+  step,
+  unit,
+  formatLabel,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  min: number;
+  max: number;
+  step: number;
+  unit: string;
+  formatLabel: (n: number) => string;
+}) {
+  const parsed = parsePriceInput(value);
+  const numVal = isNaN(parsed) || parsed === 0 ? max : Math.min(Math.max(parsed, min), max);
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[15px] font-semibold text-slate-900">
+          {parsed === 0 ? 'Ingen gräns' : `Max ${formatLabel(numVal)} ${unit}`}
+        </span>
+        {parsed > 0 && (
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className="text-[12px] text-slate-400 hover:text-slate-600 underline"
+          >
+            Rensa
+          </button>
+        )}
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={parsed === 0 ? max : numVal}
+        onChange={e => {
+          const n = Number(e.target.value);
+          onChange(n === max ? '' : String(n));
+        }}
+        className="financing-slider w-full cursor-pointer"
+      />
+      <div className="flex justify-between text-[11px] text-slate-400 mt-1">
+        <span>{formatLabel(min)} {unit}</span>
+        <span>Ingen gräns</span>
+      </div>
+    </div>
+  );
 }
 
 const CAR_TYPES = [
@@ -373,18 +436,16 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
           </div>
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-0.5">Max miltal</label>
-            <p className="text-[13.5px] text-slate-500 mb-3">Hur många mil får bilen max ha gått?</p>
-            <div className="sm:max-w-xs relative">
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.maxMiltal}
-                onChange={e => set('maxMiltal', formatThousands(e.target.value))}
-                placeholder="T.ex. 5 000"
-                className="form-control pr-14"
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none">mil</span>
-            </div>
+            <p className="text-[13.5px] text-slate-500 mb-4">Hur många mil får bilen max ha gått?</p>
+            <SliderInput
+              value={d.maxMiltal}
+              onChange={v => set('maxMiltal', v)}
+              min={500}
+              max={30000}
+              step={500}
+              unit="mil"
+              formatLabel={n => n.toLocaleString('sv-SE')}
+            />
           </div>
         </>
       )}
@@ -394,17 +455,16 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
           Max budget (kr)
           <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-3">Totalpris för bilen.</p>
-        <div className="relative sm:max-w-xs">
-          <input
-            type="text"
-            inputMode="numeric"
-            value={d.carPrice}
-            onChange={e => set('carPrice', formatThousands(e.target.value))}
-            placeholder="T.ex. 350 000"
-            className="form-control"
-          />
-        </div>
+        <p className="text-[13.5px] text-slate-500 mb-4">Totalpris för bilen.</p>
+        <SliderInput
+          value={d.carPrice}
+          onChange={v => set('carPrice', v)}
+          min={50000}
+          max={1500000}
+          step={25000}
+          unit="kr"
+          formatLabel={n => n.toLocaleString('sv-SE')}
+        />
       </div>
 
       {!hideFuel && (
@@ -622,18 +682,16 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
           </div>
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-0.5">Max miltal</label>
-            <p className="text-[13.5px] text-slate-500 mb-3">Hur många mil får bilen max ha gått?</p>
-            <div className="sm:max-w-xs relative">
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.maxMiltal}
-                onChange={e => set('maxMiltal', formatThousands(e.target.value))}
-                placeholder="T.ex. 5 000"
-                className="form-control pr-14"
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none">mil</span>
-            </div>
+            <p className="text-[13.5px] text-slate-500 mb-4">Hur många mil får bilen max ha gått?</p>
+            <SliderInput
+              value={d.maxMiltal}
+              onChange={v => set('maxMiltal', v)}
+              min={500}
+              max={30000}
+              step={500}
+              unit="mil"
+              formatLabel={n => n.toLocaleString('sv-SE')}
+            />
           </div>
         </>
       )}
@@ -677,17 +735,16 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
           Max budget (kr)
           <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-3">Totalpris för bilen.</p>
-        <div className="sm:max-w-xs">
-          <input
-            type="text"
-            inputMode="numeric"
-            value={d.carPrice}
-            onChange={e => set('carPrice', formatThousands(e.target.value))}
-            placeholder="T.ex. 350 000"
-            className="form-control"
-          />
-        </div>
+        <p className="text-[13.5px] text-slate-500 mb-4">Totalpris för bilen.</p>
+        <SliderInput
+          value={d.carPrice}
+          onChange={v => set('carPrice', v)}
+          min={50000}
+          max={1500000}
+          step={25000}
+          unit="kr"
+          formatLabel={n => n.toLocaleString('sv-SE')}
+        />
       </div>
 
       <div className="py-6 sm:py-7">
@@ -897,7 +954,10 @@ function TradeCarLookupSection({
 
 export default function BuyDetailsStep({ track, initialData, initialBil, lockedCar, knownFuelTypes, carCondition, onNext, onExplore, onQuiz }: BuyDetailsStepProps) {
   const autoFuel = knownFuelTypes ? inferFuelType(knownFuelTypes) : '';
-  const hideFuel = !!autoFuel && autoFuel !== '';
+  const carNameForEV = lockedCar || initialBil || initialData.carModel || '';
+  const isEVCar = isElectricCarName(carNameForEV) || (knownFuelTypes?.some(f => f.toLowerCase() === 'el' || f.toLowerCase() === 'electric') ?? false);
+  const resolvedAutoFuel = autoFuel || (isEVCar ? 'electric' : '');
+  const hideFuel = isEVCar || (!!autoFuel && autoFuel !== '');
 
   const parsed = parseInitialBil(initialBil);
 
@@ -910,13 +970,13 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     yearFrom: initialData.yearFrom || '',
     yearTo: initialData.yearTo || '',
     maxMiltal: initialData.maxMiltal || '',
-    fuelType: autoFuel || initialData.fuelType || '',
+    fuelType: resolvedAutoFuel || initialData.fuelType || '',
     hasQuote: initialData.hasQuote ?? null,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} carCondition={carCondition} lockedCar={lockedCar} />;
-  if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={autoFuel} carCondition={carCondition} />;
+  if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={resolvedAutoFuel} carCondition={carCondition} lockedCar={lockedCar} />;
+  if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={resolvedAutoFuel} carCondition={carCondition} />;
 
   const set = (key: keyof BuyDetailsData, value: string) => {
     setD(prev => {
@@ -1122,19 +1182,18 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Bilens pris (kr)
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-3">
+            <p className="text-[13px] text-slate-500 mb-4">
               Används för att visa ett finansieringsexempel.
             </p>
-            <div className="w-full sm:max-w-xs">
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.carPrice}
-                onChange={e => set('carPrice', formatThousands(e.target.value))}
-                placeholder="T.ex. 350 000"
-                className="form-control"
-              />
-            </div>
+            <SliderInput
+              value={d.carPrice}
+              onChange={v => set('carPrice', v)}
+              min={50000}
+              max={1500000}
+              step={25000}
+              unit="kr"
+              formatLabel={n => n.toLocaleString('sv-SE')}
+            />
           </div>
         </>
       )}
@@ -1146,20 +1205,18 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             <label className="block text-[15px] font-bold text-slate-900 mb-1">
               Max miltal
             </label>
-            <p className="text-[13px] text-slate-500 mb-3">
+            <p className="text-[13px] text-slate-500 mb-4">
               Hur många mil får bilen max ha gått?
             </p>
-            <div className="w-full sm:max-w-xs relative">
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.maxMiltal}
-                onChange={e => set('maxMiltal', formatThousands(e.target.value))}
-                placeholder="T.ex. 5 000"
-                className="form-control pr-14"
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none">mil</span>
-            </div>
+            <SliderInput
+              value={d.maxMiltal}
+              onChange={v => set('maxMiltal', v)}
+              min={500}
+              max={30000}
+              step={500}
+              unit="mil"
+              formatLabel={n => n.toLocaleString('sv-SE')}
+            />
           </div>
 
           <div className="py-5">
@@ -1193,17 +1250,16 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Max budget (kr)
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-3">Totalpris för bilen.</p>
-            <div className="w-full sm:max-w-xs">
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.carPrice}
-                onChange={e => set('carPrice', formatThousands(e.target.value))}
-                placeholder="T.ex. 350 000"
-                className="form-control"
-              />
-            </div>
+            <p className="text-[13px] text-slate-500 mb-4">Totalpris för bilen.</p>
+            <SliderInput
+              value={d.carPrice}
+              onChange={v => set('carPrice', v)}
+              min={50000}
+              max={1500000}
+              step={25000}
+              unit="kr"
+              formatLabel={n => n.toLocaleString('sv-SE')}
+            />
           </div>
         </>
       )}
@@ -1274,18 +1330,16 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-0.5">Max miltal</label>
-            <p className="text-[13px] text-slate-500 mb-3 leading-snug">Hur många mil får bilen max ha gått?</p>
-            <div className="w-full sm:max-w-xs relative">
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.maxMiltal}
-                onChange={e => set('maxMiltal', formatThousands(e.target.value))}
-                placeholder="T.ex. 5 000"
-                className="form-control pr-14"
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none">mil</span>
-            </div>
+            <p className="text-[13px] text-slate-500 mb-4 leading-snug">Hur många mil får bilen max ha gått?</p>
+            <SliderInput
+              value={d.maxMiltal}
+              onChange={v => set('maxMiltal', v)}
+              min={500}
+              max={30000}
+              step={500}
+              unit="mil"
+              formatLabel={n => n.toLocaleString('sv-SE')}
+            />
           </div>
 
           <div className="py-5">
@@ -1317,17 +1371,16 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Max budget (kr)
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-3">Totalpris för bilen.</p>
-            <div className="w-full sm:max-w-xs">
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.carPrice}
-                onChange={e => set('carPrice', formatThousands(e.target.value))}
-                placeholder="T.ex. 350 000"
-                className="form-control"
-              />
-            </div>
+            <p className="text-[13px] text-slate-500 mb-4">Totalpris för bilen.</p>
+            <SliderInput
+              value={d.carPrice}
+              onChange={v => set('carPrice', v)}
+              min={50000}
+              max={1500000}
+              step={25000}
+              unit="kr"
+              formatLabel={n => n.toLocaleString('sv-SE')}
+            />
           </div>
         </>
       )}
@@ -1377,18 +1430,16 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Max miltal
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-3">Hur många mil får nästa bil max ha gått?</p>
-            <div className="w-full sm:max-w-xs relative">
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.maxMiltal}
-                onChange={e => set('maxMiltal', formatThousands(e.target.value))}
-                placeholder="T.ex. 5 000"
-                className="form-control pr-14"
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none">mil</span>
-            </div>
+            <p className="text-[13px] text-slate-500 mb-4">Hur många mil får nästa bil max ha gått?</p>
+            <SliderInput
+              value={d.maxMiltal}
+              onChange={v => set('maxMiltal', v)}
+              min={500}
+              max={30000}
+              step={500}
+              unit="mil"
+              formatLabel={n => n.toLocaleString('sv-SE')}
+            />
           </div>
 
           {fuelTypeSelector}
@@ -1400,17 +1451,16 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Budget för nästa bil (kr)
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-3">Totalpris eller finansiering – vi hjälper dig hitta rätt upplägg.</p>
-            <div className="w-full sm:max-w-xs">
-              <input
-                type="text"
-                inputMode="numeric"
-                value={d.carPrice}
-                onChange={e => set('carPrice', formatThousands(e.target.value))}
-                placeholder="T.ex. 350 000"
-                className="form-control"
-              />
-            </div>
+            <p className="text-[13px] text-slate-500 mb-4">Totalpris eller finansiering – vi hjälper dig hitta rätt upplägg.</p>
+            <SliderInput
+              value={d.carPrice}
+              onChange={v => set('carPrice', v)}
+              min={50000}
+              max={1500000}
+              step={25000}
+              unit="kr"
+              formatLabel={n => n.toLocaleString('sv-SE')}
+            />
           </div>
         </>
       )}

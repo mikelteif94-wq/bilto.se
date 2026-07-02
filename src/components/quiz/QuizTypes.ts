@@ -134,6 +134,11 @@ export const CASH_BUDGET_OPTIONS = [
   { value: 1000000, label: '1 000 000 kr' },
 ];
 
+export function isElectricCar(car: string): boolean {
+  const name = car.toLowerCase();
+  return FUEL_TYPE_KEYWORDS.electric.some(k => name.includes(k.toLowerCase()));
+}
+
 export const BRAND_CATEGORIES = {
   premium: ['BMW', 'Mercedes-Benz', 'Audi', 'Volvo', 'Lexus', 'Porsche', 'Jaguar', 'Land Rover', 'Tesla', 'Polestar'],
   mainstream: ['Volkswagen', 'Toyota', 'Ford', 'Skoda', 'Mazda', 'Honda', 'Nissan', 'Peugeot', 'Renault', 'Opel', 'Citroen', 'SEAT', 'Subaru'],
