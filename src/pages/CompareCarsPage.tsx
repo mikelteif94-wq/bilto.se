@@ -648,7 +648,7 @@ type QuizStep = 'idle' | 'active' | 'analyzing' | 'results';
 
 /* ───────────── nav ───────────── */
 
-const NAV_ITEMS = ['Sälj bil', 'Köp bil med hjälp'] as const;
+const NAV_ITEMS = ['Sälj bil', 'Bilköpshjälpen'] as const;
 
 interface CompareCarsPageProps {
   onBackHome: () => void;
@@ -1047,7 +1047,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             <span className="text-[15px] text-white font-bold underline underline-offset-4 decoration-white/50">
-              Köp bil
+              Bilköpshjälpen
             </span>
             <button key="salj-bil" type="button" onClick={() => handleNavSelect('Sälj bil')}
               className="text-[15px] text-white/70 hover:text-white transition font-medium"
@@ -1066,7 +1066,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
-        active="Köp bil med hjälp"
+        active="Bilköpshjälpen"
         onSelect={() => { setMenuOpen(false); }}
       />
 

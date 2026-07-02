@@ -333,7 +333,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
 
   const handleMenuSelect = (item: MobileMenuItem) => {
-    if (item === 'Köp bil' || item === 'Köp bil med hjälp') {
+    if (item === 'Köp bil' || item === 'Köp bil med hjälp' || item === 'Bilköpshjälpen') {
       window.history.pushState({}, '', '/kop-bil');
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;

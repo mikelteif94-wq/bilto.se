@@ -6,6 +6,7 @@ export type MobileMenuItem =
   | 'Förmedling'
   | 'Hitta bil'
   | 'Köp bil'
+  | 'Bilköpshjälpen'
   | 'Köp bil med hjälp'
   | 'Om oss'
   | 'Vi förhandlar åt dig';
@@ -46,7 +47,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
     };
   }, [open, onClose]);
 
-  const isKopBilActive = active === 'Köp bil med hjälp' || active === 'Hitta bil' || active === 'Köp bil';
+  const isKopBilActive = active === 'Köp bil med hjälp' || active === 'Hitta bil' || active === 'Köp bil' || active === 'Bilköpshjälpen';
 
   return (
     <div
@@ -81,7 +82,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
               isKopBilActive ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
             }`}
           >
-            Bilköpshjälp
+            Bilköpshjälpen
           </button>
 
           {/* Sub-links */}

@@ -42,11 +42,11 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Köp bil'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
-    if (item === 'Köp bil') {
+    if (item === 'Bilköpshjälpen') {
       window.history.pushState({}, '', '/kop-bil');
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
