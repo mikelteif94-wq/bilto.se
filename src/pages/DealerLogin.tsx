@@ -36,11 +36,11 @@ export default function DealerLogin({
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Köp bil'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
-    if (item === 'Bilköpshjälpen') {
+    if (item === 'Köp bil') {
       window.history.pushState({}, '', '/kop-bil');
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;

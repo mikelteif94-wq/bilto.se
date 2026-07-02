@@ -71,7 +71,7 @@ export default function QuotePage({
     onBackHome();
   };
 
-  const navItems = ['Sälj bil', 'Bilköpshjälpen'];
+  const navItems = ['Sälj bil', 'Köp bil'];
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-slate-900">
@@ -116,7 +116,7 @@ export default function QuotePage({
                 className={`text-[15px] transition ${
                   item === 'Vi förhandlar åt dig'
                     ? 'text-white font-semibold'
-                    : item === 'Bilköpshjälpen'
+                    : item === 'Köp bil'
                     ? 'inline-flex items-center h-8 px-4 rounded-xl bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0a57cc] shadow-sm'
                     : 'text-white/80 hover:text-white'
                 }`}

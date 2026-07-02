@@ -536,7 +536,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
     if (item === 'Sälj bil') { onBack(); return; }
-    if (item === 'Bilköpshjälpen' || item === 'Köp bil') { onNavigateBuy?.(); return; }
+    if (item === 'Köp bil') { onNavigateBuy?.(); return; }
     if (item === 'Så funkar det') { onNavigateHowItWorks?.(); return; }
     onBack();
   };
@@ -576,7 +576,7 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
               Sälj bil
             </button>
             <button type="button" onClick={() => onNavigateBuy?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">
-              Bilköpshjälpen
+              Köp bil med hjälp
             </button>
           </nav>
           <div className="ml-auto">

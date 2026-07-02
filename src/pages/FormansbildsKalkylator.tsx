@@ -224,7 +224,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
         </div>
       </header>
 
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} active="Bilköpshjälpen" />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} active="Köp bil med hjälp" />
 
       {/* Hero — primary blue */}
       <div style={{ background: 'linear-gradient(135deg, #0a57cc 0%, #0e6efe 60%, #1a7fff 100%)' }}>

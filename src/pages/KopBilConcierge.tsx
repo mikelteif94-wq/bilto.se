@@ -138,7 +138,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
     if (item === 'Sälj bil') { onBack(); return; }
-    if (item === 'Bilköpshjälpen' || item === 'Köp bil') { onNavigateBuy(); return; }
+    if (item === 'Köp bil') { onNavigateBuy(); return; }
     if (item === 'Så funkar det') { onNavigateHowItWorks(); return; }
     onBack();
   };
@@ -148,7 +148,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
-        active="Bilköpshjälpen"
+        active="Köp bil"
         onSelect={handleMenuSelect}
       />
 
@@ -185,7 +185,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               onClick={onNavigateBuy}
               className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white/20 border border-white/40 text-white text-[14px] font-semibold hover:bg-white/30 transition backdrop-blur-sm"
             >
-              Bilköpshjälpen
+              Köp bil med hjälp
             </button>
           </nav>
           <div className="flex items-center ml-auto">
