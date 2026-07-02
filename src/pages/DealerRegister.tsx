@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Loader2, Check, Menu, User, ArrowRight, Plus, Trash2, Ligature as FileSignature, Send, Phone, Handshake, Mail, Clock } from 'lucide-react';
+import { ArrowLeft, Loader2, Check, Menu, User, ArrowRight, Plus, Trash2, Ligature as FileSignature, Send, Phone, Handshake, Mail } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
@@ -266,9 +266,6 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
                 Vi levererar kvalitetsleads direkt till dig. Förhandlingen sköter
                 vi – registrera dig nu och var först när vi lanserar.
               </p>
-
-              {/* Countdown timer */}
-              <CountdownTimer />
 
               <ul className="mt-8 space-y-3 text-[16px] text-white">
                 <li className="flex items-center gap-2.5">
@@ -613,61 +610,6 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
       </main>
 
       <SiteFooter />
-    </div>
-  );
-}
-
-function CountdownTimer() {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-  useEffect(() => {
-    const launchDate = new Date('2026-05-25T07:00:00Z').getTime();
-
-    const update = () => {
-      const diff = Math.max(0, launchDate - Date.now());
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      setTimeLeft({ days, hours, minutes, seconds });
-    };
-
-    update();
-    const interval = setInterval(update, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="mt-8">
-      <div className="inline-flex items-center gap-2 mb-3">
-        <Clock className="w-4 h-4 text-white/70" />
-        <span className="text-[13px] font-medium text-white/70 uppercase tracking-wider">Lansering om</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <TimeBlock value={timeLeft.days} label="dagar" />
-        <span className="text-white/50 text-[24px] font-light">:</span>
-        <TimeBlock value={timeLeft.hours} label="tim" />
-        <span className="text-white/50 text-[24px] font-light">:</span>
-        <TimeBlock value={timeLeft.minutes} label="min" />
-        <span className="text-white/50 text-[24px] font-light">:</span>
-        <TimeBlock value={timeLeft.seconds} label="sek" />
-      </div>
-    </div>
-  );
-}
-
-function TimeBlock({ value, label }: { value: number; label: string }) {
-  const pad = (n: number) => n.toString().padStart(2, '0');
-  return (
-    <div className="flex flex-col items-center">
-      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
-        <span className="text-[22px] sm:text-[26px] font-bold text-white tabular-nums">
-          {pad(value)}
-        </span>
-      </div>
-      <span className="text-[10px] sm:text-[11px] text-white/60 font-medium mt-1.5 uppercase tracking-wider">
-        {label}
-      </span>
     </div>
   );
 }
