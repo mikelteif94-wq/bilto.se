@@ -80,11 +80,13 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
   const carSearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    const threshold = typeof window !== 'undefined' ? window.innerHeight * 0.8 : 600;
+    let current = window.scrollY > threshold;
+    setScrolled(current);
     const onScroll = () => {
-      const threshold = typeof window !== 'undefined' ? window.innerHeight * 0.8 : 600;
-      setScrolled(window.scrollY > threshold);
+      const next = window.scrollY > threshold;
+      if (next !== current) { current = next; setScrolled(next); }
     };
-    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -520,7 +522,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="how-it-works"
         data-animate
-        className={`bg-white py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('how-it-works') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        className={`bg-white py-24 sm:py-32 px-6 transition-[opacity,transform] duration-700 will-change-[opacity,transform] ${isVisible('how-it-works') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-5xl mx-auto">
           <div className="mb-16">
@@ -586,7 +588,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="service-section"
         data-animate
-        className={`bg-[#0a0f1a] py-24 sm:py-32 px-6 transition-all duration-700 delay-100 ${isVisible('service-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        className={`bg-[#0a0f1a] py-24 sm:py-32 px-6 transition-[opacity,transform] duration-700 delay-100 will-change-[opacity,transform] ${isVisible('service-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-6xl mx-auto">
           <div className="max-w-2xl mb-16">
@@ -653,7 +655,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="benefits-section"
         data-animate
-        className={`bg-white py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('benefits-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        className={`bg-white py-24 sm:py-32 px-6 transition-[opacity,transform] duration-700 will-change-[opacity,transform] ${isVisible('benefits-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-5xl mx-auto">
           <div className="mb-16">
@@ -708,7 +710,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="reviews-section"
         data-animate
-        className={`bg-[#0a0f1a] py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('reviews-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        className={`bg-[#0a0f1a] py-24 sm:py-32 px-6 transition-[opacity,transform] duration-700 will-change-[opacity,transform] ${isVisible('reviews-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14">
@@ -764,7 +766,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       <section
         id="cta-section"
         data-animate
-        className={`bg-white py-24 sm:py-32 px-6 transition-all duration-700 ${isVisible('cta-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        className={`bg-white py-24 sm:py-32 px-6 transition-[opacity,transform] duration-700 will-change-[opacity,transform] ${isVisible('cta-section') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-[12px] font-semibold text-slate-400 uppercase tracking-[0.2em] mb-6">Redo att sälja?</p>

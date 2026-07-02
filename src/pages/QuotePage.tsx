@@ -51,11 +51,13 @@ export default function QuotePage({
   }, []);
 
   useEffect(() => {
+    const threshold = typeof window !== 'undefined' ? window.innerHeight * 0.8 : 600;
+    let current = window.scrollY > threshold;
+    setScrolled(current);
     const onScroll = () => {
-      const threshold = typeof window !== 'undefined' ? window.innerHeight * 0.8 : 600;
-      setScrolled(window.scrollY > threshold);
+      const next = window.scrollY > threshold;
+      if (next !== current) { current = next; setScrolled(next); }
     };
-    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);

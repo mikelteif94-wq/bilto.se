@@ -756,7 +756,12 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
 
   useEffect(() => {
     document.title = 'Köp bil – Jämför, hitta & förhandla | Bilto';
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    let current = window.scrollY > 20;
+    setScrolled(current);
+    const onScroll = () => {
+      const next = window.scrollY > 20;
+      if (next !== current) { current = next; setScrolled(next); }
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
