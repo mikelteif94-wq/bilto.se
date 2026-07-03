@@ -78,58 +78,83 @@ function parsePriceInput(raw: string): number {
   return isNaN(n) ? 0 : n;
 }
 
-function SliderInput({
+const MILTAL_OPTIONS = [
+  { label: 'Under 5 000', value: '5000' },
+  { label: '5 000–10 000', value: '10000' },
+  { label: '10 000–15 000', value: '15000' },
+  { label: 'Ingen gräns', value: '' },
+];
+
+const BUDGET_OPTIONS = [
+  { label: 'Under 150 000', value: '150000' },
+  { label: '150 000–300 000', value: '300000' },
+  { label: '300 000–500 000', value: '500000' },
+  { label: 'Över 500 000', value: '600000' },
+  { label: 'Ingen gräns', value: '' },
+];
+
+function ButtonGroupInput({
   value,
   onChange,
-  min,
-  max,
-  step,
+  options,
   unit,
-  formatLabel,
+  customPlaceholder,
 }: {
   value: string;
   onChange: (v: string) => void;
-  min: number;
-  max: number;
-  step: number;
+  options: { label: string; value: string }[];
   unit: string;
-  formatLabel: (n: number) => string;
+  customPlaceholder: string;
 }) {
-  const parsed = parsePriceInput(value);
-  const numVal = isNaN(parsed) || parsed === 0 ? max : Math.min(Math.max(parsed, min), max);
+  const isPreset = options.some(o => o.value === value);
+  const showCustom = !isPreset && value !== '';
+  const [customRaw, setCustomRaw] = useState(showCustom ? value : '');
+
+  const handlePreset = (v: string) => {
+    setCustomRaw('');
+    onChange(v);
+  };
+
+  const handleCustomChange = (raw: string) => {
+    setCustomRaw(raw);
+    const clean = raw.replace(/[\s\u00a0]/g, '').replace(/,/g, '.');
+    const n = parseFloat(clean);
+    onChange(isNaN(n) ? '' : String(n));
+  };
+
+  const activeValue = isPreset ? value : '';
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-[15px] font-semibold text-slate-900">
-          {parsed === 0 ? 'Ingen gräns' : `Max ${formatLabel(numVal)} ${unit}`}
-        </span>
-        {parsed > 0 && (
+      <div className="flex flex-wrap gap-2 mb-3">
+        {options.map(o => (
           <button
+            key={o.label}
             type="button"
-            onClick={() => onChange('')}
-            className="text-[12px] text-slate-400 hover:text-slate-600 underline"
+            onClick={() => handlePreset(o.value)}
+            className={`px-3.5 h-9 rounded-xl text-[13px] font-medium transition-all border ${
+              activeValue === o.value && !showCustom
+                ? 'bg-[#0e6efe] text-white border-[#0e6efe] shadow-sm'
+                : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-slate-50'
+            }`}
           >
-            Rensa
+            {o.label}
           </button>
-        )}
+        ))}
       </div>
       <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={parsed === 0 ? max : numVal}
-        onChange={e => {
-          const n = Number(e.target.value);
-          onChange(n === max ? '' : String(n));
-        }}
-        className="financing-slider w-full cursor-pointer"
+        type="text"
+        inputMode="numeric"
+        value={customRaw}
+        onChange={e => handleCustomChange(e.target.value)}
+        placeholder={customPlaceholder}
+        className="form-control text-[14px] max-w-xs"
       />
-      <div className="flex justify-between text-[11px] text-slate-400 mt-1">
-        <span>{formatLabel(min)} {unit}</span>
-        <span>Ingen gräns</span>
-      </div>
+      {customRaw && !isNaN(parseFloat(customRaw.replace(/[\s\u00a0]/g, '').replace(/,/g, '.'))) && (
+        <p className="mt-1.5 text-[12px] text-slate-400">
+          Max {parseFloat(customRaw.replace(/[\s\u00a0]/g, '').replace(/,/g, '.')).toLocaleString('sv-SE')} {unit}
+        </p>
+      )}
     </div>
   );
 }
@@ -437,14 +462,12 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-0.5">Max miltal</label>
             <p className="text-[13.5px] text-slate-500 mb-4">Hur många mil får bilen max ha gått?</p>
-            <SliderInput
+            <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
-              min={500}
-              max={30000}
-              step={500}
+              options={MILTAL_OPTIONS}
               unit="mil"
-              formatLabel={n => n.toLocaleString('sv-SE')}
+              customPlaceholder="Ange exakt miltal, t.ex. 12 000"
             />
           </div>
         </>
@@ -456,15 +479,13 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
           <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
         </label>
         <p className="text-[13.5px] text-slate-500 mb-4">Totalpris för bilen.</p>
-        <SliderInput
-          value={d.carPrice}
-          onChange={v => set('carPrice', v)}
-          min={50000}
-          max={1500000}
-          step={25000}
-          unit="kr"
-          formatLabel={n => n.toLocaleString('sv-SE')}
-        />
+            <ButtonGroupInput
+              value={d.carPrice}
+              onChange={v => set('carPrice', v)}
+              options={BUDGET_OPTIONS}
+              unit="kr"
+              customPlaceholder="Ange exakt budget, t.ex. 250 000"
+            />
       </div>
 
       {!hideFuel && (
@@ -683,14 +704,12 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-0.5">Max miltal</label>
             <p className="text-[13.5px] text-slate-500 mb-4">Hur många mil får bilen max ha gått?</p>
-            <SliderInput
+            <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
-              min={500}
-              max={30000}
-              step={500}
+              options={MILTAL_OPTIONS}
               unit="mil"
-              formatLabel={n => n.toLocaleString('sv-SE')}
+              customPlaceholder="Ange exakt miltal, t.ex. 12 000"
             />
           </div>
         </>
@@ -736,15 +755,13 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
           <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
         </label>
         <p className="text-[13.5px] text-slate-500 mb-4">Totalpris för bilen.</p>
-        <SliderInput
-          value={d.carPrice}
-          onChange={v => set('carPrice', v)}
-          min={50000}
-          max={1500000}
-          step={25000}
-          unit="kr"
-          formatLabel={n => n.toLocaleString('sv-SE')}
-        />
+            <ButtonGroupInput
+              value={d.carPrice}
+              onChange={v => set('carPrice', v)}
+              options={BUDGET_OPTIONS}
+              unit="kr"
+              customPlaceholder="Ange exakt budget, t.ex. 250 000"
+            />
       </div>
 
       <div className="py-6 sm:py-7">
@@ -1185,14 +1202,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             <p className="text-[13px] text-slate-500 mb-4">
               Används för att visa ett finansieringsexempel.
             </p>
-            <SliderInput
+              <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
-              min={50000}
-              max={1500000}
-              step={25000}
+              options={BUDGET_OPTIONS}
               unit="kr"
-              formatLabel={n => n.toLocaleString('sv-SE')}
+              customPlaceholder="Ange exakt budget, t.ex. 250 000"
             />
           </div>
         </>
@@ -1208,14 +1223,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             <p className="text-[13px] text-slate-500 mb-4">
               Hur många mil får bilen max ha gått?
             </p>
-            <SliderInput
+            <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
-              min={500}
-              max={30000}
-              step={500}
+              options={MILTAL_OPTIONS}
               unit="mil"
-              formatLabel={n => n.toLocaleString('sv-SE')}
+              customPlaceholder="Ange exakt miltal, t.ex. 12 000"
             />
           </div>
 
@@ -1251,14 +1264,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
             <p className="text-[13px] text-slate-500 mb-4">Totalpris för bilen.</p>
-            <SliderInput
+              <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
-              min={50000}
-              max={1500000}
-              step={25000}
+              options={BUDGET_OPTIONS}
               unit="kr"
-              formatLabel={n => n.toLocaleString('sv-SE')}
+              customPlaceholder="Ange exakt budget, t.ex. 250 000"
             />
           </div>
         </>
@@ -1331,14 +1342,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-0.5">Max miltal</label>
             <p className="text-[13px] text-slate-500 mb-4 leading-snug">Hur många mil får bilen max ha gått?</p>
-            <SliderInput
+            <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
-              min={500}
-              max={30000}
-              step={500}
+              options={MILTAL_OPTIONS}
               unit="mil"
-              formatLabel={n => n.toLocaleString('sv-SE')}
+              customPlaceholder="Ange exakt miltal, t.ex. 12 000"
             />
           </div>
 
@@ -1372,14 +1381,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
             <p className="text-[13px] text-slate-500 mb-4">Totalpris för bilen.</p>
-            <SliderInput
+              <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
-              min={50000}
-              max={1500000}
-              step={25000}
+              options={BUDGET_OPTIONS}
               unit="kr"
-              formatLabel={n => n.toLocaleString('sv-SE')}
+              customPlaceholder="Ange exakt budget, t.ex. 250 000"
             />
           </div>
         </>
@@ -1431,14 +1438,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
             <p className="text-[13px] text-slate-500 mb-4">Hur många mil får nästa bil max ha gått?</p>
-            <SliderInput
+            <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
-              min={500}
-              max={30000}
-              step={500}
+              options={MILTAL_OPTIONS}
               unit="mil"
-              formatLabel={n => n.toLocaleString('sv-SE')}
+              customPlaceholder="Ange exakt miltal, t.ex. 12 000"
             />
           </div>
 
@@ -1452,14 +1457,12 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
             <p className="text-[13px] text-slate-500 mb-4">Totalpris eller finansiering – vi hjälper dig hitta rätt upplägg.</p>
-            <SliderInput
+              <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
-              min={50000}
-              max={1500000}
-              step={25000}
+              options={BUDGET_OPTIONS}
               unit="kr"
-              formatLabel={n => n.toLocaleString('sv-SE')}
+              customPlaceholder="Ange exakt budget, t.ex. 250 000"
             />
           </div>
         </>
