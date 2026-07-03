@@ -468,7 +468,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       >
                         {submitting
                           ? <span className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Skickar…</span>
-                          : 'Värdera gratis'
+                          : 'Värdera bilen'
                         }
                       </button>
                     </div>
@@ -577,10 +577,8 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               }}
               className="inline-flex items-center gap-2.5 h-12 px-8 rounded-xl bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[15px] transition group"
             >
-              Värdera min bil
+              Värdera bilen
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
-            </button>
-          </div>
         </div>
       </section>
 
@@ -785,7 +783,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               }}
               className="inline-flex items-center gap-2.5 h-13 px-8 rounded-xl bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[16px] transition group"
             >
-              Värdera min bil gratis
+              Värdera bilen
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
             </button>
             <button

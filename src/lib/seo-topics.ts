@@ -45,7 +45,7 @@ export const SEO_TOPICS: SeoTopic[] = [
     ],
     ctaHeading: 'Redo att spara tiotusentals kronor?',
     ctaBody: 'Boka din kostnadsfria konsultation – vår expert ringer dig inom en dag.',
-    ctaLabel: 'Boka gratis konsultation',
+    ctaLabel: 'Få prishjälp',
     ctaPath: '/gratis-konsultation',
   },
 
@@ -77,7 +77,7 @@ export const SEO_TOPICS: SeoTopic[] = [
     ],
     ctaHeading: 'Låt oss hitta din nästa bil',
     ctaBody: 'Berätta vad du söker och vi återkommer med alternativ inom 24 timmar.',
-    ctaLabel: 'Starta gratis bilköpshjälp',
+    ctaLabel: 'Få prishjälp',
     ctaPath: '/kop-bil-hjalp',
   },
 
@@ -108,7 +108,7 @@ export const SEO_TOPICS: SeoTopic[] = [
     ],
     ctaHeading: 'Spara tiotusentals kronor på ditt nästa bilköp',
     ctaBody: 'Boka en gratis genomgång – vi berättar exakt vad din bil borde kosta.',
-    ctaLabel: 'Boka gratis genomgång',
+    ctaLabel: 'Få prishjälp',
     ctaPath: '/gratis-konsultation',
   },
 
@@ -139,7 +139,7 @@ export const SEO_TOPICS: SeoTopic[] = [
     ],
     ctaHeading: 'Sänk din bilkostnad idag',
     ctaBody: 'Boka en gratis konsultation och ta reda på hur mycket du kan spara per månad.',
-    ctaLabel: 'Boka gratis analys',
+    ctaLabel: 'Kostnadsfri konsultation',
     ctaPath: '/gratis-konsultation',
   },
 
@@ -170,7 +170,7 @@ export const SEO_TOPICS: SeoTopic[] = [
     ],
     ctaHeading: 'Dags att byta bil?',
     ctaBody: 'Starta med en gratis värdering av din gamla bil – ta sedan nästa steg i din takt.',
-    ctaLabel: 'Värdera min bil gratis',
+    ctaLabel: 'Värdera bilen',
     ctaPath: '/',
   },
 
@@ -201,7 +201,7 @@ export const SEO_TOPICS: SeoTopic[] = [
     ],
     ctaHeading: 'Prata med en bilrådgivare idag',
     ctaBody: 'Gratis, oberoende och utan bindning. Vi hjälper dig göra rätt val.',
-    ctaLabel: 'Boka gratis rådgivning',
+    ctaLabel: 'Kostnadsfri konsultation',
     ctaPath: '/gratis-konsultation',
   },
 
@@ -232,7 +232,7 @@ export const SEO_TOPICS: SeoTopic[] = [
     ],
     ctaHeading: 'Vad är din bil värd?',
     ctaBody: 'Ange registreringsnumret – vi har ett svar till dig inom 24 timmar.',
-    ctaLabel: 'Värdera min bil gratis',
+    ctaLabel: 'Värdera bilen',
     ctaPath: '/',
   },
 ];

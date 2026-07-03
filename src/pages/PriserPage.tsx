@@ -92,12 +92,19 @@ function FaqRow({ item }: { item: typeof FAQ_ITEMS[number] }) {
 export default function PriserPage({ onBackHome }: PriserPageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
-    if (item === 'Bilköpshjälpen') {
-      window.history.pushState({}, '', '/kop-bil');
+    const routes: Partial<Record<MobileMenuItem, string>> = {
+      'Bilköpshjälpen': '/kop-bil',
+      'Guider': '/guider',
+      'Priser': '/priser',
+      'Vanliga frågor': '/vanliga-fragor',
+    };
+    const route = routes[item];
+    if (route) {
+      window.history.pushState({}, '', route);
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }
@@ -235,7 +242,7 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
                   onClick={onBackHome}
                   className="w-full py-3.5 rounded-xl border-2 border-slate-200 hover:border-slate-400 text-slate-700 hover:text-slate-900 font-semibold text-[15px] transition flex items-center justify-center gap-2 group"
                 >
-                  Värdera din bil
+                  Värdera bilen
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
                 </button>
               </div>
@@ -271,7 +278,7 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
                   onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
                   className="w-full py-3.5 rounded-xl bg-white text-[#0e6efe] hover:bg-slate-50 font-bold text-[15px] transition flex items-center justify-center gap-2 group shadow-sm"
                 >
-                  Kom igång
+                  Få prishjälp
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
                 </button>
               </div>
@@ -364,7 +371,7 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
                 href="/gratis-konsultation"
                 className="inline-flex items-center justify-center gap-2 py-4 px-10 rounded-xl bg-[#0e6efe] text-white hover:bg-[#0047B3] font-bold text-[15px] transition group"
               >
-                Boka gratis samtal
+                Kostnadsfri konsultation
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
               </a>
             </div>

@@ -84,12 +84,19 @@ function FaqAccordion({ items }: { items: FaqItem[] }) {
 export default function VanligaFragorPage({ onBackHome }: VanligaFragorPageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
-    if (item === 'Bilköpshjälpen') {
-      window.history.pushState({}, '', '/kop-bil');
+    const routes: Partial<Record<MobileMenuItem, string>> = {
+      'Bilköpshjälpen': '/kop-bil',
+      'Guider': '/guider',
+      'Priser': '/priser',
+      'Vanliga frågor': '/vanliga-fragor',
+    };
+    const route = routes[item];
+    if (route) {
+      window.history.pushState({}, '', route);
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }
@@ -183,7 +190,7 @@ export default function VanligaFragorPage({ onBackHome }: VanligaFragorPageProps
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-4 justify-center">
               <a href="/gratis-konsultation" className="inline-flex items-center justify-center gap-2 py-4 px-10 rounded-xl bg-white text-[#0e6efe] hover:bg-slate-50 font-bold text-[16px] transition shadow-lg group">
-                Boka konsultation
+                Kostnadsfri konsultation
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
               </a>
             </div>

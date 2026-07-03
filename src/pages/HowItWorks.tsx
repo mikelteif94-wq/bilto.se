@@ -340,8 +340,17 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
 
   const handleMenuSelect = (item: MobileMenuItem) => {
-    if (item === 'Köp bil' || item === 'Köp bil med hjälp') {
-      window.history.pushState({}, '', '/kop-bil');
+    const routes: Partial<Record<MobileMenuItem, string>> = {
+      'Köp bil': '/kop-bil',
+      'Köp bil med hjälp': '/kop-bil',
+      'Bilköpshjälpen': '/kop-bil',
+      'Guider': '/guider',
+      'Priser': '/priser',
+      'Vanliga frågor': '/vanliga-fragor',
+    };
+    const route = routes[item];
+    if (route) {
+      window.history.pushState({}, '', route);
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }
@@ -397,24 +406,12 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               decoding="async"
             />
           </button>
-          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <button
-              type="button"
-              onClick={() => {
-                window.history.pushState({}, '', '/kop-bil');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-              }}
-              className="text-[15px] text-white/70 font-medium transition hover:text-white"
-            >
-              Bilköpshjälpen
-            </button>
-            <button
-              type="button"
-              onClick={onBackHome}
-              className="text-[15px] text-white/70 font-medium transition hover:text-white"
-            >
-              Sälj bil
-            </button>
+          <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
+            <button type="button" onClick={onBackHome} className="text-[15px] text-white/70 font-medium transition hover:text-white">Sälj bil</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Bilköpshjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/guider'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Guider</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/priser'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Priser</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/vanliga-fragor'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Vanliga frågor</button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
@@ -698,7 +695,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   }}
                   className="h-11 px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
                 >
-                  Kom igång – kostnadsfritt
+                  Få prishjälp
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>

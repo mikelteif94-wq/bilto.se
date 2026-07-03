@@ -539,8 +539,19 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
     if (item === 'Sälj bil') { onBack(); return; }
-    if (item === 'Köp bil') { onNavigateBuy?.(); return; }
-    if (item === 'Så funkar det') { onNavigateHowItWorks?.(); return; }
+    const routes: Partial<Record<MobileMenuItem, string>> = {
+      'Köp bil': '/kop-bil',
+      'Bilköpshjälpen': '/kop-bil',
+      'Guider': '/guider',
+      'Priser': '/priser',
+      'Vanliga frågor': '/vanliga-fragor',
+    };
+    const route = routes[item];
+    if (route) {
+      window.history.pushState({}, '', route);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      return;
+    }
     onBack();
   };
 
@@ -574,13 +585,12 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
               decoding="async"
             />
           </button>
-          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <button type="button" onClick={onBack} className="text-[15px] text-white/80 hover:text-white transition font-medium">
-              Sälj bil
-            </button>
-            <button type="button" onClick={() => onNavigateBuy?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">
-              Köp bil med hjälp
-            </button>
+          <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
+            <button type="button" onClick={onBack} className="text-[15px] text-white/80 hover:text-white transition font-medium">Sälj bil</button>
+            <button type="button" onClick={() => onNavigateBuy?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">Bilköpshjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/guider'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Guider</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/priser'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Priser</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/vanliga-fragor'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Vanliga frågor</button>
           </nav>
           <div className="ml-auto">
             <button

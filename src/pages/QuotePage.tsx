@@ -176,7 +176,7 @@ export default function QuotePage({
               onClick={() => navigateToBuy()}
               className="w-full h-12 rounded-lg bg-[#0047B3] hover:bg-[#003a94] text-white font-semibold text-[15px] transition inline-flex items-center justify-center gap-2 group"
             >
-              Kom igång
+              Få prishjälp
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
             </button>
             <p className="mt-3 text-[12px] text-slate-400 text-center">Vi ringer dig inom en timme.</p>

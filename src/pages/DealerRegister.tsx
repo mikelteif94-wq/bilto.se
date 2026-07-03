@@ -42,17 +42,19 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Köp bil'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
-    if (item === 'Köp bil') {
-      window.history.pushState({}, '', '/kop-bil');
-      window.dispatchEvent(new PopStateEvent('popstate'));
-      return;
-    }
-    if (item === 'Så funkar det') {
-      window.history.pushState({}, '', '/sa-funkar-det');
+    const routes: Partial<Record<MobileMenuItem, string>> = {
+      'Bilköpshjälpen': '/kop-bil',
+      'Guider': '/guider',
+      'Priser': '/priser',
+      'Vanliga frågor': '/vanliga-fragor',
+    };
+    const route = routes[item];
+    if (route) {
+      window.history.pushState({}, '', route);
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }

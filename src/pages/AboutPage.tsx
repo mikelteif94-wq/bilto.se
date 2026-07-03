@@ -44,6 +44,21 @@ const PROMISES = [
   },
 ];
 
+const FOUNDERS = [
+  {
+    name: 'Alexander',
+    role: 'VD och medgrundare',
+    bio: '[Grundarens bakgrund och varför han startade Bilto – fylls i av grundaren.]',
+    photo: '/image copy copy copy.png',
+  },
+  {
+    name: '[Medgrundare]',
+    role: '[Roll]',
+    bio: '[Grundarens bakgrund och varför han/hon startade Bilto – fylls i av grundaren.]',
+    photo: null,
+  },
+];
+
 export default function AboutPage({ onBackHome }: AboutPageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -55,12 +70,19 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
     });
   }, []);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Köp bil'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
-    if (item === 'Köp bil') {
-      window.history.pushState({}, '', '/kop-bil');
+    const routes: Partial<Record<MobileMenuItem, string>> = {
+      'Bilköpshjälpen': '/kop-bil',
+      'Guider': '/guider',
+      'Priser': '/priser',
+      'Vanliga frågor': '/vanliga-fragor',
+    };
+    const route = routes[item];
+    if (route) {
+      window.history.pushState({}, '', route);
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }
@@ -144,17 +166,17 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
           </div>
         </section>
 
-        {/* Mission + Promise combined */}
+        {/* Mission + Values + Promise */}
         <section className="py-14 sm:py-20 bg-white">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-start">
-              {/* Left: mission text + portrait */}
+              {/* Left: mission text */}
               <div>
                 <span className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.22em] mb-4 block">
                   Vår mission
                 </span>
                 <h2 className="text-[26px] sm:text-[38px] font-bold text-slate-900 leading-[1.1] tracking-tight">
-                  Vi tar makten från handlaren och ger den till dig.
+                  Handlaren har alltid haft ett expertövertag. Nu har du en expert på din sida.
                 </h2>
                 <div className="mt-5 space-y-4 text-slate-500 text-[15px] sm:text-[16px] leading-[1.75]">
                   <p>
@@ -163,22 +185,6 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                   <p>
                     Bilto är en ny tjänst byggd för transparens – vi ser till att bilaffären är tydlig och rättvis för dig som privatperson, med handlare som granskas noggrant innan de ens tillåts lägga ett bud.
                   </p>
-                </div>
-
-                <div className="mt-8 relative rounded-xl overflow-hidden aspect-[4/3] bg-slate-100">
-                  <img
-                    src="/image copy copy copy.png"
-                    alt="Alexander, VD och medgrundare"
-                    className="w-full h-full object-cover object-top"
-                    loading="lazy"
-                    decoding="async"
-                    width="480"
-                    height="360"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-5">
-                    <p className="text-[15px] font-bold text-white leading-tight">Alexander</p>
-                    <p className="text-[12px] text-white/70 mt-0.5">VD och medgrundare</p>
-                  </div>
                 </div>
               </div>
 
@@ -237,6 +243,71 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
           </div>
         </section>
 
+        {/* Our story */}
+        <section className="py-14 sm:py-20 bg-[#faf8f5]">
+          <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
+            <div className="max-w-2xl">
+              <span className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.22em] mb-4 block">
+                Vår historia
+              </span>
+              <h2 className="text-[26px] sm:text-[38px] font-bold text-slate-900 leading-[1.1] tracking-tight mb-6">
+                Varför vi startade Bilto
+              </h2>
+              <div className="space-y-4 text-slate-500 text-[15px] sm:text-[16px] leading-[1.75]">
+                <p>
+                  [Här berättar grundarna varför Bilto skapades – vad de upplevde, vad de saknade på marknaden och vad som drev dem att bygga en bättre lösning.]
+                </p>
+                <p>
+                  [Bakgrund, inspiration och den insikt som ledde till att Bilto grundades. Fylls i av grundarna.]
+                </p>
+                <p>
+                  [Hur resan har sett ut – från idé till den plattform som Bilto är idag.]
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Founders */}
+        <section className="py-14 sm:py-20 bg-white">
+          <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
+            <span className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.22em] mb-4 block">
+              Grundarna
+            </span>
+            <h2 className="text-[26px] sm:text-[38px] font-bold text-slate-900 leading-[1.1] tracking-tight mb-10">
+              Människorna bakom Bilto
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-6 max-w-2xl">
+              {FOUNDERS.map((founder) => (
+                <div key={founder.name} className="rounded-xl border border-slate-200 bg-[#faf8f5] overflow-hidden">
+                  <div className="aspect-[4/3] bg-slate-100 overflow-hidden">
+                    {founder.photo ? (
+                      <img
+                        src={founder.photo}
+                        alt={founder.name}
+                        className="w-full h-full object-cover object-top"
+                        loading="lazy"
+                        decoding="async"
+                        width="480"
+                        height="360"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-slate-100">
+                        <span className="text-[13px] text-slate-400 font-medium">Foto kommer</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-5 sm:p-6">
+                    <p className="text-[17px] font-bold text-slate-900 leading-tight">{founder.name}</p>
+                    <p className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-wide mt-1 mb-3">{founder.role}</p>
+                    <p className="text-[14px] text-slate-500 leading-[1.65]">{founder.bio}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="relative bg-[#0e6efe] overflow-hidden">
           <div className="absolute inset-0">
@@ -264,7 +335,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                 onClick={onBackHome}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-4 px-10 rounded-xl bg-white text-[#0e6efe] hover:bg-[#faf8f5] font-bold text-[16px] transition shadow-lg group"
               >
-                Värdera din bil gratis
+                Värdera bilen
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
               </button>
               <a
@@ -282,3 +353,4 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
     </div>
   );
 }
+

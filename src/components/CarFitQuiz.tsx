@@ -657,7 +657,7 @@ function ResultScreen({ result, car, onNegotiate, onRedo, onClose }: {
               onClick={() => { onClose(); onNegotiate(); }}
               className="shrink-0 bg-white/20 hover:bg-white/30 text-white rounded-xl px-3 py-2 text-[12px] font-bold transition-all flex items-center gap-1"
             >
-              Kom igång <ArrowRight className="w-3 h-3" />
+              Få prishjälp <ArrowRight className="w-3 h-3" />
             </button>
           </motion.div>
         )}

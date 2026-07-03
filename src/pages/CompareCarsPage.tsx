@@ -2026,7 +2026,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 }}
                 className="mt-4 w-full h-12 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] flex items-center justify-center gap-2 transition active:scale-[0.98]"
               >
-                Starta bilbyte
+                Värdera bilen
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -2562,7 +2562,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               onClick={() => openBuyDrawer('', 'searching')}
               className="inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition active:scale-[0.98] shadow-lg"
             >
-              Kom igång – betala bara vid affär
+              Få prishjälp
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

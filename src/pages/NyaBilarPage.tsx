@@ -562,7 +562,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
               onClick={onNavigateConsultation}
               className="h-12 px-8 bg-white text-slate-950 font-semibold rounded-xl hover:bg-slate-100 transition-colors text-sm"
             >
-              Boka gratis konsultation
+              Kostnadsfri konsultation
             </button>
             <a
               href="tel:+46855550200"

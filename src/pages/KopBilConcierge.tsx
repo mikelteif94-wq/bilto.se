@@ -114,8 +114,19 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
     if (item === 'Sälj bil') { onBack(); return; }
-    if (item === 'Köp bil') { onNavigateBuy(); return; }
-    if (item === 'Så funkar det') { onNavigateHowItWorks(); return; }
+    const routes: Partial<Record<MobileMenuItem, string>> = {
+      'Köp bil': '/kop-bil',
+      'Bilköpshjälpen': '/kop-bil',
+      'Guider': '/guider',
+      'Priser': '/priser',
+      'Vanliga frågor': '/vanliga-fragor',
+    };
+    const route = routes[item];
+    if (route) {
+      window.history.pushState({}, '', route);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      return;
+    }
     onBack();
   };
 
@@ -148,21 +159,12 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               decoding="async"
             />
           </button>
-          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <button
-              type="button"
-              onClick={onBack}
-              className="text-[15px] text-white/80 hover:text-white transition font-medium"
-            >
-              Sälj bil
-            </button>
-            <button
-              type="button"
-              onClick={onNavigateBuy}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-white/20 border border-white/40 text-white text-[14px] font-semibold hover:bg-white/30 transition backdrop-blur-sm"
-            >
-              Köp bil med hjälp
-            </button>
+          <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
+            <button type="button" onClick={onBack} className="text-[15px] text-white/80 hover:text-white transition font-medium">Sälj bil</button>
+            <button type="button" onClick={onNavigateBuy} className="text-[15px] text-white/80 hover:text-white transition font-medium">Bilköpshjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/guider'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Guider</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/priser'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Priser</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/vanliga-fragor'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Vanliga frågor</button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
@@ -227,7 +229,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                   onClick={() => onNavigateBuy()}
                   className="w-full h-13 sm:h-14 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-md inline-flex items-center justify-center gap-2 group"
                 >
-                  Kom igång – betala bara vid affär
+                  Få prishjälp
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
                 </button>
                 <p className="text-center text-white/60 text-[12px]">Fast pris 1&nbsp;995 kr – endast om affären blir av</p>
@@ -335,7 +337,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               onClick={() => onNavigateBuy()}
               className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[16px] hover:bg-[#faf8f5] transition shadow-lg inline-flex items-center gap-2 group"
             >
-              Kom igång nu
+              Få prishjälp
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
           </div>
