@@ -42,3 +42,13 @@ function setLink(rel: string, href: string) {
   }
   el.href = href;
 }
+
+export function injectJsonLd(data: object) {
+  const existing = document.querySelector('script[data-page-jsonld]');
+  if (existing) existing.remove();
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.setAttribute('data-page-jsonld', 'true');
+  script.textContent = JSON.stringify(data);
+  document.head.appendChild(script);
+}

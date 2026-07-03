@@ -51,6 +51,9 @@ const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 const NyaBilarPage = lazy(() => import('./pages/NyaBilarPage'));
+const VanligaFragorPage = lazy(() => import('./pages/VanligaFragorPage'));
+const PriserPage = lazy(() => import('./pages/PriserPage'));
+const GuidePage = lazy(() => import('./pages/GuidePage'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -556,6 +559,54 @@ function App() {
     window.history.replaceState({}, '', '/kop-bil');
     setPath('/kop-bil');
     return null;
+  }
+
+  if (path === '/salj-bil') {
+    window.history.replaceState({}, '', '/sa-funkar-det');
+    setPath('/sa-funkar-det');
+    return null;
+  }
+
+  if (path === '/vanliga-fragor') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <VanligaFragorPage
+          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/priser') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <PriserPage
+          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  const guideArticleMatch = path.match(/^\/guider\/([a-z0-9-]+)\/?$/);
+  if (guideArticleMatch) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <GuidePage
+          slug={guideArticleMatch[1]}
+          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/guider') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <GuidePage
+          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
   }
 
   if (path === '/webbplatskarta') {
