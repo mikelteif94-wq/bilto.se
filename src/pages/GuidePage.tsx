@@ -104,6 +104,7 @@ function GuideArticle({ guide, onBack, onNavigateGuide }: { guide: Guide; onBack
       title: guide.metaTitle,
       description: guide.metaDescription,
       canonical: `https://bilto.se/guider/${guide.slug}`,
+      ogType: 'article',
     });
     injectJsonLd({
       '@context': 'https://schema.org',

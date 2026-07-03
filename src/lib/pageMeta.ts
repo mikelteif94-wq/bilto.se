@@ -3,24 +3,26 @@ export interface PageMeta {
   description: string;
   canonical?: string;
   ogImage?: string;
+  ogType?: 'website' | 'article';
 }
 
-export function setPageMeta({ title, description, canonical, ogImage }: PageMeta) {
+const DEFAULT_OG_IMAGE = 'https://bilto.se/og-image.png';
+
+export function setPageMeta({ title, description, canonical, ogImage, ogType }: PageMeta) {
   document.title = title;
 
   setMeta('name', 'description', description);
   setMeta('property', 'og:title', title);
   setMeta('property', 'og:description', description);
+  setMeta('property', 'og:type', ogType ?? 'website');
+  setMeta('property', 'og:image', ogImage ?? DEFAULT_OG_IMAGE);
+  setMeta('name', 'twitter:title', title);
+  setMeta('name', 'twitter:description', description);
+  setMeta('name', 'twitter:image', ogImage ?? DEFAULT_OG_IMAGE);
   if (canonical) {
     setMeta('property', 'og:url', canonical);
     setLink('canonical', canonical);
   }
-  if (ogImage) {
-    setMeta('property', 'og:image', ogImage);
-    setMeta('name', 'twitter:image', ogImage);
-  }
-  setMeta('name', 'twitter:title', title);
-  setMeta('name', 'twitter:description', description);
 }
 
 function setMeta(attrName: string, attrValue: string, content: string) {
