@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowRight, Menu, ShieldCheck, Handshake, Gauge, Star } from 'lucide-react';
+import { ArrowRight, Menu, ShieldCheck, Handshake, Gauge } from 'lucide-react';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
 import { setPageMeta } from '../lib/pageMeta';
@@ -17,7 +17,7 @@ const VALUES = [
   {
     icon: Gauge,
     title: 'Genomtänkta flöden',
-    text: 'Processerna är slipade genom tusentals verkliga affärer – steg för steg, så att du sparar tid, får ett bättre pris och känner dig trygg hela vägen.',
+    text: 'Processerna är noggrant utformade steg för steg – så att du sparar tid, får ett bättre pris och känner dig trygg hela vägen.',
   },
   {
     icon: Handshake,
@@ -134,6 +134,9 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                   alt="Nöjda bilköpare"
                   className="w-full h-full object-cover object-center"
                   fetchPriority="high"
+                  decoding="async"
+                  width="1200"
+                  height="400"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
               </div>
@@ -158,7 +161,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                     Bilmarknaden har länge präglats av otydliga priser, dolda avgifter och ett informationsövertag på handlarens sida. Vi bestämde oss för att ändra på det.
                   </p>
                   <p>
-                    Idag säljer tusentals bilägare via Bilto och får konkurrerande bud från handlare som är granskade innan de ens tillåts lägga ett bud.
+                    Bilto är en ny tjänst byggd för transparens – vi ser till att bilaffären är tydlig och rättvis för dig som privatperson, med handlare som granskas noggrant innan de ens tillåts lägga ett bud.
                   </p>
                 </div>
 
@@ -167,15 +170,14 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                     src="/image copy copy copy.png"
                     alt="Alexander, VD och medgrundare"
                     className="w-full h-full object-cover object-top"
+                    loading="lazy"
+                    decoding="async"
+                    width="480"
+                    height="360"
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-5">
                     <p className="text-[15px] font-bold text-white leading-tight">Alexander</p>
                     <p className="text-[12px] text-white/70 mt-0.5">VD och medgrundare</p>
-                    <div className="flex gap-0.5 mt-1.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -243,6 +245,10 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
               alt=""
               aria-hidden="true"
               className="w-full h-full object-cover object-center opacity-20"
+              loading="lazy"
+              decoding="async"
+              width="1200"
+              height="400"
             />
           </div>
           <div className="relative max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-20 text-center">

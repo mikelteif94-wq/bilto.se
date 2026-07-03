@@ -641,6 +641,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         src={img}
                         alt={step.title}
                         className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                        loading="lazy"
+                        decoding="async"
+                        width="480"
+                        height="300"
                       />
                     </div>
                   )}
@@ -704,6 +708,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 src="/BSM_car_sale_key_woman_handover_101122.jpg"
                 alt="Personlig mäklare hjälper bilsäljare"
                 className="w-full h-[260px] sm:h-[400px] md:h-[500px] object-cover object-center"
+                loading="lazy"
+                decoding="async"
+                width="960"
+                height="640"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
               <div className="hidden sm:block absolute left-6 bottom-6 bg-white rounded-xl p-4 shadow-lg max-w-xs">
@@ -857,6 +865,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 src="/13ccde8b-copy-copy.png"
                 alt="Personlig rådgivare framför kund-bil"
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+                width="480"
+                height="480"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
               <div className="hidden md:block absolute right-5 bottom-5 max-w-[240px] bg-white rounded-xl p-4 shadow-lg">
@@ -1005,6 +1017,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     src="/858c5bbb-bilto-hoodie.png"
                     alt="Bilexpert"
                     className="absolute inset-0 w-full h-full object-cover object-center"
+                    loading="lazy"
+                    decoding="async"
+                    width="720"
+                    height="520"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
@@ -1012,33 +1028,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   <p className="text-[10px] font-bold text-slate-900 text-center mb-1.5">Välj en tid</p>
                   <CalendarWidget />
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Josefin testimonial ───────────────────────────── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-12 gap-8 sm:gap-12 items-center">
-            <div className="md:col-span-5">
-              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-4">Kundberättelse</p>
-              <h2 className="text-[28px] sm:text-[34px] font-semibold leading-[1.12] text-slate-900 tracking-[-0.02em]">
-                "Jag visste ingenting om bilar – Bilto guidade mig hela vägen och jag hittade rätt bil till ett pris jag aldrig klarat förhandla fram själv."
-              </h2>
-              <p className="text-[13px] text-slate-400 mt-5 font-medium">
-                Josefin L. – köpte sin Volvo XC40, 2022
-              </p>
-            </div>
-            <div className="md:col-span-7">
-              <div className="relative rounded-xl overflow-hidden bg-[#0e6efe] h-[280px] sm:h-[440px] md:h-[520px]">
-                <img
-                  src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(1200_x_1400_px)_(2000_x_2000_px)_(1).png"
-                  alt="Josefin framför sin Volvo XC40"
-                  className="absolute inset-0 w-full h-full object-cover scale-[1.03]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
               </div>
             </div>
           </div>
@@ -1255,6 +1244,10 @@ function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] 
                 src={images[i]}
                 alt={step.title}
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+                width="300"
+                height="188"
               />
               {/* Step number badge */}
               <div className="absolute bottom-3 left-3 w-9 h-9 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg">

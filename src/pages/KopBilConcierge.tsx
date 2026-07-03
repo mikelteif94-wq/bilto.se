@@ -11,7 +11,6 @@ import {
   Users,
   Handshake,
   Menu,
-  Quote,
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
@@ -98,29 +97,6 @@ const INCLUDED = [
   { title: 'Ränteförhandling', desc: 'Vi jämför finansiering och pressar räntan mot flera aktörer.' },
   { title: 'Inbytesvärdering', desc: 'Om du byter in en bil hämtar vi konkurrerande bud.' },
   { title: 'Leverans hem', desc: 'Vi kan koordinera hemleverans utan att du behöver besöka handlaren.' },
-];
-
-const TESTIMONIALS = [
-  {
-    quote: 'Jag hade hittat en Volvo XC40 men kände mig osäker. Bilto fick 15 000 kr i ersättning för en felaktig annons, förhandlade ner räntan 2 % och fick dubbdäck och 2 års garanti på köpet.',
-    name: 'Josefin L.',
-    car: 'Volvo XC40, 2022',
-    saves: [
-      { label: 'Ränta', val: '−2 %' },
-      { label: 'Ersättning', val: '15 000 kr' },
-      { label: 'Inbyte', val: '+7 000 kr' },
-    ],
-  },
-  {
-    quote: 'Jag visste inte ens vilket märke jag ville ha. Experten ställde rätt frågor, föreslog tre alternativ och hittade en BMW i perfekt skick till 40 000 kr under vad jag trodde jag måste betala.',
-    name: 'Daniel K.',
-    car: 'BMW 320i, 2021',
-    saves: [
-      { label: 'Besparing', val: '40 000 kr' },
-      { label: 'Tid sparat', val: '3 veckor' },
-      { label: 'Fordon granskade', val: '12 st' },
-    ],
-  },
 ];
 
 export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowItWorks }: KopBilConciergProps) {
@@ -251,9 +227,10 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                   onClick={() => onNavigateBuy()}
                   className="w-full h-13 sm:h-14 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-md inline-flex items-center justify-center gap-2 group"
                 >
-                  Kom igång gratis
+                  Kom igång – betala bara vid affär
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
                 </button>
+                <p className="text-center text-white/60 text-[12px]">Fast pris 1&nbsp;995 kr – endast om affären blir av</p>
                 <a
                   href="tel:+46855550200"
                   className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
@@ -361,50 +338,6 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Kom igång nu
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Testimonials ── */}
-      <section className="py-16 sm:py-24 px-5 sm:px-8">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10 sm:mb-12">
-            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
-              Kundcase
-            </span>
-            <h2 className="text-[26px] sm:text-[40px] font-bold text-slate-900 leading-tight tracking-tight">
-              Vad din Bilto-expert gör åt dig
-            </h2>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-5 sm:gap-6">
-            {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="bg-[#faf8f5] rounded-xl border border-slate-200 p-6 sm:p-8">
-                <Quote className="w-7 h-7 text-[#0e6efe]/20 mb-4" />
-                <p className="text-[14px] sm:text-[15px] text-slate-700 leading-[1.7] mb-6 italic">
-                  "{t.quote}"
-                </p>
-                <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5">
-                  {t.saves.map((s) => (
-                    <div key={s.label} className="bg-white rounded-xl px-3 py-3 text-center border border-slate-200">
-                      <p className="text-[14px] sm:text-[15px] font-bold text-[#0e6efe] leading-tight">{s.val}</p>
-                      <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5">{s.label}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <div>
-                    <p className="text-[14px] font-semibold text-slate-800">{t.name}</p>
-                    <p className="text-[12px] text-slate-500">{t.car}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>

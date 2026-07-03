@@ -26,7 +26,7 @@ const FAQ_GROUPS: FaqGroup[] = [
       { q: 'Hur snabbt kan jag sälja min bil?', a: 'De flesta bilar säljs inom 24–48 timmar. Så fort du har skickat in din bil tar vi kontakt med granskade handlare och du får bud redan samma dag.' },
       { q: 'Hämtar Bilto bilen hos mig?', a: 'Ja, vi erbjuder fri upphämtning i hela Sverige. Du behöver aldrig köra din bil till en handlare.' },
       { q: 'Vad händer om jag inte är nöjd med buden?', a: 'Du är aldrig bunden att sälja. Väljer du att tacka nej till alla bud är det helt utan kostnad. Du bestämmer alltid om och till vem du säljer.' },
-      { q: 'Hur vet jag att jag får marknadspriset?', a: 'Vi skickar din bil till flera granskade handlare som tävlar mot varandra. Det skapar en naturlig auktionsdynamik som driver upp priset. Genomsnittskunden får 15–25% mer än Blocket-snittpriset.' },
+      { q: 'Hur vet jag att jag får marknadspriset?', a: 'Vi skickar din bil till flera granskade handlare som tävlar mot varandra. Det skapar en naturlig auktionsdynamik som driver upp priset och ger dig ett transparent budgivningsresultat.' },
       { q: 'Kan jag sälja om bilen har ett pågående lån?', a: 'Ja, det går bra. Vi hjälper dig lösa ut lånet i samband med affären, så att allt hanteras smidigt vid överlämning.' },
     ],
   },
@@ -35,7 +35,7 @@ const FAQ_GROUPS: FaqGroup[] = [
     items: [
       { q: 'Vad innebär Biltos bilköpshjälp?', a: 'En av våra experter hjälper dig hitta rätt bil, granskar skicket, förhandlar priset och ser till att kontraktet är korrekt. Du betalar inte extra – vi finansieras av handlaren.' },
       { q: 'Kostar bilköpshjälpen något?', a: 'Nej, tjänsten är gratis för dig. Bilto ersätts av handlaren när en affär slutförs.' },
-      { q: 'Hur mycket kan jag spara med Biltos förhandlingshjälp?', a: 'Genomsnittskunden sparar 12 000–35 000 kr per bilaffär jämfört med att förhandla på egen hand. Besparingen kommer från priset, finansieringsräntan och att du undviker onödiga tillägg.' },
+      { q: 'Hur mycket kan jag spara med Biltos förhandlingshjälp?', a: 'Det beror på bil och situation. Genom att ha en expert som förhandlar pris, ränta och tillval på din sida – och som vet vad handlare faktiskt kan gå med på – ökar dina chanser att göra en bättre affär än om du förhandlar ensam.' },
       { q: 'Kan Bilto hjälpa mig att hitta en specifik bil?', a: 'Absolut. Berätta vilken bil du letar efter så söker vi i hela Sverige och presenterar alternativ som passar ditt behov och budget.' },
     ],
   },

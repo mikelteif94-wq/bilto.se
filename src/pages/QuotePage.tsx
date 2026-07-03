@@ -193,6 +193,10 @@ export default function QuotePage({
           alt=""
           aria-hidden="true"
           className="absolute left-1/2 -translate-x-1/2 top-0 w-[780px] h-[780px] object-contain pointer-events-none select-none opacity-40"
+          loading="lazy"
+          decoding="async"
+          width="780"
+          height="780"
         />
         <div className="relative flex-1 flex items-center max-w-[1280px] mx-auto px-6 w-full pt-28 pb-16 grid grid-cols-[1.1fr_0.9fr] gap-14">
           <div>
@@ -358,51 +362,6 @@ export default function QuotePage({
         </div>
       </section>
 
-      {/* Johan testimonial */}
-      <section className="bg-white relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-8 sm:py-12">
-          <div className="grid md:grid-cols-12 gap-8 items-center">
-            <div className="md:col-span-5 order-1">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-3 block">
-                Kundcase
-              </span>
-              <h2 className="text-[22px] sm:text-[34px] font-semibold leading-[1.15] sm:leading-[1.1] text-slate-900 tracking-[-0.02em]">
-                "Bilto löste allt från start till mål – jag behövde inte göra någonting själv."
-              </h2>
-              <p className="text-slate-600 mt-4 text-[14px] sm:text-[15px] leading-[1.65] max-w-md">
-                Johan ville köpa en Toyota RAV4 men hade varken tid eller lust att jaga annonser och förhandla. Bilto tog hand om hela affären – hittade rätt bil, förhandlade priset och såg till att allt gick smidigt. Johan sparade både pengar och en massa tid.
-              </p>
-              <div className="mt-6 grid grid-cols-2 gap-2.5">
-                {[
-                  { label: 'Sparad tid', value: 'Flera dagar' },
-                  { label: 'Prisförhandling', value: '12 000 kr' },
-                  { label: 'Smidig affär', value: 'Start–mål' },
-                  { label: 'Nöjd kund', value: '100 %' },
-                ].map(({ label, value }) => (
-                  <div key={label} className="px-4 py-3 bg-[#0e6efe]/5 border border-[#0e6efe]/15 rounded-xl">
-                    <p className="text-[10px] font-bold text-[#0e6efe] uppercase tracking-[0.12em] mb-0.5">{label}</p>
-                    <p className="text-[16px] font-bold text-slate-900 leading-tight">{value}</p>
-                  </div>
-                ))}
-              </div>
-              <p className="text-[13px] text-slate-500 mt-5">
-                Johan K. – Toyota RAV4, 2023
-              </p>
-            </div>
-            <div className="md:col-span-7 order-2">
-              <div className="relative rounded-xl overflow-hidden bg-[#0e6efe] h-[420px] sm:h-[460px] md:h-[520px]">
-                <img
-                  src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(Instagram_Post_(45))_copy_copy_copy_copy_copy.jpg"
-                  alt="Johan framför sin Toyota RAV4"
-                  className="absolute inset-0 w-full h-full object-cover object-top scale-[1.03]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0e6efe]/30 via-transparent to-transparent" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Why us */}
       <section className="bg-[#0e6efe] py-12 sm:py-20 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
@@ -456,6 +415,10 @@ export default function QuotePage({
               alt=""
               aria-hidden="true"
               className="hidden md:block w-[200px] lg:w-[260px] h-auto opacity-90"
+              loading="lazy"
+              decoding="async"
+              width="260"
+              height="260"
             />
           </div>
           <ol className="relative lg:grid lg:grid-cols-3 lg:gap-10">
@@ -555,6 +518,10 @@ export default function QuotePage({
                       alt=""
                       aria-hidden="true"
                       className={item.imgClass || "w-auto h-[90px] sm:h-[130px] object-contain group-hover:scale-105 transition-transform duration-300"}
+                      loading="lazy"
+                      decoding="async"
+                      width="200"
+                      height="130"
                     />
                   </div>
                   <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center mb-3 sm:mb-4">
@@ -593,6 +560,10 @@ export default function QuotePage({
                 src="/infographic_antal_agare.svg"
                 alt="Infografik: antal ägare och bilhistorik"
                 className="w-full max-w-[340px] h-auto"
+                loading="lazy"
+                decoding="async"
+                width="340"
+                height="340"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -630,6 +601,10 @@ export default function QuotePage({
                 src="/infographic_antal_agare.svg"
                 alt="Infografik: antal ägare och bilhistorik"
                 className="w-full max-w-[700px] h-auto"
+                loading="lazy"
+                decoding="async"
+                width="700"
+                height="700"
               />
             </div>
 

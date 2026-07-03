@@ -1099,7 +1099,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               {heroTitle ?? 'Hitta drömbilen – spara tid och pengar'}
             </h1>
             <p className="text-white/80 text-center text-[15px] sm:text-[17px] leading-relaxed mb-8 sm:mb-10 drop-shadow">
-              {heroSubtitle ?? 'Gratis hjälp • Vi förhandlar • Utan förpliktelser'}
+              {heroSubtitle ?? 'Experthjälp • Vi förhandlar • Betala bara vid affär'}
             </p>
 
             <p className="text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-3 text-center">
@@ -1477,7 +1477,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                           transition={{ delay: 0.1 + i * 0.1 }}
                           className="aspect-[4/3] rounded-xl bg-white border border-slate-100 shadow-sm flex items-end justify-center overflow-hidden p-2"
                         >
-                          {img && <img src={img} alt={`${car.brand_display} ${car.model_display}`} className="w-full h-auto object-contain" />}
+                          {img && <img src={img} alt={`${car.brand_display} ${car.model_display}`} className="w-full h-auto object-contain" loading="lazy" decoding="async" width="400" height="300" />}
                         </motion.div>
                       );
                     })}
@@ -1929,7 +1929,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       <div key={car.id} className="relative shrink-0">
                         <div className="w-10 h-10 rounded-xl bg-slate-700 overflow-hidden">
                           {img ? (
-                            <img src={img} alt="" className="w-full h-full object-cover" />
+                            <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" decoding="async" width="40" height="40" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
                               <Car className="w-4 h-4 text-slate-500" />
@@ -1986,6 +1986,10 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           alt=""
           className="absolute inset-0 w-full h-full object-cover object-center opacity-30"
           aria-hidden="true"
+          loading="lazy"
+          decoding="async"
+          width="1920"
+          height="1080"
         />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-8 py-10 sm:py-24">
           <div className="max-w-xl">
@@ -2366,38 +2370,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         </div>
       </section>
 
-      {/* Johan testimonial */}
-      <section className="bg-white relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-8 sm:py-12">
-          <div className="grid md:grid-cols-12 gap-8 items-center">
-            <div className="md:col-span-5 order-1">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-[0.18em] mb-3 block">
-                Kundcase
-              </span>
-              <h2 className="text-[22px] sm:text-[34px] font-semibold leading-[1.15] sm:leading-[1.1] text-slate-900 tracking-[-0.02em]">
-                "Bilto löste allt från start till mål – jag behövde inte göra någonting själv."
-              </h2>
-              <p className="text-slate-600 mt-4 text-[14px] sm:text-[15px] leading-[1.65] max-w-md">
-                Johan ville köpa en Toyota RAV4 men hade varken tid eller lust att jaga annonser och förhandla. Bilto tog hand om hela affären – hittade rätt bil, förhandlade priset och såg till att allt gick smidigt. Johan sparade både pengar och en massa tid.
-              </p>
-              <p className="text-[13px] text-slate-500 mt-5">
-                Johan K. – Toyota RAV4, 2023
-              </p>
-            </div>
-            <div className="md:col-span-7 order-2">
-              <div className="relative rounded-xl overflow-hidden">
-                <img
-                  src="/manrope_(1920_x_1080_px)_(1280_x_720_px)_(Instagram_Post_(45))_copy_copy_copy_copy_copy.jpg"
-                  alt="Johan framför sin Toyota RAV4"
-                  className="w-full h-[300px] sm:h-[460px] md:h-[520px] object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Why us stats */}
       <section className="bg-[#0e6efe] py-12 sm:py-20 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
@@ -2481,6 +2453,10 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       alt=""
                       aria-hidden="true"
                       className={item.imgClass || "w-auto h-[110px] sm:h-[130px] object-contain group-hover:scale-105 transition-transform duration-300"}
+                      loading="lazy"
+                      decoding="async"
+                      width="200"
+                      height="130"
                     />
                   </div>
                   <div className="w-11 h-11 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center mb-4">
@@ -2528,6 +2504,10 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                 src="/infographic_antal_agare.svg"
                 alt="Infografik: antal ägare och bilhistorik"
                 className="w-full max-w-[600px] sm:max-w-[700px] h-auto"
+                loading="lazy"
+                decoding="async"
+                width="700"
+                height="700"
               />
             </div>
             <div className="lg:col-span-1 space-y-6 sm:space-y-8 order-3">
@@ -2562,6 +2542,10 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           src="/b858d9c8-9893-488f-8103-98fee9292c16.png"
           alt="Bilaffär med Bilto"
           className="w-full h-[340px] sm:h-[480px] object-cover object-center"
+          loading="lazy"
+          decoding="async"
+          width="1920"
+          height="1080"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/50 to-transparent" />
         <div className="absolute inset-0 flex items-center">
@@ -2578,7 +2562,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               onClick={() => openBuyDrawer('', 'searching')}
               className="inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition active:scale-[0.98] shadow-lg"
             >
-              Kom igång gratis
+              Kom igång – betala bara vid affär
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

@@ -214,7 +214,7 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
               {/* Card A – Free */}
               <div className="bg-[#faf8f5] rounded-2xl p-7 sm:p-9 border border-slate-200 flex flex-col">
                 <div className="mb-5">
-                  <p className="text-[12px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">Kom igång gratis</p>
+                  <p className="text-[12px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">Kostnadsfritt</p>
                   <div className="flex items-baseline gap-1">
                     <span className="text-[42px] font-bold text-slate-900">0 kr</span>
                   </div>
