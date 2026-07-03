@@ -267,7 +267,7 @@ export default function ConfirmationForm({
             {firstName_cap ? `Tack ${firstName_cap}!` : 'Tack!'}
           </h2>
           <p className="text-slate-600 px-2 mb-5">
-            Vi har tagit emot din bil och hör av oss när budgivningen är klar – du behöver inte göra något mer.
+            Klart! Din bil skickas nu till våra granskade handlare för budgivning.
           </p>
           {trackUrl && (
             <a

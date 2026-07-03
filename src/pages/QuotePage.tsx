@@ -188,16 +188,6 @@ export default function QuotePage({
       <section className="hidden lg:flex relative bg-[#0e6efe] min-h-[100svh] flex-col overflow-hidden">
         <div className="absolute -left-40 top-20 w-[620px] h-[620px] rounded-full bg-[#3d8cff] opacity-60" />
         <div className="absolute right-10 -bottom-40 w-[560px] h-[560px] rounded-full bg-[#3d8cff] opacity-50" />
-        <img
-          src="/manrope_(1920_x_1080_px)_(Instagram_Post_(34))_(2).png"
-          alt=""
-          aria-hidden="true"
-          className="absolute left-1/2 -translate-x-1/2 top-0 w-[780px] h-[780px] object-contain pointer-events-none select-none opacity-40"
-          loading="lazy"
-          decoding="async"
-          width="780"
-          height="780"
-        />
         <div className="relative flex-1 flex items-center max-w-[1280px] mx-auto px-6 w-full pt-28 pb-16 grid grid-cols-[1.1fr_0.9fr] gap-14">
           <div>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/20 backdrop-blur-sm text-white text-[13px] font-semibold mb-6">
@@ -490,20 +480,80 @@ export default function QuotePage({
                 icon: Search,
                 title: 'Vi letar bilen åt dig',
                 text: 'Vi kontrollerar hela marknaden – inte bara en handlares lager – och hittar bilar som matchar dina önskemål och budget.',
-                svg: '/certified-pre-own.75373bb7.svg',
+                illustration: (
+                  <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                    {/* background */}
+                    <rect width="200" height="120" fill="#f0f6ff" rx="12"/>
+                    {/* search results list */}
+                    <rect x="20" y="18" width="100" height="84" rx="8" fill="white" stroke="#dbeafe" strokeWidth="1.5"/>
+                    <rect x="30" y="28" width="60" height="7" rx="3.5" fill="#bfdbfe"/>
+                    <rect x="30" y="42" width="80" height="5" rx="2.5" fill="#e0eaff"/>
+                    <rect x="30" y="51" width="64" height="5" rx="2.5" fill="#e0eaff"/>
+                    <rect x="30" y="62" width="80" height="5" rx="2.5" fill="#e0eaff"/>
+                    <rect x="30" y="71" width="52" height="5" rx="2.5" fill="#e0eaff"/>
+                    <rect x="30" y="82" width="80" height="5" rx="2.5" fill="#e0eaff"/>
+                    <rect x="30" y="91" width="44" height="5" rx="2.5" fill="#e0eaff"/>
+                    {/* magnifying glass */}
+                    <circle cx="148" cy="60" r="26" fill="#dbeafe" stroke="#0e6efe" strokeWidth="2"/>
+                    <circle cx="148" cy="60" r="16" fill="white" stroke="#0e6efe" strokeWidth="2"/>
+                    <line x1="159" y1="72" x2="172" y2="85" stroke="#0e6efe" strokeWidth="3" strokeLinecap="round"/>
+                    {/* checkmark on result */}
+                    <circle cx="110" cy="47" r="7" fill="#0e6efe"/>
+                    <polyline points="107,47 109.5,49.5 114,44.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  </svg>
+                ),
               },
               {
                 icon: ShieldCheck,
                 title: 'Vi kollar att den håller',
                 text: 'Vi kontrollerar servicehistorik, eventuella skador och tidigare ägare. Inga otrevliga överraskningar efter köpet.',
-                svg: '/infographic_antal_agare.svg',
-                imgClass: 'w-full h-full object-contain group-hover:scale-105 transition-transform duration-300',
+                illustration: (
+                  <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                    <rect width="200" height="120" fill="#f0f6ff" rx="12"/>
+                    {/* shield */}
+                    <path d="M100 18 L138 32 L138 68 C138 88 100 102 100 102 C100 102 62 88 62 68 L62 32 Z" fill="#dbeafe" stroke="#0e6efe" strokeWidth="2"/>
+                    <path d="M100 26 L130 37 L130 67 C130 82 100 94 100 94 C100 94 70 82 70 67 L70 37 Z" fill="white"/>
+                    {/* checkmark inside shield */}
+                    <polyline points="84,60 94,70 117,48" stroke="#0e6efe" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                    {/* small data dots */}
+                    <circle cx="28" cy="38" r="5" fill="#bfdbfe"/>
+                    <circle cx="28" cy="58" r="5" fill="#06b6d4" opacity="0.7"/>
+                    <circle cx="28" cy="78" r="5" fill="#bfdbfe"/>
+                    <rect x="37" y="35" width="20" height="3" rx="1.5" fill="#e0eaff"/>
+                    <rect x="37" y="55" width="16" height="3" rx="1.5" fill="#cffafe" opacity="0.9"/>
+                    <rect x="37" y="75" width="20" height="3" rx="1.5" fill="#e0eaff"/>
+                    <circle cx="172" cy="38" r="5" fill="#bfdbfe"/>
+                    <circle cx="172" cy="58" r="5" fill="#06b6d4" opacity="0.7"/>
+                    <circle cx="172" cy="78" r="5" fill="#bfdbfe"/>
+                    <rect x="143" y="35" width="20" height="3" rx="1.5" fill="#e0eaff"/>
+                    <rect x="147" y="55" width="16" height="3" rx="1.5" fill="#cffafe" opacity="0.9"/>
+                    <rect x="143" y="75" width="20" height="3" rx="1.5" fill="#e0eaff"/>
+                  </svg>
+                ),
               },
               {
                 icon: Phone,
                 title: 'Vi förhandlar priset',
-                text: 'Vi vet hur handlare räknar och vågar säga nej. Det betyder att du sparar mer än vad tjänsten kostar.',
-                svg: '/info-content.a96a55cf.svg',
+                text: 'Vi vet hur handlare räknar och vågar säga nej. Det betyder att du sparar ofta mer än vad tjänsten kostar.',
+                illustration: (
+                  <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                    <rect width="200" height="120" fill="#f0f6ff" rx="12"/>
+                    {/* bar chart */}
+                    <rect x="24" y="88" width="130" height="1.5" rx="0.75" fill="#bfdbfe"/>
+                    {/* bars */}
+                    <rect x="35" y="50" width="22" height="38" rx="4" fill="#bfdbfe"/>
+                    <rect x="64" y="38" width="22" height="50" rx="4" fill="#93c5fd"/>
+                    <rect x="93" y="26" width="22" height="62" rx="4" fill="#0e6efe" opacity="0.8"/>
+                    {/* negotiated savings arrow */}
+                    <rect x="122" y="60" width="22" height="28" rx="4" fill="#06b6d4" opacity="0.6"/>
+                    {/* savings label */}
+                    <rect x="150" y="55" width="30" height="16" rx="6" fill="#0e6efe"/>
+                    <rect x="153" y="60" width="16" height="3" rx="1.5" fill="white"/>
+                    <rect x="153" y="65" width="12" height="3" rx="1.5" fill="white" opacity="0.7"/>
+                    {/* down arrow on last bar */}
+                    <polyline points="133,52 133,42 139,48" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  </svg>
+                ),
               },
             ].map((item) => {
               const Icon = item.icon;
@@ -512,17 +562,10 @@ export default function QuotePage({
                   key={item.title}
                   className="group rounded-xl border border-slate-200 bg-white p-4 sm:p-7 hover:border-[#0e6efe]/40 hover:shadow-lg transition-all duration-300"
                 >
-                  <div className="w-full h-[120px] sm:h-[160px] flex items-center justify-center mb-4 sm:mb-5 overflow-hidden rounded-xl bg-[#faf8f5] group-hover:bg-[#0e6efe]/5 transition-colors duration-300">
-                    <img
-                      src={item.svg}
-                      alt=""
-                      aria-hidden="true"
-                      className={item.imgClass || "w-auto h-[90px] sm:h-[130px] object-contain group-hover:scale-105 transition-transform duration-300"}
-                      loading="lazy"
-                      decoding="async"
-                      width="200"
-                      height="130"
-                    />
+                  <div className="w-full h-[120px] sm:h-[160px] flex items-center justify-center mb-4 sm:mb-5 overflow-hidden rounded-xl bg-[#f0f6ff] group-hover:bg-[#e8f3ff] transition-colors duration-300">
+                    <div className="w-full h-full group-hover:scale-105 transition-transform duration-300">
+                      {item.illustration}
+                    </div>
                   </div>
                   <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center mb-3 sm:mb-4">
                     <Icon className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={2.2} />
@@ -572,7 +615,7 @@ export default function QuotePage({
                 { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
                 { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket, inte bara foton i annonsen.' },
                 { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
-                { label: 'Bilalternativ', desc: 'Vi jämför att din bil ligger rätt till i marknaden så att du inte betalar för mycket.' },
+                { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
               ].map((point) => (
                 <div key={point.label}>
                   <h4 className="text-[14px] font-semibold text-slate-900 mb-1">{point.label}</h4>
@@ -612,7 +655,7 @@ export default function QuotePage({
               {[
                 { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket, inte bara foton i annonsen.' },
                 { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
-                { label: 'Bilalternativ', desc: 'Vi jämför att din bil ligger rätt till i marknaden så att du inte betalar för mycket.' },
+                { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
               ].map((point) => (
                 <div key={point.label}>
                   <h4 className="text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
