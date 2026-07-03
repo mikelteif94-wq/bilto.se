@@ -90,7 +90,7 @@ const FAQ = [
   },
   {
     q: 'Hur stor besparing kan jag räkna med?',
-    a: 'Våra kunder sparar i snitt 15 000–40 000 kr per bilaffär – räknat på prisnedförhandling, inbytesvärde, ränta och tillbehör. Vår avgift på 1 995 kr betalar sig alltså mångfalt.',
+    a: 'Våra kunder sparar ofta mer än vad tjänsten kostar – räknat på prisnedförhandling, inbytesvärde, ränta och tillbehör. Vår avgift på 1 995 kr betalas dessutom bara om affären blir av.',
   },
   {
     q: 'Kan ni hjälpa mig även om jag inte hittat en bil ännu?',
@@ -984,7 +984,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   {[
                     'En personlig bilexpert sköter hela förhandlingen',
                     'Vi jämför bud från granskade handlare åt dig',
-                    'Du sparar i snitt 15 000–40 000 kr per affär',
+                    'Våra kunder sparar ofta mer än vad tjänsten kostar',
                   ].map((text) => (
                     <li key={text} className="flex items-center gap-3">
                       <span className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-white/20">
