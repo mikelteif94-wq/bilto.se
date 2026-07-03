@@ -42,7 +42,6 @@ const CustomerDashboard = lazy(() => import('./pages/CustomerDashboard'));
 const PortalCallbackPage = lazy(() => import('./pages/PortalCallbackPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
-const BlogPage = lazy(() => import('./pages/BlogPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CompareCarsPage = lazy(() => import('./pages/CompareCarsPage'));
 const SaljBilMedHjalp = lazy(() => import('./pages/SaljBilMedHjalp'));
@@ -514,16 +513,6 @@ function App() {
     window.history.replaceState({}, '', '/kop-bil');
     setPath('/kop-bil');
     return null;
-  }
-
-  if (path === '/blogg' || path === '/blogg/salja-begagnad-bil') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <BlogPage
-          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-        />
-      </Suspense>
-    );
   }
 
   if (path === '/om-oss') {

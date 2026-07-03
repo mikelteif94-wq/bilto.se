@@ -70,7 +70,7 @@ export function SiteFooter() {
               {[
                 { label: 'Om Bilto', href: '/om-oss' },
                 { label: 'Så funkar det', href: '/sa-funkar-det' },
-                { label: 'Blogg', href: '/blogg' },
+                { label: 'Admin', href: '/admin' },
                 { label: 'Bli handlare', href: '/handlare/registrera' },
                 { label: 'Handlare logga in', href: '/handlare/logga-in' },
               ].map(({ label, href }) => (
@@ -113,11 +113,7 @@ export function SiteFooter() {
         {/* Bottom */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-[12px] text-slate-600">
           <p>&copy; {new Date().getFullYear()} Bilto AB · Alla rättigheter förbehållna</p>
-          <div className="flex items-center gap-5">
-            <a href="/admin" className="hover:text-slate-400 transition-colors">Admin</a>
-            <span style={{ color: 'rgba(255,255,255,0.12)' }}>&middot;</span>
-            <span className="text-slate-600">Gjord med omsorg i Sverige</span>
-          </div>
+          <span className="text-slate-600">Gjord med omsorg i Sverige</span>
         </div>
       </div>
     </footer>
