@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { setPageMeta } from '../lib/pageMeta';
 import { calcCarMonthly } from '../lib/utils';
 import {
   Search, ArrowRight, Car, Menu, User, Check,
@@ -673,6 +674,16 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640);
 
   useEffect(() => {
+    if (pageSlug === 'kop-bil') {
+      setPageMeta({
+        title: 'Köp begagnad bil med expertstöd | Bilto',
+        description: 'Hitta rätt begagnad bil och låt Biltos experter förhandla pris åt dig. Jämför modeller, hämta bud och kör hem din drömbil.',
+        canonical: 'https://bilto.se/kop-bil',
+      });
+    }
+  }, [pageSlug]);
+
+  useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 640);
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
@@ -755,7 +766,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   }, []);
 
   useEffect(() => {
-    document.title = 'Köp bil – Jämför, hitta & förhandla | Bilto';
     let current = window.scrollY > 20;
     setScrolled(current);
     const onScroll = () => {

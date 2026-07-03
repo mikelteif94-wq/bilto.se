@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowRight, Menu, ShieldCheck, Handshake, Gauge, Star } from 'lucide-react';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
+import { setPageMeta } from '../lib/pageMeta';
 
 interface AboutPageProps {
   onBackHome: () => void;
@@ -45,6 +46,14 @@ const PROMISES = [
 
 export default function AboutPage({ onBackHome }: AboutPageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setPageMeta({
+      title: 'Om Bilto – vi förenklar din bilaffär',
+      description: 'Bilto grundades för att göra bilaffären transparent och rättvis för privatpersoner. Lär känna teamet och vår vision om en bättre bilmarknad.',
+      canonical: 'https://bilto.se/om-oss',
+    });
+  }, []);
 
   const navItems: MobileMenuItem[] = ['Sälj bil', 'Köp bil'];
 

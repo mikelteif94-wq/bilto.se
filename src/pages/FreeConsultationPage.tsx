@@ -408,10 +408,13 @@ export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigate
   const vehicleLookup = useVehicleLookup(form.regnummer);
 
   useEffect(() => {
+    const isKontakt = window.location.pathname === '/kontakt';
     setPageMeta({
-      title: 'Gratis konsultation – Köp eller sälj bil med expertstöd | Bilto',
-      description: 'Boka en kostnadsfri konsultation med Biltos experter. Vi hjälper dig förhandla, värdera och genomföra din bilaffär – oavsett om du köper eller säljer.',
-      canonical: 'https://bilto.se/gratis-konsultation',
+      title: isKontakt ? 'Kontakt & gratis konsultation | Bilto' : 'Gratis konsultation – Köp eller sälj bil med expertstöd | Bilto',
+      description: isKontakt
+        ? 'Kontakta Biltos experter eller boka ett kostnadsfritt samtal. Vi hjälper dig sälja, köpa eller värdera din bil – ingen säljpitch.'
+        : 'Boka en kostnadsfri konsultation med Biltos experter. Vi hjälper dig förhandla, värdera och genomföra din bilaffär – oavsett om du köper eller säljer.',
+      canonical: isKontakt ? 'https://bilto.se/kontakt' : 'https://bilto.se/gratis-konsultation',
     });
   }, []);
 

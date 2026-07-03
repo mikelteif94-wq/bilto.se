@@ -21,11 +21,13 @@ const BASE = `http://localhost:${PORT}`;
 // Routes to prerender — path : wait-for-selector (to detect content rendered)
 const ROUTES = [
   { path: '/',                               selector: 'h1' },
+  { path: '/salj-bil',                       selector: 'h1' },
   { path: '/sa-funkar-det',                  selector: 'h1' },
   { path: '/kop-bil',                        selector: 'h1' },
   { path: '/om-oss',                         selector: 'h1' },
   { path: '/vanliga-fragor',                 selector: 'h1' },
   { path: '/priser',                         selector: 'h1' },
+  { path: '/kontakt',                        selector: 'h1' },
   { path: '/guider',                         selector: 'h1' },
   { path: '/guider/kopa-begagnad-bil',       selector: 'h1' },
   { path: '/guider/forhandla-bilpris',       selector: 'h1' },

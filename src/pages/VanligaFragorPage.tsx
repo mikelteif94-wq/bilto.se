@@ -98,8 +98,8 @@ export default function VanligaFragorPage({ onBackHome }: VanligaFragorPageProps
 
   useEffect(() => {
     setPageMeta({
-      title: 'Vanliga frågor | Bilto',
-      description: 'Svar på de vanligaste frågorna om att sälja eller köpa bil via Bilto. Fri tjänst för privatpersoner – vi finansieras av handlarna.',
+      title: 'Vanliga frågor om bilköp och bilförsäljning | Bilto',
+      description: 'Svar på de vanligaste frågorna om att sälja eller köpa bil via Bilto. Hur funkar det, vad kostar det och vad ingår?',
       canonical: 'https://bilto.se/vanliga-fragor',
     });
     injectJsonLd({

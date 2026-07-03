@@ -44,6 +44,7 @@ interface HowItWorksProps {
   onSell?: (regnummer: string) => void;
   showSeo?: boolean;
   pageTitle?: string;
+  seoSlug?: 'home' | 'sa-funkar-det' | 'salj-bil';
 }
 
 type Mode = 'direct';
@@ -146,24 +147,30 @@ function CalendarWidget() {
   );
 }
 
-export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTitle }: HowItWorksProps) {
+export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTitle, seoSlug }: HowItWorksProps) {
   useEffect(() => {
-    if (showSeo) {
+    if (seoSlug === 'sa-funkar-det') {
       setPageMeta({
-        title: 'Sälj din bil snabbt och enkelt | Bilto',
-        description: 'Sälj din bil via Bilto – gratis värdering, fri upphämtning i hela Sverige och pengarna på kontot direkt. Certifierade handlare konkurrerar om din bil.',
-        canonical: 'https://bilto.se/salj-din-bil',
+        title: 'Så funkar Bilto – sälj eller köp bil med expert',
+        description: 'Se hur Bilto hjälper dig sälja bilen till bästa pris eller köpa rätt bil med en dedikerad expert. Gratis värdering – ingen bindning.',
+        canonical: 'https://bilto.se/sa-funkar-det',
+      });
+    } else if (seoSlug === 'salj-bil' || showSeo) {
+      setPageMeta({
+        title: 'Sälj din bil snabbt – handlare konkurrerar om priset | Bilto',
+        description: 'Sälj bilen via Bilto och få bud från granskade bilhandlare. Gratis värdering, fri upphämtning och pengarna direkt på kontot.',
+        canonical: seoSlug === 'salj-bil' ? 'https://bilto.se/salj-bil' : 'https://bilto.se/salj-din-bil',
       });
     } else if (pageTitle) {
       document.title = pageTitle;
     } else {
       setPageMeta({
-        title: 'Bilto – Sälj din bil snabbt och enkelt | Gratis värdering',
-        description: 'Bilto hjälper dig sälja eller köpa bil till bästa pris. Gratis värdering, fri upphämtning i hela Sverige och pengarna på kontot direkt.',
+        title: 'Sälj din bil till bästa pris – granskade handlare bjuder | Bilto',
+        description: 'Gratis värdering av din bil – certifierade handlare konkurrerar om att ge dig bästa pris. Betala ingenting, sälj tryggt.',
         canonical: 'https://bilto.se/',
       });
     }
-  }, [showSeo, pageTitle]);
+  }, [showSeo, pageTitle, seoSlug]);
 
   // Preload likely next pages after idle so clicks feel instant
   useEffect(() => {

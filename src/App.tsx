@@ -54,6 +54,7 @@ const NyaBilarPage = lazy(() => import('./pages/NyaBilarPage'));
 const VanligaFragorPage = lazy(() => import('./pages/VanligaFragorPage'));
 const PriserPage = lazy(() => import('./pages/PriserPage'));
 const GuidePage = lazy(() => import('./pages/GuidePage'));
+const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -562,9 +563,18 @@ function App() {
   }
 
   if (path === '/salj-bil') {
-    window.history.replaceState({}, '', '/sa-funkar-det');
-    setPath('/sa-funkar-det');
-    return null;
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <>
+          <HowItWorks
+            seoSlug="salj-bil"
+            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+        </>
+      </Suspense>
+    );
   }
 
   if (path === '/vanliga-fragor') {
@@ -674,12 +684,24 @@ function App() {
     }
   }
 
+  if (path === '/kontakt') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <FreeConsultationPage
+          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+          onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
+        />
+      </Suspense>
+    );
+  }
+
   if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
     return (
       <Suspense fallback={<PageLoader />}>
         <>
           <HowItWorks
             showSeo={path === '/salj-din-bil'}
+            seoSlug={path === '/sa-funkar-det' ? 'sa-funkar-det' : undefined}
             pageTitle={path === '/salj-din-bil' ? 'Sälj din bil | Bilto' : undefined}
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
             onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
@@ -710,6 +732,7 @@ function App() {
       <>
         {publicRoute.page === 'home' && (
           <HowItWorks
+            seoSlug="home"
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
             onSell={(reg) => setPublicRoute({ page: 'sell', regnummer: reg })}
           />
