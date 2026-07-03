@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Menu, Check, ArrowRight, X } from 'lucide-react';
+import { Menu, Check, ArrowRight, Shield } from 'lucide-react';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
 import { setPageMeta, injectJsonLd } from '../lib/pageMeta';
@@ -8,31 +8,19 @@ interface PriserPageProps {
   onBackHome: () => void;
 }
 
-const SELL_FEATURES = [
-  'Gratis värdering av din bil',
-  'Fri upphämtning i hela Sverige',
-  'Konkurrerande bud från granskade handlare',
-  'Personlig rådgivare hela vägen',
-  'Pengar på kontot vid överlämning',
-  'Inga dolda avgifter för dig som privatperson',
+const FREE_ITEMS = [
+  'Värdering av din bil',
+  'Personlig bilrådgivning och konsultation',
+  'Bilmatch – vi hittar rätt bil åt dig',
+  'Ta emot och jämföra bud från handlare',
+  'Hjälp med finansierings­jämförelse',
+  'Tillgång till Biltos nätverk av granskade handlare',
 ];
 
-const BUY_FEATURES = [
-  'Kostnadsfri bilsökning och matchning',
-  'Experter förhandlar priset åt dig',
-  'Genomgång av skicket och historiken',
-  'Granskning av finansieringsvillkor',
-  'Hjälp med kontraktet och signering',
-  'Ingen provision för dig – vi ersätts av handlaren',
-];
-
-const COMPARISON = [
-  { label: 'Pris för säljaren', bilto: 'Gratis', other: '2 000–5 000 kr' },
-  { label: 'Antal köpare', bilto: 'Flera granskade handlare', other: '1 okänd köpare' },
-  { label: 'Förhandling', bilto: 'Bilto förhandlar åt dig', other: 'På egen hand' },
-  { label: 'Upphämtning', bilto: 'Fri i hela Sverige', other: 'Du kör dit själv' },
-  { label: 'Trygghet', bilto: 'Kontrollerade handlare', other: 'Okänt' },
-  { label: 'Uppskattad prisskillnad', bilto: '+15–25 % vs Blocket', other: 'Marknadspris' },
+const FEE_COVERS = [
+  { title: 'Förhandling', desc: 'Vi förhandlar pris, villkor och finansiering direkt med handlaren.' },
+  { title: 'Granskning', desc: 'Genomgång av bilens historia, skick och avtalsvillkor.' },
+  { title: 'Administration', desc: 'Kontraktsgranskning, ägarbytet och all pappershantering.' },
 ];
 
 export default function PriserPage({ onBackHome }: PriserPageProps) {
@@ -52,17 +40,22 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
 
   useEffect(() => {
     setPageMeta({
-      title: 'Priser & avgifter | Bilto',
-      description: 'Bilto är helt gratis för privatpersoner. Inga listningsavgifter, inga dolda kostnader – vi finansieras av handlarna när affären är klar.',
+      title: 'Priser & avgifter – betala bara vid affär | Bilto',
+      description: 'Biltos bilköpshjälp är gratis att prova. Du betalar en fast avgift på 1 995 kr – men bara om affären genomförs. Inga dolda avgifter, ingen provision.',
       canonical: 'https://bilto.se/priser',
     });
     injectJsonLd({
       '@context': 'https://schema.org',
       '@type': 'Service',
-      name: 'Bilto – Bilförsäljning och bilköpshjälp',
+      name: 'Bilto bilköpshjälp',
       provider: { '@type': 'Organization', name: 'Bilto', url: 'https://bilto.se' },
-      description: 'Gratis för privatpersoner – sälja och köpa bil via Bilto är kostnadsfritt. Vi finansieras av ett arvode från handlaren.',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'SEK', description: 'Gratis för privatpersoner' },
+      description: 'Biltos bilköpshjälp – gratis att prova, fast avgift 1 995 kr som betalas bara om affären genomförs.',
+      offers: {
+        '@type': 'Offer',
+        price: '1995',
+        priceCurrency: 'SEK',
+        description: 'Fast avgift som betalas bara när affären är klar. Värdering, konsultation och bilmatch ingår alltid gratis.',
+      },
     });
   }, []);
 
@@ -97,103 +90,102 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
         {/* Hero */}
         <section className="pt-28 sm:pt-36 pb-14 sm:pb-20 bg-white">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 text-center">
-            <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.22em] mb-4">Transparenta avgifter</span>
-            <h1 className="text-[34px] sm:text-[52px] lg:text-[64px] font-bold leading-[1.05] tracking-tight text-slate-900 max-w-3xl mx-auto">
-              Helt gratis för dig
+            <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.22em] mb-4">
+              Transparenta avgifter
+            </span>
+            <h1 className="text-[32px] sm:text-[50px] lg:text-[62px] font-bold leading-[1.05] tracking-tight text-slate-900 max-w-3xl mx-auto">
+              Enkel prissättning – betala bara vid affär
             </h1>
             <p className="mt-5 text-[16px] sm:text-[19px] leading-[1.65] text-slate-500 max-w-2xl mx-auto">
-              Bilto tar aldrig betalt av privatpersoner. Inga listningsavgifter, inga dolda kostnader, inga provisioner. Vi finansieras av handlarna – bara när affären är klar.
+              Värdering, konsultation och bilmatch kostar ingenting. Den fasta avgiften på 1&nbsp;995&nbsp;kr betalas bara om du faktiskt genomför en affär via Bilto.
             </p>
-            <div className="mt-8 inline-flex items-center gap-3 bg-[#0e6efe]/8 text-[#0e6efe] font-bold text-[22px] sm:text-[28px] px-8 py-4 rounded-2xl">
-              <span>0 kr</span>
-              <span className="text-[14px] font-medium text-[#0e6efe]/70">för dig som privatperson</span>
-            </div>
           </div>
         </section>
 
-        {/* Two cards */}
+        {/* Two columns: Free + Fixed fee */}
         <section className="py-14 sm:py-20 bg-[#faf8f5]">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
-              {/* Sell card */}
+            <div className="grid md:grid-cols-2 gap-6 lg:gap-8 items-start">
+
+              {/* Free */}
               <div className="bg-white rounded-2xl p-7 sm:p-9 border border-slate-100 shadow-sm">
-                <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.2em] mb-3">Sälja bil</span>
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-[42px] font-bold text-slate-900">0 kr</span>
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-50">
+                    <Check className="w-5 h-5 text-emerald-600" strokeWidth={2.5} />
+                  </span>
+                  <div>
+                    <p className="text-[11px] font-bold text-emerald-600 uppercase tracking-[0.2em]">Alltid gratis</p>
+                    <p className="text-[28px] font-bold text-slate-900 leading-none">0 kr</p>
+                  </div>
                 </div>
                 <p className="text-[14px] text-slate-500 mb-6 leading-relaxed">
-                  Allt ingår. Gratis värdering, fri upphämtning och handlare som tävlar om din bil.
+                  Dessa tjänster är alltid kostnadsfria – oavsett om du genomför en affär eller inte.
                 </p>
-                <ul className="space-y-3 mb-8">
-                  {SELL_FEATURES.map(f => (
+                <ul className="space-y-3">
+                  {FREE_ITEMS.map(f => (
                     <li key={f} className="flex items-start gap-3">
-                      <Check className="w-4 h-4 text-[#0e6efe] mt-0.5 shrink-0" strokeWidth={2.5} />
+                      <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" strokeWidth={2.5} />
                       <span className="text-[14px] text-slate-700">{f}</span>
                     </li>
                   ))}
                 </ul>
-                <button
-                  type="button"
-                  onClick={onBackHome}
-                  className="w-full py-3.5 rounded-xl bg-[#0e6efe] text-white font-bold text-[15px] hover:bg-[#0047B3] transition flex items-center justify-center gap-2 group"
-                >
-                  Värdera min bil
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-                </button>
               </div>
 
-              {/* Buy card */}
-              <div className="bg-white rounded-2xl p-7 sm:p-9 border border-slate-100 shadow-sm">
-                <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.2em] mb-3">Köpa bil</span>
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-[42px] font-bold text-slate-900">0 kr</span>
+              {/* Fixed fee */}
+              <div className="bg-[#0e6efe] rounded-2xl p-7 sm:p-9 shadow-lg">
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/15">
+                    <Shield className="w-5 h-5 text-white" strokeWidth={2} />
+                  </span>
+                  <div>
+                    <p className="text-[11px] font-bold text-white/70 uppercase tracking-[0.2em]">Fast avgift vid affär</p>
+                    <p className="text-[28px] font-bold text-white leading-none">1&nbsp;995 kr</p>
+                  </div>
                 </div>
-                <p className="text-[14px] text-slate-500 mb-6 leading-relaxed">
-                  Experthjälp med att hitta, granska och förhandla din nästa bil. Ingenting kostar dig.
+                <p className="text-[14px] text-white/80 mb-7 leading-relaxed">
+                  Betalas <strong className="text-white font-semibold">bara om affären genomförs</strong>. Inga dolda avgifter. Ingen provision baserad på bilens pris.
                 </p>
-                <ul className="space-y-3 mb-8">
-                  {BUY_FEATURES.map(f => (
-                    <li key={f} className="flex items-start gap-3">
-                      <Check className="w-4 h-4 text-[#0e6efe] mt-0.5 shrink-0" strokeWidth={2.5} />
-                      <span className="text-[14px] text-slate-700">{f}</span>
-                    </li>
+
+                <p className="text-[11px] font-bold text-white/60 uppercase tracking-[0.18em] mb-4">Avgiften täcker</p>
+                <div className="space-y-4">
+                  {FEE_COVERS.map(item => (
+                    <div key={item.title} className="flex gap-3">
+                      <Check className="w-4 h-4 text-white mt-0.5 shrink-0" strokeWidth={2.5} />
+                      <div>
+                        <p className="text-[14px] font-semibold text-white leading-snug">{item.title}</p>
+                        <p className="text-[13px] text-white/70 leading-relaxed">{item.desc}</p>
+                      </div>
+                    </div>
                   ))}
-                </ul>
-                <button
-                  type="button"
-                  onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                  className="w-full py-3.5 rounded-xl bg-[#0e6efe] text-white font-bold text-[15px] hover:bg-[#0047B3] transition flex items-center justify-center gap-2 group"
-                >
-                  Utforska bilköpshjälp
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-                </button>
+                </div>
+
+                <div className="mt-7 pt-6 border-t border-white/20">
+                  <p className="text-[12px] text-white/60 leading-relaxed">
+                    Genomsnittskunden sparar 12&nbsp;000–35&nbsp;000&nbsp;kr per affär. Avgiften betalar sig normalt sett många gånger om.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Comparison table */}
+        {/* How it works */}
         <section className="py-14 sm:py-20 bg-white">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mx-auto">
-              <h2 className="text-[26px] sm:text-[36px] font-bold text-slate-900 text-center mb-10 tracking-tight">
-                Bilto vs. att sälja på Blocket
+            <div className="max-w-2xl mx-auto text-center">
+              <h2 className="text-[24px] sm:text-[34px] font-bold text-slate-900 mb-4 tracking-tight">
+                Hur prissättningen fungerar i praktiken
               </h2>
-              <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
-                <div className="grid grid-cols-[1fr_auto_auto] bg-slate-50 text-[12px] font-bold text-slate-400 uppercase tracking-[0.15em] px-5 py-3">
-                  <span></span>
-                  <span className="text-center px-4 text-[#0e6efe]">Bilto</span>
-                  <span className="text-center px-4">Blocket/privat</span>
-                </div>
-                {COMPARISON.map((row, i) => (
-                  <div key={row.label} className={`grid grid-cols-[1fr_auto_auto] items-center px-5 py-4 ${i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}>
-                    <span className="text-[14px] text-slate-700 font-medium">{row.label}</span>
-                    <span className="text-center px-4 text-[13px] font-semibold text-[#0e6efe] flex items-center justify-center gap-1.5">
-                      <Check className="w-3.5 h-3.5 shrink-0" strokeWidth={3} />{row.bilto}
-                    </span>
-                    <span className="text-center px-4 text-[13px] text-slate-400 flex items-center justify-center gap-1.5">
-                      <X className="w-3.5 h-3.5 shrink-0" strokeWidth={2.5} />{row.other}
-                    </span>
+              <div className="mt-8 space-y-4 text-left">
+                {[
+                  { step: '01', text: 'Du kontaktar Bilto – kostnadsfritt. Vi sätter ihop en plan för din bilaffär.' },
+                  { step: '02', text: 'Vi söker, matchar och presenterar alternativ. Du väljer vad du vill gå vidare med.' },
+                  { step: '03', text: 'Bilto förhandlar, granskar och sköter kontraktet. Affären genomförs.' },
+                  { step: '04', text: 'Affären är klar – du betalar den fasta avgiften på 1 995 kr. Inget annat.' },
+                ].map(({ step, text }) => (
+                  <div key={step} className="flex gap-4 items-start bg-[#faf8f5] rounded-xl px-5 py-4">
+                    <span className="text-[13px] font-bold text-slate-300 tabular-nums pt-0.5 shrink-0 w-6">{step}</span>
+                    <p className="text-[14px] sm:text-[15px] text-slate-700 leading-relaxed">{text}</p>
                   </div>
                 ))}
               </div>
@@ -201,16 +193,27 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
           </div>
         </section>
 
-        {/* How dealer fee works */}
-        <section className="py-14 sm:py-20 bg-[#faf8f5]">
-          <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
-            <div className="max-w-2xl mx-auto text-center">
-              <h2 className="text-[26px] sm:text-[36px] font-bold text-slate-900 mb-5 tracking-tight">
-                Hur tjänar Bilto pengar?
-              </h2>
-              <p className="text-[15px] sm:text-[17px] text-slate-500 leading-[1.75]">
-                Bilto tar ett arvode från handlaren när en bil byter ägare via plattformen. Arvodet ingår i handlarens pris och påverkar inte det du som säljare eller köpare betalar. Det är ett rakt incitament: vi tjänar bara pengar när du gör en lyckad affär.
-              </p>
+        {/* CTA */}
+        <section className="relative bg-[#0e6efe] overflow-hidden">
+          <div className="relative max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-20 text-center">
+            <h2 className="text-[28px] sm:text-[40px] font-bold text-white leading-[1.1] tracking-tight max-w-2xl mx-auto">
+              Kom igång – det kostar ingenting att prova
+            </h2>
+            <p className="mt-4 text-white/80 text-[15px] sm:text-[17px] leading-[1.7] max-w-lg mx-auto">
+              Boka en kostnadsfri konsultation och se vad Bilto kan göra för din nästa bilaffär.
+            </p>
+            <div className="mt-7 flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="/gratis-konsultation" className="inline-flex items-center justify-center gap-2 py-4 px-10 rounded-xl bg-white text-[#0e6efe] hover:bg-slate-50 font-bold text-[16px] transition shadow-lg group">
+                Boka gratis konsultation
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
+              </a>
+              <button
+                type="button"
+                onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+                className="inline-flex items-center justify-center py-4 px-10 rounded-xl border-2 border-white/50 text-white font-semibold text-[16px] hover:border-white/80 hover:bg-white/10 transition"
+              >
+                Utforska bilköpshjälpen
+              </button>
             </div>
           </div>
         </section>
