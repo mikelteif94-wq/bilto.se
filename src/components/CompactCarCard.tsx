@@ -1,5 +1,6 @@
 import { Star, Check, ChevronRight, Users, Info, Scale } from 'lucide-react';
 import { calcOwnershipLevel } from '../lib/utils';
+import ScoreBadge from './ScoreBadge';
 
 const BODY_LABELS: Record<string, string> = {
   sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
@@ -52,23 +53,6 @@ function OwnershipMeter({ make, fuelTypes }: { make: string; fuelTypes?: string[
   );
 }
 
-function ScoreBadge({ value }: { value: number }) {
-  const color = value >= 8 ? '#16a34a' : value >= 6 ? '#d97706' : '#dc2626';
-  return (
-    <div
-      className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-xl"
-      style={{
-        border: `2px solid ${color}`,
-        boxShadow: `0 2px 8px ${color}30`,
-        backgroundColor: 'rgba(255,255,255,0.95)',
-      }}
-    >
-      <span className="text-[10px] font-extrabold tabular-nums leading-none" style={{ color }}>
-        {Number.isInteger(value) ? value : value.toFixed(1)}
-      </span>
-    </div>
-  );
-}
 
 export default function CompactCarCard({
   name, make: makeProp, imageUrl, rating, topBadge, expertComment,
@@ -122,7 +106,7 @@ export default function CompactCarCard({
             </div>
           )}
           {rating != null && !(equityFreed && equityFreed > 0) && !isSelected && (
-            <ScoreBadge value={rating} />
+            <ScoreBadge value={rating} small className="absolute top-2 right-2" />
           )}
           {/* no isCompared state */}
         </div>
@@ -212,7 +196,7 @@ export default function CompactCarCard({
             </div>
           )}
           {rating != null && !(equityFreed && equityFreed > 0) && !isSelected && (
-            <ScoreBadge value={rating} />
+            <ScoreBadge value={rating} small className="absolute top-2 right-2" />
           )}
         </div>
 

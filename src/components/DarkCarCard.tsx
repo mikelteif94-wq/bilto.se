@@ -1,5 +1,6 @@
 import { Star, ChevronRight, Info } from 'lucide-react';
 import { calcCarMonthlyRange } from '../lib/utils';
+import ScoreBadge from './ScoreBadge';
 
 interface DarkCarCardProps {
   name: string;
@@ -25,17 +26,6 @@ function formatSEK(n: number) {
   return new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(n);
 }
 
-function ScoreBadge({ value }: { value: number }) {
-  const color = value >= 8.5 ? '#059669' : value >= 7 ? '#0e6efe' : '#d97706';
-  return (
-    <div
-      className="absolute top-3 right-3 flex items-center justify-center w-10 h-10 rounded-xl bg-white/95 shadow-md"
-      style={{ border: `2.5px solid ${color}` }}
-    >
-      <span className="text-[13px] font-extrabold leading-none" style={{ color }}>{value}</span>
-    </div>
-  );
-}
 
 export default function DarkCarCard({
   name, imageUrl, rating, topBadge, expertComment,
@@ -69,7 +59,7 @@ export default function DarkCarCard({
               </span>
             </div>
           )}
-          {rating != null && <ScoreBadge value={rating} />}
+          {rating != null && <ScoreBadge value={rating} className="absolute top-3 right-3" />}
         </div>
 
         <div className="px-4 pt-3 pb-3">

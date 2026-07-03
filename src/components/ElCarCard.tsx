@@ -1,5 +1,6 @@
 import { Zap, Star, Check, ChevronRight, Info, Scale } from 'lucide-react';
 import { calcOwnershipLevel } from '../lib/utils';
+import ScoreBadge from './ScoreBadge';
 
 const BODY_LABELS: Record<string, string> = {
   sedan: 'Sedan', kombi: 'Kombi', suv: 'SUV', hatchback: 'Halvkombi',
@@ -49,25 +50,6 @@ function OwnershipMeter({ make, fuelTypes }: { make: string; fuelTypes?: string[
   );
 }
 
-function ScoreBadge({ value }: { value: number }) {
-  const isTop = value >= 9;
-  const isMid = value >= 7.5;
-  const color = isTop ? '#059669' : isMid ? '#0e6efe' : '#d97706';
-  return (
-    <div
-      className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-xl"
-      style={{
-        border: `2px solid ${color}`,
-        boxShadow: `0 2px 8px ${color}30`,
-        backgroundColor: 'rgba(255,255,255,0.95)',
-      }}
-    >
-      <span className="text-[10px] font-extrabold tabular-nums leading-none" style={{ color }}>
-        {Number.isInteger(value) ? value : value.toFixed(1)}
-      </span>
-    </div>
-  );
-}
 
 export default function ElCarCard({
   name, make: makeProp, imageUrl, rating, expertComment,
@@ -115,7 +97,7 @@ export default function ElCarCard({
               </span>
             </div>
           )}
-          {rating != null && !isSelected && !topBadge && <ScoreBadge value={rating} />}
+          {rating != null && !isSelected && !topBadge && <ScoreBadge value={rating} small className="absolute top-2 right-2" />}
           {isSelected && (
             <div className="absolute top-1.5 right-1.5">
               <div className="w-5 h-5 rounded-full flex items-center justify-center bg-[#0e6efe]">
@@ -202,7 +184,7 @@ export default function ElCarCard({
                 <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
               </div>
             )}
-            {rating != null && !isSelected && !topBadge && <ScoreBadge value={rating} />}
+            {rating != null && !isSelected && !topBadge && <ScoreBadge value={rating} small className="absolute top-2 right-2" />}
           </div>
 
           <div className="px-3.5 pt-3 pb-2">

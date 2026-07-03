@@ -11,6 +11,7 @@ import { setPageMeta } from '../lib/pageMeta';
 import { useCatalogCars } from '../hooks/useCatalogCars';
 import { useCarImages } from '../hooks/useCarImages';
 import MobileMenu from '../components/MobileMenu';
+import ScoreBadge from '../components/ScoreBadge';
 
 
 interface JamforBilarPageProps {
@@ -61,17 +62,6 @@ const BODY_LABELS: Record<string, string> = {
   hatchback: 'Halvkombi', cab: 'Cab', mpv: 'MPV',
 };
 
-function ScoreBadge({ value, small = false }: { value: number; small?: boolean }) {
-  const color = value >= 8.5 ? '#059669' : value >= 7 ? '#0e6efe' : '#d97706';
-  const size = small ? 'w-8 h-8' : 'w-10 h-10';
-  const fontSize = small ? 'text-[11px]' : 'text-[13px]';
-  return (
-    <div className={`absolute top-2.5 right-2.5 flex items-center justify-center ${size} rounded-xl bg-white/95 shadow-md`}
-      style={{ border: `2.5px solid ${color}` }}>
-      <span className={`${fontSize} font-extrabold leading-none`} style={{ color }}>{value}</span>
-    </div>
-  );
-}
 
 /* ─── Car card — exact DarkCarCard style + selection state ─── */
 function CarPickCard({
@@ -127,7 +117,7 @@ function CarPickCard({
           </div>
 
           {/* Score badge */}
-          <ScoreBadge value={car.ratings.overall} small={small} />
+          <ScoreBadge value={car.ratings.overall} small={small} className="absolute top-2.5 right-2.5" />
 
           {/* Selected checkmark overlay */}
           {selected && (
