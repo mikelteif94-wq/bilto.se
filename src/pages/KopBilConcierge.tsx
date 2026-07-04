@@ -106,14 +106,6 @@ const INCLUDED = [
   { title: 'Leverans hem', desc: 'Vi kan koordinera hemleverans utan att du behöver besöka handlaren.' },
 ];
 
-const MEDIA_LOGOS = [
-  { name: 'Aftonbladet', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Aftonbladet_logo.svg/200px-Aftonbladet_logo.svg.png' },
-  { name: 'Expressen', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Expressen_logo.svg/200px-Expressen_logo.svg.png' },
-  { name: 'Dagens Industri', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/DI_logo.svg/200px-DI_logo.svg.png' },
-  { name: 'SVT', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/SVT_logo_2016.svg/200px-SVT_logo_2016.svg.png' },
-  { name: 'GP', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/GP_logotype.svg/200px-GP_logotype.svg.png' },
-];
-
 const WHY_BILTO = [
   {
     icon: Banknote,
@@ -263,7 +255,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 <button
                   type="button"
                   onClick={() => onNavigateBuy()}
-                  className="w-full h-13 sm:h-14 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-md inline-flex items-center justify-center gap-2 group"
+                  className="w-full h-12 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-md inline-flex items-center justify-center gap-2 group"
                 >
                   Få prishjälp
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -271,8 +263,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 <p className="text-center text-white/60 text-[12px]">Fast pris 1&nbsp;995 kr – endast om affären blir av</p>
                 <a
                   href={PHONE_TEL}
-                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
-                >
+                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"                >
                   <Phone className="w-4 h-4 shrink-0" />
                   Ring oss: {PHONE}
                 </a>
@@ -331,7 +322,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] sm:text-[16px] transition shadow-sm inline-flex items-center gap-2 group"
+              className="h-12 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] transition shadow-sm inline-flex items-center gap-2 group"
             >
               Skicka en förfrågan
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -371,7 +362,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[16px] hover:bg-[#faf8f5] transition shadow-lg inline-flex items-center gap-2 group"
+              className="h-12 px-8 sm:px-10 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-[#faf8f5] transition shadow-lg inline-flex items-center gap-2 group"
             >
               Få prishjälp
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -429,25 +420,6 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
         </div>
       </section>
 
-      {/* ── Som sett i ── */}
-      <section className="py-10 sm:py-14 px-5 sm:px-8 border-b border-slate-200 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-center text-[11px] sm:text-[12px] font-semibold text-slate-400 uppercase tracking-[0.18em] mb-7">
-            Som omskrivna i
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
-            {MEDIA_LOGOS.map((logo) => (
-              <img
-                key={logo.name}
-                src={logo.src}
-                alt={logo.name}
-                className="h-6 sm:h-7 w-auto object-contain grayscale opacity-40 hover:opacity-70 hover:grayscale-0 transition-all duration-300"
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── Varför Bilto ── */}
       <section className="py-16 sm:py-24 px-5 sm:px-8 bg-[#faf8f5]">
         <div className="max-w-5xl mx-auto">
@@ -484,7 +456,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] sm:text-[16px] transition shadow-sm inline-flex items-center gap-2 group"
+              className="h-12 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] transition shadow-sm inline-flex items-center gap-2 group"
             >
               Kom igång gratis
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -520,7 +492,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 <button
                   type="button"
                   onClick={() => onNavigateBuy()}
-                  className="inline-flex items-center justify-center h-10 px-5 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0b5cd8] transition"
+                  className="inline-flex items-center justify-center h-11 px-6 rounded-xl bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0b5cd8] transition"
                 >
                   Starta chatt
                 </button>
@@ -536,7 +508,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 <p className="text-[13px] text-slate-500 leading-relaxed mb-4">Välj en tid som passar – vi ringer dig upp och svarar på allt.</p>
                 <a
                   href="/gratis-konsultation"
-                  className="inline-flex items-center justify-center h-10 px-5 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0b5cd8] transition"
+                  className="inline-flex items-center justify-center h-11 px-6 rounded-xl bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0b5cd8] transition"
                 >
                   Boka tid
                 </a>
@@ -552,7 +524,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 <p className="text-[13px] text-slate-500 leading-relaxed mb-4">Mån–fre 8–18. En riktig person svarar – inte ett callcenter.</p>
                 <a
                   href={PHONE_TEL}
-                  className="inline-flex items-center justify-center h-10 px-5 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0b5cd8] transition"
+                  className="inline-flex items-center justify-center h-11 px-6 rounded-xl bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0b5cd8] transition"
                 >
                   {PHONE}
                 </a>
@@ -611,14 +583,14 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] sm:text-[16px] transition shadow-sm inline-flex items-center justify-center gap-2 group"
+              className="h-12 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] transition shadow-sm inline-flex items-center justify-center gap-2 group"
             >
               Skicka en förfrågan
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
             <a
               href={PHONE_TEL}
-              className="h-13 sm:h-14 px-6 sm:px-8 rounded-xl border-2 border-slate-300 text-slate-700 font-semibold text-[14px] sm:text-[15px] hover:border-slate-400 hover:bg-white transition inline-flex items-center justify-center gap-2"
+              className="h-12 px-6 sm:px-8 rounded-xl border-2 border-slate-300 text-slate-700 font-semibold text-[14px] hover:border-slate-400 hover:bg-white transition inline-flex items-center justify-center gap-2"
             >
               <Phone className="w-4 h-4 shrink-0" />
               Ring oss direkt
