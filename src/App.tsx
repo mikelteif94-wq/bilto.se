@@ -54,6 +54,16 @@ const VanligaFragorPage = lazy(() => import('./pages/VanligaFragorPage'));
 const PriserPage = lazy(() => import('./pages/PriserPage'));
 const GuidePage = lazy(() => import('./pages/GuidePage'));
 const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
+const BilsparaPage = lazy(() => import('./pages/BilsparaPage'));
+const DealerCampaigns = lazy(() => import('./pages/DealerCampaigns'));
+const DealerDashboard = lazy(() => import('./pages/DealerDashboard'));
+const DealerNewCampaign = lazy(() => import('./pages/DealerNewCampaign'));
+const DealerCostBuilder = lazy(() => import('./pages/DealerCostBuilder'));
+const DealerLeadsPage = lazy(() => import('./pages/DealerLeadsPage'));
+const DealerStats = lazy(() => import('./pages/DealerStats'));
+const DealerProfile = lazy(() => import('./pages/DealerProfile'));
+const DealerIntegrationer = lazy(() => import('./pages/DealerIntegrationer'));
+const DealerValuationLeads = lazy(() => import('./pages/DealerValuationLeads'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -252,11 +262,23 @@ function App() {
   const onDealerApply = path === '/handlare/ansok';
   const onDealerLogin = path === '/handlare/logga-in';
   const onDealerApp =
+    path === '/handlare' ||
     path === '/handlare/oversikt' ||
     path === '/handlare/installningar' ||
     path === '/handlare/bilar' ||
     path === '/handlare/bilar/ny' ||
     path === '/handlare/lager' ||
+    path === '/handlare/kampanjer' ||
+    path === '/handlare/ny' ||
+    path === '/handlare/bygg' ||
+    path === '/handlare/lager-b' ||
+    path === '/handlare/mallar' ||
+    path === '/handlare/leads-b' ||
+    path === '/handlare/vardering-leads' ||
+    path === '/handlare/motbud' ||
+    path === '/handlare/statistik' ||
+    path === '/handlare/integrationer' ||
+    path === '/handlare/profil' ||
     matchDealerCarDetail(path) !== null;
 
   const myCarToken = matchMyCar(path);
@@ -580,6 +602,16 @@ function App() {
     return (
       <Suspense fallback={<PageLoader />}>
         <PriserPage
+          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/bilspara') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <BilsparaPage
           onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
         />
       </Suspense>
@@ -1058,6 +1090,99 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
         foretagsnamn={dealer.foretagsnamn}
         carId={carDetailId}
         onBack={() => navigate('/handlare/bilar')}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/kampanjer') {
+    return (
+      <DealerCampaigns
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+        onNavigateOverview={() => navigate('/handlare/oversikt')}
+        onNavigateCars={() => navigate('/handlare/bilar')}
+        onNavigateSettings={() => navigate('/handlare/installningar')}
+      />
+    );
+  }
+
+  if (path === '/handlare' || path === '/handlare/') {
+    return (
+      <DealerDashboard
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/ny') {
+    return (
+      <DealerNewCampaign
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/bygg') {
+    return (
+      <DealerCostBuilder
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/leads-b') {
+    return (
+      <DealerLeadsPage
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/statistik') {
+    return (
+      <DealerStats
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/profil') {
+    return (
+      <DealerProfile
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/integrationer') {
+    return (
+      <DealerIntegrationer
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/vardering-leads') {
+    return (
+      <DealerValuationLeads
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
         onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
       />
     );
