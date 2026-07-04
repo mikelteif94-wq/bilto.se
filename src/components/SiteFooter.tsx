@@ -110,7 +110,16 @@ export function SiteFooter() {
         {/* Bottom */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-[12px] text-slate-600">
           <p>&copy; {new Date().getFullYear()} Bilto AB · Alla rättigheter förbehållna</p>
-          <span className="text-slate-600">Gjord med omsorg i Sverige</span>
+          <div className="flex items-center gap-4">
+            <span className="text-slate-600">Gjord med omsorg i Sverige</span>
+            <a
+              href="/admin"
+              className="flex items-center gap-1.5 text-[11px] text-slate-700 hover:text-slate-400 transition-colors duration-200"
+            >
+              <Shield className="w-3 h-3" />
+              Admin
+            </a>
+          </div>
         </div>
       </div>
     </footer>
