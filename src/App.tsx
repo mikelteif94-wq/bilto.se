@@ -5,7 +5,6 @@ import type { Session } from '@supabase/supabase-js';
 import { slugToCity, slugToBrand } from './lib/seo-pages';
 import { slugToTopic } from './lib/seo-topics';
 import ConsultationDrawer from './components/ConsultationDrawer';
-import { useStaffAuth } from './hooks/useStaffAuth';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
@@ -62,20 +61,6 @@ const DealerProfile = lazy(() => import('./pages/DealerProfile'));
 const DealerIntegrationer = lazy(() => import('./pages/DealerIntegrationer'));
 const DealerValuationLeads = lazy(() => import('./pages/DealerValuationLeads'));
 const DealerApprovals = lazy(() => import('./pages/DealerApprovals'));
-
-// Staff portal
-const StaffLogin = lazy(() => import('./pages/StaffLogin'));
-const StaffOverview = lazy(() => import('./pages/StaffOverview'));
-const StaffPool = lazy(() => import('./pages/StaffPool'));
-const StaffDealsList = lazy(() => import('./pages/StaffDealsList'));
-const StaffDealDetail = lazy(() => import('./pages/StaffDealDetail'));
-const StaffNewDeal = lazy(() => import('./pages/StaffNewDeal'));
-const StaffValuations = lazy(() => import('./pages/StaffValuations'));
-const StaffValuationDetail = lazy(() => import('./pages/StaffValuationDetail'));
-const StaffNewValuation = lazy(() => import('./pages/StaffNewValuation'));
-const StaffTasks = lazy(() => import('./pages/StaffTasks'));
-const StaffUsers = lazy(() => import('./pages/StaffUsers'));
-const StaffEarnings = lazy(() => import('./pages/StaffEarnings'));
 
 // Dealer portal (new)
 const DealerAtgarder = lazy(() => import('./pages/DealerAtgarder'));
@@ -140,16 +125,6 @@ function matchAdminOfferNew(path: string): string | null {
 
 function matchDealerCarDetail(path: string): string | null {
   const m = path.match(/^\/handlare\/bilar\/([^/]+)\/?$/);
-  return m ? decodeURIComponent(m[1]) : null;
-}
-
-function matchStaffDealDetail(path: string): string | null {
-  const m = path.match(/^\/staff\/affarer\/([^/]+)\/?$/);
-  return m ? decodeURIComponent(m[1]) : null;
-}
-
-function matchStaffValuationDetail(path: string): string | null {
-  const m = path.match(/^\/staff\/varderingar\/([^/]+)\/?$/);
   return m ? decodeURIComponent(m[1]) : null;
 }
 
@@ -285,12 +260,6 @@ function App() {
     return () => { cancelled = true; };
   }, [session?.user?.id, onAdminRouteBool]);
 
-  const onStaffLoginPage = (path === '/staff' || path === '/staff/logga-in');
-  useEffect(() => {
-    if (!authLoading && session && onStaffLoginPage) {
-      navigate('/staff/oversikt');
-    }
-  }, [authLoading, session, onStaffLoginPage]);
 
   if (recoveryMode) {
     return (
@@ -336,8 +305,6 @@ function App() {
     path === '/handlare/ekonomi' ||
     path === '/handlare/provisioner' ||
     matchDealerCarDetail(path) !== null;
-
-  const onStaffApp = path.startsWith('/staff');
 
   // Public token pages (no auth)
   const budToken = matchBudToken(path);
@@ -453,22 +420,6 @@ function App() {
           userId={session.user.id}
           path={path}
           onLoggedOut={() => { sessionStorage.removeItem('bilto_portal'); navigate('/handlare/logga-in'); }}
-        />
-      </Suspense>
-    );
-  }
-
-  if (onStaffApp) {
-    if (path === '/staff' || path === '/staff/logga-in') {
-      navigate('/staff/oversikt');
-      return null;
-    }
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <StaffArea
-          userId={session?.user?.id ?? null}
-          path={path}
-          onLoggedOut={() => navigate('/')}
         />
       </Suspense>
     );
@@ -1323,145 +1274,3 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
 
 export default App;
 
-// ── Staff area ──────────────────────────────────────────────────────────────
-
-interface StaffAreaProps {
-  userId: string | null;
-  path: string;
-  onLoggedOut: () => void;
-}
-
-function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
-  const { staffUser, loading } = useStaffAuth();
-
-  if (loading) return <PageLoader />;
-
-  const fallbackUser: import('./hooks/useStaffAuth').StaffUser = staffUser ?? {
-    id: 'local',
-    user_id: userId ?? 'local',
-    fornamn: 'Admin',
-    efternamn: '',
-    email: '',
-    telefon: null,
-    role: 'teamlead',
-    is_active: true,
-  };
-
-  const dealDetailId = matchStaffDealDetail(path);
-  if (dealDetailId) {
-    return (
-      <StaffDealDetail
-        staffUser={fallbackUser}
-        dealId={dealDetailId}
-        onLoggedOut={onLoggedOut}
-        onBack={() => navigate('/staff/affarer')}
-      />
-    );
-  }
-
-  if (path === '/staff/affarer/ny') {
-    const newDealParams = new URLSearchParams(window.location.search);
-    const initialCarId = newDealParams.get('carId') ?? undefined;
-    return (
-      <StaffNewDeal
-        staffUser={fallbackUser}
-        onLoggedOut={onLoggedOut}
-        onCreated={(id) => navigate(`/staff/affarer/${id}`)}
-        onBack={() => navigate('/staff/affarer')}
-        initialCarId={initialCarId}
-      />
-    );
-  }
-
-  if (path === '/staff/affarer') {
-    return (
-      <StaffDealsList
-        staffUser={fallbackUser}
-        onLoggedOut={onLoggedOut}
-        onOpenDeal={(id) => navigate(`/staff/affarer/${id}`)}
-        onNewDeal={() => navigate('/staff/affarer/ny')}
-      />
-    );
-  }
-
-  if (path === '/staff/varderingar/ny') {
-    return (
-      <StaffNewValuation
-        staffUser={fallbackUser}
-        onLoggedOut={onLoggedOut}
-        onCreated={() => navigate('/staff/varderingar')}
-        onCancel={() => navigate('/staff/varderingar')}
-      />
-    );
-  }
-
-  const valuationDetailId = matchStaffValuationDetail(path);
-  if (valuationDetailId) {
-    return (
-      <StaffValuationDetail
-        staffUser={fallbackUser}
-        valuationId={valuationDetailId}
-        onLoggedOut={onLoggedOut}
-        onBack={() => navigate('/staff/varderingar')}
-      />
-    );
-  }
-
-  if (path === '/staff/varderingar') {
-    return (
-      <StaffValuations
-        staffUser={fallbackUser}
-        onLoggedOut={onLoggedOut}
-        onNewValuation={() => navigate('/staff/varderingar/ny')}
-        onOpenValuation={(id) => navigate(`/staff/varderingar/${id}`)}
-      />
-    );
-  }
-
-  if (path === '/staff/lager') {
-    return (
-      <StaffPool
-        staffUser={fallbackUser}
-        onLoggedOut={onLoggedOut}
-        onDealCreated={(id) => navigate(`/staff/affarer/${id}`)}
-      />
-    );
-  }
-
-  if (path === '/staff/uppgifter') {
-    return (
-      <StaffTasks
-        staffUser={fallbackUser}
-        onLoggedOut={onLoggedOut}
-        onOpenDeal={(id) => navigate(`/staff/affarer/${id}`)}
-      />
-    );
-  }
-
-  if (path === '/staff/anvandare' && fallbackUser.role === 'teamlead') {
-    return (
-      <StaffUsers
-        staffUser={fallbackUser}
-        onLoggedOut={onLoggedOut}
-      />
-    );
-  }
-
-  if (path === '/staff/intjaning') {
-    return (
-      <StaffEarnings
-        staffUser={fallbackUser}
-        onLoggedOut={onLoggedOut}
-      />
-    );
-  }
-
-  // Default: overview
-  return (
-    <StaffOverview
-      staffUser={fallbackUser}
-      onLoggedOut={onLoggedOut}
-      onNavigate={(p) => navigate(p)}
-    />
-  );
-}
