@@ -66,6 +66,7 @@ const SAVINGS_ITEMS = [
 ];
 
 function SavingsInfoBox() {
+  const [open, setOpen] = useState(false);
   return (
     <div className="mt-10 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
       <div className="bg-[#0e6efe] px-6 sm:px-8 py-6 sm:py-7">
@@ -79,30 +80,41 @@ function SavingsInfoBox() {
           Spara 15 000 kr eller mer på din nästa bil
         </h3>
         <p className="mt-2 text-white/75 text-[14px] sm:text-[15px] leading-[1.65] max-w-lg">
-          Oavsett om du leasar eller köper kontaktar Biltos experter handlarna åt dig, förhandlar bästa priset och hanterar varje steg – du sparar tid och pengar.
+          Oavsett om du leasar eller köper förhandlar Biltos experter pris, ränta och tillval åt dig – du sparar tid och pengar.
         </p>
+        <button
+          type="button"
+          onClick={() => setOpen(v => !v)}
+          className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold text-white/90 hover:text-white underline underline-offset-2 transition"
+        >
+          {open ? 'Dölj beräkning' : 'Läs mer – hur räknar vi?'}
+          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        </button>
       </div>
-      <div className="bg-white divide-y divide-slate-100">
-        {SAVINGS_ITEMS.map((item) => (
-          <div key={item.label} className="flex items-center gap-4 px-6 sm:px-8 py-4 sm:py-5">
-            <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/[0.08] flex items-center justify-center shrink-0">
-              <Check className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.5} />
+
+      {open && (
+        <div className="bg-white divide-y divide-slate-100">
+          {SAVINGS_ITEMS.map((item) => (
+            <div key={item.label} className="flex items-center gap-4 px-6 sm:px-8 py-4 sm:py-5">
+              <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/[0.08] flex items-center justify-center shrink-0">
+                <Check className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.5} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-semibold text-slate-900 leading-snug">{item.label}</p>
+                <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5 leading-snug">{item.desc}</p>
+              </div>
+              <span className="text-[13px] sm:text-[14px] font-bold text-[#0e6efe] shrink-0 tabular-nums">{item.amount}</span>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-semibold text-slate-900 leading-snug">{item.label}</p>
-              <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5 leading-snug">{item.desc}</p>
-            </div>
-            <span className="text-[13px] sm:text-[14px] font-bold text-[#0e6efe] shrink-0 tabular-nums">{item.amount}</span>
+          ))}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 px-6 sm:px-8 py-4 sm:py-5 bg-slate-50">
+            <p className="text-[13px] sm:text-[14px] font-semibold text-slate-700">Typisk total besparing per affär</p>
+            <span className="text-[20px] sm:text-[18px] font-bold text-slate-900 tabular-nums">13 000–22 000 kr</span>
           </div>
-        ))}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 px-6 sm:px-8 py-4 sm:py-5 bg-slate-50">
-          <p className="text-[13px] sm:text-[14px] font-semibold text-slate-700">Typisk total besparing per affär</p>
-          <span className="text-[20px] sm:text-[18px] font-bold text-slate-900 tabular-nums">13 000–22 000 kr</span>
+          <div className="bg-slate-50 border-t border-slate-100 px-6 sm:px-8 py-3">
+            <p className="text-[11px] text-slate-400 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
+          </div>
         </div>
-      </div>
-      <div className="bg-slate-50 border-t border-slate-100 px-6 sm:px-8 py-3">
-        <p className="text-[11px] text-slate-400 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
-      </div>
+      )}
     </div>
   );
 }
