@@ -113,6 +113,13 @@ export function SiteFooter() {
           <div className="flex items-center gap-4">
             <span className="text-slate-600">Gjord med omsorg i Sverige</span>
             <a
+              href="/staff/logga-in"
+              className="flex items-center gap-1.5 text-[11px] text-slate-700 hover:text-slate-400 transition-colors duration-200"
+            >
+              <Shield className="w-3 h-3" />
+              Staff
+            </a>
+            <a
               href="/admin"
               className="flex items-center gap-1.5 text-[11px] text-slate-700 hover:text-slate-400 transition-colors duration-200"
             >
