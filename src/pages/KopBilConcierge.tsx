@@ -118,55 +118,54 @@ const WHY_BILTO = [
 const SAVINGS_ITEMS = [
   { label: 'Prisförhandling på bilen', amount: '8 000–12 000 kr', desc: 'Vi vet vad handlaren betalat och var marginalen finns – och utnyttjar det.' },
   { label: 'Ränterabatt på finansiering', amount: '3 000–6 000 kr', desc: 'Vi jämför och förhandlar räntan mot flera finansaktörer och pressar den nedåt.' },
-  { label: 'Däck & tillval ingår', amount: '2 000–4 000 kr', desc: 'Vinterdäck, golvmattor och service tas med i paketet – utan extrakostnad.' },
+  { label: 'Däck & tillval', amount: '2 000–4 000 kr', desc: 'Vinterdäck, golvmattor och service tas med i paketet – utan extrakostnad.' },
 ];
 
 function SavingsInfoBox() {
-  const [open, setOpen] = useState(false);
   return (
-    <div className="mt-8 rounded-2xl border border-[#0e6efe]/20 bg-[#f0f6ff] overflow-hidden">
-      <button
-        type="button"
-        onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between gap-4 px-5 sm:px-7 py-4 text-left group"
-      >
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="w-9 h-9 rounded-xl bg-[#0e6efe] flex items-center justify-center shrink-0 shadow-sm">
-            <Banknote className="w-4.5 h-4.5 text-white" strokeWidth={1.8} />
+    <div className="mt-10 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+      {/* Header */}
+      <div className="bg-[#0e6efe] px-6 sm:px-8 py-6 sm:py-7">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+            <Banknote className="w-4 h-4 text-white" strokeWidth={2} />
           </div>
-          <p className="text-[14px] sm:text-[15px] font-semibold text-slate-900 leading-snug">
-            Så räknar vi ut din besparing
-            <span className="ml-2 text-[12px] font-normal text-slate-400 group-hover:text-[#0e6efe] transition-colors">
-              {open ? 'Dölj' : 'Läs mer'}
-            </span>
-          </p>
+          <p className="text-[11px] font-semibold text-white/70 uppercase tracking-[0.15em]">Vad vi förhandlar fram</p>
         </div>
-        <ChevronDown className={`w-4.5 h-4.5 text-[#0e6efe] shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
-      </button>
+        <h3 className="text-[22px] sm:text-[28px] font-bold text-white leading-snug tracking-tight">
+          Spara 15 000 kr eller mer på din nästa bil
+        </h3>
+        <p className="mt-2 text-white/75 text-[14px] sm:text-[15px] leading-relaxed max-w-lg">
+          Oavsett om du leasar eller köper kontaktar Biltos experter handlarna åt dig, förhandlar bästa priset och hanterar varje steg – du sparar tid och pengar.
+        </p>
+      </div>
 
-      {open && (
-        <div className="px-5 sm:px-7 pb-6 border-t border-[#0e6efe]/10">
-          <p className="text-[13px] sm:text-[14px] text-slate-600 leading-relaxed mt-4 mb-5">
-            Vi räknar alltid in tre delar när vi utvärderar vad du faktiskt sparar. Hur mycket det blir beror på bil, handlare och finansiering – men det är dessa poster vi aktivt arbetar med:
-          </p>
-          <div className="space-y-3">
-            {SAVINGS_ITEMS.map((item) => (
-              <div key={item.label} className="flex items-start gap-3 bg-white rounded-xl px-4 py-3.5 border border-[#0e6efe]/10">
-                <Check className="w-4 h-4 text-[#0e6efe] mt-0.5 shrink-0" strokeWidth={2.5} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] sm:text-[14px] font-semibold text-slate-900">{item.label}</p>
-                  <p className="text-[12px] text-slate-500 mt-0.5 leading-snug">{item.desc}</p>
-                </div>
-              </div>
-            ))}
+      {/* Savings rows */}
+      <div className="bg-white divide-y divide-slate-100">
+        {SAVINGS_ITEMS.map((item) => (
+          <div key={item.label} className="flex items-center gap-4 px-6 sm:px-8 py-4 sm:py-5">
+            <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/8 flex items-center justify-center shrink-0">
+              <Check className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.5} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-semibold text-slate-900 leading-snug">{item.label}</p>
+              <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5 leading-snug">{item.desc}</p>
+            </div>
+            <span className="text-[13px] sm:text-[14px] font-bold text-[#0e6efe] shrink-0 tabular-nums">{item.amount}</span>
           </div>
-          <div className="mt-4 flex items-center justify-between bg-[#0e6efe] rounded-xl px-4 py-3 text-white">
-            <span className="text-[13px] font-semibold">Typisk total besparing per affär</span>
-            <span className="text-[15px] font-bold">13 000–22 000 kr</span>
-          </div>
-          <p className="mt-3 text-[11px] text-slate-400 leading-snug">Baserat på genomsnitt från genomförda affärer. Biltos avgift är 1 995 kr och betalas endast om affären faktiskt blir av.</p>
+        ))}
+
+        {/* Total row */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 px-6 sm:px-8 py-4 sm:py-5 bg-slate-50">
+          <p className="text-[13px] sm:text-[14px] font-semibold text-slate-700">Typisk total besparing per affär</p>
+          <span className="text-[20px] sm:text-[18px] font-bold text-slate-900 tabular-nums">13 000–22 000 kr</span>
         </div>
-      )}
+      </div>
+
+      {/* Footer note */}
+      <div className="bg-slate-50 border-t border-slate-100 px-6 sm:px-8 py-3">
+        <p className="text-[11px] text-slate-400 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 1 995 kr och betalas endast om affären blir av.</p>
+      </div>
     </div>
   );
 }
