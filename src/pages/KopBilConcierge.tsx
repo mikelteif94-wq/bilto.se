@@ -6,9 +6,7 @@ import {
   Phone,
   Search,
   ShieldCheck,
-  Star,
   TrendingDown,
-  Users,
   Handshake,
   Menu,
   MessageCircle,
@@ -22,30 +20,13 @@ import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { setPageMeta } from '../lib/pageMeta';
 import BuyFlowFAQ from '../components/BuyFlowFAQ';
-import { PHONE, PHONE_TEL, EXPERT_NAME, EXPERT_PHOTO } from '../config/site';
+import { PHONE, PHONE_TEL } from '../config/site';
 
 interface KopBilConciergProps {
   onBack: () => void;
   onNavigateBuy: (bil?: string) => void;
   onNavigateHowItWorks: () => void;
 }
-
-const EXPERTS = [
-  {
-    name: EXPERT_NAME,
-    title: 'Seniorförhandlare',
-    years: '12 år i branschen',
-    avatar: EXPERT_PHOTO,
-    spec: 'Premium & tyska märken',
-  },
-  {
-    name: EXPERT_NAME,
-    title: 'Bilrådgivare',
-    years: '8 år i branschen',
-    avatar: EXPERT_PHOTO,
-    spec: 'Familjebil & inbyte',
-  },
-];
 
 const STEPS = [
   {
@@ -362,55 +343,6 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Få prishjälp
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Team ── */}
-      <section className="bg-[#faf8f5] border-y border-slate-200 py-16 sm:py-24 px-5 sm:px-8">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-10 sm:mb-12">
-            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
-              Teamet
-            </span>
-            <h2 className="text-[26px] sm:text-[40px] font-bold text-slate-900 leading-tight tracking-tight">
-              Erfarna förhandlare – på din sida
-            </h2>
-            <p className="text-slate-500 mt-3 sm:mt-4 text-[14px] sm:text-[16px] max-w-xl leading-relaxed">
-              Vårt team har jobbat som toppsäljare hos Sveriges största bilhandlare i sammanlagt över 40 år. Nu jobbar vi uteslutande för köparen.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl">
-            {EXPERTS.map((e) => (
-              <div key={e.name} className="flex items-center gap-5 bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-sm">
-                <div className="relative shrink-0">
-                  <img
-                    src={e.avatar}
-                    alt={e.name}
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover object-top border-4 border-white shadow-md"
-                  />
-                </div>
-                <div>
-                  <p className="text-[16px] sm:text-[17px] font-bold text-slate-900">{e.name}</p>
-                  <p className="text-[13px] text-[#0e6efe] font-semibold mt-0.5">{e.title}</p>
-                  <p className="text-[12px] text-slate-500 mt-0.5">{e.years} · {e.spec}</p>
-                  <p className="text-[11px] text-slate-400 mt-1">Svar inom 24 timmar</p>
-                  <div className="flex gap-0.5 mt-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 sm:mt-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 text-[13px] sm:text-[14px] font-medium shadow-sm">
-              <Users className="w-4 h-4 text-slate-400 shrink-0" />
-              +3 ytterligare experter i teamet
-            </div>
           </div>
         </div>
       </section>
