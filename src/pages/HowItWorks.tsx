@@ -13,13 +13,12 @@ import {
   ShieldCheck,
   Clock,
   ChevronDown,
+  ChevronRight,
   Plus,
   MessageCircle as _MessageCircle,
   X,
   XCircle,
   Car as CarIcon,
-  TrendingUp,
-  Sparkles,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SiteFooter } from '../components/SiteFooter';
@@ -461,7 +460,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       heroTab === t ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'
                     }`}
                   >
-                    {t === 'salj' ? 'Sälj bil' : 'Hitta bil'}
+                    {t === 'salj' ? 'Sälj bil' : 'Bilköpshjälp'}
                     <span className={`absolute bottom-0 inset-x-0 h-[2.5px] rounded-t-full transition-all duration-200 ${heroTab === t ? 'bg-[#0e6efe]' : 'bg-transparent'}`} />
                   </button>
                 ))}
@@ -498,112 +497,47 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     </div>
                   </>
                 ) : (
-                  <div ref={carSearchRef} className="relative space-y-3">
-                    <div className="relative">
-                      <div className="flex items-center h-12 rounded-xl bg-[#faf8f5] border-2 border-slate-200 overflow-visible focus-within:border-[#0e6efe] focus-within:bg-white focus-within:shadow-[0_0_0_4px_rgba(14,110,254,0.08)] transition-all duration-200">
-                        <span className="flex items-center justify-center w-11 shrink-0">
-                          {carSearchLoading
-                            ? <div className="w-4 h-4 border-2 border-slate-300 border-t-[#0e6efe] rounded-full animate-spin" />
-                            : <Search className="w-4 h-4 text-slate-400" />
-                          }
-                        </span>
-                        <input
-                          type="text"
-                          value={carQuery}
-                          onChange={(e) => handleCarQueryChange(e.target.value)}
-                          onFocus={handleCarFocus}
-                          onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
-                          placeholder="Sök märke eller modell..."
-                          className="flex-1 min-w-0 w-0 h-full text-[14px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400 font-medium"
-                        />
-                        {carQuery && (
-                          <button
-                            type="button"
-                            onClick={() => { setCarQuery(''); setCarSuggestions([]); setShowSuggestions(false); }}
-                            className="mr-1 w-6 h-6 flex items-center justify-center rounded-xl hover:bg-slate-200 text-slate-400 transition shrink-0"
-                          >
-                            <XCircle className="w-4 h-4" />
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={handleCarSearch}
-                          className="h-9 mx-1.5 px-4 flex items-center justify-center bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.97] rounded-xl shrink-0 text-white font-bold text-[12px] tracking-wide transition-all shadow-[0_3px_12px_-3px_rgba(14,110,254,0.5)]"
-                        >
-                          Sök
-                        </button>
-                      </div>
-                      {showSuggestions && carSuggestions.length > 0 && (
-                        <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-[0_8px_32px_-8px_rgba(15,23,42,0.18)] border border-slate-100 overflow-hidden z-50 max-h-64 overflow-y-auto">
-                          {carSuggestions.map((s, i) => {
-                            const img = s.cleaned_image_url || s.image_url;
-                            return (
-                              <button
-                                key={i}
-                                type="button"
-                                onClick={() => handleCarSelect(s.make, s.model)}
-                                className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-[#0e6efe]/[0.04] transition-colors border-b border-slate-50 last:border-0 group"
-                              >
-                                <span className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
-                                  {img
-                                    ? <img src={img} alt={`${s.make} ${s.model}`} className="w-full h-full object-cover" loading="lazy" />
-                                    : <CarIcon className="w-4 h-4 text-slate-400" />
-                                  }
-                                </span>
-                                <span className="text-[13px] text-slate-900 font-semibold">{s.make}</span>
-                                <span className="text-[13px] text-slate-500">{s.model}</span>
-                              </button>
-                            );
-                          })}
+                  <div className="space-y-2">
+                    {[
+                      {
+                        icon: Handshake,
+                        title: 'Jag har hittat en bil',
+                        sub: 'Låt oss förhandla och granska åt dig.',
+                        params: { typ: 'found' },
+                      },
+                      {
+                        icon: Search,
+                        title: 'Jag letar efter bil',
+                        sub: 'Utforska, jämför eller testa bilmatch.',
+                        params: { typ: 'searching' },
+                      },
+                      {
+                        icon: CarIcon,
+                        title: 'Jag vill byta bil',
+                        sub: 'Vi hittar och förhandlar nästa bil åt dig.',
+                        params: { typ: 'trade' },
+                      },
+                    ].map(({ icon: Icon, title, sub, params }) => (
+                      <button
+                        key={title}
+                        type="button"
+                        onClick={() => {
+                          const p = new URLSearchParams(params);
+                          window.history.pushState({}, '', `/kop-bil/bestall?${p}`);
+                          window.dispatchEvent(new PopStateEvent('popstate'));
+                        }}
+                        className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl border border-slate-200 hover:border-[#0e6efe]/40 hover:bg-[#0e6efe]/[0.03] active:scale-[0.99] transition text-left group"
+                      >
+                        <div className="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition">
+                          <Icon className="w-4 h-4 text-slate-500 group-hover:text-[#0e6efe] transition" strokeWidth={1.8} />
                         </div>
-                      )}
-                      {carQuery.trim().length >= 2 && !carSearchLoading && carSuggestions.length === 0 && (
-                        <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-[0_8px_32px_-8px_rgba(15,23,42,0.18)] border border-slate-100 overflow-hidden z-50">
-                          <div className="px-4 py-3.5 text-center">
-                            <p className="text-[13px] text-slate-500 mb-2.5">Hittade inga bilar för <span className="font-semibold text-slate-700">"{carQuery.trim()}"</span></p>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                window.history.pushState({}, '', '/kop-bil/bestall');
-                                window.dispatchEvent(new PopStateEvent('popstate'));
-                              }}
-                              className="text-[12.5px] font-bold text-[#0e6efe] hover:underline"
-                            >
-                              Berätta vad du letar efter – vi hittar bilen
-                            </button>
-                          </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[13.5px] font-semibold text-slate-900 leading-snug">{title}</p>
+                          <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{sub}</p>
                         </div>
-                      )}
-                    </div>
-                    {!carQuery.trim() && <div>
-                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.1em] mb-2">Populärt just nu</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {[
-                          { label: 'Tesla Model Y', make: 'Tesla', model: 'Model Y' },
-                          { label: 'Volvo XC60', make: 'Volvo', model: 'XC60' },
-                          { label: 'BMW 3-serie', make: 'BMW', model: '3-serie' },
-                          { label: 'Kia EV6', make: 'Kia', model: 'EV6' },
-                        ].map((s) => (
-                          <button
-                            key={s.label}
-                            type="button"
-                            onClick={() => openDrawer(`${s.make} ${s.model}`)}
-                            className="inline-flex items-center gap-1 text-[12px] text-slate-600 hover:text-[#0e6efe] bg-white hover:bg-blue-50 border border-slate-200 hover:border-[#0e6efe]/40 rounded-xl px-3 py-1.5 font-medium transition-all shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
-                          >
-                            <TrendingUp className="w-3 h-3 opacity-50" />
-                            {s.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>}
-                    <button
-                      type="button"
-                      onClick={() => openDrawer('', undefined, 'searching')}
-                      className="w-full h-10 rounded-xl border border-slate-200 bg-[#faf8f5] hover:bg-slate-100 active:scale-[0.98] text-slate-500 hover:text-slate-700 text-[12px] font-semibold transition-all inline-flex items-center justify-center gap-1.5"
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-[#0e6efe]" />
-                      Vet inte vad du vill ha? Vi hjälper dig
-                    </button>
+                        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] shrink-0 transition" />
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
