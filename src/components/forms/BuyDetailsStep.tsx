@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { ChevronDown, Sparkles, Search, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { ChevronDown, Search, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import type { BuyTrack } from './BuyTrackStep';
 import FieldError from './FieldError';
 import RegInput from '../RegInput';
@@ -58,6 +58,7 @@ export interface BuyDetailsData {
   yearTo: string;
   maxMiltal: string;
   hasQuote: boolean | null;
+  monthlyCostExMoms: boolean;
 }
 
 interface BuyDetailsStepProps {
@@ -245,14 +246,12 @@ function BrandModelSelector({
   onBrandChange,
   onModelChange,
   brandError,
-  onQuiz,
 }: {
   brand: string;
   model: string;
   onBrandChange: (v: string) => void;
   onModelChange: (v: string) => void;
   brandError?: string;
-  onQuiz?: () => void;
 }) {
   const models = brand && brand !== 'Annan' ? (CAR_BRANDS[brand] ?? []) : [];
   const modelIsAnnan = model === 'Annan';
@@ -296,29 +295,17 @@ function BrandModelSelector({
         />
       )}
 
-      <div className="flex flex-wrap gap-2 items-center">
-        <button
-          type="button"
-          onClick={() => { onBrandChange('Vet ej'); onModelChange('Vet ej'); }}
-          className={`inline-flex items-center gap-1.5 px-4 h-9 rounded-xl text-[13px] font-medium transition-all border ${
-            brand === 'Vet ej'
-              ? 'bg-slate-900 text-white border-slate-900'
-              : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
-          }`}
-        >
-          Vet ej
-        </button>
-        {onQuiz && (
-          <button
-            type="button"
-            onClick={onQuiz}
-            className="inline-flex items-center gap-1.5 px-4 h-9 rounded-xl text-[13px] font-semibold bg-[#0e6efe]/10 text-[#0e6efe] hover:bg-[#0e6efe]/18 transition-all"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            Hitta med bilmatch
-          </button>
-        )}
-      </div>
+      <button
+        type="button"
+        onClick={() => { onBrandChange('Vet ej'); onModelChange('Vet ej'); }}
+        className={`inline-flex items-center gap-1.5 px-4 h-9 rounded-xl text-[13px] font-medium transition-all border ${
+          brand === 'Vet ej'
+            ? 'bg-slate-900 text-white border-slate-900'
+            : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
+        }`}
+      >
+        Vet ej
+      </button>
 
       <CarImagePreview brand={brand} model={model} />
     </div>
@@ -989,8 +976,32 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     maxMiltal: initialData.maxMiltal || '',
     fuelType: resolvedAutoFuel || initialData.fuelType || '',
     hasQuote: initialData.hasQuote ?? null,
+    monthlyCostExMoms: initialData.monthlyCostExMoms ?? false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Auto-detect fuel type from selected car in comparison data
+  const selectedCarFuelTypes = useMemo(() => {
+    if (!d.carBrand || d.carBrand === 'Vet ej' || d.carBrand === 'Annan') return [];
+    const model = d.carModel && d.carModel !== 'Annan' && d.carModel !== 'Vet ej' ? d.carModel : '';
+    if (!model) return [];
+    const car = findComparisonCarByMakeModel(d.carBrand, model);
+    return car?.specs.fuel_types ?? [];
+  }, [d.carBrand, d.carModel]);
+
+  const inferredFuelFromCar = useMemo(() => inferFuelType(selectedCarFuelTypes), [selectedCarFuelTypes]);
+
+  useEffect(() => {
+    if (inferredFuelFromCar && d.fuelType !== inferredFuelFromCar) {
+      setD(prev => ({ ...prev, fuelType: inferredFuelFromCar }));
+    }
+  }, [inferredFuelFromCar]);
+
+  // Only show relevant fuel types when car has a definite fuel type
+  const filteredFuelTypes = useMemo(() => {
+    if (!inferredFuelFromCar) return FUEL_TYPES;
+    return FUEL_TYPES.filter(f => f.value === inferredFuelFromCar || f.value === 'no_pref');
+  }, [inferredFuelFromCar]);
 
   if (track === 'know') return <KnowDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={resolvedAutoFuel} carCondition={carCondition} lockedCar={lockedCar} />;
   if (track === 'explore') return <ExploreDetailsStep initialData={initialData} onNext={onNext} hideFuel={hideFuel} autoFuel={resolvedAutoFuel} carCondition={carCondition} />;
@@ -1033,7 +1044,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     <div className="py-6">
       <label className="block text-[15px] font-bold text-slate-900 mb-1">Drivmedel</label>
       <div className="flex flex-wrap gap-2">
-        {FUEL_TYPES.map(f => {
+        {filteredFuelTypes.map(f => {
           const isSelected = d.fuelType === f.value;
           return (
             <button
@@ -1185,7 +1196,13 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 model={d.carModel}
                 onBrandChange={v => set('carBrand', v)}
                 onModelChange={v => set('carModel', v)}
-                onQuiz={onQuiz}
+              />
+              <textarea
+                value={d.additionalRequests}
+                onChange={e => set('additionalRequests', e.target.value)}
+                placeholder="Beskriv bilen eller ange önskemål, t.ex. 'BMW 3-serie svart med lågt miltal'…"
+                rows={2}
+                className="form-control resize-none text-[13px] sm:text-[14px] mt-3"
               />
             </div>
           )}
@@ -1335,7 +1352,6 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               model={d.carModel}
               onBrandChange={v => set('carBrand', v)}
               onModelChange={v => set('carModel', v)}
-              onQuiz={onQuiz}
             />
             <textarea
               value={d.additionalRequests}
@@ -1426,7 +1442,6 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                   model={d.carModel}
                   onBrandChange={v => set('carBrand', v)}
                   onModelChange={v => set('carModel', v)}
-                  onQuiz={onQuiz}
                 />
                 <input
                   type="text"
