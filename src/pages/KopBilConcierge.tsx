@@ -76,8 +76,8 @@ const STEPS = [
 
 const FAQS = [
   {
-    q: 'Vad kostar tjänsten?',
-    a: 'Det är helt kostnadsfritt för privatpersoner. Vi tar aldrig betalt av dig. Vi finansieras av ett blygsamt arvode från handlaren när en affär görs – det påverkar inte priset du betalar.',
+    q: 'Kostar det något att använda Biltos köptjänst?',
+    a: 'Ja – tjänsten kostar 1 995 kr och betalas bara om affären faktiskt blir av. Inget köp, ingen kostnad. Snittbesparingen vi förhandlar fram är 18 000 kr per affär, så de flesta kunder tjänar mångfalt mer än de betalar.',
   },
   {
     q: 'Kan ni hjälpa mig om jag redan hittat en bil?',
@@ -89,7 +89,7 @@ const FAQS = [
   },
   {
     q: 'Vad händer om ingen bil passar mig?',
-    a: 'Ingenting. Det finns inga förpliktelser. Du tackar enkelt nej – och om du vill fortsöka justerar vi kriterierna.',
+    a: 'Ingenting. Det finns inga förpliktelser. Du tackar enkelt nej – och om du vill fortsöka justerar vi kriterierna. Du betalar inget om ingen affär görs.',
   },
   {
     q: 'Kan ni hjälpa till med inbytesbil?',
@@ -110,7 +110,7 @@ const WHY_BILTO = [
   {
     icon: Banknote,
     title: 'Vi sparar dig pengar',
-    desc: 'Snittbesparing på 18 000 kr per affär. Vi förhandlar pris, ränta och tillval – du betalar fast pris 1 995 kr om affären blir av.',
+    desc: 'Snittbesparing på 18 000 kr per affär. Vi förhandlar pris, ränta och tillval – du betalar 1 995 kr om affären blir av.',
   },
   {
     icon: Clock,
@@ -135,9 +135,9 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
   useEffect(() => {
     setPageMeta({
-      title: 'Köp bil med hjälp av en expert – Bilto Concierge',
-      description: 'Låt Biltos experter hjälpa dig hitta, förhandla och köpa rätt bil. Vi sköter kontakten med handlare åt dig – gratis och utan krångel.',
-      canonical: 'https://bilto.se/kop-bil-hjalp',
+      title: 'Köp bil med hjälp av en expert – Bilto',
+      description: 'Låt Biltos experter hjälpa dig hitta, förhandla och köpa rätt bil. Vi sköter kontakten med handlare åt dig – 1 995 kr om affären blir av.',
+      canonical: 'https://bilto.se/kop-bil',
     });
   }, []);
 
@@ -207,7 +207,6 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
       {/* ── Hero ── */}
       <section className="relative min-h-[100svh] flex flex-col overflow-hidden">
-        {/* Background image */}
         <img
           src="/files_2615643-2026-06-21T06-29-18-662Z-b858d9c8-9893-488f-8103-98fee9292c16 copy.webp"
           alt=""
@@ -216,21 +215,17 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           fetchPriority="high"
           decoding="async"
         />
-        {/* Gradient overlay – strong at top so nav/text readable, fades to transparent */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/25 to-transparent pointer-events-none" />
 
-        {/* Content – sits below the fixed nav pill (nav is 64px + 12px top = 76px) */}
         <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
           <div className="w-full max-w-md">
-            {/* Headline */}
             <h1 className="text-white text-[36px] sm:text-[48px] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
               Köp bil –<br />med en expert på din sida
             </h1>
             <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
-              Helt gratis · Söker hela marknaden · Noll bindning
+              1 995 kr om affären blir av · Söker hela marknaden · Noll bindning
             </p>
 
-            {/* Card */}
             <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
               <div className="px-6 pt-6 pb-2">
                 <p className="text-[13px] font-bold text-slate-400 uppercase tracking-widest mb-4">Köp bil med expert</p>
@@ -260,15 +255,15 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                   Få prishjälp
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
                 </button>
-                <p className="text-center text-white/60 text-[12px]">Fast pris 1&nbsp;995 kr – endast om affären blir av</p>
+                <p className="text-center text-slate-400 text-[12px]">Fast pris 1&nbsp;995 kr – betalas bara om affären blir av</p>
                 <a
                   href={PHONE_TEL}
-                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"                >
+                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
+                >
                   <Phone className="w-4 h-4 shrink-0" />
                   Ring oss: {PHONE}
                 </a>
               </div>
-
             </div>
 
             <div className="flex items-center justify-center gap-1.5 mt-5">
@@ -282,7 +277,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       {/* ── How it works ── */}
       <section className="py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12 sm:mb-14">
+          <div className="mb-12 sm:mb-14">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Processen
             </span>
@@ -293,11 +288,11 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
           <div className="relative">
             <div className="hidden lg:block absolute top-10 left-[12.5%] right-[12.5%] h-px bg-slate-200" />
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {STEPS.map((step) => {
                 const Icon = step.icon;
                 return (
-                  <div key={step.n} className="relative flex lg:flex-col items-start lg:items-center gap-4 lg:gap-0 lg:text-center">
+                  <div key={step.n} className="relative flex lg:flex-col items-start gap-4 lg:gap-0">
                     <div className="relative z-10 w-16 h-16 lg:w-20 lg:h-20 rounded-xl bg-[#0e6efe] flex items-center justify-center shrink-0 lg:mb-5 shadow-lg shadow-[#0e6efe]/20">
                       <Icon className="w-7 h-7 lg:w-8 lg:h-8 text-white" strokeWidth={1.8} />
                       <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border-2 border-[#0e6efe] text-[#0e6efe] text-[10px] font-bold flex items-center justify-center">
@@ -318,7 +313,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             </div>
           </div>
 
-          <div className="mt-12 sm:mt-14 text-center">
+          <div className="mt-12 sm:mt-14">
             <button
               type="button"
               onClick={() => onNavigateBuy()}
@@ -327,7 +322,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Skicka en förfrågan
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
-            <p className="mt-3 text-[13px] text-slate-400">Gratis och utan förpliktelse.</p>
+            <p className="mt-3 text-[13px] text-slate-400">1 995 kr – betalas bara om affären blir av.</p>
           </div>
         </div>
       </section>
@@ -335,11 +330,11 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       {/* ── What's included ── */}
       <section className="bg-[#0e6efe] py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10 sm:mb-12">
+          <div className="mb-10 sm:mb-12">
             <h2 className="text-[26px] sm:text-[42px] font-bold text-white leading-tight tracking-tight">
               Vad ingår i tjänsten?
             </h2>
-            <p className="text-white/70 mt-3 sm:mt-4 text-[15px] sm:text-[17px] max-w-xl mx-auto leading-relaxed">
+            <p className="text-white/70 mt-3 sm:mt-4 text-[15px] sm:text-[17px] max-w-xl leading-relaxed">
               Allt från idé till nyckel – vi gör jobbet åt dig.
             </p>
           </div>
@@ -358,7 +353,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             ))}
           </div>
 
-          <div className="mt-10 sm:mt-12 text-center">
+          <div className="mt-10 sm:mt-12">
             <button
               type="button"
               onClick={() => onNavigateBuy()}
@@ -373,20 +368,20 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
       {/* ── Team ── */}
       <section className="bg-[#faf8f5] border-y border-slate-200 py-16 sm:py-24 px-5 sm:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10 sm:mb-12">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-10 sm:mb-12">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Teamet
             </span>
             <h2 className="text-[26px] sm:text-[40px] font-bold text-slate-900 leading-tight tracking-tight">
               Erfarna förhandlare – på din sida
             </h2>
-            <p className="text-slate-500 mt-3 sm:mt-4 text-[14px] sm:text-[16px] max-w-xl mx-auto leading-relaxed">
+            <p className="text-slate-500 mt-3 sm:mt-4 text-[14px] sm:text-[16px] max-w-xl leading-relaxed">
               Vårt team har jobbat som toppsäljare hos Sveriges största bilhandlare i sammanlagt över 40 år. Nu jobbar vi uteslutande för köparen.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl">
             {EXPERTS.map((e) => (
               <div key={e.name} className="flex items-center gap-5 bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-sm">
                 <div className="relative shrink-0">
@@ -411,7 +406,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             ))}
           </div>
 
-          <div className="mt-8 sm:mt-10 text-center">
+          <div className="mt-8 sm:mt-10">
             <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 text-[13px] sm:text-[14px] font-medium shadow-sm">
               <Users className="w-4 h-4 text-slate-400 shrink-0" />
               +3 ytterligare experter i teamet
@@ -421,16 +416,16 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Varför Bilto ── */}
-      <section className="py-16 sm:py-24 px-5 sm:px-8 bg-[#faf8f5]">
+      <section className="py-16 sm:py-24 px-5 sm:px-8 bg-white">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12 sm:mb-14">
+          <div className="mb-12 sm:mb-14">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Varför Bilto
             </span>
             <h2 className="text-[28px] sm:text-[44px] font-bold text-slate-900 leading-[1.1] tracking-tight">
               Det smartaste sättet att köpa bil
             </h2>
-            <p className="text-slate-500 mt-3 sm:mt-4 text-[15px] sm:text-[17px] max-w-xl mx-auto leading-relaxed">
+            <p className="text-slate-500 mt-3 sm:mt-4 text-[15px] sm:text-[17px] max-w-xl leading-relaxed">
               Du går aldrig ensam till en bilhandlare. Nu behöver du inte göra det digitalt heller.
             </p>
           </div>
@@ -439,7 +434,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             {WHY_BILTO.map((item) => {
               const Icon = item.icon;
               return (
-                <div key={item.title} className="flex gap-5 bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <div key={item.title} className="flex gap-5 bg-[#faf8f5] rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                   <div className="w-12 h-12 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
                     <Icon className="w-6 h-6 text-[#0e6efe]" strokeWidth={1.8} />
                   </div>
@@ -452,41 +447,41 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             })}
           </div>
 
-          <div className="mt-10 sm:mt-12 text-center">
+          <div className="mt-10 sm:mt-12">
             <button
               type="button"
               onClick={() => onNavigateBuy()}
               className="h-12 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] transition shadow-sm inline-flex items-center gap-2 group"
             >
-              Kom igång gratis
+              Kom igång
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
-            <p className="mt-3 text-[13px] text-slate-400">Ingen bindning · Vi hör av oss inom en arbetsdag</p>
+            <p className="mt-3 text-[13px] text-slate-400">1 995 kr om affären blir av · Ingen bindning</p>
           </div>
         </div>
       </section>
 
       {/* ── Inte säker? Prata med oss ── */}
-      <section className="py-16 sm:py-24 px-5 sm:px-8 bg-white border-t border-slate-200">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-10 sm:mb-12">
+      <section className="py-16 sm:py-24 px-5 sm:px-8 bg-[#faf8f5] border-t border-slate-200">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-10 sm:mb-12">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Osäker?
             </span>
             <h2 className="text-[26px] sm:text-[42px] font-bold text-slate-900 leading-[1.1] tracking-tight">
               Prata med oss – utan förpliktelse
             </h2>
-            <p className="text-slate-500 mt-3 sm:mt-4 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
-              Inte redo att skicka en förfrågan? Hör av dig så svarar vi på dina frågor – gratis och utan säljsnack.
+            <p className="text-slate-500 mt-3 sm:mt-4 text-[14px] sm:text-[16px] max-w-lg leading-relaxed">
+              Inte redo att skicka en förfrågan? Hör av dig så svarar vi på dina frågor utan säljsnack.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-4">
-            <div className="flex flex-col items-center text-center gap-4 bg-[#faf8f5] rounded-xl p-6 sm:p-7 border border-slate-200">
+            <div className="flex flex-col items-start gap-4 bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm">
               <div className="w-14 h-14 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg shadow-[#0e6efe]/25">
                 <MessageCircle className="w-7 h-7 text-white" strokeWidth={1.8} />
               </div>
-              <div>
+              <div className="flex-1">
                 <p className="text-[15px] font-bold text-slate-900 mb-1">Chatta med oss</p>
                 <p className="text-[13px] text-slate-500 leading-relaxed mb-4">Svar på minuter under kontorstid. Inga robo-svar.</p>
                 <button
@@ -499,11 +494,11 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               </div>
             </div>
 
-            <div className="flex flex-col items-center text-center gap-4 bg-[#faf8f5] rounded-xl p-6 sm:p-7 border border-slate-200">
+            <div className="flex flex-col items-start gap-4 bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm">
               <div className="w-14 h-14 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg shadow-[#0e6efe]/25">
                 <CalendarCheck className="w-7 h-7 text-white" strokeWidth={1.8} />
               </div>
-              <div>
+              <div className="flex-1">
                 <p className="text-[15px] font-bold text-slate-900 mb-1">Boka ett samtal</p>
                 <p className="text-[13px] text-slate-500 leading-relaxed mb-4">Välj en tid som passar – vi ringer dig upp och svarar på allt.</p>
                 <a
@@ -515,11 +510,11 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               </div>
             </div>
 
-            <div className="flex flex-col items-center text-center gap-4 bg-[#faf8f5] rounded-xl p-6 sm:p-7 border border-slate-200">
+            <div className="flex flex-col items-start gap-4 bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm">
               <div className="w-14 h-14 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg shadow-[#0e6efe]/25">
                 <Phone className="w-7 h-7 text-white" strokeWidth={1.8} />
               </div>
-              <div>
+              <div className="flex-1">
                 <p className="text-[15px] font-bold text-slate-900 mb-1">Ring direkt</p>
                 <p className="text-[13px] text-slate-500 leading-relaxed mb-4">Mån–fre 8–18. En riktig person svarar – inte ett callcenter.</p>
                 <a
@@ -537,7 +532,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       {/* ── FAQ ── */}
       <section className="py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-10 sm:mb-12">
+          <div className="mb-10 sm:mb-12">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Vanliga frågor
             </span>
@@ -571,33 +566,33 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Final CTA ── */}
-      <section className="bg-slate-50 border-t border-slate-200 py-16 sm:py-24 px-5 sm:px-8">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-[28px] sm:text-[48px] font-bold text-slate-900 leading-[1.1] tracking-tight">
+      <section className="bg-[#0e6efe] py-16 sm:py-24 px-5 sm:px-8">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-[28px] sm:text-[48px] font-bold text-white leading-[1.1] tracking-tight max-w-xl">
             Trött på bilköps-kaos?<br className="hidden sm:block" /> Vi sköter det.
           </h2>
-          <p className="text-slate-500 mt-4 sm:mt-5 text-[15px] sm:text-[17px] leading-[1.65] max-w-lg mx-auto">
+          <p className="text-white/70 mt-4 sm:mt-5 text-[15px] sm:text-[17px] leading-[1.65] max-w-lg">
             Berätta vad du söker – resten tar vi hand om.
           </p>
-          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3">
             <button
               type="button"
               onClick={() => onNavigateBuy()}
-              className="h-12 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] transition shadow-sm inline-flex items-center justify-center gap-2 group"
+              className="h-12 px-8 sm:px-10 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-[#faf8f5] transition shadow-lg inline-flex items-center justify-center gap-2 group"
             >
               Skicka en förfrågan
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
             <a
               href={PHONE_TEL}
-              className="h-12 px-6 sm:px-8 rounded-xl border-2 border-slate-300 text-slate-700 font-semibold text-[14px] hover:border-slate-400 hover:bg-white transition inline-flex items-center justify-center gap-2"
+              className="h-12 px-6 sm:px-8 rounded-xl border-2 border-white/40 text-white font-semibold text-[14px] hover:border-white hover:bg-white/10 transition inline-flex items-center justify-center gap-2"
             >
               <Phone className="w-4 h-4 shrink-0" />
               Ring oss direkt
             </a>
           </div>
-          <p className="mt-5 text-[12px] sm:text-[13px] text-slate-400">
-            Gratis · Utan bindning · Vi hör av oss inom en arbetsdag
+          <p className="mt-5 text-[12px] sm:text-[13px] text-white/50">
+            1 995 kr om affären blir av · Ingen bindning · Vi hör av oss inom en arbetsdag
           </p>
         </div>
       </section>
