@@ -401,16 +401,15 @@ function App() {
 
   if (onStaffApp) {
     if (authLoading) return <PageLoader />;
+    if (!session) {
+      return (
+        <Suspense fallback={<PageLoader />}>
+          <StaffLogin onLoggedIn={() => navigate('/staff/oversikt')} onBack={() => navigate('/')} />
+        </Suspense>
+      );
+    }
     if (path === '/staff' || path === '/staff/logga-in') {
-      if (!session) {
-        return (
-          <Suspense fallback={<PageLoader />}>
-            <StaffLogin onLoggedIn={() => navigate('/staff/oversikt')} onBack={() => navigate('/')} />
-          </Suspense>
-        );
-      }
-      // Can't navigate during render — use effect
-      useEffect(() => { navigate('/staff/oversikt'); }, []);
+      navigate('/staff/oversikt');
       return <PageLoader />;
     }
     return (
@@ -418,7 +417,11 @@ function App() {
         <StaffArea
           userId={session?.user?.id ?? null}
           path={path}
-          onLoggedOut={() => { sessionStorage.removeItem('bilto_portal'); navigate('/staff/logga-in'); }}
+          onLoggedOut={() => {
+            supabase.auth.signOut();
+            sessionStorage.removeItem('bilto_portal');
+            navigate('/staff/logga-in');
+          }}
         />
       </Suspense>
     );
@@ -1234,14 +1237,30 @@ interface StaffAreaProps {
 function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
   const { staffUser, loading } = useStaffAuth();
 
-  useEffect(() => {
-    if (!loading && (!staffUser || !userId)) {
-      navigate('/staff/logga-in');
-    }
-  }, [loading, staffUser, userId]);
-
   if (loading) return <PageLoader />;
-  if (!staffUser || !userId) return <PageLoader />;
+
+  if (!staffUser || !userId) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{ background: '#0A1628' }}
+      >
+        <div className="text-center max-w-sm">
+          <p className="text-white font-semibold mb-2">Ingen staff-profil hittades</p>
+          <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            Ditt konto finns men saknar en rad i staff_users-tabellen. Kontakta admin.
+          </p>
+          <button
+            onClick={onLoggedOut}
+            className="px-6 py-2.5 rounded-xl text-sm font-bold text-white"
+            style={{ background: '#00A85A' }}
+          >
+            Logga ut
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const dealDetailId = matchStaffDealDetail(path);
   if (dealDetailId) {
