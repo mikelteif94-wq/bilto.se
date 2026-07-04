@@ -2,12 +2,13 @@ import { ReactNode } from 'react';
 import {
   LayoutGrid, Plus, Calculator, Package, LayoutTemplate,
   Inbox, Trophy, Swords, BarChart3, Plug, User, LogOut,
+  ClipboardCheck,
 } from 'lucide-react';
 
 export type DealerPage =
   | 'dashboard' | 'ny' | 'bygg' | 'lager' | 'mallar'
   | 'leads' | 'vardering-leads' | 'motbud' | 'statistik'
-  | 'integrationer' | 'profil';
+  | 'integrationer' | 'profil' | 'godkannanden';
 
 interface NavItem {
   id: DealerPage;
@@ -25,6 +26,7 @@ const NAV: NavItem[] = [
   { id: 'leads',            label: 'Leads',            icon: Inbox,          path: '/handlare/leads-b' },
   { id: 'vardering-leads',  label: 'Värdera & Vinn',   icon: Trophy,         path: '/handlare/vardering-leads' },
   { id: 'motbud',           label: 'Motbud',           icon: Swords,         path: '/handlare/motbud' },
+  { id: 'godkannanden',     label: 'Godkännanden',     icon: ClipboardCheck, path: '/handlare/godkannanden' },
   { id: 'statistik',        label: 'Statistik',        icon: BarChart3,      path: '/handlare/statistik' },
   { id: 'integrationer',    label: 'Integrationer',    icon: Plug,           path: '/handlare/integrationer' },
   { id: 'profil',           label: 'Profil',           icon: User,           path: '/handlare/profil' },
@@ -35,6 +37,7 @@ interface DealerShellProps {
   foretagsnamn: string;
   onLoggedOut: () => void;
   children: ReactNode;
+  badgeCount?: Partial<Record<DealerPage, number>>;
 }
 
 function navigate(path: string) {
@@ -45,7 +48,7 @@ function navigate(path: string) {
 // Mobile pill nav — top 5 most used items
 const MOBILE_NAV: DealerPage[] = ['dashboard', 'ny', 'leads', 'statistik', 'profil'];
 
-export default function DealerShell({ activePage, foretagsnamn, onLoggedOut, children }: DealerShellProps) {
+export default function DealerShell({ activePage, foretagsnamn, onLoggedOut, children, badgeCount = {} }: DealerShellProps) {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row" style={{ background: '#F7F8FB' }}>
 
@@ -104,6 +107,14 @@ export default function DealerShell({ activePage, foretagsnamn, onLoggedOut, chi
                     style={{ background: '#00A85A', color: 'white' }}
                   >
                     NY
+                  </span>
+                )}
+                {(badgeCount[item.id] ?? 0) > 0 && item.id !== 'ny' && (
+                  <span
+                    className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                    style={{ background: active ? 'rgba(255,255,255,0.2)' : '#FEF3C7', color: active ? 'white' : '#D97706' }}
+                  >
+                    {badgeCount[item.id]}
                   </span>
                 )}
               </button>

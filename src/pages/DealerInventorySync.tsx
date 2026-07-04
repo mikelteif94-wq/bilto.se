@@ -3,7 +3,7 @@ import {
   Package, Upload, RefreshCw, Search, Plus, Trash2, ChevronLeft,
   CheckCircle2, XCircle, AlertCircle, Loader2, Download, Target,
   Car, Fuel, Gauge, FileText, Zap, ArrowRight,
-  AlertTriangle,
+  AlertTriangle, Share2, ToggleLeft, ToggleRight,
 } from 'lucide-react';
 import PortalLayout from '../components/PortalLayout';
 import { supabase } from '../lib/supabase';
@@ -81,7 +81,7 @@ const SOURCE_ICON: Record<string, string> = {
 const CSV_TEMPLATE_HEADERS = 'marke,modell,ar,miltal,pris,regnummer,drivmedel,vaxellada,farg,karosseri,notes,external_id';
 const CSV_TEMPLATE_EXAMPLE = 'Volvo,XC60,2021,4500,349000,ABC123,diesel,automat,Svart,SUV,,INV-001';
 
-type Tab = 'lager' | 'import' | 'matchning';
+type Tab = 'lager' | 'import' | 'matchning' | 'bytesavdelning';
 
 export default function DealerInventorySync({
   dealerId,
@@ -116,6 +116,24 @@ export default function DealerInventorySync({
   const [addForm, setAddForm] = useState<Partial<CsvRow>>({});
   const [addSaving, setAddSaving] = useState(false);
 
+  // Pool settings state
+  interface PoolCar {
+    id: string;
+    marke: string;
+    modell: string;
+    ar: number;
+    regnummer: string | null;
+    startbud: number | null;
+    available_for_staff_sales: boolean;
+    pool_status: string | null;
+    pool_prisgolv: number | null;
+    pool_lagerkostnad_per_dag: number | null;
+    pool_prioritet: string | null;
+  }
+  const [poolCars, setPoolCars] = useState<PoolCar[]>([]);
+  const [poolLoading, setPoolLoading] = useState(false);
+  const [poolSaving, setPoolSaving] = useState<string | null>(null);
+
   const navItems = [
     { icon: <Gauge className="w-4 h-4" />, label: 'Oversikt', onClick: onNavigateOverview },
     { icon: <Car className="w-4 h-4" />, label: 'Leads', onClick: onNavigateCars },
@@ -123,6 +141,10 @@ export default function DealerInventorySync({
   ];
 
   useEffect(() => { loadInventory(); }, []);
+
+  useEffect(() => {
+    if (tab === 'bytesavdelning') loadPoolCars();
+  }, [tab]);
 
   async function loadInventory() {
     setLoading(true);
@@ -134,6 +156,34 @@ export default function DealerInventorySync({
     if (err) setError('Kunde inte ladda lager.');
     else setInventory(data ?? []);
     setLoading(false);
+  }
+
+  async function loadPoolCars() {
+    setPoolLoading(true);
+    const { data } = await supabase
+      .from('cars')
+      .select('id, marke, modell, ar, regnummer, startbud, available_for_staff_sales, pool_status, pool_prisgolv, pool_lagerkostnad_per_dag, pool_prioritet')
+      .eq('dealer_id', dealerId)
+      .order('created_at', { ascending: false });
+    setPoolCars((data ?? []) as unknown as PoolCar[]);
+    setPoolLoading(false);
+  }
+
+  async function togglePoolCar(carId: string, enabled: boolean) {
+    setPoolSaving(carId);
+    await supabase.from('cars').update({
+      available_for_staff_sales: enabled,
+      pool_status: enabled ? 'available' : null,
+    }).eq('id', carId);
+    setPoolCars(prev => prev.map(c => c.id === carId ? { ...c, available_for_staff_sales: enabled, pool_status: enabled ? 'available' : null } : c));
+    setPoolSaving(null);
+  }
+
+  async function savePoolField(carId: string, field: string, value: number | string | null) {
+    setPoolSaving(carId);
+    await supabase.from('cars').update({ [field]: value }).eq('id', carId);
+    setPoolCars(prev => prev.map(c => c.id === carId ? { ...c, [field]: value } : c));
+    setPoolSaving(null);
   }
 
   // ── CSV parsing ─────────────────────────────────────────────────────────────
@@ -411,12 +461,13 @@ export default function DealerInventorySync({
 
         {/* Tabs */}
         <div className="flex border-b border-slate-200 bg-white rounded-t-xl overflow-hidden">
-          {(['lager', 'import', 'matchning'] as Tab[]).map((t) => {
-            const labels: Record<Tab, string> = { lager: 'Lager', import: 'CSV-import', matchning: 'Leadmatchning' };
+          {(['lager', 'import', 'matchning', 'bytesavdelning'] as Tab[]).map((t) => {
+            const labels: Record<Tab, string> = { lager: 'Lager', import: 'CSV-import', matchning: 'Leadmatchning', bytesavdelning: 'Bytesavdelning' };
             const icons: Record<Tab, React.ReactNode> = {
               lager: <Package className="w-4 h-4" />,
               import: <Upload className="w-4 h-4" />,
               matchning: <Target className="w-4 h-4" />,
+              bytesavdelning: <Share2 className="w-4 h-4" />,
             };
             return (
               <button
@@ -852,6 +903,116 @@ export default function DealerInventorySync({
                   })}
                 </div>
               )
+            )}
+          </div>
+        )}
+
+        {/* ── TAB: BYTESAVDELNING ── */}
+        {tab === 'bytesavdelning' && (
+          <div className="space-y-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
+              <Share2 className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-blue-900">Nätverkslager – Bytesavdelningen</p>
+                <p className="text-xs text-blue-700 mt-0.5 leading-relaxed">
+                  Aktivera bilar för att göra dem synliga för Bilspara-teamets säljare. De kan sälja bilen åt dig via bytesaffärer.
+                </p>
+              </div>
+            </div>
+
+            {poolLoading ? (
+              <div className="flex items-center justify-center h-48">
+                <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+              </div>
+            ) : poolCars.length === 0 ? (
+              <div className="text-center py-12 bg-white rounded-xl border border-slate-200">
+                <Share2 className="w-10 h-10 mx-auto mb-3 text-slate-200" />
+                <p className="text-sm text-slate-400">Inga bilar hittades i ditt lager.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {poolCars.map(car => {
+                  const enabled = car.available_for_staff_sales;
+                  const saving = poolSaving === car.id;
+                  return (
+                    <div
+                      key={car.id}
+                      className="bg-white rounded-xl border p-5 transition"
+                      style={{ borderColor: enabled ? '#BBF7D0' : '#E5E7EB' }}
+                    >
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <div>
+                          <div className="text-sm font-bold text-slate-900">
+                            {car.marke} {car.modell} {car.ar}
+                            {car.regnummer && (
+                              <span className="ml-2 text-xs font-mono text-slate-400">{car.regnummer}</span>
+                            )}
+                          </div>
+                          {car.startbud != null && (
+                            <div className="text-xs text-slate-400 mt-0.5">Utpris: {car.startbud.toLocaleString('sv-SE')} kr</div>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => togglePoolCar(car.id, !enabled)}
+                          disabled={saving}
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border-2 transition shrink-0"
+                          style={{
+                            borderColor: enabled ? '#00A85A' : '#E5E7EB',
+                            background: enabled ? '#F0FDF4' : 'white',
+                            color: enabled ? '#00A85A' : '#9CA3AF',
+                          }}
+                        >
+                          {saving ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : enabled ? (
+                            <ToggleRight className="w-4 h-4" />
+                          ) : (
+                            <ToggleLeft className="w-4 h-4" />
+                          )}
+                          {enabled ? 'Aktiv' : 'Inaktiv'}
+                        </button>
+                      </div>
+
+                      {enabled && (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100">
+                          <div>
+                            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Prisgolv (kr)</label>
+                            <input
+                              type="number"
+                              defaultValue={car.pool_prisgolv ?? ''}
+                              onBlur={e => savePoolField(car.id, 'pool_prisgolv', e.target.value ? parseInt(e.target.value, 10) : null)}
+                              placeholder="t.ex. 140000"
+                              className="w-full h-8 px-2 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-blue-400"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Lagerkostnad/dag (kr)</label>
+                            <input
+                              type="number"
+                              defaultValue={car.pool_lagerkostnad_per_dag ?? ''}
+                              onBlur={e => savePoolField(car.id, 'pool_lagerkostnad_per_dag', e.target.value ? parseInt(e.target.value, 10) : null)}
+                              placeholder="t.ex. 150"
+                              className="w-full h-8 px-2 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-blue-400"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Prioritet</label>
+                            <select
+                              value={car.pool_prioritet ?? 'normal'}
+                              onChange={e => savePoolField(car.id, 'pool_prioritet', e.target.value)}
+                              className="w-full h-8 px-2 rounded-lg border border-slate-200 text-xs bg-white focus:outline-none"
+                            >
+                              <option value="normal">Normal</option>
+                              <option value="high">Hög</option>
+                              <option value="urgent">Bråttom</option>
+                            </select>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
         )}

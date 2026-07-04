@@ -5,6 +5,7 @@ import type { Session } from '@supabase/supabase-js';
 import { slugToCity, slugToBrand } from './lib/seo-pages';
 import { slugToTopic } from './lib/seo-topics';
 import ConsultationDrawer from './components/ConsultationDrawer';
+import { useStaffAuth } from './hooks/useStaffAuth';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
@@ -60,6 +61,19 @@ const DealerStats = lazy(() => import('./pages/DealerStats'));
 const DealerProfile = lazy(() => import('./pages/DealerProfile'));
 const DealerIntegrationer = lazy(() => import('./pages/DealerIntegrationer'));
 const DealerValuationLeads = lazy(() => import('./pages/DealerValuationLeads'));
+const DealerApprovals = lazy(() => import('./pages/DealerApprovals'));
+
+// Staff portal
+const StaffLogin = lazy(() => import('./pages/StaffLogin'));
+const StaffOverview = lazy(() => import('./pages/StaffOverview'));
+const StaffPool = lazy(() => import('./pages/StaffPool'));
+const StaffDealsList = lazy(() => import('./pages/StaffDealsList'));
+const StaffDealDetail = lazy(() => import('./pages/StaffDealDetail'));
+const StaffNewDeal = lazy(() => import('./pages/StaffNewDeal'));
+const StaffValuations = lazy(() => import('./pages/StaffValuations'));
+const StaffNewValuation = lazy(() => import('./pages/StaffNewValuation'));
+const StaffTasks = lazy(() => import('./pages/StaffTasks'));
+const StaffUsers = lazy(() => import('./pages/StaffUsers'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -113,6 +127,11 @@ function matchAdminOfferNew(path: string): string | null {
 
 function matchDealerCarDetail(path: string): string | null {
   const m = path.match(/^\/handlare\/bilar\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchStaffDealDetail(path: string): string | null {
+  const m = path.match(/^\/staff\/affarer\/([^/]+)\/?$/);
   return m ? decodeURIComponent(m[1]) : null;
 }
 
@@ -275,7 +294,10 @@ function App() {
     path === '/handlare/statistik' ||
     path === '/handlare/integrationer' ||
     path === '/handlare/profil' ||
+    path === '/handlare/godkannanden' ||
     matchDealerCarDetail(path) !== null;
+
+  const onStaffApp = path.startsWith('/staff');
 
   const myCarToken = matchMyCar(path);
   if (myCarToken) {
@@ -372,6 +394,30 @@ function App() {
           userId={session.user.id}
           path={path}
           onLoggedOut={() => { sessionStorage.removeItem('bilto_portal'); navigate('/handlare/logga-in'); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (onStaffApp) {
+    if (authLoading) return <PageLoader />;
+    if (path === '/staff' || path === '/staff/logga-in') {
+      if (!session) {
+        return (
+          <Suspense fallback={<PageLoader />}>
+            <StaffLogin onLoggedIn={() => navigate('/staff/oversikt')} onBack={() => navigate('/')} />
+          </Suspense>
+        );
+      }
+      navigate('/staff/oversikt');
+      return null;
+    }
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <StaffArea
+          userId={session?.user?.id ?? null}
+          path={path}
+          onLoggedOut={() => { sessionStorage.removeItem('bilto_portal'); navigate('/staff/logga-in'); }}
         />
       </Suspense>
     );
@@ -1147,6 +1193,16 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
     return null;
   }
 
+  if (path === '/handlare/godkannanden') {
+    return (
+      <DealerApprovals
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
   return (
     <DealerCarsList
       dealerId={dealer.id}
@@ -1162,3 +1218,118 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
 }
 
 export default App;
+
+// ── Staff area ──────────────────────────────────────────────────────────────
+
+interface StaffAreaProps {
+  userId: string | null;
+  path: string;
+  onLoggedOut: () => void;
+}
+
+function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
+  const { staffUser, loading } = useStaffAuth();
+
+  if (loading) return <PageLoader />;
+  if (!staffUser || !userId) {
+    navigate('/staff/logga-in');
+    return null;
+  }
+
+  const dealDetailId = matchStaffDealDetail(path);
+  if (dealDetailId) {
+    return (
+      <StaffDealDetail
+        staffUser={staffUser}
+        dealId={dealDetailId}
+        onLoggedOut={onLoggedOut}
+        onBack={() => navigate('/staff/affarer')}
+      />
+    );
+  }
+
+  if (path === '/staff/affarer/ny') {
+    const newDealParams = new URLSearchParams(window.location.search);
+    const initialCarId = newDealParams.get('carId') ?? undefined;
+    return (
+      <StaffNewDeal
+        staffUser={staffUser}
+        onLoggedOut={onLoggedOut}
+        onCreated={(id) => navigate(`/staff/affarer/${id}`)}
+        onBack={() => navigate('/staff/affarer')}
+        initialCarId={initialCarId}
+      />
+    );
+  }
+
+  if (path === '/staff/affarer') {
+    return (
+      <StaffDealsList
+        staffUser={staffUser}
+        onLoggedOut={onLoggedOut}
+        onOpenDeal={(id) => navigate(`/staff/affarer/${id}`)}
+        onNewDeal={() => navigate('/staff/affarer/ny')}
+      />
+    );
+  }
+
+  if (path === '/staff/varderingar/ny') {
+    return (
+      <StaffNewValuation
+        staffUser={staffUser}
+        onLoggedOut={onLoggedOut}
+        onCreated={() => navigate('/staff/varderingar')}
+        onCancel={() => navigate('/staff/varderingar')}
+      />
+    );
+  }
+
+  if (path === '/staff/varderingar') {
+    return (
+      <StaffValuations
+        staffUser={staffUser}
+        onLoggedOut={onLoggedOut}
+        onNewValuation={() => navigate('/staff/varderingar/ny')}
+        onOpenValuation={(id) => navigate(`/staff/varderingar/${id}`)}
+      />
+    );
+  }
+
+  if (path === '/staff/lager') {
+    return (
+      <StaffPool
+        staffUser={staffUser}
+        onLoggedOut={onLoggedOut}
+        onCreateDeal={(carId) => navigate(`/staff/affarer/ny?carId=${carId}`)}
+      />
+    );
+  }
+
+  if (path === '/staff/uppgifter') {
+    return (
+      <StaffTasks
+        staffUser={staffUser}
+        onLoggedOut={onLoggedOut}
+        onOpenDeal={(id) => navigate(`/staff/affarer/${id}`)}
+      />
+    );
+  }
+
+  if (path === '/staff/anvandare' && staffUser.role === 'teamlead') {
+    return (
+      <StaffUsers
+        staffUser={staffUser}
+        onLoggedOut={onLoggedOut}
+      />
+    );
+  }
+
+  // Default: overview
+  return (
+    <StaffOverview
+      staffUser={staffUser}
+      onLoggedOut={onLoggedOut}
+      onNavigate={(p) => navigate(p)}
+    />
+  );
+}
