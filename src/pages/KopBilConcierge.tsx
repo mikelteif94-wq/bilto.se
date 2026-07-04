@@ -251,37 +251,6 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
         </div>
       </section>
 
-      {/* ── Expert trust bar ── */}
-      <section className="bg-white border-b border-slate-100 py-8 sm:py-10 px-5 sm:px-8">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
-          <div className="relative shrink-0">
-            <img
-              src={EXPERT_PHOTO}
-              alt={EXPERT_NAME}
-              className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover object-top border-4 border-[#0e6efe]/10 shadow-md"
-            />
-            <span className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white" />
-          </div>
-          <div className="text-center sm:text-left">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#0e6efe] mb-1">Expert tillgänglig</p>
-            <p className="text-[20px] sm:text-[24px] font-bold text-slate-900 leading-tight">
-              Din personliga bilrådgivare – från start till nyckel
-            </p>
-            <p className="text-[14px] sm:text-[15px] text-slate-500 mt-1.5 leading-relaxed max-w-lg">
-              Vi tar kontakt inom en arbetsdag. Ingen robot, ingen callcenter – en riktig expert som känner till marknaden.
-            </p>
-          </div>
-          <div className="shrink-0 sm:ml-auto flex flex-col gap-2 items-center sm:items-end">
-            <div className="flex gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-              ))}
-            </div>
-            <p className="text-[12px] text-slate-400 text-center sm:text-right">4.9 / 5 från 200+ kunder</p>
-          </div>
-        </div>
-      </section>
-
       {/* ── How it works ── */}
       <section className="py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-5xl mx-auto">
@@ -418,79 +387,6 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 text-[13px] sm:text-[14px] font-medium shadow-sm">
               <Users className="w-4 h-4 text-slate-400 shrink-0" />
               +3 ytterligare experter i teamet
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Priser & Vad du sparar ── */}
-      <section className="py-16 sm:py-24 px-5 sm:px-8 bg-white border-y border-slate-100">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12 sm:mb-16">
-            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
-              Priser & besparing
-            </span>
-            <h2 className="text-[28px] sm:text-[44px] font-bold leading-[1.1] text-slate-900 tracking-tight">
-              Vad kostar det – och vad sparar du?
-            </h2>
-            <p className="text-slate-500 mt-4 text-[15px] sm:text-[17px] max-w-xl mx-auto leading-relaxed">
-              Vår tjänst är gratis att påbörja. Du betalar bara ett fast arvode om vi hittar din bil och affären går i lås – och vi förhandlar nästan alltid hem mer än det.
-            </p>
-          </div>
-
-          {/* Pricing card + savings examples */}
-          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-start">
-
-            {/* Pricing card */}
-            <div className="rounded-2xl border-2 border-[#0e6efe]/20 bg-[#0e6efe]/[0.03] p-7 sm:p-8">
-              <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#0e6efe] mb-4">Vår prislista</p>
-              <div className="space-y-4">
-                {[
-                  { label: 'Starta sökning', price: 'Kostnadsfritt', desc: 'Berätta vad du söker – ingen bindning' },
-                  { label: 'Rådgivning & bilmatch', price: 'Kostnadsfritt', desc: 'Vi hjälper dig jämföra och välja' },
-                  { label: 'Förhandling & köp', price: '1 995 kr', desc: 'Fast arvode – betalas bara om affären blir av' },
-                ].map(item => (
-                  <div key={item.label} className="flex items-start justify-between gap-4 pb-4 border-b border-slate-200 last:border-0 last:pb-0">
-                    <div>
-                      <p className="text-[14px] sm:text-[15px] font-semibold text-slate-900">{item.label}</p>
-                      <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5">{item.desc}</p>
-                    </div>
-                    <span className="shrink-0 text-[14px] sm:text-[15px] font-bold text-[#0e6efe] text-right">{item.price}</span>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-5 text-[12px] text-slate-400">* Arvodet är avdragsgillt för företag.</p>
-            </div>
-
-            {/* Savings examples */}
-            <div className="space-y-4">
-              <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400 mb-2">Verkliga exempel – vad kunder sparat</p>
-              {[
-                { car: 'Tesla Model Y Long Range', year: '2023', listPrice: 529_900, paidPrice: 489_000, saved: 40_900 },
-                { car: 'Volvo XC60 T6 AWD', year: '2022', listPrice: 398_000, paidPrice: 365_000, saved: 33_000 },
-                { car: 'BMW 3-serie 320i', year: '2021', listPrice: 289_000, paidPrice: 263_000, saved: 26_000 },
-              ].map(ex => (
-                <div key={ex.car} className="bg-[#faf8f5] rounded-xl p-4 sm:p-5 border border-slate-200">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-[14px] sm:text-[15px] font-semibold text-slate-900">{ex.car} {ex.year}</p>
-                      <p className="text-[12px] text-slate-400 mt-0.5">
-                        Utropspris {ex.listPrice.toLocaleString('sv-SE')} kr → förhandlat {ex.paidPrice.toLocaleString('sv-SE')} kr
-                      </p>
-                    </div>
-                    <div className="shrink-0 text-right">
-                      <div className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-[13px] font-bold px-3 py-1 rounded-full">
-                        <TrendingDown className="w-3.5 h-3.5" />
-                        -{ex.saved.toLocaleString('sv-SE')} kr
-                      </div>
-                      <p className="text-[11px] text-slate-400 mt-1">
-                        {Math.round((ex.saved / ex.listPrice) * 100)}% under listpris
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <p className="text-[12px] text-slate-400 px-1">Genomsnittlig besparing: 28 000 kr per affär. Arvodet är 1 995 kr.</p>
             </div>
           </div>
         </div>

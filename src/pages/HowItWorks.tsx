@@ -738,7 +738,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
-                    Bilar våra experter rekommenderar just nu
+                    Bilar vår expert rekommenderar just nu
                   </h2>
                   <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
                     Handplockade modeller med bäst balans mellan pris, driftskostnad och tillförlitlighet. Berätta vad du söker – vi förhandlar priset.
@@ -851,24 +851,23 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      {/* ── Köp & byte ──────────────────────── */}
+      {/* ── Din personliga rådgivare ──────────────────────── */}
       <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
-              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Köp &amp; byte</p>
+              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Personlig service</p>
               <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
-                Ska du köpa eller byta bil?
+                Din personliga rådgivare
               </h2>
               <p className="text-slate-500 mt-4 text-[15px] leading-[1.65]">
-                Din personliga bilmäklare hjälper dig hela vägen – oavsett om du letar efter en ny bil, redan hittat en eller vill byta in din nuvarande.
+                En dedikerad expert hanterar hela processen – från att inhämta bud till att presentera det bästa erbjudandet. Du slipper telefonsamtal från handlare och onödiga förhandlingar.
               </p>
               <ul className="mt-6 space-y-3">
                 {[
-                  'En dedikerad bilmäklare på din sida',
-                  'Vi granskar pris, villkor och avtal åt dig',
-                  'Du betalar bara om affären går i lås',
-                  'Fungerar vid köp, byte och leasing',
+                  'Samma kontaktperson hela vägen',
+                  'Inga samtal från okända handlare',
+                  'Vi förhandlar och sköter all kontakt åt dig',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[14px] text-slate-700">
                     <Check className="w-4 h-4 mt-0.5 text-emerald-500 shrink-0" strokeWidth={2.5} />
@@ -880,7 +879,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <div className="relative rounded-xl overflow-hidden aspect-square max-w-[480px] mx-auto w-full">
               <img
                 src="/13ccde8b-copy-copy.png"
-                alt="Bilmäklare hjälper kund"
+                alt="Personlig rådgivare framför kund-bil"
                 className="w-full h-full object-cover"
                 loading="lazy"
                 decoding="async"
