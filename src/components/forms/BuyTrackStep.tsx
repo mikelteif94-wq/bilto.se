@@ -87,21 +87,21 @@ export default function BuyTrackStep({ initialBil, onChoose, onGuidance }: BuyTr
       <OptionButton
         icon={Handshake}
         title={initialBil ? `Jag har hittat en ${initialBil}` : 'Jag har hittat en bil'}
-        sub="Vi förhandlar med säljaren åt dig och pressar priset."
+        sub="Låt oss förhandla och granska åt dig."
         onClick={() => onChoose('found')}
       />
 
       <OptionButton
         icon={Search}
-        title={initialBil ? `Jag letar efter en ${initialBil}` : 'Jag söker en bil'}
-        sub="Vi hittar, kollar och förhandlar åt dig."
+        title={initialBil ? `Jag letar efter en ${initialBil}` : 'Jag letar efter bil'}
+        sub="Utforska, jämför eller testa bilmatch."
         onClick={() => initialBil ? onChoose('know') : setMainChoice('searching')}
       />
 
       <OptionButton
         icon={ArrowLeftRight}
-        title="Jag vill byta in"
-        sub="Vi sköter inbytet och hjälper dig hitta ny bil."
+        title="Jag vill byta bil"
+        sub="Vi hittar och förhandlar nästa bil åt dig."
         onClick={() => onChoose('trade')}
       />
 
