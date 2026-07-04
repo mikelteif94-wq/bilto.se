@@ -135,7 +135,7 @@ function SavingsInfoBox() {
             <Banknote className="w-4.5 h-4.5 text-white" strokeWidth={1.8} />
           </div>
           <p className="text-[14px] sm:text-[15px] font-semibold text-slate-900 leading-snug">
-            Spara <span className="text-[#0e6efe]">15 000 kr eller mer</span> på din nästa bil
+            Så räknar vi ut din besparing
             <span className="ml-2 text-[12px] font-normal text-slate-400 group-hover:text-[#0e6efe] transition-colors">
               {open ? 'Dölj' : 'Läs mer'}
             </span>
@@ -147,7 +147,7 @@ function SavingsInfoBox() {
       {open && (
         <div className="px-5 sm:px-7 pb-6 border-t border-[#0e6efe]/10">
           <p className="text-[13px] sm:text-[14px] text-slate-600 leading-relaxed mt-4 mb-5">
-            Oavsett om du leasar eller köper kontaktar Biltos experter handlarna åt dig, förhandlar bästa priset och hanterar varje steg – du sparar tid och pengar. Så räknar vi ut din totala besparing:
+            Vi räknar alltid in tre delar när vi utvärderar vad du faktiskt sparar. Hur mycket det blir beror på bil, handlare och finansiering – men det är dessa poster vi aktivt arbetar med:
           </p>
           <div className="space-y-3">
             {SAVINGS_ITEMS.map((item) => (
@@ -161,10 +161,10 @@ function SavingsInfoBox() {
             ))}
           </div>
           <div className="mt-4 flex items-center justify-between bg-[#0e6efe] rounded-xl px-4 py-3 text-white">
-            <span className="text-[13px] font-semibold">Total genomsnittlig besparing</span>
+            <span className="text-[13px] font-semibold">Typisk total besparing per affär</span>
             <span className="text-[15px] font-bold">13 000–22 000 kr</span>
           </div>
-          <p className="mt-3 text-[11px] text-slate-400 leading-snug">Biltos avgift är 1 995 kr och betalas endast om affären faktiskt blir av.</p>
+          <p className="mt-3 text-[11px] text-slate-400 leading-snug">Baserat på genomsnitt från genomförda affärer. Biltos avgift är 1 995 kr och betalas endast om affären faktiskt blir av.</p>
         </div>
       )}
     </div>
@@ -336,7 +336,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       {/* ── How it works ── */}
       <section className="py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-12 sm:mb-14">
+          <div className="mb-12 sm:mb-14 text-center">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Processen
             </span>
