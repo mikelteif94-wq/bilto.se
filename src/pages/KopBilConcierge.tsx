@@ -4,9 +4,7 @@ import {
   Check,
   ChevronDown,
   Phone,
-  Search,
   ShieldCheck,
-  TrendingDown,
   Handshake,
   Menu,
   Banknote,
@@ -28,47 +26,6 @@ interface KopBilConciergProps {
   onNavigateBuy: (bil?: string) => void;
   onNavigateHowItWorks: () => void;
 }
-
-interface Step {
-  icon: typeof Search;
-  title: string;
-  body: string;
-  n: string;
-}
-
-const STEPS: Step[] = [
-  {
-    n: '01',
-    title: 'Du berättar vad du söker',
-    body: 'Via ett kort formulär – märke, budget, körprofil eller bara ett behov. Tar två minuter.',
-    icon: Search,
-  },
-  {
-    n: '02',
-    title: 'En expert tar vid',
-    body: 'Vi ringer dig inom en arbetsdag, ställer rätt frågor och lägger upp ett sökkoncept anpassat för dig.',
-    icon: Phone,
-  },
-  {
-    n: '03',
-    title: 'Vi hittar och förhandlar',
-    body: 'Vår expert söker i hela marknaden, kontrollerar historik och förhandlar pris, ränta och tillval.',
-    icon: TrendingDown,
-  },
-  {
-    n: '04',
-    title: 'Du godkänner och kör',
-    body: 'Du får ett tydligt erbjudande med allt nerskrivet. Tackar du ja levereras bilen – hem om du vill.',
-    icon: Handshake,
-  },
-];
-
-const STEP_IMAGES = [
-  '/ChatGPT_Image_20_maj_2026_02_01_19.png',
-  '/13ccde8b-copy-copy.png',
-  '/e66827b0-71c5-48a7-8d91-5123f7db4a0d.png',
-  '/55e96830-06e0-436b-8559-63a5b9cf41af.png',
-];
 
 const FAQS = [
   {
@@ -145,53 +102,6 @@ function SavingsInfoBox() {
       </div>
       <div className="bg-slate-50 border-t border-slate-100 px-6 sm:px-8 py-3">
         <p className="text-[11px] text-slate-400 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
-      </div>
-    </div>
-  );
-}
-
-function StepsMobile({ steps, images }: { steps: Step[]; images: string[] }) {
-  const [active, setActive] = useState(0);
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const el = e.currentTarget;
-    const cardWidth = el.scrollWidth / steps.length;
-    const idx = Math.round(el.scrollLeft / cardWidth);
-    setActive(Math.min(Math.max(idx, 0), steps.length - 1));
-  };
-  return (
-    <div className="sm:hidden mb-10 -mx-5">
-      <div
-        className="flex overflow-x-auto snap-x snap-mandatory gap-3 px-5 pb-1"
-        style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
-        onScroll={handleScroll}
-      >
-        {steps.map((step, i) => (
-          <div key={i} className="snap-center shrink-0 w-[74vw] max-w-[300px]">
-            <div className="relative rounded-xl overflow-hidden aspect-[16/10] shadow-md">
-              <img
-                src={images[i]}
-                alt={step.title}
-                className="w-full h-full object-cover"
-                loading="lazy"
-                decoding="async"
-                width="300"
-                height="188"
-              />
-              <div className="absolute bottom-3 left-3 w-9 h-9 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg">
-                <span className="text-white text-[14px] font-bold tabular-nums">{i + 1}</span>
-              </div>
-            </div>
-            <div className="px-1 pt-4 pb-2">
-              <h3 className="text-[16px] font-bold text-slate-900 leading-tight tracking-tight mb-1.5">{step.title}</h3>
-              <p className="text-[14px] text-slate-600 leading-[1.6]">{step.body}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="flex justify-center gap-1.5 mt-2">
-        {steps.map((_, i) => (
-          <div key={i} className={`h-1.5 rounded-full transition-all duration-200 ${i === active ? 'w-5 bg-[#0e6efe]' : 'w-1.5 bg-slate-300'}`} />
-        ))}
       </div>
     </div>
   );
@@ -370,57 +280,6 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
         </div>
       </section>
 
-      {/* ── Så funkar det ── */}
-      <section className="bg-white px-4 sm:px-6 py-16 sm:py-24">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Hur det fungerar</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
-              Fyra steg – du behöver bara sitta still
-            </h2>
-          </div>
-
-          <StepsMobile steps={STEPS} images={STEP_IMAGES} />
-
-          <ol className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
-            {STEPS.map((step, i) => (
-              <li key={step.n} className="group">
-                <div className="rounded-xl overflow-hidden aspect-[16/10] mb-5 shadow-sm">
-                  <img
-                    src={STEP_IMAGES[i]}
-                    alt={step.title}
-                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-                    loading="lazy"
-                    decoding="async"
-                    width="400"
-                    height="250"
-                  />
-                </div>
-                <div className="flex items-baseline gap-2.5 mb-2">
-                  <span className="text-[13px] font-bold text-[#0e6efe] tabular-nums">{step.n}</span>
-                  <h3 className="text-[17px] sm:text-[18px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
-                    {step.title}
-                  </h3>
-                </div>
-                <p className="text-slate-500 text-[14px] leading-[1.65]">{step.body}</p>
-              </li>
-            ))}
-          </ol>
-
-          <div className="mt-12 sm:mt-14 flex flex-col items-center text-center">
-            <button
-              type="button"
-              onClick={() => onNavigateBuy()}
-              className="h-12 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] transition shadow-sm inline-flex items-center gap-2 group"
-            >
-              Skicka en förfrågan
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
-            </button>
-            <p className="mt-3 text-[13px] text-slate-400">4 995 kr – betalas bara om affären blir av.</p>
-          </div>
-        </div>
-      </section>
-
       {/* ── Expertens toppval ── */}
       <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24 border-t border-slate-100">
         <div className="max-w-5xl mx-auto">
@@ -478,6 +337,92 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 />
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Granska 50 punkter ── */}
+      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-12 sm:py-28 px-4 sm:px-6 overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8 sm:mb-16 max-w-3xl mx-auto px-2">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
+              Grundlig genomgång
+            </span>
+            <h2 className="text-[24px] sm:text-[48px] font-semibold leading-[1.15] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
+              Vi granskar varje detalj – så slipper du oroa dig
+            </h2>
+            <p className="text-slate-600 mt-4 sm:mt-6 text-[15px] sm:text-[18px] leading-[1.6] max-w-2xl mx-auto">
+              Innan vi rekommenderar en bil till dig går vi igenom fem kritiska datapunkter. Inget lämnas åt slumpen.
+            </p>
+          </div>
+
+          {/* Mobile */}
+          <div className="lg:hidden">
+            <div className="flex items-center justify-center mb-6">
+              <img
+                src="/infographic_antal_agare.svg"
+                alt="Infografik: antal ägare och bilhistorik"
+                className="w-full max-w-[340px] h-auto"
+                loading="lazy"
+                decoding="async"
+                width="340"
+                height="340"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
+                { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
+                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket.' },
+                { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
+                { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
+              ].map((point) => (
+                <div key={point.label}>
+                  <h4 className="text-[14px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[12px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop */}
+          <div className="hidden lg:grid lg:grid-cols-5 gap-12 items-center">
+            <div className="lg:col-span-1 space-y-8">
+              {[
+                { label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
+                { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
+              ].map((point) => (
+                <div key={point.label} className="text-right">
+                  <h4 className="text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="lg:col-span-3 flex items-center justify-center">
+              <img
+                src="/infographic_antal_agare.svg"
+                alt="Infografik: antal ägare och bilhistorik"
+                className="w-full max-w-[700px] h-auto"
+                loading="lazy"
+                decoding="async"
+                width="700"
+                height="700"
+              />
+            </div>
+
+            <div className="lg:col-span-1 space-y-8">
+              {[
+                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket.' },
+                { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
+                { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
+              ].map((point) => (
+                <div key={point.label}>
+                  <h4 className="text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
