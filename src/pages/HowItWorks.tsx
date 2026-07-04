@@ -388,13 +388,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         active="Sälj bil"
         onSelect={handleMenuSelect}
       />
-      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 transition-colors duration-300 bg-[#0e6efe] ${!scrolled ? 'backdrop-blur-md' : ''}`}>
+      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 transition-colors duration-300 ${scrolled ? 'bg-white ring-slate-200/70' : 'bg-white/95 ring-white/10 backdrop-blur-md'}`}>
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
             aria-label="Meny"
             onClick={() => setMenuOpen(true)}
-            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white"
+            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-slate-800"
           >
             <Menu className="w-6 h-6 text-white" strokeWidth={2} />
           </button>
@@ -408,15 +408,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Sälj bil</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Köp bil</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Om oss</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-600 font-medium transition hover:text-slate-900">Säljhjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-600 font-medium transition hover:text-slate-900">Bilköpshjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-600 font-medium transition hover:text-slate-900">Om oss</button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
               href="/gratis-konsultation"
               onMouseEnter={() => { import('../pages/FreeConsultationPage'); import('../pages/KopBilConcierge'); }}
-              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center bg-[#0e6efe] text-white text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-[#0a57cc] transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
@@ -438,11 +438,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
         <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
           <div className="w-full max-w-md">
-            <h1 className="text-white text-[clamp(22px,6.5vw,50px)] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2 whitespace-nowrap">
-              Sälj, köp eller byt bil
+            <h1 className="text-white text-[clamp(20px,6vw,46px)] font-bold leading-[1.1] tracking-tight text-center drop-shadow-lg mb-2">
+              {seoSlug === 'salj-bil'
+                ? 'Säljhjälpen – vi tar in buden, du väljer det bästa.'
+                : 'En bilexpert på din sida – när du säljer, köper eller byter.'}
             </h1>
             <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
-              Gratis värdering • Fri upphämtning • Pengar direkt på kontot
+              {seoSlug === 'salj-bil'
+                ? 'Vi värderar, förhandlar och granskar åt dig. Du bestämmer – fast pris, bara vid affär.'
+                : 'Vi värderar, förhandlar och granskar åt dig. Du bestämmer – fast pris, bara vid affär.'}
             </p>
 
             <div className="bg-white rounded-xl shadow-2xl overflow-visible">
@@ -608,7 +612,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
             <div className="flex items-center justify-center gap-1.5 mt-5">
               <ShieldCheck className="w-4 h-4 text-white/70 shrink-0" />
-              <p className="text-white/70 text-[13px] drop-shadow text-center">Certifierade handlare · Fri upphämtning · Pengarna direkt</p>
+              <p className="text-white/70 text-[13px] drop-shadow text-center">Kostnadsfritt och utan förpliktelser</p>
             </div>
           </div>
         </div>

@@ -299,15 +299,19 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
   const [sort, setSort] = useState<SortKey>('savings');
   const [search, setSearch] = useState('');
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Köp bil', 'Om oss'];
+  const navItems: { id: MobileMenuItem; label: string }[] = [
+    { id: 'Sälj bil', label: 'Säljhjälpen' },
+    { id: 'Köp bil', label: 'Bilköpshjälpen' },
+    { id: 'Om oss', label: 'Om oss' },
+  ];
 
-  const handleMenuSelect = (item: MobileMenuItem) => {
+  const handleMenuSelect = (id: MobileMenuItem) => {
     setMenuOpen(false);
     const routes: Partial<Record<MobileMenuItem, string>> = {
       'Köp bil': '/kop-bil',
       'Om oss': '/om-oss',
     };
-    const route = routes[item];
+    const route = routes[id];
     if (route) {
       window.history.pushState({}, '', route);
       window.dispatchEvent(new PopStateEvent('popstate'));
@@ -443,15 +447,15 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
       <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} onSelect={handleMenuSelect} />
 
       {/* Standard Bilto floating pill header */}
-      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-slate-200/70 bg-white">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-4 sm:px-5 lg:px-8">
-          <button type="button" aria-label="Meny" onClick={() => setMenuOpen(true)} className="lg:hidden -ml-1 w-11 h-11 flex items-center justify-center text-white">
-            <Menu className="w-6 h-6 text-white" strokeWidth={2} />
+          <button type="button" aria-label="Meny" onClick={() => setMenuOpen(true)} className="lg:hidden -ml-1 w-11 h-11 flex items-center justify-center text-slate-800">
+            <Menu className="w-6 h-6 text-slate-800" strokeWidth={2} />
           </button>
           <button onClick={onBackHome} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center gap-2">
             <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
             <span className="hidden lg:flex items-center gap-1.5">
-              <span className="text-white/40 text-[13px] font-medium">/</span>
+              <span className="text-slate-400 text-[13px] font-medium">/</span>
               <span
                 className="text-[13px] font-bold px-2 py-0.5 rounded"
                 style={{ fontFamily: '"Anton", "Impact", sans-serif', background: '#FFD500', color: '#0E1B33', letterSpacing: '0.02em' }}
@@ -461,18 +465,18 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
             </span>
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            {navItems.map(item => (
-              <button key={item} type="button" onClick={() => handleMenuSelect(item)} className="text-[15px] text-white/90 hover:text-white transition">
-                {item}
+            {navItems.map(({ id, label }) => (
+              <button key={id} type="button" onClick={() => handleMenuSelect(id)} className="text-[15px] text-slate-600 hover:text-slate-900 transition">
+                {label}
               </button>
             ))}
           </nav>
           <div className="flex items-center gap-3 ml-auto">
-            <div className="hidden lg:flex items-center gap-1.5 text-[12px] font-semibold text-white/70">
+            <div className="hidden lg:flex items-center gap-1.5 text-[12px] font-semibold text-slate-600">
               <span className="w-2 h-2 rounded-full bg-[#00A85A] animate-pulse" />
               {loading ? '...' : filtered.length} aktiva klipp
             </div>
-            <a href="/gratis-konsultation" className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
+            <a href="/gratis-konsultation" className="inline-flex items-center bg-[#0e6efe] text-white text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-[#0a57cc] transition whitespace-nowrap">
               Kostnadsfri konsultation
             </a>
           </div>

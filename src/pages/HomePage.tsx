@@ -262,7 +262,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
               }}
               className={`text-[15px] font-semibold transition ${scrolled ? 'text-slate-900' : 'text-white'}`}
             >
-              Sälj bil
+              Säljhjälpen
             </button>
             <a
               href="/sa-funkar-det"
@@ -307,30 +307,14 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1a]/20 via-transparent to-[#0a0f1a]" />
 
         <div className="relative z-10 flex flex-col items-center justify-center text-center px-5 pt-24 pb-0" style={{ minHeight: '100svh' }}>
-          {/* Social proof pill */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl border border-white/15 bg-white/8 backdrop-blur-md text-[13px] font-medium text-white/80 mb-8">
-            <div className="flex gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-              ))}
-            </div>
-            <span>4.9 – Över 2 400 nöjda kunder</span>
-          </div>
-
           {/* Main headline */}
-          <h1 className="font-black leading-[0.9] tracking-[-0.03em] text-white mb-6"
-            style={{ fontSize: 'clamp(3rem, 8vw, 6.5rem)' }}>
-            {heroTab === 'hitta'
-              ? <>Hitta din<br />drömvagn.</>
-              : <>Sälj bilen.<br />Bästa pris.</>
-            }
+          <h1 className="font-black leading-[1.0] tracking-[-0.03em] text-white mb-6"
+            style={{ fontSize: 'clamp(2.2rem, 6vw, 5rem)' }}>
+            En bilexpert på din sida – när du säljer, köper eller byter.
           </h1>
 
-          <p className="text-white/55 text-[17px] sm:text-[20px] font-normal max-w-md leading-relaxed mb-12">
-            {heroTab === 'hitta'
-              ? 'Din personliga bilexpert hittar rätt bil och förhandlar priset – utan stress.'
-              : 'Jämför bud från hundratals certifierade handlare på 48 timmar.'
-            }
+          <p className="text-white/65 text-[16px] sm:text-[19px] font-normal max-w-lg leading-relaxed mb-12">
+            Vi värderar, förhandlar och granskar åt dig. Du bestämmer – fast pris, bara vid affär.
           </p>
 
           {/* Action card */}

@@ -1085,31 +1085,31 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   return (
     <div className="min-h-screen bg-[#faf8f5]">
       {/* Navbar */}
-      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-30 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 transition-colors duration-300 ${scrolled ? 'bg-[#0e6efe]' : 'bg-[#0e6efe]/40 backdrop-blur-md'}`}>
+      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-30 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 transition-colors duration-300 ${scrolled ? 'bg-white ring-slate-200/70' : 'bg-white/95 ring-white/10 backdrop-blur-md'}`}>
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
-          <button type="button" aria-label="Meny" onClick={() => setMenuOpen(true)} className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white">
-            <Menu className="w-6 h-6 text-white" strokeWidth={2} />
+          <button type="button" aria-label="Meny" onClick={() => setMenuOpen(true)} className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-slate-800">
+            <Menu className="w-6 h-6 text-slate-800" strokeWidth={2} />
           </button>
           <button onClick={onBackHome} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center">
             <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             <button type="button" onClick={() => handleNavSelect('Sälj bil')}
-              className="text-[15px] text-white/70 hover:text-white transition font-medium"
+              className="text-[15px] text-slate-600 hover:text-slate-900 transition font-medium"
             >
-              Sälj bil
+              Säljhjälpen
             </button>
-            <span className="text-[15px] text-white font-bold underline underline-offset-4 decoration-white/50">
-              Köp bil
+            <span className="text-[15px] text-[#0e6efe] font-semibold">
+              Bilköpshjälpen
             </span>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-              className="text-[15px] text-white/70 hover:text-white transition font-medium"
+              className="text-[15px] text-slate-600 hover:text-slate-900 transition font-medium"
             >
               Om oss
             </button>
           </nav>
           <div className="flex items-center ml-auto">
-            <a href="/gratis-konsultation" className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
+            <a href="/gratis-konsultation" className="inline-flex items-center bg-[#0e6efe] text-white text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-[#0a57cc] transition whitespace-nowrap">
               Kostnadsfri konsultation
             </a>
           </div>
@@ -1138,11 +1138,11 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         {/* Hero content */}
         <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-36 pb-10 px-5 sm:px-8">
           <div className="w-full max-w-md sm:max-w-lg">
-            <h1 className="text-white text-[clamp(26px,4vw,52px)] font-bold leading-[1.15] tracking-tight text-center drop-shadow-lg mb-4 sm:mb-5">
-              {heroTitle ?? 'Hitta drömbilen – spara tid och pengar'}
+            <h1 className="text-white text-[clamp(24px,4vw,50px)] font-bold leading-[1.15] tracking-tight text-center drop-shadow-lg mb-4 sm:mb-5">
+              {heroTitle ?? 'Bilköpshjälpen – vi förhandlar, du bestämmer.'}
             </h1>
             <p className="text-white/80 text-center text-[15px] sm:text-[17px] leading-relaxed mb-8 sm:mb-10 drop-shadow">
-              {heroSubtitle ?? 'Experthjälp • Vi förhandlar • Betala bara vid affär'}
+              {heroSubtitle ?? 'Vi kontaktar säljaren, förhandlar priset och granskar bilen åt dig. Betala bara vid affär.'}
             </p>
 
             <p className="text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-3 text-center">
