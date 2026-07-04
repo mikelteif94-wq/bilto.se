@@ -261,28 +261,26 @@ export default function BuyCarPage({
       )}
 
       {step === 'track' && (
-        <section className="bg-[#0e6efe] px-4 sm:px-6 pt-[calc(69px+48px)] sm:pt-[calc(80px+56px)] pb-14 sm:pb-20">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 bg-white/15 text-white text-[11px] font-bold uppercase tracking-[0.18em] px-4 py-1.5 rounded-full mb-6">
-              Bilköpshjälpen
-            </div>
-            <h1 className="text-[32px] sm:text-[52px] lg:text-[60px] font-bold text-white leading-[1.04] tracking-[-0.025em]">
+        <section className="bg-[#0e6efe] px-4 sm:px-6 pt-[calc(69px+56px)] sm:pt-[calc(80px+64px)] pb-16 sm:pb-24">
+          <div className="max-w-3xl mx-auto">
+            <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-4">Bilköpshjälpen</p>
+            <h1 className="text-[28px] sm:text-[46px] font-bold text-white leading-[1.08] tracking-[-0.02em] max-w-2xl">
               Spara 15&nbsp;000&nbsp;kr eller mer på din nästa bil
             </h1>
-            <p className="mt-5 text-white/80 text-[16px] sm:text-[19px] leading-[1.65] max-w-2xl mx-auto">
+            <p className="mt-5 text-white/75 text-[15px] sm:text-[17px] leading-[1.65] max-w-xl">
               Oavsett om du leasar eller köper kontaktar Biltos experter handlarna åt dig, förhandlar bästa priset och hanterar varje steg – du sparar tid och pengar.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <a
                 href="#kom-igang"
                 onClick={(e) => { e.preventDefault(); document.getElementById('kom-igang')?.scrollIntoView({ behavior: 'smooth' }); }}
-                className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg"
+                className="inline-flex items-center gap-2 h-12 px-8 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg self-start"
               >
                 Kom igång
                 <ArrowRight className="w-5 h-5" />
               </a>
             </div>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2">
               {['Inga bindningar', 'Svar inom 24h', '1 995 kr om affären blir av'].map(t => (
                 <span key={t} className="flex items-center gap-1.5 text-white/70 text-[13px]">
                   <Check className="w-3.5 h-3.5 text-white/60" strokeWidth={2.5} />
@@ -412,7 +410,7 @@ export default function BuyCarPage({
                 </span>
               </div>
 
-              <h1 className="text-[22px] sm:text-2xl font-bold text-slate-900 leading-tight">
+              <h1 className="text-[22px] sm:text-[28px] font-bold text-slate-900 leading-tight tracking-[-0.02em]">
                 {titles[step]}
               </h1>
             </div>
