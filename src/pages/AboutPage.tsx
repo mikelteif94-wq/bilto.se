@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowRight, Menu, ShieldCheck, Handshake, Gauge } from 'lucide-react';
+import { Menu, ShieldCheck, Handshake, Gauge } from 'lucide-react';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
 import { setPageMeta } from '../lib/pageMeta';
@@ -301,46 +301,6 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="relative bg-[#0e6efe] overflow-hidden">
-          <div className="absolute inset-0">
-            <img
-              src="/files_2615643-2026-06-20T00-26-02-459Z-header8.jpg"
-              alt=""
-              aria-hidden="true"
-              className="w-full h-full object-cover object-center opacity-20"
-              loading="lazy"
-              decoding="async"
-              width="1200"
-              height="400"
-            />
-          </div>
-          <div className="relative max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-20 text-center">
-            <h2 className="text-[28px] sm:text-[44px] font-bold text-white leading-[1.1] tracking-tight max-w-2xl mx-auto">
-              Sälja på dina villkor? Börja här.
-            </h2>
-            <p className="mt-4 sm:mt-5 text-white/80 text-[15px] sm:text-[17px] leading-[1.7] max-w-lg mx-auto">
-              Få bud från granskade handlare på några minuter. Du väljer det bästa – vi hämtar bilen.
-            </p>
-            <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                type="button"
-                onClick={onBackHome}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-4 px-10 rounded-xl bg-white text-[#0e6efe] hover:bg-[#faf8f5] font-bold text-[16px] transition shadow-lg group"
-              >
-                Värdera bilen
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
-              </button>
-              <a
-                href="/gratis-konsultation"
-                className="w-full sm:w-auto inline-flex items-center justify-center py-4 px-10 rounded-xl border-2 border-white/50 text-white font-semibold text-[16px] hover:border-white/80 hover:bg-white/10 transition"
-              >
-                Boka konsultation
-              </a>
             </div>
           </div>
         </section>
