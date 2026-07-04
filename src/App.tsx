@@ -71,9 +71,22 @@ const StaffDealsList = lazy(() => import('./pages/StaffDealsList'));
 const StaffDealDetail = lazy(() => import('./pages/StaffDealDetail'));
 const StaffNewDeal = lazy(() => import('./pages/StaffNewDeal'));
 const StaffValuations = lazy(() => import('./pages/StaffValuations'));
+const StaffValuationDetail = lazy(() => import('./pages/StaffValuationDetail'));
 const StaffNewValuation = lazy(() => import('./pages/StaffNewValuation'));
 const StaffTasks = lazy(() => import('./pages/StaffTasks'));
 const StaffUsers = lazy(() => import('./pages/StaffUsers'));
+const StaffEarnings = lazy(() => import('./pages/StaffEarnings'));
+
+// Dealer portal (new)
+const DealerAtgarder = lazy(() => import('./pages/DealerAtgarder'));
+const DealerArenden = lazy(() => import('./pages/DealerArenden'));
+const DealerMittLager = lazy(() => import('./pages/DealerMittLager'));
+const DealerEkonomi = lazy(() => import('./pages/DealerEkonomi'));
+const DealerProvisioner = lazy(() => import('./pages/DealerProvisioner'));
+
+// Public token pages
+const BudPage = lazy(() => import('./pages/BudPage'));
+const AvtalPage = lazy(() => import('./pages/AvtalPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -132,6 +145,21 @@ function matchDealerCarDetail(path: string): string | null {
 
 function matchStaffDealDetail(path: string): string | null {
   const m = path.match(/^\/staff\/affarer\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchStaffValuationDetail(path: string): string | null {
+  const m = path.match(/^\/staff\/varderingar\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchBudToken(path: string): string | null {
+  const m = path.match(/^\/bud\/([^/]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function matchAvtalToken(path: string): string | null {
+  const m = path.match(/^\/avtal\/([^/]+)\/?$/);
   return m ? decodeURIComponent(m[1]) : null;
 }
 
@@ -302,9 +330,33 @@ function App() {
     path === '/handlare/integrationer' ||
     path === '/handlare/profil' ||
     path === '/handlare/godkannanden' ||
+    path === '/handlare/atgarder' ||
+    path === '/handlare/arenden' ||
+    path === '/handlare/mitt-lager' ||
+    path === '/handlare/ekonomi' ||
+    path === '/handlare/provisioner' ||
     matchDealerCarDetail(path) !== null;
 
   const onStaffApp = path.startsWith('/staff');
+
+  // Public token pages (no auth)
+  const budToken = matchBudToken(path);
+  if (budToken) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <BudPage token={budToken} />
+      </Suspense>
+    );
+  }
+
+  const avtalToken = matchAvtalToken(path);
+  if (avtalToken) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <AvtalPage token={avtalToken} />
+      </Suspense>
+    );
+  }
 
   const myCarToken = matchMyCar(path);
   if (myCarToken) {
@@ -1195,6 +1247,56 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
     return null;
   }
 
+  if (path === '/handlare/atgarder') {
+    return (
+      <DealerAtgarder
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/arenden') {
+    return (
+      <DealerArenden
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/mitt-lager') {
+    return (
+      <DealerMittLager
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/ekonomi') {
+    return (
+      <DealerEkonomi
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
+  if (path === '/handlare/provisioner') {
+    return (
+      <DealerProvisioner
+        dealerId={dealer.id}
+        foretagsnamn={dealer.foretagsnamn}
+        onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
+      />
+    );
+  }
+
   if (path === '/handlare/godkannanden') {
     return (
       <DealerApprovals
@@ -1293,6 +1395,18 @@ function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
     );
   }
 
+  const valuationDetailId = matchStaffValuationDetail(path);
+  if (valuationDetailId) {
+    return (
+      <StaffValuationDetail
+        staffUser={fallbackUser}
+        valuationId={valuationDetailId}
+        onLoggedOut={onLoggedOut}
+        onBack={() => navigate('/staff/varderingar')}
+      />
+    );
+  }
+
   if (path === '/staff/varderingar') {
     return (
       <StaffValuations
@@ -1327,6 +1441,15 @@ function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
   if (path === '/staff/anvandare' && fallbackUser.role === 'teamlead') {
     return (
       <StaffUsers
+        staffUser={fallbackUser}
+        onLoggedOut={onLoggedOut}
+      />
+    );
+  }
+
+  if (path === '/staff/intjaning') {
+    return (
+      <StaffEarnings
         staffUser={fallbackUser}
         onLoggedOut={onLoggedOut}
       />

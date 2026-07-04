@@ -7,7 +7,7 @@ import { supabase } from '../lib/supabase';
 
 export type StaffPage =
   | 'overview' | 'pool' | 'deals' | 'deal-detail'
-  | 'valuations' | 'tasks' | 'users' | 'approvals';
+  | 'valuations' | 'valuation-detail' | 'tasks' | 'users' | 'approvals' | 'intjaning';
 
 interface NavItem {
   id: StaffPage;
@@ -22,7 +22,8 @@ const NAV: NavItem[] = [
   { id: 'valuations', label: 'Värderingar',  icon: Star,       path: '/staff/varderingar' },
   { id: 'pool',       label: 'Handlarpool',  icon: Package,    path: '/staff/lager' },
   { id: 'approvals',  label: 'Godkännanden', icon: ThumbsUp,   path: '/staff/affarer' },
-  { id: 'tasks',      label: 'Ekonomi',      icon: TrendingUp, path: '/staff/uppgifter' },
+  { id: 'tasks',      label: 'Uppgifter',    icon: TrendingUp, path: '/staff/uppgifter' },
+  { id: 'intjaning',  label: 'Min intjäning',icon: TrendingUp, path: '/staff/intjaning' },
   { id: 'users',      label: 'Inställningar',icon: Settings,   path: '/staff/anvandare', roles: ['teamlead'] },
 ];
 
