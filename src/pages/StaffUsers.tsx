@@ -75,30 +75,43 @@ export default function StaffUsers({ staffUser, onLoggedOut }: StaffUsersProps) 
       setCreateError('Fyll i alla obligatoriska fält.');
       return;
     }
+    if (form.password.length < 8) {
+      setCreateError('Lösenordet måste vara minst 8 tecken.');
+      return;
+    }
     setCreating(true);
     setCreateError(null);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('Inte inloggad.');
+      // Create auth user via a separate client so the admin session is unaffected
+      const { createClient } = await import('@supabase/supabase-js');
+      const tempClient = createClient(
+        import.meta.env.VITE_SUPABASE_URL as string,
+        import.meta.env.VITE_SUPABASE_ANON_KEY as string,
+        { auth: { persistSession: false, detectSessionInUrl: false, autoRefreshToken: false } }
+      );
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-      const res = await fetch(`${supabaseUrl}/functions/v1/create-staff-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password,
-          fornamn: form.fornamn,
-          efternamn: form.efternamn,
-          role: form.role,
-        }),
+      const { data: authData, error: authError } = await tempClient.auth.signUp({
+        email: form.email.toLowerCase(),
+        password: form.password,
       });
 
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? 'Något gick fel.');
+      if (authError) throw new Error('Kunde inte skapa konto: ' + authError.message);
+      if (!authData.user) throw new Error('Kunde inte skapa konto: inget svar.');
+
+      // Insert staff record via SECURITY DEFINER RPC (bypasses RLS, verifies teamlead)
+      const { error: rpcError } = await supabase.rpc('create_staff_member', {
+        p_email: form.email,
+        p_fornamn: form.fornamn,
+        p_efternamn: form.efternamn,
+        p_role: form.role,
+        p_user_id: authData.user.id,
+      });
+
+      if (rpcError) {
+        throw new Error(rpcError.message.includes('create_staff_member')
+          ? 'DB-funktion saknas. Kör SQL i Supabase-dashboarden — se instruktioner nedan.'
+          : rpcError.message);
+      }
 
       setShowCreateModal(false);
       setForm({ email: '', password: '', fornamn: '', efternamn: '', role: 'salesperson' });
