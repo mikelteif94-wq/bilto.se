@@ -4,6 +4,7 @@ import {
   Check,
   ChevronDown,
   Phone,
+  Search,
   ShieldCheck,
   TrendingDown,
   Handshake,
