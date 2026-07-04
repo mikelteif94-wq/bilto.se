@@ -286,7 +286,97 @@ export default function BuyCarPage({
       </header>
       )}
 
-      <div className={`flex-1 flex flex-col items-center px-4 ${hideNav ? 'pt-4 pb-8' : 'pt-28 sm:pt-32 pb-6 sm:pb-8'}`}>
+      {step === 'track' && popularCars.length > 0 && (
+        <section className="bg-white px-4 sm:px-6 py-14 sm:py-20 mt-[69px] lg:mt-[80px]">
+          <div className="max-w-5xl mx-auto">
+            <div className="mb-10">
+              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">EXPERTERNAS VAL</p>
+              <h2 className="text-[24px] sm:text-[34px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
+                Bilar vår expert rekommenderar just nu
+              </h2>
+              <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
+                Handplockade modeller med bäst balans mellan pris, driftskostnad och tillförlitlighet. Berätta vad du söker – vi förhandlar priset.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {popularCars.slice(0, 6).map((car, i) => {
+                const imageUrl = getCarImage(car.brand_display, car.model_display);
+                const fuelLabelStr = car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ');
+                const isEl = car.specs.fuel_types.includes('el');
+                if (isEl) {
+                  return (
+                    <ElCarCard
+                      key={car.id}
+                      name={`${car.brand_display} ${car.model_display}`}
+                      make={car.brand_display}
+                      imageUrl={imageUrl}
+                      rating={car.ratings.overall}
+                      topBadge={i === 0}
+                      pros={car.pros}
+                      fuelLabel={fuelLabelStr}
+                      fuelTypes={car.specs.fuel_types}
+                      bodyType={car.specs.body_type}
+                      drivetrain={car.specs.drivetrain}
+                      seats={car.specs.seats}
+                      carPrice={car.pricing.new_from_sek ?? undefined}
+                      usedPrice={car.pricing.used_from_sek ?? undefined}
+                      cardMode="beg"
+                      onNegotiate={() => {
+                        window.history.pushState({}, '', `/kop-bil/bestall?bil=${encodeURIComponent(`${car.brand_display} ${car.model_display}`)}&typ=found`);
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }}
+                      onDetail={() => {}}
+                      onFitQuiz={() => setFitQuizCar(car)}
+                    />
+                  );
+                }
+                return (
+                  <CompactCarCard
+                    key={car.id}
+                    name={`${car.brand_display} ${car.model_display}`}
+                    make={car.brand_display}
+                    imageUrl={imageUrl}
+                    rating={car.ratings.overall}
+                    topBadge={i === 0}
+                    expertComment={car.pros[0]}
+                    fuelLabel={fuelLabelStr}
+                    fuelTypes={car.specs.fuel_types}
+                    carPrice={car.pricing.new_from_sek ?? undefined}
+                    usedPrice={car.pricing.used_from_sek ?? undefined}
+                    cardMode="beg"
+                    onNegotiate={() => {
+                      window.history.pushState({}, '', `/kop-bil/bestall?bil=${encodeURIComponent(`${car.brand_display} ${car.model_display}`)}&typ=found`);
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    onDetail={() => {}}
+                    onFitQuiz={() => setFitQuizCar(car)}
+                    index={i}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Quiz entry card */}
+            <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <p className="text-[15px] font-semibold text-slate-900 leading-snug">Osäker på vilken som passar dig?</p>
+                <p className="mt-1 text-[13px] text-slate-500 leading-[1.6] max-w-md">Svara på 5 korta frågor om hur du kör och vad du prioriterar – vi matchar dig med rätt bilar.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => popularCars.length > 0 && setFitQuizCar(popularCars[0])}
+                className="shrink-0 h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[13px] inline-flex items-center gap-2 transition-all whitespace-nowrap"
+              >
+                Testa bilmatch – tar 60 sekunder
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <div className={`flex-1 flex flex-col items-center px-4 ${hideNav ? 'pt-4 pb-8' : step === 'track' ? 'pt-8 pb-6 sm:pb-8 bg-[#faf8f5]' : 'pt-28 sm:pt-32 pb-6 sm:pb-8'}`}>
         <div className="w-full max-w-lg">
           {step !== 'done' && (
             <div className="mb-6 sm:mb-8">
@@ -469,96 +559,6 @@ export default function BuyCarPage({
           )}
         </div>
       </div>
-
-      {step === 'track' && popularCars.length > 0 && (
-        <section className="bg-white px-4 sm:px-6 py-14 sm:py-20">
-          <div className="max-w-5xl mx-auto">
-            <div className="mb-10">
-              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">EXPERTERNAS VAL</p>
-              <h2 className="text-[24px] sm:text-[34px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
-                Bilar vår expert rekommenderar just nu
-              </h2>
-              <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
-                Handplockade modeller med bäst balans mellan pris, driftskostnad och tillförlitlighet. Berätta vad du söker – vi förhandlar priset.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {popularCars.slice(0, 6).map((car, i) => {
-                const imageUrl = getCarImage(car.brand_display, car.model_display);
-                const fuelLabelStr = car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ');
-                const isEl = car.specs.fuel_types.includes('el');
-                if (isEl) {
-                  return (
-                    <ElCarCard
-                      key={car.id}
-                      name={`${car.brand_display} ${car.model_display}`}
-                      make={car.brand_display}
-                      imageUrl={imageUrl}
-                      rating={car.ratings.overall}
-                      topBadge={i === 0}
-                      pros={car.pros}
-                      fuelLabel={fuelLabelStr}
-                      fuelTypes={car.specs.fuel_types}
-                      bodyType={car.specs.body_type}
-                      drivetrain={car.specs.drivetrain}
-                      seats={car.specs.seats}
-                      carPrice={car.pricing.new_from_sek ?? undefined}
-                      usedPrice={car.pricing.used_from_sek ?? undefined}
-                      cardMode="beg"
-                      onNegotiate={() => {
-                        window.history.pushState({}, '', `/kop-bil/bestall?bil=${encodeURIComponent(`${car.brand_display} ${car.model_display}`)}&typ=found`);
-                        window.dispatchEvent(new PopStateEvent('popstate'));
-                      }}
-                      onDetail={() => {}}
-                      onFitQuiz={() => setFitQuizCar(car)}
-                    />
-                  );
-                }
-                return (
-                  <CompactCarCard
-                    key={car.id}
-                    name={`${car.brand_display} ${car.model_display}`}
-                    make={car.brand_display}
-                    imageUrl={imageUrl}
-                    rating={car.ratings.overall}
-                    topBadge={i === 0}
-                    expertComment={car.pros[0]}
-                    fuelLabel={fuelLabelStr}
-                    fuelTypes={car.specs.fuel_types}
-                    carPrice={car.pricing.new_from_sek ?? undefined}
-                    usedPrice={car.pricing.used_from_sek ?? undefined}
-                    cardMode="beg"
-                    onNegotiate={() => {
-                      window.history.pushState({}, '', `/kop-bil/bestall?bil=${encodeURIComponent(`${car.brand_display} ${car.model_display}`)}&typ=found`);
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }}
-                    onDetail={() => {}}
-                    onFitQuiz={() => setFitQuizCar(car)}
-                    index={i}
-                  />
-                );
-              })}
-            </div>
-
-            {/* Quiz entry card */}
-            <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <p className="text-[15px] font-semibold text-slate-900 leading-snug">Osäker på vilken som passar dig?</p>
-                <p className="mt-1 text-[13px] text-slate-500 leading-[1.6] max-w-md">Svara på 5 korta frågor om hur du kör och vad du prioriterar – vi matchar dig med rätt bilar.</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => popularCars.length > 0 && setFitQuizCar(popularCars[0])}
-                className="shrink-0 h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[13px] inline-flex items-center gap-2 transition-all whitespace-nowrap"
-              >
-                Testa bilmatch – tar 60 sekunder
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
 
       {step === 'track' && <BuyFlowFAQ variant="buy" />}
 
