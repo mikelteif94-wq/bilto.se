@@ -80,67 +80,79 @@ export default function StaffLogin({ onLoggedIn, onBack }: StaffLoginProps) {
 
     setLoading(true);
 
-    // Check again that no staff exists
-    const { count } = await supabase
-      .from('staff_users')
-      .select('id', { count: 'exact', head: true });
+    try {
+      // Check again that no staff exists
+      const { count } = await supabase
+        .from('staff_users')
+        .select('id', { count: 'exact', head: true });
 
-    if ((count ?? 0) > 0) {
-      setError('Det finns redan staff-konton. Logga in istället.');
-      setLoading(false);
-      return;
+      if ((count ?? 0) > 0) {
+        setError('Det finns redan staff-konton. Logga in istället.');
+        setLoading(false);
+        return;
+      }
+
+      // Create auth user (email_confirm disabled in Supabase dashboard assumed)
+      const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
+        email: setupEmail.toLowerCase(),
+        password: setupPassword,
+        options: { data: { fornamn: setupFornamn, efternamn: setupEfternamn, is_staff: true } },
+      });
+
+      if (signUpErr) {
+        setError('Kunde inte skapa konto: ' + signUpErr.message);
+        setLoading(false);
+        return;
+      }
+
+      // If signUp returns a session directly (email confirm disabled), use it
+      // Otherwise sign in to get a session
+      let session = signUpData.session;
+      if (!session) {
+        const { data: signInData, error: signInErr } = await supabase.auth.signInWithPassword({
+          email: setupEmail.toLowerCase(),
+          password: setupPassword,
+        });
+        if (signInErr) {
+          setError('Konto skapat. Vänligen bekräfta din e-post och logga in manuellt, eller inaktivera e-postbekräftelse i Supabase > Authentication > Settings.');
+          setLoading(false);
+          return;
+        }
+        session = signInData.session;
+      }
+
+      if (!session?.user) {
+        setError('Kunde inte hämta användarsession.');
+        setLoading(false);
+        return;
+      }
+
+      // Insert staff_users row
+      const { error: insertErr } = await supabase.from('staff_users').insert({
+        user_id: session.user.id,
+        email: setupEmail.toLowerCase(),
+        fornamn: setupFornamn,
+        efternamn: setupEfternamn,
+        role: 'teamlead',
+        is_active: true,
+      });
+
+      if (insertErr) {
+        await supabase.auth.signOut();
+        setError(
+          'Auth-konto skapat men kunde inte spara i staff-tabellen. ' +
+          'Kör detta i Supabase SQL Editor och försök igen:\n\n' +
+          'CREATE POLICY "bootstrap_insert_first_staff" ON staff_users FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id AND NOT EXISTS (SELECT 1 FROM staff_users));\n\n' +
+          'Fel: ' + insertErr.message
+        );
+        setLoading(false);
+        return;
+      }
+
+      setSetupDone(true);
+    } catch (err) {
+      setError('Oväntat fel: ' + String(err));
     }
-
-    // Create auth user
-    const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
-      email: setupEmail.toLowerCase(),
-      password: setupPassword,
-    });
-
-    if (signUpErr || !signUpData.user) {
-      setError('Kunde inte skapa konto: ' + (signUpErr?.message ?? 'okänt fel'));
-      setLoading(false);
-      return;
-    }
-
-    // Insert into staff_users using service-level via RPC bypass
-    // We sign in first to get an authenticated session, then insert
-    const { error: loginErr } = await supabase.auth.signInWithPassword({
-      email: setupEmail.toLowerCase(),
-      password: setupPassword,
-    });
-
-    if (loginErr) {
-      setError('Konto skapat men kunde inte logga in: ' + loginErr.message);
-      setLoading(false);
-      return;
-    }
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setError('Kunde inte hämta användare efter inloggning.');
-      setLoading(false);
-      return;
-    }
-
-    // Insert staff_users row — needs INSERT policy for authenticated users
-    const { error: insertErr } = await supabase.from('staff_users').insert({
-      user_id: user.id,
-      email: setupEmail.toLowerCase(),
-      fornamn: setupFornamn,
-      efternamn: setupEfternamn,
-      role: 'teamlead',
-      is_active: true,
-    });
-
-    if (insertErr) {
-      await supabase.auth.signOut();
-      setError('Konto skapat men kunde inte spara i staff-tabellen: ' + insertErr.message + '. Se instruktioner nedan.');
-      setLoading(false);
-      return;
-    }
-
-    setSetupDone(true);
     setLoading(false);
   };
 
@@ -336,9 +348,11 @@ export default function StaffLogin({ onLoggedIn, onBack }: StaffLoginProps) {
             </div>
 
             {error && (
-              <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl" style={{ background: 'rgba(229,62,62,0.1)', border: '1px solid rgba(229,62,62,0.2)' }}>
-                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                <p className="text-xs text-red-400">{error}</p>
+              <div className="px-3 py-2.5 rounded-xl" style={{ background: 'rgba(229,62,62,0.1)', border: '1px solid rgba(229,62,62,0.2)' }}>
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                  <p className="text-xs text-red-400 whitespace-pre-wrap break-all">{error}</p>
+                </div>
               </div>
             )}
 

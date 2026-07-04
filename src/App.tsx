@@ -409,8 +409,9 @@ function App() {
           </Suspense>
         );
       }
-      navigate('/staff/oversikt');
-      return null;
+      // Can't navigate during render — use effect
+      useEffect(() => { navigate('/staff/oversikt'); }, []);
+      return <PageLoader />;
     }
     return (
       <Suspense fallback={<PageLoader />}>
@@ -1233,11 +1234,14 @@ interface StaffAreaProps {
 function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
   const { staffUser, loading } = useStaffAuth();
 
+  useEffect(() => {
+    if (!loading && (!staffUser || !userId)) {
+      navigate('/staff/logga-in');
+    }
+  }, [loading, staffUser, userId]);
+
   if (loading) return <PageLoader />;
-  if (!staffUser || !userId) {
-    navigate('/staff/logga-in');
-    return null;
-  }
+  if (!staffUser || !userId) return <PageLoader />;
 
   const dealDetailId = matchStaffDealDetail(path);
   if (dealDetailId) {
