@@ -45,7 +45,6 @@ const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CompareCarsPage = lazy(() => import('./pages/CompareCarsPage'));
-const BilkopshjalpPage = lazy(() => import('./pages/BilkopshjalpPage'));
 const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
@@ -516,23 +515,6 @@ function App() {
   }
 
   if (path === '/kop-bil') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <>
-          <BilkopshjalpPage
-            onBackHome={() => {
-              window.history.pushState({}, '', '/');
-              setPath('/');
-              setPublicRoute({ page: 'home' });
-            }}
-          />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
-        </>
-      </Suspense>
-    );
-  }
-
-  if (path === '/bilar') {
     return (
       <Suspense fallback={<PageLoader />}>
         <>
