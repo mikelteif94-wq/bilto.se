@@ -396,20 +396,20 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       {/* ── Inte säker? Prata med oss ── */}
       <section className="py-16 sm:py-24 px-5 sm:px-8 bg-[#faf8f5] border-t border-slate-200">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-10 sm:mb-12">
+          <div className="mb-10 sm:mb-12 text-center">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Osäker?
             </span>
             <h2 className="text-[26px] sm:text-[42px] font-bold text-slate-900 leading-[1.1] tracking-tight">
               Prata med oss – utan förpliktelse
             </h2>
-            <p className="text-slate-500 mt-3 sm:mt-4 text-[14px] sm:text-[16px] max-w-lg leading-relaxed">
+            <p className="text-slate-500 mt-3 sm:mt-4 text-[14px] sm:text-[16px] max-w-lg leading-relaxed mx-auto">
               Inte redo att skicka en förfrågan? Hör av dig så svarar vi på dina frågor utan säljsnack.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-4">
-            <div className="flex flex-col items-start gap-4 bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm">
+            <div className="flex flex-col items-center text-center gap-4 bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm">
               <div className="w-14 h-14 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg shadow-[#0e6efe]/25">
                 <MessageCircle className="w-7 h-7 text-white" strokeWidth={1.8} />
               </div>
@@ -426,7 +426,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               </div>
             </div>
 
-            <div className="flex flex-col items-start gap-4 bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm">
+            <div className="flex flex-col items-center text-center gap-4 bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm">
               <div className="w-14 h-14 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg shadow-[#0e6efe]/25">
                 <CalendarCheck className="w-7 h-7 text-white" strokeWidth={1.8} />
               </div>
@@ -442,7 +442,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               </div>
             </div>
 
-            <div className="flex flex-col items-start gap-4 bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm">
+            <div className="flex flex-col items-center text-center gap-4 bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm">
               <div className="w-14 h-14 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg shadow-[#0e6efe]/25">
                 <Phone className="w-7 h-7 text-white" strokeWidth={1.8} />
               </div>
