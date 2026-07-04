@@ -14,7 +14,7 @@ export function SiteFooter() {
       <div className="absolute top-0 right-1/4 w-64 h-48 rounded-xl pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.04) 0%, transparent 70%)' }} />
 
-      <div className="relative max-w-7xl mx-auto px-6 pt-14 pb-8">
+      <div className="relative max-w-7xl mx-auto px-6 pt-14 pb-24 md:pb-8">
         {/* Top grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 pb-12" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
           {/* Brand */}
@@ -54,7 +54,8 @@ export function SiteFooter() {
                 { label: 'Sälj din bil', href: '/salj-din-bil' },
                 { label: 'Köp bil med hjälp', href: '/kop-bil' },
                 { label: 'Priser', href: '/priser' },
-
+                { label: 'Guider', href: '/guider' },
+                { label: 'Vanliga frågor', href: '/vanliga-fragor' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <a href={href} className="text-[13.5px] text-slate-500 hover:text-white transition-colors duration-200 hover:pl-1 inline-block transition-all">{label}</a>

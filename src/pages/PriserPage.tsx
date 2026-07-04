@@ -92,7 +92,7 @@ function FaqRow({ item }: { item: typeof FAQ_ITEMS[number] }) {
 export default function PriserPage({ onBackHome }: PriserPageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor', 'Bilspara'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Priser', 'Bilspara'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);

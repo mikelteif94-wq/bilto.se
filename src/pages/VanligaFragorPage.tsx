@@ -84,7 +84,7 @@ function FaqAccordion({ items }: { items: FaqItem[] }) {
 export default function VanligaFragorPage({ onBackHome }: VanligaFragorPageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor', 'Bilspara'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Priser', 'Bilspara'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);

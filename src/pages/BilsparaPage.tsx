@@ -299,7 +299,7 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
   const [sort, setSort] = useState<SortKey>('savings');
   const [search, setSearch] = useState('');
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor', 'Bilspara'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Priser', 'Bilspara'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);

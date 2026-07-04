@@ -374,7 +374,7 @@ export default function BuyCarPage({
                 <div className="p-5 flex items-center gap-4">
                   <div className="relative shrink-0">
                     <img
-                      src="/image copy copy copy.png"
+                      src="/daniel-portrait.jpg"
                       alt="Marcus Holm"
                       className="w-14 h-14 rounded-xl object-cover object-top border-2 border-slate-200"
                     />

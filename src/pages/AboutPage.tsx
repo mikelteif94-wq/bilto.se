@@ -49,7 +49,7 @@ const FOUNDERS = [
     name: 'Alexander',
     role: 'VD och medgrundare',
     bio: '[Grundarens bakgrund och varför han startade Bilto – fylls i av grundaren.]',
-    photo: '/image copy copy copy.png',
+    photo: '/daniel-portrait.jpg',
   },
   {
     name: '[Medgrundare]',
@@ -70,7 +70,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
     });
   }, []);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor', 'Bilspara'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Priser', 'Bilspara'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);

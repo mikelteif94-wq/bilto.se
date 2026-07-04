@@ -28,7 +28,7 @@ const EXPERTS = [
     name: 'Marcus Holm',
     title: 'Seniorförhandlare',
     years: '12 år i branschen',
-    avatar: '/image copy copy copy.png',
+    avatar: '/daniel-portrait.jpg',
     spec: 'Premium & tyska märken',
   },
   {
