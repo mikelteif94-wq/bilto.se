@@ -115,6 +115,65 @@ const WHY_BILTO = [
   },
 ];
 
+const SAVINGS_ITEMS = [
+  { label: 'Prisförhandling på bilen', amount: '8 000–12 000 kr', desc: 'Vi vet vad handlaren betalat och var marginalen finns – och utnyttjar det.' },
+  { label: 'Ränterabatt på finansiering', amount: '3 000–6 000 kr', desc: 'Vi jämför och förhandlar räntan mot flera finansaktörer och pressar den nedåt.' },
+  { label: 'Däck & tillval ingår', amount: '2 000–4 000 kr', desc: 'Vinterdäck, golvmattor och service tas med i paketet – utan extrakostnad.' },
+];
+
+function SavingsInfoBox() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mt-8 rounded-2xl border border-[#0e6efe]/20 bg-[#f0f6ff] overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between gap-4 px-5 sm:px-7 py-4 text-left group"
+      >
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-9 h-9 rounded-xl bg-[#0e6efe] flex items-center justify-center shrink-0 shadow-sm">
+            <Banknote className="w-4.5 h-4.5 text-white" strokeWidth={1.8} />
+          </div>
+          <p className="text-[14px] sm:text-[15px] font-semibold text-slate-900 leading-snug">
+            Spara <span className="text-[#0e6efe]">15 000 kr eller mer</span> på din nästa bil
+            <span className="ml-2 text-[12px] font-normal text-slate-400 group-hover:text-[#0e6efe] transition-colors">
+              {open ? 'Dölj' : 'Läs mer'}
+            </span>
+          </p>
+        </div>
+        <ChevronDown className={`w-4.5 h-4.5 text-[#0e6efe] shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="px-5 sm:px-7 pb-6 border-t border-[#0e6efe]/10">
+          <p className="text-[13px] sm:text-[14px] text-slate-600 leading-relaxed mt-4 mb-5">
+            Oavsett om du leasar eller köper kontaktar Biltos experter handlarna åt dig, förhandlar bästa priset och hanterar varje steg – du sparar tid och pengar. Så räknar vi ut din totala besparing:
+          </p>
+          <div className="space-y-3">
+            {SAVINGS_ITEMS.map((item) => (
+              <div key={item.label} className="flex items-start gap-3 bg-white rounded-xl px-4 py-3.5 border border-[#0e6efe]/10">
+                <Check className="w-4 h-4 text-[#0e6efe] mt-0.5 shrink-0" strokeWidth={2.5} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <p className="text-[13px] sm:text-[14px] font-semibold text-slate-900">{item.label}</p>
+                    <span className="text-[12px] font-bold text-[#0e6efe] whitespace-nowrap">{item.amount}</span>
+                  </div>
+                  <p className="text-[12px] text-slate-500 mt-0.5 leading-snug">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 flex items-center justify-between bg-[#0e6efe] rounded-xl px-4 py-3 text-white">
+            <span className="text-[13px] font-semibold">Total genomsnittlig besparing</span>
+            <span className="text-[15px] font-bold">13 000–22 000 kr</span>
+          </div>
+          <p className="mt-3 text-[11px] text-slate-400 leading-snug">Biltos avgift är 1 995 kr och betalas endast om affären faktiskt blir av.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowItWorks }: KopBilConciergProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -462,15 +521,17 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             })}
           </div>
 
+          {/* Spara-inforuta */}
+          <SavingsInfoBox />
+
           <div className="mt-10 sm:mt-12">
-            <button
-              type="button"
-              onClick={() => onNavigateBuy()}
+            <a
+              href="/gratis-konsultation"
               className="h-12 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] transition shadow-sm inline-flex items-center gap-2 group"
             >
-              Kom igång
+              Boka kostnadsfri konsultation
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
-            </button>
+            </a>
             <p className="mt-3 text-[13px] text-slate-400">1 995 kr om affären blir av · Ingen bindning</p>
           </div>
         </div>
