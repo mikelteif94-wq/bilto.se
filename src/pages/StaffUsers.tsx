@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Users, Plus, Search, Loader2, CheckCircle2,
-  XCircle, Shield, User, MoreVertical, Eye, EyeOff,
+  XCircle, Shield, Eye, EyeOff,
 } from 'lucide-react';
 import StaffShell from '../components/StaffShell';
 import type { StaffUser } from '../hooks/useStaffAuth';
@@ -78,22 +78,27 @@ export default function StaffUsers({ staffUser, onLoggedOut }: StaffUsersProps) 
     setCreating(true);
     setCreateError(null);
     try {
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: form.email,
-        password: form.password,
-        email_confirm: true,
-      });
-      if (authError || !authData.user) throw new Error(authError?.message ?? 'Kunde inte skapa användare.');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Inte inloggad.');
 
-      const { error: insertError } = await supabase.from('staff_users').insert({
-        user_id: authData.user.id,
-        email: form.email,
-        fornamn: form.fornamn,
-        efternamn: form.efternamn,
-        role: form.role,
-        is_active: true,
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+      const res = await fetch(`${supabaseUrl}/functions/v1/create-staff-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+          fornamn: form.fornamn,
+          efternamn: form.efternamn,
+          role: form.role,
+        }),
       });
-      if (insertError) throw new Error(insertError.message);
+
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? 'Något gick fel.');
 
       setShowCreateModal(false);
       setForm({ email: '', password: '', fornamn: '', efternamn: '', role: 'salesperson' });
