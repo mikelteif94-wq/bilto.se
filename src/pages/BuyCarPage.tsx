@@ -286,8 +286,42 @@ export default function BuyCarPage({
       </header>
       )}
 
+      {step === 'track' && (
+        <section className="bg-[#0e6efe] px-4 sm:px-6 pt-[calc(69px+48px)] sm:pt-[calc(80px+56px)] pb-14 sm:pb-20">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 bg-white/15 text-white text-[11px] font-bold uppercase tracking-[0.18em] px-4 py-1.5 rounded-full mb-6">
+              Bilköpshjälpen
+            </div>
+            <h1 className="text-[32px] sm:text-[52px] lg:text-[60px] font-bold text-white leading-[1.04] tracking-[-0.025em]">
+              Spara 15&nbsp;000&nbsp;kr eller mer på din nästa bil
+            </h1>
+            <p className="mt-5 text-white/80 text-[16px] sm:text-[19px] leading-[1.65] max-w-2xl mx-auto">
+              Oavsett om du leasar eller köper kontaktar Biltos experter handlarna åt dig, förhandlar bästa priset och hanterar varje steg – du sparar tid och pengar.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+              <a
+                href="#kom-igang"
+                onClick={(e) => { e.preventDefault(); document.getElementById('kom-igang')?.scrollIntoView({ behavior: 'smooth' }); }}
+                className="inline-flex items-center justify-center gap-2 h-13 px-8 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg"
+              >
+                Kom igång – det är gratis
+                <ArrowRight className="w-5 h-5" />
+              </a>
+            </div>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+              {['Kostnadsfritt för dig', 'Inga bindningar', 'Svar inom 24h'].map(t => (
+                <span key={t} className="flex items-center gap-1.5 text-white/70 text-[13px]">
+                  <Check className="w-3.5 h-3.5 text-white/60" strokeWidth={2.5} />
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {step === 'track' && popularCars.length > 0 && (
-        <section className="bg-white px-4 sm:px-6 py-14 sm:py-20 mt-[69px] lg:mt-[80px]">
+        <section className="bg-white px-4 sm:px-6 py-14 sm:py-20">
           <div className="max-w-5xl mx-auto">
             <div className="mb-10">
               <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">EXPERTERNAS VAL</p>
@@ -376,7 +410,7 @@ export default function BuyCarPage({
         </section>
       )}
 
-      <div className={`flex-1 flex flex-col items-center px-4 ${hideNav ? 'pt-4 pb-8' : step === 'track' ? 'pt-8 pb-6 sm:pb-8 bg-[#faf8f5]' : 'pt-28 sm:pt-32 pb-6 sm:pb-8'}`}>
+      <div id="kom-igang" className={`flex-1 flex flex-col items-center px-4 ${hideNav ? 'pt-4 pb-8' : step === 'track' ? 'pt-8 pb-6 sm:pb-8 bg-[#faf8f5]' : 'pt-28 sm:pt-32 pb-6 sm:pb-8'}`}>
         <div className="w-full max-w-lg">
           {step !== 'done' && (
             <div className="mb-6 sm:mb-8">
