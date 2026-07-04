@@ -520,6 +520,21 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             })}
           </div>
 
+          <div className="mt-10 flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200">
+            <img
+              src={EXPERT_PHOTO}
+              alt="Alexander"
+              className="w-14 h-14 rounded-xl object-cover object-top shrink-0"
+            />
+            <div className="min-w-0">
+              <p className="text-[15px] font-bold text-slate-900 leading-snug">Alexander</p>
+              <p className="text-[13px] text-slate-500 mt-0.5">VD och medgrundare</p>
+              <p className="text-[13px] text-slate-600 mt-1 leading-snug">
+                Har du frågor? Jag och mitt team hjälper dig hitta och förhandla rätt bil – helt utan bindning.
+              </p>
+            </div>
+          </div>
+
           <SavingsInfoBox />
         </div>
       </section>
