@@ -314,7 +314,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
           </h1>
 
           <p className="text-white/65 text-[16px] sm:text-[19px] font-normal max-w-lg leading-relaxed mb-12">
-            Vi värderar, förhandlar och granskar åt dig. Du bestämmer – fast pris, bara vid affär.
+            Vi värderar, förhandlar och granskar åt dig. Du bestämmer.
           </p>
 
           {/* Action card */}

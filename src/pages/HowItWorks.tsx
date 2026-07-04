@@ -445,8 +445,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             </h1>
             <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
               {seoSlug === 'salj-bil'
-                ? 'Vi värderar, förhandlar och granskar åt dig. Du bestämmer – fast pris, bara vid affär.'
-                : 'Vi värderar, förhandlar och granskar åt dig. Du bestämmer – fast pris, bara vid affär.'}
+                ? 'Vi värderar, förhandlar och granskar åt dig. Du bestämmer.'
+                : 'Vi värderar, förhandlar och granskar åt dig. Du bestämmer.'}
             </p>
 
             <div className="bg-white rounded-xl shadow-2xl overflow-visible">
@@ -608,11 +608,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 )}
               </div>
 
-            </div>
-
-            <div className="flex items-center justify-center gap-1.5 mt-5">
-              <ShieldCheck className="w-4 h-4 text-white/70 shrink-0" />
-              <p className="text-white/70 text-[13px] drop-shadow text-center">Kostnadsfritt och utan förpliktelser</p>
             </div>
           </div>
         </div>
