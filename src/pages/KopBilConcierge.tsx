@@ -154,10 +154,7 @@ function SavingsInfoBox() {
               <div key={item.label} className="flex items-start gap-3 bg-white rounded-xl px-4 py-3.5 border border-[#0e6efe]/10">
                 <Check className="w-4 h-4 text-[#0e6efe] mt-0.5 shrink-0" strokeWidth={2.5} />
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <p className="text-[13px] sm:text-[14px] font-semibold text-slate-900">{item.label}</p>
-                    <span className="text-[12px] font-bold text-[#0e6efe] whitespace-nowrap">{item.amount}</span>
-                  </div>
+                  <p className="text-[13px] sm:text-[14px] font-semibold text-slate-900">{item.label}</p>
                   <p className="text-[12px] text-slate-500 mt-0.5 leading-snug">{item.desc}</p>
                 </div>
               </div>

@@ -40,10 +40,7 @@ function HeroSavingsBox() {
               <div key={item.label} className="flex items-start gap-3 bg-white/10 rounded-xl px-4 py-3">
                 <Check className="w-3.5 h-3.5 text-white mt-0.5 shrink-0" strokeWidth={2.5} />
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <p className="text-[12px] sm:text-[13px] font-semibold text-white">{item.label}</p>
-                    <span className="text-[11px] font-bold text-white/80 whitespace-nowrap">{item.amount}</span>
-                  </div>
+                  <p className="text-[12px] sm:text-[13px] font-semibold text-white">{item.label}</p>
                   <p className="text-[11px] text-white/60 mt-0.5 leading-snug">{item.desc}</p>
                 </div>
               </div>
