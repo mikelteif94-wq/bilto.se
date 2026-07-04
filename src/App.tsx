@@ -45,6 +45,7 @@ const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CompareCarsPage = lazy(() => import('./pages/CompareCarsPage'));
+const KopBilConcierge = lazy(() => import('./pages/KopBilConcierge'));
 const UtforskaSida = lazy(() => import('./pages/UtforskaSida'));
 const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
@@ -530,13 +531,17 @@ function App() {
     return (
       <Suspense fallback={<PageLoader />}>
         <>
-          <CompareCarsPage
-            onBackHome={() => {
-              window.history.pushState({}, '', '/');
-              setPath('/');
-              setPublicRoute({ page: 'home' });
+          <KopBilConcierge
+            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onNavigateBuy={(bil?: string) => {
+              const url = bil ? `/kop-bil/bestall?bil=${encodeURIComponent(bil)}&typ=found` : '/kop-bil/bestall';
+              window.history.pushState({}, '', url);
+              setPath(url.split('?')[0]);
             }}
-            pageSlug="kop-bil"
+            onNavigateHowItWorks={() => {
+              window.history.pushState({}, '', '/sa-funkar-det');
+              setPath('/sa-funkar-det');
+            }}
           />
           <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
         </>
