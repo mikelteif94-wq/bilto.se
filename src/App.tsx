@@ -1309,7 +1309,7 @@ function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
       <StaffPool
         staffUser={fallbackUser}
         onLoggedOut={onLoggedOut}
-        onCreateDeal={(carId) => navigate(`/staff/affarer/ny?carId=${carId}`)}
+        onDealCreated={(id) => navigate(`/staff/affarer/${id}`)}
       />
     );
   }
