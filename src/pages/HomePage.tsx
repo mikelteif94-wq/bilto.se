@@ -146,15 +146,19 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     const bil = `${make} ${model}`.trim();
     setCarQuery(bil);
     setShowSuggestions(false);
-    const params = new URLSearchParams({ bil });
+    // Model chip → price-help flow pre-filled
+    const params = new URLSearchParams({ bil, typ: 'found' });
     window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
   const handleCarSearch = () => {
-    if (!carQuery.trim()) return;
-    const params = new URLSearchParams({ bil: carQuery.trim() });
-    window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
+    const q = carQuery.trim();
+    if (!q) return;
+    setShowSuggestions(false);
+    // Free-text search → catalog with filter applied
+    const params = new URLSearchParams({ q });
+    window.history.pushState({}, '', `/kop-bil?${params}`);
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
@@ -429,17 +433,38 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                         )}
 
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                      {['Elbilar', 'SUV', 'Hybrid', 'Familjebil'].map((f) => (
+                      {[
+                        { make: 'Tesla', model: 'Model Y' },
+                        { make: 'Volvo', model: 'XC60' },
+                        { make: 'BMW', model: '3-serie' },
+                        { make: 'Kia', model: 'EV6' },
+                      ].map(({ make, model }) => (
                         <button
-                          key={f}
+                          key={`${make} ${model}`}
                           type="button"
-                          onClick={() => handleCarQueryChange(f)}
+                          onClick={() => {
+                            setCarQuery(`${make} ${model}`);
+                            setShowSuggestions(false);
+                            const params = new URLSearchParams({ bil: `${make} ${model}`, typ: 'found' });
+                            window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
+                            window.dispatchEvent(new PopStateEvent('popstate'));
+                          }}
                           className="text-[12px] text-slate-500 hover:text-slate-800 border border-slate-200 hover:border-slate-400 rounded-xl px-3 py-1 transition font-medium"
                         >
-                          {f}
+                          {make} {model}
                         </button>
                       ))}
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.history.pushState({}, '', '/kop-bil?quiz=start');
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }}
+                      className="mt-2.5 text-[12px] text-[#0e6efe] hover:text-[#0a57cc] font-medium transition w-full text-left"
+                    >
+                      Vet inte vad du vill ha? Vi hjälper dig →
+                    </button>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit}>

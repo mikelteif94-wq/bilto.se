@@ -785,6 +785,11 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         setQuizStep('active');
       }, 300);
     }
+    const q = params.get('q');
+    if (q) {
+      window.history.replaceState({}, '', window.location.pathname);
+      setCarSearchQuery(q);
+    }
   }, []);
 
   const allCarsMap = useMemo(() => {
@@ -793,7 +798,36 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
     return map;
   }, [allCarsRaw]);
 
-  const [carSearchQuery, setCarSearchQuery] = useState('');
+  const [carSearchQuery, setCarSearchQuery] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('q') || '';
+  });
+
+  // Active Bilspara campaign matched to current search query
+  const [bilsparaCampaign, setBilsparaCampaign] = useState<{
+    id: string; make: string; model: string; regular_price: number; campaign_price: number;
+    image_url: string | null; campaign_type: string | null; valid_until: string;
+  } | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from('campaign_cars')
+      .select('id, make, model, regular_price, campaign_price, image_url, campaign_type, valid_until')
+      .gte('valid_until', new Date().toISOString().slice(0, 10))
+      .order('regular_price', { ascending: false })
+      .limit(50)
+      .then(({ data }) => {
+        if (!data) return;
+        const q = carSearchQuery.trim().toLowerCase();
+        if (!q) { setBilsparaCampaign(null); return; }
+        const match = data.find(c =>
+          `${c.make} ${c.model}`.toLowerCase().includes(q) ||
+          q.includes(c.make.toLowerCase()) ||
+          q.includes(c.model.toLowerCase())
+        );
+        setBilsparaCampaign(match ?? null);
+      });
+  }, [carSearchQuery]);
 
   // All cars from DB, filtered by category and sorted by rating desc
   const allCategoryCars = useMemo((): CatalogCarFull[] => {
@@ -1777,6 +1811,40 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             })}
           </div>
 
+          {/* Bilspara campaign match – shown at top when search matches an active campaign */}
+          {bilsparaCampaign && (
+            <div
+              className="mb-4 flex items-center gap-4 p-4 rounded-xl border-2 border-emerald-400 bg-emerald-50 cursor-pointer group hover:bg-emerald-100 transition-all"
+              onClick={() => {
+                window.history.pushState({}, '', '/bilspara');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }}
+            >
+              {bilsparaCampaign.image_url && (
+                <img src={bilsparaCampaign.image_url} alt={`${bilsparaCampaign.make} ${bilsparaCampaign.model}`}
+                  className="w-20 h-14 rounded-lg object-cover shrink-0" />
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500 text-white text-[11px] font-bold uppercase tracking-wide">
+                    <CheckCircle className="w-3 h-3" /> Färdigförhandlad
+                  </span>
+                  {bilsparaCampaign.campaign_type && (
+                    <span className="text-[11px] text-emerald-700 font-semibold">{bilsparaCampaign.campaign_type}</span>
+                  )}
+                </div>
+                <p className="text-[15px] font-bold text-slate-900">{bilsparaCampaign.make} {bilsparaCampaign.model}</p>
+                <p className="text-[13px] text-emerald-700 font-semibold">
+                  Spara {(bilsparaCampaign.regular_price - bilsparaCampaign.campaign_price).toLocaleString('sv-SE')} kr –{' '}
+                  {bilsparaCampaign.campaign_price.toLocaleString('sv-SE')} kr
+                </p>
+              </div>
+              <div className="shrink-0 flex items-center gap-1 text-emerald-600 font-semibold text-[13px] group-hover:translate-x-0.5 transition-transform">
+                Se deal <ArrowRight className="w-4 h-4" />
+              </div>
+            </div>
+          )}
+
           <AnimatePresence mode="wait">
             <motion.div
               key={activeCategory}
@@ -1858,6 +1926,43 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   />
                 );
               })}
+
+              {/* Empty state – search has no matches */}
+              {carSearchQuery.trim() && visibleCars.length === 0 && !carsLoading && (
+                <div className="col-span-full flex flex-col items-center text-center py-12 px-4">
+                  <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+                    <Search className="w-6 h-6 text-slate-400" />
+                  </div>
+                  <p className="text-[17px] font-bold text-slate-900 mb-2">
+                    Inga träffar på &quot;{carSearchQuery}&quot;
+                  </p>
+                  <p className="text-[14px] text-slate-500 max-w-sm mb-5">
+                    Vi hittade ingen bil som matchar exakt – men vi kan hitta den åt dig.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button
+                      type="button"
+                      onClick={() => openBuyDrawer(carSearchQuery.trim(), 'found')}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0e6efe] text-white text-[14px] font-semibold hover:bg-[#0a57cc] transition"
+                    >
+                      Beställ prishjälp <ArrowRight className="w-4 h-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCarSearchQuery('');
+                        setTimeout(() => {
+                          quizSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          setQuizStep('active');
+                        }, 100);
+                      }}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-[14px] font-semibold hover:bg-slate-200 transition"
+                    >
+                      Testa bilmatch
+                    </button>
+                  </div>
+                </div>
+              )}
 
             </motion.div>
           </AnimatePresence>

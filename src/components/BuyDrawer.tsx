@@ -355,7 +355,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                 <div className="flex items-center gap-2.5 mb-3">
                   <div className="relative shrink-0">
                     <img
-                      src="/daniel-portrait.jpg"
+                      src="/Man_in_car_showroom_portrait copy.png"
                       alt="Bilto-expert"
                       className="w-9 h-9 rounded-xl object-cover object-top border-2 border-white shadow-sm"
                     />

@@ -49,7 +49,7 @@ const FOUNDERS = [
     name: 'Alexander',
     role: 'VD och medgrundare',
     bio: '[Grundarens bakgrund och varför han startade Bilto – fylls i av grundaren.]',
-    photo: '/daniel-portrait.jpg',
+    photo: '/Man_in_car_showroom_portrait copy.png',
   },
   {
     name: '[Medgrundare]',
