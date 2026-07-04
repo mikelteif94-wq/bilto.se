@@ -1204,6 +1204,66 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         </div>
       </section>
 
+      {/* Vad ingår */}
+      <section className="bg-white py-14 sm:py-20 px-5 sm:px-6 border-b border-slate-100">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10 sm:mb-14">
+            <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.22em] mb-3">Vad ingår</span>
+            <h2 className="text-[26px] sm:text-[38px] font-bold text-slate-900 tracking-tight leading-[1.12]">
+              En personlig bilförhandlare i fickan
+            </h2>
+            <p className="mt-4 text-[15px] sm:text-[17px] text-slate-500 max-w-2xl mx-auto leading-relaxed">
+              Tjänsten är gjord för dig som inte vill spendera dagar på att jaga bilar, ringa annonser eller känna dig pressad i en handlares showroom.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            {[
+              {
+                icon: Search,
+                title: 'Vi söker åt dig',
+                text: 'Du berättar vad du vill ha – vi letar bland tusentals bilar och presenterar de bästa alternativen.',
+              },
+              {
+                icon: Handshake,
+                title: 'Vi förhandlar priset',
+                text: 'Vår rådgivare tar kontakt med säljaren och förhandlar fram bästa möjliga pris – utan att du behöver lyfta ett finger.',
+              },
+              {
+                icon: ShieldCheck,
+                title: 'Vi granskar bilen',
+                text: 'Historik, skick och villkor kontrolleras innan du säger ja. Du ska känna dig trygg hela vägen.',
+              },
+              {
+                icon: Phone,
+                title: 'Alltid tillgänglig',
+                text: 'Din personliga rådgivare finns tillgänglig via telefon och chatt – från första fråga till nyckelöverlämning.',
+              },
+              {
+                icon: CheckCircle,
+                title: 'Betala bara vid affär',
+                text: 'Ingen bindning, inga dolda avgifter. Du betalar bara om du väljer att genomföra köpet.',
+              },
+              {
+                icon: ArrowRight,
+                title: 'Du bestämmer alltid',
+                text: 'Alla beslut är dina. Vi ger dig underlag, förhandlar och stöttar – men du har alltid sista ordet.',
+              },
+            ].map(({ icon: Icon, title, text }) => (
+              <div key={title} className="flex gap-4 p-5 sm:p-6 rounded-2xl bg-[#f7f9fc] ring-1 ring-slate-100 hover:ring-[#c8dbff] hover:bg-[#f0f6ff] transition-all duration-200">
+                <div className="shrink-0 w-10 h-10 rounded-xl bg-[#e8f0fe] flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-[#0e6efe]" />
+                </div>
+                <div>
+                  <h3 className="text-[14px] sm:text-[15px] font-semibold text-slate-900 mb-1">{title}</h3>
+                  <p className="text-[13px] sm:text-[14px] text-slate-500 leading-relaxed">{text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {SHOW_EXPLORE && (<>
       {/* Browse by budget – hidden */}
       {false && <section className="py-10 sm:py-16 bg-white">
@@ -2279,207 +2339,6 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         </div>
       </section>
 
-      {/* AI Smart Search */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-[#0e1c2f]">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-[13px] font-medium text-white mb-4">
-              <Sparkles className="w-4 h-4 text-[#5b9bfe]" />
-              AI-bilsökning
-            </div>
-            <h2 className="text-[22px] sm:text-[32px] font-bold text-white mb-2">
-              Hittar du inte rätt bil?
-            </h2>
-            <p className="text-slate-300 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
-              Beskriv vad du söker – "barnvagn och stor bagage", "elbil för pendling" eller "sportig kombi under 500k".
-            </p>
-          </div>
-
-          <div className="bg-slate-900 rounded-2xl ring-1 ring-white/10 overflow-hidden">
-            {/* Chat messages */}
-            <div
-              ref={chatScrollRef}
-              className="overflow-y-auto overscroll-contain"
-              style={{
-                WebkitOverflowScrolling: 'touch',
-                maxHeight: (chatMessages.length > 0 || chatSearching) ? '520px' : '0px',
-                transition: 'max-height 0.3s ease',
-              }}
-            >
-              <div className="p-4 sm:p-6 space-y-5">
-                {chatMessages.map((msg, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25, ease: 'easeOut' }}
-                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div className="max-w-[92%] sm:max-w-[88%]">
-                      {msg.role === 'assistant' && (
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 rounded-full bg-[#0e6efe] flex items-center justify-center shrink-0">
-                            <Sparkles className="w-3 h-3 text-white" />
-                          </div>
-                          <span className="text-[11px] font-semibold text-[#5b9bfe] tracking-wide uppercase">Bilto AI</span>
-                        </div>
-                      )}
-                      <div className={`px-4 py-2.5 rounded-xl text-[14px] leading-relaxed ${
-                        msg.role === 'user'
-                          ? 'bg-[#0e6efe] text-white rounded-br-sm'
-                          : 'bg-slate-800 text-slate-200 ring-1 ring-white/10 rounded-bl-sm'
-                      }`}>
-                        {msg.text}
-                      </div>
-                      {msg.cars && msg.cars.length > 0 && (
-                        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                          {msg.cars.map((car, ci) => {
-                            const imgUrl = resolveCarImage(car.id, car.brand_display, car.model_display, getCarImage);
-                            return (
-                              <motion.div
-                                key={car.id}
-                                initial={{ opacity: 0, y: 16 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.3, delay: ci * 0.09, ease: 'easeOut' }}
-                              >
-                                {car.specs.fuel_types.includes('el') ? (
-                                  <ElCarCard
-                                    name={`${car.brand_display} ${car.model_display}`}
-                                    make={car.brand_display}
-                                    imageUrl={imgUrl}
-                                    rating={car.ratings.overall}
-                                    fuelTypes={car.specs.fuel_types}
-                                    pros={car.pros}
-                                    bodyType={car.specs.body_type}
-                                    drivetrain={car.specs.drivetrain}
-                                    seats={car.specs.seats}
-                                    carPrice={car.pricing.new_from_sek ?? undefined}
-                                    usedPrice={car.pricing.used_from_sek ?? undefined}
-                                    isCompared={selectedIds.has(car.id)}
-                                    onNegotiate={() => openContactForCar(car)}
-                                    onDetail={() => setDetailCar(car)}
-                                    onCompare={() => toggleSelect(car.id)}
-                                  />
-                                ) : (
-                                  <CompactCarCard
-                                    name={`${car.brand_display} ${car.model_display}`}
-                                    make={car.brand_display}
-                                    imageUrl={imgUrl}
-                                    rating={car.ratings.overall}
-                                    fuelLabel={car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ')}
-                                    fuelTypes={car.specs.fuel_types}
-                                    bodyType={car.specs.body_type}
-                                    drivetrain={car.specs.drivetrain}
-                                    seats={car.specs.seats}
-                                    pros={car.pros}
-                                    onNegotiate={() => openContactForCar(car)}
-                                    onDetail={() => setDetailCar(car)}
-                                    onCompare={() => toggleSelect(car.id)}
-                                    isCompared={selectedIds.has(car.id)}
-                                    index={ci}
-                                  />
-                                )}
-                              </motion.div>
-                            );
-                          })}
-                        </div>
-                      )}
-                      {msg.role === 'assistant' && msg.reformulations && msg.reformulations.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {msg.reformulations.map(r => (
-                            <button
-                              key={r}
-                              onClick={() => handleChatSubmit(r)}
-                              className="px-3 py-1.5 rounded-xl bg-slate-700 text-[12px] text-slate-200 font-medium hover:bg-[#0e6efe] hover:text-white transition-all active:scale-95"
-                            >
-                              {r}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
-
-                {/* Typing indicator */}
-                <AnimatePresence>
-                  {chatSearching && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -4 }}
-                      transition={{ duration: 0.2 }}
-                      className="flex justify-start"
-                    >
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 rounded-full bg-[#0e6efe] flex items-center justify-center shrink-0">
-                            <Sparkles className="w-3 h-3 text-white" />
-                          </div>
-                          <span className="text-[11px] font-semibold text-[#5b9bfe] tracking-wide uppercase">Bilto AI</span>
-                        </div>
-                        <div className="px-4 py-3.5 rounded-xl bg-slate-800 ring-1 ring-white/10 rounded-bl-sm inline-flex items-center gap-1.5">
-                          {[0, 1, 2].map(i => (
-                            <motion.div
-                              key={i}
-                              className="w-2 h-2 rounded-full bg-slate-400"
-                              animate={{ opacity: [0.3, 1, 0.3], y: [0, -4, 0] }}
-                              transition={{ duration: 0.85, repeat: Infinity, delay: i * 0.16, ease: 'easeInOut' }}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div ref={chatEndRef} />
-              </div>
-            </div>
-
-            {/* Input area */}
-            <div className="p-3 sm:p-4 border-t border-white/10 bg-slate-900">
-              {chatMessages.length === 0 && !chatSearching && (
-                <div className="mb-3 flex flex-wrap gap-2">
-                  {[
-                    { label: 'Familje-SUV', query: 'Familje-SUV under 500k' },
-                    { label: 'Bästa elbilen', query: 'Bästa elbilen' },
-                    { label: 'Sportig kombi', query: 'Sportig kombi' },
-                    { label: 'Bil med barnvagn', query: 'Bil med barnvagn' },
-                    { label: 'Bil för hund', query: 'Bil för hund' },
-                    { label: 'SUV med AWD', query: 'SUV med AWD' },
-                  ].map(({ label, query }) => (
-                    <button
-                      key={label}
-                      onClick={() => handleChatSubmit(query)}
-                      className="px-3 py-1.5 rounded-xl bg-white/10 text-[13px] text-white font-medium hover:bg-[#0e6efe] transition-all border border-white/15 active:scale-95"
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              )}
-              <form onSubmit={(e) => { e.preventDefault(); handleChatSubmit(); }} className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  placeholder='T.ex. "elbil för familj", "Toyota SUV" eller "bil med hund"...'
-                  disabled={chatSearching}
-                  className="flex-1 h-11 px-4 rounded-xl border border-orange-300 bg-white text-[14px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-700/40 focus:border-orange-700 transition placeholder:text-slate-400 disabled:opacity-60"
-                />
-                <button
-                  type="submit"
-                  disabled={!chatInput.trim() || chatSearching}
-                  className="h-11 w-11 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] disabled:opacity-40 text-white flex items-center justify-center transition shrink-0 active:scale-95"
-                >
-                  {chatSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
       </>)}
 
       {/* Why us stats */}
