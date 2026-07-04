@@ -7,7 +7,7 @@ export interface StaffUser {
   user_id: string;
   fornamn: string;
   efternamn: string;
-  mejl: string;
+  email: string;
   telefon: string | null;
   role: 'salesperson' | 'valuator' | 'teamlead' | 'delivery_coordinator';
   is_active: boolean;
