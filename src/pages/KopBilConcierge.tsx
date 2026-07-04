@@ -292,69 +292,8 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
         </div>
       </section>
 
-      {/* ── Expertens toppval ── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24 border-t border-slate-100">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">EXPERTERNAS VAL</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
-              Bilar vår expert rekommenderar just nu
-            </h2>
-            <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
-              Handplockade modeller med bäst balans mellan pris, driftskostnad och tillförlitlighet. Berätta vad du söker – vi förhandlar priset.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {popularCars.map((car, i) => {
-              const imageUrl = getCarImage(car.brand_display, car.model_display);
-              const fuelLabelStr = car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ');
-              const isEl = car.specs.fuel_types.includes('el');
-              if (isEl) {
-                return (
-                  <ElCarCard
-                    key={car.id}
-                    name={`${car.brand_display} ${car.model_display}`}
-                    make={car.brand_display}
-                    imageUrl={imageUrl}
-                    rating={car.ratings.overall}
-                    topBadge={i === 0}
-                    pros={car.pros}
-                    fuelLabel={fuelLabelStr}
-                    fuelTypes={car.specs.fuel_types}
-                    bodyType={car.specs.body_type}
-                    drivetrain={car.specs.drivetrain}
-                    seats={car.specs.seats}
-                    carPrice={car.pricing.new_from_sek ?? undefined}
-                    usedPrice={car.pricing.used_from_sek ?? undefined}
-                    onNegotiate={() => onNavigateBuy(`${car.brand_display} ${car.model_display}`)}
-                  />
-                );
-              }
-              return (
-                <CompactCarCard
-                  key={car.id}
-                  name={`${car.brand_display} ${car.model_display}`}
-                  make={car.brand_display}
-                  imageUrl={imageUrl}
-                  rating={car.ratings.overall}
-                  topBadge={i === 0}
-                  expertComment={car.pros[0]}
-                  fuelLabel={fuelLabelStr}
-                  fuelTypes={car.specs.fuel_types}
-                  carPrice={car.pricing.new_from_sek ?? undefined}
-                  usedPrice={car.pricing.used_from_sek ?? undefined}
-                  onNegotiate={() => onNavigateBuy(`${car.brand_display} ${car.model_display}`)}
-                  index={i}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Granska 50 punkter ── */}
-      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-12 sm:py-28 px-4 sm:px-6 overflow-hidden">
+      {/* ── Grundlig genomgång ── */}
+      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-12 sm:py-20 px-4 sm:px-6 overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8 sm:mb-16 max-w-3xl mx-auto px-2">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
@@ -435,6 +374,67 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Expertens toppval ── */}
+      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24 border-t border-slate-100">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-10 sm:mb-14">
+            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">EXPERTERNAS VAL</p>
+            <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
+              Bilar vår expert rekommenderar just nu
+            </h2>
+            <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
+              Handplockade modeller med bäst balans mellan pris, driftskostnad och tillförlitlighet. Berätta vad du söker – vi förhandlar priset.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {popularCars.map((car, i) => {
+              const imageUrl = getCarImage(car.brand_display, car.model_display);
+              const fuelLabelStr = car.specs.fuel_types.map(f => FUEL_LABELS[f] || f).join(' / ');
+              const isEl = car.specs.fuel_types.includes('el');
+              if (isEl) {
+                return (
+                  <ElCarCard
+                    key={car.id}
+                    name={`${car.brand_display} ${car.model_display}`}
+                    make={car.brand_display}
+                    imageUrl={imageUrl}
+                    rating={car.ratings.overall}
+                    topBadge={i === 0}
+                    pros={car.pros}
+                    fuelLabel={fuelLabelStr}
+                    fuelTypes={car.specs.fuel_types}
+                    bodyType={car.specs.body_type}
+                    drivetrain={car.specs.drivetrain}
+                    seats={car.specs.seats}
+                    carPrice={car.pricing.new_from_sek ?? undefined}
+                    usedPrice={car.pricing.used_from_sek ?? undefined}
+                    onNegotiate={() => onNavigateBuy(`${car.brand_display} ${car.model_display}`)}
+                  />
+                );
+              }
+              return (
+                <CompactCarCard
+                  key={car.id}
+                  name={`${car.brand_display} ${car.model_display}`}
+                  make={car.brand_display}
+                  imageUrl={imageUrl}
+                  rating={car.ratings.overall}
+                  topBadge={i === 0}
+                  expertComment={car.pros[0]}
+                  fuelLabel={fuelLabelStr}
+                  fuelTypes={car.specs.fuel_types}
+                  carPrice={car.pricing.new_from_sek ?? undefined}
+                  usedPrice={car.pricing.used_from_sek ?? undefined}
+                  onNegotiate={() => onNavigateBuy(`${car.brand_display} ${car.model_display}`)}
+                  index={i}
+                />
+              );
+            })}
           </div>
         </div>
       </section>

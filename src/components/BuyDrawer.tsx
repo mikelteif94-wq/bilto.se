@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, ChevronLeft, Check, Phone, CheckCircle, Sparkles, Clock } from 'lucide-react';
+import { X, ChevronLeft, Check, Phone, CheckCircle, Sparkles, Clock, ArrowRight, Repeat, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ErrorBanner from './ErrorBanner';
 import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
@@ -30,9 +30,12 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
   const hasSpecificCar = !!car && !isSearchingWithPrefill;
   const skipTrack = hasSpecificCar || !!initialTrack;
 
+  // Show the intent picker (found/searching/trade) when a specific car is given with no pre-set track
+  const showCarIntent = hasSpecificCar && !initialTrack;
+
   const [track, setTrack] = useState<BuyTrack>(initialTrack || 'found');
   const [step, setStep] = useState<FormStep>(
-    skipToContact ? 'contact' : skipIntent ? 'details' : isSearchingWithPrefill ? 'details' : initialTrack ? 'details' : 'track'
+    skipToContact ? 'contact' : skipIntent ? 'details' : isSearchingWithPrefill ? 'details' : showCarIntent ? 'carIntent' : initialTrack ? 'details' : 'track'
   );
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -109,8 +112,10 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
       sessionIdRef.current = crypto.randomUUID();
       const resolvedTrack = initialTrack || 'found';
       const searchingPrefill = (resolvedTrack === 'searching' || skipIntent) && !!car;
+      const specificCar = !!car && !searchingPrefill;
+      const intentPicker = specificCar && !initialTrack;
       setTrack(resolvedTrack);
-      setStep(skipToContact ? 'contact' : skipIntent ? 'details' : searchingPrefill ? 'details' : initialTrack ? 'details' : 'track');
+      setStep(skipToContact ? 'contact' : skipIntent ? 'details' : searchingPrefill ? 'details' : intentPicker ? 'carIntent' : initialTrack ? 'details' : 'track');
       setError(null);
       trackEvent('drawer_opened', { track: resolvedTrack });
       setDetails({
@@ -164,6 +169,12 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
       return ['details', 'tradeIn', 'contact'];
     }
     if (hasSpecificCar) {
+      if (showCarIntent) {
+        // Intent step first, then route based on chosen track
+        if (track === 'trade') return ['carIntent', 'details', 'contact'];
+        if (track === 'searching') return ['carIntent', 'condition', 'details', 'tradeIn', 'contact'];
+        return ['carIntent', 'details', 'tradeIn', 'contact'];
+      }
       if (track === 'trade') return ['track', 'details', 'contact'];
       if (track === 'found') return ['track', 'details', 'tradeIn', 'contact'];
       return ['track', 'condition', 'details', 'tradeIn', 'contact'];
@@ -180,7 +191,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
 
   const titles: Record<FormStep, string> = {
     track: 'Hur vill du gå vidare?',
-    carIntent: 'Hur vill du gå vidare?',
+    carIntent: car ? `Vad gäller för ${car}?` : 'Hur vill du gå vidare?',
     condition: 'Ny eller begagnad?',
     details: skipIntent
       ? (track === 'searching' ? `Hitta en ${car}` : `Förhandla – ${car}`)
@@ -437,7 +448,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
             <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5">
               <ErrorBanner message={error} className="mb-5" />
 
-              {(step === 'track' || step === 'carIntent') && (
+              {(step === 'track') && (
                 <BuyTrackStep
                   initialBil={car ?? ''}
                   onChoose={(t) => {
@@ -456,6 +467,78 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                     setGuidanceError(null);
                   }}
                 />
+              )}
+
+              {step === 'carIntent' && car && (
+                <div className="py-1 space-y-3">
+                  <p className="text-[14px] text-slate-500 leading-[1.55] mb-1">Välj det som stämmer bäst:</p>
+
+                  {/* Har du hittat */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTrack('found');
+                      setError(null);
+                      setStep('details');
+                    }}
+                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-[#0e6efe] bg-white hover:bg-[#0e6efe]/5 transition-all text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                      <Check className="w-5 h-5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-bold text-slate-900">Har du hittat en {car}</p>
+                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
+                        Du har ett specifikt annons eller en bil du vill att vi granskar och förhandlar.
+                      </p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] shrink-0 mt-1 transition-colors" />
+                  </button>
+
+                  {/* Letar du efter */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTrack('searching');
+                      setError(null);
+                      setStep('condition');
+                    }}
+                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-[#0e6efe] bg-white hover:bg-[#0e6efe]/5 transition-all text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                      <Search className="w-5 h-5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-bold text-slate-900">Letar du efter en {car}</p>
+                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
+                        Vi söker hela marknaden och hittar rätt {car} åt dig – du berättar vad du vill ha.
+                      </p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] shrink-0 mt-1 transition-colors" />
+                  </button>
+
+                  {/* Vill du byta till */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTrack('trade');
+                      setError(null);
+                      setStep('details');
+                    }}
+                    className="w-full flex items-start gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-[#0e6efe] bg-white hover:bg-[#0e6efe]/5 transition-all text-left group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                      <Repeat className="w-5 h-5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-bold text-slate-900">Vill du byta till en {car}</p>
+                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
+                        Du har en bil idag och vill byta – vi hanterar både köp och försäljning åt dig.
+                      </p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] shrink-0 mt-1 transition-colors" />
+                  </button>
+                </div>
               )}
 
               {step === 'condition' && (
