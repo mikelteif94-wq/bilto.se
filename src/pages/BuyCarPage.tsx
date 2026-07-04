@@ -326,7 +326,7 @@ export default function BuyCarPage({
             <div className="mb-10">
               <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">EXPERTERNAS VAL</p>
               <h2 className="text-[24px] sm:text-[34px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
-                Bilar vår expert rekommenderar just nu
+                Bilar våra experter rekommenderar just nu
               </h2>
               <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
                 Handplockade modeller med bäst balans mellan pris, driftskostnad och tillförlitlighet. Berätta vad du söker – vi förhandlar priset.

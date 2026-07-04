@@ -2639,7 +2639,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             <div className="flex items-start gap-3 bg-white border border-slate-200 rounded-xl px-4 sm:px-7 py-3 sm:py-4 shadow-sm max-w-xs sm:max-w-none">
               <ShieldCheck className="w-5 h-5 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2} />
               <span className="text-[13px] sm:text-[15px] text-slate-700 font-medium leading-snug">
-                Alla bilar vi rekommenderar har klarat vår 5-punktskontroll
+                Alla bilar vi rekommenderar har klarat vår 50-punktskontroll
               </span>
             </div>
           </div>

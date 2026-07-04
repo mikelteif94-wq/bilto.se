@@ -68,6 +68,7 @@ export function SiteFooter() {
             <ul className="space-y-3">
               {[
                 { label: 'Priser', href: '/priser' },
+                { label: 'Bilspara', href: '/bilspara' },
                 { label: 'Guider', href: '/guider' },
                 { label: 'Vanliga frågor', href: '/vanliga-fragor' },
                 { label: 'Så funkar det', href: '/sa-funkar-det' },
