@@ -188,37 +188,36 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/35 to-transparent pointer-events-none" />
 
-          <div className="relative flex-1 flex flex-col items-center justify-center pt-28 sm:pt-36 pb-20 px-5 sm:px-8">
-            <div className="text-center max-w-2xl mx-auto">
-              <span className="inline-block text-[11px] font-bold text-white/50 uppercase tracking-[0.28em] mb-5">
+          <div className="relative flex-1 flex flex-col items-center justify-center pt-24 sm:pt-36 pb-16 px-4 sm:px-8">
+            <div className="text-center w-full max-w-xl mx-auto">
+              <span className="inline-block text-[10px] sm:text-[11px] font-bold text-white/50 uppercase tracking-[0.22em] mb-4">
                 Transparenta avgifter
               </span>
-              <h1 className="text-white text-[clamp(32px,6vw,62px)] font-bold leading-[1.06] tracking-tight drop-shadow-lg mb-5">
+              <h1 className="text-white text-[clamp(28px,7vw,58px)] font-bold leading-[1.08] tracking-tight drop-shadow-lg mb-4 sm:mb-5">
                 Ett fast pris.<br />Inga provisioner.<br />Inga dolda avgifter.
               </h1>
-              <p className="text-white/80 text-[16px] sm:text-[19px] leading-[1.6] drop-shadow mb-10 max-w-lg mx-auto">
+              <p className="text-white/80 text-[15px] sm:text-[18px] leading-[1.65] drop-shadow mb-8 sm:mb-10 max-w-sm sm:max-w-lg mx-auto px-2">
                 Du betalar bara om affären blir av – och du godkänner varje steg.
               </p>
 
               {/* Price pill */}
-              <div className="inline-flex items-center gap-4 bg-black/30 backdrop-blur-md border border-white/15 rounded-2xl px-8 py-5 mb-10">
+              <div className="inline-flex items-center gap-3 sm:gap-4 bg-black/30 backdrop-blur-md border border-white/15 rounded-2xl px-5 sm:px-8 py-4 sm:py-5 mb-8 sm:mb-10">
                 <div className="text-left">
-                  <p className="text-white/50 text-[11px] font-semibold uppercase tracking-[0.2em] mb-0.5">Bilto Expert</p>
-                  <p className="text-white text-[38px] sm:text-[46px] font-bold leading-none">1 995 kr</p>
+                  <p className="text-white/50 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] mb-0.5">Bilto Expert</p>
+                  <p className="text-white text-[30px] sm:text-[42px] font-bold leading-none whitespace-nowrap">1 995 kr</p>
                 </div>
-                <div className="w-px h-12 bg-white/15" />
-                <p className="text-white/60 text-[13px] leading-snug text-left max-w-[120px]">
+                <div className="w-px h-10 sm:h-12 bg-white/15" />
+                <p className="text-white/60 text-[12px] sm:text-[13px] leading-snug text-left max-w-[100px] sm:max-w-[120px]">
                   Engångsavgift<br />per affär
                 </p>
               </div>
 
               {/* CTA */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 px-2">
                 <button
                   type="button"
                   onClick={() => navigate('/kop-bil')}
-                  className="inline-flex items-center justify-center gap-2 h-13 px-8 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition-all shadow-[0_4px_20px_-4px_rgba(14,110,254,0.55)] group"
-                  style={{ height: '52px' }}
+                  className="flex items-center justify-center gap-2 h-12 sm:h-[52px] px-7 sm:px-8 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition-all shadow-[0_4px_20px_-4px_rgba(14,110,254,0.55)] group"
                 >
                   Kom igång gratis
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -226,8 +225,7 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
                 <button
                   type="button"
                   onClick={onBackHome}
-                  className="inline-flex items-center justify-center gap-2 h-13 px-8 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-[15px] transition-all backdrop-blur-sm"
-                  style={{ height: '52px' }}
+                  className="flex items-center justify-center gap-2 h-12 sm:h-[52px] px-7 sm:px-8 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-[15px] transition-all backdrop-blur-sm"
                 >
                   Värdera bilen
                 </button>
@@ -339,36 +337,36 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
               </div>
 
               <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-white">
-                <div className="grid grid-cols-[1fr_88px_88px] sm:grid-cols-[1fr_120px_120px] bg-slate-50 border-b border-slate-100">
-                  <div className="px-5 py-4" />
-                  <div className="px-3 py-4 text-center">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.18em] mb-0.5">Gratis</p>
-                    <p className="text-[14px] font-bold text-slate-700">0 kr</p>
+                <div className="grid grid-cols-[1fr_72px_72px] sm:grid-cols-[1fr_120px_120px] bg-slate-50 border-b border-slate-100">
+                  <div className="px-4 sm:px-5 py-4" />
+                  <div className="px-2 sm:px-3 py-4 text-center">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-0.5">Gratis</p>
+                    <p className="text-[13px] font-bold text-slate-700">0 kr</p>
                   </div>
-                  <div className="px-3 py-4 text-center bg-[#0e6efe]/5">
-                    <p className="text-[10px] font-bold text-[#0e6efe] uppercase tracking-[0.18em] mb-0.5">Expert</p>
-                    <p className="text-[14px] font-bold text-[#0e6efe]">1 995 kr</p>
+                  <div className="px-2 sm:px-3 py-4 text-center bg-[#0e6efe]/5">
+                    <p className="text-[10px] font-bold text-[#0e6efe] uppercase tracking-[0.15em] mb-0.5">Expert</p>
+                    <p className="text-[13px] font-bold text-[#0e6efe]">1 995 kr</p>
                   </div>
                 </div>
 
                 {TABLE_ROWS.map((row, i) => (
                   <div
                     key={row.label}
-                    className={`grid grid-cols-[1fr_88px_88px] sm:grid-cols-[1fr_120px_120px] items-center border-b border-slate-50 last:border-0 ${i % 2 === 1 ? 'bg-slate-50/40' : 'bg-white'}`}
+                    className={`grid grid-cols-[1fr_72px_72px] sm:grid-cols-[1fr_120px_120px] items-center border-b border-slate-50 last:border-0 ${i % 2 === 1 ? 'bg-slate-50/40' : 'bg-white'}`}
                   >
-                    <div className="px-5 py-4">
-                      <span className="text-[14px] text-slate-700 font-medium">{row.label}</span>
+                    <div className="px-4 sm:px-5 py-3.5">
+                      <span className="text-[13px] sm:text-[14px] text-slate-700 font-medium">{row.label}</span>
                     </div>
-                    <div className="px-3 py-4 flex items-center justify-center">
+                    <div className="px-2 sm:px-3 py-3.5 flex items-center justify-center">
                       {row.free
-                        ? <Check className="w-5 h-5 text-emerald-500" strokeWidth={2.5} />
-                        : <X className="w-4 h-4 text-slate-200" strokeWidth={2.5} />
+                        ? <Check className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" strokeWidth={2.5} />
+                        : <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-200" strokeWidth={2.5} />
                       }
                     </div>
-                    <div className="px-3 py-4 flex items-center justify-center bg-[#0e6efe]/[0.03]">
+                    <div className="px-2 sm:px-3 py-3.5 flex items-center justify-center bg-[#0e6efe]/[0.03]">
                       {row.expert
-                        ? <Check className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.5} />
-                        : <X className="w-4 h-4 text-slate-200" strokeWidth={2.5} />
+                        ? <Check className="w-4 h-4 sm:w-5 sm:h-5 text-[#0e6efe]" strokeWidth={2.5} />
+                        : <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-200" strokeWidth={2.5} />
                       }
                     </div>
                   </div>
@@ -386,10 +384,10 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
                 <span className="inline-block text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.25em] mb-4">Trygghet</span>
                 <h2 className="text-[26px] sm:text-[36px] font-bold text-slate-900 tracking-tight">Du har alltid full kontroll</h2>
               </div>
-              <div className="grid sm:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
                 {CONTROLS.map(({ icon: Icon, text }) => (
-                  <div key={text} className="flex flex-col items-center text-center gap-4 bg-[#faf8f5] rounded-2xl p-7 border border-slate-100 hover:border-[#0e6efe]/20 hover:shadow-md transition-all">
-                    <span className="w-12 h-12 rounded-xl bg-[#0e6efe]/8 flex items-center justify-center shrink-0">
+                  <div key={text} className="flex sm:flex-col items-start sm:items-center text-left sm:text-center gap-4 bg-[#faf8f5] rounded-2xl p-5 sm:p-7 border border-slate-100 hover:border-[#0e6efe]/20 hover:shadow-md transition-all">
+                    <span className="w-11 h-11 rounded-xl bg-[#0e6efe]/8 flex items-center justify-center shrink-0">
                       <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={1.8} />
                     </span>
                     <p className="text-[14px] sm:text-[15px] text-slate-700 font-medium leading-snug">{text}</p>
