@@ -120,6 +120,9 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
             <button onClick={onBack} className="hidden sm:block text-[13px] text-white/80 hover:text-white font-medium transition">
               Startsidan
             </button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/bilspara'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="hidden sm:block text-[13px] text-white/90 hover:text-white font-medium transition">
+              Bilspara
+            </button>
             <button
               onClick={onNavigateConsultation ?? (() => { window.history.pushState({}, '', '/gratis-konsultation'); window.dispatchEvent(new PopStateEvent('popstate')); })}
               className="text-[13px] text-white/80 hover:text-white font-medium transition"

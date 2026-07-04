@@ -12,7 +12,8 @@ export type MobileMenuItem =
   | 'Bilköpshjälpen'
   | 'Guider'
   | 'Priser'
-  | 'Vanliga frågor';
+  | 'Vanliga frågor'
+  | 'Bilspara';
 
 interface MobileMenuProps {
   open: boolean;
@@ -129,6 +130,20 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
             }`}
           >
             Sälj bil
+          </button>
+
+          {/* Bilspara */}
+          <button
+            type="button"
+            onClick={() => navigate('/bilspara', onClose)}
+            className={`w-full text-left px-4 py-3 rounded-lg text-[18px] tracking-tight transition font-medium flex items-center gap-2 ${
+              active === 'Bilspara' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
+            }`}
+          >
+            Bilspara
+            <span className="flex items-center gap-1 ml-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            </span>
           </button>
 
           {/* Om oss */}

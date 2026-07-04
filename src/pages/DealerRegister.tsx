@@ -42,7 +42,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor', 'Bilspara'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
@@ -51,6 +51,7 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
       'Guider': '/guider',
       'Priser': '/priser',
       'Vanliga frågor': '/vanliga-fragor',
+      'Bilspara': '/bilspara',
     };
     const route = routes[item];
     if (route) {

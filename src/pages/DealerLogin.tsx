@@ -36,7 +36,7 @@ export default function DealerLogin({
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor', 'Bilspara'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
@@ -45,6 +45,7 @@ export default function DealerLogin({
       'Guider': '/guider',
       'Priser': '/priser',
       'Vanliga frågor': '/vanliga-fragor',
+      'Bilspara': '/bilspara',
     };
     const route = routes[item];
     if (route) {

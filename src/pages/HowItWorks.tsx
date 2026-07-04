@@ -412,6 +412,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <button type="button" onClick={() => { window.history.pushState({}, '', '/guider'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Guider</button>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/priser'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Priser</button>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/vanliga-fragor'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Vanliga frågor</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/bilspara'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/90 hover:text-white transition flex items-center gap-1.5">
+              Bilspara
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            </button>
           </nav>
           <div className="flex items-center ml-auto">
             <a

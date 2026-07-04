@@ -165,6 +165,10 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button type="button" onClick={() => { window.history.pushState({}, '', '/guider'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Guider</button>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/priser'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Priser</button>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/vanliga-fragor'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Vanliga frågor</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/bilspara'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/90 hover:text-white transition flex items-center gap-1.5">
+              Bilspara
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            </button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
