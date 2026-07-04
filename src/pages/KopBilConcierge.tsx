@@ -372,7 +372,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             </div>
           </div>
 
-          <div className="mt-12 sm:mt-14">
+          <div className="mt-12 sm:mt-14 flex flex-col items-center text-center">
             <button
               type="button"
               onClick={() => onNavigateBuy()}
