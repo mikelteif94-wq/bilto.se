@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, Phone, Check, X, ShieldCheck, ArrowRight } from 'lucide-react';
+import { ChevronLeft, Phone, Check, X, ArrowRight } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
 import BuyFlowFAQ from '../components/BuyFlowFAQ';
 import { validateSwedishPhone } from '../lib/utils';
-import { PHONE, PHONE_TEL, EXPERT_NAME, EXPERT_PHOTO } from '../config/site';
+import { PHONE, PHONE_TEL } from '../config/site';
 import BuyTrackStep, { type BuyTrack } from '../components/forms/BuyTrackStep';
 import BuyDetailsStep, { type BuyDetailsData } from '../components/forms/BuyDetailsStep';
 import BuyTradeInStep, { type BuyTradeInData } from '../components/forms/BuyTradeInStep';
@@ -276,14 +276,14 @@ export default function BuyCarPage({
               <a
                 href="#kom-igang"
                 onClick={(e) => { e.preventDefault(); document.getElementById('kom-igang')?.scrollIntoView({ behavior: 'smooth' }); }}
-                className="inline-flex items-center justify-center gap-2 h-13 px-8 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg"
+                className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg"
               >
-                Kom igång – det är gratis
+                Kom igång
                 <ArrowRight className="w-5 h-5" />
               </a>
             </div>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-              {['Kostnadsfritt för dig', 'Inga bindningar', 'Svar inom 24h'].map(t => (
+              {['Inga bindningar', 'Svar inom 24h', '1 995 kr om affären blir av'].map(t => (
                 <span key={t} className="flex items-center gap-1.5 text-white/70 text-[13px]">
                   <Check className="w-3.5 h-3.5 text-white/60" strokeWidth={2.5} />
                   {t}
@@ -484,33 +484,6 @@ export default function BuyCarPage({
                 <p className="text-[15px] text-slate-600 leading-relaxed max-w-sm mx-auto">
                   Din förfrågan är mottagen. En expert tar vid och hör av sig – du behöver inte göra något mer.
                 </p>
-              </div>
-
-              {/* Expert handoff card */}
-              <div className="max-w-sm mx-auto mb-7 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-                <div className="bg-[#0e6efe]/5 px-5 py-3 border-b border-slate-100">
-                  <p className="text-[12px] font-bold text-[#0e6efe] uppercase tracking-wider">Din tilldelade expert</p>
-                </div>
-                <div className="p-5 flex items-center gap-4">
-                  <div className="relative shrink-0">
-                    <img
-                      src={EXPERT_PHOTO}
-                      alt={EXPERT_NAME}
-                      className="w-14 h-14 rounded-xl object-cover object-top border-2 border-slate-200"
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[15px] font-bold text-slate-900">{EXPERT_NAME}</p>
-                    <p className="text-[12px] text-[#0e6efe] font-medium">Seniorförhandlare · 12 år</p>
-                    <p className="text-[11px] text-slate-400 mt-1">Svar inom 24 timmar</p>
-                  </div>
-                </div>
-                <div className="px-5 pb-5 flex items-start gap-2.5">
-                  <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <p className="text-[12.5px] text-slate-600 leading-relaxed">
-                    Din expert jobbar <span className="font-semibold">uteslutande för dig</span> – aldrig för handlaren.
-                  </p>
-                </div>
               </div>
 
               {/* Email notice */}

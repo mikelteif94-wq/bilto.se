@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 
 interface FaqItem {
   q: string;
@@ -14,7 +13,7 @@ interface BuyFlowFAQProps {
 const BUY_FAQS: FaqItem[] = [
   {
     q: 'Kostar det något att använda Biltos köptjänst?',
-    a: 'Nej, det är helt kostnadsfritt för dig som privatperson. Bilto finansieras av ett blygsamt arvode från handlaren när en affär genomförs – det påverkar aldrig priset du betalar.',
+    a: 'Ja – tjänsten kostar 1 995 kr och betalas bara om affären faktiskt blir av. Inget köp, ingen kostnad. Snittbesparingen vi förhandlar fram är 18 000 kr per affär, så de flesta kunder tjänar mångfalt mer än de betalar.',
   },
   {
     q: 'Är det bindande att skicka in en förfrågan?',
@@ -34,18 +33,18 @@ const BUY_FAQS: FaqItem[] = [
   },
   {
     q: 'Hjälper ni även med finansiering?',
-    a: 'Ja. Vi jämför ränteerbjudanden från flera finansiärers och ser till att du inte betalar mer än du behöver. Vi kan även hjälpa dig med leasingavtal om det passar bättre.',
+    a: 'Ja. Vi jämför ränteerbjudanden från flera finansiärer och ser till att du inte betalar mer än du behöver. Vi kan även hjälpa dig med leasingavtal om det passar bättre.',
   },
   {
     q: 'Kan jag byta in min gamla bil?',
-    a: 'Ja. Sätt "Ja, jag har en bil att byta in" i formuläret så ingår inbyteshantering i tjänsten – vi värdera din bil och matchar köp och sälj.',
+    a: 'Ja. Välj "Jag har en bil att byta in" i formuläret så ingår inbyteshantering i tjänsten – vi värderar din bil och matchar köp och sälj.',
   },
 ];
 
 const CONCIERGE_FAQS: FaqItem[] = [
   {
     q: 'Vad kostar köphjälpstjänsten?',
-    a: 'Helt gratis för dig. Vi tar aldrig betalt av privatpersoner. Bilto finansieras av ett litet arvode från handlaren när en affär görs – det påverkar inte priset du betalar.',
+    a: 'Tjänsten kostar 1 995 kr och betalas bara om affären blir av. Inget köp, ingen kostnad. Snittbesparingen vi förhandlar fram är 18 000 kr – de flesta kunder tjänar mångfalt mer.',
   },
   {
     q: 'Är det bindande att kontakta er?',
@@ -65,52 +64,45 @@ const CONCIERGE_FAQS: FaqItem[] = [
   },
   {
     q: 'Kan jag vara med och provköra bilen?',
-    a: 'Självklart. Vi bokar tid för provkörning hos den handlare eller säljare vi hittat. Du beslutar alltid sista ordet.',
+    a: 'Självklart. Vi bokar tid för provkörning hos den handlare eller säljare vi hittat. Du bestämmer alltid sista ordet.',
   },
 ];
 
 export default function BuyFlowFAQ({ variant = 'buy' }: BuyFlowFAQProps) {
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [openIdx, setOpenIdx] = useState<number | null>(0);
   const faqs = variant === 'concierge' ? CONCIERGE_FAQS : BUY_FAQS;
 
   return (
-    <section className="py-10 sm:py-14 px-4">
-      <div className="max-w-2xl mx-auto">
-        <h2 className="text-[20px] sm:text-[24px] font-extrabold text-slate-900 mb-6 text-center">
-          Vanliga frågor
-        </h2>
-        <div className="space-y-2">
-          {faqs.map((item, i) => (
-            <div
-              key={i}
-              className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
-            >
+    <section className="bg-[#0e6efe] px-4 sm:px-6 py-16 sm:py-24">
+      <div className="max-w-3xl mx-auto">
+        <div className="mb-10 sm:mb-14">
+          <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3">Vanliga frågor</p>
+          <h2 className="text-[28px] sm:text-[38px] font-bold text-white tracking-[-0.02em] leading-[1.08]">
+            Vanliga frågor – vi svarar rakt på sak.
+          </h2>
+        </div>
+        <div className="divide-y divide-white/15 border-y border-white/15">
+          {faqs.map((item, idx) => {
+            const open = openIdx === idx;
+            return (
               <button
+                key={item.q}
                 type="button"
-                onClick={() => setOpenIdx(openIdx === i ? null : i)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-[#faf8f5] transition"
+                onClick={() => setOpenIdx(open ? null : idx)}
+                className="w-full text-left py-5 flex items-start gap-4 group"
               >
-                <span className="text-[14px] font-semibold text-slate-800 pr-4 leading-snug">{item.q}</span>
-                {openIdx === i
-                  ? <ChevronUp className="w-4 h-4 text-slate-400 shrink-0" />
-                  : <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />}
+                <div className="flex-1">
+                  <h3 className="text-[16px] font-semibold text-white leading-snug">{item.q}</h3>
+                  {open && (
+                    <p className="mt-3 text-[14px] text-white/75 leading-[1.65]">{item.a}</p>
+                  )}
+                </div>
+                <ChevronDown
+                  className={`w-5 h-5 text-white/50 mt-0.5 shrink-0 transition-transform duration-200 ${open ? 'rotate-180 text-white/80' : ''}`}
+                />
               </button>
-              <AnimatePresence initial={false}>
-                {openIdx === i && (
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: 'auto' }}
-                    exit={{ height: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <p className="px-5 pb-5 text-[13px] sm:text-[14px] text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
-                      {item.a}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
