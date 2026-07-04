@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import {
   Package, Search, ArrowUpDown, AlertTriangle, Clock,
-  ChevronRight, Loader2, Filter, Zap, TrendingDown,
+  Loader2, Filter, Zap, TrendingDown,
 } from 'lucide-react';
 import StaffShell from '../components/StaffShell';
 import type { StaffUser } from '../hooks/useStaffAuth';
@@ -33,11 +33,6 @@ interface PoolCar {
 }
 
 type SortKey = 'rabatt' | 'lagertid' | 'prioritet' | 'pris';
-
-function navigate(path: string) {
-  window.history.pushState({}, '', path);
-  window.dispatchEvent(new PopStateEvent('popstate'));
-}
 
 function fmtKr(v: number | null) {
   if (v == null) return '—';
@@ -276,13 +271,6 @@ export default function StaffPool({ staffUser, onLoggedOut, onCreateDeal }: Staf
                     >
                       <Zap className="w-3.5 h-3.5" />
                       Skapa affär
-                    </button>
-                    <button
-                      onClick={() => navigate(`/handlare/bilar/${car.id}`)}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 border border-slate-200 hover:bg-slate-50 transition"
-                    >
-                      <ChevronRight className="w-3.5 h-3.5" />
-                      Visa detaljer
                     </button>
                   </div>
                 </div>

@@ -102,7 +102,6 @@ export default function StaffNewDeal({ staffUser, onLoggedOut, onBack, onCreated
       .from('deals')
       .insert({
         assigned_staff_user_id: staffUser.id,
-        created_by_staff_user_id: staffUser.id,
         customer_id: customerId,
         car_id: selectedCar.id,
         dealer_id: selectedCar.dealer_id,

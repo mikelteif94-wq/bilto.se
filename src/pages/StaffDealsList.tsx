@@ -21,6 +21,7 @@ interface Deal {
   created_at: string;
   updated_at: string;
   dealer_id: string | null;
+  assigned_staff_user_id: string | null;
   dealers: { foretagsnamn: string } | null;
   customers: { namn: string } | null;
   cars: { marke: string; modell: string; ar: number; regnummer: string | null } | null;
@@ -85,7 +86,7 @@ export default function StaffDealsList({ staffUser, onLoggedOut, onOpenDeal, onN
       const { data } = await supabase
         .from('deals')
         .select(`
-          id, deal_number, status, created_at, updated_at, dealer_id,
+          id, deal_number, status, created_at, updated_at, dealer_id, assigned_staff_user_id,
           dealers(foretagsnamn),
           customers(namn),
           cars(marke, modell, ar, regnummer),
@@ -100,9 +101,7 @@ export default function StaffDealsList({ staffUser, onLoggedOut, onOpenDeal, onN
   }, []);
 
   const filtered = deals.filter(d => {
-    if (tab === 'mine' && (d.staff_users as unknown as { fornamn: string; efternamn: string } | null) !== null) {
-      // approximation: filter by assigned staff
-    }
+    if (tab === 'mine' && d.assigned_staff_user_id !== staffUser.id) return false;
     if (tab === 'pending_approval' && d.status !== 'sent_for_approval') return false;
     if (tab === 'active' && !ACTIVE_STATUSES.includes(d.status)) return false;
     if (tab === 'closed' && !CLOSED_STATUSES.includes(d.status)) return false;
