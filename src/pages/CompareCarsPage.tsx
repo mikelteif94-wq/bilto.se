@@ -39,7 +39,7 @@ import { useVehicleLookup } from '../lib/useVehicleLookup';
 
 /* ───────────── constants ───────────── */
 
-const SHOW_EXPLORE = false;
+const SHOW_EXPLORE = true;
 
 const FUEL_LABELS: Record<string, string> = {
   bensin: 'Bensin', diesel: 'Diesel', hybrid: 'Hybrid', laddhybrid: 'Laddhybrid', el: 'El',
