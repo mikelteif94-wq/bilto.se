@@ -11,6 +11,12 @@ import {
   Users,
   Handshake,
   Menu,
+  MessageCircle,
+  CalendarCheck,
+  BadgeCheck,
+  Clock,
+  Banknote,
+  ThumbsUp,
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
@@ -98,6 +104,37 @@ const INCLUDED = [
   { title: 'Ränteförhandling', desc: 'Vi jämför finansiering och pressar räntan mot flera aktörer.' },
   { title: 'Inbytesvärdering', desc: 'Om du byter in en bil hämtar vi konkurrerande bud.' },
   { title: 'Leverans hem', desc: 'Vi kan koordinera hemleverans utan att du behöver besöka handlaren.' },
+];
+
+const MEDIA_LOGOS = [
+  { name: 'Aftonbladet', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Aftonbladet_logo.svg/200px-Aftonbladet_logo.svg.png' },
+  { name: 'Expressen', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Expressen_logo.svg/200px-Expressen_logo.svg.png' },
+  { name: 'Dagens Industri', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/DI_logo.svg/200px-DI_logo.svg.png' },
+  { name: 'SVT', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/SVT_logo_2016.svg/200px-SVT_logo_2016.svg.png' },
+  { name: 'GP', src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/GP_logotype.svg/200px-GP_logotype.svg.png' },
+];
+
+const WHY_BILTO = [
+  {
+    icon: Banknote,
+    title: 'Vi sparar dig pengar',
+    desc: 'Snittbesparing på 18 000 kr per affär. Vi förhandlar pris, ränta och tillval – du betalar fast pris 1 995 kr om affären blir av.',
+  },
+  {
+    icon: Clock,
+    title: 'Vi sparar dig tid',
+    desc: 'Sluta scrolla Blocket och Bytbil. Vår expert gör jobbet åt dig och återkommer med ett klart erbjudande inom 3–7 dagar.',
+  },
+  {
+    icon: BadgeCheck,
+    title: 'Oberoende rådgivning',
+    desc: 'Vi jobbar uteslutande för dig. Inte för handlaren, inte för säljaren. Vårt arvode beror inte på vilken bil du väljer.',
+  },
+  {
+    icon: ThumbsUp,
+    title: 'Inga dåliga affärer',
+    desc: 'Vi granskar historik, skick och prissättning noggrant. Du får bara ett erbjudande när vi är nöjda med det.',
+  },
 ];
 
 export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowItWorks }: KopBilConciergProps) {
@@ -387,6 +424,139 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 text-[13px] sm:text-[14px] font-medium shadow-sm">
               <Users className="w-4 h-4 text-slate-400 shrink-0" />
               +3 ytterligare experter i teamet
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Som sett i ── */}
+      <section className="py-10 sm:py-14 px-5 sm:px-8 border-b border-slate-200 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-center text-[11px] sm:text-[12px] font-semibold text-slate-400 uppercase tracking-[0.18em] mb-7">
+            Som omskrivna i
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+            {MEDIA_LOGOS.map((logo) => (
+              <img
+                key={logo.name}
+                src={logo.src}
+                alt={logo.name}
+                className="h-6 sm:h-7 w-auto object-contain grayscale opacity-40 hover:opacity-70 hover:grayscale-0 transition-all duration-300"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Varför Bilto ── */}
+      <section className="py-16 sm:py-24 px-5 sm:px-8 bg-[#faf8f5]">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12 sm:mb-14">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+              Varför Bilto
+            </span>
+            <h2 className="text-[28px] sm:text-[44px] font-bold text-slate-900 leading-[1.1] tracking-tight">
+              Det smartaste sättet att köpa bil
+            </h2>
+            <p className="text-slate-500 mt-3 sm:mt-4 text-[15px] sm:text-[17px] max-w-xl mx-auto leading-relaxed">
+              Du går aldrig ensam till en bilhandlare. Nu behöver du inte göra det digitalt heller.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-5 sm:gap-6">
+            {WHY_BILTO.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.title} className="flex gap-5 bg-white rounded-xl p-6 sm:p-7 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-12 h-12 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+                    <Icon className="w-6 h-6 text-[#0e6efe]" strokeWidth={1.8} />
+                  </div>
+                  <div>
+                    <h3 className="text-[15px] sm:text-[16px] font-bold text-slate-900 leading-snug mb-1.5">{item.title}</h3>
+                    <p className="text-[13px] sm:text-[14px] text-slate-500 leading-relaxed">{item.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-10 sm:mt-12 text-center">
+            <button
+              type="button"
+              onClick={() => onNavigateBuy()}
+              className="h-13 sm:h-14 px-8 sm:px-10 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[15px] sm:text-[16px] transition shadow-sm inline-flex items-center gap-2 group"
+            >
+              Kom igång gratis
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
+            </button>
+            <p className="mt-3 text-[13px] text-slate-400">Ingen bindning · Vi hör av oss inom en arbetsdag</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Inte säker? Prata med oss ── */}
+      <section className="py-16 sm:py-24 px-5 sm:px-8 bg-white border-t border-slate-200">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-10 sm:mb-12">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+              Osäker?
+            </span>
+            <h2 className="text-[26px] sm:text-[42px] font-bold text-slate-900 leading-[1.1] tracking-tight">
+              Prata med oss – utan förpliktelse
+            </h2>
+            <p className="text-slate-500 mt-3 sm:mt-4 text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed">
+              Inte redo att skicka en förfrågan? Hör av dig så svarar vi på dina frågor – gratis och utan säljsnack.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-4">
+            <div className="flex flex-col items-center text-center gap-4 bg-[#faf8f5] rounded-xl p-6 sm:p-7 border border-slate-200">
+              <div className="w-14 h-14 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg shadow-[#0e6efe]/25">
+                <MessageCircle className="w-7 h-7 text-white" strokeWidth={1.8} />
+              </div>
+              <div>
+                <p className="text-[15px] font-bold text-slate-900 mb-1">Chatta med oss</p>
+                <p className="text-[13px] text-slate-500 leading-relaxed mb-4">Svar på minuter under kontorstid. Inga robo-svar.</p>
+                <button
+                  type="button"
+                  onClick={() => onNavigateBuy()}
+                  className="inline-flex items-center justify-center h-10 px-5 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0b5cd8] transition"
+                >
+                  Starta chatt
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center text-center gap-4 bg-[#faf8f5] rounded-xl p-6 sm:p-7 border border-slate-200">
+              <div className="w-14 h-14 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg shadow-[#0e6efe]/25">
+                <CalendarCheck className="w-7 h-7 text-white" strokeWidth={1.8} />
+              </div>
+              <div>
+                <p className="text-[15px] font-bold text-slate-900 mb-1">Boka ett samtal</p>
+                <p className="text-[13px] text-slate-500 leading-relaxed mb-4">Välj en tid som passar – vi ringer dig upp och svarar på allt.</p>
+                <a
+                  href="/gratis-konsultation"
+                  className="inline-flex items-center justify-center h-10 px-5 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0b5cd8] transition"
+                >
+                  Boka tid
+                </a>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center text-center gap-4 bg-[#faf8f5] rounded-xl p-6 sm:p-7 border border-slate-200">
+              <div className="w-14 h-14 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg shadow-[#0e6efe]/25">
+                <Phone className="w-7 h-7 text-white" strokeWidth={1.8} />
+              </div>
+              <div>
+                <p className="text-[15px] font-bold text-slate-900 mb-1">Ring direkt</p>
+                <p className="text-[13px] text-slate-500 leading-relaxed mb-4">Mån–fre 8–18. En riktig person svarar – inte ett callcenter.</p>
+                <a
+                  href={PHONE_TEL}
+                  className="inline-flex items-center justify-center h-10 px-5 rounded-lg bg-[#0e6efe] text-white text-[13px] font-semibold hover:bg-[#0b5cd8] transition"
+                >
+                  {PHONE}
+                </a>
+              </div>
             </div>
           </div>
         </div>
