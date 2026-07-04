@@ -27,6 +27,7 @@ import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import SeoCarsSection from '../components/SeoCarsSection';
 import ReviewsSection from '../components/ReviewsSection';
 import CompactCarCard from '../components/CompactCarCard';
+import { PHONE, PHONE_TEL, EXPERT_PHOTO } from '../config/site';
 import ElCarCard from '../components/ElCarCard';
 import { CarDetailSheet } from '../components/quiz/CarDetailSheet';
 import type { ComparisonCar } from '../lib/comparison';
@@ -407,7 +408,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <button type="button" onClick={onBackHome} className="text-[15px] text-white/70 font-medium transition hover:text-white">Sälj bil</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Sälj bil</button>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Köp bil</button>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Om oss</button>
           </nav>
@@ -997,11 +998,11 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     Kostnadsfri konsultation
                   </a>
                   <a
-                    href="tel:+46855550200"
+                    href={PHONE_TEL}
                     className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
                   >
                     <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
-                    Ring 08-5555 0200
+                    Ring {PHONE}
                   </a>
                 </div>
               </div>
@@ -1143,13 +1144,12 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
       {scrolled && (
         <a
-          href="tel:+46855550200"
+          href={PHONE_TEL}
           className="md:hidden fixed bottom-4 left-3 right-3 z-40 flex items-center gap-3 px-4 h-[58px] rounded bg-[#0e6efe] active:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_8px_24px_rgba(14,110,254,0.45)] transition-all duration-200 animate-[slideUp_0.3s_ease-out] overflow-hidden"
           style={{ background: 'linear-gradient(135deg,#1a7fff 0%,#0e6efe 50%,#0a57cc 100%)' }}
         >
           <div className="relative shrink-0">
-            <img src="/Man_in_car_showroom_portrait copy.png" alt="Expert" className="w-9 h-9 rounded object-cover object-top border-2 border-white/30" />
-            <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-white" />
+            <img src={EXPERT_PHOTO} alt="Expert" className="w-9 h-9 rounded object-cover object-top border-2 border-white/30" />
           </div>
           <div className="flex flex-col leading-tight min-w-0">
             <span className="text-[15px] font-bold tracking-[-0.01em] truncate">Ring expert nu</span>

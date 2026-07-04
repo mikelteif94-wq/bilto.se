@@ -16,6 +16,7 @@ import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { setPageMeta } from '../lib/pageMeta';
 import BuyFlowFAQ from '../components/BuyFlowFAQ';
+import { PHONE, PHONE_TEL, EXPERT_NAME, EXPERT_PHOTO } from '../config/site';
 
 interface KopBilConciergProps {
   onBack: () => void;
@@ -25,17 +26,17 @@ interface KopBilConciergProps {
 
 const EXPERTS = [
   {
-    name: 'Marcus Holm',
+    name: EXPERT_NAME,
     title: 'Seniorförhandlare',
     years: '12 år i branschen',
-    avatar: '/Man_in_car_showroom_portrait copy.png',
+    avatar: EXPERT_PHOTO,
     spec: 'Premium & tyska märken',
   },
   {
-    name: 'Sofia Lindgren',
+    name: EXPERT_NAME,
     title: 'Bilrådgivare',
     years: '8 år i branschen',
-    avatar: '/BSM_car_sale_key_woman_handover_101122.jpg',
+    avatar: EXPERT_PHOTO,
     spec: 'Familjebil & inbyte',
   },
 ];
@@ -161,14 +162,8 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           </button>
           <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
             <button type="button" onClick={onBack} className="text-[15px] text-white/80 hover:text-white transition font-medium">Sälj bil</button>
-            <button type="button" onClick={onNavigateBuy} className="text-[15px] text-white/80 hover:text-white transition font-medium">Bilköpshjälpen</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/guider'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Guider</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/priser'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Priser</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/vanliga-fragor'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Vanliga frågor</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/bilspara'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/90 hover:text-white transition flex items-center gap-1.5">
-              Bilspara
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            </button>
+            <button type="button" onClick={onNavigateBuy} className="text-[15px] text-white font-semibold transition">Köp bil</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Om oss</button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
@@ -238,11 +233,11 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 </button>
                 <p className="text-center text-white/60 text-[12px]">Fast pris 1&nbsp;995 kr – endast om affären blir av</p>
                 <a
-                  href="tel:+46855550200"
+                  href={PHONE_TEL}
                   className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
                 >
                   <Phone className="w-4 h-4 shrink-0" />
-                  Ring oss: 08-5555 0200
+                  Ring oss: {PHONE}
                 </a>
               </div>
 
@@ -372,12 +367,12 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                     alt={e.name}
                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover object-top border-4 border-white shadow-md"
                   />
-                  <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
                 </div>
                 <div>
                   <p className="text-[16px] sm:text-[17px] font-bold text-slate-900">{e.name}</p>
                   <p className="text-[13px] text-[#0e6efe] font-semibold mt-0.5">{e.title}</p>
                   <p className="text-[12px] text-slate-500 mt-0.5">{e.years} · {e.spec}</p>
+                  <p className="text-[11px] text-slate-400 mt-1">Svar inom 24 timmar</p>
                   <div className="flex gap-0.5 mt-2">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -452,7 +447,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
             <a
-              href="tel:+46855550200"
+              href={PHONE_TEL}
               className="h-13 sm:h-14 px-6 sm:px-8 rounded-xl border-2 border-slate-300 text-slate-700 font-semibold text-[14px] sm:text-[15px] hover:border-slate-400 hover:bg-white transition inline-flex items-center justify-center gap-2"
             >
               <Phone className="w-4 h-4 shrink-0" />

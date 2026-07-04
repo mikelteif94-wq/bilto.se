@@ -3,6 +3,7 @@ import { ArrowRight, Menu, ShieldCheck, Handshake, Gauge } from 'lucide-react';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
 import { setPageMeta } from '../lib/pageMeta';
+import { FOUNDER_PHOTO } from '../config/site';
 
 interface AboutPageProps {
   onBackHome: () => void;
@@ -49,7 +50,7 @@ const FOUNDERS = [
     name: 'Alexander',
     role: 'VD och medgrundare',
     bio: '[Grundarens bakgrund och varför han startade Bilto – fylls i av grundaren.]',
-    photo: '/Man_in_car_showroom_portrait copy.png',
+    photo: FOUNDER_PHOTO,
   },
   {
     name: '[Medgrundare]',

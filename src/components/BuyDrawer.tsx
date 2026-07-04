@@ -7,6 +7,7 @@ import BuyDetailsStep, { type BuyDetailsData } from './forms/BuyDetailsStep';
 import BuyTradeInStep, { type BuyTradeInData } from './forms/BuyTradeInStep';
 import BuyContactStep, { type BuyContactData } from './forms/BuyContactStep';
 import { supabase } from '../lib/supabase';
+import { PHONE, PHONE_TEL, EXPERT_NAME, EXPERT_PHOTO } from '../config/site';
 
 interface BuyDrawerProps {
   car: string | null;
@@ -355,11 +356,10 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                 <div className="flex items-center gap-2.5 mb-3">
                   <div className="relative shrink-0">
                     <img
-                      src="/Man_in_car_showroom_portrait copy.png"
+                      src={EXPERT_PHOTO}
                       alt="Bilto-expert"
                       className="w-9 h-9 rounded-xl object-cover object-top border-2 border-white shadow-sm"
                     />
-                    <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />
                   </div>
                   <div>
                     <p className="text-[12px] font-semibold text-slate-800 leading-tight">Bilto-expert tillgänglig</p>
@@ -648,11 +648,11 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                     </button>
                     <span className="text-slate-300 text-[13px]">·</span>
                     <a
-                      href="tel:+46855550200"
+                      href={PHONE_TEL}
                       className="inline-flex items-center gap-1.5 text-[13.5px] text-slate-500 hover:text-slate-700 transition"
                     >
                       <Phone className="w-3.5 h-3.5" />
-                      08-5555 0200
+                      {PHONE}
                     </a>
                   </div>
                 </div>

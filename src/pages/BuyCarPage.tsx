@@ -3,6 +3,7 @@ import { ChevronLeft, Phone, Check, X, User, Star, ShieldCheck } from 'lucide-re
 import ErrorBanner from '../components/ErrorBanner';
 import BuyFlowFAQ from '../components/BuyFlowFAQ';
 import { validateSwedishPhone } from '../lib/utils';
+import { PHONE, PHONE_TEL, EXPERT_NAME, EXPERT_PHOTO } from '../config/site';
 import BuyTrackStep, { type BuyTrack } from '../components/forms/BuyTrackStep';
 import BuyDetailsStep, { type BuyDetailsData } from '../components/forms/BuyDetailsStep';
 import BuyTradeInStep, { type BuyTradeInData } from '../components/forms/BuyTradeInStep';
@@ -223,7 +224,7 @@ export default function BuyCarPage({
 
       setStep('done');
     } catch {
-      setError('Något gick fel. Försök igen eller ring oss på 08-5555 0200.');
+      setError(`Något gick fel. Försök igen eller ring oss på ${PHONE}.`);
     } finally {
       setSubmitting(false);
     }
@@ -374,26 +375,21 @@ export default function BuyCarPage({
                 <div className="p-5 flex items-center gap-4">
                   <div className="relative shrink-0">
                     <img
-                      src="/Man_in_car_showroom_portrait copy.png"
-                      alt="Marcus Holm"
+                      src={EXPERT_PHOTO}
+                      alt={EXPERT_NAME}
                       className="w-14 h-14 rounded-xl object-cover object-top border-2 border-slate-200"
                     />
-                    <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[15px] font-bold text-slate-900">Marcus Holm</p>
+                    <p className="text-[15px] font-bold text-slate-900">{EXPERT_NAME}</p>
                     <p className="text-[12px] text-[#0e6efe] font-medium">Seniorförhandlare · 12 år</p>
-                    <div className="flex items-center gap-0.5 mt-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
+                    <p className="text-[11px] text-slate-400 mt-1">Svar inom 24 timmar</p>
                   </div>
                 </div>
                 <div className="px-5 pb-5 flex items-start gap-2.5">
                   <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                   <p className="text-[12.5px] text-slate-600 leading-relaxed">
-                    Marcus jobbar <span className="font-semibold">uteslutande för dig</span> – aldrig för handlaren.
+                    Din expert jobbar <span className="font-semibold">uteslutande för dig</span> – aldrig för handlaren.
                   </p>
                 </div>
               </div>
@@ -441,11 +437,11 @@ export default function BuyCarPage({
 
               <div className="text-center">
                 <a
-                  href="tel:+46855550200"
+                  href={PHONE_TEL}
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-100 text-slate-700 text-[14px] font-medium hover:bg-slate-200 transition"
                 >
                   <Phone className="w-4 h-4" />
-                  Ring oss direkt: 08-5555 0200
+                  Ring oss direkt: {PHONE}
                 </a>
               </div>
             </div>
@@ -457,7 +453,7 @@ export default function BuyCarPage({
 
       {scrolled && step !== 'done' && (
         <a
-          href="tel:+46855550200"
+          href={PHONE_TEL}
           className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3 rounded-full bg-[#0e6efe] text-white text-[13px] font-semibold shadow-lg hover:bg-[#0a57cc] transition-all"
         >
           <Phone className="w-4 h-4" />

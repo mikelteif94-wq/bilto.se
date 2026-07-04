@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import {
-  User, Menu, Search, Phone, XCircle, Car, Sparkles, Handshake,
+  User, Menu, Search, XCircle, Car, Sparkles, Handshake,
   Mail, ChevronRight, Shield, Clock, TrendingUp, Star, ArrowRight, CheckCircle,
 } from 'lucide-react';
-import { validateSwedishPhone } from '../lib/utils';
 import { supabase } from '../lib/supabase';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
@@ -63,7 +62,6 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
   const [heroTab, setHeroTab] = useState<'hitta' | 'salj'>('salj');
   const [regnummer, setRegnummer] = useState('');
-  const [telefon, setTelefon] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -156,9 +154,8 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     const q = carQuery.trim();
     if (!q) return;
     setShowSuggestions(false);
-    // Free-text search → catalog with filter applied
-    const params = new URLSearchParams({ q });
-    window.history.pushState({}, '', `/kop-bil?${params}`);
+    const params = new URLSearchParams({ bil: q, typ: 'searching' });
+    window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
@@ -183,18 +180,15 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const regTrim = regnummer.trim().toUpperCase().replace(/\s/g, '');
-    const telTrim = telefon.trim();
     if (!regTrim) { setError('Ange ett registreringsnummer'); return; }
     if (!/^[A-Z]{3}[0-9]{2}[A-Z0-9]$/.test(regTrim)) {
       setError('Registreringsnummer måste vara 3 bokstäver följt av 3 tecken (t.ex. ABC123)');
       return;
     }
-    const phoneErr = validateSwedishPhone(telTrim);
-    if (phoneErr) { setError(phoneErr); return; }
     setError('');
     setSubmitting(true);
     const emailTrim = email.trim();
-    await supabase.from('leads').insert({ regnummer: regTrim, telefon: telTrim, email: emailTrim });
+    await supabase.from('leads').insert({ regnummer: regTrim, telefon: '', email: emailTrim });
     try {
       const notifyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-new-lead`;
       await fetch(notifyUrl, {
@@ -204,11 +198,11 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
           Apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ telefon: telTrim, regnummer: regTrim, email: emailTrim, source: 'Startsidan' }),
+        body: JSON.stringify({ telefon: '', regnummer: regTrim, email: emailTrim, source: 'Startsidan' }),
       });
     } catch { /* best effort */ }
     setSubmitting(false);
-    onNavigate(regTrim, telTrim);
+    onNavigate(regTrim, '');
   };
 
   const isVisible = (id: string) => visibleSections.has(id);
@@ -455,36 +449,18 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                         </button>
                       ))}
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        window.history.pushState({}, '', '/kop-bil?quiz=start');
-                        window.dispatchEvent(new PopStateEvent('popstate'));
-                      }}
-                      className="mt-2.5 text-[12px] text-[#0e6efe] hover:text-[#0a57cc] font-medium transition w-full text-left"
+                    <a
+                      href="/gratis-konsultation"
+                      className="mt-2.5 text-[12px] text-[#0e6efe] hover:text-[#0a57cc] font-medium transition w-full text-left inline-block"
                     >
                       Vet inte vad du vill ha? Vi hjälper dig →
-                    </button>
+                    </a>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit}>
                     <div className="flex flex-col sm:flex-row gap-2">
                       <div className="flex-1">
                         <RegInput value={regnummer} onChange={(v) => { setRegnummer(v); setError(''); }} disabled={submitting} />
-                      </div>
-                      <div className="flex items-center flex-1 h-13 rounded-xl border border-slate-200 bg-[#faf8f5] overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
-                        <span className="flex items-center justify-center w-11 shrink-0">
-                          <Phone className="w-4 h-4 text-slate-400" />
-                        </span>
-                        <input
-                          type="tel"
-                          value={telefon}
-                          onChange={(e) => { setTelefon(e.target.value); setError(''); }}
-                          placeholder="Telefon"
-                          autoComplete="tel"
-                          disabled={submitting}
-                          className="flex-1 min-w-0 w-0 h-full text-[15px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
-                        />
                       </div>
                       <button
                         type="submit"

@@ -25,6 +25,7 @@ import {
 import { supabase } from '../lib/supabase';
 import CustomerOfferCard from '../components/CustomerOfferCard';
 import PortalLayout from '../components/PortalLayout';
+import { PHONE, PHONE_TEL } from '../config/site';
 
 const STATUS_META: Record<string, { label: string; step: number; color: string; bg: string; topColor: string }> = {
   ny:               { label: 'Granskas',        step: 1, color: 'text-sky-700',     bg: 'bg-sky-50 border-sky-200',       topColor: 'bg-sky-400' },
@@ -553,7 +554,7 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                 <h3 className="text-sm font-bold text-slate-900 mb-0.5">Frågor om din bil?</h3>
                 <p className="text-sm text-slate-500">
                   Din rådgivare hjälper dig direkt.{' '}
-                  <a href="tel:+46855550200" className="font-semibold text-[#0e6efe] hover:underline">08-5555 0200</a>
+                  <a href={PHONE_TEL} className="font-semibold text-[#0e6efe] hover:underline">{PHONE}</a>
                 </p>
               </div>
             </div>

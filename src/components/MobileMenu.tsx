@@ -82,13 +82,20 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
           ))}
         </nav>
 
-        <div className="border-t border-slate-100 px-4 py-4">
+        <div className="border-t border-slate-100 px-4 py-4 flex flex-col gap-2">
           <a
             href="/gratis-konsultation"
             className="inline-flex items-center justify-center gap-2 w-full px-4 h-12 rounded-xl bg-[#0e6efe] text-white text-[15px] font-semibold hover:bg-[#0a57cc] transition"
           >
             Kostnadsfri konsultation
           </a>
+          <button
+            type="button"
+            onClick={() => navigate('/logga-in', onClose)}
+            className="w-full px-4 h-10 rounded-xl border border-slate-200 text-slate-700 text-[14px] font-medium hover:bg-slate-50 transition"
+          >
+            Logga in
+          </button>
         </div>
       </aside>
     </div>

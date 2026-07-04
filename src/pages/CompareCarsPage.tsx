@@ -726,23 +726,24 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
   const quizSectionRef = useRef<HTMLDivElement>(null);
   const [selectedQuizCars, setSelectedQuizCars] = useState<Set<string>>(new Set());
 
-  // Buy drawer
+  // Buy drawer state kept for CompareDrawer onNegotiate
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
-  const [buyDrawerTrack, setBuyDrawerTrack] = useState<'found' | 'searching' | 'trade' | undefined>(undefined);
-  const [buyDrawerSkipIntent, setBuyDrawerSkipIntent] = useState(false);
-  const [buyDrawerEquity, setBuyDrawerEquity] = useState<string>('');
-  const [buyDrawerInitialReg, setBuyDrawerInitialReg] = useState<string>('');
+  const [buyDrawerTrack] = useState<'found' | 'searching' | 'trade' | undefined>(undefined);
+  const [buyDrawerSkipIntent] = useState(false);
+  const [buyDrawerEquity] = useState<string>('');
+  const [buyDrawerInitialReg] = useState<string>('');
   const [quizPreselectedCar, setQuizPreselectedCar] = useState<string | undefined>(undefined);
 
-  const [buyDrawerFuelTypes, setBuyDrawerFuelTypes] = useState<string[] | undefined>(undefined);
+  const [buyDrawerFuelTypes] = useState<string[] | undefined>(undefined);
 
-  const openBuyDrawer = (car: string, track?: 'found' | 'searching' | 'trade', skipIntent?: boolean, equitySummary?: string, fuelTypes?: string[], tradeReg?: string) => {
-    setBuyDrawerTrack(track);
-    setBuyDrawerSkipIntent(!!skipIntent);
-    setBuyDrawerEquity(equitySummary ?? '');
-    setBuyDrawerFuelTypes(fuelTypes);
-    setBuyDrawerInitialReg(tradeReg ?? '');
-    setBuyDrawerCar(car);
+  const navigateToBuy = (car: string, track?: 'found' | 'searching' | 'trade', _skipIntent?: boolean, _equitySummary?: string, _fuelTypes?: string[], tradeReg?: string) => {
+    const params = new URLSearchParams();
+    if (track) params.set('typ', track);
+    if (car) params.set('bil', car);
+    if (tradeReg) params.set('reg', tradeReg);
+    window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
   // Bilto Score info
@@ -986,12 +987,13 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
 
   const openContactForCar = (car: ComparisonCar | null) => {
     const name = car ? `${car.brand_display} ${car.model_display}` : '';
-    openBuyDrawer(name || '', undefined, false, undefined, car?.specs.fuel_types);
+    navigateToBuy(name || '', undefined, false, undefined, car?.specs.fuel_types);
   };
 
   const handleNavSelect = (item: string) => {
     if (item === 'Sälj bil') {
-      onBackHome();
+      window.history.pushState({}, '', '/salj-bil');
+      window.dispatchEvent(new PopStateEvent('popstate'));
     }
   };
 
@@ -1173,7 +1175,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   <button
                     key={label}
                     type="button"
-                    onClick={() => openBuyDrawer('', track, false, '', defaultFuelTypes)}
+                    onClick={() => navigateToBuy('', track)}
                     className={`group w-full flex items-center gap-4 px-5 py-[18px] hover:bg-[#0e6efe]/[0.04] active:bg-[#0e6efe]/[0.07] transition-all text-left ${i < arr.length - 1 ? 'border-b border-slate-100' : ''}`}
                   >
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
@@ -1448,7 +1450,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     <EquityFlow
                       compact
                       isEv={isEvPage}
-                      onNegotiate={(carLabel, equitySummary) => openBuyDrawer(carLabel, undefined, false, equitySummary)}
+                      onNegotiate={(carLabel) => navigateToBuy(carLabel, 'found')}
                     />
                   </div>
                 </div>
@@ -1498,7 +1500,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       <EquityFlow
                         compact
                         isEv={isEvPage}
-                        onNegotiate={(carLabel, equitySummary) => openBuyDrawer(carLabel, undefined, false, equitySummary)}
+                        onNegotiate={(carLabel) => navigateToBuy(carLabel, 'found')}
                       />
                     </div>
                   </div>
@@ -1607,7 +1609,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                                 usedPrice={car.usedPrice}
                                 isSelected={isSelected}
                                 onSelect={() => toggleQuizCarSelection(key)}
-                                onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, compData?.specs.fuel_types)}
+                                onNegotiate={() => navigateToBuy(`${car.make} ${car.model}`, 'found')}
                                 onDetail={() => { if (compData) setDetailCar(compData); }}
                               />
                             ) : (
@@ -1628,7 +1630,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                                 usedPrice={car.usedPrice}
                                 isSelected={isSelected}
                                 onSelect={() => toggleQuizCarSelection(key)}
-                                onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, compData?.specs.fuel_types)}
+                                onNegotiate={() => navigateToBuy(`${car.make} ${car.model}`, 'found')}
                                 onDetail={() => { if (compData) setDetailCar(compData); }}
                                 index={i}
                                 disableMotion={isMobile}
@@ -1678,7 +1680,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                                   .filter(c => selectedQuizCars.has(`${c.make}-${c.model}`))
                                   .map(c => `${c.make} ${c.model}`)
                                   .join(', ');
-                                openBuyDrawer(names, 'searching');
+                                navigateToBuy(names, 'searching');
                               }}
                               className="h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white text-[13px] font-bold inline-flex items-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-[#0e6efe]/30"
                             >
@@ -1696,7 +1698,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       <Car className="w-6 h-6 text-slate-400" />
                     </div>
                     <p className="text-[14px] text-slate-500 mb-4">Vi hjälper dig ändå – kontakta oss så hittar vi rätt bil.</p>
-                    <button onClick={() => setBuyDrawerCar('')} className="h-11 px-6 rounded-xl bg-[#0e6efe] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition">
+                    <button onClick={() => navigateToBuy('', 'searching')} className="h-11 px-6 rounded-xl bg-[#0e6efe] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition">
                       Kontakta oss <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -1895,7 +1897,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       pros={compCar?.pros}
                       isCompared={!!(compCar && selectedIds.has(compCar.id))}
                       cardMode={expertCardMode}
-                      onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
+                      onNegotiate={() => navigateToBuy(`${car.make} ${car.model}`, 'found')}
                       onDetail={() => { if (compCar) setDetailCar(compCar); }}
                       onCompare={compCar ? () => toggleSelect(compCar.id) : () => {}}
                       onFitQuiz={() => { if (compCar) setFitQuizCar(compCar); }}
@@ -1922,7 +1924,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     carPrice={car.price_new_from ?? undefined}
                     usedPrice={car.price_used_from ?? undefined}
                     cardMode={expertCardMode}
-                    onNegotiate={() => openBuyDrawer(`${car.make} ${car.model}`, undefined, false, undefined, car.fuel_types ?? undefined)}
+                    onNegotiate={() => navigateToBuy(`${car.make} ${car.model}`, 'found')}
                     onDetail={() => { if (compCar) setDetailCar(compCar); }}
                     onCompare={compCar ? () => toggleSelect(compCar.id) : () => {}}
                     onFitQuiz={() => { if (compCar) setFitQuizCar(compCar); }}
@@ -1950,7 +1952,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <button
                       type="button"
-                      onClick={() => openBuyDrawer(carSearchQuery.trim(), 'found')}
+                      onClick={() => navigateToBuy(carSearchQuery.trim(), 'found')}
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0e6efe] text-white text-[14px] font-semibold hover:bg-[#0a57cc] transition"
                     >
                       Beställ prishjälp <ArrowRight className="w-4 h-4" />
@@ -1978,7 +1980,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           {/* "Hittar du inte bilen?" – always visible banner below grid */}
           <button
             type="button"
-            onClick={() => openBuyDrawer(carSearchQuery.trim() || '', 'found')}
+            onClick={() => navigateToBuy(carSearchQuery.trim() || '', 'found')}
             className={`group w-full mt-4 flex items-center gap-4 px-5 py-4 rounded-xl border transition-all duration-200 text-left ${
               activeCategory === 'el'
                 ? 'bg-white/5 border-white/15 hover:border-[#38bdf8]/50 hover:bg-[#38bdf8]/5'
@@ -2135,7 +2137,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                     setBilbyteRegError(true);
                     return;
                   }
-                  openBuyDrawer('', 'trade', false, undefined, undefined, bilbyteReg.trim().toUpperCase());
+                  navigateToBuy('', 'trade', false, undefined, undefined, bilbyteReg.trim().toUpperCase());
                 }}
                 className="mt-4 w-full h-12 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] flex items-center justify-center gap-2 transition active:scale-[0.98]"
               >
@@ -2673,7 +2675,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             </p>
             <button
               type="button"
-              onClick={() => openBuyDrawer('', 'searching')}
+              onClick={() => navigateToBuy('', 'searching')}
               className="inline-flex items-center gap-2 h-12 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-bold text-[15px] transition active:scale-[0.98] shadow-lg"
             >
               Få prishjälp
@@ -2685,8 +2687,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
 
       <SiteFooter />
 
-      {/* Buy drawer */}
-      <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} skipIntent={buyDrawerSkipIntent} initialAdditionalRequests={buyDrawerEquity || undefined} fuelTypes={buyDrawerFuelTypes} initialReg={buyDrawerInitialReg} onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); setBuyDrawerFuelTypes(undefined); setBuyDrawerInitialReg(''); }} />
+      {/* BuyDrawer kept for CompareDrawer onNegotiate navigation */}
+      <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} skipIntent={buyDrawerSkipIntent} initialAdditionalRequests={buyDrawerEquity || undefined} fuelTypes={buyDrawerFuelTypes} initialReg={buyDrawerInitialReg} onClose={() => { setBuyDrawerCar(null); }} />
 
       {/* Compare drawer */}
       {SHOW_EXPLORE && (
@@ -2715,7 +2717,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       <TcoCompareBar
         cars={tcoCompare}
         onRemove={(id) => setTcoCompare(prev => prev.filter(c => c.id !== id))}
-        onGetHelp={(name) => openBuyDrawer(name, 'found')}
+        onGetHelp={(name) => navigateToBuy(name, 'found')}
       />
       )}
 

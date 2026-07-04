@@ -1,4 +1,5 @@
 import { Phone, Mail, Shield, MapPin } from 'lucide-react';
+import { PHONE, PHONE_TEL } from '../config/site';
 
 export function SiteFooter() {
   return (
@@ -30,9 +31,9 @@ export function SiteFooter() {
               Din bilaffär, förenklad. Sälj tryggare - köp smartare.
             </p>
             <div className="flex flex-col gap-2.5">
-              <a href="tel:+46855550200" className="flex items-center gap-2 text-[13px] text-slate-500 hover:text-white transition-colors duration-200 group">
+              <a href={PHONE_TEL} className="flex items-center gap-2 text-[13px] text-slate-500 hover:text-white transition-colors duration-200 group">
                 <Phone className="w-3.5 h-3.5 text-bilto-500 group-hover:text-bilto-400 shrink-0" />
-                08-5555 0200
+                {PHONE}
               </a>
               <a href="mailto:hej@bilto.se" className="flex items-center gap-2 text-[13px] text-slate-500 hover:text-white transition-colors duration-200 group">
                 <Mail className="w-3.5 h-3.5 text-bilto-500 group-hover:text-bilto-400 shrink-0" />

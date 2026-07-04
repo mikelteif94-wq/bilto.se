@@ -3,6 +3,7 @@ import { ArrowLeft, Loader2, Check, Menu, User, ArrowRight, Plus, Trash2, Ligatu
 import { supabase } from '../lib/supabase';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { SiteFooter } from '../components/SiteFooter';
+import { PHONE } from '../config/site';
 import ErrorBanner from '../components/ErrorBanner';
 
 interface DealerRegisterProps {
@@ -114,9 +115,9 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
 
     if (insertError) {
       const msg = (insertError?.message ?? '').toLowerCase();
-      let userMessage = 'Något gick fel. Vänligen ring oss på 08-5555 0200 så hjälper vi dig direkt.';
+      let userMessage = `Något gick fel. Vänligen ring oss på ${PHONE} så hjälper vi dig direkt.`;
       if (msg.includes('duplicate') || msg.includes('unique')) {
-        userMessage = 'En ansökan med samma uppgifter finns redan. Kontakta oss på 08-5555 0200 så hjälper vi dig.';
+        userMessage = `En ansökan med samma uppgifter finns redan. Kontakta oss på ${PHONE} så hjälper vi dig.`;
       } else if (msg.includes('network') || msg.includes('failed to fetch')) {
         userMessage = 'Vi kunde inte nå servern. Kontrollera din internetuppkoppling och försök igen.';
       }

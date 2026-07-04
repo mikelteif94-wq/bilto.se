@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { calcCarMonthly } from '@/lib/utils';
+import { PHONE_TEL } from '@/config/site';
 import {
   BRAND_CATEGORIES, BODY_TYPE_KEYWORDS, FUEL_TYPE_KEYWORDS,
 } from '@/components/quiz/QuizTypes';
@@ -251,7 +252,7 @@ export function EquityResults({ equity, onReset, onNegotiate }: EquityResultsPro
               Ja, jag vill ha hjälp <ChevronRight className="w-4 h-4" />
             </button>
             <a
-              href="tel:+46855550200"
+              href={PHONE_TEL}
               className="w-full h-10 rounded-xl border border-slate-200 text-slate-600 text-[13px] font-semibold hover:bg-[#faf8f5] transition flex items-center justify-center gap-2"
             >
               <Phone className="w-3.5 h-3.5" />Ring oss

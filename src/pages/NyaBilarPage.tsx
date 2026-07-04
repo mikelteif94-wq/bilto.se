@@ -7,6 +7,7 @@ import { useCatalogCars, CatalogCarFull } from '@/hooks/useCatalogCars';
 import { SiteFooter } from '@/components/SiteFooter';
 import { findComparisonCarByMakeModel } from '@/lib/comparison/lookup';
 import BuyDrawer from '@/components/BuyDrawer';
+import { PHONE, PHONE_TEL } from '@/config/site';
 
 interface Props {
   onBack: () => void;
@@ -565,11 +566,11 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
               Kostnadsfri konsultation
             </button>
             <a
-              href="tel:+46855550200"
+              href={PHONE_TEL}
               className="h-12 px-8 border border-white/20 text-white font-semibold rounded-xl hover:bg-white/10 transition-colors text-sm flex items-center justify-center gap-2"
             >
               <Phone className="w-4 h-4" />
-              Ring 08-5555 0200
+              Ring {PHONE}
             </a>
           </div>
 

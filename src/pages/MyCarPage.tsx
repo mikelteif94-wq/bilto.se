@@ -26,6 +26,7 @@ import CarImageUploader, {
   PendingImage,
 } from '../components/forms/CarImageUploader';
 import { supabase } from '../lib/supabase';
+import { PHONE, PHONE_TEL } from '../config/site';
 import DealerProposalCard from '../components/DealerProposalCard';
 import type { Database } from '../lib/database.types';
 
@@ -425,7 +426,6 @@ function CustomerLiveFeed({
       <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
         <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
             <span className="text-sm font-bold text-slate-900">Vad händer med din bil</span>
           </div>
         </div>
@@ -574,7 +574,7 @@ function NoBidsCard() {
 
       <div className="grid sm:grid-cols-2 gap-3">
         <a
-          href="tel:+46855550200"
+          href={PHONE_TEL}
           className="group flex items-center gap-3 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] px-5 py-4 transition"
         >
           <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
@@ -582,7 +582,7 @@ function NoBidsCard() {
           </div>
           <div className="min-w-0">
             <p className="text-[14px] font-semibold text-white leading-tight">Boka samtal med din mäklare</p>
-            <p className="text-[12px] text-white/70 mt-0.5">Ring 08-5555 0200</p>
+            <p className="text-[12px] text-white/70 mt-0.5">Ring {PHONE}</p>
           </div>
         </a>
         <div className="flex items-center gap-3 rounded-xl bg-white border border-amber-200 px-5 py-4">

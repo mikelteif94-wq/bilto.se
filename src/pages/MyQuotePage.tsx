@@ -17,6 +17,7 @@ import {
   Star,
 } from 'lucide-react';
 import CustomerOfferCard from '../components/CustomerOfferCard';
+import { PHONE, PHONE_TEL, EXPERT_NAME, EXPERT_PHOTO } from '../config/site';
 
 interface MyQuotePageProps {
   token: string;
@@ -376,11 +377,11 @@ export default function MyQuotePage({ token, onBack }: MyQuotePageProps) {
           </div>
           <p className="text-sm text-slate-600 mb-4">Din bilmäklare hjälper dig gärna. Ring eller mejla oss.</p>
           <a
-            href="tel:+46855550200"
+            href={PHONE_TEL}
             className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-slate-100 text-slate-700 text-sm font-medium hover:bg-slate-200 transition"
           >
             <Phone className="w-4 h-4" />
-            08-5555 0200
+            {PHONE}
           </a>
         </div>
 
@@ -443,9 +444,8 @@ function QuoteLiveFeed({ dispatchCount, suggestionCount, offerCount, activities,
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
       <div className="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <h2 className="text-sm font-bold text-slate-700">Aktivitet</h2>
-        <span className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          Live
+        <span className="text-[11px] font-semibold text-slate-500">
+          Svar inom 24 timmar
         </span>
       </div>
 
@@ -503,24 +503,18 @@ function ExpertCard() {
       <div className="p-5 sm:p-6 flex items-center gap-5">
         <div className="relative shrink-0">
           <img
-            src="/Man_in_car_showroom_portrait copy.png"
-            alt="Marcus Holm"
+            src={EXPERT_PHOTO}
+            alt={EXPERT_NAME}
             className="w-16 h-16 rounded-xl object-cover object-top border-2 border-slate-200"
           />
-          <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-base font-bold text-slate-900">Marcus Holm</p>
+          <p className="text-base font-bold text-slate-900">{EXPERT_NAME}</p>
           <p className="text-sm text-[#0e6efe] font-medium">Seniorförhandlare · 12 år i branschen</p>
-          <div className="flex items-center gap-1 mt-1.5">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-            ))}
-            <span className="text-[11px] text-slate-400 ml-1">5.0</span>
-          </div>
+          <p className="text-[11px] text-slate-400 mt-1">Svar inom 24 timmar</p>
         </div>
         <a
-          href="tel:+46855550200"
+          href={PHONE_TEL}
           className="shrink-0 inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#0e6efe] text-white text-sm font-semibold hover:bg-[#0a57cc] transition"
         >
           <Phone className="w-3.5 h-3.5" />
@@ -530,7 +524,7 @@ function ExpertCard() {
       <div className="px-5 sm:px-6 pb-5 flex items-start gap-3">
         <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
         <p className="text-[13px] text-slate-600 leading-relaxed">
-          Marcus arbetar <span className="font-semibold">uteslutande för dig</span> – inte för handlaren. Hans mål är att du ska betala rätt pris och inte ett öre mer.
+          Din expert arbetar <span className="font-semibold">uteslutande för dig</span> – inte för handlaren. Målet är att du ska betala rätt pris och inte ett öre mer.
         </p>
       </div>
     </div>

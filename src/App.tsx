@@ -44,16 +44,12 @@ const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CompareCarsPage = lazy(() => import('./pages/CompareCarsPage'));
-const SaljBilMedHjalp = lazy(() => import('./pages/SaljBilMedHjalp'));
-const KopBilConcierge = lazy(() => import('./pages/KopBilConcierge'));
 const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
-const NyaBilarPage = lazy(() => import('./pages/NyaBilarPage'));
 const VanligaFragorPage = lazy(() => import('./pages/VanligaFragorPage'));
 const PriserPage = lazy(() => import('./pages/PriserPage'));
 const GuidePage = lazy(() => import('./pages/GuidePage'));
-const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
 const BilsparaPage = lazy(() => import('./pages/BilsparaPage'));
 const DealerCampaigns = lazy(() => import('./pages/DealerCampaigns'));
 const DealerDashboard = lazy(() => import('./pages/DealerDashboard'));
@@ -435,45 +431,15 @@ function App() {
   }
 
   if (path === '/nya-bilar') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <>
-          <NyaBilarPage
-            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
-            onNavigateBuy={(bil) => {
-              const p = new URLSearchParams();
-              if (bil) p.set('bil', bil);
-              p.set('source', 'Nya bilar sida');
-              window.history.pushState({}, '', `/kop-bil/bestall?${p.toString()}`);
-              setPath('/kop-bil/bestall');
-            }}
-            onNavigateConsultation={openConsultation}
-          />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
-        </>
-      </Suspense>
-    );
+    window.history.replaceState({}, '', '/kop-bil');
+    setPath('/kop-bil');
+    return null;
   }
 
   if (path === '/kop-bil-hjalp') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <>
-          <KopBilConcierge
-            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); }}
-            onNavigateBuy={(bil) => {
-              const params = new URLSearchParams();
-              if (bil) params.set('bil', bil);
-              params.set('source', 'Köp-hjälp-sida');
-              window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
-              setPath('/kop-bil/bestall');
-            }}
-            onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
-          />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
-        </>
-      </Suspense>
-    );
+    window.history.replaceState({}, '', '/kop-bil');
+    setPath('/kop-bil');
+    return null;
   }
 
   if (path === '/kop-bil/bestall') {
@@ -518,17 +484,9 @@ function App() {
 
 
   if (path === '/salj-bil-hjalp') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <SaljBilMedHjalp
-          onBackHome={() => {
-            window.history.pushState({}, '', '/');
-            setPath('/');
-            setPublicRoute({ page: 'home' });
-          }}
-        />
-      </Suspense>
-    );
+    window.history.replaceState({}, '', '/salj-bil');
+    setPath('/salj-bil');
+    return null;
   }
 
   if (path === '/hitta-bil') {
@@ -706,14 +664,10 @@ function App() {
   }
 
   if (path === '/kontakt') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <FreeConsultationPage
-          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-          onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
-        />
-      </Suspense>
-    );
+    window.history.replaceState({}, '', '/');
+    setPath('/');
+    setConsultationOpen(true);
+    return null;
   }
 
   if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
@@ -1186,6 +1140,11 @@ function DealerArea({ userId, path, onLoggedOut }: DealerAreaProps) {
         onLoggedOut={async () => { await supabase.auth.signOut(); onLoggedOut(); }}
       />
     );
+  }
+
+  if (path === '/handlare/lager-b' || path === '/handlare/mallar' || path === '/handlare/motbud') {
+    navigate('/handlare/oversikt');
+    return null;
   }
 
   return (
