@@ -1,5 +1,63 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, Phone, Check, X, ArrowRight } from 'lucide-react';
+import { ChevronLeft, Phone, Check, X, ArrowRight, Banknote, ChevronDown } from 'lucide-react';
+
+const SAVINGS_ITEMS = [
+  { label: 'Prisförhandling på bilen', amount: '8 000–12 000 kr', desc: 'Vi vet vad handlaren betalat och var marginalen finns – och utnyttjar det.' },
+  { label: 'Ränterabatt på finansiering', amount: '3 000–6 000 kr', desc: 'Vi jämför och förhandlar räntan mot flera finansaktörer och pressar den nedåt.' },
+  { label: 'Däck & tillval ingår', amount: '2 000–4 000 kr', desc: 'Vinterdäck, golvmattor och service tas med i paketet – utan extrakostnad.' },
+];
+
+function HeroSavingsBox() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mt-8 max-w-lg mx-auto rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden text-left">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between gap-4 px-5 py-4 group"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+            <Banknote className="w-4 h-4 text-white" strokeWidth={1.8} />
+          </div>
+          <p className="text-[13px] sm:text-[14px] font-semibold text-white leading-snug">
+            Hur sparar vi dig pengar?
+            <span className="ml-2 text-[12px] font-normal text-white/60 group-hover:text-white/90 transition-colors">
+              {open ? 'Dölj' : 'Läs mer'}
+            </span>
+          </p>
+        </div>
+        <ChevronDown className={`w-4 h-4 text-white/70 shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="px-5 pb-5 border-t border-white/15">
+          <p className="text-[12px] sm:text-[13px] text-white/70 leading-relaxed mt-4 mb-4">
+            Oavsett om du leasar eller köper kontaktar Biltos experter handlarna åt dig, förhandlar bästa priset och hanterar varje steg. Så räknar vi ut din totala besparing:
+          </p>
+          <div className="space-y-2">
+            {SAVINGS_ITEMS.map((item) => (
+              <div key={item.label} className="flex items-start gap-3 bg-white/10 rounded-xl px-4 py-3">
+                <Check className="w-3.5 h-3.5 text-white mt-0.5 shrink-0" strokeWidth={2.5} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <p className="text-[12px] sm:text-[13px] font-semibold text-white">{item.label}</p>
+                    <span className="text-[11px] font-bold text-white/80 whitespace-nowrap">{item.amount}</span>
+                  </div>
+                  <p className="text-[11px] text-white/60 mt-0.5 leading-snug">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 flex items-center justify-between bg-white/20 rounded-xl px-4 py-2.5 text-white">
+            <span className="text-[12px] font-semibold">Total genomsnittlig besparing</span>
+            <span className="text-[14px] font-bold">13 000–22 000 kr</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 import ErrorBanner from '../components/ErrorBanner';
 import BuyFlowFAQ from '../components/BuyFlowFAQ';
 import { validateSwedishPhone } from '../lib/utils';
@@ -272,11 +330,10 @@ export default function BuyCarPage({
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href="#kom-igang"
-                onClick={(e) => { e.preventDefault(); document.getElementById('kom-igang')?.scrollIntoView({ behavior: 'smooth' }); }}
+                href="/gratis-konsultation"
                 className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg"
               >
-                Kom igång
+                Boka kostnadsfri konsultation
                 <ArrowRight className="w-5 h-5" />
               </a>
             </div>
@@ -288,6 +345,7 @@ export default function BuyCarPage({
                 </span>
               ))}
             </div>
+            <HeroSavingsBox />
           </div>
         </section>
       )}
