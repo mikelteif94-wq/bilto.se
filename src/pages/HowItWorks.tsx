@@ -598,7 +598,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <div>
               <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Köp &amp; byte</p>
               <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
-                Ska du köpa eller byta bil?
+                Spara pengar på din nästa bil.
               </h2>
               <p className="text-[15px] text-slate-500 mt-4 leading-[1.65]">
                 Din personliga bilmäklare hjälper dig hela vägen – oavsett om du letar efter en ny bil, redan hittat en eller vill byta in din nuvarande.
