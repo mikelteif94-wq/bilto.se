@@ -315,7 +315,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
         <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
           <div className="w-full max-w-md">
-            <h1 className="text-white text-[36px] sm:text-[48px] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
+            <h1 className="text-white text-[28px] sm:text-[42px] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
               Köp bil –<br />med en expert på din sida
             </h1>
             <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">

@@ -297,7 +297,7 @@ function BrandModelSelector({
 
       <button
         type="button"
-        onClick={() => { onBrandChange('Vet ej'); onModelChange('Vet ej'); }}
+        onClick={() => { onBrandChange(brand === 'Vet ej' ? '' : 'Vet ej'); onModelChange(''); }}
         className={`inline-flex items-center gap-1.5 px-4 h-9 rounded-xl text-[13px] font-medium transition-all border ${
           brand === 'Vet ej'
             ? 'bg-slate-900 text-white border-slate-900'

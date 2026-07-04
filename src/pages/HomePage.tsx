@@ -246,7 +246,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
         <div className="relative z-10 flex flex-col items-center justify-center text-center px-5 pt-24 pb-0" style={{ minHeight: '100svh' }}>
           {/* Main headline */}
           <h1 className="font-black leading-[1.0] tracking-[-0.03em] text-white mb-6"
-            style={{ fontSize: 'clamp(2.2rem, 6vw, 5rem)' }}>
+            style={{ fontSize: 'clamp(1.75rem, 5vw, 4.5rem)' }}>
             En bilexpert på din sida – när du säljer, köper eller byter.
           </h1>
 
@@ -374,7 +374,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
         <div className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
           {STATS.map((s) => (
             <div key={s.label} className="flex flex-col items-center text-center">
-              <span className="text-white text-[36px] sm:text-[44px] font-black tracking-tight leading-none tabular-nums">
+              <span className="text-white text-[30px] sm:text-[38px] font-black tracking-tight leading-none tabular-nums">
                 {s.value}
               </span>
               <span className="text-white/40 text-[13px] mt-2 font-medium tracking-wide">{s.label}</span>
@@ -635,7 +635,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
       >
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-[12px] font-semibold text-slate-400 uppercase tracking-[0.2em] mb-6">Redo att sälja?</p>
-          <h3 className="text-[40px] sm:text-[56px] font-black text-slate-900 tracking-[-0.025em] leading-[1.0] mb-6">
+          <h3 className="text-[32px] sm:text-[48px] font-black text-slate-900 tracking-[-0.025em] leading-[1.0] mb-6">
             Få ett skarpt bud<br />på din bil.
           </h3>
           <p className="text-[17px] text-slate-500 leading-relaxed mb-10 max-w-md mx-auto">

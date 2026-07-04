@@ -193,7 +193,7 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
               <span className="inline-block text-[10px] sm:text-[11px] font-bold text-white/50 uppercase tracking-[0.22em] mb-4">
                 Transparenta avgifter
               </span>
-              <h1 className="text-white text-[clamp(28px,7vw,58px)] font-bold leading-[1.08] tracking-tight drop-shadow-lg mb-4 sm:mb-5">
+              <h1 className="text-white text-[clamp(22px,5.5vw,50px)] font-bold leading-[1.08] tracking-tight drop-shadow-lg mb-4 sm:mb-5">
                 Ett fast pris.<br />Inga provisioner.<br />Inga dolda avgifter.
               </h1>
               <p className="text-white/80 text-[15px] sm:text-[18px] leading-[1.65] drop-shadow mb-8 sm:mb-10 max-w-sm sm:max-w-lg mx-auto px-2">

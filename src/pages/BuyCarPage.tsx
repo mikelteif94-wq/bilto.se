@@ -264,7 +264,7 @@ export default function BuyCarPage({
         <section className="bg-[#0e6efe] px-4 sm:px-6 pt-[calc(69px+56px)] sm:pt-[calc(80px+64px)] pb-16 sm:pb-24">
           <div className="max-w-3xl mx-auto text-center">
             <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-4">Bilköpshjälpen</p>
-            <h1 className="text-[28px] sm:text-[46px] font-bold text-white leading-[1.08] tracking-[-0.02em]">
+            <h1 className="text-[24px] sm:text-[40px] font-bold text-white leading-[1.08] tracking-[-0.02em]">
               Spara 15&nbsp;000&nbsp;kr eller mer på din nästa bil
             </h1>
             <p className="mt-5 text-white/75 text-[15px] sm:text-[17px] leading-[1.65] max-w-xl mx-auto">
