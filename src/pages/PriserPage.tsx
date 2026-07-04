@@ -60,7 +60,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Gäller priset både köp och sälj?',
-    a: 'Ja, samma fasta avgift på 1 995 kr gäller oavsett om du köper eller säljer via Bilto Expert.',
+    a: 'Ja, samma fasta avgift på 4 995 kr gäller oavsett om du köper eller säljer via Bilto Expert.',
   },
 ];
 
@@ -116,8 +116,8 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
 
   useEffect(() => {
     setPageMeta({
-      title: 'Priser – fast avgift 1 995 kr, betala bara vid affär | Bilto',
-      description: 'Bilto Expert kostar 1 995 kr – en fast engångsavgift som bara betalas om affären genomförs. Värdering, konsultation och bilmatch ingår alltid gratis.',
+      title: 'Priser – fast avgift 4 995 kr, betala bara vid affär | Bilto',
+      description: 'Bilto Expert kostar 4 995 kr – en fast engångsavgift som bara betalas om affären genomförs. Värdering, konsultation och bilmatch ingår alltid gratis.',
       canonical: 'https://bilto.se/priser',
     });
     injectJsonLd({
@@ -127,10 +127,10 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
           '@type': 'Service',
           name: 'Bilto Expert – bilköpshjälp och bilförsäljning',
           provider: { '@type': 'Organization', name: 'Bilto', url: 'https://bilto.se' },
-          description: 'Fast avgift 1 995 kr per affär, betalas bara om affären genomförs.',
+          description: 'Fast avgift 4 995 kr per affär, betalas bara om affären genomförs.',
           offers: {
             '@type': 'Offer',
-            price: '1995',
+            price: '4995',
             priceCurrency: 'SEK',
             description: 'Engångsavgift per affär – betalas bara när affären genomförs.',
           },
@@ -204,7 +204,7 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
               <div className="inline-flex items-center gap-3 sm:gap-4 bg-black/30 backdrop-blur-md border border-white/15 rounded-2xl px-5 sm:px-8 py-4 sm:py-5 mb-8 sm:mb-10">
                 <div className="text-left">
                   <p className="text-white/50 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] mb-0.5">Bilto Expert</p>
-                  <p className="text-white text-[30px] sm:text-[42px] font-bold leading-none whitespace-nowrap">1 995 kr</p>
+                  <p className="text-white text-[30px] sm:text-[42px] font-bold leading-none whitespace-nowrap">4 995 kr</p>
                 </div>
                 <div className="w-px h-10 sm:h-12 bg-white/15" />
                 <p className="text-white/60 text-[12px] sm:text-[13px] leading-snug text-left max-w-[100px] sm:max-w-[120px]">
@@ -297,7 +297,7 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
                 <div className="mb-6">
                   <p className="text-[11px] font-bold text-white/50 uppercase tracking-[0.22em] mb-3">Bilto Expert</p>
                   <div className="flex items-baseline gap-1 mb-1">
-                    <span className="text-[46px] font-bold text-white leading-none">1 995 kr</span>
+                    <span className="text-[46px] font-bold text-white leading-none">4 995 kr</span>
                   </div>
                   <p className="text-[13px] text-white/55">Engångsavgift per affär. Betalas bara om affären genomförs.</p>
                 </div>
@@ -345,7 +345,7 @@ export default function PriserPage({ onBackHome }: PriserPageProps) {
                   </div>
                   <div className="px-2 sm:px-3 py-4 text-center bg-[#0e6efe]/5">
                     <p className="text-[10px] font-bold text-[#0e6efe] uppercase tracking-[0.15em] mb-0.5">Expert</p>
-                    <p className="text-[13px] font-bold text-[#0e6efe]">1 995 kr</p>
+                    <p className="text-[13px] font-bold text-[#0e6efe]">4 995 kr</p>
                   </div>
                 </div>
 

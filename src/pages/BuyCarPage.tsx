@@ -280,7 +280,7 @@ export default function BuyCarPage({
               </a>
             </div>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-              {['Inga bindningar', 'Svar inom 24h', '1 995 kr om affären blir av'].map(t => (
+              {['Inga bindningar', 'Svar inom 24h', '4 995 kr om affären blir av'].map(t => (
                 <span key={t} className="flex items-center gap-1.5 text-white/70 text-[13px]">
                   <Check className="w-3.5 h-3.5 text-white/60" strokeWidth={2.5} />
                   {t}

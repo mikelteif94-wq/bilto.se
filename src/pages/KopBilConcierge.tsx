@@ -63,7 +63,7 @@ const STEPS = [
 const FAQS = [
   {
     q: 'Kostar det något att använda Biltos köptjänst?',
-    a: 'Ja – tjänsten kostar 1 995 kr och betalas bara om affären faktiskt blir av. Inget köp, ingen kostnad. Snittbesparingen vi förhandlar fram är 18 000 kr per affär, så de flesta kunder tjänar mångfalt mer än de betalar.',
+    a: 'Ja – tjänsten kostar 4 995 kr och betalas bara om affären faktiskt blir av. Inget köp, ingen kostnad. Snittbesparingen vi förhandlar fram är 18 000 kr per affär, så de flesta kunder tjänar mångfalt mer än de betalar.',
   },
   {
     q: 'Kan ni hjälpa mig om jag redan hittat en bil?',
@@ -96,7 +96,7 @@ const WHY_BILTO = [
   {
     icon: Banknote,
     title: 'Vi sparar dig pengar',
-    desc: 'Snittbesparing på 18 000 kr per affär. Vi förhandlar pris, ränta och tillval – du betalar 1 995 kr om affären blir av.',
+    desc: 'Snittbesparing på 18 000 kr per affär. Vi förhandlar pris, ränta och tillval – du betalar 4 995 kr om affären blir av.',
   },
   {
     icon: Clock,
@@ -164,7 +164,7 @@ function SavingsInfoBox() {
 
       {/* Footer note */}
       <div className="bg-slate-50 border-t border-slate-100 px-6 sm:px-8 py-3">
-        <p className="text-[11px] text-slate-400 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 1 995 kr och betalas endast om affären blir av.</p>
+        <p className="text-[11px] text-slate-400 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
       </div>
     </div>
   );
@@ -194,7 +194,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
   useEffect(() => {
     setPageMeta({
       title: 'Köp bil med hjälp av en expert – Bilto',
-      description: 'Låt Biltos experter hjälpa dig hitta, förhandla och köpa rätt bil. Vi sköter kontakten med handlare åt dig – 1 995 kr om affären blir av.',
+      description: 'Låt Biltos experter hjälpa dig hitta, förhandla och köpa rätt bil. Vi sköter kontakten med handlare åt dig – 4 995 kr om affären blir av.',
       canonical: 'https://bilto.se/kop-bil',
     });
   }, []);
@@ -281,7 +281,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Köp bil –<br />med en expert på din sida
             </h1>
             <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
-              1 995 kr om affären blir av · Söker hela marknaden · Noll bindning
+              4 995 kr om affären blir av · Söker hela marknaden · Noll bindning
             </p>
 
             <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
@@ -380,7 +380,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Skicka en förfrågan
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </button>
-            <p className="mt-3 text-[13px] text-slate-400">1 995 kr – betalas bara om affären blir av.</p>
+            <p className="mt-3 text-[13px] text-slate-400">4 995 kr – betalas bara om affären blir av.</p>
           </div>
         </div>
       </section>
@@ -528,7 +528,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Boka kostnadsfri konsultation
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
             </a>
-            <p className="mt-3 text-[13px] text-slate-400">1 995 kr om affären blir av · Ingen bindning</p>
+            <p className="mt-3 text-[13px] text-slate-400">4 995 kr om affären blir av · Ingen bindning</p>
           </div>
         </div>
       </section>
@@ -664,7 +664,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             </a>
           </div>
           <p className="mt-5 text-[12px] sm:text-[13px] text-white/50">
-            1 995 kr om affären blir av · Ingen bindning · Vi hör av oss inom en arbetsdag
+            4 995 kr om affären blir av · Ingen bindning · Vi hör av oss inom en arbetsdag
           </p>
         </div>
       </section>

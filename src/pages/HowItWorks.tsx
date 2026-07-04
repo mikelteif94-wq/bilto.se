@@ -82,7 +82,7 @@ const DIRECT_STEP_IMAGES = [
 const FAQ = [
   {
     q: 'Vad kostar det att använda Bilto?',
-    a: 'Det kostar 1 995 kr i fast avgift – det är allt du betalar. Inga dolda avgifter, noll provision. Avgiften täcker förhandling, granskning och all administration kring affären. Gäller privatpersoner.',
+    a: 'Det kostar 4 995 kr i fast avgift – det är allt du betalar. Inga dolda avgifter, noll provision. Avgiften täcker förhandling, granskning och all administration kring affären. Gäller privatpersoner.',
   },
   {
     q: 'Hur hjälper Bilto mig att köpa bil?',
@@ -90,7 +90,7 @@ const FAQ = [
   },
   {
     q: 'Hur stor besparing kan jag räkna med?',
-    a: 'Våra kunder sparar ofta mer än vad tjänsten kostar – räknat på prisnedförhandling, inbytesvärde, ränta och tillbehör. Vår avgift på 1 995 kr betalas dessutom bara om affären blir av.',
+    a: 'Våra kunder sparar ofta mer än vad tjänsten kostar – räknat på prisnedförhandling, inbytesvärde, ränta och tillbehör. Vår avgift på 4 995 kr betalas dessutom bara om affären blir av.',
   },
   {
     q: 'Kan ni hjälpa mig även om jag inte hittat en bil ännu?',
@@ -102,7 +102,7 @@ const FAQ = [
   },
   {
     q: 'När betalar jag avgiften?',
-    a: 'Avgiften på 1 995 kr betalas när vi påbörjar förhandlingen åt dig. Om affären inte går igenom på grund av att säljaren avböjer, hör du av dig till oss så löser vi det.',
+    a: 'Avgiften på 4 995 kr betalas när vi påbörjar förhandlingen åt dig. Om affären inte går igenom på grund av att säljaren avböjer, hör du av dig till oss så löser vi det.',
   },
 ];
 

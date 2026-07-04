@@ -13,7 +13,7 @@ interface BuyFlowFAQProps {
 const BUY_FAQS: FaqItem[] = [
   {
     q: 'Kostar det något att använda Biltos köptjänst?',
-    a: 'Ja – tjänsten kostar 1 995 kr och betalas bara om affären faktiskt blir av. Inget köp, ingen kostnad. Snittbesparingen vi förhandlar fram är 18 000 kr per affär, så de flesta kunder tjänar mångfalt mer än de betalar.',
+    a: 'Ja – tjänsten kostar 4 995 kr och betalas bara om affären faktiskt blir av. Inget köp, ingen kostnad. Snittbesparingen vi förhandlar fram är 18 000 kr per affär, så de flesta kunder tjänar mångfalt mer än de betalar.',
   },
   {
     q: 'Är det bindande att skicka in en förfrågan?',
@@ -44,7 +44,7 @@ const BUY_FAQS: FaqItem[] = [
 const CONCIERGE_FAQS: FaqItem[] = [
   {
     q: 'Vad kostar köphjälpstjänsten?',
-    a: 'Tjänsten kostar 1 995 kr och betalas bara om affären blir av. Inget köp, ingen kostnad. Snittbesparingen vi förhandlar fram är 18 000 kr – de flesta kunder tjänar mångfalt mer.',
+    a: 'Tjänsten kostar 4 995 kr och betalas bara om affären blir av. Inget köp, ingen kostnad. Snittbesparingen vi förhandlar fram är 18 000 kr – de flesta kunder tjänar mångfalt mer.',
   },
   {
     q: 'Är det bindande att kontakta er?',
