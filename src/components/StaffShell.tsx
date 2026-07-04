@@ -19,7 +19,7 @@ interface NavItem {
 
 const NAV: NavItem[] = [
   { id: 'overview',   label: 'Översikt',       icon: LayoutDashboard, path: '/staff/oversikt' },
-  { id: 'pool',       label: 'Nätverkslager',  icon: Package,         path: '/staff/pool' },
+  { id: 'pool',       label: 'Nätverkslager',  icon: Package,         path: '/staff/lager' },
   { id: 'deals',      label: 'Affärer',        icon: FileText,        path: '/staff/affarer' },
   { id: 'valuations', label: 'Värderingar',    icon: Star,            path: '/staff/varderingar' },
   { id: 'tasks',      label: 'Uppgifter',      icon: CheckSquare,     path: '/staff/uppgifter' },

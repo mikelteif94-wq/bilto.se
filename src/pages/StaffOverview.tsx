@@ -142,9 +142,9 @@ export default function StaffOverview({ staffUser, onLoggedOut, onNavigate }: St
   }
 
   const quickActions = [
-    { label: 'Ny affär', icon: Plus, action: () => navigate('/staff/affar/ny'), color: '#00A85A' },
-    { label: 'Nätverkslager', icon: Package, action: () => navigate('/staff/pool'), color: '#3B82F6' },
-    { label: 'Ny värdering', icon: Star, action: () => navigate('/staff/vardering/ny'), color: '#F59E0B' },
+    { label: 'Ny affär', icon: Plus, action: () => navigate('/staff/affarer/ny'), color: '#00A85A' },
+    { label: 'Nätverkslager', icon: Package, action: () => navigate('/staff/lager'), color: '#3B82F6' },
+    { label: 'Ny värdering', icon: Star, action: () => navigate('/staff/varderingar/ny'), color: '#F59E0B' },
     { label: 'Mina uppgifter', icon: CheckSquare, action: () => navigate('/staff/uppgifter'), color: '#8B5CF6' },
   ];
 
@@ -273,7 +273,7 @@ export default function StaffOverview({ staffUser, onLoggedOut, onNavigate }: St
             <div className="divide-y divide-slate-50">
               {recentDeals.length === 0 ? (
                 <div className="px-6 py-8 text-center text-sm text-slate-400">
-                  Inga affärer ännu. <button onClick={() => navigate('/staff/affar/ny')} className="text-blue-600 font-semibold">Skapa din första affär.</button>
+                  Inga affärer ännu. <button onClick={() => navigate('/staff/affarer/ny')} className="text-blue-600 font-semibold">Skapa din första affär.</button>
                 </div>
               ) : (
                 recentDeals.map(deal => {
@@ -283,7 +283,7 @@ export default function StaffOverview({ staffUser, onLoggedOut, onNavigate }: St
                   return (
                     <button
                       key={deal.id}
-                      onClick={() => navigate(`/staff/affar/${deal.id}`)}
+                      onClick={() => navigate(`/staff/affarer/${deal.id}`)}
                       className="w-full px-6 py-3.5 flex items-center gap-4 hover:bg-slate-50 transition text-left"
                     >
                       <div className="flex-1 min-w-0">
