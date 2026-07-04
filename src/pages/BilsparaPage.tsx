@@ -1,9 +1,12 @@
 import { useEffect, useState, useMemo } from 'react';
 import {
   Menu, ArrowRight, Heart, Clock, Car as CarIcon,
-  Filter, X, ChevronDown, Bell, CheckCircle2, Eye, Zap,
+  Filter, X, Bell, CheckCircle2, Eye, Zap, Search,
 } from 'lucide-react';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
+import BilsparaFilterPanel, {
+  Filters, Mode, SortKey, DEFAULT_FILTERS, isDefaultFilters, QUICK_PICKS,
+} from '../components/BilsparaFilterPanel';
 import { SiteFooter } from '../components/SiteFooter';
 import { setPageMeta } from '../lib/pageMeta';
 import { supabase } from '../lib/supabase';
@@ -16,6 +19,7 @@ interface CampaignCar {
   id: string;
   dealer_id: string;
   dealer_name: string;
+  dealer_stad: string | null;
   regnr: string | null;
   make: string;
   model: string;
@@ -23,93 +27,80 @@ interface CampaignCar {
   image_url: string | null;
   regular_price: number;
   campaign_price: number;
-  campaign_type: string;
+  campaign_type: string | null;
   valid_until: string;
   sale_type: string;
+  drivmedel: string | null;
+  kaross: string | null;
+  giftcard_amount: number | null;
   created_at: string;
 }
 
-type SortKey = 'savings_kr' | 'savings_pct' | 'newest';
-type SaleTab = 'Alla' | 'Köp' | 'Privatleasing';
-type MinSaving = 0 | 10000 | 25000 | 50000;
-
-// Navy = #0E1B33, Yellow = #FFD500, Red = #E4002B, Green = #00A85A
 const CAMPAIGN_TYPE_STYLES: Record<string, string> = {
-  Kampanj: 'bg-[#003399] text-white',
+  Nybilskampanj:  'bg-[#003399] text-white',
   Förhandlingsklar: 'bg-[#FFD500] text-[#0E1B33]',
-  Offert: 'bg-white/90 text-[#0E1B33]',
-  Lagerrensning: 'bg-[#00A85A] text-white',
-  Demobil: 'bg-[#0E1B33] text-[#FFD500]',
+  Offert:         'bg-white/90 text-[#0E1B33]',
+  Lagerrensning:  'bg-[#00A85A] text-white',
+  Demobil:        'bg-[#0E1B33] text-[#FFD500]',
+  Kampanj:        'bg-[#003399] text-white',
 };
 
-function daysLeft(validUntil: string): number {
-  return Math.max(0, Math.ceil((new Date(validUntil).getTime() - Date.now()) / 86400000));
+const SORT_OPTIONS: { label: string; value: SortKey }[] = [
+  { label: 'Störst besparing (kr)',  value: 'savings' },
+  { label: 'Störst rabatt (%)',      value: 'pct' },
+  { label: 'Lägst pris',            value: 'price' },
+  { label: 'Slutar snart',          value: 'ending' },
+];
+
+function daysLeft(d: string) {
+  return Math.max(0, Math.ceil((new Date(d).getTime() - Date.now()) / 86400000));
 }
 
-function fmt(n: number) {
-  return n.toLocaleString('sv-SE');
-}
+function fmt(n: number) { return n.toLocaleString('sv-SE'); }
 
 function pct(regular: number, campaign: number) {
   return Math.round(((regular - campaign) / regular) * 100);
 }
 
-// Rotated yellow "SPARA X KR" sticker tag
-function SavingsTag({ savings }: { savings: number }) {
+function savings(c: CampaignCar) { return c.regular_price - c.campaign_price; }
+
+function SavingsTag({ amount }: { amount: number }) {
   return (
-    <div
-      className="absolute top-2 right-2 z-10"
-      style={{ transform: 'rotate(4deg)' }}
-    >
+    <div className="absolute top-2 right-2 z-10" style={{ transform: 'rotate(4deg)' }}>
       <div
-        className="px-2.5 py-1.5 rounded-md font-bold uppercase text-[11px] leading-tight text-center"
+        className="px-2.5 py-1.5 rounded-md text-center"
         style={{
           background: '#FFD500',
           color: '#0E1B33',
           border: '1.5px solid #0E1B33',
           boxShadow: '2px 3px 0 rgba(14,27,51,0.35)',
           fontFamily: '"Anton", "Impact", sans-serif',
-          letterSpacing: '0.02em',
         }}
       >
-        <span className="block text-[9px] font-bold" style={{ fontFamily: 'inherit' }}>SPARA</span>
-        <span className="block text-[14px]" style={{ fontFamily: 'inherit' }}>{fmt(savings)} KR</span>
+        <span className="block text-[9px] font-bold">SPARA</span>
+        <span className="block text-[14px] font-bold">{fmt(amount)} KR</span>
       </div>
     </div>
   );
 }
 
-function CarCard({
-  car,
-  favourite,
-  onToggleFav,
-}: {
-  car: CampaignCar;
-  favourite: boolean;
-  onToggleFav: () => void;
-}) {
-  const savings = car.regular_price - car.campaign_price;
+function CarCard({ car, favourite, onToggleFav }: { car: CampaignCar; favourite: boolean; onToggleFav: () => void }) {
+  const s = savings(car);
   const savingsPct = pct(car.regular_price, car.campaign_price);
   const days = daysLeft(car.valid_until);
   const urgent = days <= 7;
+  const typeStyle = CAMPAIGN_TYPE_STYLES[car.campaign_type ?? ''] ?? 'bg-white/90 text-[#0E1B33]';
 
   function openConsultation() {
     const label = `${car.make} ${car.model}${car.year ? ' ' + car.year : ''}`;
     window.history.pushState({}, '', '/gratis-konsultation');
-    window.dispatchEvent(new PopStateEvent('popstate', {
-      state: { carLabel: label, dealerName: car.dealer_name },
-    }));
+    window.dispatchEvent(new PopStateEvent('popstate', { state: { carLabel: label, dealerName: car.dealer_name } }));
   }
-
-  const typeStyle = CAMPAIGN_TYPE_STYLES[car.campaign_type] ?? 'bg-white/90 text-[#0E1B33]';
 
   return (
     <div
       className="group relative flex flex-col overflow-hidden rounded-2xl bg-white transition-all duration-300"
-      style={{
-        border: '1px solid #E8ECF3',
-        boxShadow: '0 1px 2px rgb(14 27 51 / .04), 0 10px 30px -12px rgb(14 27 51 / .10)',
-      }}
+      style={{ border: '1px solid #E8ECF3', boxShadow: '0 1px 2px rgb(14 27 51 / .04), 0 10px 30px -12px rgb(14 27 51 / .10)' }}
       onMouseEnter={e => {
         (e.currentTarget as HTMLElement).style.transform = 'translateY(-6px)';
         (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 8px rgb(14 27 51 / .06), 0 24px 44px -14px rgb(14 27 51 / .18)';
@@ -119,7 +110,6 @@ function CarCard({
         (e.currentTarget as HTMLElement).style.boxShadow = '0 1px 2px rgb(14 27 51 / .04), 0 10px 30px -12px rgb(14 27 51 / .10)';
       }}
     >
-      {/* Image */}
       <div className="relative aspect-[16/9] bg-[#F7F8FB] overflow-hidden">
         {car.image_url ? (
           <img
@@ -134,7 +124,7 @@ function CarCard({
           </div>
         )}
 
-        {/* Pct badge — top left red pill */}
+        {/* Top-left badges */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
           <span
             className="inline-flex items-center font-bold text-white text-[12px] px-2.5 py-1 rounded-md"
@@ -142,25 +132,21 @@ function CarCard({
           >
             -{savingsPct}%
           </span>
-
-          {/* Campaign type */}
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${typeStyle}`}>
-            {car.campaign_type}
-          </span>
-
-          {/* Urgency */}
+          {car.campaign_type && (
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${typeStyle}`}>
+              {car.campaign_type}
+            </span>
+          )}
           {urgent && days > 0 && (
             <span className="inline-flex items-center gap-1 bg-[#FFD500] text-[#0E1B33] text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
-              <Clock className="w-3 h-3" />
-              {days} dgr kvar
+              <Clock className="w-3 h-3" />{days} dgr kvar
             </span>
           )}
         </div>
 
-        {/* Rotated savings tag — top right */}
-        <SavingsTag savings={savings} />
+        <SavingsTag amount={s} />
 
-        {/* Fav + view row — bottom */}
+        {/* Bottom actions */}
         <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5">
           <button
             type="button"
@@ -173,44 +159,49 @@ function CarCard({
           <button
             type="button"
             className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow"
-            aria-label="Visningar"
           >
             <Eye className="w-4 h-4 text-slate-400" />
           </button>
         </div>
 
-        {/* Dealer name strip */}
         <div className="absolute bottom-0 left-0 right-0 bg-[#0E1B33]/75 backdrop-blur-[2px] px-3 py-1.5">
-          <p className="text-[11px] font-semibold text-white/80 truncate">{car.dealer_name}</p>
+          <p className="text-[11px] font-semibold text-white/80 truncate">
+            {car.dealer_name}{car.dealer_stad ? ` · ${car.dealer_stad}` : ''}
+          </p>
         </div>
       </div>
 
-      {/* Body */}
       <div className="p-4 flex flex-col flex-1">
         <div className="flex items-start justify-between gap-2 mb-0.5">
-          <p
-            className="text-[15px] font-bold leading-tight"
-            style={{ color: '#1A2233', fontFamily: '"Signika", ui-sans-serif, system-ui' }}
-          >
+          <p className="text-[15px] font-bold leading-tight" style={{ color: '#1A2233', fontFamily: '"Signika", ui-sans-serif' }}>
             {car.make} {car.model}
             {car.year && <span className="text-[#6B7486] font-normal ml-1">{car.year}</span>}
           </p>
           {car.regnr && (
-            <span
-              className="shrink-0 flex items-center overflow-hidden rounded text-[10px] font-bold"
-              style={{ fontFamily: '"Anton", "Impact", sans-serif' }}
-            >
+            <span className="shrink-0 flex items-center overflow-hidden rounded text-[10px] font-bold" style={{ fontFamily: '"Anton", "Impact", sans-serif' }}>
               <span className="bg-[#003399] text-white px-1.5 py-0.5">EU</span>
               <span className="bg-[#FFD500] text-[#0E1B33] px-1.5 py-0.5">{car.regnr.toUpperCase()}</span>
             </span>
           )}
         </div>
 
+        {(car.drivmedel || car.kaross) && (
+          <div className="flex gap-1.5 mt-1.5 flex-wrap">
+            {car.drivmedel && (
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: '#F7F8FB', color: '#6B7486', border: '1px solid #E8ECF3' }}>
+                {car.drivmedel}
+              </span>
+            )}
+            {car.kaross && (
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: '#F7F8FB', color: '#6B7486', border: '1px solid #E8ECF3' }}>
+                {car.kaross}
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="mt-3 flex items-baseline gap-2">
-          <span
-            className="text-[20px] font-bold"
-            style={{ color: '#0E1B33', fontFamily: '"Anton", "Impact", sans-serif', letterSpacing: '-0.01em' }}
-          >
+          <span className="text-[20px] font-bold" style={{ color: '#0E1B33', fontFamily: '"Anton", "Impact", sans-serif', letterSpacing: '-0.01em' }}>
             {fmt(car.campaign_price)} kr
           </span>
           <span className="text-[13px] line-through" style={{ color: '#6B7486' }}>{fmt(car.regular_price)} kr</span>
@@ -224,7 +215,7 @@ function CarCard({
             background: 'linear-gradient(135deg, #00A85A 0%, #007a42 100%)',
             color: 'white',
             boxShadow: '0 4px 14px -4px rgba(0,168,90,0.45)',
-            fontFamily: '"Signika", ui-sans-serif, system-ui',
+            fontFamily: '"Signika", ui-sans-serif',
           }}
         >
           <Zap className="w-3.5 h-3.5" />
@@ -252,26 +243,17 @@ function EmptyState({ onSubscribe }: { onSubscribe: (email: string) => Promise<v
 
   return (
     <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-      <div
-        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
-        style={{ background: '#F7F8FB', border: '1px solid #E8ECF3' }}
-      >
+      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5" style={{ background: '#F7F8FB', border: '1px solid #E8ECF3' }}>
         <CarIcon className="w-8 h-8" style={{ color: '#6B7486' }} />
       </div>
-      <h3
-        className="text-[22px] font-bold mb-2"
-        style={{ color: '#0E1B33', fontFamily: '"Anton", "Impact", sans-serif', letterSpacing: '-0.01em' }}
-      >
+      <h3 className="text-[22px] font-bold mb-2" style={{ color: '#0E1B33', fontFamily: '"Anton", "Impact", sans-serif' }}>
         INGA AKTIVA KLIPP JUST NU
       </h3>
       <p className="text-[14px] max-w-sm mb-8" style={{ color: '#6B7486' }}>
         Nya klipp släpps löpande – bevaka sidan så missar du inte nästa prissänkning.
       </p>
       {done ? (
-        <div
-          className="inline-flex items-center gap-2 text-[14px] font-semibold px-5 py-3 rounded-full"
-          style={{ background: '#00A85A', color: 'white' }}
-        >
+        <div className="inline-flex items-center gap-2 text-[14px] font-semibold px-5 py-3 rounded-full" style={{ background: '#00A85A', color: 'white' }}>
           <CheckCircle2 className="w-5 h-5" />
           Vi meddelar dig när nya klipp dyker upp!
         </div>
@@ -284,23 +266,13 @@ function EmptyState({ onSubscribe }: { onSubscribe: (email: string) => Promise<v
             onChange={e => setEmail(e.target.value)}
             required
             className="flex-1 h-11 px-4 text-[14px] focus:outline-none transition"
-            style={{
-              borderRadius: 999,
-              border: '1.5px solid #E8ECF3',
-              background: 'white',
-              color: '#1A2233',
-            }}
+            style={{ borderRadius: 999, border: '1.5px solid #E8ECF3', background: 'white', color: '#1A2233' }}
           />
           <button
             type="submit"
             disabled={submitting}
             className="h-11 px-5 font-bold text-[13px] transition inline-flex items-center gap-1.5 shrink-0"
-            style={{
-              borderRadius: 999,
-              background: '#0E1B33',
-              color: '#FFD500',
-              fontFamily: '"Signika", ui-sans-serif, system-ui',
-            }}
+            style={{ borderRadius: 999, background: '#0E1B33', color: '#FFD500', fontFamily: '"Signika", ui-sans-serif' }}
           >
             <Bell className="w-4 h-4" />
             Meddela mig
@@ -319,14 +291,13 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
     try { return new Set(JSON.parse(localStorage.getItem('bilspara_favs') ?? '[]')); }
     catch { return new Set(); }
   });
-
-  const [saleTab, setSaleTab] = useState<SaleTab>('Alla');
-  const [minSaving, setMinSaving] = useState<MinSaving>(0);
-  const [selectedMake, setSelectedMake] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-  const [searchQ, setSearchQ] = useState('');
-  const [sort, setSort] = useState<SortKey>('savings_kr');
   const [filterOpen, setFilterOpen] = useState(false);
+
+  // Filter state
+  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+  const [mode, setMode] = useState<Mode>('alla');
+  const [sort, setSort] = useState<SortKey>('savings');
+  const [search, setSearch] = useState('');
 
   const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor', 'Bilspara'];
 
@@ -384,42 +355,91 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
     await supabase.from('bilspara_alerts').insert({ email });
   }
 
-  const makes = useMemo(() => [...new Set(cars.map(c => c.make))].sort(), [cars]);
-  const types = useMemo(() => [...new Set(cars.map(c => c.campaign_type))].sort(), [cars]);
-  const totalSavings = useMemo(() => cars.reduce((sum, c) => sum + (c.regular_price - c.campaign_price), 0), [cars]);
+  function handleFiltersChange(partial: Partial<Filters>) {
+    setFilters(prev => ({ ...prev, ...partial }));
+  }
+
+  function handleReset() {
+    setFilters(DEFAULT_FILTERS);
+    setMode('alla');
+    setSearch('');
+  }
+
+  function applyQuickPick(pick: typeof QUICK_PICKS[0]) {
+    setFilters({ ...DEFAULT_FILTERS, ...pick.filtersOverride });
+    if (pick.modeOverride) setMode(pick.modeOverride);
+  }
+
+  const availableMakes = useMemo(() => [...new Set(cars.map(c => c.make))].sort(), [cars]);
 
   const filtered = useMemo(() => {
     let list = [...cars];
-    if (saleTab !== 'Alla') list = list.filter(c => c.sale_type === saleTab);
-    if (minSaving > 0) list = list.filter(c => c.regular_price - c.campaign_price >= minSaving);
-    if (selectedMake) list = list.filter(c => c.make === selectedMake);
-    if (selectedType) list = list.filter(c => c.campaign_type === selectedType);
-    if (searchQ.trim()) {
-      const q = searchQ.toLowerCase();
+
+    // Mode
+    if (mode !== 'alla') {
+      list = list.filter(c => {
+        const st = (c.sale_type ?? '').toLowerCase().replace(/å/g, 'a');
+        if (mode === 'kop') return st === 'kop' || st === 'kop' || c.sale_type === 'Köp';
+        if (mode === 'leasing') return st === 'leasing' || st === 'privatleasing' || c.sale_type === 'Privatleasing';
+        return true;
+      });
+    }
+
+    // Min savings
+    if (filters.minSavings > 0) list = list.filter(c => savings(c) >= filters.minSavings);
+
+    // Max price (only when not leasing)
+    if (mode !== 'leasing' && filters.maxPrice < 700000) {
+      list = list.filter(c => c.campaign_price <= filters.maxPrice);
+    }
+
+    // Kampanjtyper
+    if (filters.kampanjtyper.length > 0) {
+      list = list.filter(c => filters.kampanjtyper.includes(c.campaign_type as any));
+    }
+
+    // Märken
+    if (filters.marken.length > 0) {
+      list = list.filter(c => filters.marken.includes(c.make));
+    }
+
+    // Drivmedel
+    if (filters.drivmedel.length > 0) {
+      list = list.filter(c => c.drivmedel && filters.drivmedel.includes(c.drivmedel as any));
+    }
+
+    // Karosser
+    if (filters.karosser.length > 0) {
+      list = list.filter(c => c.kaross && filters.karosser.includes(c.kaross as any));
+    }
+
+    // Bonus only
+    if (filters.bonusOnly) {
+      list = list.filter(c => (c.giftcard_amount ?? 0) > 0);
+    }
+
+    // Search
+    if (search.trim()) {
+      const q = search.toLowerCase();
       list = list.filter(c =>
-        `${c.make} ${c.model} ${c.dealer_name}`.toLowerCase().includes(q)
+        `${c.make} ${c.model} ${c.dealer_name} ${c.dealer_stad ?? ''}`.toLowerCase().includes(q)
       );
     }
+
+    // Sort
     list.sort((a, b) => {
-      if (sort === 'savings_kr') return (b.regular_price - b.campaign_price) - (a.regular_price - a.campaign_price);
-      if (sort === 'savings_pct') return pct(b.regular_price, b.campaign_price) - pct(a.regular_price, a.campaign_price);
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      if (sort === 'savings') return savings(b) - savings(a);
+      if (sort === 'pct')     return pct(b.regular_price, b.campaign_price) - pct(a.regular_price, a.campaign_price);
+      if (sort === 'price')   return a.campaign_price - b.campaign_price;
+      if (sort === 'ending')  return daysLeft(a.valid_until) - daysLeft(b.valid_until);
+      return 0;
     });
+
     return list;
-  }, [cars, saleTab, minSaving, selectedMake, selectedType, searchQ, sort]);
+  }, [cars, filters, mode, search, sort]);
 
-  const minSavingOptions: { label: string; value: MinSaving }[] = [
-    { label: '0 kr', value: 0 },
-    { label: '10 000 kr', value: 10000 },
-    { label: '25 000 kr', value: 25000 },
-    { label: '50 000 kr', value: 50000 },
-  ];
-
-  const sortOptions: { label: string; value: SortKey }[] = [
-    { label: 'Störst besparing i kr', value: 'savings_kr' },
-    { label: 'Störst besparing i %', value: 'savings_pct' },
-    { label: 'Nyast', value: 'newest' },
-  ];
+  const totalSavings = useMemo(() => filtered.reduce((s, c) => s + savings(c), 0), [filtered]);
+  const hasActive = !isDefaultFilters(filters, mode) || search.trim().length > 0;
 
   return (
     <div className="min-h-screen text-[#1A2233]" style={{ background: '#F7F8FB' }}>
@@ -463,19 +483,14 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
       </header>
 
       <main>
-        {/* ── HERO ── */}
-        <section
-          className="relative overflow-hidden pt-28 sm:pt-36 pb-16 sm:pb-20"
-          style={{ background: '#0e6efe' }}
-        >
-          {/* Decorative blobs */}
+        {/* HERO */}
+        <section className="relative overflow-hidden pt-28 sm:pt-36 pb-16 sm:pb-20" style={{ background: '#0e6efe' }}>
           <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 65%)', transform: 'translate(20%, -30%)' }} />
           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,213,0,0.10) 0%, transparent 65%)', transform: 'translate(-20%, 30%)' }} />
 
           <div className="relative max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
               <div className="max-w-2xl">
-                {/* Badge */}
                 <span
                   className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-[0.18em]"
                   style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)', color: 'white' }}
@@ -484,37 +499,54 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
                   Sparveckan pågår
                 </span>
 
-                {/* Big headline */}
                 <h1
                   className="leading-[0.92] tracking-tight"
                   style={{ fontFamily: '"Anton", "Impact", sans-serif', fontSize: 'clamp(64px, 10vw, 120px)', color: 'white' }}
                 >
                   VECKANS{' '}
-                  <span style={{ color: '#FFD500', WebkitTextStroke: '0px' }}>KLIPP</span>
+                  <span style={{ color: '#FFD500' }}>KLIPP</span>
                 </h1>
 
-                <p className="mt-5 text-[16px] sm:text-[18px] leading-[1.65]" style={{ color: 'rgba(255,255,255,0.55)', fontFamily: '"Signika", ui-sans-serif' }}>
+                <p className="mt-5 text-[16px] sm:text-[18px] leading-[1.65]" style={{ color: 'rgba(255,255,255,0.65)', fontFamily: '"Signika", ui-sans-serif' }}>
                   Alla priser jämförs mot handlarens ordinarie pris — du ser exakt vad du sparar, i kronor.
                 </p>
+
+                {/* Hero search */}
+                <div
+                  className="mt-6 flex items-center gap-3 px-4 h-12 max-w-md"
+                  style={{ background: 'white', borderRadius: 999, boxShadow: '0 4px 20px rgba(0,0,0,0.12)' }}
+                >
+                  <Search className="w-4 h-4 shrink-0" style={{ color: '#6B7486' }} />
+                  <input
+                    type="text"
+                    placeholder="Sök märke, modell eller handlare..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    className="flex-1 bg-transparent text-[14px] focus:outline-none"
+                    style={{ color: '#0E1B33', fontFamily: '"Signika", ui-sans-serif' }}
+                  />
+                  {search && (
+                    <button type="button" onClick={() => setSearch('')}>
+                      <X className="w-4 h-4" style={{ color: '#6B7486' }} />
+                    </button>
+                  )}
+                </div>
               </div>
 
-              {/* Total savings card */}
+              {/* Savings card */}
               <div className="shrink-0 w-full lg:w-64">
                 <div
                   className="rounded-2xl p-6 text-center"
                   style={{ background: '#00A85A', boxShadow: '0 8px 40px -8px rgba(0,168,90,0.5)' }}
                 >
-                  <p
-                    className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2"
-                    style={{ color: 'rgba(255,255,255,0.7)', fontFamily: '"Signika", ui-sans-serif' }}
-                  >
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: 'rgba(255,255,255,0.7)', fontFamily: '"Signika", ui-sans-serif' }}>
                     Totalt på sidan
                   </p>
                   <p
                     className="leading-none"
                     style={{ fontFamily: '"Anton", "Impact", sans-serif', fontSize: 'clamp(36px, 5vw, 52px)', color: 'white', letterSpacing: '-0.01em' }}
                   >
-                    {loading ? '–' : fmt(totalSavings)} kr
+                    {loading ? '–' : fmt(cars.reduce((s, c) => s + savings(c), 0))} kr
                   </p>
                   <p className="text-[12px] mt-2" style={{ color: 'rgba(255,255,255,0.65)', fontFamily: '"Signika", ui-sans-serif' }}>
                     i rabatter just nu
@@ -525,136 +557,82 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
           </div>
         </section>
 
-        {/* ── FILTER + GRID ── */}
+        {/* FILTER + GRID */}
         <section className="py-8 sm:py-12">
           <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
-            <div className="lg:grid lg:grid-cols-[220px_1fr] lg:gap-8">
 
+            {/* Quick picks */}
+            <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1 mb-6">
+              {QUICK_PICKS.map(pick => {
+                const Icon = pick.icon;
+                return (
+                  <button
+                    key={pick.label}
+                    type="button"
+                    onClick={() => applyQuickPick(pick)}
+                    className="shrink-0 flex items-center gap-2 px-4 h-9 rounded-full text-[13px] font-bold transition-all hover:shadow-md"
+                    style={{
+                      background: 'white',
+                      border: '1px solid #E8ECF3',
+                      color: '#0E1B33',
+                      fontFamily: '"Signika", ui-sans-serif',
+                      boxShadow: '0 1px 3px rgba(14,27,51,0.06)',
+                    }}
+                  >
+                    <Icon className="w-3.5 h-3.5 shrink-0" />
+                    {pick.label}
+                  </button>
+                );
+              })}
+              {hasActive && (
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="shrink-0 flex items-center gap-1.5 px-4 h-9 rounded-full text-[13px] font-bold transition-all"
+                  style={{ background: '#FFD500', color: '#0E1B33', fontFamily: '"Signika", ui-sans-serif' }}
+                >
+                  <X className="w-3.5 h-3.5" />
+                  Rensa filter
+                </button>
+              )}
+            </div>
+
+            <div className="lg:grid lg:grid-cols-[240px_1fr] lg:gap-8">
               {/* Sidebar */}
               <aside>
-                {/* Mobile toggle */}
+                {/* Mobile filter toggle */}
                 <button
                   type="button"
                   onClick={() => setFilterOpen(o => !o)}
-                  className="lg:hidden w-full flex items-center justify-between px-4 h-11 mb-4 text-[14px] font-bold uppercase tracking-wider"
-                  style={{ background: 'white', border: '1px solid #E8ECF3', borderRadius: 12, color: '#E4002B', fontFamily: '"Signika", ui-sans-serif' }}
+                  className="lg:hidden w-full flex items-center justify-between px-4 h-11 mb-4 text-[14px] font-bold uppercase tracking-wider transition"
+                  style={{ background: hasActive ? '#0E1B33' : 'white', border: `1px solid ${hasActive ? '#0E1B33' : '#E8ECF3'}`, borderRadius: 12, color: hasActive ? '#FFD500' : '#E4002B', fontFamily: '"Signika", ui-sans-serif' }}
                 >
-                  <span className="flex items-center gap-2"><Filter className="w-4 h-4" />Sparfilter</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform ${filterOpen ? 'rotate-180' : ''}`} style={{ color: '#6B7486' }} />
+                  <span className="flex items-center gap-2">
+                    <Filter className="w-4 h-4" />
+                    Sparfilter
+                    {hasActive && (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: '#FFD500', color: '#0E1B33' }}>
+                        Aktiva
+                      </span>
+                    )}
+                  </span>
+                  <span className="text-[12px] font-normal" style={{ color: filterOpen ? '#E4002B' : '#6B7486' }}>
+                    {filterOpen ? 'Dölj' : 'Visa'}
+                  </span>
                 </button>
 
-                <div className={`${filterOpen ? 'block' : 'hidden'} lg:block space-y-4`}>
-                  {/* Filter heading — desktop only */}
-                  <p
-                    className="hidden lg:block text-[13px] font-bold uppercase tracking-[0.18em] mb-1"
-                    style={{ color: '#E4002B', fontFamily: '"Signika", ui-sans-serif' }}
-                  >
-                    Sparfilter
-                  </p>
-
-                  {/* Sale type */}
-                  <div className="bg-white rounded-2xl p-4" style={{ border: '1px solid #E8ECF3' }}>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] mb-3" style={{ color: '#6B7486' }}>Typ av affär</p>
-                    <div className="flex gap-1 p-1 rounded-xl" style={{ background: '#F7F8FB' }}>
-                      {(['Alla', 'Köp', 'Privatleasing'] as SaleTab[]).map(tab => (
-                        <button
-                          key={tab}
-                          type="button"
-                          onClick={() => setSaleTab(tab)}
-                          className="flex-1 py-1.5 rounded-lg text-[12px] font-bold transition"
-                          style={{
-                            background: saleTab === tab ? '#0E1B33' : 'transparent',
-                            color: saleTab === tab ? 'white' : '#6B7486',
-                            fontFamily: '"Signika", ui-sans-serif',
-                          }}
-                        >
-                          {tab}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Min saving */}
-                  <div className="bg-white rounded-2xl p-4" style={{ border: '1px solid #E8ECF3' }}>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] mb-3" style={{ color: '#6B7486' }}>Minsta besparing</p>
-                    <div className="flex flex-col gap-1">
-                      {minSavingOptions.map(opt => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => setMinSaving(opt.value)}
-                          className="text-left px-3 py-2 rounded-lg text-[13px] font-bold transition"
-                          style={{
-                            background: minSaving === opt.value ? '#FFD500' : 'transparent',
-                            color: minSaving === opt.value ? '#0E1B33' : '#6B7486',
-                            fontFamily: '"Signika", ui-sans-serif',
-                          }}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Make filter */}
-                  {makes.length > 0 && (
-                    <div className="bg-white rounded-2xl p-4" style={{ border: '1px solid #E8ECF3' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] mb-3" style={{ color: '#6B7486' }}>Märke</p>
-                      <div className="flex flex-col gap-0.5">
-                        {['', ...makes].map(make => (
-                          <button
-                            key={make}
-                            type="button"
-                            onClick={() => setSelectedMake(make)}
-                            className="text-left px-3 py-1.5 rounded-lg text-[13px] font-semibold transition"
-                            style={{
-                              background: selectedMake === make ? '#F7F8FB' : 'transparent',
-                              color: selectedMake === make ? '#0E1B33' : '#6B7486',
-                              fontFamily: '"Signika", ui-sans-serif',
-                            }}
-                          >
-                            {make || 'Alla märken'}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Campaign type filter */}
-                  {types.length > 0 && (
-                    <div className="bg-white rounded-2xl p-4" style={{ border: '1px solid #E8ECF3' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] mb-3" style={{ color: '#6B7486' }}>Kampanjtyp</p>
-                      <div className="flex flex-col gap-0.5">
-                        {['', ...types].map(type => (
-                          <button
-                            key={type}
-                            type="button"
-                            onClick={() => setSelectedType(type)}
-                            className="text-left px-3 py-1.5 rounded-lg text-[13px] font-semibold transition"
-                            style={{
-                              background: selectedType === type ? '#F7F8FB' : 'transparent',
-                              color: selectedType === type ? '#0E1B33' : '#6B7486',
-                              fontFamily: '"Signika", ui-sans-serif',
-                            }}
-                          >
-                            {type || 'Alla typer'}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {(saleTab !== 'Alla' || minSaving > 0 || selectedMake || selectedType || searchQ) && (
-                    <button
-                      type="button"
-                      onClick={() => { setSaleTab('Alla'); setMinSaving(0); setSelectedMake(''); setSelectedType(''); setSearchQ(''); }}
-                      className="w-full flex items-center justify-center gap-1.5 text-[12px] font-semibold py-2 transition"
-                      style={{ color: '#6B7486' }}
-                    >
-                      <X className="w-3.5 h-3.5" />Rensa filter
-                    </button>
-                  )}
-                </div>
+                <BilsparaFilterPanel
+                  filters={filters}
+                  mode={mode}
+                  onChange={handleFiltersChange}
+                  onModeChange={setMode}
+                  onReset={handleReset}
+                  availableMakes={availableMakes}
+                  filteredCount={filtered.length}
+                  totalSavings={totalSavings}
+                  hasActive={hasActive}
+                  open={filterOpen}
+                />
               </aside>
 
               {/* Car grid */}
@@ -663,6 +641,7 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
                   <p className="text-[14px] font-semibold" style={{ color: '#6B7486', fontFamily: '"Signika", ui-sans-serif' }}>
                     <strong style={{ color: '#0E1B33' }}>{filtered.length}</strong> bilar
+                    {hasActive && <span className="ml-2 text-[12px] text-[#0e6efe]">(filtrerat)</span>}
                   </p>
                   <div className="flex items-center gap-2">
                     <label htmlFor="sort-select" className="text-[11px] font-bold uppercase tracking-wider whitespace-nowrap" style={{ color: '#6B7486' }}>Sortera:</label>
@@ -671,14 +650,9 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
                       value={sort}
                       onChange={e => setSort(e.target.value as SortKey)}
                       className="text-[13px] bg-white focus:outline-none transition pl-3 pr-8 h-9"
-                      style={{
-                        border: '1px solid #E8ECF3',
-                        borderRadius: 10,
-                        color: '#0E1B33',
-                        fontFamily: '"Signika", ui-sans-serif',
-                      }}
+                      style={{ border: '1px solid #E8ECF3', borderRadius: 10, color: '#0E1B33', fontFamily: '"Signika", ui-sans-serif' }}
                     >
-                      {sortOptions.map(o => (
+                      {SORT_OPTIONS.map(o => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
                     </select>
@@ -717,17 +691,14 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
           </div>
         </section>
 
-        {/* ── CTA FOOTER ── */}
+        {/* CTA FOOTER */}
         <section
           className="relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #0E1B33 0%, #2a1a4a 55%, #E4002B 100%)' }}
         >
           <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at bottom left, rgba(255,213,0,0.08) 0%, transparent 55%)' }} />
           <div className="relative max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 py-16 sm:py-24">
-            <p
-              className="text-[11px] font-bold uppercase tracking-[0.2em] mb-4"
-              style={{ color: '#FFD500', fontFamily: '"Signika", ui-sans-serif' }}
-            >
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: '#FFD500', fontFamily: '"Signika", ui-sans-serif' }}>
               Biltos experter
             </p>
             <h2
@@ -743,13 +714,7 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
               <a
                 href="/gratis-konsultation"
                 className="inline-flex items-center justify-center gap-2 py-3.5 px-8 font-bold text-[15px] transition group"
-                style={{
-                  borderRadius: 999,
-                  background: '#FFD500',
-                  color: '#0E1B33',
-                  boxShadow: '0 4px 24px -4px rgba(255,213,0,0.4)',
-                  fontFamily: '"Signika", ui-sans-serif',
-                }}
+                style={{ borderRadius: 999, background: '#FFD500', color: '#0E1B33', boxShadow: '0 4px 24px -4px rgba(255,213,0,0.4)', fontFamily: '"Signika", ui-sans-serif' }}
               >
                 Få prishjälp gratis
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
@@ -758,13 +723,7 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
                 type="button"
                 onClick={onBackHome}
                 className="inline-flex items-center justify-center gap-2 py-3.5 px-8 font-semibold text-[15px] transition"
-                style={{
-                  borderRadius: 999,
-                  background: 'rgba(255,255,255,0.08)',
-                  color: 'white',
-                  border: '1px solid rgba(255,255,255,0.18)',
-                  fontFamily: '"Signika", ui-sans-serif',
-                }}
+                style={{ borderRadius: 999, background: 'rgba(255,255,255,0.08)', color: 'white', border: '1px solid rgba(255,255,255,0.18)', fontFamily: '"Signika", ui-sans-serif' }}
               >
                 Värdera din bil
               </button>
