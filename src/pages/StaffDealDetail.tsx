@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
   ArrowLeft, Loader2, Plus, Trash2, Send, CheckCircle2,
-  XCircle, Clock, FileText, AlertCircle, ChevronDown, ChevronUp,
+  XCircle, Clock, AlertCircle, ChevronDown, ChevronUp,
   Car, Shield, Coins, Snowflake, Truck, Tag, Scale,
   RefreshCw, ClipboardList, History,
 } from 'lucide-react';
@@ -25,10 +25,10 @@ interface Deal {
   distance_sale: boolean;
   created_at: string;
   updated_at: string;
+  assigned_staff_user_id: string | null;
   dealers: { id: string; foretagsnamn: string; mejl: string | null; pool_sla_minutes: number } | null;
   customers: { id: string; namn: string; telefon: string | null; mejl: string | null } | null;
   cars: { id: string; marke: string; modell: string; ar: number; regnummer: string | null; startbud: number | null; pool_prisgolv: number | null } | null;
-  staff_users: { fornamn: string; efternamn: string } | null;
 }
 
 interface DealLine {
@@ -38,7 +38,6 @@ interface DealLine {
   list_price: number;
   negotiated_price: number;
   kickback_amount: number;
-  kickback_receiver: string;
   sort_order: number;
 }
 
@@ -91,6 +90,20 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: 'Avbruten',
 };
 
+const STATUS_STYLE: Record<string, { bg: string; text: string }> = {
+  draft:             { bg: '#F7F6F3', text: '#6E6D68' },
+  sent_for_approval: { bg: '#E6F1FB', text: '#0C447C' },
+  approved:          { bg: '#E1F5EE', text: '#085041' },
+  rejected:          { bg: '#FCEBEB', text: '#791F1F' },
+  contract_sent:     { bg: '#EEEDFE', text: '#3C3489' },
+  contract_signed:   { bg: '#EEEDFE', text: '#3C3489' },
+  deposit_sent:      { bg: '#FAEEDA', text: '#854F0B' },
+  deposit_paid:      { bg: '#E1F5EE', text: '#085041' },
+  reserved:          { bg: '#E1F5EE', text: '#085041' },
+  handed_over:       { bg: '#EAF3DE', text: '#27500A' },
+  cancelled:         { bg: '#F7F6F3', text: '#6E6D68' },
+};
+
 const NEXT_STATUS: Record<string, string> = {
   draft: 'sent_for_approval',
   approved: 'contract_sent',
@@ -102,11 +115,11 @@ const NEXT_STATUS: Record<string, string> = {
 };
 
 const NEXT_ACTION_LABEL: Record<string, string> = {
-  draft: 'Skicka till handlare för godkännande',
-  approved: 'Markera kontrakt skickat',
-  contract_sent: 'Markera kontrakt signerat',
-  contract_signed: 'Markera handpenning skickad',
-  deposit_sent: 'Markera handpenning betald',
+  draft: 'Skicka till handlare',
+  approved: 'Kontrakt skickat',
+  contract_sent: 'Kontrakt signerat',
+  contract_signed: 'Handpenning skickad',
+  deposit_sent: 'Handpenning betald',
   deposit_paid: 'Reservera bilen',
   reserved: 'Markera som levererad',
 };
@@ -148,11 +161,15 @@ function fmtKr(v: number) {
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
   const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just nu';
   if (m < 60) return `${m} min sedan`;
   const h = Math.floor(m / 60);
   if (h < 24) return `${h} h sedan`;
   return `${Math.floor(h / 24)} d sedan`;
 }
+
+const cardStyle = { background: '#FFFFFF', border: '1px solid #E5E4E0', borderRadius: 12 };
+const inputStyle = { border: '1px solid #E5E4E0', background: '#F7F6F3', color: '#1C1C1A', borderRadius: 8 };
 
 export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack }: StaffDealDetailProps) {
   const [deal, setDeal] = useState<Deal | null>(null);
@@ -174,10 +191,10 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
     const [dealRes, linesRes, appRes, tasksRes, eventsRes] = await Promise.all([
       supabase.from('deals').select(`
         id, deal_number, status, notes, internal_notes, distance_sale, created_at, updated_at,
+        assigned_staff_user_id,
         dealers(id, foretagsnamn, mejl, pool_sla_minutes),
         customers(id, namn, telefon, mejl),
-        cars(id, marke, modell, ar, regnummer, startbud, pool_prisgolv),
-        staff_users!assigned_staff_user_id(fornamn, efternamn)
+        cars(id, marke, modell, ar, regnummer, startbud, pool_prisgolv)
       `).eq('id', dealId).maybeSingle(),
       supabase.from('deal_lines').select('*').eq('deal_id', dealId).order('sort_order'),
       supabase.from('deal_approvals').select('*').eq('deal_id', dealId).order('created_at', { ascending: false }),
@@ -205,17 +222,12 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
       const slaMinutes = deal.dealers.pool_sla_minutes ?? 120;
       const deadline = new Date(Date.now() + slaMinutes * 60 * 1000).toISOString();
       await supabase.from('deal_approvals').insert({
-        deal_id: dealId,
-        dealer_id: deal.dealers.id,
-        decision: 'pending',
-        sla_deadline_at: deadline,
+        deal_id: dealId, dealer_id: deal.dealers.id,
+        decision: 'pending', sla_deadline_at: deadline,
       });
-
       await supabase.from('deal_tasks').insert({
-        deal_id: dealId,
-        task_type: 'dealer_approval',
-        assigned_to_staff_user_id: staffUser.id,
-        due_at: deadline,
+        deal_id: dealId, task_type: 'dealer_approval',
+        assigned_to_staff_user_id: staffUser.id, due_at: deadline,
         note: `Väntar på godkännande från ${deal.dealers.foretagsnamn}. SLA: ${slaMinutes} min.`,
       });
     }
@@ -226,10 +238,8 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
 
     await supabase.from('deals').update({ status: next }).eq('id', dealId);
     await supabase.from('deal_events').insert({
-      deal_id: dealId,
-      event_type: 'status_change',
-      actor_type: 'staff',
-      actor_id: staffUser.user_id,
+      deal_id: dealId, event_type: 'status_change',
+      actor_type: 'staff', actor_id: staffUser.user_id,
       actor_name: `${staffUser.fornamn} ${staffUser.efternamn}`,
       payload_json: { from: deal.status, to: next },
     });
@@ -253,8 +263,7 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
   const addLine = async () => {
     if (!newLine.description) return;
     await supabase.from('deal_lines').insert({
-      deal_id: dealId,
-      line_type: newLine.line_type,
+      deal_id: dealId, line_type: newLine.line_type,
       description: newLine.description,
       list_price: parseInt(newLine.list_price) || 0,
       negotiated_price: parseInt(newLine.negotiated_price) || 0,
@@ -286,11 +295,9 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
   const addTask = async () => {
     if (!newTask.note) return;
     await supabase.from('deal_tasks').insert({
-      deal_id: dealId,
-      task_type: newTask.task_type,
+      deal_id: dealId, task_type: newTask.task_type,
       assigned_to_staff_user_id: staffUser.id,
-      due_at: newTask.due_at || null,
-      note: newTask.note,
+      due_at: newTask.due_at || null, note: newTask.note,
     });
     await supabase.from('deal_events').insert({
       deal_id: dealId, event_type: 'task_created',
@@ -334,7 +341,6 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
     fetchAll();
   };
 
-  // Totals
   const totalList = lines.reduce((s, l) => s + l.list_price, 0);
   const totalNegotiated = lines.reduce((s, l) => s + l.negotiated_price, 0);
   const totalKickback = lines.reduce((s, l) => s + l.kickback_amount, 0);
@@ -346,7 +352,7 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
     return (
       <StaffShell activePage="deals" staffUser={staffUser} onLoggedOut={onLoggedOut}>
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: '#6E6D68' }} />
         </div>
       </StaffShell>
     );
@@ -355,9 +361,9 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
   if (!deal) {
     return (
       <StaffShell activePage="deals" staffUser={staffUser} onLoggedOut={onLoggedOut}>
-        <div className="text-center py-16 text-slate-400">
-          <AlertCircle className="w-8 h-8 mx-auto mb-2" />
-          <p>Affären hittades inte.</p>
+        <div className="flex flex-col items-center justify-center h-64 gap-2">
+          <AlertCircle className="w-7 h-7" style={{ color: '#E5E4E0' }} />
+          <p className="text-[14px]" style={{ color: '#6E6D68' }}>Affären hittades inte.</p>
         </div>
       </StaffShell>
     );
@@ -368,25 +374,35 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
   const latestApproval = approvals[0];
   const openTasks = tasks.filter(t => t.status !== 'done');
   const doneTasks = tasks.filter(t => t.status === 'done');
+  const statusStyle = STATUS_STYLE[deal.status] ?? STATUS_STYLE.draft;
 
   return (
     <StaffShell activePage="deals" staffUser={staffUser} onLoggedOut={onLoggedOut}>
       <div className="max-w-5xl">
-        {/* Back + header */}
-        <button onClick={onBack} className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 mb-5 transition">
-          <ArrowLeft className="w-4 h-4" />
-          Tillbaka till affärer
+        {/* Back */}
+        <button onClick={onBack} className="flex items-center gap-1.5 mb-5 text-[13px] transition" style={{ color: '#6E6D68' }}>
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Tillbaka
         </button>
 
-        <div className="flex items-start justify-between gap-4 mb-6 flex-wrap">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
           <div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold text-slate-900">
-                {deal.cars ? `${deal.cars.marke} ${deal.cars.modell} ${deal.cars.ar}` : 'Ny affär'}
+            <div className="flex items-center gap-2.5 flex-wrap mb-0.5">
+              <h1 className="text-[20px] font-medium" style={{ color: '#1C1C1A' }}>
+                {deal.cars ? `${deal.cars.marke} ${deal.cars.modell} ${deal.cars.ar}` : 'Affär'}
               </h1>
-              <span className="text-sm font-mono text-slate-400">{deal.deal_number ?? '—'}</span>
+              {deal.cars?.regnummer && (
+                <span className="text-[11px] px-1.5 py-0.5 rounded font-medium" style={{ fontFamily: 'JetBrains Mono, monospace', background: '#E6F1FB', color: '#0C447C', borderRadius: 4 }}>
+                  {deal.cars.regnummer}
+                </span>
+              )}
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: statusStyle.bg, color: statusStyle.text, borderRadius: 100 }}>
+                {STATUS_LABELS[deal.status] ?? deal.status}
+              </span>
             </div>
-            <p className="text-sm text-slate-500 mt-0.5">
+            <p className="text-[13px]" style={{ color: '#6E6D68' }}>
+              {deal.deal_number && <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{deal.deal_number} · </span>}
               {deal.dealers?.foretagsnamn ?? '—'}
               {deal.customers?.namn && ` · ${deal.customers.namn}`}
             </p>
@@ -397,69 +413,66 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
                 <button
                   onClick={advanceStatus}
                   disabled={saving}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition"
-                  style={{ background: '#00A85A', color: 'white', opacity: saving ? 0.7 : 1 }}
+                  className="flex items-center gap-1.5 px-4 h-9 rounded-lg text-[13px] font-medium transition"
+                  style={{ background: '#0F6E56', color: '#FFFFFF', opacity: saving ? 0.7 : 1 }}
                 >
-                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                   {nextAction}
                 </button>
               )}
               <button
                 onClick={cancelDeal}
-                className="px-4 py-2.5 rounded-xl text-sm font-semibold text-red-600 border border-red-200 hover:bg-red-50 transition"
+                className="px-4 h-9 rounded-lg text-[13px] font-medium transition"
+                style={{ border: '1px solid #FCEBEB', color: '#791F1F', background: '#FFFFFF' }}
               >
-                Avbryt
+                Avbryt affär
               </button>
             </div>
           )}
         </div>
 
         {/* Status stepper */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 mb-5">
-          <div className="flex items-center gap-0 overflow-x-auto pb-1">
+        <div className="mb-5 p-4 overflow-x-auto" style={cardStyle}>
+          <div className="flex items-center gap-0">
             {STATUS_FLOW.map((s, idx) => {
               const done = idx < statusIdx;
               const active = idx === statusIdx;
-              const future = idx > statusIdx;
               return (
                 <div key={s} className="flex items-center shrink-0">
                   <div className="flex flex-col items-center">
                     <div
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border-2 transition"
+                      className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
                       style={{
-                        background: done ? '#00A85A' : active ? '#0A1628' : '#F3F4F6',
-                        borderColor: done ? '#00A85A' : active ? '#0A1628' : '#E5E7EB',
-                        color: done || active ? 'white' : '#9CA3AF',
+                        background: done ? '#E1F5EE' : active ? '#0F6E56' : '#F7F6F3',
+                        border: active ? 'none' : done ? '1px solid #C7EBD9' : '1px solid #E5E4E0',
                       }}
                     >
-                      {done ? <CheckCircle2 className="w-3.5 h-3.5" /> : idx + 1}
+                      {done
+                        ? <CheckCircle2 className="w-3 h-3" style={{ color: '#085041' }} />
+                        : <span className="text-[10px] font-medium" style={{ color: active ? '#FFFFFF' : '#6E6D68' }}>{idx + 1}</span>
+                      }
                     </div>
-                    <span
-                      className="text-[10px] mt-1 text-center max-w-[64px] leading-tight"
-                      style={{ color: active ? '#0A1628' : future ? '#D1D5DB' : '#6B7280', fontWeight: active ? 700 : 400 }}
-                    >
+                    <span className="text-[10px] mt-1 text-center leading-tight" style={{ maxWidth: 60, color: active ? '#1C1C1A' : '#6E6D68', fontWeight: active ? 500 : 400 }}>
                       {STATUS_LABELS[s]}
                     </span>
                   </div>
                   {idx < STATUS_FLOW.length - 1 && (
-                    <div
-                      className="h-0.5 w-8 mx-1 shrink-0"
-                      style={{ background: done ? '#00A85A' : '#E5E7EB' }}
-                    />
+                    <div className="h-px w-6 mx-1 shrink-0 mb-3" style={{ background: done ? '#C7EBD9' : '#E5E4E0' }} />
                   )}
                 </div>
               );
             })}
           </div>
+
           {deal.status === 'rejected' && (
-            <div className="mt-3 flex items-center gap-2 text-sm text-red-600 bg-red-50 rounded-xl px-3 py-2">
-              <XCircle className="w-4 h-4 shrink-0" />
-              Avvisad av handlare. {latestApproval?.message && `"${latestApproval.message}"`}
+            <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg text-[13px]" style={{ background: '#FCEBEB', color: '#791F1F' }}>
+              <XCircle className="w-3.5 h-3.5 shrink-0" />
+              Avvisad av handlare.{latestApproval?.message && ` "${latestApproval.message}"`}
             </div>
           )}
           {deal.status === 'sent_for_approval' && latestApproval && (
-            <div className="mt-3 flex items-center gap-2 text-sm text-amber-700 bg-amber-50 rounded-xl px-3 py-2">
-              <Clock className="w-4 h-4 shrink-0" />
+            <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg text-[13px]" style={{ background: '#FAEEDA', color: '#854F0B' }}>
+              <Clock className="w-3.5 h-3.5 shrink-0" />
               Väntar på {deal.dealers?.foretagsnamn}.
               {latestApproval.sla_deadline_at && (
                 <span className="ml-1">
@@ -471,123 +484,103 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
         </div>
 
         <div className="grid lg:grid-cols-3 gap-5">
-          {/* LEFT: Affärskort */}
+          {/* LEFT */}
           <div className="lg:col-span-2 space-y-5">
 
             {/* Lines */}
-            <div className="bg-white rounded-2xl border border-slate-200">
-              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                <h2 className="text-sm font-bold text-slate-900">Affärsrader</h2>
+            <div style={cardStyle}>
+              <div className="px-5 py-3.5 flex items-center justify-between" style={{ borderBottom: '1px solid #E5E4E0' }}>
+                <h2 className="text-[14px] font-medium" style={{ color: '#1C1C1A' }}>Affärsrader</h2>
                 <button
                   onClick={() => setShowAddLine(!showAddLine)}
-                  className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg"
-                  style={{ background: '#F0FDF4', color: '#00A85A' }}
+                  className="flex items-center gap-1.5 text-[12px] font-medium px-3 h-7 rounded-lg"
+                  style={{ background: '#EEF7F4', color: '#0F6E56' }}
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-3 h-3" />
                   Lägg till
                 </button>
               </div>
 
               {showAddLine && (
-                <div className="px-5 py-4 bg-slate-50 border-b border-slate-100">
+                <div className="px-5 py-4" style={{ background: '#F7F6F3', borderBottom: '1px solid #E5E4E0' }}>
                   <div className="grid sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-xs font-semibold text-slate-500 mb-1 block">Typ</label>
-                      <select
-                        value={newLine.line_type}
-                        onChange={e => setNewLine({ ...newLine, line_type: e.target.value })}
-                        className="w-full h-9 px-3 rounded-lg border border-slate-200 text-sm bg-white focus:outline-none"
-                      >
-                        {Object.entries(LINE_TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-slate-500 mb-1 block">Beskrivning</label>
-                      <input
-                        value={newLine.description}
-                        onChange={e => setNewLine({ ...newLine, description: e.target.value })}
-                        placeholder="T.ex. Fordonsgaranti 3 år"
-                        className="w-full h-9 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-slate-500 mb-1 block">Listpris (kr)</label>
-                      <input
-                        type="number"
-                        value={newLine.list_price}
-                        onChange={e => setNewLine({ ...newLine, list_price: e.target.value })}
-                        className="w-full h-9 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-slate-500 mb-1 block">Förhandlat pris (kr)</label>
-                      <input
-                        type="number"
-                        value={newLine.negotiated_price}
-                        onChange={e => setNewLine({ ...newLine, negotiated_price: e.target.value })}
-                        className="w-full h-9 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-slate-500 mb-1 block">Kickback (kr)</label>
-                      <input
-                        type="number"
-                        value={newLine.kickback_amount}
-                        onChange={e => setNewLine({ ...newLine, kickback_amount: e.target.value })}
-                        className="w-full h-9 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none"
-                      />
-                    </div>
+                    {([
+                      { label: 'Typ', field: 'line_type', type: 'select' },
+                      { label: 'Beskrivning', field: 'description', type: 'text', placeholder: 'T.ex. Fordonsgaranti 3 år' },
+                      { label: 'Listpris (kr)', field: 'list_price', type: 'number' },
+                      { label: 'Förhandlat pris (kr)', field: 'negotiated_price', type: 'number' },
+                      { label: 'Kickback (kr)', field: 'kickback_amount', type: 'number' },
+                    ] as { label: string; field: string; type: string; placeholder?: string }[]).map(f => (
+                      <div key={f.field}>
+                        <label className="text-[12px] font-medium mb-1 block" style={{ color: '#6E6D68' }}>{f.label}</label>
+                        {f.type === 'select' ? (
+                          <select
+                            value={newLine[f.field as keyof typeof newLine]}
+                            onChange={e => setNewLine({ ...newLine, [f.field]: e.target.value })}
+                            className="w-full h-9 px-3 text-[13px] focus:outline-none"
+                            style={inputStyle}
+                          >
+                            {Object.entries(LINE_TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                          </select>
+                        ) : (
+                          <input
+                            type={f.type}
+                            value={newLine[f.field as keyof typeof newLine]}
+                            onChange={e => setNewLine({ ...newLine, [f.field]: e.target.value })}
+                            placeholder={f.placeholder}
+                            className="w-full h-9 px-3 text-[13px] focus:outline-none"
+                            style={inputStyle}
+                          />
+                        )}
+                      </div>
+                    ))}
                   </div>
                   <div className="flex gap-2 mt-3">
-                    <button onClick={addLine} className="px-4 py-2 rounded-lg text-sm font-bold" style={{ background: '#00A85A', color: 'white' }}>
+                    <button onClick={addLine} className="px-4 h-8 rounded-lg text-[13px] font-medium" style={{ background: '#0F6E56', color: '#FFFFFF' }}>
                       Spara rad
                     </button>
-                    <button onClick={() => setShowAddLine(false)} className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 border border-slate-200">
+                    <button onClick={() => setShowAddLine(false)} className="px-4 h-8 rounded-lg text-[13px]" style={{ border: '1px solid #E5E4E0', color: '#6E6D68' }}>
                       Avbryt
                     </button>
                   </div>
                 </div>
               )}
 
-              <div className="divide-y divide-slate-50">
+              <div>
                 {lines.length === 0 ? (
-                  <div className="px-5 py-6 text-center text-sm text-slate-400">
-                    Inga rader ännu. Lägg till bil, inbyte och tillval.
+                  <div className="px-5 py-8 text-center text-[13px]" style={{ color: '#6E6D68' }}>
+                    Inga rader ännu.
                   </div>
                 ) : (
-                  lines.map(line => {
+                  lines.map((line, idx) => {
                     const Icon = LINE_TYPE_ICONS[line.line_type] ?? Tag;
                     const isTradeIn = line.line_type === 'trade_in';
                     return (
-                      <div key={line.id} className="px-5 py-3.5 flex items-center gap-3">
-                        <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                          style={{ background: isTradeIn ? '#FEF3C7' : '#F0F9FF' }}
-                        >
-                          <Icon className="w-4 h-4" style={{ color: isTradeIn ? '#D97706' : '#3B82F6' }} />
+                      <div key={line.id} className="px-5 py-3.5 flex items-center gap-3" style={{ borderTop: idx > 0 ? '1px solid #E5E4E0' : undefined }}>
+                        <div className="w-8 h-8 rounded-md flex items-center justify-center shrink-0" style={{ background: isTradeIn ? '#FAEEDA' : '#F7F6F3' }}>
+                          <Icon className="w-4 h-4" style={{ color: isTradeIn ? '#854F0B' : '#6E6D68' }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-semibold text-slate-900">{line.description}</div>
-                          <div className="text-xs text-slate-400">{LINE_TYPE_LABELS[line.line_type]}</div>
+                          <div className="text-[14px] font-medium" style={{ color: '#1C1C1A' }}>{line.description}</div>
+                          <div className="text-[12px]" style={{ color: '#6E6D68' }}>{LINE_TYPE_LABELS[line.line_type]}</div>
                         </div>
                         <div className="text-right shrink-0">
                           {line.list_price !== line.negotiated_price && line.list_price > 0 && (
-                            <div className="text-xs line-through text-slate-300">{fmtKr(line.list_price)}</div>
+                            <div className="text-[11px] line-through" style={{ color: '#6E6D68' }}>{fmtKr(line.list_price)}</div>
                           )}
-                          <div className="text-sm font-bold" style={{ color: isTradeIn ? '#D97706' : '#0A1628' }}>
-                            {isTradeIn ? '-' : ''}{fmtKr(line.negotiated_price)}
+                          <div className="text-[14px] font-medium" style={{ color: isTradeIn ? '#854F0B' : '#1C1C1A', fontFamily: 'JetBrains Mono, monospace' }}>
+                            {isTradeIn ? '−' : ''}{fmtKr(line.negotiated_price)}
                           </div>
                           {line.kickback_amount > 0 && (
-                            <div className="text-[11px] font-semibold" style={{ color: '#00A85A' }}>
+                            <div className="text-[11px] font-medium" style={{ color: '#085041' }}>
                               +{fmtKr(line.kickback_amount)} kickback
                             </div>
                           )}
                         </div>
-                        <button
-                          onClick={() => removeLine(line.id)}
-                          className="text-slate-300 hover:text-red-400 transition ml-2"
-                        >
-                          <Trash2 className="w-4 h-4" />
+                        <button onClick={() => removeLine(line.id)} className="ml-1 transition" style={{ color: '#E5E4E0' }}
+                          onMouseEnter={e => (e.currentTarget.style.color = '#791F1F')}
+                          onMouseLeave={e => (e.currentTarget.style.color = '#E5E4E0')}>
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     );
@@ -596,25 +589,25 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
               </div>
 
               {lines.length > 0 && (
-                <div className="px-5 py-4 border-t border-slate-100 bg-slate-50 rounded-b-2xl space-y-1.5">
-                  <div className="flex justify-between text-xs text-slate-500">
+                <div className="px-5 py-3.5 space-y-1.5 rounded-b-xl" style={{ borderTop: '1px solid #E5E4E0', background: '#F7F6F3' }}>
+                  <div className="flex justify-between text-[12px]" style={{ color: '#6E6D68' }}>
                     <span>Listpris totalt</span>
-                    <span>{fmtKr(totalList)}</span>
+                    <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(totalList)}</span>
                   </div>
                   {tradeInLine && (
-                    <div className="flex justify-between text-xs text-amber-700">
+                    <div className="flex justify-between text-[12px]" style={{ color: '#854F0B' }}>
                       <span>Inbyte</span>
-                      <span>-{fmtKr(Math.abs(tradeInLine.negotiated_price))}</span>
+                      <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>−{fmtKr(Math.abs(tradeInLine.negotiated_price))}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-sm font-bold text-slate-900 pt-1 border-t border-slate-200">
+                  <div className="flex justify-between text-[14px] font-medium pt-1" style={{ borderTop: '1px solid #E5E4E0', color: '#1C1C1A' }}>
                     <span>Att betala</span>
-                    <span>{fmtKr(toPay > 0 ? toPay : totalNegotiated)}</span>
+                    <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(toPay > 0 ? toPay : totalNegotiated)}</span>
                   </div>
                   {totalKickback > 0 && (
-                    <div className="flex justify-between text-xs font-semibold" style={{ color: '#00A85A' }}>
-                      <span>Kickback totalt (plattform+handlare+säljare)</span>
-                      <span>+{fmtKr(totalKickback)}</span>
+                    <div className="flex justify-between text-[12px] font-medium" style={{ color: '#085041' }}>
+                      <span>Kickback totalt</span>
+                      <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>+{fmtKr(totalKickback)}</span>
                     </div>
                   )}
                 </div>
@@ -622,97 +615,78 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
             </div>
 
             {/* Tasks */}
-            <div className="bg-white rounded-2xl border border-slate-200">
-              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <ClipboardList className="w-4 h-4 text-slate-400" />
+            <div style={cardStyle}>
+              <div className="px-5 py-3.5 flex items-center justify-between" style={{ borderBottom: '1px solid #E5E4E0' }}>
+                <h2 className="text-[14px] font-medium flex items-center gap-2" style={{ color: '#1C1C1A' }}>
+                  <ClipboardList className="w-4 h-4" style={{ color: '#6E6D68' }} />
                   Uppgifter
                   {openTasks.length > 0 && (
-                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
-                      {openTasks.length} öppna
+                    <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-full" style={{ background: '#FAEEDA', color: '#854F0B' }}>
+                      {openTasks.length}
                     </span>
                   )}
                 </h2>
                 <button
                   onClick={() => setShowAddTask(!showAddTask)}
-                  className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg"
-                  style={{ background: '#EFF6FF', color: '#3B82F6' }}
+                  className="flex items-center gap-1.5 text-[12px] font-medium px-3 h-7 rounded-lg"
+                  style={{ background: '#EEF7F4', color: '#0F6E56' }}
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-3 h-3" />
                   Ny uppgift
                 </button>
               </div>
 
               {showAddTask && (
-                <div className="px-5 py-4 bg-slate-50 border-b border-slate-100">
+                <div className="px-5 py-4" style={{ background: '#F7F6F3', borderBottom: '1px solid #E5E4E0' }}>
                   <div className="grid sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-semibold text-slate-500 mb-1 block">Typ</label>
-                      <select
-                        value={newTask.task_type}
-                        onChange={e => setNewTask({ ...newTask, task_type: e.target.value })}
-                        className="w-full h-9 px-3 rounded-lg border border-slate-200 text-sm bg-white focus:outline-none"
-                      >
+                      <label className="text-[12px] font-medium mb-1 block" style={{ color: '#6E6D68' }}>Typ</label>
+                      <select value={newTask.task_type} onChange={e => setNewTask({ ...newTask, task_type: e.target.value })}
+                        className="w-full h-9 px-3 text-[13px] focus:outline-none" style={inputStyle}>
                         {Object.entries(TASK_TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                       </select>
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-slate-500 mb-1 block">Förfaller</label>
-                      <input
-                        type="datetime-local"
-                        value={newTask.due_at}
-                        onChange={e => setNewTask({ ...newTask, due_at: e.target.value })}
-                        className="w-full h-9 px-3 rounded-lg border border-slate-200 text-sm bg-white focus:outline-none"
-                      />
+                      <label className="text-[12px] font-medium mb-1 block" style={{ color: '#6E6D68' }}>Förfaller</label>
+                      <input type="datetime-local" value={newTask.due_at} onChange={e => setNewTask({ ...newTask, due_at: e.target.value })}
+                        className="w-full h-9 px-3 text-[13px] focus:outline-none" style={inputStyle} />
                     </div>
                     <div className="sm:col-span-2">
-                      <label className="text-xs font-semibold text-slate-500 mb-1 block">Instruktion</label>
-                      <input
-                        value={newTask.note}
-                        onChange={e => setNewTask({ ...newTask, note: e.target.value })}
-                        placeholder="Vad ska göras?"
-                        className="w-full h-9 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none"
-                      />
+                      <label className="text-[12px] font-medium mb-1 block" style={{ color: '#6E6D68' }}>Instruktion</label>
+                      <input value={newTask.note} onChange={e => setNewTask({ ...newTask, note: e.target.value })}
+                        placeholder="Vad ska göras?" className="w-full h-9 px-3 text-[13px] focus:outline-none" style={inputStyle} />
                     </div>
                   </div>
                   <div className="flex gap-2 mt-3">
-                    <button onClick={addTask} className="px-4 py-2 rounded-lg text-sm font-bold" style={{ background: '#3B82F6', color: 'white' }}>
+                    <button onClick={addTask} className="px-4 h-8 rounded-lg text-[13px] font-medium" style={{ background: '#0F6E56', color: '#FFFFFF' }}>
                       Spara
                     </button>
-                    <button onClick={() => setShowAddTask(false)} className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 border border-slate-200">
+                    <button onClick={() => setShowAddTask(false)} className="px-4 h-8 rounded-lg text-[13px]" style={{ border: '1px solid #E5E4E0', color: '#6E6D68' }}>
                       Avbryt
                     </button>
                   </div>
                 </div>
               )}
 
-              <div className="divide-y divide-slate-50">
+              <div>
                 {tasks.length === 0 ? (
-                  <div className="px-5 py-5 text-center text-sm text-slate-400">Inga uppgifter ännu.</div>
+                  <div className="px-5 py-8 text-center text-[13px]" style={{ color: '#6E6D68' }}>Inga uppgifter ännu.</div>
                 ) : (
-                  [...openTasks, ...doneTasks].map(task => (
-                    <div key={task.id} className="px-5 py-3.5 flex items-start gap-3">
+                  [...openTasks, ...doneTasks].map((task, idx) => (
+                    <div key={task.id} className="px-5 py-3.5 flex items-start gap-3" style={{ borderTop: idx > 0 ? '1px solid #E5E4E0' : undefined }}>
                       <button onClick={() => toggleTask(task)} className="mt-0.5 shrink-0">
-                        <div
-                          className="w-5 h-5 rounded border-2 flex items-center justify-center transition"
-                          style={{
-                            borderColor: task.status === 'done' ? '#00A85A' : '#D1D5DB',
-                            background: task.status === 'done' ? '#00A85A' : 'white',
-                          }}
-                        >
-                          {task.status === 'done' && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+                        <div className="w-4 h-4 rounded flex items-center justify-center"
+                          style={{ background: task.status === 'done' ? '#0F6E56' : '#FFFFFF', border: task.status === 'done' ? 'none' : '1px solid #E5E4E0' }}>
+                          {task.status === 'done' && <CheckCircle2 className="w-3 h-3" style={{ color: '#FFFFFF' }} />}
                         </div>
                       </button>
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs font-bold text-slate-500 mb-0.5">{TASK_TYPE_LABELS[task.task_type]}</div>
-                        <div
-                          className="text-sm text-slate-700"
-                          style={{ textDecoration: task.status === 'done' ? 'line-through' : 'none', opacity: task.status === 'done' ? 0.5 : 1 }}
-                        >
+                        <div className="text-[11px] font-medium mb-0.5" style={{ color: '#6E6D68' }}>{TASK_TYPE_LABELS[task.task_type]}</div>
+                        <div className="text-[13px]" style={{ color: '#1C1C1A', textDecoration: task.status === 'done' ? 'line-through' : 'none', opacity: task.status === 'done' ? 0.5 : 1 }}>
                           {task.note ?? '—'}
                         </div>
                         {task.due_at && (
-                          <div className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                          <div className="text-[11px] flex items-center gap-1 mt-0.5" style={{ color: '#6E6D68' }}>
                             <Clock className="w-3 h-3" />
                             {new Date(task.due_at).toLocaleString('sv-SE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                           </div>
@@ -725,67 +699,72 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
             </div>
 
             {/* Internal note */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-5">
-              <h2 className="text-sm font-bold text-slate-900 mb-3">Internanteckning</h2>
+            <div className="p-5" style={cardStyle}>
+              <h2 className="text-[14px] font-medium mb-3" style={{ color: '#1C1C1A' }}>Internanteckning</h2>
               <textarea
                 value={internalNote || deal.internal_notes || ''}
                 onChange={e => setInternalNote(e.target.value)}
                 rows={3}
                 placeholder="Anteckningar som inte syns för kund eller handlare…"
-                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400 resize-none"
+                className="w-full px-3 py-2 text-[13px] focus:outline-none resize-none"
+                style={inputStyle}
               />
               <button
                 onClick={saveInternalNote}
                 disabled={savingNote}
-                className="mt-2 px-4 py-2 rounded-lg text-sm font-bold transition"
-                style={{ background: '#0A1628', color: 'white', opacity: savingNote ? 0.7 : 1 }}
+                className="mt-2 px-4 h-8 rounded-lg text-[13px] font-medium"
+                style={{ background: '#0F6E56', color: '#FFFFFF', opacity: savingNote ? 0.7 : 1 }}
               >
                 {savingNote ? 'Sparar…' : 'Spara'}
               </button>
             </div>
           </div>
 
-          {/* RIGHT: Meta + Log */}
+          {/* RIGHT */}
           <div className="space-y-5">
             {/* Deal info */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-5">
-              <h2 className="text-sm font-bold text-slate-900 mb-4">Affärsinformation</h2>
-              <dl className="space-y-3 text-sm">
+            <div className="p-5" style={cardStyle}>
+              <h2 className="text-[13px] font-medium mb-4" style={{ color: '#6E6D68', letterSpacing: '0.03em' }}>Affärsinformation</h2>
+              <dl className="space-y-3">
                 <div>
-                  <dt className="text-xs text-slate-400">Handlare</dt>
-                  <dd className="font-semibold text-slate-900">{deal.dealers?.foretagsnamn ?? '—'}</dd>
-                  {deal.dealers?.mejl && <dd className="text-xs text-slate-500">{deal.dealers.mejl}</dd>}
+                  <dt className="text-[11px] mb-0.5" style={{ color: '#6E6D68' }}>Handlare</dt>
+                  <dd className="text-[14px] font-medium" style={{ color: '#1C1C1A' }}>{deal.dealers?.foretagsnamn ?? '—'}</dd>
+                  {deal.dealers?.mejl && <dd className="text-[12px]" style={{ color: '#6E6D68' }}>{deal.dealers.mejl}</dd>}
                 </div>
                 {deal.customers && (
                   <div>
-                    <dt className="text-xs text-slate-400">Kund</dt>
-                    <dd className="font-semibold text-slate-900">{deal.customers.namn}</dd>
-                    {deal.customers.telefon && <dd className="text-xs text-slate-500">{deal.customers.telefon}</dd>}
-                    {deal.customers.mejl && <dd className="text-xs text-slate-500">{deal.customers.mejl}</dd>}
+                    <dt className="text-[11px] mb-0.5" style={{ color: '#6E6D68' }}>Kund</dt>
+                    <dd className="text-[14px] font-medium" style={{ color: '#1C1C1A' }}>{deal.customers.namn}</dd>
+                    {deal.customers.telefon && <dd className="text-[12px]" style={{ color: '#6E6D68' }}>{deal.customers.telefon}</dd>}
+                    {deal.customers.mejl && <dd className="text-[12px]" style={{ color: '#6E6D68' }}>{deal.customers.mejl}</dd>}
                   </div>
                 )}
                 {deal.cars && (
                   <div>
-                    <dt className="text-xs text-slate-400">Bil</dt>
-                    <dd className="font-semibold text-slate-900">{deal.cars.marke} {deal.cars.modell} {deal.cars.ar}</dd>
-                    {deal.cars.regnummer && <dd className="text-xs font-mono text-slate-500">{deal.cars.regnummer}</dd>}
-                    {deal.cars.startbud && <dd className="text-xs text-slate-500">Utpris: {fmtKr(deal.cars.startbud)}</dd>}
-                    {deal.cars.pool_prisgolv && <dd className="text-xs text-slate-500">Golv: {fmtKr(deal.cars.pool_prisgolv)}</dd>}
+                    <dt className="text-[11px] mb-0.5" style={{ color: '#6E6D68' }}>Bil</dt>
+                    <dd className="text-[14px] font-medium" style={{ color: '#1C1C1A' }}>{deal.cars.marke} {deal.cars.modell} {deal.cars.ar}</dd>
+                    {deal.cars.regnummer && (
+                      <dd>
+                        <span className="text-[11px] px-1.5 py-0.5 rounded font-medium" style={{ fontFamily: 'JetBrains Mono, monospace', background: '#E6F1FB', color: '#0C447C', borderRadius: 4 }}>
+                          {deal.cars.regnummer}
+                        </span>
+                      </dd>
+                    )}
+                    {deal.cars.startbud != null && <dd className="text-[12px]" style={{ color: '#6E6D68' }}>Utpris: <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(deal.cars.startbud)}</span></dd>}
+                    {deal.cars.pool_prisgolv != null && <dd className="text-[12px]" style={{ color: '#6E6D68' }}>Golv: <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(deal.cars.pool_prisgolv)}</span></dd>}
                   </div>
                 )}
                 <div>
-                  <dt className="text-xs text-slate-400">Ansvarig säljare</dt>
-                  <dd className="font-semibold text-slate-900">
-                    {deal.staff_users ? `${(deal.staff_users as unknown as { fornamn: string; efternamn: string }).fornamn} ${(deal.staff_users as unknown as { fornamn: string; efternamn: string }).efternamn}` : '—'}
-                  </dd>
+                  <dt className="text-[11px] mb-0.5" style={{ color: '#6E6D68' }}>Ansvarig säljare</dt>
+                  <dd className="text-[14px] font-medium" style={{ color: '#1C1C1A' }}>{staffUser.fornamn} {staffUser.efternamn}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-slate-400">Skapad</dt>
-                  <dd className="text-slate-600">{timeAgo(deal.created_at)}</dd>
+                  <dt className="text-[11px] mb-0.5" style={{ color: '#6E6D68' }}>Skapad</dt>
+                  <dd className="text-[13px]" style={{ color: '#6E6D68' }}>{timeAgo(deal.created_at)}</dd>
                 </div>
                 {deal.distance_sale && (
-                  <div className="px-3 py-2 rounded-lg bg-blue-50 text-xs text-blue-700 font-semibold">
-                    Distansförsäljning – ångerrätt gäller
+                  <div className="px-3 py-2 rounded-lg text-[12px]" style={{ background: '#E6F1FB', color: '#0C447C' }}>
+                    Distansförsäljning — ångerrätt gäller
                   </div>
                 )}
               </dl>
@@ -793,54 +772,56 @@ export default function StaffDealDetail({ dealId, staffUser, onLoggedOut, onBack
 
             {/* Approval history */}
             {approvals.length > 0 && (
-              <div className="bg-white rounded-2xl border border-slate-200 p-5">
-                <h2 className="text-sm font-bold text-slate-900 mb-4">Godkännandehistorik</h2>
+              <div className="p-5" style={cardStyle}>
+                <h2 className="text-[13px] font-medium mb-3" style={{ color: '#6E6D68', letterSpacing: '0.03em' }}>Godkännandehistorik</h2>
                 <div className="space-y-3">
                   {approvals.map(a => (
-                    <div key={a.id} className="text-sm">
+                    <div key={a.id}>
                       <div className="flex items-center gap-2">
-                        {a.decision === 'approved' && <CheckCircle2 className="w-4 h-4 text-green-500" />}
-                        {a.decision === 'rejected' && <XCircle className="w-4 h-4 text-red-500" />}
-                        {a.decision === 'pending' && <Clock className="w-4 h-4 text-amber-500" />}
-                        {a.decision === 'counter_offer' && <RefreshCw className="w-4 h-4 text-blue-500" />}
-                        <span className="font-semibold capitalize text-slate-800">
+                        {a.decision === 'approved' && <CheckCircle2 className="w-3.5 h-3.5 shrink-0" style={{ color: '#085041' }} />}
+                        {a.decision === 'rejected' && <XCircle className="w-3.5 h-3.5 shrink-0" style={{ color: '#791F1F' }} />}
+                        {a.decision === 'pending' && <Clock className="w-3.5 h-3.5 shrink-0" style={{ color: '#854F0B' }} />}
+                        {a.decision === 'counter_offer' && <RefreshCw className="w-3.5 h-3.5 shrink-0" style={{ color: '#0C447C' }} />}
+                        <span className="text-[13px] font-medium" style={{ color: '#1C1C1A' }}>
                           {a.decision === 'approved' ? 'Godkänd'
                             : a.decision === 'rejected' ? 'Avvisad'
                             : a.decision === 'counter_offer' ? `Motbud: ${a.counter_offer_amount != null ? fmtKr(a.counter_offer_amount) : '—'}`
                             : 'Väntar'}
                         </span>
                       </div>
-                      {a.message && <p className="text-xs text-slate-500 mt-1 pl-6">"{a.message}"</p>}
-                      <p className="text-[11px] text-slate-400 pl-6">{timeAgo(a.created_at)}</p>
+                      {a.message && <p className="text-[12px] mt-0.5 pl-5" style={{ color: '#6E6D68' }}>"{a.message}"</p>}
+                      <p className="text-[11px] pl-5" style={{ color: '#6E6D68' }}>{timeAgo(a.created_at)}</p>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Event log toggle */}
-            <div className="bg-white rounded-2xl border border-slate-200">
+            {/* Event log */}
+            <div style={cardStyle}>
               <button
                 onClick={() => setShowLog(!showLog)}
-                className="w-full px-5 py-4 flex items-center justify-between text-sm font-bold text-slate-900"
+                className="w-full px-5 py-3.5 flex items-center justify-between"
               >
-                <span className="flex items-center gap-2">
-                  <History className="w-4 h-4 text-slate-400" />
-                  Händelselogg ({events.length})
+                <span className="flex items-center gap-2 text-[14px] font-medium" style={{ color: '#1C1C1A' }}>
+                  <History className="w-3.5 h-3.5" style={{ color: '#6E6D68' }} />
+                  Händelselogg
+                  <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-full" style={{ background: '#F7F6F3', color: '#6E6D68' }}>{events.length}</span>
                 </span>
-                {showLog ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                {showLog ? <ChevronUp className="w-3.5 h-3.5" style={{ color: '#6E6D68' }} /> : <ChevronDown className="w-3.5 h-3.5" style={{ color: '#6E6D68' }} />}
               </button>
               {showLog && (
-                <div className="border-t border-slate-100 divide-y divide-slate-50 max-h-80 overflow-y-auto">
-                  {events.map(ev => (
-                    <div key={ev.id} className="px-5 py-3">
-                      <div className="text-xs font-semibold text-slate-700">{ev.event_type.replace(/_/g, ' ')}</div>
-                      {ev.actor_name && <div className="text-[11px] text-slate-400">{ev.actor_name}</div>}
-                      <div className="text-[11px] text-slate-300 mt-0.5">{timeAgo(ev.created_at)}</div>
-                    </div>
-                  ))}
-                  {events.length === 0 && (
-                    <div className="px-5 py-4 text-xs text-slate-400 text-center">Inga händelser ännu.</div>
+                <div className="max-h-72 overflow-y-auto" style={{ borderTop: '1px solid #E5E4E0' }}>
+                  {events.length === 0 ? (
+                    <div className="px-5 py-4 text-center text-[12px]" style={{ color: '#6E6D68' }}>Inga händelser ännu.</div>
+                  ) : (
+                    events.map((ev, idx) => (
+                      <div key={ev.id} className="px-5 py-3" style={{ borderTop: idx > 0 ? '1px solid #E5E4E0' : undefined }}>
+                        <div className="text-[13px] font-medium" style={{ color: '#1C1C1A' }}>{ev.event_type.replace(/_/g, ' ')}</div>
+                        {ev.actor_name && <div className="text-[12px]" style={{ color: '#6E6D68' }}>{ev.actor_name}</div>}
+                        <div className="text-[11px] mt-0.5" style={{ color: '#6E6D68' }}>{timeAgo(ev.created_at)}</div>
+                      </div>
+                    ))
                   )}
                 </div>
               )}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  Users, Plus, Search, Loader2, CheckCircle2,
+  Plus, Search, Loader2, CheckCircle2,
   XCircle, Shield, Eye, EyeOff,
 } from 'lucide-react';
 import StaffShell from '../components/StaffShell';
@@ -29,11 +29,11 @@ const ROLE_LABELS: Record<string, string> = {
   delivery_coordinator: 'Leveranskoord.',
 };
 
-const ROLE_COLORS: Record<string, { bg: string; text: string }> = {
-  teamlead: { bg: '#EDE9FE', text: '#6D28D9' },
-  salesperson: { bg: '#DBEAFE', text: '#1D4ED8' },
-  valuator: { bg: '#FEF3C7', text: '#D97706' },
-  delivery_coordinator: { bg: '#D1FAE5', text: '#065F46' },
+const ROLE_STYLE: Record<string, { bg: string; text: string }> = {
+  teamlead:             { bg: '#EEEDFE', text: '#3C3489' },
+  salesperson:          { bg: '#E6F1FB', text: '#0C447C' },
+  valuator:             { bg: '#FAEEDA', text: '#854F0B' },
+  delivery_coordinator: { bg: '#E1F5EE', text: '#085041' },
 };
 
 interface CreateForm {
@@ -43,6 +43,9 @@ interface CreateForm {
   efternamn: string;
   role: string;
 }
+
+const cardStyle = { background: '#FFFFFF', border: '1px solid #E5E4E0', borderRadius: 12 };
+const inputStyle = { border: '1px solid #E5E4E0', background: '#F7F6F3', color: '#1C1C1A', borderRadius: 8 };
 
 export default function StaffUsers({ staffUser, onLoggedOut }: StaffUsersProps) {
   const [members, setMembers] = useState<StaffMember[]>([]);
@@ -57,13 +60,10 @@ export default function StaffUsers({ staffUser, onLoggedOut }: StaffUsersProps) 
     email: '', password: '', fornamn: '', efternamn: '', role: 'salesperson',
   });
 
-  useEffect(() => {
-    fetchMembers();
-  }, []);
+  useEffect(() => { fetchMembers(); }, []);
 
   async function fetchMembers() {
-    const { data } = await supabase
-      .from('staff_users')
+    const { data } = await supabase.from('staff_users')
       .select('id, email, fornamn, efternamn, role, is_active, created_at')
       .order('created_at', { ascending: false });
     setMembers((data ?? []) as StaffMember[]);
@@ -82,7 +82,6 @@ export default function StaffUsers({ staffUser, onLoggedOut }: StaffUsersProps) 
     setCreating(true);
     setCreateError(null);
     try {
-      // Create auth user via a separate client so the admin session is unaffected
       const { createClient } = await import('@supabase/supabase-js');
       const tempClient = createClient(
         import.meta.env.VITE_SUPABASE_URL as string,
@@ -98,7 +97,6 @@ export default function StaffUsers({ staffUser, onLoggedOut }: StaffUsersProps) 
       if (authError) throw new Error('Kunde inte skapa konto: ' + authError.message);
       if (!authData.user) throw new Error('Kunde inte skapa konto: inget svar.');
 
-      // Insert staff record via SECURITY DEFINER RPC (bypasses RLS, verifies teamlead)
       const { error: rpcError } = await supabase.rpc('create_staff_member', {
         p_email: form.email,
         p_fornamn: form.fornamn,
@@ -109,7 +107,7 @@ export default function StaffUsers({ staffUser, onLoggedOut }: StaffUsersProps) 
 
       if (rpcError) {
         throw new Error(rpcError.message.includes('create_staff_member')
-          ? 'DB-funktion saknas. Kör SQL i Supabase-dashboarden — se instruktioner nedan.'
+          ? 'DB-funktion saknas.'
           : rpcError.message);
       }
 
@@ -142,199 +140,169 @@ export default function StaffUsers({ staffUser, onLoggedOut }: StaffUsersProps) 
 
   return (
     <StaffShell activePage="users" staffUser={staffUser} onLoggedOut={onLoggedOut}>
-      <div className="max-w-4xl">
-        <div className="flex items-start justify-between gap-4 mb-6">
+      <div>
+        <div className="flex items-start justify-between gap-4 mb-5">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-              <Users className="w-6 h-6 text-blue-500" />
-              Teamhantering
-            </h1>
-            <p className="text-sm text-slate-500 mt-0.5">
+            <h1 className="text-[20px] font-medium" style={{ color: '#1C1C1A' }}>Inställningar</h1>
+            <p className="text-[13px] mt-0.5" style={{ color: '#6E6D68' }}>
               {members.filter(m => m.is_active).length} aktiva · {members.length} totalt
             </p>
           </div>
           <button
             onClick={() => { setShowCreateModal(true); setCreateError(null); }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold"
-            style={{ background: '#00A85A', color: 'white' }}
+            className="flex items-center gap-1.5 px-4 h-9 rounded-lg text-[13px] font-medium"
+            style={{ background: '#0F6E56', color: '#FFFFFF' }}
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             Ny medarbetare
           </button>
         </div>
 
-        <div className="relative mb-5">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#6E6D68' }} />
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Sök namn, e-post, roll…"
-            className="w-full h-10 pl-9 pr-4 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:border-blue-400"
+            className="w-full h-9 pl-8 pr-3 rounded-lg text-[14px] focus:outline-none"
+            style={{ border: '1px solid #E5E4E0', background: '#FFFFFF', color: '#1C1C1A' }}
           />
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+            <Loader2 className="w-5 h-5 animate-spin" style={{ color: '#6E6D68' }} />
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-            <div className="divide-y divide-slate-50">
-              {filtered.map(member => {
-                const roleStyle = ROLE_COLORS[member.role] ?? { bg: '#F3F4F6', text: '#6B7280' };
+          <div style={cardStyle}>
+            {filtered.length === 0 ? (
+              <div className="text-center py-12 text-[13px]" style={{ color: '#6E6D68' }}>Inga medarbetare matchar.</div>
+            ) : (
+              filtered.map((member, idx) => {
+                const roleStyle = ROLE_STYLE[member.role] ?? { bg: '#F7F6F3', text: '#6E6D68' };
                 const isSelf = member.id === staffUser.id;
+                const initials = (member.fornamn[0] ?? '') + (member.efternamn[0] ?? '');
                 return (
-                  <div key={member.id} className="px-5 py-4 flex items-center gap-4">
+                  <div key={member.id} className="px-5 py-4 flex items-center gap-3"
+                    style={{ borderTop: idx > 0 ? '1px solid #E5E4E0' : undefined }}>
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-sm font-bold"
-                      style={{ background: member.is_active ? '#EFF6FF' : '#F3F4F6', color: member.is_active ? '#3B82F6' : '#9CA3AF' }}
+                      className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-[12px] font-medium"
+                      style={{ background: member.is_active ? '#EEF7F4' : '#F7F6F3', color: member.is_active ? '#0F6E56' : '#6E6D68' }}
                     >
-                      {member.fornamn[0]}{member.efternamn[0]}
+                      {initials || 'A'}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-semibold text-slate-900">
+                        <span className="text-[14px] font-medium" style={{ color: '#1C1C1A' }}>
                           {member.fornamn} {member.efternamn}
                         </span>
                         {isSelf && (
-                          <span className="text-[10px] font-bold bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded">Du</span>
+                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ background: '#E6F1FB', color: '#0C447C' }}>Du</span>
                         )}
-                        <span
-                          className="text-[11px] font-bold px-2 py-0.5 rounded-full"
-                          style={{ background: roleStyle.bg, color: roleStyle.text }}
-                        >
+                        <span className="text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: roleStyle.bg, color: roleStyle.text, borderRadius: 100 }}>
                           {ROLE_LABELS[member.role] ?? member.role}
                         </span>
                         {!member.is_active && (
-                          <span className="text-[11px] font-bold text-slate-400 flex items-center gap-1">
+                          <span className="text-[11px] flex items-center gap-1" style={{ color: '#6E6D68' }}>
                             <XCircle className="w-3 h-3" />
                             Inaktiv
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-slate-400 truncate">{member.email}</p>
+                      <p className="text-[12px] truncate" style={{ color: '#6E6D68' }}>{member.email}</p>
                     </div>
                     {!isSelf && (
                       <button
                         onClick={() => toggleActive(member)}
                         disabled={togglingId === member.id}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition hover:bg-slate-50"
+                        className="flex items-center gap-1.5 px-3 h-8 rounded-lg text-[12px] font-medium transition"
                         style={{
-                          borderColor: member.is_active ? '#FECACA' : '#D1FAE5',
-                          color: member.is_active ? '#DC2626' : '#00A85A',
+                          border: '1px solid #E5E4E0',
+                          color: member.is_active ? '#791F1F' : '#085041',
+                          background: '#FFFFFF',
                         }}
                       >
                         {togglingId === member.id ? (
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <Loader2 className="w-3 h-3 animate-spin" />
                         ) : member.is_active ? (
-                          <><XCircle className="w-3.5 h-3.5" /> Inaktivera</>
+                          <><XCircle className="w-3 h-3" /> Inaktivera</>
                         ) : (
-                          <><CheckCircle2 className="w-3.5 h-3.5" /> Aktivera</>
+                          <><CheckCircle2 className="w-3 h-3" /> Aktivera</>
                         )}
                       </button>
                     )}
                   </div>
                 );
-              })}
-              {filtered.length === 0 && (
-                <div className="text-center py-12 text-slate-400 text-sm">Inga medarbetare matchar.</div>
-              )}
-            </div>
+              })
+            )}
           </div>
         )}
       </div>
 
       {/* Create modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}>
+          <div className="w-full max-w-md rounded-xl p-6" style={{ background: '#FFFFFF', border: '1px solid #E5E4E0', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
             <div className="flex items-center gap-2 mb-5">
-              <Shield className="w-5 h-5 text-blue-500" />
-              <h2 className="text-lg font-bold text-slate-900">Ny medarbetare</h2>
+              <Shield className="w-4 h-4" style={{ color: '#6E6D68' }} />
+              <h2 className="text-[16px] font-medium" style={{ color: '#1C1C1A' }}>Ny medarbetare</h2>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Förnamn *</label>
-                  <input
-                    value={form.fornamn}
-                    onChange={e => setForm(f => ({ ...f, fornamn: e.target.value }))}
-                    className="w-full h-9 px-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Efternamn *</label>
-                  <input
-                    value={form.efternamn}
-                    onChange={e => setForm(f => ({ ...f, efternamn: e.target.value }))}
-                    className="w-full h-9 px-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400"
-                  />
-                </div>
+                {[['fornamn', 'Förnamn *'], ['efternamn', 'Efternamn *']].map(([key, label]) => (
+                  <div key={key}>
+                    <label className="block text-[12px] font-medium mb-1" style={{ color: '#6E6D68' }}>{label}</label>
+                    <input value={form[key as keyof CreateForm]}
+                      onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                      className="w-full h-9 px-3 text-[13px] focus:outline-none" style={inputStyle} />
+                  </div>
+                ))}
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">E-post *</label>
-                <input
-                  type="email"
-                  value={form.email}
+                <label className="block text-[12px] font-medium mb-1" style={{ color: '#6E6D68' }}>E-post *</label>
+                <input type="email" value={form.email}
                   onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                  className="w-full h-9 px-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400"
-                />
+                  className="w-full h-9 px-3 text-[13px] focus:outline-none" style={inputStyle} />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Lösenord *</label>
+                <label className="block text-[12px] font-medium mb-1" style={{ color: '#6E6D68' }}>Lösenord *</label>
                 <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={form.password}
+                  <input type={showPassword ? 'text' : 'password'} value={form.password}
                     onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                    className="w-full h-9 px-3 pr-9 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400"
                     placeholder="Min 8 tecken"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  >
+                    className="w-full h-9 px-3 pr-9 text-[13px] focus:outline-none" style={inputStyle} />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2" style={{ color: '#6E6D68' }}>
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Roll *</label>
-                <select
-                  value={form.role}
-                  onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
-                  className="w-full h-9 px-3 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none"
-                >
-                  {Object.entries(ROLE_LABELS).map(([val, label]) => (
-                    <option key={val} value={val}>{label}</option>
-                  ))}
+                <label className="block text-[12px] font-medium mb-1" style={{ color: '#6E6D68' }}>Roll *</label>
+                <select value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
+                  className="w-full h-9 px-3 text-[13px] focus:outline-none" style={inputStyle}>
+                  {Object.entries(ROLE_LABELS).map(([val, label]) => <option key={val} value={val}>{label}</option>)}
                 </select>
               </div>
 
               {createError && (
-                <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">{createError}</p>
+                <p className="text-[12px] px-3 py-2 rounded-lg" style={{ background: '#FCEBEB', color: '#791F1F' }}>{createError}</p>
               )}
             </div>
 
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="flex-1 h-10 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition"
-              >
+            <div className="flex gap-3 mt-5">
+              <button onClick={() => setShowCreateModal(false)}
+                className="flex-1 h-9 rounded-lg text-[13px]" style={{ border: '1px solid #E5E4E0', color: '#6E6D68' }}>
                 Avbryt
               </button>
-              <button
-                onClick={createMember}
-                disabled={creating}
-                className="flex-1 h-10 rounded-xl text-sm font-bold text-white transition flex items-center justify-center gap-2"
-                style={{ background: '#00A85A' }}
-              >
-                {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+              <button onClick={createMember} disabled={creating}
+                className="flex-1 h-9 rounded-lg text-[13px] font-medium flex items-center justify-center gap-2"
+                style={{ background: '#0F6E56', color: '#FFFFFF' }}>
+                {creating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Skapa
               </button>
             </div>

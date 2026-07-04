@@ -1,8 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 import {
-  LayoutDashboard, Package, FileText, Star,
-  Users, LogOut, Search, ThumbsUp,
-  TrendingUp,
+  FileText, Star, Package, ThumbsUp, TrendingUp, Settings, LogOut, Search,
 } from 'lucide-react';
 import type { StaffUser } from '../hooks/useStaffAuth';
 import { supabase } from '../lib/supabase';
@@ -14,22 +12,21 @@ export type StaffPage =
 interface NavItem {
   id: StaffPage;
   label: string;
-  icon: typeof LayoutDashboard;
+  icon: typeof FileText;
   path: string;
   roles?: StaffUser['role'][];
 }
 
 const NAV: NavItem[] = [
-  { id: 'overview',   label: 'Översikt',     icon: LayoutDashboard, path: '/staff/oversikt' },
-  { id: 'deals',      label: 'Ärenden',      icon: FileText,        path: '/staff/affarer' },
-  { id: 'valuations', label: 'Värderingar',  icon: Star,            path: '/staff/varderingar' },
-  { id: 'pool',       label: 'Handlarpool',  icon: Package,         path: '/staff/lager' },
-  { id: 'approvals',  label: 'Godkännanden', icon: ThumbsUp,        path: '/staff/affarer' },
-  { id: 'tasks',      label: 'Min intjäning',icon: TrendingUp,      path: '/staff/uppgifter' },
-  { id: 'users',      label: 'Säljare',      icon: Users,           path: '/staff/anvandare', roles: ['teamlead'] },
+  { id: 'deals',      label: 'Ärenden',      icon: FileText,   path: '/staff/affarer' },
+  { id: 'valuations', label: 'Värderingar',  icon: Star,       path: '/staff/varderingar' },
+  { id: 'pool',       label: 'Handlarpool',  icon: Package,    path: '/staff/lager' },
+  { id: 'approvals',  label: 'Godkännanden', icon: ThumbsUp,   path: '/staff/affarer' },
+  { id: 'tasks',      label: 'Ekonomi',      icon: TrendingUp, path: '/staff/uppgifter' },
+  { id: 'users',      label: 'Inställningar',icon: Settings,   path: '/staff/anvandare', roles: ['teamlead'] },
 ];
 
-function navigate(path: string) {
+export function navigate(path: string) {
   window.history.pushState({}, '', path);
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
@@ -42,7 +39,7 @@ interface StaffShellProps {
   badgeCount?: Partial<Record<StaffPage, number>>;
 }
 
-const MOBILE_NAV: StaffPage[] = ['overview', 'pool', 'deals', 'tasks'];
+const MOBILE_NAV: StaffPage[] = ['deals', 'pool', 'valuations', 'tasks'];
 
 export default function StaffShell({ activePage, staffUser, onLoggedOut, children, badgeCount = {} }: StaffShellProps) {
   const visibleNav = NAV.filter(item => !item.roles || item.roles.includes(staffUser.role));
@@ -66,32 +63,25 @@ export default function StaffShell({ activePage, staffUser, onLoggedOut, childre
     })();
   }, [staffUser.id]);
 
-  const roleLabel: Record<StaffUser['role'], string> = {
-    salesperson: 'Säljare',
-    valuator: 'Värderare',
-    teamlead: 'Admin',
-    delivery_coordinator: 'Leveranskoord.',
-  };
-
   const initials = (staffUser.fornamn[0] ?? '') + (staffUser.efternamn[0] ?? '');
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row" style={{ background: '#F2F4F8' }}>
+    <div className="min-h-screen flex" style={{ background: '#F7F6F3', fontFamily: 'Inter, sans-serif' }}>
 
-      {/* DESKTOP SIDEBAR */}
-      <aside className="hidden lg:flex flex-col w-56 shrink-0 sticky top-0 h-screen overflow-y-auto" style={{ background: '#0F1B2D' }}>
+      {/* SIDEBAR */}
+      <aside className="hidden lg:flex flex-col w-52 shrink-0 sticky top-0 h-screen" style={{ background: '#FFFFFF', borderRight: '1px solid #E5E4E0' }}>
         {/* Logo */}
-        <div className="px-5 pt-5 pb-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+        <div className="px-5 py-4 border-b" style={{ borderColor: '#E5E4E0' }}>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: '#00A85A' }}>
-              <span className="text-white text-xs font-black">B</span>
+            <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0" style={{ background: '#0F6E56' }}>
+              <span className="text-white text-[11px] font-bold">B</span>
             </div>
-            <span className="text-[15px] font-bold text-white">Bytesmotorn</span>
+            <span className="text-[15px] font-medium" style={{ color: '#1C1C1A' }}>Bytesmotorn</span>
           </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
+        <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
           {visibleNav.map(item => {
             const active = activePage === item.id;
             const Icon = item.icon;
@@ -101,16 +91,17 @@ export default function StaffShell({ activePage, staffUser, onLoggedOut, childre
                 key={item.id}
                 type="button"
                 onClick={() => navigate(item.path)}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[14px] transition-all text-left"
                 style={{
-                  background: active ? 'rgba(255,255,255,0.1)' : 'transparent',
-                  color: active ? 'white' : 'rgba(255,255,255,0.5)',
+                  background: active ? '#EEF7F4' : 'transparent',
+                  color: active ? '#0F6E56' : '#6E6D68',
+                  fontWeight: active ? 500 : 400,
                 }}
               >
-                <Icon className="w-4 h-4 shrink-0" strokeWidth={active ? 2.5 : 2} />
+                <Icon className="w-4 h-4 shrink-0" strokeWidth={active ? 2 : 1.75} />
                 <span className="flex-1">{item.label}</span>
                 {badge != null && badge > 0 && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center" style={{ background: '#E53E3E', color: 'white' }}>
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full min-w-[18px] text-center" style={{ background: '#FCEBEB', color: '#791F1F' }}>
                     {badge}
                   </span>
                 )}
@@ -119,41 +110,38 @@ export default function StaffShell({ activePage, staffUser, onLoggedOut, childre
           })}
         </nav>
 
-        {/* My stats */}
-        <div className="px-4 py-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
-          <div className="text-[10px] font-bold tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.3)' }}>MINA SIFFROR</div>
-          <div className="space-y-1.5">
-            {([
-              ['Mina sålda', myStats.solda],
-              ['Väntar på avslut', myStats.vantar],
-              ['Mina levererade', myStats.levererade],
-            ] as [string, number][]).map(([label, val]) => (
-              <div key={label} className="flex items-center justify-between">
-                <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</span>
-                <span className="text-[11px] font-bold" style={{ color: 'rgba(255,255,255,0.7)' }}>{val}</span>
-              </div>
-            ))}
-          </div>
+        {/* Stats */}
+        <div className="px-4 py-3 border-t" style={{ borderColor: '#E5E4E0' }}>
+          <div className="text-[11px] font-medium mb-2" style={{ color: '#6E6D68' }}>Mina siffror</div>
+          {([
+            ['Sålda', myStats.solda],
+            ['Väntar på avslut', myStats.vantar],
+            ['Levererade', myStats.levererade],
+          ] as [string, number][]).map(([label, val]) => (
+            <div key={label} className="flex items-center justify-between py-0.5">
+              <span className="text-[12px]" style={{ color: '#6E6D68' }}>{label}</span>
+              <span className="text-[12px] font-medium" style={{ color: '#1C1C1A', fontFamily: 'JetBrains Mono, monospace' }}>{val}</span>
+            </div>
+          ))}
         </div>
 
         {/* User */}
-        <div className="px-4 py-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
-          <div className="flex items-center gap-2.5 mb-3">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0" style={{ background: '#00A85A', color: 'white' }}>
+        <div className="px-4 py-3 border-t" style={{ borderColor: '#E5E4E0' }}>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-medium shrink-0" style={{ background: '#EEF7F4', color: '#0F6E56' }}>
               {initials || 'A'}
             </div>
             <div className="min-w-0">
-              <div className="text-[12px] font-semibold text-white truncate">{staffUser.fornamn} {staffUser.efternamn}</div>
-              <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>{roleLabel[staffUser.role]}</div>
+              <div className="text-[13px] font-medium truncate" style={{ color: '#1C1C1A' }}>{staffUser.fornamn} {staffUser.efternamn}</div>
             </div>
           </div>
           <button
             type="button"
             onClick={onLoggedOut}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium transition-all text-left"
-            style={{ color: 'rgba(255,255,255,0.35)' }}
+            className="flex items-center gap-2 text-[13px] transition-all"
+            style={{ color: '#6E6D68' }}
           >
-            <LogOut className="w-3.5 h-3.5 shrink-0" strokeWidth={2} />
+            <LogOut className="w-3.5 h-3.5" strokeWidth={1.75} />
             Logga ut
           </button>
         </div>
@@ -161,49 +149,41 @@ export default function StaffShell({ activePage, staffUser, onLoggedOut, childre
 
       {/* MAIN */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top search bar */}
-        <header className="hidden lg:flex sticky top-0 z-20 items-center gap-4 px-6 h-13 bg-white border-b border-slate-200" style={{ height: 52 }}>
+        {/* Global search bar */}
+        <header className="sticky top-0 z-20 flex items-center gap-4 px-6" style={{ height: 52, background: '#FFFFFF', borderBottom: '1px solid #E5E4E0' }}>
           <div className="relative flex-1 max-w-lg">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#6E6D68' }} />
             <input
               value={globalSearch}
               onChange={e => setGlobalSearch(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && globalSearch.trim()) navigate('/staff/affarer'); }}
               placeholder="Sök regnummer, kund eller ärende..."
-              className="w-full h-9 pl-9 pr-4 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-blue-400 focus:bg-white transition"
+              className="w-full h-9 pl-9 pr-4 rounded-lg text-[14px] focus:outline-none transition"
+              style={{ border: '1px solid #E5E4E0', background: '#F7F6F3', color: '#1C1C1A' }}
             />
+          </div>
+          {/* Mobile: show name */}
+          <div className="lg:hidden flex items-center gap-2">
+            <span className="text-[13px] font-medium" style={{ color: '#1C1C1A' }}>{staffUser.fornamn}</span>
+            <button onClick={onLoggedOut} className="text-[12px] px-3 h-7 rounded-lg" style={{ border: '1px solid #E5E4E0', color: '#6E6D68' }}>Logga ut</button>
           </div>
         </header>
 
-        {/* Mobile header */}
-        <header className="lg:hidden sticky top-0 z-30 w-full" style={{ background: '#0F1B2D', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-          <div className="px-4 h-12 flex items-center justify-between">
-            <span className="text-sm font-bold text-white">Bytesmotorn</span>
-            <button type="button" onClick={onLoggedOut} className="text-[11px] font-semibold px-3 h-7 rounded-full" style={{ color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              Logga ut
-            </button>
-          </div>
-          <div className="px-3 pb-2 flex gap-1 overflow-x-auto scrollbar-none">
-            {visibleNav.filter(n => MOBILE_NAV.includes(n.id)).map(item => {
-              const active = activePage === item.id;
-              const Icon = item.icon;
-              const badge = badgeCount[item.id];
-              return (
-                <button key={item.id} type="button" onClick={() => navigate(item.path)}
-                  className="shrink-0 flex items-center gap-1.5 px-3 h-7 rounded-full text-[11px] font-bold transition-all relative"
-                  style={{ background: active ? '#00A85A' : 'rgba(255,255,255,0.08)', color: active ? 'white' : 'rgba(255,255,255,0.55)' }}>
-                  <Icon className="w-3.5 h-3.5 shrink-0" strokeWidth={2} />
-                  {item.label}
-                  {badge != null && badge > 0 && (
-                    <span className="absolute -top-1 -right-1 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center" style={{ background: '#E53E3E', color: 'white' }}>
-                      {badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </header>
+        {/* Mobile nav */}
+        <div className="lg:hidden flex gap-1 px-3 py-2 overflow-x-auto scrollbar-none" style={{ background: '#FFFFFF', borderBottom: '1px solid #E5E4E0' }}>
+          {visibleNav.filter(n => MOBILE_NAV.includes(n.id)).map(item => {
+            const active = activePage === item.id;
+            const Icon = item.icon;
+            return (
+              <button key={item.id} type="button" onClick={() => navigate(item.path)}
+                className="shrink-0 flex items-center gap-1.5 px-3 h-8 rounded-lg text-[12px] transition-all"
+                style={{ background: active ? '#EEF7F4' : 'transparent', color: active ? '#0F6E56' : '#6E6D68', fontWeight: active ? 500 : 400 }}>
+                <Icon className="w-3.5 h-3.5" strokeWidth={1.75} />
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
 
         <main className="flex-1 p-5 sm:p-6 lg:p-7">
           {children}

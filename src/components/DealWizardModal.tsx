@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { X, Search, Loader2, ChevronRight, Check, Plus, Minus } from 'lucide-react';
+import { X, Search, Loader2, Check } from 'lucide-react';
 import type { StaffUser } from '../hooks/useStaffAuth';
 import { supabase } from '../lib/supabase';
 
@@ -34,10 +34,10 @@ interface Valuation {
 const PROVISION_RATE = 0.04;
 
 const ADDONS = [
-  { id: 'financing',    label: 'Billån via Marginalen',   type: 'FINANSIERING', price: 8500,  kickback: 5950 },
-  { id: 'insurance_12', label: 'Helförsäkring lf (12 mån)', type: 'FÖRSÄKRING',  price: 1800,  kickback: 900  },
-  { id: 'warranty_24',  label: 'Fordonsgaranti 24 mån',   type: 'GARANTI',     price: 6900,  kickback: 3450 },
-  { id: 'winter',       label: 'Vinterhjulet komplett',   type: 'HJUL',        price: 12000, kickback: 0    },
+  { id: 'financing',    label: 'Billån via Marginalen',     type: 'Finansiering', price: 8500,  kickback: 5950 },
+  { id: 'insurance_12', label: 'Helförsäkring lf (12 mån)', type: 'Försäkring',   price: 1800,  kickback: 900  },
+  { id: 'warranty_24',  label: 'Fordonsgaranti 24 mån',     type: 'Garanti',      price: 6900,  kickback: 3450 },
+  { id: 'winter',       label: 'Vinterhjulet komplett',     type: 'Hjul',         price: 12000, kickback: 0    },
 ];
 
 interface Props {
@@ -51,7 +51,14 @@ function fmtKr(v: number) {
   return v.toLocaleString('sv-SE') + ' kr';
 }
 
-const STEPS = ['KUND', 'AFFÄRSKORT', 'HANDLARGODKÄNNANDE', 'RESERVATIONSAVGIFT', 'ÖVERLÄMNING'];
+const STEPS = ['Kund', 'Affärskort', 'Godkännande', 'Betalning', 'Överlämning'];
+
+const inputStyle = {
+  border: '1px solid #E5E4E0',
+  background: '#F7F6F3',
+  color: '#1C1C1A',
+  borderRadius: 8,
+};
 
 export default function DealWizardModal({ car, staffUser, onClose, onCreated }: Props) {
   const [step, setStep] = useState(1);
@@ -174,104 +181,127 @@ export default function DealWizardModal({ car, staffUser, onClose, onCreated }: 
     onCreated(deal.id);
   }
 
+  const step1Ok = newCustomerMode ? !!newCustomer.namn : !!selectedCustomer;
+
   const calcPanel = (
-    <div className="w-72 shrink-0 bg-slate-900 rounded-2xl p-5 text-white">
-      <div className="text-[11px] font-bold text-slate-400 tracking-widest mb-4">KALKYL (INTERN)</div>
-      <div className="space-y-2 text-sm">
-        {[
-          ['Utpris', fmtKr(utpris), false],
-          ['Prisgolv (intern)', fmtKr(prisgolv), false],
-          ['Förhandlingsutrymme', fmtKr(maxRabatt), false],
-        ].map(([label, val]) => (
-          <div key={String(label)} className="flex justify-between">
-            <span style={{ color: 'rgba(255,255,255,0.5)' }}>{label}</span>
-            <span className="font-medium">{val}</span>
+    <div className="w-64 shrink-0 rounded-xl p-4" style={{ background: '#1C1C1A', border: '1px solid #2E2E2A' }}>
+      <div className="text-[11px] font-medium mb-3" style={{ color: '#6E6D68', letterSpacing: '0.05em' }}>Kalkyl (intern)</div>
+      <div className="space-y-1.5">
+        {([
+          ['Utpris', fmtKr(utpris)],
+          ['Prisgolv', fmtKr(prisgolv)],
+          ['Utrymme', fmtKr(maxRabatt)],
+        ] as [string, string][]).map(([label, val]) => (
+          <div key={label} className="flex justify-between items-baseline">
+            <span className="text-[12px]" style={{ color: '#6E6D68' }}>{label}</span>
+            <span className="text-[12px]" style={{ color: '#A3A29E', fontFamily: 'JetBrains Mono, monospace' }}>{val}</span>
           </div>
         ))}
-        <div className="border-t my-2" style={{ borderColor: 'rgba(255,255,255,0.1)' }} />
-        <div className="flex justify-between">
-          <span style={{ color: 'rgba(255,255,255,0.5)' }}>Kundens pris</span>
-          <span className="font-bold">{fmtKr(kundensPris)}</span>
+
+        <div className="my-2" style={{ borderTop: '1px solid #2E2E2A' }} />
+
+        <div className="flex justify-between items-baseline">
+          <span className="text-[12px]" style={{ color: '#6E6D68' }}>Kundens pris</span>
+          <span className="text-[13px] font-medium" style={{ color: '#FFFFFF', fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(kundensPris)}</span>
         </div>
-        <div className="flex justify-between">
-          <span style={{ color: 'rgba(255,255,255,0.5)' }}>Rabatt till kund</span>
-          <span className="font-medium" style={{ color: rabatt > 0 ? '#F59E0B' : 'rgba(255,255,255,0.5)' }}>{rabatt > 0 ? '−' : ''}{fmtKr(rabatt)}</span>
+        <div className="flex justify-between items-baseline">
+          <span className="text-[12px]" style={{ color: '#6E6D68' }}>Rabatt</span>
+          <span className="text-[12px]" style={{ color: rabatt > 0 ? '#854F0B' : '#6E6D68', fontFamily: 'JetBrains Mono, monospace' }}>
+            {rabatt > 0 ? `−${fmtKr(rabatt)}` : fmtKr(0)}
+          </span>
         </div>
         {tradeInBud > 0 && (
-          <div className="flex justify-between">
-            <span style={{ color: 'rgba(255,255,255,0.5)' }}>Inbyte</span>
-            <span className="font-medium" style={{ color: '#00A85A' }}>−{fmtKr(tradeInBud)}</span>
+          <div className="flex justify-between items-baseline">
+            <span className="text-[12px]" style={{ color: '#6E6D68' }}>Inbyte</span>
+            <span className="text-[12px]" style={{ color: '#085041', fontFamily: 'JetBrains Mono, monospace' }}>−{fmtKr(tradeInBud)}</span>
           </div>
         )}
-        <div className="flex justify-between">
-          <span style={{ color: 'rgba(255,255,255,0.5)' }}>Tillägg</span>
-          <span className="font-medium" style={{ color: addonsTotal > 0 ? 'white' : 'rgba(255,255,255,0.5)' }}>
+        <div className="flex justify-between items-baseline">
+          <span className="text-[12px]" style={{ color: '#6E6D68' }}>Tillägg</span>
+          <span className="text-[12px]" style={{ color: addonsTotal > 0 ? '#FFFFFF' : '#6E6D68', fontFamily: 'JetBrains Mono, monospace' }}>
             {addonsTotal > 0 ? `+${fmtKr(addonsTotal)}` : fmtKr(0)}
           </span>
         </div>
-        <div className="flex justify-between border-t pt-2" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-          <span className="font-semibold">Att betala (kund)</span>
-          <span className="font-bold text-base">{fmtKr(attBetala)}</span>
+        <div className="flex justify-between items-baseline pt-2" style={{ borderTop: '1px solid #2E2E2A' }}>
+          <span className="text-[13px] font-medium" style={{ color: '#FFFFFF' }}>Att betala</span>
+          <span className="text-[14px] font-medium" style={{ color: '#FFFFFF', fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(attBetala)}</span>
         </div>
-        <div className="border-t mt-2 pt-2" style={{ borderColor: 'rgba(255,255,255,0.1)' }} />
-        <div className="flex justify-between">
-          <span style={{ color: 'rgba(255,255,255,0.5)' }}>Provision (bytesavd)</span>
-          <span className="font-medium">{fmtKr(provision)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span style={{ color: 'rgba(255,255,255,0.5)' }}>Kickback (plattform + säljare)</span>
-          <span className="font-medium">{fmtKr(kickbackTotal)}</span>
-        </div>
-        <div className="flex justify-between border-t pt-2" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-          <span className="font-semibold">Intjäning</span>
-          <span className="font-bold text-base" style={{ color: '#00A85A' }}>{fmtKr(intjaning)}</span>
-        </div>
-      </div>
-      {selectedCustomer && (
-        <>
-          <div className="border-t mt-4 pt-4" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-            <div className="text-[11px] font-bold text-slate-400 tracking-widest mb-2">KUND</div>
-            <div className="text-sm font-semibold">{selectedCustomer.namn}</div>
-            {selectedCustomer.telefon && <div className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{selectedCustomer.telefon}</div>}
+
+        <div className="mt-3 pt-3" style={{ borderTop: '1px solid #2E2E2A' }}>
+          <div className="text-[11px] font-medium mb-1.5" style={{ color: '#6E6D68', letterSpacing: '0.05em' }}>Intjäning</div>
+          <div className="flex justify-between items-baseline">
+            <span className="text-[12px]" style={{ color: '#6E6D68' }}>Provision (4%)</span>
+            <span className="text-[12px]" style={{ color: '#A3A29E', fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(provision)}</span>
           </div>
-        </>
-      )}
+          <div className="flex justify-between items-baseline">
+            <span className="text-[12px]" style={{ color: '#6E6D68' }}>Kickback</span>
+            <span className="text-[12px]" style={{ color: '#A3A29E', fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(kickbackTotal)}</span>
+          </div>
+          <div className="flex justify-between items-baseline pt-1.5" style={{ borderTop: '1px solid #2E2E2A' }}>
+            <span className="text-[13px] font-medium" style={{ color: '#FFFFFF' }}>Intjäning</span>
+            <span className="text-[14px] font-medium" style={{ color: '#0F6E56', fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(intjaning)}</span>
+          </div>
+        </div>
+
+        {selectedCustomer && (
+          <div className="mt-3 pt-3" style={{ borderTop: '1px solid #2E2E2A' }}>
+            <div className="text-[11px] font-medium mb-1" style={{ color: '#6E6D68', letterSpacing: '0.05em' }}>Kund</div>
+            <div className="text-[13px] font-medium" style={{ color: '#FFFFFF' }}>{selectedCustomer.namn}</div>
+            {selectedCustomer.telefon && <div className="text-[12px]" style={{ color: '#6E6D68' }}>{selectedCustomer.telefon}</div>}
+          </div>
+        )}
+      </div>
     </div>
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}>
+      <div className="w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden rounded-xl" style={{ background: '#FFFFFF', border: '1px solid #E5E4E0', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 shrink-0">
+        <div className="px-5 py-4 shrink-0" style={{ borderBottom: '1px solid #E5E4E0' }}>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-xs font-bold tracking-widest text-slate-400 uppercase">
-              BYGG AFFÄR · {car.marke} {car.modell} {car.ar}
-              {car.regnummer && <span className="ml-2 font-mono normal-case text-slate-300">{car.regnummer}</span>}
+            <div className="flex items-center gap-2">
+              <span className="text-[13px] font-medium" style={{ color: '#6E6D68' }}>Bygg affär</span>
+              <span style={{ color: '#E5E4E0' }}>·</span>
+              <span className="text-[13px] font-medium" style={{ color: '#1C1C1A' }}>{car.marke} {car.modell} {car.ar}</span>
+              {car.regnummer && (
+                <span className="text-[11px] px-1.5 py-0.5 rounded font-medium" style={{ fontFamily: 'JetBrains Mono, monospace', background: '#E6F1FB', color: '#0C447C', borderRadius: 4 }}>
+                  {car.regnummer}
+                </span>
+              )}
             </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 transition">
-              <X className="w-4 h-4 text-slate-400" />
+            <button onClick={onClose} className="w-7 h-7 rounded-md flex items-center justify-center transition hover:bg-[#F7F6F3]">
+              <X className="w-4 h-4" style={{ color: '#6E6D68' }} />
             </button>
           </div>
-          {/* Step tabs */}
-          <div className="flex items-center gap-1">
+
+          {/* Step dots */}
+          <div className="flex items-center gap-2">
             {STEPS.map((s, i) => {
               const n = i + 1;
               const done = step > n;
               const active = step === n;
               return (
-                <div key={s} className="flex items-center gap-1">
-                  <div
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition"
-                    style={{
-                      background: active ? '#0A1628' : done ? '#00A85A' : '#F3F4F6',
-                      color: active || done ? 'white' : '#9CA3AF',
-                    }}
-                  >
-                    {done ? <Check className="w-3 h-3" /> : <span>{n}</span>}
-                    <span>{s}</span>
+                <div key={s} className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <div
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                      style={{
+                        background: active ? '#0F6E56' : done ? '#E1F5EE' : '#F7F6F3',
+                        border: active ? 'none' : done ? '1px solid #E1F5EE' : '1px solid #E5E4E0',
+                      }}
+                    >
+                      {done
+                        ? <Check className="w-2.5 h-2.5" style={{ color: '#085041' }} />
+                        : <span className="text-[10px] font-medium" style={{ color: active ? '#FFFFFF' : '#6E6D68' }}>{n}</span>
+                      }
+                    </div>
+                    <span className="text-[12px] hidden sm:block" style={{ color: active ? '#1C1C1A' : '#6E6D68', fontWeight: active ? 500 : 400 }}>{s}</span>
                   </div>
-                  {i < STEPS.length - 1 && <ChevronRight className="w-3 h-3 text-slate-200" />}
+                  {i < STEPS.length - 1 && (
+                    <div className="w-6 h-px" style={{ background: '#E5E4E0' }} />
+                  )}
                 </div>
               );
             })}
@@ -279,86 +309,97 @@ export default function DealWizardModal({ car, staffUser, onClose, onCreated }: 
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-hidden flex">
-          <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-hidden flex min-h-0">
+          <div className="flex-1 overflow-y-auto p-5">
 
             {/* STEP 1: KUND */}
             {step === 1 && (
               <div>
-                <div className="text-xs font-bold tracking-widest text-slate-400 mb-4">STEG 1 · IDENTIFIERA KUND</div>
+                <div className="text-[13px] font-medium mb-4" style={{ color: '#1C1C1A' }}>Identifiera kund</div>
 
-                <div className="flex gap-2 mb-1">
-                  <button
-                    onClick={() => setNewCustomerMode(false)}
-                    className="px-4 py-1.5 rounded-full text-xs font-bold transition"
-                    style={{ background: !newCustomerMode ? '#0A1628' : '#F3F4F6', color: !newCustomerMode ? 'white' : '#6B7280' }}
-                  >
-                    Befintlig kund
-                  </button>
-                  <button
-                    onClick={() => setNewCustomerMode(true)}
-                    className="px-4 py-1.5 rounded-full text-xs font-bold transition"
-                    style={{ background: newCustomerMode ? '#0A1628' : '#F3F4F6', color: newCustomerMode ? 'white' : '#6B7280' }}
-                  >
-                    Ny kund
-                  </button>
+                {/* Toggle */}
+                <div className="flex gap-0.5 p-1 rounded-lg mb-4 w-fit" style={{ background: '#F7F6F3', border: '1px solid #E5E4E0' }}>
+                  {(['Befintlig kund', 'Ny kund'] as const).map((label, i) => {
+                    const isNew = i === 1;
+                    const active = newCustomerMode === isNew;
+                    return (
+                      <button key={label} onClick={() => setNewCustomerMode(isNew)}
+                        className="px-4 h-7 rounded-md text-[12px] transition"
+                        style={{ background: active ? '#FFFFFF' : 'transparent', color: active ? '#1C1C1A' : '#6E6D68', fontWeight: active ? 500 : 400, border: active ? '1px solid #E5E4E0' : 'none' }}>
+                        {label}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {!newCustomerMode ? (
-                  <div className="mt-4">
+                  <div>
                     <div className="flex gap-2 mb-3">
                       <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#6E6D68' }} />
                         <input
                           value={customerSearch}
                           onChange={e => setCustomerSearch(e.target.value)}
                           onKeyDown={e => e.key === 'Enter' && searchCustomers()}
                           placeholder="Sök namn, telefon, e-post…"
-                          className="w-full h-10 pl-9 pr-4 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400"
+                          className="w-full h-9 pl-8 pr-3 text-[14px] focus:outline-none"
+                          style={{ ...inputStyle, borderRadius: 8 }}
                         />
                       </div>
                       <button
                         onClick={searchCustomers}
                         disabled={customerLoading}
-                        className="px-4 h-10 rounded-xl text-sm font-bold"
-                        style={{ background: '#0A1628', color: 'white' }}
+                        className="px-4 h-9 rounded-lg text-[13px] font-medium"
+                        style={{ background: '#0F6E56', color: '#FFFFFF' }}
                       >
-                        {customerLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sök'}
+                        {customerLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Sök'}
                       </button>
                     </div>
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                    <div className="space-y-1.5 max-h-64 overflow-y-auto">
                       {customerResults.map(c => (
                         <label
                           key={c.id}
-                          className="flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition"
-                          style={{ borderColor: selectedCustomer?.id === c.id ? '#00A85A' : '#E5E7EB', background: selectedCustomer?.id === c.id ? '#F0FDF4' : 'white' }}
+                          className="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition"
+                          style={{
+                            border: selectedCustomer?.id === c.id ? '1px solid #0F6E56' : '1px solid #E5E4E0',
+                            background: selectedCustomer?.id === c.id ? '#EEF7F4' : '#FFFFFF',
+                          }}
                         >
                           <input
                             type="radio"
                             name="customer"
                             checked={selectedCustomer?.id === c.id}
                             onChange={() => setSelectedCustomer(c)}
-                            className="accent-green-600"
+                            style={{ accentColor: '#0F6E56' }}
                           />
                           <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-slate-900 text-sm">{c.namn}</div>
-                            <div className="text-xs text-slate-400">
-                              {c.telefon ?? c.mejl ?? '—'}
-                            </div>
+                            <div className="text-[14px] font-medium" style={{ color: '#1C1C1A' }}>{c.namn}</div>
+                            <div className="text-[12px]" style={{ color: '#6E6D68' }}>{c.telefon ?? c.mejl ?? '—'}</div>
                           </div>
                         </label>
                       ))}
                       {customerResults.length === 0 && customerSearch && !customerLoading && (
-                        <p className="text-xs text-slate-400 text-center py-4">Inga träffar — prova ny kund.</p>
+                        <p className="text-[13px] text-center py-4" style={{ color: '#6E6D68' }}>Inga träffar — prova ny kund.</p>
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 mt-3">BankID-identifiering och kreditunderlag genomförs vid signering (steg 4).</p>
+                    <p className="text-[12px] mt-3" style={{ color: '#6E6D68' }}>BankID-identifiering genomförs vid signering.</p>
                   </div>
                 ) : (
-                  <div className="mt-4 space-y-3">
-                    <input value={newCustomer.namn} onChange={e => setNewCustomer(p => ({ ...p, namn: e.target.value }))} placeholder="Namn *" className="w-full h-10 px-4 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400" />
-                    <input value={newCustomer.telefon} onChange={e => setNewCustomer(p => ({ ...p, telefon: e.target.value }))} placeholder="Telefon" className="w-full h-10 px-4 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400" />
-                    <input value={newCustomer.mejl} onChange={e => setNewCustomer(p => ({ ...p, mejl: e.target.value }))} placeholder="E-post" className="w-full h-10 px-4 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400" />
+                  <div className="space-y-2.5">
+                    {[
+                      { key: 'namn', placeholder: 'Namn *' },
+                      { key: 'telefon', placeholder: 'Telefon' },
+                      { key: 'mejl', placeholder: 'E-post' },
+                    ].map(({ key, placeholder }) => (
+                      <input
+                        key={key}
+                        value={newCustomer[key as keyof typeof newCustomer]}
+                        onChange={e => setNewCustomer(p => ({ ...p, [key]: e.target.value }))}
+                        placeholder={placeholder}
+                        className="w-full h-9 px-3 text-[14px] focus:outline-none"
+                        style={inputStyle}
+                      />
+                    ))}
                   </div>
                 )}
               </div>
@@ -368,10 +409,10 @@ export default function DealWizardModal({ car, staffUser, onClose, onCreated }: 
             {step === 2 && (
               <div className="space-y-5">
                 {/* Price slider */}
-                <div className="bg-slate-50 rounded-2xl p-5">
+                <div className="rounded-lg p-4" style={{ background: '#F7F6F3', border: '1px solid #E5E4E0' }}>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-bold text-slate-900">Pris & rabatt</span>
-                    <span className="text-xs text-slate-400">Utrymme: {fmtKr(maxRabatt)}</span>
+                    <span className="text-[13px] font-medium" style={{ color: '#1C1C1A' }}>Pris och rabatt</span>
+                    <span className="text-[12px]" style={{ color: '#6E6D68' }}>Utrymme: <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(maxRabatt)}</span></span>
                   </div>
                   <input
                     type="range"
@@ -380,51 +421,60 @@ export default function DealWizardModal({ car, staffUser, onClose, onCreated }: 
                     step={500}
                     value={rabatt}
                     onChange={e => setRabatt(Number(e.target.value))}
-                    className="w-full h-2 accent-blue-600 mb-3"
-                    style={{ accentColor: '#0A1628' }}
+                    className="w-full mb-3"
+                    style={{ accentColor: '#0F6E56' }}
                   />
                   <div className="flex items-end justify-between">
                     <div>
-                      <div className="text-xs text-slate-400 mb-0.5">Golv {fmtKr(prisgolv)}</div>
-                      {rabatt > 0 && <div className="text-xs" style={{ color: '#F59E0B' }}>Rabatt till kund: {fmtKr(rabatt)}</div>}
+                      <div className="text-[12px]" style={{ color: '#6E6D68' }}>Golv <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(prisgolv)}</span></div>
+                      {rabatt > 0 && <div className="text-[12px] mt-0.5" style={{ color: '#854F0B' }}>Rabatt: <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(rabatt)}</span></div>}
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-slate-900">{fmtKr(kundensPris)}</div>
-                      <div className="text-xs text-slate-400">Utpris {fmtKr(utpris)}</div>
+                      <div className="text-[22px] font-medium" style={{ color: '#1C1C1A', fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(kundensPris)}</div>
+                      <div className="text-[12px]" style={{ color: '#6E6D68' }}>Utpris <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(utpris)}</span></div>
                     </div>
                   </div>
                 </div>
 
                 {/* Trade-in */}
                 <div>
-                  <div className="text-sm font-bold text-slate-900 mb-2">Inbyte (loggad värdering)</div>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition"
-                      style={{ borderColor: tradeInMode === 'none' ? '#00A85A' : '#E5E7EB', background: tradeInMode === 'none' ? '#F0FDF4' : 'white' }}>
-                      <input type="radio" name="tradein" checked={tradeInMode === 'none'} onChange={() => setTradeInMode('none')} className="accent-green-600" />
-                      <span className="text-sm font-semibold text-slate-700">Inget inbyte</span>
-                    </label>
-                    {valuations.map(v => (
-                      <label key={v.id} className="flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition"
-                        style={{ borderColor: (tradeInMode === 'valuation' && selectedValuation?.id === v.id) ? '#00A85A' : '#E5E7EB', background: (tradeInMode === 'valuation' && selectedValuation?.id === v.id) ? '#F0FDF4' : 'white' }}>
-                        <input type="radio" name="tradein" checked={tradeInMode === 'valuation' && selectedValuation?.id === v.id} onChange={() => { setTradeInMode('valuation'); setSelectedValuation(v); }} className="accent-green-600" />
-                        <div className="flex-1">
-                          <div className="text-sm font-semibold text-slate-700">{v.marke} {v.modell} {v.regnummer && `(${v.regnummer})`}</div>
-                          <div className="text-xs text-slate-400">Rekommenderat bud: {fmtKr(v.bid_recommended)}</div>
-                        </div>
-                      </label>
-                    ))}
-                    <label className="flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition"
-                      style={{ borderColor: (tradeInMode === 'valuation' && !selectedValuation) ? '#00A85A' : '#E5E7EB', background: (tradeInMode === 'valuation' && !selectedValuation) ? '#F0FDF4' : 'white' }}>
-                      <input type="radio" name="tradein" checked={tradeInMode === 'valuation' && !selectedValuation} onChange={() => { setTradeInMode('valuation'); setSelectedValuation(null); }} className="accent-green-600" />
+                  <div className="text-[13px] font-medium mb-2" style={{ color: '#1C1C1A' }}>Inbyte</div>
+                  <div className="space-y-1.5">
+                    {[{ id: 'none-opt', label: 'Inget inbyte', sub: null }].concat(
+                      valuations.map(v => ({ id: v.id, label: `${v.marke ?? ''} ${v.modell ?? ''} ${v.regnummer ? `(${v.regnummer})` : ''}`.trim(), sub: `Rekommenderat bud: ${fmtKr(v.bid_recommended)}` }))
+                    ).map(opt => {
+                      const isNone = opt.id === 'none-opt';
+                      const v = !isNone ? valuations.find(vv => vv.id === opt.id) : null;
+                      const active = isNone ? tradeInMode === 'none' : (tradeInMode === 'valuation' && selectedValuation?.id === opt.id);
+                      return (
+                        <label key={opt.id} className="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition"
+                          style={{ border: active ? '1px solid #0F6E56' : '1px solid #E5E4E0', background: active ? '#EEF7F4' : '#FFFFFF' }}>
+                          <input type="radio" name="tradein"
+                            checked={active}
+                            onChange={() => { if (isNone) { setTradeInMode('none'); setSelectedValuation(null); } else { setTradeInMode('valuation'); setSelectedValuation(v!); } }}
+                            style={{ accentColor: '#0F6E56' }} />
+                          <div>
+                            <div className="text-[13px] font-medium" style={{ color: '#1C1C1A' }}>{opt.label}</div>
+                            {opt.sub && <div className="text-[12px]" style={{ color: '#6E6D68' }}>{opt.sub}</div>}
+                          </div>
+                        </label>
+                      );
+                    })}
+                    <label className="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition"
+                      style={{ border: (tradeInMode === 'valuation' && !selectedValuation) ? '1px solid #0F6E56' : '1px solid #E5E4E0', background: (tradeInMode === 'valuation' && !selectedValuation) ? '#EEF7F4' : '#FFFFFF' }}>
+                      <input type="radio" name="tradein"
+                        checked={tradeInMode === 'valuation' && !selectedValuation}
+                        onChange={() => { setTradeInMode('valuation'); setSelectedValuation(null); }}
+                        style={{ accentColor: '#0F6E56' }} />
                       <div className="flex-1">
-                        <div className="text-sm font-semibold text-slate-700">Manuellt inbytespris</div>
+                        <div className="text-[13px] font-medium" style={{ color: '#1C1C1A' }}>Manuellt inbytespris</div>
                         {tradeInMode === 'valuation' && !selectedValuation && (
                           <input
                             value={manualTradeIn}
                             onChange={e => setManualTradeIn(e.target.value)}
                             placeholder="t.ex. 85000"
-                            className="mt-1 w-full h-8 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-blue-400"
+                            className="mt-1.5 w-full h-8 px-3 text-[13px] focus:outline-none"
+                            style={inputStyle}
                             onClick={e => e.stopPropagation()}
                           />
                         )}
@@ -435,27 +485,28 @@ export default function DealWizardModal({ car, staffUser, onClose, onCreated }: 
 
                 {/* Add-ons */}
                 <div>
-                  <div className="text-sm font-bold text-slate-900 mb-2">Tillägg (kickback)</div>
-                  <div className="space-y-2">
+                  <div className="text-[13px] font-medium mb-2" style={{ color: '#1C1C1A' }}>Tillägg med kickback</div>
+                  <div className="space-y-1.5">
                     {ADDONS.map(a => {
                       const checked = checkedAddons.has(a.id);
                       return (
-                        <label key={a.id} className="flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition"
-                          style={{ borderColor: checked ? '#00A85A' : '#E5E7EB', background: checked ? '#F0FDF4' : 'white' }}>
-                          <div
-                            className="w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 transition"
-                            style={{ borderColor: checked ? '#00A85A' : '#D1D5DB', background: checked ? '#00A85A' : 'white' }}
-                            onClick={() => setCheckedAddons(prev => {
-                              const next = new Set(prev);
-                              if (next.has(a.id)) next.delete(a.id); else next.add(a.id);
-                              return next;
-                            })}
-                          >
-                            {checked && <Check className="w-3 h-3 text-white" />}
+                        <label key={a.id} className="flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition"
+                          style={{ border: checked ? '1px solid #0F6E56' : '1px solid #E5E4E0', background: checked ? '#EEF7F4' : '#FFFFFF' }}
+                          onClick={() => setCheckedAddons(prev => {
+                            const next = new Set(prev);
+                            if (next.has(a.id)) next.delete(a.id); else next.add(a.id);
+                            return next;
+                          })}>
+                          <div className="w-4 h-4 rounded flex items-center justify-center shrink-0"
+                            style={{ background: checked ? '#0F6E56' : '#FFFFFF', border: checked ? 'none' : '1px solid #E5E4E0' }}>
+                            {checked && <Check className="w-2.5 h-2.5" style={{ color: '#FFFFFF' }} />}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-sm font-semibold text-slate-700">{a.label}</div>
-                            <div className="text-xs text-slate-400">{a.type} · {fmtKr(a.price)}</div>
+                            <div className="text-[13px] font-medium" style={{ color: '#1C1C1A' }}>{a.label}</div>
+                            <div className="text-[12px]" style={{ color: '#6E6D68' }}>
+                              {a.type} · <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(a.price)}</span>
+                              {a.kickback > 0 && <span> · kickback <span style={{ fontFamily: 'JetBrains Mono, monospace' }}>{fmtKr(a.kickback)}</span></span>}
+                            </div>
                           </div>
                         </label>
                       );
@@ -465,56 +516,58 @@ export default function DealWizardModal({ car, staffUser, onClose, onCreated }: 
 
                 {/* Notes */}
                 <div>
-                  <div className="text-sm font-bold text-slate-900 mb-2">Anteckningar</div>
+                  <div className="text-[13px] font-medium mb-2" style={{ color: '#1C1C1A' }}>Anteckningar</div>
                   <textarea
                     value={notes}
                     onChange={e => setNotes(e.target.value)}
                     rows={2}
-                    placeholder="Inledande noteringar om affären…"
-                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400 resize-none"
+                    placeholder="Noteringar om affären…"
+                    className="w-full px-3 py-2 text-[13px] focus:outline-none resize-none"
+                    style={{ ...inputStyle, borderRadius: 8 }}
                   />
                 </div>
 
                 {saveError && (
-                  <div className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-3">{saveError}</div>
+                  <div className="text-[13px] rounded-lg px-4 py-3" style={{ background: '#FCEBEB', color: '#791F1F' }}>{saveError}</div>
                 )}
               </div>
             )}
           </div>
 
           {/* Calc panel */}
-          <div className="p-4 shrink-0">
+          <div className="p-4 shrink-0 hidden sm:block">
             {calcPanel}
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-slate-100 shrink-0 flex items-center justify-between">
+        <div className="px-5 py-3.5 shrink-0 flex items-center justify-between" style={{ borderTop: '1px solid #E5E4E0' }}>
           <button
             onClick={() => step > 1 ? setStep(s => s - 1) : onClose()}
-            className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition"
+            className="text-[13px] transition"
+            style={{ color: '#6E6D68' }}
           >
             {step === 1 ? 'Avbryt' : 'Föregående'}
           </button>
           {step === 1 && (
             <button
               onClick={() => setStep(2)}
-              disabled={!newCustomerMode && !selectedCustomer}
-              className="px-6 py-2.5 rounded-xl text-sm font-bold transition"
-              style={{ background: (newCustomerMode && newCustomer.namn) || selectedCustomer ? '#00A85A' : '#E5E7EB', color: (newCustomerMode && newCustomer.namn) || selectedCustomer ? 'white' : '#9CA3AF' }}
+              disabled={!step1Ok}
+              className="px-5 h-9 rounded-lg text-[13px] font-medium transition"
+              style={{ background: step1Ok ? '#0F6E56' : '#F7F6F3', color: step1Ok ? '#FFFFFF' : '#6E6D68' }}
             >
-              NÄSTA
+              Nästa
             </button>
           )}
           {step === 2 && (
             <button
               onClick={handleCreate}
               disabled={saving}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition"
-              style={{ background: '#00A85A', color: 'white', opacity: saving ? 0.7 : 1 }}
+              className="flex items-center gap-2 px-5 h-9 rounded-lg text-[13px] font-medium transition"
+              style={{ background: '#0F6E56', color: '#FFFFFF', opacity: saving ? 0.7 : 1 }}
             >
-              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-              SKICKA TILL HANDLARE
+              {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              Skicka till handlare
             </button>
           )}
         </div>

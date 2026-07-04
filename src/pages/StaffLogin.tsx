@@ -171,7 +171,7 @@ export default function StaffLogin({ onLoggedIn, onBack }: StaffLoginProps) {
           <button
             onClick={() => { setMode('login'); setSetupDone(false); }}
             className="w-full h-11 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition"
-            style={{ background: '#00A85A', color: 'white' }}
+            style={{ background: '#0F6E56', color: 'white' }}
           >
             <LogIn className="w-4 h-4" />
             Gå till inloggning
@@ -244,7 +244,7 @@ export default function StaffLogin({ onLoggedIn, onBack }: StaffLoginProps) {
                 type="submit"
                 disabled={loading}
                 className="w-full h-11 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition"
-                style={{ background: '#00A85A', color: 'white', opacity: loading ? 0.7 : 1 }}
+                style={{ background: '#0F6E56', color: 'white', opacity: loading ? 0.7 : 1 }}
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogIn className="w-4 h-4" />}
                 Logga in
@@ -361,7 +361,7 @@ export default function StaffLogin({ onLoggedIn, onBack }: StaffLoginProps) {
               type="submit"
               disabled={loading}
               className="w-full h-11 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition"
-              style={{ background: '#00A85A', color: 'white', opacity: loading ? 0.7 : 1 }}
+              style={{ background: '#0F6E56', color: 'white', opacity: loading ? 0.7 : 1 }}
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
               Skapa konto
