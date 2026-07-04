@@ -1205,8 +1205,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       </section>
 
       {SHOW_EXPLORE && (<>
-      {/* Browse by budget */}
-      <section className="py-10 sm:py-16 bg-white">
+      {/* Browse by budget – hidden */}
+      {false && <section className="py-10 sm:py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-7 sm:mb-10">
             <h2 className="text-[26px] sm:text-[32px] font-extrabold text-slate-900 tracking-tight">
@@ -1393,7 +1393,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             </motion.div>
           )}
         </AnimatePresence>
-      </section>
+      </section>}
 
 
       {/* Bilmatch Section */}
@@ -1441,14 +1441,14 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
 
                   </div>
 
-                  {/* EquityFlow below card */}
-                  <div className="mt-3">
+                  {/* EquityFlow below card – hidden */}
+                  {false && <div className="mt-3">
                     <EquityFlow
                       compact
                       isEv={isEvPage}
                       onNegotiate={(carLabel) => navigateToBuy(carLabel, 'found')}
                     />
-                  </div>
+                  </div>}
                 </div>
 
                 {/* Desktop layout – unchanged */}
@@ -1493,11 +1493,11 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
                       <p className="text-[12px] text-slate-400 text-center">Tar 60 sekunder · Helt gratis</p>
                     </div>
                     <div className="w-full max-w-sm mx-auto lg:mx-0 mt-4 pt-4 border-t border-slate-100">
-                      <EquityFlow
+                      {false && <EquityFlow
                         compact
                         isEv={isEvPage}
                         onNegotiate={(carLabel) => navigateToBuy(carLabel, 'found')}
-                      />
+                      />}
                     </div>
                   </div>
                   {/* Right: car image grid – desktop only */}
@@ -1724,8 +1724,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         </div>
       </section>
 
-      {/* How it works */}
-      <section id="sa-funkar-det" className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-b border-slate-100">
+      {/* How it works – hidden */}
+      {false && <section id="sa-funkar-det" className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-b border-slate-100">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-[20px] sm:text-[28px] font-bold text-slate-900 text-center mb-8 sm:mb-10">Din väg till rätt bil</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
@@ -1749,7 +1749,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             })}
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* Curated grid */}
       <section
@@ -2090,8 +2090,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         )}
       </AnimatePresence>
 
-      {/* Bilbyte Section */}
-      <section className="relative overflow-hidden bg-slate-900">
+      {/* Bilbyte Section – hidden */}
+      {false && <section className="relative overflow-hidden bg-slate-900">
         <img
           src="/9e88d67e-f888-4b7f-b55b-60dea75193a3.png"
           alt=""
@@ -2162,7 +2162,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             </div>
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* Electric cars spotlight */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white overflow-hidden">

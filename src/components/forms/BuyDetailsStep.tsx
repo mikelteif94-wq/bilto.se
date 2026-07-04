@@ -1337,6 +1337,13 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               onModelChange={v => set('carModel', v)}
               onQuiz={onQuiz}
             />
+            <textarea
+              value={d.additionalRequests}
+              onChange={e => set('additionalRequests', e.target.value)}
+              placeholder="Hittade du inte bilen? Beskriv fritt vad du söker, t.ex. 'SUV med dragkrok under 300 000 kr'…"
+              rows={2}
+              className="form-control resize-none text-[13px] sm:text-[14px] mt-3"
+            />
           </div>
 
           <div className="py-5">
@@ -1493,7 +1500,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     <FieldError message={errors.buyingStage} />
   </div>
 
-      {/* ── Övriga önskemål ── */}
+      {/* ── Övriga önskemål – hidden for searching (already shown above brand selector) ── */}
+      {track !== 'searching' && (
       <div className="py-6">
         <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
           Övriga önskemål
@@ -1511,6 +1519,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           className="form-control resize-none"
         />
       </div>
+      )}
 
       <div className="pt-2 pb-2">
         <button
