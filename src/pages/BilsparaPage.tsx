@@ -328,7 +328,7 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
   const [sort, setSort] = useState<SortKey>('savings_kr');
   const [filterOpen, setFilterOpen] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Guider', 'Priser', 'Vanliga frågor', 'Bilspara'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
@@ -425,86 +425,38 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
     <div className="min-h-screen text-[#1A2233]" style={{ background: '#F7F8FB' }}>
       <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} onSelect={handleMenuSelect} />
 
-      {/* Top announcement bar */}
-      <div
-        className="relative z-50 w-full py-2.5 text-center text-[12px] font-bold uppercase tracking-wider"
-        style={{ background: '#E4002B', color: 'white', fontFamily: '"Signika", ui-sans-serif, system-ui' }}
-      >
-        <span className="mr-1.5">🔥</span>
-        SPARVECKAN — extra prissänkt på demobilar. Kampanjerna gäller så länge lagret räcker.
-      </div>
-
-      {/* Header */}
-      <header
-        className="sticky top-0 z-40 w-full"
-        style={{ background: '#0E1B33', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
-      >
-        <div className="max-w-[1400px] mx-auto h-14 flex items-center px-4 sm:px-6 lg:px-8 gap-4">
-          {/* Mobile menu */}
-          <button type="button" aria-label="Meny" onClick={() => setMenuOpen(true)} className="lg:hidden w-10 h-10 flex items-center justify-center text-white">
-            <Menu className="w-5 h-5" strokeWidth={2} />
+      {/* Standard Bilto floating pill header */}
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
+        <div className="max-w-[1400px] mx-auto h-full flex items-center px-4 sm:px-5 lg:px-8">
+          <button type="button" aria-label="Meny" onClick={() => setMenuOpen(true)} className="lg:hidden -ml-1 w-11 h-11 flex items-center justify-center text-white">
+            <Menu className="w-6 h-6 text-white" strokeWidth={2} />
           </button>
-
-          {/* Logo */}
-          <button onClick={onBackHome} className="shrink-0 flex items-center gap-2">
-            <span
-              className="text-[22px] font-bold leading-none"
-              style={{ fontFamily: '"Anton", "Impact", sans-serif', color: 'white', letterSpacing: '-0.01em' }}
-            >
-              bil
+          <button onClick={onBackHome} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center gap-2">
+            <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
+            <span className="hidden lg:flex items-center gap-1.5">
+              <span className="text-white/40 text-[13px] font-medium">/</span>
+              <span
+                className="text-[13px] font-bold px-2 py-0.5 rounded"
+                style={{ fontFamily: '"Anton", "Impact", sans-serif', background: '#FFD500', color: '#0E1B33', letterSpacing: '0.02em' }}
+              >
+                bilspara
+              </span>
             </span>
-            <span
-              className="text-[22px] font-bold leading-none px-1.5 py-0.5 rounded"
-              style={{ fontFamily: '"Anton", "Impact", sans-serif', background: '#FFD500', color: '#0E1B33', letterSpacing: '-0.01em' }}
-            >
-              spara
-            </span>
-            <span className="text-[13px] text-white/40 ml-0.5 hidden sm:inline" style={{ fontFamily: '"Signika", ui-sans-serif' }}>.se via Bilto</span>
           </button>
-
-          {/* Search bar */}
-          <div className="hidden md:flex flex-1 max-w-md mx-4">
-            <div
-              className="w-full flex items-center gap-2 px-4 h-9 text-[13px]"
-              style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 999, border: '1px solid rgba(255,255,255,0.12)' }}
-            >
-              <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 16 16" style={{ color: 'rgba(255,255,255,0.35)' }}><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.5"/><path d="m10.5 10.5 3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-              <input
-                type="text"
-                placeholder="Sök märke, modell eller handlare..."
-                value={searchQ}
-                onChange={e => setSearchQ(e.target.value)}
-                className="flex-1 bg-transparent focus:outline-none text-[13px]"
-                style={{ color: 'white', fontFamily: '"Signika", ui-sans-serif' }}
-              />
-              {searchQ && (
-                <button onClick={() => setSearchQ('')} className="shrink-0" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Nav actions */}
-          <div className="flex items-center gap-2 ml-auto">
-            <button
-              type="button"
-              onClick={onBackHome}
-              className="hidden lg:inline-flex items-center gap-1.5 px-3 h-8 rounded-full text-[12px] font-semibold transition"
-              style={{ background: '#FFD500', color: '#0E1B33', fontFamily: '"Signika", ui-sans-serif' }}
-            >
-              Värdera &amp; Vinn
-            </button>
-            <div className="hidden lg:flex items-center gap-1.5 px-3 h-8 rounded-full text-[12px] font-semibold" style={{ background: 'rgba(255,255,255,0.08)', color: 'white' }}>
+          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+            {navItems.map(item => (
+              <button key={item} type="button" onClick={() => handleMenuSelect(item)} className="text-[15px] text-white/90 hover:text-white transition">
+                {item}
+              </button>
+            ))}
+          </nav>
+          <div className="flex items-center gap-3 ml-auto">
+            <div className="hidden lg:flex items-center gap-1.5 text-[12px] font-semibold text-white/70">
               <span className="w-2 h-2 rounded-full bg-[#00A85A] animate-pulse" />
               {loading ? '...' : filtered.length} aktiva klipp
             </div>
-            <a
-              href="/gratis-konsultation"
-              className="inline-flex items-center px-4 h-8 rounded-full text-[12px] font-bold transition"
-              style={{ background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.18)' }}
-            >
-              Logga in
+            <a href="/gratis-konsultation" className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
+              Kostnadsfri konsultation
             </a>
           </div>
         </div>
@@ -513,12 +465,12 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
       <main>
         {/* ── HERO ── */}
         <section
-          className="relative overflow-hidden pt-14 pb-16 sm:pb-20"
-          style={{ background: 'linear-gradient(135deg, #0E1B33 0%, #16264a 60%, #0E1B33 100%)' }}
+          className="relative overflow-hidden pt-28 sm:pt-36 pb-16 sm:pb-20"
+          style={{ background: '#0e6efe' }}
         >
           {/* Decorative blobs */}
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,213,0,0.07) 0%, transparent 65%)', transform: 'translate(20%, -30%)' }} />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(228,0,43,0.08) 0%, transparent 65%)', transform: 'translate(-20%, 30%)' }} />
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 65%)', transform: 'translate(20%, -30%)' }} />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,213,0,0.10) 0%, transparent 65%)', transform: 'translate(-20%, 30%)' }} />
 
           <div className="relative max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
@@ -526,7 +478,7 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
                 {/* Badge */}
                 <span
                   className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-[0.18em]"
-                  style={{ background: 'rgba(255,213,0,0.1)', border: '1px solid rgba(255,213,0,0.25)', color: '#FFD500' }}
+                  style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)', color: 'white' }}
                 >
                   <span className="w-2 h-2 rounded-full bg-[#FFD500] animate-pulse" />
                   Sparveckan pågår
