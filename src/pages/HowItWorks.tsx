@@ -388,13 +388,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         active="Sälj bil"
         onSelect={handleMenuSelect}
       />
-      <header className={`fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 transition-colors duration-300 ${scrolled ? 'bg-white ring-slate-200/70' : 'bg-white/95 ring-white/10 backdrop-blur-md'}`}>
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
             aria-label="Meny"
             onClick={() => setMenuOpen(true)}
-            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-slate-800"
+            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white"
           >
             <Menu className="w-6 h-6 text-white" strokeWidth={2} />
           </button>
@@ -408,15 +408,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-600 font-medium transition hover:text-slate-900">Säljhjälpen</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-600 font-medium transition hover:text-slate-900">Bilköpshjälpen</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-600 font-medium transition hover:text-slate-900">Om oss</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/90 font-medium transition hover:text-white">Säljhjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/90 font-medium transition hover:text-white">Bilköpshjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/90 font-medium transition hover:text-white">Om oss</button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
               href="/gratis-konsultation"
               onMouseEnter={() => { import('../pages/FreeConsultationPage'); import('../pages/KopBilConcierge'); }}
-              className="inline-flex items-center bg-[#0e6efe] text-white text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-[#0a57cc] transition whitespace-nowrap"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
@@ -734,14 +734,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <section id="experternas-val" className="bg-white px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Bilkatalogen</p>
+            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">EXPERTERNAS VAL</p>
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
-                    Vad våra kunder bytt till senast
+                    Bilar vår expert rekommenderar just nu
                   </h2>
                   <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
-                    Populäraste modellerna just nu. Berätta vad du söker – vi hittar den och förhandlar priset.
+                    Handplockade modeller med bäst balans mellan pris, driftskostnad och tillförlitlighet. Berätta vad du söker – vi förhandlar priset.
                   </p>
                 </div>
               </div>
@@ -819,6 +819,22 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               </>
             );
           })()}
+
+          {/* Quiz entry card */}
+          <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p className="text-[15px] font-semibold text-slate-900 leading-snug">Osäker på vilken som passar dig?</p>
+              <p className="mt-1 text-[13px] text-slate-500 leading-[1.6] max-w-md">Svara på 5 korta frågor om hur du kör och vad du prioriterar – vi matchar dig med rätt bilar.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => popularCars.length > 0 && setFitQuizCar(popularCars[0])}
+              className="shrink-0 h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[13px] inline-flex items-center gap-2 transition-all whitespace-nowrap"
+            >
+              Testa bilmatch – tar 60 sekunder
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
@@ -1207,7 +1223,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           car={fitQuizCar!}
           open={!!fitQuizCar}
           onClose={() => setFitQuizCar(null)}
-          onNegotiate={() => { if (fitQuizCar) { openDrawer(`${fitQuizCar.brand_display} ${fitQuizCar.model_display}`); setFitQuizCar(null); } }}
+          onNegotiate={() => {
+            if (fitQuizCar) {
+              const name = encodeURIComponent(`${fitQuizCar.brand_display} ${fitQuizCar.model_display}`);
+              setFitQuizCar(null);
+              window.history.pushState({}, '', `/kop-bil/bestall?bil=${name}&typ=found`);
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            }
+          }}
         />
       </Suspense>
     </div>

@@ -97,15 +97,15 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
       <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} onSelect={handleMenuSelect} />
 
       {/* Header */}
-      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-slate-200/70 bg-white">
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-4 sm:px-5 lg:px-8">
           <button
             type="button"
             aria-label="Meny"
             onClick={() => setMenuOpen(true)}
-            className="lg:hidden -ml-1 w-11 h-11 flex items-center justify-center text-slate-800"
+            className="lg:hidden -ml-1 w-11 h-11 flex items-center justify-center text-white"
           >
-            <Menu className="w-6 h-6 text-slate-800" strokeWidth={2} />
+            <Menu className="w-6 h-6 text-white" strokeWidth={2} />
           </button>
           <button onClick={onBackHome} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center">
             <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
@@ -116,7 +116,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
                 key={id}
                 type="button"
                 onClick={() => handleMenuSelect(id)}
-                className="text-[15px] text-slate-600 hover:text-slate-900 transition"
+                className="text-[15px] text-white/90 hover:text-white transition"
               >
                 {label}
               </button>
@@ -125,7 +125,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
           <div className="flex items-center ml-auto">
             <a
               href="/gratis-konsultation"
-              className="inline-flex items-center bg-[#0e6efe] text-white text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-[#0a57cc] transition whitespace-nowrap"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
