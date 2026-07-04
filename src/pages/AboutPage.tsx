@@ -52,12 +52,6 @@ const FOUNDERS = [
     bio: '[Grundarens bakgrund och varför han startade Bilto – fylls i av grundaren.]',
     photo: FOUNDER_PHOTO,
   },
-  {
-    name: '[Medgrundare]',
-    role: '[Roll]',
-    bio: '[Grundarens bakgrund och varför han/hon startade Bilto – fylls i av grundaren.]',
-    photo: null,
-  },
 ];
 
 export default function AboutPage({ onBackHome }: AboutPageProps) {
