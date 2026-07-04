@@ -84,16 +84,13 @@ function FaqAccordion({ items }: { items: FaqItem[] }) {
 export default function VanligaFragorPage({ onBackHome }: VanligaFragorPageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Priser', 'Bilspara'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Köp bil', 'Om oss'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
     const routes: Partial<Record<MobileMenuItem, string>> = {
-      'Bilköpshjälpen': '/kop-bil',
-      'Guider': '/guider',
-      'Priser': '/priser',
-      'Vanliga frågor': '/vanliga-fragor',
-      'Bilspara': '/bilspara',
+      'Köp bil': '/kop-bil',
+      'Om oss': '/om-oss',
     };
     const route = routes[item];
     if (route) {

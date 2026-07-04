@@ -406,16 +406,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               decoding="async"
             />
           </button>
-          <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
+          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             <button type="button" onClick={onBackHome} className="text-[15px] text-white/70 font-medium transition hover:text-white">Sälj bil</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Bilköpshjälpen</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/guider'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Guider</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/priser'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Priser</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/vanliga-fragor'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Vanliga frågor</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/bilspara'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/90 hover:text-white transition flex items-center gap-1.5">
-              Bilspara
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            </button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Köp bil</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/70 font-medium transition hover:text-white">Om oss</button>
           </nav>
           <div className="flex items-center ml-auto">
             <a

@@ -47,15 +47,12 @@ export function SiteFooter() {
 
           {/* Sälj */}
           <div>
-            <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] mb-5 text-slate-300">Sälj & Köp</h4>
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] mb-5 text-slate-300">Tjänster</h4>
             <ul className="space-y-3">
               {[
-                { label: 'Värdera din bil', href: '/' },
-                { label: 'Sälj din bil', href: '/salj-din-bil' },
+                { label: 'Sälj din bil', href: '/salj-bil' },
                 { label: 'Köp bil med hjälp', href: '/kop-bil' },
-                { label: 'Priser', href: '/priser' },
-                { label: 'Guider', href: '/guider' },
-                { label: 'Vanliga frågor', href: '/vanliga-fragor' },
+                { label: 'Bli handlare', href: '/handlare/registrera' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <a href={href} className="text-[13.5px] text-slate-500 hover:text-white transition-colors duration-200 hover:pl-1 inline-block transition-all">{label}</a>
@@ -64,16 +61,15 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Företag */}
+          {/* Resurser */}
           <div>
-            <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] mb-5 text-slate-300">Företag</h4>
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] mb-5 text-slate-300">Resurser</h4>
             <ul className="space-y-3">
               {[
-                { label: 'Om Bilto', href: '/om-oss' },
+                { label: 'Priser', href: '/priser' },
+                { label: 'Guider', href: '/guider' },
+                { label: 'Vanliga frågor', href: '/vanliga-fragor' },
                 { label: 'Så funkar det', href: '/sa-funkar-det' },
-                { label: 'Admin', href: '/admin' },
-                { label: 'Bli handlare', href: '/handlare/registrera' },
-                { label: 'Handlare logga in', href: '/handlare/logga-in' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <a href={href} className="text-[13.5px] text-slate-500 hover:text-white transition-colors duration-200 hover:pl-1 inline-block transition-all">{label}</a>
@@ -87,9 +83,8 @@ export function SiteFooter() {
             <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] mb-5 text-slate-300">Trygghet</h4>
             <ul className="space-y-3 mb-6">
               {[
-                { label: 'Användarvillkor', href: '/anvandarvillkor' },
                 { label: 'Integritetspolicy', href: '/integritetspolicy' },
-                { label: 'Cookies', href: '/integritetspolicy' },
+                { label: 'Användarvillkor', href: '/anvandarvillkor' },
                 { label: 'Webbplatskarta', href: '/webbplatskarta' },
               ].map(({ label, href }) => (
                 <li key={label}>

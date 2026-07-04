@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { X, User, ChevronRight } from 'lucide-react';
+import { X } from 'lucide-react';
 
 export type MobileMenuItem =
   | 'Sälj bil'
@@ -28,22 +28,6 @@ function navigate(path: string, onClose: () => void) {
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
 
-function goToKopBilSection(sectionId: string, onClose: () => void) {
-  onClose();
-  const isAlreadyOnPage = window.location.pathname === '/kop-bil';
-  if (isAlreadyOnPage) {
-    setTimeout(() => {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-  } else {
-    window.history.pushState({}, '', '/kop-bil');
-    window.dispatchEvent(new PopStateEvent('popstate'));
-    setTimeout(() => {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 500);
-  }
-}
-
 export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
   useEffect(() => {
     if (!open) return;
@@ -57,7 +41,11 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
     };
   }, [open, onClose]);
 
-  const isKopBilActive = active === 'Köp bil med hjälp' || active === 'Hitta bil' || active === 'Köp bil' || active === 'Bilköpshjälpen';
+  const items: { label: string; path: string; id: MobileMenuItem }[] = [
+    { label: 'Sälj bil', path: '/salj-bil', id: 'Sälj bil' },
+    { label: 'Köp bil', path: '/kop-bil', id: 'Köp bil' },
+    { label: 'Om oss', path: '/om-oss', id: 'Om oss' },
+  ];
 
   return (
     <div
@@ -80,128 +68,18 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
         </div>
 
         <nav className="flex-1 px-2 py-3 overflow-y-auto">
-          {/* Bilköpshjälp */}
-          <button
-            type="button"
-            onClick={() => navigate('/kop-bil', onClose)}
-            className={`w-full text-left px-4 py-3 rounded-lg text-[18px] tracking-tight transition font-medium ${
-              isKopBilActive ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
-            }`}
-          >
-            Bilköpshjälp
-          </button>
-
-          {/* Sub-links */}
-          <div className="ml-4 mb-1 flex flex-col gap-0">
+          {items.map(({ label, path, id }) => (
             <button
+              key={id}
               type="button"
-              onClick={() => goToKopBilSection('quiz-section', onClose)}
-              className="w-full text-left px-3 py-2 rounded-md text-[14px] text-slate-500 hover:text-slate-800 hover:bg-[#faf8f5] transition flex items-center gap-2"
+              onClick={() => navigate(path, onClose)}
+              className={`w-full text-left px-4 py-3 rounded-lg text-[18px] tracking-tight transition font-medium ${
+                active === id ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
+              }`}
             >
-              <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-300" strokeWidth={2.5} />
-              Bilquiz
+              {label}
             </button>
-            <button
-              type="button"
-              onClick={() => goToKopBilSection('quiz-section', onClose)}
-              className="w-full text-left px-3 py-2 rounded-md text-[14px] text-slate-500 hover:text-slate-800 hover:bg-[#faf8f5] transition flex items-center gap-2"
-            >
-              <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-300" strokeWidth={2.5} />
-              Vad är min bil värd?
-            </button>
-            <button
-              type="button"
-              onClick={() => goToKopBilSection('cars-grid', onClose)}
-              className="w-full text-left px-3 py-2 rounded-md text-[14px] text-slate-500 hover:text-slate-800 hover:bg-[#faf8f5] transition flex items-center gap-2"
-            >
-              <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-300" strokeWidth={2.5} />
-              Experternas val
-            </button>
-          </div>
-
-          <div className="mx-2 my-1.5 border-t border-slate-100" />
-
-          {/* Sälj bil */}
-          <button
-            type="button"
-            onClick={() => navigate('/', onClose)}
-            className={`w-full text-left px-4 py-3 rounded-lg text-[18px] tracking-tight transition font-medium ${
-              active === 'Sälj bil' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
-            }`}
-          >
-            Sälj bil
-          </button>
-
-          {/* Bilspara */}
-          <button
-            type="button"
-            onClick={() => navigate('/bilspara', onClose)}
-            className={`w-full text-left px-4 py-3 rounded-lg text-[18px] tracking-tight transition font-medium flex items-center gap-2 ${
-              active === 'Bilspara' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
-            }`}
-          >
-            Bilspara
-            <span className="flex items-center gap-1 ml-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            </span>
-          </button>
-
-          {/* Om oss */}
-          <button
-            type="button"
-            onClick={() => navigate('/om-oss', onClose)}
-            className={`w-full text-left px-4 py-3 rounded-lg text-[18px] tracking-tight transition font-medium ${
-              active === 'Om oss' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
-            }`}
-          >
-            Om oss
-          </button>
-
-          <div className="mx-2 my-1.5 border-t border-slate-100" />
-
-          {/* Guider */}
-          <button
-            type="button"
-            onClick={() => navigate('/guider', onClose)}
-            className={`w-full text-left px-4 py-3 rounded-lg text-[18px] tracking-tight transition font-medium ${
-              active === 'Guider' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
-            }`}
-          >
-            Guider
-          </button>
-
-          {/* Priser */}
-          <button
-            type="button"
-            onClick={() => navigate('/priser', onClose)}
-            className={`w-full text-left px-4 py-3 rounded-lg text-[18px] tracking-tight transition font-medium ${
-              active === 'Priser' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
-            }`}
-          >
-            Priser
-          </button>
-
-          {/* Vanliga frågor */}
-          <button
-            type="button"
-            onClick={() => navigate('/vanliga-fragor', onClose)}
-            className={`w-full text-left px-4 py-3 rounded-lg text-[18px] tracking-tight transition font-medium ${
-              active === 'Vanliga frågor' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-800 hover:bg-[#faf8f5]'
-            }`}
-          >
-            Vanliga frågor
-          </button>
-
-          <div className="mx-2 my-1.5 border-t border-slate-100" />
-
-          <a
-            href="/logga-in"
-            onClick={onClose}
-            className="w-full text-left px-4 py-3 rounded-lg text-[18px] tracking-tight transition font-medium text-[#0e6efe] hover:bg-[#0e6efe]/5 flex items-center gap-3"
-          >
-            <User className="w-5 h-5 shrink-0" strokeWidth={2.2} />
-            Mina erbjudanden
-          </a>
+          ))}
         </nav>
 
         <div className="border-t border-slate-100 px-4 py-4">
@@ -209,7 +87,6 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
             href="/gratis-konsultation"
             className="inline-flex items-center justify-center gap-2 w-full px-4 h-12 rounded-xl bg-[#0e6efe] text-white text-[15px] font-semibold hover:bg-[#0a57cc] transition"
           >
-            <User className="w-5 h-5" strokeWidth={2.2} />
             Kostnadsfri konsultation
           </a>
         </div>

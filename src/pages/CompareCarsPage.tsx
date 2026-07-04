@@ -39,6 +39,8 @@ import { useVehicleLookup } from '../lib/useVehicleLookup';
 
 /* ───────────── constants ───────────── */
 
+const SHOW_EXPLORE = false;
+
 const FUEL_LABELS: Record<string, string> = {
   bensin: 'Bensin', diesel: 'Diesel', hybrid: 'Hybrid', laddhybrid: 'Laddhybrid', el: 'El',
 };
@@ -1090,13 +1092,18 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <span className="text-[15px] text-white font-bold underline underline-offset-4 decoration-white/50">
-              Köp bil
-            </span>
-            <button key="salj-bil" type="button" onClick={() => handleNavSelect('Sälj bil')}
+            <button type="button" onClick={() => handleNavSelect('Sälj bil')}
               className="text-[15px] text-white/70 hover:text-white transition font-medium"
             >
               Sälj bil
+            </button>
+            <span className="text-[15px] text-white font-bold underline underline-offset-4 decoration-white/50">
+              Köp bil
+            </span>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+              className="text-[15px] text-white/70 hover:text-white transition font-medium"
+            >
+              Om oss
             </button>
           </nav>
           <div className="flex items-center ml-auto">
@@ -1199,6 +1206,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         </div>
       </section>
 
+      {SHOW_EXPLORE && (<>
       {/* Browse by budget */}
       <section className="py-10 sm:py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -2474,6 +2482,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
           </div>
         </div>
       </section>
+      </>)}
 
       {/* Why us stats */}
       <section className="bg-[#0e6efe] py-12 sm:py-20 px-5 sm:px-6">
@@ -2680,6 +2689,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       <BuyDrawer car={buyDrawerCar} initialTrack={buyDrawerTrack} skipIntent={buyDrawerSkipIntent} initialAdditionalRequests={buyDrawerEquity || undefined} fuelTypes={buyDrawerFuelTypes} initialReg={buyDrawerInitialReg} onClose={() => { setBuyDrawerCar(null); setBuyDrawerEquity(''); setBuyDrawerFuelTypes(undefined); setBuyDrawerInitialReg(''); }} />
 
       {/* Compare drawer */}
+      {SHOW_EXPLORE && (
       <CompareDrawer
         cars={selectedCars}
         open={compareOpen}
@@ -2698,13 +2708,16 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         }}
         getImageUrl={getImageForCar}
       />
+      )}
 
       {/* TCO compare bar */}
+      {SHOW_EXPLORE && (
       <TcoCompareBar
         cars={tcoCompare}
         onRemove={(id) => setTcoCompare(prev => prev.filter(c => c.id !== id))}
         onGetHelp={(name) => openBuyDrawer(name, 'found')}
       />
+      )}
 
       {/* Detail sheet */}
       {detailCar && (
