@@ -15,12 +15,14 @@ import {
   Clock,
   Banknote,
   ThumbsUp,
+  Star,
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { setPageMeta } from '../lib/pageMeta';
 import BuyFlowFAQ from '../components/BuyFlowFAQ';
 import { PHONE, PHONE_TEL } from '../config/site';
+import { supabase } from '../lib/supabase';
 
 interface KopBilConciergProps {
   onBack: () => void;
@@ -113,6 +115,20 @@ const WHY_BILTO = [
 export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowItWorks }: KopBilConciergProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [topCars, setTopCars] = useState<{ id: string; make: string; model: string; image_url: string | null; cleaned_image_url: string | null; rating_overall: number | null; expert_comment: string | null; body_type: string | null; drivmedel: string | null; price_new_from: number | null }[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from('car_catalog')
+      .select('id, make, model, image_url, cleaned_image_url, rating_overall, expert_comment, body_type, drivmedel, pris_ny_fran')
+      .eq('is_active', true)
+      .not('rating_overall', 'is', null)
+      .order('rating_overall', { ascending: false })
+      .limit(5)
+      .then(({ data }) => {
+        if (data) setTopCars(data.map((c: Record<string, unknown>) => ({ ...c, price_new_from: (c.pris_ny_fran as number | null) ?? null })) as typeof topCars);
+      });
+  }, []);
 
   useEffect(() => {
     setPageMeta({
@@ -307,6 +323,87 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           </div>
         </div>
       </section>
+
+      {/* ── Expertens toppval ── */}
+      {topCars.length > 0 && (
+        <section className="py-16 sm:py-20 px-5 sm:px-8 bg-white border-t border-slate-100">
+          <div className="max-w-5xl mx-auto">
+            <div className="mb-8 sm:mb-10 text-center">
+              <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+                Experttips
+              </span>
+              <h2 className="text-[24px] sm:text-[36px] font-bold text-slate-900 leading-tight tracking-tight">
+                Expertens toppval
+              </h2>
+              <p className="text-slate-500 mt-2 sm:mt-3 text-[14px] sm:text-[15px] max-w-md leading-relaxed mx-auto">
+                Bilar våra förhandlare rekommenderar just nu – baserat på pris, kvalitet och nöjda kunder.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+              {topCars.map((car, i) => {
+                const img = car.cleaned_image_url || car.image_url;
+                const name = `${car.make} ${car.model}`;
+                const rating = car.rating_overall ?? 0;
+                return (
+                  <div
+                    key={car.id}
+                    className="group relative bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-[#0e6efe]/30 transition-all overflow-hidden cursor-pointer"
+                    onClick={() => onNavigateBuy(name)}
+                  >
+                    {i === 0 && (
+                      <div className="absolute top-2.5 left-2.5 z-10">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[9px] font-bold text-white"
+                          style={{ background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', boxShadow: '0 2px 6px rgba(245,158,11,0.4)' }}>
+                          <Star className="w-2.5 h-2.5 fill-white text-white" />
+                          #1
+                        </span>
+                      </div>
+                    )}
+                    <div className="aspect-[4/3] bg-gradient-to-b from-slate-50 to-white flex items-center justify-center overflow-hidden">
+                      {img ? (
+                        <img
+                          src={img} alt={name} loading="lazy" decoding="async"
+                          className="w-full h-full object-contain p-3 transition-transform duration-500 group-hover:scale-[1.06]"
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
+                          <Search className="w-5 h-5 text-slate-300" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="px-3 pt-2 pb-3">
+                      <p className="text-[13px] font-bold text-slate-900 leading-snug truncate group-hover:text-[#0e6efe] transition-colors">{name}</p>
+                      {car.drivmedel && (
+                        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mt-0.5">{car.drivmedel}</p>
+                      )}
+                      <div className="flex items-center gap-1 mt-1.5">
+                        {[1,2,3,4,5].map(s => (
+                          <div key={s} className="w-2 h-2 rounded-sm" style={{ backgroundColor: s <= Math.round(rating / 2) ? '#0e6efe' : '#e2e8f0' }} />
+                        ))}
+                        <span className="text-[10px] font-bold text-slate-500 ml-0.5">{rating.toFixed(1)}</span>
+                      </div>
+                      {car.price_new_from && (
+                        <p className="text-[10px] text-slate-400 mt-1">
+                          Från {new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(car.price_new_from)} kr
+                        </p>
+                      )}
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); onNavigateBuy(name); }}
+                        className="mt-2 w-full h-8 rounded-lg bg-[#0e6efe] hover:bg-[#0b5cd8] text-white text-[11px] font-bold transition inline-flex items-center justify-center gap-1"
+                      >
+                        Få prishjälp <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── What's included ── */}
       <section className="bg-[#0e6efe] py-16 sm:py-24 px-5 sm:px-8">
