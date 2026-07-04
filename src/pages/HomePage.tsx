@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  User, Menu, Search, XCircle, Car, Sparkles, Handshake,
-  Mail, ChevronRight, Shield, Clock, TrendingUp, Star, ArrowRight, CheckCircle,
+  User, Menu, XCircle, Car, Sparkles, Handshake,
+  Mail, ChevronRight, Shield, Clock, TrendingUp, Star, Search, CheckCircle,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
@@ -69,14 +69,6 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
   const [scrolled, setScrolled] = useState(false);
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
 
-  const [carQuery, setCarQuery] = useState('');
-  const [carSuggestions, setCarSuggestions] = useState<{ make: string; model: string }[]>([]);
-  const [allCars, setAllCars] = useState<{ make: string; model: string }[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [carSearchLoading, setCarSearchLoading] = useState(false);
-  const carSearchRef = useRef<HTMLDivElement>(null);
-  const carSearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   useEffect(() => {
     const threshold = typeof window !== 'undefined' ? window.innerHeight * 0.8 : 600;
     let current = window.scrollY > threshold;
@@ -103,61 +95,6 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
     document.querySelectorAll('[data-animate]').forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (carSearchRef.current && !carSearchRef.current.contains(e.target as Node)) {
-        setShowSuggestions(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    supabase.from('car_catalog').select('make, model').order('make').limit(200).then(({ data }) => {
-      setAllCars(data || []);
-    });
-  }, []);
-
-  const handleCarQueryChange = (q: string) => {
-    setCarQuery(q);
-    if (carSearchTimer.current) clearTimeout(carSearchTimer.current);
-    if (!q.trim()) {
-      setCarSuggestions(allCars);
-      setShowSuggestions(allCars.length > 0);
-      return;
-    }
-    setCarSearchLoading(true);
-    carSearchTimer.current = setTimeout(async () => {
-      const lower = q.trim().toLowerCase();
-      const filtered = allCars.filter(
-        (c) => c.make.toLowerCase().includes(lower) || c.model.toLowerCase().includes(lower)
-      );
-      setCarSuggestions(filtered.length > 0 ? filtered : []);
-      setShowSuggestions(true);
-      setCarSearchLoading(false);
-    }, 150);
-  };
-
-  const handleCarSelect = (make: string, model: string) => {
-    const bil = `${make} ${model}`.trim();
-    setCarQuery(bil);
-    setShowSuggestions(false);
-    // Model chip → price-help flow pre-filled
-    const params = new URLSearchParams({ bil, typ: 'found' });
-    window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  };
-
-  const handleCarSearch = () => {
-    const q = carQuery.trim();
-    if (!q) return;
-    setShowSuggestions(false);
-    const params = new URLSearchParams({ bil: q, typ: 'searching' });
-    window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  };
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     if (item === 'Sälj bil') {
@@ -331,7 +268,7 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
                       heroTab === t ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'
                     }`}
                   >
-                    {t === 'hitta' ? 'Köp bil' : 'Sälj bil'}
+                    {t === 'hitta' ? 'Bilköpshjälp' : 'Sälj bil'}
                     {heroTab === t && (
                       <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-slate-900 rounded-t-full" />
                     )}
@@ -341,104 +278,47 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
 
               <div className="p-4 sm:p-5">
                 {heroTab === 'hitta' ? (
-                  <div ref={carSearchRef} className="relative">
-                    <div className="flex items-center h-13 rounded-xl border border-slate-200 bg-[#faf8f5] overflow-hidden focus-within:border-slate-400 focus-within:bg-white transition-all">
-                      <span className="flex items-center justify-center w-12 shrink-0">
-                        <Search className="w-4.5 h-4.5 text-slate-400" />
-                      </span>
-                      <input
-                        type="text"
-                        value={carQuery}
-                        onChange={(e) => handleCarQueryChange(e.target.value)}
-                        onFocus={() => {
-                          if (!carQuery.trim()) {
-                            setCarSuggestions(allCars);
-                            setShowSuggestions(allCars.length > 0);
-                          } else {
-                            setShowSuggestions(true);
-                          }
-                        }}
-                        onKeyDown={(e) => { if (e.key === 'Enter') handleCarSearch(); }}
-                        placeholder="Sök märke, modell..."
-                        className="flex-1 min-w-0 w-0 h-full text-[15px] text-slate-800 bg-transparent focus:outline-none placeholder:text-slate-400"
-                      />
+                  <div className="space-y-2.5">
+                    {[
+                      {
+                        icon: Handshake,
+                        title: 'Jag har hittat en bil',
+                        sub: 'Låt oss förhandla och granska åt dig',
+                        params: { typ: 'found' },
+                      },
+                      {
+                        icon: Search,
+                        title: 'Jag letar efter bil',
+                        sub: 'Utforska, jämför eller testa bilmatch',
+                        params: { typ: 'searching' },
+                      },
+                      {
+                        icon: Car,
+                        title: 'Jag vill byta bil',
+                        sub: 'Vi hittar och förhandlar nästa bil åt dig',
+                        params: { typ: 'trade' },
+                      },
+                    ].map(({ icon: Icon, title, sub, params }) => (
                       <button
+                        key={title}
                         type="button"
-                        onClick={handleCarSearch}
-                        className="m-1.5 h-10 px-5 flex items-center gap-2 bg-slate-900 hover:bg-slate-700 active:scale-95 transition rounded-lg text-white text-[14px] font-semibold shrink-0"
+                        onClick={() => {
+                          const p = new URLSearchParams(params);
+                          window.history.pushState({}, '', `/kop-bil/bestall?${p}`);
+                          window.dispatchEvent(new PopStateEvent('popstate'));
+                        }}
+                        className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl border border-slate-200 hover:border-slate-400 hover:bg-[#faf8f5] active:scale-[0.99] transition text-left group"
                       >
-                        {carSearchLoading
-                          ? <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                          : <>Sök <ArrowRight className="w-4 h-4" strokeWidth={2.5} /></>
-                        }
+                        <div className="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 transition">
+                          <Icon className="w-4.5 h-4.5 text-slate-600" strokeWidth={1.8} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[14px] font-semibold text-slate-900 leading-tight">{title}</p>
+                          <p className="text-[12px] text-slate-500 mt-0.5 leading-snug">{sub}</p>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 shrink-0 transition" />
                       </button>
-                    </div>
-
-                        {showSuggestions && !carSearchLoading && (
-                          <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-50 max-h-72 overflow-y-auto">
-                            {carSuggestions.length === 0 ? (
-                              <div className="flex items-center gap-3 px-4 py-4 text-[14px] text-slate-400">
-                                <Search className="w-4 h-4 shrink-0" />
-                                <span>Inga träffar för <span className="font-semibold text-slate-600">"{carQuery}"</span></span>
-                              </div>
-                            ) : (
-                              <>
-                                <div className="px-4 pt-2.5 pb-1">
-                                  <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                                    {carQuery.trim() ? `${carSuggestions.length} träffar` : 'Alla bilar i katalogen'}
-                                  </p>
-                                </div>
-                                {carSuggestions.map((s, i) => (
-                                  <button
-                                    key={i}
-                                    type="button"
-                                    onClick={() => handleCarSelect(s.make, s.model)}
-                                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#faf8f5] transition group border-t border-slate-100 first:border-0"
-                                  >
-                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
-                                      <Car className="w-3.5 h-3.5 text-slate-500" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <span className="font-semibold text-slate-800 text-[14px]">{s.make} </span>
-                                      <span className="text-slate-500 text-[14px]">{s.model}</span>
-                                    </div>
-                                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 shrink-0 transition" />
-                                  </button>
-                                ))}
-                              </>
-                            )}
-                          </div>
-                        )}
-
-                    <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                      {[
-                        { make: 'Tesla', model: 'Model Y' },
-                        { make: 'Volvo', model: 'XC60' },
-                        { make: 'BMW', model: '3-serie' },
-                        { make: 'Kia', model: 'EV6' },
-                      ].map(({ make, model }) => (
-                        <button
-                          key={`${make} ${model}`}
-                          type="button"
-                          onClick={() => {
-                            setCarQuery(`${make} ${model}`);
-                            setShowSuggestions(false);
-                            const params = new URLSearchParams({ bil: `${make} ${model}`, typ: 'found' });
-                            window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
-                            window.dispatchEvent(new PopStateEvent('popstate'));
-                          }}
-                          className="text-[12px] text-slate-500 hover:text-slate-800 border border-slate-200 hover:border-slate-400 rounded-xl px-3 py-1 transition font-medium"
-                        >
-                          {make} {model}
-                        </button>
-                      ))}
-                    </div>
-                    <a
-                      href="/gratis-konsultation"
-                      className="mt-2.5 text-[12px] text-[#0e6efe] hover:text-[#0a57cc] font-medium transition w-full text-left inline-block"
-                    >
-                      Vet inte vad du vill ha? Vi hjälper dig →
-                    </a>
+                    ))}
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit}>
