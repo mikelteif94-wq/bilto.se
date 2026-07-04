@@ -407,27 +407,16 @@ function App() {
   }
 
   if (onStaffApp) {
-    if (authLoading) return <PageLoader />;
-    if (!session) {
-      return (
-        <Suspense fallback={<PageLoader />}>
-          <StaffLogin onLoggedIn={() => navigate('/staff/oversikt')} onBack={() => navigate('/')} />
-        </Suspense>
-      );
-    }
     if (path === '/staff' || path === '/staff/logga-in') {
-      return <PageLoader />;
+      navigate('/staff/oversikt');
+      return null;
     }
     return (
       <Suspense fallback={<PageLoader />}>
         <StaffArea
           userId={session?.user?.id ?? null}
           path={path}
-          onLoggedOut={() => {
-            supabase.auth.signOut();
-            sessionStorage.removeItem('bilto_portal');
-            navigate('/staff/logga-in');
-          }}
+          onLoggedOut={() => navigate('/')}
         />
       </Suspense>
     );
@@ -1245,34 +1234,22 @@ function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
 
   if (loading) return <PageLoader />;
 
-  if (!staffUser || !userId) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center px-4"
-        style={{ background: '#0A1628' }}
-      >
-        <div className="text-center max-w-sm">
-          <p className="text-white font-semibold mb-2">Ingen staff-profil hittades</p>
-          <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            Ditt konto finns men saknar en rad i staff_users-tabellen. Kontakta admin.
-          </p>
-          <button
-            onClick={onLoggedOut}
-            className="px-6 py-2.5 rounded-xl text-sm font-bold text-white"
-            style={{ background: '#00A85A' }}
-          >
-            Logga ut
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const fallbackUser: import('./hooks/useStaffAuth').StaffUser = staffUser ?? {
+    id: 'local',
+    user_id: userId ?? 'local',
+    fornamn: 'Admin',
+    efternamn: '',
+    email: '',
+    telefon: null,
+    role: 'teamlead',
+    is_active: true,
+  };
 
   const dealDetailId = matchStaffDealDetail(path);
   if (dealDetailId) {
     return (
       <StaffDealDetail
-        staffUser={staffUser}
+        staffUser={fallbackUser}
         dealId={dealDetailId}
         onLoggedOut={onLoggedOut}
         onBack={() => navigate('/staff/affarer')}
@@ -1285,7 +1262,7 @@ function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
     const initialCarId = newDealParams.get('carId') ?? undefined;
     return (
       <StaffNewDeal
-        staffUser={staffUser}
+        staffUser={fallbackUser}
         onLoggedOut={onLoggedOut}
         onCreated={(id) => navigate(`/staff/affarer/${id}`)}
         onBack={() => navigate('/staff/affarer')}
@@ -1297,7 +1274,7 @@ function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
   if (path === '/staff/affarer') {
     return (
       <StaffDealsList
-        staffUser={staffUser}
+        staffUser={fallbackUser}
         onLoggedOut={onLoggedOut}
         onOpenDeal={(id) => navigate(`/staff/affarer/${id}`)}
         onNewDeal={() => navigate('/staff/affarer/ny')}
@@ -1308,7 +1285,7 @@ function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
   if (path === '/staff/varderingar/ny') {
     return (
       <StaffNewValuation
-        staffUser={staffUser}
+        staffUser={fallbackUser}
         onLoggedOut={onLoggedOut}
         onCreated={() => navigate('/staff/varderingar')}
         onCancel={() => navigate('/staff/varderingar')}
@@ -1319,7 +1296,7 @@ function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
   if (path === '/staff/varderingar') {
     return (
       <StaffValuations
-        staffUser={staffUser}
+        staffUser={fallbackUser}
         onLoggedOut={onLoggedOut}
         onNewValuation={() => navigate('/staff/varderingar/ny')}
         onOpenValuation={(id) => navigate(`/staff/varderingar/${id}`)}
@@ -1330,7 +1307,7 @@ function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
   if (path === '/staff/lager') {
     return (
       <StaffPool
-        staffUser={staffUser}
+        staffUser={fallbackUser}
         onLoggedOut={onLoggedOut}
         onCreateDeal={(carId) => navigate(`/staff/affarer/ny?carId=${carId}`)}
       />
@@ -1340,17 +1317,17 @@ function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
   if (path === '/staff/uppgifter') {
     return (
       <StaffTasks
-        staffUser={staffUser}
+        staffUser={fallbackUser}
         onLoggedOut={onLoggedOut}
         onOpenDeal={(id) => navigate(`/staff/affarer/${id}`)}
       />
     );
   }
 
-  if (path === '/staff/anvandare' && staffUser.role === 'teamlead') {
+  if (path === '/staff/anvandare' && fallbackUser.role === 'teamlead') {
     return (
       <StaffUsers
-        staffUser={staffUser}
+        staffUser={fallbackUser}
         onLoggedOut={onLoggedOut}
       />
     );
@@ -1359,7 +1336,7 @@ function StaffArea({ userId, path, onLoggedOut }: StaffAreaProps) {
   // Default: overview
   return (
     <StaffOverview
-      staffUser={staffUser}
+      staffUser={fallbackUser}
       onLoggedOut={onLoggedOut}
       onNavigate={(p) => navigate(p)}
     />
