@@ -257,6 +257,13 @@ function App() {
     return () => { cancelled = true; };
   }, [session?.user?.id, onAdminRouteBool]);
 
+  const onStaffLoginPage = (path === '/staff' || path === '/staff/logga-in');
+  useEffect(() => {
+    if (!authLoading && session && onStaffLoginPage) {
+      navigate('/staff/oversikt');
+    }
+  }, [authLoading, session, onStaffLoginPage]);
+
   if (recoveryMode) {
     return (
       <Suspense fallback={<PageLoader />}>
@@ -409,7 +416,6 @@ function App() {
       );
     }
     if (path === '/staff' || path === '/staff/logga-in') {
-      navigate('/staff/oversikt');
       return <PageLoader />;
     }
     return (
