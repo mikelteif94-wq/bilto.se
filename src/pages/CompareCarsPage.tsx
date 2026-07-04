@@ -1456,8 +1456,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       </section>}
 
 
-      {/* Bilmatch Section */}
-      <section id="quiz-section" ref={quizSectionRef} className="py-0 sm:py-20 lg:py-28 sm:px-6 bg-[#faf8f5] sm:bg-gradient-to-b sm:from-slate-50 sm:to-white sm:border-t sm:border-slate-100">
+      {/* Bilmatch Section – moved to /utforska */}
+      {false && <section id="quiz-section" ref={quizSectionRef} className="py-0 sm:py-20 lg:py-28 sm:px-6 bg-[#faf8f5] sm:bg-gradient-to-b sm:from-slate-50 sm:to-white sm:border-t sm:border-slate-100">
         <div className="max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             {quizStep === 'idle' && (
@@ -1782,7 +1782,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             )}
           </AnimatePresence>
         </div>
-      </section>
+      </section>}
 
       {/* How it works – hidden */}
       {false && <section id="sa-funkar-det" className="py-12 sm:py-16 px-4 sm:px-6 bg-white border-b border-slate-100">
@@ -2224,8 +2224,8 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         </div>
       </section>}
 
-      {/* Electric cars spotlight */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white overflow-hidden">
+      {/* Electric cars spotlight – moved to /utforska */}
+      {false && <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-[22px] sm:text-[32px] font-extrabold text-slate-900 tracking-tight uppercase">
             Populära elbilar just nu
@@ -2337,7 +2337,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
             })()}
           </div>
         </div>
-      </section>
+      </section>}
 
       </>)}
 

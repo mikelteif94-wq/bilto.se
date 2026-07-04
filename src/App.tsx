@@ -45,6 +45,7 @@ const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CompareCarsPage = lazy(() => import('./pages/CompareCarsPage'));
+const UtforskaSida = lazy(() => import('./pages/UtforskaSida'));
 const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
@@ -508,6 +509,17 @@ function App() {
             source={buySource}
             onBack={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
           />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+        </>
+      </Suspense>
+    );
+  }
+
+  if (path === '/utforska') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <>
+          <UtforskaSida onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }} />
           <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
         </>
       </Suspense>

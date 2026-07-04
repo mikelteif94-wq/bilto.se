@@ -1,5 +1,5 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
-import { ChevronLeft, Phone, Check, X, User, Star, ShieldCheck, ArrowRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ChevronLeft, Phone, Check, X, ShieldCheck, ArrowRight } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
 import BuyFlowFAQ from '../components/BuyFlowFAQ';
 import { validateSwedishPhone } from '../lib/utils';
@@ -9,19 +9,6 @@ import BuyDetailsStep, { type BuyDetailsData } from '../components/forms/BuyDeta
 import BuyTradeInStep, { type BuyTradeInData } from '../components/forms/BuyTradeInStep';
 import BuyContactStep, { type BuyContactData } from '../components/forms/BuyContactStep';
 import { supabase } from '../lib/supabase';
-import CompactCarCard from '../components/CompactCarCard';
-import ElCarCard from '../components/ElCarCard';
-import type { ComparisonCar } from '../lib/comparison';
-import { useCarImages } from '../hooks/useCarImages';
-import { useCatalogCars } from '../hooks/useCatalogCars';
-
-const CarFitQuiz = lazy(() => import('../components/CarFitQuiz').then(m => ({ default: m.CarFitQuiz })));
-
-const POPULAR_IDS = ['tesla_model_y', 'volvo_xc60', 'kia_ev6', 'toyota_rav4', 'volvo_xc40', 'vw_golf'];
-
-const FUEL_LABELS: Record<string, string> = {
-  el: 'El', bensin: 'Bensin', diesel: 'Diesel', hybrid: 'Hybrid', laddhybrid: 'Laddhybrid',
-};
 
 interface BuyCarPageProps {
   initialBil?: string;
@@ -47,19 +34,6 @@ export default function BuyCarPage({
   const [step, setStep] = useState<FormStep>(skipTrack ? 'details' : 'track');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-
-  const [fitQuizCar, setFitQuizCar] = useState<ComparisonCar | null>(null);
-  const [allCars, setAllCars] = useState<ComparisonCar[]>([]);
-  const { cars: dbCars } = useCatalogCars();
-  const { getCarImage } = useCarImages(dbCars);
-
-  useEffect(() => {
-    import('../lib/comparison').then(m => setAllCars(m.getAllComparisonCars()));
-  }, []);
-
-  const popularCars = POPULAR_IDS
-    .map(id => allCars.find(c => c.id === id))
-    .filter((c): c is ComparisonCar => !!c);
 
   const [details, setDetails] = useState<BuyDetailsData>({
     linkOrSeller: '',
@@ -320,7 +294,7 @@ export default function BuyCarPage({
         </section>
       )}
 
-      {step === 'track' && popularCars.length > 0 && (
+      {false && step === 'track' && popularCars.length > 0 && (
         <section className="bg-white px-4 sm:px-6 py-14 sm:py-20">
           <div className="max-w-5xl mx-auto">
             <div className="mb-10">
@@ -595,22 +569,6 @@ export default function BuyCarPage({
       </div>
 
       {step === 'track' && <BuyFlowFAQ variant="buy" />}
-
-      <Suspense fallback={null}>
-        <CarFitQuiz
-          car={fitQuizCar!}
-          open={!!fitQuizCar}
-          onClose={() => setFitQuizCar(null)}
-          onNegotiate={() => {
-            if (fitQuizCar) {
-              const name = encodeURIComponent(`${fitQuizCar.brand_display} ${fitQuizCar.model_display}`);
-              setFitQuizCar(null);
-              window.history.pushState({}, '', `/kop-bil/bestall?bil=${name}&typ=found`);
-              window.dispatchEvent(new PopStateEvent('popstate'));
-            }
-          }}
-        />
-      </Suspense>
 
       {scrolled && step !== 'done' && (
         <a
