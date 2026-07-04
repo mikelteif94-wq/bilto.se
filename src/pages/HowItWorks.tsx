@@ -437,7 +437,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
         <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
           <div className="w-full max-w-md">
-            <h1 className="text-white text-[clamp(20px,6vw,46px)] font-bold leading-[1.1] tracking-tight text-center drop-shadow-lg mb-2">
+            <h1 className="text-white text-[36px] sm:text-[48px] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
               {seoSlug === 'salj-bil'
                 ? 'Säljhjälpen – vi tar in buden, du väljer det bästa.'
                 : 'En bilexpert på din sida – när du säljer, köper eller byter.'}

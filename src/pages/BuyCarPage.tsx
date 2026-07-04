@@ -262,25 +262,25 @@ export default function BuyCarPage({
 
       {step === 'track' && (
         <section className="bg-[#0e6efe] px-4 sm:px-6 pt-[calc(69px+56px)] sm:pt-[calc(80px+64px)] pb-16 sm:pb-24">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto text-center">
             <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-4">Bilköpshjälpen</p>
-            <h1 className="text-[28px] sm:text-[46px] font-bold text-white leading-[1.08] tracking-[-0.02em] max-w-2xl">
+            <h1 className="text-[28px] sm:text-[46px] font-bold text-white leading-[1.08] tracking-[-0.02em]">
               Spara 15&nbsp;000&nbsp;kr eller mer på din nästa bil
             </h1>
-            <p className="mt-5 text-white/75 text-[15px] sm:text-[17px] leading-[1.65] max-w-xl">
+            <p className="mt-5 text-white/75 text-[15px] sm:text-[17px] leading-[1.65] max-w-xl mx-auto">
               Oavsett om du leasar eller köper kontaktar Biltos experter handlarna åt dig, förhandlar bästa priset och hanterar varje steg – du sparar tid och pengar.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <a
                 href="#kom-igang"
                 onClick={(e) => { e.preventDefault(); document.getElementById('kom-igang')?.scrollIntoView({ behavior: 'smooth' }); }}
-                className="inline-flex items-center gap-2 h-12 px-8 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg self-start"
+                className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg"
               >
                 Kom igång
                 <ArrowRight className="w-5 h-5" />
               </a>
             </div>
-            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2">
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
               {['Inga bindningar', 'Svar inom 24h', '1 995 kr om affären blir av'].map(t => (
                 <span key={t} className="flex items-center gap-1.5 text-white/70 text-[13px]">
                   <Check className="w-3.5 h-3.5 text-white/60" strokeWidth={2.5} />
