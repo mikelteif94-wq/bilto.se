@@ -544,9 +544,12 @@ function App() {
   if (path === '/om-oss') {
     return (
       <Suspense fallback={<PageLoader />}>
-        <AboutPage
-          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-        />
+        <>
+          <AboutPage
+            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+        </>
       </Suspense>
     );
   }
