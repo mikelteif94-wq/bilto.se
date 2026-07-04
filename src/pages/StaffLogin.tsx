@@ -30,8 +30,9 @@ export default function StaffLogin({ onLoggedIn, onBack }: StaffLoginProps) {
     supabase
       .from('staff_users')
       .select('id', { count: 'exact', head: true })
-      .then(({ count }) => {
-        if (count === 0) setNoStaff(true);
+      .then(({ count, error }) => {
+        // count is null if RLS blocks anon — treat as empty so setup button shows
+        if (count === 0 || count === null) setNoStaff(true);
       });
   }, []);
 
