@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, Suspense, lazy } from 'react';
 import {
   ArrowRight,
   Check,
@@ -20,6 +20,8 @@ import ReviewsSection from '../components/ReviewsSection';
 import type { ComparisonCar } from '../lib/comparison';
 import { useCarImages } from '../hooks/useCarImages';
 import { useCatalogCars } from '../hooks/useCatalogCars';
+
+const BuyDrawer = lazy(() => import('../components/BuyDrawer'));
 
 interface KopBilConciergProps {
   onBack: () => void;
@@ -122,6 +124,9 @@ function SavingsInfoBox() {
 export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowItWorks }: KopBilConciergProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
+
+  const openBuyDrawer = (car?: string) => setBuyDrawerCar(car ?? '');
   const [allCars, setAllCars] = useState<ComparisonCar[]>([]);
   const [scrolled, setScrolled] = useState(false);
   const { cars: dbCars } = useCatalogCars();
@@ -267,8 +272,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               <div className="px-6 pb-6 space-y-3">
                 <button
                   type="button"
-                  onClick={() => onNavigateBuy()}
-                  className="w-full h-12 rounded-xl bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-bold text-[16px] transition shadow-md inline-flex items-center justify-center gap-2 group"
+                  onClick={() => openBuyDrawer()}
                 >
                   Få prishjälp
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -413,7 +417,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                     seats={car.specs.seats}
                     carPrice={car.pricing.new_from_sek ?? undefined}
                     usedPrice={car.pricing.used_from_sek ?? undefined}
-                    onNegotiate={() => onNavigateBuy(`${car.brand_display} ${car.model_display}`)}
+                    onNegotiate={() => openBuyDrawer(`${car.brand_display} ${car.model_display}`)}
                   />
                 );
               }
@@ -430,7 +434,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                   fuelTypes={car.specs.fuel_types}
                   carPrice={car.pricing.new_from_sek ?? undefined}
                   usedPrice={car.pricing.used_from_sek ?? undefined}
-                  onNegotiate={() => onNavigateBuy(`${car.brand_display} ${car.model_display}`)}
+                  onNegotiate={() => openBuyDrawer(`${car.brand_display} ${car.model_display}`)}
                   index={i}
                 />
               );
@@ -469,7 +473,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           <div className="mt-10 sm:mt-12">
             <button
               type="button"
-              onClick={() => onNavigateBuy()}
+              onClick={() => openBuyDrawer()}
               className="h-12 px-8 sm:px-10 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-[#faf8f5] transition shadow-lg inline-flex items-center gap-2 group"
             >
               Få prishjälp
@@ -568,7 +572,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
                   <button
                     type="button"
-                    onClick={() => onNavigateBuy()}
+                    onClick={() => openBuyDrawer()}
                     className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-white text-[#0e6efe] text-[15px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
                   >
                     Skicka en förfrågan
@@ -665,6 +669,14 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           </div>
         </a>
       )}
+
+      <Suspense fallback={null}>
+        <BuyDrawer
+          car={buyDrawerCar}
+          onBack={onBack}
+          onClose={() => setBuyDrawerCar(null)}
+        />
+      </Suspense>
     </div>
   );
 }
