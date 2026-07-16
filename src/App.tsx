@@ -5,6 +5,8 @@ import type { Session } from '@supabase/supabase-js';
 import { slugToCity, slugToBrand } from './lib/seo-pages';
 import { slugToTopic } from './lib/seo-topics';
 import ConsultationDrawer from './components/ConsultationDrawer';
+import { captureAttribution } from './lib/attribution';
+import type { Forhandlare } from './lib/forhandlare.types';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
@@ -76,6 +78,10 @@ const DealerProvisioner = lazy(() => import('./pages/DealerProvisioner'));
 const BudPage = lazy(() => import('./pages/BudPage'));
 const AvtalPage = lazy(() => import('./pages/AvtalPage'));
 
+// Förhandlare
+const ForhandlarListPage = lazy(() => import('./pages/ForhandlarListPage'));
+const ForhandlarProfilPage = lazy(() => import('./pages/ForhandlarProfilPage'));
+
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
     <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
@@ -141,6 +147,11 @@ function matchAvtalToken(path: string): string | null {
   return m ? decodeURIComponent(m[1]) : null;
 }
 
+function matchForhandlarProfil(path: string): string | null {
+  const m = path.match(/^\/f\/([a-z0-9-]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
 function matchMyCar(path: string): string | null {
   const m = path.match(/^\/min-bil\/([^/]+)\/?$/);
   return m ? decodeURIComponent(m[1]) : null;
@@ -172,8 +183,15 @@ function App() {
   const [recoveryTarget, setRecoveryTarget] = useState<string>('/handlare/oversikt');
   const [adminVerified, setAdminVerified] = useState<boolean | null>(null);
   const [consultationOpen, setConsultationOpen] = useState(() => window.location.pathname === '/gratis-konsultation');
+  const [consultationForhandlare, setConsultationForhandlare] = useState<Forhandlare | null>(null);
 
-  const openConsultation = () => setConsultationOpen(true);
+  const openConsultation = (forhandlare?: Forhandlare) => {
+    setConsultationForhandlare(forhandlare ?? null);
+    setConsultationOpen(true);
+  };
+
+  // Capture ?via= attribution on every navigation
+  useEffect(() => { captureAttribution(); }, [path]);
 
   useEffect(() => {
     const onPop = () => {
@@ -482,6 +500,39 @@ function App() {
     return null;
   }
 
+  if (path === '/forhandlare') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <>
+          <ForhandlarListPage
+            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSelectForhandlare={(slug) => { window.history.pushState({}, '', `/f/${slug}`); setPath(`/f/${slug}`); }}
+            onOpenConsultation={() => openConsultation()}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+        </>
+      </Suspense>
+    );
+  }
+
+  const forhandlarSlug = matchForhandlarProfil(path);
+  if (forhandlarSlug) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <>
+          <ForhandlarProfilPage
+            slug={forhandlarSlug}
+            onBack={() => { window.history.pushState({}, '', '/forhandlare'); setPath('/forhandlare'); }}
+            onOpenConsultation={(f) => openConsultation(f)}
+            onNavigateBuy={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
+            onNavigateSell={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: '' }); }}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+        </>
+      </Suspense>
+    );
+  }
+
   if (path === '/nya-bilar') {
     window.history.replaceState({}, '', '/kop-bil');
     setPath('/kop-bil');
@@ -510,7 +561,7 @@ function App() {
             source={buySource}
             onBack={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
         </>
       </Suspense>
     );
@@ -521,7 +572,7 @@ function App() {
       <Suspense fallback={<PageLoader />}>
         <>
           <UtforskaSida onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }} />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
         </>
       </Suspense>
     );
@@ -543,7 +594,7 @@ function App() {
               setPath('/sa-funkar-det');
             }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
         </>
       </Suspense>
     );
@@ -569,7 +620,7 @@ function App() {
           <AboutPage
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
         </>
       </Suspense>
     );
@@ -610,7 +661,7 @@ function App() {
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
             onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
         </>
       </Suspense>
     );
@@ -692,7 +743,7 @@ function App() {
               onNavigateConsultation={openConsultation}
               onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
             />
-            <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+            <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
           </>
         </Suspense>
       );
@@ -751,7 +802,7 @@ function App() {
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
             onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
         </>
       </Suspense>
     );
