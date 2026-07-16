@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, ChevronLeft, Check, Phone, CheckCircle, Sparkles, Clock, ArrowRight, Repeat, Search, Banknote } from 'lucide-react';
+import { X, ChevronLeft, Check, Phone, CheckCircle, Sparkles, Clock, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ErrorBanner from './ErrorBanner';
 import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
@@ -470,9 +470,9 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
               )}
 
               {step === 'carIntent' && (
-                <div className="py-1 space-y-3">
+                <div className="py-2 space-y-3">
                   {car && (
-                    <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-[#0e6efe]/8 border border-[#0e6efe]/20">
+                    <div className="flex items-center gap-2 mb-5 p-3 rounded-xl bg-[#0e6efe]/8 border border-[#0e6efe]/20">
                       <div className="w-2 h-2 rounded-full bg-[#0e6efe] shrink-0" />
                       <p className="text-[13px] font-semibold text-[#0e6efe]">{car}</p>
                     </div>
@@ -486,18 +486,10 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                       setError(null);
                       setStep('details');
                     }}
-                    className="w-full flex items-start gap-4 p-5 rounded-2xl border-2 border-slate-200 hover:border-[#0e6efe] bg-white hover:bg-[#0e6efe]/5 transition-all text-left group active:scale-[0.99]"
+                    className="w-full h-14 rounded-xl text-white text-[15px] font-bold transition-all active:scale-[0.98]"
+                    style={{ background: 'linear-gradient(135deg,#1a7fff 0%,#0e6efe 60%,#0a57cc 100%)', boxShadow: '0 4px 16px rgba(14,110,254,0.30)' }}
                   >
-                    <div className="w-11 h-11 rounded-xl bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
-                      <Check className="w-5 h-5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[16px] font-bold text-slate-900">Köpa bil</p>
-                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
-                        {car ? `Vi granskar, förhandlar och säkrar din ${car}.` : 'Vi söker, granskar och förhandlar rätt bil åt dig.'}
-                      </p>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] shrink-0 mt-1.5 transition-colors" />
+                    Köpa bil
                   </button>
 
                   {/* Byta bil */}
@@ -508,18 +500,9 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                       setError(null);
                       setStep('details');
                     }}
-                    className="w-full flex items-start gap-4 p-5 rounded-2xl border-2 border-slate-200 hover:border-[#0e6efe] bg-white hover:bg-[#0e6efe]/5 transition-all text-left group active:scale-[0.99]"
+                    className="w-full h-14 rounded-xl border-2 border-[#0e6efe] text-[#0e6efe] text-[15px] font-bold bg-white hover:bg-[#0e6efe]/5 transition-all active:scale-[0.98]"
                   >
-                    <div className="w-11 h-11 rounded-xl bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
-                      <Repeat className="w-5 h-5 text-slate-500 group-hover:text-[#0e6efe] transition-colors" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[16px] font-bold text-slate-900">Byta bil</p>
-                      <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
-                        Du har en bil idag – vi hanterar både försäljning och köp åt dig.
-                      </p>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] shrink-0 mt-1.5 transition-colors" />
+                    Byta bil
                   </button>
 
                   {/* Sälja bil */}
@@ -530,18 +513,9 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                         onClose();
                         onBack();
                       }}
-                      className="w-full flex items-start gap-4 p-5 rounded-2xl border-2 border-slate-200 hover:border-slate-400 bg-white hover:bg-slate-50 transition-all text-left group active:scale-[0.99]"
+                      className="w-full h-14 rounded-xl border-2 border-slate-200 text-slate-700 text-[15px] font-bold bg-white hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-[0.98]"
                     >
-                      <div className="w-11 h-11 rounded-xl bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
-                        <Banknote className="w-5 h-5 text-slate-500 transition-colors" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[16px] font-bold text-slate-900">Sälja bil</p>
-                        <p className="text-[13px] text-slate-500 mt-0.5 leading-snug">
-                          Värdera och sälj din bil – vi hämtar bud från flera handlare åt dig.
-                        </p>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 shrink-0 mt-1.5 transition-colors" />
+                      Sälja bil
                     </button>
                   )}
                 </div>
