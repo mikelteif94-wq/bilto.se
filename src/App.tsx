@@ -82,6 +82,14 @@ const AvtalPage = lazy(() => import('./pages/AvtalPage'));
 const ForhandlarListPage = lazy(() => import('./pages/ForhandlarListPage'));
 const ForhandlarProfilPage = lazy(() => import('./pages/ForhandlarProfilPage'));
 
+// Förhandla (new marketing site)
+const ForhandlaShell = lazy(() => import('./components/forhandla/ForhandlaShell'));
+const ForhandlaHome = lazy(() => import('./pages/forhandla/HomePage'));
+const ForhandlareList = lazy(() => import('./pages/forhandla/ForhandlareListPage'));
+const ForhandlareProfile = lazy(() => import('./pages/forhandla/ForhandlareProfilePage'));
+const ForhandlaSalj = lazy(() => import('./pages/forhandla/SaljPage'));
+const ForhandlaKopBil = lazy(() => import('./pages/forhandla/KopBilPage'));
+
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
     <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
@@ -494,6 +502,75 @@ function App() {
       </Suspense>
     );
   }
+
+  // ===== Förhandla marketing site (new) =====
+  const forhandlaNav = (p: string) => {
+    window.history.pushState({}, '', p);
+    setPath(p);
+  };
+
+  if (path === '/' && publicRoute.page === 'home') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ForhandlaShell activePath={path} onNavigate={forhandlaNav}>
+          {({ onNavigate, onOpenConsultation, activePath: ap }) => (
+            <ForhandlaHome onNavigate={onNavigate} onOpenConsultation={onOpenConsultation} activePath={ap} />
+          )}
+        </ForhandlaShell>
+      </Suspense>
+    );
+  }
+
+  if (path === '/forhandlare') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ForhandlaShell activePath={path} onNavigate={forhandlaNav}>
+          {({ onNavigate, onOpenConsultation, activePath: ap }) => (
+            <ForhandlareList onNavigate={onNavigate} onOpenConsultation={onOpenConsultation} activePath={ap} />
+          )}
+        </ForhandlaShell>
+      </Suspense>
+    );
+  }
+
+  const forhandlareProfileMatch = path.match(/^\/f\/([a-z0-9-]+)\/?$/);
+  if (forhandlareProfileMatch) {
+    const slug = forhandlareProfileMatch[1];
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ForhandlaShell activePath={path} onNavigate={forhandlaNav}>
+          {({ onNavigate, onOpenConsultation, activePath: ap }) => (
+            <ForhandlareProfile slug={slug} onNavigate={onNavigate} onOpenConsultation={onOpenConsultation} activePath={ap} />
+          )}
+        </ForhandlaShell>
+      </Suspense>
+    );
+  }
+
+  if (path === '/salj') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ForhandlaShell activePath={path} onNavigate={forhandlaNav}>
+          {({ onNavigate, onOpenConsultation, activePath: ap }) => (
+            <ForhandlaSalj onNavigate={onNavigate} onOpenConsultation={onOpenConsultation} activePath={ap} />
+          )}
+        </ForhandlaShell>
+      </Suspense>
+    );
+  }
+
+  if (path === '/kop-bil') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ForhandlaShell activePath={path} onNavigate={forhandlaNav}>
+          {({ onNavigate, onOpenConsultation, activePath: ap }) => (
+            <ForhandlaKopBil onNavigate={onNavigate} onOpenConsultation={onOpenConsultation} activePath={ap} />
+          )}
+        </ForhandlaShell>
+      </Suspense>
+    );
+  }
+  // ===== End Förhandla marketing site =====
 
   if (path === '/gratis-konsultation') {
     // Open drawer and redirect — handled via useEffect to avoid render-time state mutation
