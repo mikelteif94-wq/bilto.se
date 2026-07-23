@@ -44,6 +44,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
   const items: { label: string; path: string; id: MobileMenuItem }[] = [
     { label: 'Säljhjälpen', path: '/salj-bil', id: 'Sälj bil' },
     { label: 'Bilköpshjälpen', path: '/kop-bil', id: 'Köp bil' },
+    { label: 'Förhandlare', path: '/forhandlare', id: 'Förhandlare' },
     { label: 'Om oss', path: '/om-oss', id: 'Om oss' },
   ];
 
