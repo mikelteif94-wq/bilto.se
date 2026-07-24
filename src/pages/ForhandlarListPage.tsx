@@ -16,6 +16,7 @@ import {
   TrendingUp,
   ChevronRight,
   Banknote,
+  Award,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Forhandlare } from '../lib/forhandlare.types';
@@ -625,6 +626,53 @@ export default function ForhandlarListPage({ onBack, onSelectForhandlare, onOpen
                 </button>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Bli förhandlare CTA ── */}
+      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-5xl mx-auto">
+          <div className="relative rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+            <div className="grid md:grid-cols-[1.4fr_1fr] items-center">
+              <div className="p-8 sm:p-12">
+                <div className="inline-flex items-center gap-2 bg-[#0e6efe]/10 text-[#0e6efe] text-[12px] font-semibold px-3 py-1.5 rounded-full mb-5">
+                  <Award className="w-4 h-4" strokeWidth={2.2} />
+                  Bli förhandlare
+                </div>
+                <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
+                  Vill du hjälpa andra till en bättre bilaffär?
+                </h2>
+                <p className="mt-4 text-slate-600 text-[16px] leading-[1.65] max-w-lg">
+                  Ansök för att bli en certifierad Bilto-förhandlare. Arbeta flexibelt,
+                  tjäna arvode per avslutad affär och bygg din egen reputation.
+                </p>
+                <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                  <a
+                    href="/forhandlare/registrera"
+                    className="inline-flex items-center justify-center gap-2 h-12 px-7 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[15px] transition"
+                  >
+                    Ansök nu
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                  <a
+                    href="/forhandlare/registrera"
+                    className="inline-flex items-center justify-center gap-2 h-12 px-7 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold text-[15px] transition"
+                  >
+                    Läs mer
+                  </a>
+                </div>
+              </div>
+              <div className="relative h-full min-h-[200px] hidden md:block">
+                <img
+                  src="/BSM_car_sale_key_woman_handover_101122.jpg"
+                  alt="Förhandlare hjälper kund"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-white via-white/0 to-transparent" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
