@@ -1,7 +1,7 @@
-import { LayoutDashboard, Building2, Users, BookOpen, CalendarDays, Warehouse } from 'lucide-react';
+import { LayoutDashboard, Building2, Users, BookOpen, CalendarDays, Warehouse, Handshake } from 'lucide-react';
 import { useAdminBadges } from './useAdminBadges';
 
-export type AdminPage = 'overview' | 'leads' | 'handlare' | 'katalog' | 'bokningar' | 'handlarpool';
+export type AdminPage = 'overview' | 'leads' | 'handlare' | 'katalog' | 'bokningar' | 'handlarpool' | 'forhandlare-ansokningar';
 
 interface AdminNavOptions {
   activePage: AdminPage;
@@ -49,6 +49,13 @@ export function useAdminNav({ activePage, onNavigate }: AdminNavOptions) {
       label: 'Handlarpoolen',
       active: activePage === 'handlarpool',
       onClick: activePage !== 'handlarpool' ? () => onNavigate('handlarpool') : undefined,
+    },
+    {
+      icon: <Handshake className="w-[18px] h-[18px]" />,
+      label: 'Förhandlare',
+      active: activePage === 'forhandlare-ansokningar',
+      badge: badges.pendingForhandlare,
+      onClick: activePage !== 'forhandlare-ansokningar' ? () => onNavigate('forhandlare-ansokningar') : undefined,
     },
   ];
 }

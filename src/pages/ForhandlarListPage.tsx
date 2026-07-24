@@ -264,7 +264,13 @@ export default function ForhandlarListPage({ onBack, onSelectForhandlare, onOpen
             <button type="button" onClick={() => {}} className="text-[15px] text-white font-semibold transition">Förhandlare</button>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Om oss</button>
           </nav>
-          <div className="flex items-center ml-auto">
+          <div className="flex items-center gap-2 ml-auto">
+            <a
+              href="/forhandlare/logga-in"
+              className="hidden lg:inline-flex items-center gap-1.5 text-white/80 hover:text-white text-[13px] font-medium transition whitespace-nowrap"
+            >
+              Förhandlarportal
+            </a>
             <a
               href="/gratis-konsultation"
               className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"

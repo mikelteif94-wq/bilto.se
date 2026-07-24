@@ -82,6 +82,9 @@ const AvtalPage = lazy(() => import('./pages/AvtalPage'));
 const ForhandlarListPage = lazy(() => import('./pages/ForhandlarListPage'));
 const ForhandlarProfilPage = lazy(() => import('./pages/ForhandlarProfilPage'));
 const ForhandlareOnboarding = lazy(() => import('./pages/ForhandlareOnboarding'));
+const ForhandlareLogin = lazy(() => import('./pages/ForhandlareLogin'));
+const ForhandlarePortal = lazy(() => import('./pages/ForhandlarePortal'));
+const AdminForhandlareApplications = lazy(() => import('./pages/AdminForhandlareApplications'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -303,6 +306,8 @@ function App() {
   const onDealerApply = path === '/handlare/ansok';
   const onForhandlareRegister = path === '/forhandlare/registrera';
   const onForhandlareApply = path === '/forhandlare/ansok';
+  const onForhandlareLogin = path === '/forhandlare/logga-in';
+  const onForhandlarePortal = path === '/forhandlare/portal';
   const onDealerLogin = path === '/handlare/logga-in';
   const onDealerApp =
     path === '/handlare' ||
@@ -437,6 +442,31 @@ function App() {
     );
   }
 
+  if (onForhandlareLogin) {
+    if (authLoading) return <PageLoader />;
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ForhandlareLogin
+          onLoggedIn={() => navigate('/forhandlare/portal')}
+          onBack={() => navigate('/forhandlare')}
+        />
+      </Suspense>
+    );
+  }
+
+  if (onForhandlarePortal) {
+    if (authLoading) return <PageLoader />;
+    if (!session) { navigate('/forhandlare/logga-in'); return null; }
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ForhandlarePortal
+          userId={session.user.id}
+          onLoggedOut={() => { sessionStorage.removeItem('bilto_portal'); navigate('/forhandlare/logga-in'); }}
+        />
+      </Suspense>
+    );
+  }
+
   if (onDealerLogin) {
     if (authLoading) return <PageLoader />;
     return (
@@ -499,6 +529,7 @@ function App() {
       else if (page === 'katalog') navigate('/admin/katalog');
       else if (page === 'bokningar') navigate('/admin/bokningar');
       else if (page === 'handlarpool') navigate('/admin/handlarpool');
+      else if (page === 'forhandlare-ansokningar') navigate('/admin/forhandlare-ansokningar');
     };
 
     return (
@@ -1038,6 +1069,14 @@ function AdminRoutes({ path, setPath, session, adminNavigate }: AdminRoutesProps
 
   if (path === '/admin/handlarpool') {
     return <AdminHandlarpool onLoggedOut={() => navigate('/admin')} onNavigate={adminNavigate} />;
+  }
+
+  if (path === '/admin/forhandlare-ansokningar') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <AdminForhandlareApplications onBack={() => navigate('/admin/oversikt')} onNavigate={adminNavigate} />
+      </Suspense>
+    );
   }
 
   if (path !== '/admin/bilar') {
