@@ -81,6 +81,7 @@ const AvtalPage = lazy(() => import('./pages/AvtalPage'));
 // Förhandlare
 const ForhandlarListPage = lazy(() => import('./pages/ForhandlarListPage'));
 const ForhandlarProfilPage = lazy(() => import('./pages/ForhandlarProfilPage'));
+const ForhandlareOnboarding = lazy(() => import('./pages/ForhandlareOnboarding'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -300,6 +301,8 @@ function App() {
   const onAdminRoute = path.startsWith('/admin');
   const onDealerRegister = path === '/handlare/registrera';
   const onDealerApply = path === '/handlare/ansok';
+  const onForhandlareRegister = path === '/forhandlare/registrera';
+  const onForhandlareApply = path === '/forhandlare/ansok';
   const onDealerLogin = path === '/handlare/logga-in';
   const onDealerApp =
     path === '/handlare' ||
@@ -414,6 +417,22 @@ function App() {
     return (
       <Suspense fallback={<PageLoader />}>
         <DealerRegister mode="form" onBack={() => navigate('/handlare/registrera')} />
+      </Suspense>
+    );
+  }
+
+  if (onForhandlareRegister) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ForhandlareOnboarding mode="landing" onBack={() => navigate('/')} onNavigateApply={() => navigate('/forhandlare/ansok')} />
+      </Suspense>
+    );
+  }
+
+  if (onForhandlareApply) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ForhandlareOnboarding mode="form" onBack={() => navigate('/forhandlare/registrera')} />
       </Suspense>
     );
   }
