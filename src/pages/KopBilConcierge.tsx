@@ -285,14 +285,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                   Få prishjälp
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
                 </button>
-                <p className="text-center text-slate-400 text-[12px]">Fast pris 4&nbsp;995 kr – betalas bara om affären blir av</p>
-                <a
-                  href={PHONE_TEL}
-                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
-                >
-                  <Phone className="w-4 h-4 shrink-0" />
-                  Ring oss: {PHONE}
-                </a>
+                <p className="text-center text-slate-400 text-[12px]">Från 4995 kr – betalas bara om affären blir av</p>
               </div>
             </div>
 

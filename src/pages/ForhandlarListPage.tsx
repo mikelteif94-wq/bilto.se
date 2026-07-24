@@ -325,13 +325,7 @@ export default function ForhandlarListPage({ onBack, onSelectForhandlare, onOpen
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
                 </button>
                 <p className="text-center text-slate-400 text-[12px]">Kostnadsfritt · Ingen bindning</p>
-                <a
-                  href={PHONE_TEL}
-                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
-                >
-                  <Phone className="w-4 h-4 shrink-0" />
-                  Ring oss: {PHONE}
-                </a>
+
               </div>
             </div>
 
@@ -574,13 +568,7 @@ export default function ForhandlarListPage({ onBack, onSelectForhandlare, onOpen
                     Kom igång
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </button>
-                  <a
-                    href={PHONE_TEL}
-                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
-                  >
-                    <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
-                    Ring {PHONE}
-                  </a>
+
                 </div>
               </div>
 
@@ -642,27 +630,6 @@ export default function ForhandlarListPage({ onBack, onSelectForhandlare, onOpen
       </section>
 
       <SiteFooter />
-
-      {/* ── Scrolled mobile CTA ── */}
-      {scrolled && (
-        <a
-          href={PHONE_TEL}
-          className="md:hidden fixed bottom-4 left-3 right-3 z-40 flex items-center gap-3 px-4 h-[58px] rounded bg-[#0e6efe] active:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_8px_24px_rgba(14,110,254,0.45)] transition-all duration-200 overflow-hidden"
-          style={{ background: 'linear-gradient(135deg,#1a7fff 0%,#0e6efe 50%,#0a57cc 100%)' }}
-        >
-          <div className="relative shrink-0">
-            <Shield className="w-9 h-9 p-1 rounded object-cover border-2 border-white/30" />
-          </div>
-          <div className="flex flex-col leading-tight min-w-0">
-            <span className="text-[15px] font-bold tracking-[-0.01em] truncate">Prata med en expert</span>
-            <span className="text-[11px] text-white/70 font-normal">Gratis · svar direkt</span>
-          </div>
-          <div className="ml-auto shrink-0 flex items-center gap-1.5 bg-white/15 rounded px-3 py-1.5">
-            <Phone className="w-3.5 h-3.5" strokeWidth={2.5} />
-            <span className="text-[13px] font-semibold">Ring</span>
-          </div>
-        </a>
-      )}
 
       <Suspense fallback={null}>
         <ConsultationDrawer open={false} onClose={() => {}} />
