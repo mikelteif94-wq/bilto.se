@@ -320,6 +320,8 @@ function FoundCarLookupSection({
   onLinkOrSellerChange,
   linkError,
   onCarFound,
+  miltal,
+  onMiltalChange,
 }: {
   regnummer: string;
   onRegnummerChange: (v: string) => void;
@@ -327,6 +329,8 @@ function FoundCarLookupSection({
   onLinkOrSellerChange: (v: string) => void;
   linkError?: string;
   onCarFound: (brand: string, model: string) => void;
+  miltal: string;
+  onMiltalChange: (v: string) => void;
 }) {
   const lookup = useVehicleLookup(regnummer);
   const hasReg = regnummer.trim().length > 0;
@@ -335,6 +339,9 @@ function FoundCarLookupSection({
     if (lookup.status === 'found') {
       const data = lookup.data;
       onCarFound(data.marke, data.modell);
+      if (data.miltal != null && data.miltal > 0 && !miltal) {
+        onMiltalChange(String(data.miltal));
+      }
     }
   }, [lookup.status]);
 
@@ -365,7 +372,7 @@ function FoundCarLookupSection({
               {lookup.data.ar ? ` (${lookup.data.ar})` : ''}
             </p>
             <p className="text-[13px] text-slate-500 mt-0.5">
-              {lookup.data.bransle}{lookup.data.miltal ? ` · ${lookup.data.miltal.toLocaleString('sv-SE')} mil` : ''}
+              {lookup.data.bransle}
             </p>
           </div>
         )}
@@ -421,6 +428,23 @@ function FoundCarLookupSection({
         </div>
         <FieldError message={linkError} />
       </div>
+
+      {hasReg && lookup.status === 'found' && (
+        <div>
+          <label className="block text-[15px] font-bold text-slate-900 mb-1">Miltal</label>
+          <p className="text-[13px] text-slate-500 mb-2">Vi hämtade miltal automatiskt – ändra om det inte stämmer.</p>
+          <div className="w-full sm:max-w-xs">
+            <input
+              type="text"
+              inputMode="numeric"
+              value={miltal}
+              onChange={e => onMiltalChange(e.target.value)}
+              placeholder="T.ex. 4500"
+              className="form-control"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1272,6 +1296,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               if (brand && !d.carBrand) set('carBrand', brand);
               if (model && !d.carModel) set('carModel', model);
             }}
+            miltal={d.miltal}
+            onMiltalChange={v => set('miltal', v)}
           />
 
           <div className="py-5">
