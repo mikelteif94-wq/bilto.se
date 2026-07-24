@@ -15,6 +15,8 @@ import {
   TrendingUp,
   Shield,
   ChevronRight,
+  Gauge,
+  Scale,
 } from 'lucide-react';
 import { FALLBACK_FORHANDLARE } from '../lib/forhandlare-data';
 import { SiteFooter } from '../components/SiteFooter';
@@ -298,86 +300,52 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Grundlig genomgång ── */}
-      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-12 sm:py-20 px-4 sm:px-6 overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8 sm:mb-16 max-w-3xl mx-auto px-2">
-            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
+      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-14 sm:py-20 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10 sm:mb-14 max-w-2xl mx-auto">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
               Grundlig genomgång
             </span>
-            <h2 className="text-[24px] sm:text-[48px] font-semibold leading-[1.15] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
+            <h2 className="text-[26px] sm:text-[40px] font-semibold leading-[1.12] sm:leading-[1.06] text-slate-900 tracking-[-0.02em]">
               Vi granskar varje detalj – så slipper du oroa dig
             </h2>
-            <p className="text-slate-600 mt-4 sm:mt-6 text-[15px] sm:text-[18px] leading-[1.6] max-w-2xl mx-auto">
+            <p className="text-slate-600 mt-4 sm:mt-5 text-[15px] sm:text-[17px] leading-[1.6]">
               Innan vi rekommenderar en bil till dig går vi igenom fem kritiska datapunkter. Inget lämnas åt slumpen.
             </p>
           </div>
 
-          {/* Mobile */}
-          <div className="lg:hidden">
-            <div className="flex items-center justify-center mb-6">
-              <img
-                src="/infographic_antal_agare.svg"
-                alt="Infografik: antal ägare och bilhistorik"
-                className="w-full max-w-[340px] h-auto"
-                loading="lazy"
-                decoding="async"
-                width="340"
-                height="340"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+          {/* Infographic + points */}
+          <div className="flex flex-col items-center lg:flex-row lg:items-center lg:justify-center gap-8 sm:gap-10 mb-10 sm:mb-14">
+            <img
+              src="/infographic_antal_agare.svg"
+              alt="Infografik: antal ägare och bilhistorik"
+              className="w-40 h-40 sm:w-56 sm:h-56 lg:w-64 lg:h-64 shrink-0"
+              loading="lazy"
+              decoding="async"
+              width="256"
+              height="256"
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 w-full max-w-xl">
               {[
-                { label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
-                { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
-                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket.' },
-                { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
-                { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
-              ].map((point) => (
-                <div key={point.label}>
-                  <h4 className="text-[14px] font-semibold text-slate-900 mb-1">{point.label}</h4>
-                  <p className="text-[12px] text-slate-500 leading-[1.5]">{point.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Desktop */}
-          <div className="hidden lg:grid lg:grid-cols-5 gap-12 items-center">
-            <div className="lg:col-span-1 space-y-8">
-              {[
-                { label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
-                { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
-              ].map((point) => (
-                <div key={point.label} className="text-right">
-                  <h4 className="text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
-                  <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="lg:col-span-3 flex items-center justify-center">
-              <img
-                src="/infographic_antal_agare.svg"
-                alt="Infografik: antal ägare och bilhistorik"
-                className="w-full max-w-[700px] h-auto"
-                loading="lazy"
-                decoding="async"
-                width="700"
-                height="700"
-              />
-            </div>
-
-            <div className="lg:col-span-1 space-y-8">
-              {[
-                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket.' },
-                { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
-                { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
-              ].map((point) => (
-                <div key={point.label}>
-                  <h4 className="text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
-                  <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
-                </div>
-              ))}
+                { icon: ShieldCheck, label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
+                { icon: Users, label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
+                { icon: Gauge, label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket.' },
+                { icon: MapPin, label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
+                { icon: Scale, label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
+              ].map((point) => {
+                const Icon = point.icon;
+                return (
+                  <div key={point.label} className="flex items-start gap-3">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+                      <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#0e6efe]" strokeWidth={2} />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-[14px] sm:text-[15px] font-semibold text-slate-900 mb-0.5">{point.label}</h4>
+                      <p className="text-[12px] sm:text-[13px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
