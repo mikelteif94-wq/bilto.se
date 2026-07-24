@@ -313,6 +313,118 @@ function BrandModelSelector({
 }
 
 /* ── URL / text link field with live validation ── */
+function FoundCarLookupSection({
+  regnummer,
+  onRegnummerChange,
+  linkOrSeller,
+  onLinkOrSellerChange,
+  linkError,
+  onCarFound,
+}: {
+  regnummer: string;
+  onRegnummerChange: (v: string) => void;
+  linkOrSeller: string;
+  onLinkOrSellerChange: (v: string) => void;
+  linkError?: string;
+  onCarFound: (brand: string, model: string) => void;
+}) {
+  const lookup = useVehicleLookup(regnummer);
+  const hasReg = regnummer.trim().length > 0;
+
+  useEffect(() => {
+    if (lookup.status === 'found') {
+      const data = lookup.data;
+      onCarFound(data.marke, data.modell);
+    }
+  }, [lookup.status]);
+
+  return (
+    <div className="pb-5 space-y-4">
+      <div>
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
+          Registreringsnummer
+        </label>
+        <p className="text-sm text-slate-500 mb-3">
+          Fyll i regnumret så hämtar vi bilen automatiskt.
+        </p>
+        <RegInput value={regnummer} onChange={onRegnummerChange} />
+        {lookup.status === 'loading' && (
+          <p className="mt-2 text-[13px] text-slate-400 flex items-center gap-1.5">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            Hämtar biluppgifter…
+          </p>
+        )}
+        {lookup.status === 'found' && (
+          <div className="mt-3 p-4 bg-[#faf8f5] rounded-xl border border-emerald-200">
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle className="w-4 h-4 text-emerald-500" />
+              <p className="text-[14px] font-bold text-slate-900">Bil hittad</p>
+            </div>
+            <p className="text-[14px] text-slate-700">
+              {lookup.data.marke} {lookup.data.modell}
+              {lookup.data.ar ? ` (${lookup.data.ar})` : ''}
+            </p>
+            <p className="text-[13px] text-slate-500 mt-0.5">
+              {lookup.data.bransle}{lookup.data.miltal ? ` · ${lookup.data.miltal.toLocaleString('sv-SE')} mil` : ''}
+            </p>
+          </div>
+        )}
+        {lookup.status === 'not_found' && (
+          <p className="mt-2 text-[13px] text-amber-600 flex items-center gap-1.5">
+            <XCircle className="w-3.5 h-3.5" />
+            Hittade ingen bil med det regnumret. Du kan klistra in en länk istället.
+          </p>
+        )}
+        {lookup.status === 'error' && (
+          <p className="mt-2 text-[13px] text-slate-400">
+            Kunde inte hämta biluppgifter just nu. Fyll i länken nedan istället.
+          </p>
+        )}
+      </div>
+
+      <div className="relative">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="flex-1 h-px bg-slate-200" />
+          <span className="text-[12px] font-medium text-slate-400 whitespace-nowrap">
+            eller
+          </span>
+          <div className="flex-1 h-px bg-slate-200" />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[15px] font-bold text-slate-900 mb-1">
+          Länk till annonsen
+          <span className="ml-2 text-[12px] font-normal text-slate-400">om du inte har regnumret</span>
+        </label>
+        <div className="relative">
+          <input
+            type="text"
+            value={linkOrSeller}
+            onChange={e => onLinkOrSellerChange(e.target.value)}
+            placeholder="https://... eller handlarens namn"
+            className={`form-control pr-10 ${linkError ? 'form-control-error' : ''}`}
+          />
+          {(() => {
+            const status = getLinkStatus(linkOrSeller);
+            if (status === 'empty') return null;
+            return (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                {status === 'valid_url' ? (
+                  <CheckCircle className="w-5 h-5 text-emerald-500" />
+                ) : (
+                  <XCircle className="w-5 h-5 text-slate-400" />
+                )}
+              </span>
+            );
+          })()}
+        </div>
+        <FieldError message={linkError} />
+      </div>
+    </div>
+  );
+}
+
 function LinkField({
   value,
   onChange,
@@ -1025,8 +1137,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     const e: Record<string, string> = {};
     if (!d.buyingStage) e.buyingStage = 'Välj var du är i processen';
     if (!d.paymentType) e.paymentType = 'Välj hur du vill betala';
-    if (track === 'found' && !d.linkOrSeller.trim()) {
-      e.linkOrSeller = 'Fyll i länk eller handlarens namn';
+    if (track === 'found' && !d.regnummer.trim() && !d.linkOrSeller.trim()) {
+      e.linkOrSeller = 'Fyll i regnummer eller länk till annonsen';
     }
     if (track === 'trade' && !d.regnummer.trim()) {
       e.regnummer = 'Fyll i regnummer';
@@ -1150,13 +1262,17 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       {/* ── FOUND track ── */}
       {track === 'found' && (
         <>
-          <div className="pb-5">
-            <LinkField
-              value={d.linkOrSeller}
-              onChange={v => set('linkOrSeller', v)}
-              error={errors.linkOrSeller}
-            />
-          </div>
+          <FoundCarLookupSection
+            regnummer={d.regnummer}
+            onRegnummerChange={v => set('regnummer', v)}
+            linkOrSeller={d.linkOrSeller}
+            onLinkOrSellerChange={v => set('linkOrSeller', v)}
+            linkError={errors.linkOrSeller}
+            onCarFound={(brand, model) => {
+              if (brand && !d.carBrand) set('carBrand', brand);
+              if (model && !d.carModel) set('carModel', model);
+            }}
+          />
 
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-1">

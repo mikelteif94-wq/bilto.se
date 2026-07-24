@@ -229,7 +229,7 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
       const carModelFull = [details.carBrand, details.carModel].filter(Boolean).join(' ').trim();
       const { data: insertedRows, error: dbError } = await supabase.from('quote_requests').insert({
         search_option: track,
-        regnummer: track === 'trade' ? details.regnummer : '',
+        regnummer: (track === 'trade' || track === 'found') ? details.regnummer : '',
         miltal: details.miltal ? parseInt(details.miltal) : 0,
         buying_stage: details.buyingStage,
         budget: details.carPrice,
