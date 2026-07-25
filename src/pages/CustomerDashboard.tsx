@@ -366,34 +366,41 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
                 <div className="space-y-4">
                   {bookings.map(booking => {
                     const syfteLabel: Record<string,string> = { kop_bil: 'Köpa bil', salj_bil: 'Sälja bil', inbyte: 'Inbyte', ovrig: 'Annat' };
-                    const bStatusMeta: Record<string, { label: string; cls: string }> = {
-                      pending:   { label: 'Väntar',    cls: 'bg-amber-50 border-amber-200 text-amber-700' },
-                      confirmed: { label: 'Bekräftad', cls: 'bg-blue-50 border-blue-200 text-blue-700' },
-                      completed: { label: 'Genomförd', cls: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
-                      cancelled: { label: 'Avbokad',   cls: 'bg-slate-100 border-slate-200 text-slate-600' },
+                    const bStatusMeta: Record<string, { label: string; cls: string; topColor: string }> = {
+                      pending:   { label: 'Väntar',    cls: 'bg-amber-50 border-amber-200 text-amber-700',    topColor: 'bg-amber-400' },
+                      confirmed: { label: 'Bekräftad', cls: 'bg-blue-50 border-blue-200 text-blue-700',     topColor: 'bg-[#0e6efe]' },
+                      completed: { label: 'Genomförd', cls: 'bg-emerald-50 border-emerald-200 text-emerald-700', topColor: 'bg-emerald-500' },
+                      cancelled: { label: 'Avbokad',   cls: 'bg-slate-100 border-slate-200 text-slate-600', topColor: 'bg-slate-300' },
                     };
                     const bMeta = bStatusMeta[booking.status] ?? bStatusMeta.pending;
                     return (
                       <div key={booking.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                        <div className="h-0.5 w-full bg-[#0e6efe]" />
-                        <div className="px-5 py-4">
-                          <div className="flex items-start justify-between gap-2 mb-2">
-                            <div>
-                              <p className="text-[14px] font-bold text-slate-900">{syfteLabel[booking.syfte] ?? booking.syfte}</p>
-                              <div className="flex items-center gap-3 text-[12px] text-slate-500 mt-0.5">
-                                <span className="inline-flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{booking.booking_date}</span>
-                                <span className="inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" />kl. {booking.booking_time}</span>
-                              </div>
+                        <div className={`h-0.5 w-full ${bMeta.topColor}`} />
+                        <div className="px-5 sm:px-6 pt-5 pb-4 flex items-start justify-between gap-4">
+                          <div>
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-xl text-[11px] font-semibold border ${bMeta.cls}`}>
+                                {bMeta.label}
+                              </span>
                             </div>
-                            <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-xl text-[10px] font-semibold border ${bMeta.cls}`}>{bMeta.label}</span>
+                            <h3 className="text-xl font-bold text-slate-900 leading-tight">
+                              {syfteLabel[booking.syfte] ?? booking.syfte}
+                            </h3>
+                            <div className="flex items-center gap-3 text-[12px] text-slate-500 mt-1 flex-wrap">
+                              <span className="inline-flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{booking.booking_date}</span>
+                              <span className="inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" />kl. {booking.booking_time}</span>
+                            </div>
                           </div>
-                          {booking.forhandlare_slug && (
-                            <p className="text-[11px] text-slate-400 mb-2">Din rådgivare: {booking.forhandlare_slug}</p>
-                          )}
-                          {/* Live timeline */}
-                          <div className="border-t border-slate-100 pt-3 mt-1">
-                            <CustomerBookingTimeline bookingId={booking.id} />
+                        </div>
+                        {booking.forhandlare_slug && (
+                          <div className="px-5 sm:px-6 pb-2">
+                            <p className="text-[11px] text-slate-400">Din rådgivare: {booking.forhandlare_slug}</p>
                           </div>
+                        )}
+                        {/* Live timeline */}
+                        <div className="px-5 sm:px-6 pb-5 border-t border-slate-100 pt-4">
+                          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Tidslinje</p>
+                          <CustomerBookingTimeline bookingId={booking.id} />
                         </div>
                       </div>
                     );
