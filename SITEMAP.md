@@ -987,4 +987,48 @@ Links that exist in the nav/footer and their reachability:
 
 ---
 
-*Generated: 2026-07-04 — read from source code, not guessed.*
+## 10. FÖRHANDLARE-PORTALEN (Advisor Portal) — VERIFIED 2026-07-25
+
+### 10a. Routes
+
+| URL | Component | Type |
+|-----|-----------|------|
+| `/forhandlare` | `ForhandlarListPage` | Public, CSR |
+| `/f/[slug]` | `ForhandlarProfilPage` | Public, CSR |
+| `/forhandlare/registrera` | `ForhandlareOnboarding` | Public, CSR |
+| `/forhandlare/portal` | `ForhandlarePortal` | Auth, CSR |
+| `/forhandlare/logga-in` | `ForhandlareLogin` | Auth, CSR |
+
+### 10b. Portal Tabs
+
+| Tab | Content |
+|-----|---------|
+| Översikt | Stats: bokningar, profilvisningar, rating |
+| Bokningar | Consultation bookings with status management + `ForhandlareBookingTimeline` |
+| Profil | Editable profile (namn, telefon, stad, specialiteter, språk, bio, LinkedIn) |
+| Inställningar | Konto-info, logga ut |
+
+### 10c. Booking Timeline (booking_updates table)
+
+| Feature | Detail |
+|---------|--------|
+| Table | `booking_updates` (id, booking_id, forhandlare_slug, status, message, created_at) |
+| Statuses | kontaktad, soker_bil, forhandlar, klar, avbruten |
+| Förhandlare | Can add updates via `ForhandlareBookingTimeline` component |
+| Customer | Sees updates read-only via `CustomerBookingTimeline` in dashboard |
+| Admin | Sees updates read-only via `CustomerBookingTimeline` in `/admin/bokningar` |
+| Realtime | Supabase realtime subscriptions — no polling |
+| RLS | SELECT for authenticated; INSERT for booking owner; append-only (no UPDATE/DELETE) |
+
+### 10d. Admin Flow
+
+| Step | Location |
+|------|----------|
+| Application review | `/admin/forhandlare` → `AdminForhandlareApplications` |
+| Approval | Sets förhandlare status to approved, creates auth user |
+| Login | Förhandlare logs in at `/forhandlare/logga-in` |
+| Portal | `/forhandlare/portal` shows tabs based on `forhandlare` table profile |
+
+---
+
+*Updated: 2026-07-25 — förhandlare portal + booking timeline added, nav consistency fixed.*
