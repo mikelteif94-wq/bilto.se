@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { LayoutDashboard, Star, MessageSquare, Settings, LogOut, TrendingUp, Calendar, Users, Award, ChevronRight, Loader2, User, MapPin, Globe, Briefcase, CreditCard as Edit3, Check, X, Linkedin, Phone, Mail, Clock, Inbox, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { ForhandlareBookingTimeline } from '../components/BookingTimeline';
 
 interface ForhandlareProfil {
   id: string;
@@ -427,8 +428,14 @@ function BokningarTab({ profil }: { profil: ForhandlareProfil }) {
                   </div>
                 )}
 
+                {/* Timeline — förhandlare can add updates, customer sees them */}
+                <div className="border-t border-slate-100 pt-4 mt-1">
+                  <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Tidslinje</p>
+                  <ForhandlareBookingTimeline bookingId={booking.id} slug={profil.slug} />
+                </div>
+
                 {/* Actions */}
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-2 flex-wrap pt-2">
                   {booking.status === 'pending' && (
                     <button
                       onClick={() => updateStatus(booking.id, 'confirmed')}
