@@ -548,8 +548,6 @@ export default function HomePage({
             <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
               <div className="flex flex-wrap gap-3 sm:gap-4">
                 {[
-                  { value: '4 000+', label: 'Bilar sålda & inhandlade' },
-                  { value: 'Topp­säljare', label: 'På Riddermar Bil' },
                   { value: '100%', label: 'På kundens sida' },
                 ].map((stat) => (
                   <div key={stat.label} className="rounded-xl bg-white/90 backdrop-blur-sm px-4 py-3 shadow-lg">
@@ -564,7 +562,7 @@ export default function HomePage({
           {/* Story text */}
           <div className="max-w-3xl mx-auto">
             <p className="text-[16px] sm:text-[18px] text-slate-600 leading-[1.7] mb-5">
-              Vi började inne i bilbranschen. Som topp­säljare på Riddermar Bil sålde vi mest av alla – flest bilar, mest försäljning, år efter år. Under åren sålde och köpte vi in över 4 000 bilar. Vi lärde oss varenda trick, varje marginal och varje knapp som handlaren trycker på.
+              Vi började inne i bilbranschen. Vi sålde mest av alla – flest bilar, mest försäljning, år efter år. Vi lärde oss varenda trick, varje marginal och varje knapp som handlaren trycker på.
             </p>
             <p className="text-[16px] sm:text-[18px] text-slate-600 leading-[1.7] mb-5">
               Ju mer vi såg, desto tydligare blev det: köparen betalar alltid för mycket. Inte för att handlaren är ond – utan för att informationen är ojämnt fördelad. Handlaren vet allt. Köparen vet nästan inget.
@@ -581,7 +579,7 @@ export default function HomePage({
               />
               <div className="min-w-0">
                 <p className="text-[15px] font-bold text-slate-700 leading-snug">Alexander</p>
-                <p className="text-[13px] text-slate-500 mt-0.5">Tidigare topp­säljare på Riddermar Bil – nu din expert på insidan</p>
+                <p className="text-[13px] text-slate-500 mt-0.5">Din expert på insidan av bilbranschen</p>
               </div>
             </div>
           </div>
