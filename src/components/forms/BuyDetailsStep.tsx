@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { ChevronDown, Search, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { ChevronDown, Search, CheckCircle, XCircle, Loader2, Info } from 'lucide-react';
 import type { BuyTrack } from './BuyTrackStep';
 import FieldError from './FieldError';
 import RegInput from '../RegInput';
@@ -330,7 +330,7 @@ function LinkField({
         Har du hittat en bil? Dela länken eller handlarens namn
       </label>
       <p className="text-sm text-slate-500 mb-3 leading-[1.5]">
-        Klistra in länken till annonsen (t.ex. på Blocket) så tittar jag på den direkt. Har du ingen länk? Skriv handlarens namn så tar jag kontakt åt dig. Det här hjälper mig veta exakt vilken bil du tittar på så jag kan kolla priset och förhandla åt dig.
+        Klistra in en länk eller skriv handlarens namn – så kollar jag priset och förhandlar åt dig.
       </p>
       <div className="relative">
         <input
@@ -397,7 +397,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
     <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
       <div className="pb-5 mb-2 p-4 rounded-xl bg-[#faf8f5] border border-slate-200">
         <p className="text-[14px] text-slate-600 leading-[1.6]">
-          <strong className="text-slate-900">Hej! Nu ska vi berätta om bilen du letar efter.</strong> Ingen stress – du behöver inte vara expert. Jag ställer några enkla frågor för att förstå vad du vill ha, så att jag kan hitta och förhandla rätt bil åt dig. Allt du fyller i stannar mellan oss. Fält markerade <em>frivilligt</em> kan du hoppa över helt.
+          <strong className="text-slate-900">Hej! Nu ska vi berätta om bilen du letar efter.</strong> Jag ställer några enkla frågor för att hitta och förhandla rätt bil åt dig. Allt stannar mellan oss.
         </p>
       </div>
       <div className="pb-6 sm:pb-7">
@@ -405,7 +405,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
           Vilken bil drömmer du om?
         </label>
         <p className="text-[13.5px] text-slate-500 mb-3 leading-[1.5]">
-          Välj märke och modell så vet jag exakt vad jag ska leta efter. Hittar du inte din modell? Välj “Annan” och skriv in den fritt.
+          Välj märke och modell. Hittar du inte modellen? Välj “Annan” och skriv fritt.
         </p>
         {lockedCar ? (
           <div className="flex items-center h-11 px-4 bg-[#faf8f5] border border-slate-200 rounded-xl text-slate-700 font-medium text-[14px]">
@@ -437,7 +437,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
         <>
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">Vilka årsmodeller är OK?</label>
-            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Nyare bilar kostar mer men har ofta bättre teknik och garanti. Äldre bilar är billigare men kan behöva mer underhåll. Sätt ett spann som känns rimligt för dig.</p>
+            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Nyare = dyrare men bättre teknik. Äldre = billigare men mer underhåll.</p>
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
@@ -457,7 +457,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
           </div>
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-0.5">Max miltal</label>
-            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Miltalet påverkar både pris och hur länge bilen håller. En bil som gått 10 000 mil är ofta märkbart billigare än en som gått 3 000 – men den kan fortfarande ha många bra mil kvar. Sätt en gräns som känns bra för dig.</p>
+            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Högre miltal = lägre pris, men kortare livslängd. Sätt en gräns som känns bra.</p>
             <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
@@ -474,7 +474,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
           Vad vill du lägga max?
           <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Den totala prislappen för bilen. Om du inte har en fast budget än så strunta i fältet – jag hittar bilen först och vi pratar pris senare. Ett tips: lämna lite marginal, så finns utrymme att förhandla ner priset åt dig.</p>
+        <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Totalpriset. Ingen fast budget? Hoppa över – jag hittar bilen först.</p>
             <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
@@ -490,7 +490,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
             Bränsle – spelar det någon roll?
             <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
           </label>
-          <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Vissa vet exakt vad de vill ha, andra bryr sig inte alls. Har du ingen stark åsikt så välj “Spelar ingen roll” – jag hittar det som ger bäst värde för just dig.</p>
+          <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Bryr du dig inte? Välj “Spelar ingen roll” – jag hittar det som ger bäst värde.</p>
           <div className="flex flex-wrap gap-2">
             {FUEL_TYPES.map(f => (
               <button
@@ -514,7 +514,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Hur vill du betala?
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Det här styr vilka bilar och upplägg jag letar efter. Kontant = du betalar hela priset direkt. Finansiering = du lånar och betalar per månad. Leasing = du hyr bilen en tid och betalar en fast månadskostnad.</p>
+        <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Kontant, finansiering eller leasing – styr vilka upplägg jag letar efter.</p>
         <div className="flex flex-wrap gap-2">
           {PAYMENT_TYPES.map(p => (
             <button
@@ -688,7 +688,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
         <>
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">Vilka årsmodeller är OK?</label>
-            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Nyare bilar kostar mer men har ofta bättre teknik och garanti. Äldre bilar är billigare men kan behöva mer underhåll. Sätt ett spann som känns rimligt för dig.</p>
+            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Nyare = dyrare men bättre teknik. Äldre = billigare men mer underhåll.</p>
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
@@ -708,7 +708,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
           </div>
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-0.5">Max miltal</label>
-            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Miltalet påverkar både pris och hur länge bilen håller. En bil som gått 10 000 mil är ofta märkbart billigare än en som gått 3 000 – men den kan fortfarande ha många bra mil kvar. Sätt en gräns som känns bra för dig.</p>
+            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Högre miltal = lägre pris, men kortare livslängd. Sätt en gräns som känns bra.</p>
             <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
@@ -773,7 +773,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Hur vill du betala?
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Det här styr vilka bilar och upplägg jag letar efter. Kontant = du betalar hela priset direkt. Finansiering = du lånar och betalar per månad. Leasing = du hyr bilen en tid och betalar en fast månadskostnad.</p>
+        <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Kontant, finansiering eller leasing – styr vilka upplägg jag letar efter.</p>
         <div className="flex flex-wrap gap-2">
           {PAYMENT_TYPES.map(p => (
             <button
@@ -1062,7 +1062,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
   const fuelTypeSelector = hideFuel ? null : (
     <div className="py-6">
       <label className="block text-[15px] font-bold text-slate-900 mb-1">Bränsle – spelar det någon roll?</label>
-      <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">Vissa vet exakt vad de vill ha, andra bryr sig inte alls. Har du ingen stark åsikt så välj “Spelar ingen roll” – jag hittar det som ger bäst värde för just dig.</p>
+      <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">Bryr du dig inte? Välj “Spelar ingen roll” – jag hittar det som ger bäst värde.</p>
       <div className="flex flex-wrap gap-2">
         {filteredFuelTypes.map(f => {
           const isSelected = d.fuelType === f.value;
@@ -1090,7 +1090,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
         Hur vill du betala?
       </label>
-      <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">Det här styr vilka upplägg jag letar efter. Kontant = du betalar hela priset direkt. Finansiering = du lånar och betalar per månad. Leasing = du hyr bilen en tid och betalar en fast månadskostnad.</p>
+      <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">Kontant, finansiering eller leasing – styr vilka upplägg jag letar efter.</p>
       <div className="flex flex-wrap gap-2">
         {PAYMENT_TYPES.map(p => (
           <button
@@ -1183,7 +1183,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Har handlaren redan gett dig ett pris?
             </label>
             <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">
-              Om du redan har fått ett pris vet jag vad jag ska försöka slå. Jag jämför med marknadspriset och förhandlar ner det åt dig. Har du inte frågat än? Ingen fara – då gör jag det.
+              Redan ett pris? Jag jämför med marknaden och försöker slå det. Saknas pris? Tar jag fram ett.
             </p>
             <div className="flex gap-3 sm:max-w-xs">
               {([{ value: true, label: 'Ja' }, { value: false, label: 'Nej' }] as const).map(opt => (
@@ -1212,7 +1212,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
                 Vilken bil är det du tittar på?
               </label>
               <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">
-                Välj märke och modell så vet jag exakt vilken bil det gäller. Hittar du inte modellen? Välj “Annan” och skriv in den fritt i rutan nedan.
+                Välj märke och modell. Hittar du inte modellen? Välj “Annan” och skriv fritt.
               </p>
               <BrandModelSelector
                 brand={d.carBrand}
@@ -1240,7 +1240,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
             <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">
-              Om du vet priset hjälper det mig räkna ut ett finansieringsförslag direkt. Vet du inte än? Hoppa över – jag kollar priset åt dig och kommer med ett förslag.
+              Hjälper mig räkna ut finansiering. Vet du inte? Hoppa över – jag kollar priset.
             </p>
               <ButtonGroupInput
               value={d.carPrice}
@@ -1261,7 +1261,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Max miltal
             </label>
             <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">
-              Miltalet påverkar både pris och hur länge bilen håller. En bil som gått 10 000 mil är ofta märkbart billigare än en som gått 3 000 – men den kan fortfarande ha många bra mil kvar. Sätt en gräns som känns bra för dig.
+              Högre miltal = lägre pris, men kortare livslängd. Sätt en gräns som känns bra.
             </p>
             <ButtonGroupInput
               value={d.maxMiltal}
@@ -1276,7 +1276,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             <label className="block text-[15px] font-bold text-slate-900 mb-1">
               Vilka årsmodeller är OK?
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Nyare bilar kostar mer men har ofta bättre teknik och garanti. Äldre bilar är billigare men kan behöva mer underhåll. Sätt ett spann som känns rimligt för dig.</p>
+            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Nyare = dyrare men bättre teknik. Äldre = billigare men mer underhåll.</p>
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
@@ -1304,7 +1304,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Vad vill du lägga max?
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Den totala prislappen för bilen. Om du inte har en fast budget än så strunta i fältet – jag hittar bilen först och vi pratar pris senare. Ett tips: lämna lite marginal, så finns utrymme att förhandla ner priset åt dig.</p>
+            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Totalpriset. Ingen fast budget? Hoppa över – jag hittar bilen först.</p>
               <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
@@ -1369,7 +1369,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Vilken bil letar du efter?
             </label>
             <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">
-              Välj märke och modell så vet jag exakt vad jag ska leta efter. Är du osäker? Använd bilmatchen ovan så hjälper jag dig hitta rätt.
+              Välj märke och modell. Osäker? Använd bilmatchen ovan.
             </p>
             <BrandModelSelector
               brand={d.carBrand}
@@ -1388,7 +1388,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-0.5">Max miltal</label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Miltalet påverkar både pris och hur länge bilen håller. En bil som gått 10 000 mil är ofta märkbart billigare än en som gått 3 000 – men den kan fortfarande ha många bra mil kvar. Sätt en gräns som känns bra för dig.</p>
+            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Högre miltal = lägre pris, men kortare livslängd. Sätt en gräns som känns bra.</p>
             <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
@@ -1400,7 +1400,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-1">Vilka årsmodeller är OK?</label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Nyare bilar kostar mer men har ofta bättre teknik och garanti. Äldre bilar är billigare men kan behöva mer underhåll. Sätt ett spann som känns rimligt för dig.</p>
+            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Nyare = dyrare men bättre teknik. Äldre = billigare men mer underhåll.</p>
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
@@ -1428,7 +1428,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Vad vill du lägga max?
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Den totala prislappen för bilen. Om du inte har en fast budget än så strunta i fältet – jag hittar bilen först och vi pratar pris senare. Ett tips: lämna lite marginal, så finns utrymme att förhandla ner priset åt dig.</p>
+            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Totalpriset. Ingen fast budget? Hoppa över – jag hittar bilen först.</p>
               <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
@@ -1484,7 +1484,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Max miltal på nästa bil
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Miltalet påverkar både pris och hur länge bilen håller. En bil som gått 10 000 mil är ofta märkbart billigare än en som gått 3 000 – men den kan fortfarande ha många bra mil kvar. Sätt en gräns som känns bra för dig.</p>
+            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Högre miltal = lägre pris, men kortare livslängd. Sätt en gräns som känns bra.</p>
             <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
@@ -1503,7 +1503,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
               Vad vill du lägga max på nästa bil?
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Den totala prislappen för nästa bil. Om du inte har en fast budget än så strunta i fältet – jag hittar bilen först och vi pratar pris senare. Ett tips: lämna lite marginal, så finns utrymme att förhandla ner priset åt dig.</p>
+            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Totalpriset. Ingen fast budget? Hoppa över – jag hittar bilen först.</p>
               <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
@@ -1520,7 +1520,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
     <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
       Var befinner du dig just nu?
     </label>
-    <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">Det här hjälper mig att anpassa takten. Är du nyfiken och bara kollar runt så tar vi det lugnt. Redo att köpa snart så sätter jag igång direkt och börjar leta redan idag.</p>
+    <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">Hjälper mig anpassa takten – från lugn koll till direkt uppslag.</p>
     <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2">
       {BUYING_STAGES.map(s => (
         <button
@@ -1549,7 +1549,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
         </label>
         <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">
-          Har du önskemål om färg, utrustning, garanti eller något annat som är viktigt för dig? Skriv det här – ju mer jag vet, desto bättre kan jag hitta rätt bil åt dig.
+          Färg, tillval, garanti eller annat? Ju mer jag vet, desto bättre hittar jag rätt.
         </p>
         <textarea
           value={d.additionalRequests}
