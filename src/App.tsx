@@ -768,10 +768,9 @@ function App() {
         {publicRoute.page === 'home' && (
           <HomePage
             onNavigate={(reg, tel) => setPublicRoute({ page: 'sell', regnummer: reg })}
-            onNavigateBuy={(bil?: string) => {
-              const url = bil ? `/kop-bil/bestall?bil=${encodeURIComponent(bil)}&typ=found` : '/kop-bil/bestall';
-              window.history.pushState({}, '', url);
-              setPath(url.split('?')[0]);
+            onNavigateBuy={() => {
+              window.history.pushState({}, '', '/kop-bil');
+              setPath('/kop-bil');
             }}
             onNavigateSell={() => { window.history.pushState({}, '', '/salj-bil'); setPath('/salj-bil'); }}
             onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}

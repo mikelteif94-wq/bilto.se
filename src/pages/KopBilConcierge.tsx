@@ -10,7 +10,6 @@ const BuyDrawer = lazy(() => import('../components/BuyDrawer'));
 
 interface KopBilConciergProps {
   onBack: () => void;
-  onNavigateBuy: (bil?: string) => void;
   onNavigateHowItWorks: () => void;
 }
 
@@ -41,7 +40,7 @@ const CUSTOMER_RESULTS = [
   { name: 'Michael', car: 'Volvo XC60', saving: '15 000 kr', text: 'Jag fick bättre pris och vinterhjul utan extra kostnad. Rekommenderar verkligen Bilto.' },
 ];
 
-export default function KopBilConcierge({ onBack, onNavigateBuy }: KopBilConciergProps) {
+export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
@@ -90,7 +89,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy }: KopBilConcier
           <button type="button" onClick={onBack} className="shrink-0 flex items-center"><img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" /></button>
           <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
             <button type="button" onClick={onBack} className="text-[15px] text-white/80 hover:text-white transition font-medium">Sälj bil</button>
-            <button type="button" onClick={() => onNavigateBuy()} className="text-[15px] text-white font-semibold">Köp bil</button>
+            <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-[15px] text-white font-semibold">Köp bil</button>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Om oss</button>
           </nav>
           <a href="/gratis-konsultation" className="ml-auto inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">Kostnadsfri konsultation</a>
