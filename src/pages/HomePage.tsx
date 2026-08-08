@@ -331,7 +331,7 @@ export default function HomePage({
                   placeholder="ABC123"
                   maxLength={6}
                   autoComplete="off"
-                  className="flex-1 min-w-0 px-3 bg-white text-[18px] font-bold tracking-widest text-slate-900 placeholder:text-slate-400 placeholder:font-normal placeholder:tracking-normal focus:outline-none"
+                  className="flex-1 min-w-0 px-3 bg-white text-[15px] font-semibold tracking-widest text-slate-900 placeholder:text-slate-400 placeholder:font-normal placeholder:tracking-normal focus:outline-none"
                 />
                 {lookup.status === 'loading' && (
                   <span className="flex items-center justify-center w-11 shrink-0">
