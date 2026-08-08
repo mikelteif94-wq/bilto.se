@@ -234,10 +234,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           <div className="max-w-4xl mb-10 sm:mb-14">
             <h1 className="text-[42px] sm:text-[64px] lg:text-[76px] font-bold leading-[0.98] tracking-[-0.055em] text-slate-700">
               Vi förhandlar din nästa bil.<br />
-              <span className="relative inline-block text-slate-700">
-                Du hämtar nycklarna.
-                <span className="absolute left-0 right-[12%] bottom-1 sm:bottom-2 -z-0 h-3 sm:h-4 rounded-full bg-[#a8d0ff]" />
-              </span>
+              <span className="text-slate-700">Du hämtar nycklarna.</span>
             </h1>
             <p className="mt-8 max-w-4xl text-[19px] sm:text-[25px] leading-[1.5] tracking-[-0.02em] text-slate-500">
               Två sätt att köpa bil utan handlarbesök. Osäker på vad som passar?{' '}
