@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, Phone, Check, X, ArrowRight } from 'lucide-react';
+import { ChevronLeft, Phone, Check, X, ArrowRight, Sparkles } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
 import BuyFlowFAQ from '../components/BuyFlowFAQ';
 import { validateSwedishPhone } from '../lib/utils';
@@ -261,29 +261,96 @@ export default function BuyCarPage({
       )}
 
       {step === 'track' && (
-        <section className="bg-[#0e6efe] px-4 sm:px-6 pt-[calc(69px+56px)] sm:pt-[calc(80px+64px)] pb-16 sm:pb-24">
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-4">Bilköpshjälpen</p>
-            <h1 className="text-[24px] sm:text-[40px] font-bold text-white leading-[1.08] tracking-[-0.02em]">
-              Spara 15&nbsp;000&nbsp;kr eller mer på din nästa bil
-            </h1>
-            <p className="mt-5 text-white/75 text-[15px] sm:text-[17px] leading-[1.65] max-w-xl mx-auto">
-              Oavsett om du leasar eller köper kontaktar Biltos experter handlarna åt dig, förhandlar bästa priset och hanterar varje steg – du sparar tid och pengar.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-              <a
-                href="/gratis-konsultation"
-                className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg"
-              >
-                Boka kostnadsfri konsultation
-                <ArrowRight className="w-5 h-5" />
-              </a>
+        <section className="relative overflow-hidden bg-gradient-to-b from-[#f0f5ff] via-[#f7f9ff] to-white px-4 sm:px-6 pt-[calc(69px+56px)] sm:pt-[calc(80px+64px)] pb-16 sm:pb-24">
+          <div className="absolute -top-24 -right-24 w-[500px] h-[500px] rounded-full bg-[#0e6efe]/[0.05] blur-3xl pointer-events-none" />
+          <div className="absolute top-1/3 -left-32 w-[400px] h-[400px] rounded-full bg-[#69a8ff]/[0.06] blur-3xl pointer-events-none" />
+
+          <div className="relative max-w-5xl mx-auto">
+            <div className="max-w-4xl mx-auto text-center">
+              <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-5">Bilköpshjälpen</p>
+              <h1 className="text-[32px] sm:text-[44px] lg:text-[52px] font-bold text-slate-800 leading-[1.06] tracking-[-0.04em]">
+                We negotiate your next car.<br className="hidden sm:block" /> You pick it up.
+              </h1>
+              <p className="mt-5 text-slate-500 text-[16px] sm:text-[19px] leading-[1.5] max-w-2xl mx-auto">
+                Vi förhandlar din nästa bil åt dig. Du väljer bilen, vi sköter kontakten, priset och alla detaljer fram till upphämtning.
+              </p>
             </div>
+
+            <div className="mt-10 grid lg:grid-cols-[1.35fr_0.65fr] gap-4 items-stretch">
+              <div className="relative rounded-[24px] border-2 border-[#0e6efe] bg-[#f0f5ff]/80 p-6 sm:p-8 lg:p-9 shadow-[0_20px_60px_rgba(14,110,254,0.10)]">
+                <div className="absolute -top-3 left-5 inline-flex items-center gap-1.5 rounded-full bg-[#0e6efe] px-3 py-1 text-[11px] font-bold text-white shadow-sm">
+                  <Sparkles className="w-3 h-3" />
+                  Personlig service
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                  <div className="max-w-xl">
+                    <h2 className="text-[24px] sm:text-[30px] font-bold text-slate-800 tracking-[-0.03em] leading-tight">
+                      Bilto Concierge
+                    </h2>
+                    <p className="mt-2 text-[14px] sm:text-[15px] text-slate-500 leading-[1.6]">
+                      En dedikerad bilexpert hanterar allt från första samtalet till att du hämtar nycklarna.
+                    </p>
+                    <a href="/gratis-konsultation" className="inline-flex items-center gap-1.5 mt-4 text-[13px] font-semibold text-[#0e6efe] hover:text-[#0a57cc] transition">
+                      Träffa teamet
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                  <div className="flex items-center shrink-0 pt-1 sm:pt-0 sm:pr-1" aria-label="Bilto-teamet">
+                    {[
+                      '/daniel-portrait.jpg',
+                      '/Man_in_car_showroom_portrait.png',
+                      '/Man_in_car_showroom_portrait copy.png',
+                      '/Man_in_car_showroom_portrait copy copy.png',
+                    ].map((image, index) => (
+                      <img
+                        key={image}
+                        src={image}
+                        alt=""
+                        className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover object-top border-2 border-white shadow-sm ${index > 0 ? '-ml-3' : ''}`}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ))}
+                    <span className="-ml-3 w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-white bg-slate-800 text-white flex items-center justify-center text-[12px] font-bold shadow-sm">+4</span>
+                  </div>
+                </div>
+
+                <div className="mt-7 grid sm:grid-cols-2 gap-x-6 gap-y-3">
+                  {[
+                    'En personlig bilexpert tilldelas dig',
+                    'Vi sköter research, förhandling och kontakt',
+                    'Vi granskar villkor och pressar priset',
+                    'Du hämtar bilen när allt är klart',
+                  ].map((text) => (
+                    <div key={text} className="flex items-start gap-2.5 text-[13px] sm:text-[14px] text-slate-700 leading-[1.45]">
+                      <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
+                      {text}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[24px] border border-slate-200 bg-white p-6 sm:p-8 shadow-sm flex flex-col justify-between">
+                <div>
+                  <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-[0.16em] mb-3">Så fungerar det</p>
+                  <h2 className="text-[22px] sm:text-[25px] font-bold text-slate-800 leading-tight tracking-[-0.02em]">Du väljer bilen. Vi gör jobbet.</h2>
+                  <p className="mt-3 text-[14px] text-slate-500 leading-[1.6]">Oavsett om du redan hittat en bil eller fortfarande letar börjar vi där du är.</p>
+                </div>
+                <a
+                  href="/gratis-konsultation"
+                  className="mt-7 inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl bg-[#0e6efe] text-white font-bold text-[14px] hover:bg-[#0a57cc] transition shadow-[0_4px_18px_-4px_rgba(14,110,254,0.5)]"
+                >
+                  Boka kostnadsfri konsultation
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+
             <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-              {['Inga bindningar', 'Svar inom 24h', '4 995 kr om affären blir av'].map(t => (
-                <span key={t} className="flex items-center gap-1.5 text-white/70 text-[13px]">
-                  <Check className="w-3.5 h-3.5 text-white/60" strokeWidth={2.5} />
-                  {t}
+              {['Inga bindningar', 'Svar inom 24h', '4 995 kr om affären blir av'].map((text) => (
+                <span key={text} className="flex items-center gap-1.5 text-slate-500 text-[13px]">
+                  <Check className="w-3.5 h-3.5 text-[#0e6efe]" strokeWidth={2.5} />
+                  {text}
                 </span>
               ))}
             </div>
