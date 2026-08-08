@@ -247,7 +247,7 @@ export default function HomePage({
 
         <div className="relative mx-auto w-full max-w-5xl px-5 sm:px-8 text-center">
           <div className="max-w-3xl mx-auto">
-            <h1 className="text-[42px] sm:text-[60px] lg:text-[72px] font-bold leading-[0.98] tracking-[-0.055em] text-slate-700">
+            <h1 className="text-[30px] sm:text-[40px] lg:text-[48px] font-bold leading-[1.05] tracking-[-0.04em] text-slate-700">
               Spara 15 000 kr eller mer<br />
               på din nästa bil.
             </h1>
