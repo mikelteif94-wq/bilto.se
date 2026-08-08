@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, Phone, Check, X, User, ShieldCheck, Gavel, BadgeCheck, Clock3 } from 'lucide-react';
+import { ChevronLeft, Phone, Check, X, ShieldCheck, Gavel, BadgeCheck, Clock3 } from 'lucide-react';
 import ErrorBanner from '../components/ErrorBanner';
 import { validateSwedishPhone } from '../lib/utils';
 import CarConditionStep from '../components/forms/CarConditionStep';
@@ -151,42 +151,38 @@ export default function SellCarPage({
   };
 
   return (
-    <div className="min-h-screen bg-[#f6f4f9] text-[#161616] flex flex-col">
-      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-16 xl:inset-x-28 z-30 h-[58px] lg:h-[68px] rounded-2xl shadow-lg ring-1 ring-black/10 bg-[#111111]">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900 flex flex-col">
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button onClick={onBack} className="shrink-0 flex items-center">
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
-              className="h-16 lg:h-24 w-auto object-contain brightness-0 invert"
+              className="h-20 lg:h-32 w-auto object-contain"
               fetchPriority="high"
               decoding="async"
             />
           </button>
           <div className="flex items-center ml-auto">
-            <button
-              type="button"
-              onClick={() => {
-                window.history.pushState({}, '', '/gratis-konsultation');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-              }}
-              className="inline-flex items-center bg-[#63d4e3] text-[#111111] text-[11px] lg:text-[13px] font-bold px-[14px] lg:px-[18px] h-9 rounded-full hover:bg-[#8be2ed] transition whitespace-nowrap"
+            <a
+              href="/gratis-konsultation"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
-            </button>
+            </a>
           </div>
         </div>
       </header>
 
-      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-28 sm:pt-32 pb-10 lg:pb-16">
+      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-28 sm:pt-36 pb-10 lg:pb-16">
         <div className="mb-10 lg:mb-14 max-w-4xl">
-          <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.22em] text-[#4c8f99] mb-4">Sälj tryggt. Sälj smart.</p>
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-[-0.055em] leading-[0.94] text-[#111111] max-w-3xl">Få bilen såld till rätt pris.</h1>
+          <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.22em] text-[#0e6efe] mb-4">Sälj tryggt. Sälj smart.</p>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-[-0.04em] leading-[1.05] text-slate-900 max-w-3xl">Få bilen såld till rätt pris.</h1>
           <p className="mt-5 text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">Vi hjälper dig genom hela försäljningen och låter granskade handlare tävla om din bil.</p>
         </div>
         <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-8 xl:gap-14 items-start">
           <main className="w-full max-w-2xl">
-            <div className="rounded-[28px] bg-white border border-black/[0.07] shadow-[0_20px_60px_rgba(17,17,17,0.08)] p-5 sm:p-8 lg:p-10">
+            <div className="rounded-[24px] bg-white border border-slate-200/80 shadow-[0_18px_50px_rgba(14,110,254,0.08)] p-5 sm:p-8 lg:p-10">
           <div className="mb-6 sm:mb-8">
             {step !== 'confirm' && (
               <button
@@ -218,8 +214,8 @@ export default function SellCarPage({
 
             {step !== 'confirm' && (
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#4c8f99] mb-2">Steg {currentStepNum} av {totalSteps}</p>
-                <h2 className="text-2xl sm:text-3xl font-black tracking-[-0.035em] text-[#111111] leading-tight">
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#0e6efe] mb-2">Steg {currentStepNum} av {totalSteps}</p>
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] text-slate-900 leading-tight">
                   {titles[step]}
                 </h2>
               </div>
@@ -308,17 +304,17 @@ export default function SellCarPage({
           </main>
           <aside className="hidden lg:block lg:pt-4">
             <div className="sticky top-28 space-y-4">
-              <div className="rounded-[24px] bg-[#111111] text-white p-6 xl:p-7">
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#63d4e3] mb-5">Så fungerar det</p>
+              <div className="rounded-[20px] bg-white border border-slate-200/80 shadow-[0_8px_30px_rgba(14,110,254,0.06)] p-6 xl:p-7">
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#0e6efe] mb-5">Så fungerar det</p>
                 <div className="space-y-5">
-                  <div className="flex gap-3"><ShieldCheck className="w-5 h-5 text-[#63d4e3] shrink-0" /><div><p className="font-bold text-sm">Tryggt hela vägen</p><p className="text-xs text-white/60 mt-1 leading-relaxed">Inga dolda kostnader eller krav på att acceptera ett bud.</p></div></div>
-                  <div className="flex gap-3"><Gavel className="w-5 h-5 text-[#63d4e3] shrink-0" /><div><p className="font-bold text-sm">Handlare tävlar</p><p className="text-xs text-white/60 mt-1 leading-relaxed">Vi skickar bilen till vårt nätverk av granskade handlare.</p></div></div>
-                  <div className="flex gap-3"><BadgeCheck className="w-5 h-5 text-[#63d4e3] shrink-0" /><div><p className="font-bold text-sm">Kostnadsfritt</p><p className="text-xs text-white/60 mt-1 leading-relaxed">Du bestämmer själv om du vill gå vidare med affären.</p></div></div>
+                  <div className="flex gap-3"><ShieldCheck className="w-5 h-5 text-[#0e6efe] shrink-0" /><div><p className="font-semibold text-sm text-slate-900">Tryggt hela vägen</p><p className="text-xs text-slate-500 mt-1 leading-relaxed">Inga dolda kostnader eller krav på att acceptera ett bud.</p></div></div>
+                  <div className="flex gap-3"><Gavel className="w-5 h-5 text-[#0e6efe] shrink-0" /><div><p className="font-semibold text-sm text-slate-900">Handlare tävlar</p><p className="text-xs text-slate-500 mt-1 leading-relaxed">Vi skickar bilen till vårt nätverk av granskade handlare.</p></div></div>
+                  <div className="flex gap-3"><BadgeCheck className="w-5 h-5 text-[#0e6efe] shrink-0" /><div><p className="font-semibold text-sm text-slate-900">Kostnadsfritt</p><p className="text-xs text-slate-500 mt-1 leading-relaxed">Du bestämmer själv om du vill gå vidare med affären.</p></div></div>
                 </div>
               </div>
-              <div className="rounded-[24px] bg-[#d8f5f7] border border-[#b4e8ed] p-5">
-                <div className="flex items-center gap-2 text-[#246a73] mb-2"><Clock3 className="w-4 h-4" /><span className="text-xs font-bold uppercase tracking-[0.12em]">Snabb hjälp</span></div>
-                <p className="text-sm font-semibold text-[#163f44] leading-relaxed">En expert kan ringa dig och guida dig genom nästa steg.</p>
+              <div className="rounded-[20px] bg-[#e7f3ff] border border-[#69a8ff]/30 p-5">
+                <div className="flex items-center gap-2 text-[#0e6efe] mb-2"><Clock3 className="w-4 h-4" /><span className="text-xs font-bold uppercase tracking-[0.12em]">Snabb hjälp</span></div>
+                <p className="text-sm font-semibold text-slate-700 leading-relaxed">En expert kan ringa dig och guida dig genom nästa steg.</p>
               </div>
             </div>
           </aside>
