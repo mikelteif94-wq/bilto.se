@@ -281,9 +281,8 @@ export default function HomePage({
 
         <div className="relative mx-auto w-full max-w-5xl px-5 sm:px-8 text-center">
           <div className="max-w-3xl mx-auto">
-            <h1 className="text-[30px] sm:text-[40px] lg:text-[48px] font-bold leading-[1.05] tracking-[-0.04em] text-slate-700">
-              Spara 2 500 kr eller mer på din nästa bil<br />
-              – utan att besöka en bilhall.
+            <h1 className="text-[30px] sm:text-[40px] lg:text-[48px] font-bold leading-[1.1] tracking-[-0.04em] text-slate-700">
+              Spara 15 000 kr eller mer på din nästa bil – utan att besöka en bilhall.
             </h1>
             <p className="mt-8 text-[16px] sm:text-[19px] leading-[1.5] tracking-[-0.01em] text-slate-500">
               Oavsett om du leasar eller köper kontaktar Biltos experter handlaren åt dig, förhandlar bästa pris och sköter varje steg – du sparar tid och pengar.{' '}
