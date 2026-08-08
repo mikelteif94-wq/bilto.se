@@ -229,147 +229,73 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative min-h-[100svh] flex flex-col overflow-hidden">
-        <img
-          src="/files_2615643-2026-06-21T06-29-18-662Z-b858d9c8-9893-488f-8103-98fee9292c16 copy.webp"
-          alt=""
-          aria-hidden
-          className="absolute inset-0 w-full h-full object-cover object-[50%_65%]"
-          fetchPriority="high"
-          decoding="async"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[#faf8f5] pointer-events-none" />
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#e7f3ff] via-[#f2f8ff] to-[#faf8f5] pt-32 sm:pt-40 pb-16 sm:pb-24">
+        <div className="relative mx-auto w-full max-w-5xl px-5 sm:px-8">
+          <div className="max-w-4xl mb-10 sm:mb-14">
+            <h1 className="text-[42px] sm:text-[64px] lg:text-[76px] font-bold leading-[0.98] tracking-[-0.055em] text-slate-700">
+              Vi förhandlar din nästa bil.<br />
+              <span className="relative inline-block text-slate-700">
+                Du hämtar nycklarna.
+                <span className="absolute left-0 right-[12%] bottom-1 sm:bottom-2 -z-0 h-3 sm:h-4 rounded-full bg-[#a8d0ff]" />
+              </span>
+            </h1>
+            <p className="mt-8 max-w-4xl text-[19px] sm:text-[25px] leading-[1.5] tracking-[-0.02em] text-slate-500">
+              Två sätt att köpa bil utan handlarbesök. Osäker på vad som passar?{' '}
+              <a href="/gratis-konsultation" className="font-medium text-[#0e6efe] hover:text-[#0a57cc] transition">
+                Boka ett kostnadsfritt samtal på 15 minuter med någon i vårt team
+              </a>{' '}
+              – vi lyssnar och rekommenderar rätt lösning, ingen säljpitch. Köp eller leasing, ny eller begagnad, alla märken.
+            </p>
+          </div>
 
-        <div className="relative flex-1 flex flex-col items-center justify-center pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
-          <div className="w-full max-w-5xl">
-            {/* Headline */}
-            <div className="text-center mb-8 sm:mb-12">
-              <h1 className="text-white text-[30px] sm:text-[48px] lg:text-[56px] font-bold leading-[1.05] tracking-tight drop-shadow-lg mb-4 max-w-3xl mx-auto">
-                Vi förhandlar din nästa bil. Du hämtar nycklarna.
-              </h1>
-              <p className="text-white/80 text-[15px] sm:text-[18px] leading-[1.6] drop-shadow max-w-2xl mx-auto">
-                Två sätt att köpa bil utan handlarbesök. Osäker på vad som passar? Boka ett kostnadsfritt samtal på 15 minuter med någon i vårt team – vi lyssnar och rekommenderar rätt lösning, ingen säljpitch. Köp eller leasing, ny eller begagnad, alla märken.
-              </p>
+          <div className="relative max-w-4xl rounded-[28px] border-2 border-[#69a8ff] bg-[#e4efff]/80 px-6 pb-8 pt-12 sm:px-10 sm:pb-12 sm:pt-14 shadow-[0_20px_60px_rgba(14,110,254,0.12)]">
+            <div className="absolute -top-5 left-6 sm:left-10 inline-flex items-center gap-2 rounded-full bg-[#237cf5] px-4 py-2 text-[15px] sm:text-[18px] font-bold leading-none text-white shadow-md">
+              <span aria-hidden className="text-[19px] leading-none">✣</span>
+              Fullservice, personlig
             </div>
 
-            {/* Two-column: Concierge card + pricing card */}
-            <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto items-stretch">
-              {/* Concierge card */}
-              <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-                <div className="bg-gradient-to-br from-[#0e6efe] to-[#0a57cc] px-6 py-6">
-                  <span className="text-[11px] font-bold text-white/60 uppercase tracking-[0.15em] block mb-1">Fullservice · Personlig</span>
-                  <h2 className="text-[22px] sm:text-[26px] font-bold text-white leading-tight tracking-[-0.02em]">
-                    Bilto Bilköpshjälp
-                  </h2>
-                </div>
-                <div className="px-6 py-5 flex-1 flex flex-col">
-                  <p className="text-slate-600 text-[14px] sm:text-[15px] leading-[1.6] mb-5">
-                    En personlig expert från vårt team sköter allt, från början till slut. Du skriver på pappren och hämtar nycklarna.
-                  </p>
+            <h2 className="text-[30px] sm:text-[42px] font-bold leading-tight tracking-[-0.045em] text-slate-700">
+              Bilto Bilköpshjälp
+            </h2>
+            <p className="mt-4 max-w-3xl text-[18px] sm:text-[23px] leading-[1.4] text-slate-500">
+              En personlig expert från vårt team sköter allt, från början till slut. Du skriver på pappren och hämtar nycklarna.
+            </p>
 
-                  <div className="flex items-center gap-3 mb-5 pb-5 border-b border-slate-100">
-                    <img
-                      src={EXPERT_PHOTO}
-                      alt="Alexander från Bilto"
-                      className="w-14 h-14 rounded-xl object-cover object-top shrink-0 ring-2 ring-[#0e6efe]/20"
-                    />
-                    <div className="min-w-0">
-                      <p className="text-[14px] font-bold text-slate-900 leading-snug">Alexander</p>
-                      <p className="text-[12px] text-slate-500 mt-0.5 leading-snug">År på handlarens sida. Nu på din.</p>
-                      <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-[#0e6efe]">
-                        <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#0e6efe]/10 text-[10px] font-bold">+7</span>
-                        års branschvana
-                      </span>
-                    </div>
-                  </div>
+            <a href="/om-oss" className="mt-6 inline-flex items-center gap-2 text-[16px] sm:text-[20px] font-medium text-[#0e6efe] hover:text-[#0a57cc] transition">
+              Lär känna teamet <ArrowRight className="h-5 w-5" />
+              <span className="text-slate-500">År på handlarens sida. Nu på din.</span>
+            </a>
 
-                  <ul className="space-y-3 mb-6 flex-1">
-                    {[
-                      'En personlig mänsklig expert tilldelad dig',
-                      'Vi koordinerar research, förhandling, papper och leverans',
-                      'Hanterar handlarens samtal, mejl och det finstilta',
-                      'Personligt: vi slutar inte förrän du sitter i bilen',
-                    ].map((point) => (
-                      <li key={point} className="flex items-start gap-3 text-slate-700 text-[13px] sm:text-[14px] leading-snug">
-                        <div className="w-5 h-5 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mt-0.5">
-                          <Check className="w-3 h-3 text-[#0e6efe]" strokeWidth={3} />
-                        </div>
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <button
-                    type="button"
-                    onClick={() => openBuyDrawer()}
-                    className="w-full h-12 rounded-xl bg-[#0e6efe] text-white font-bold text-[15px] hover:bg-[#0a57cc] transition inline-flex items-center justify-center gap-2 shadow-md"
-                  >
-                    Kom igång med Bilköpshjälpen
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                  <a
-                    href="/om-oss"
-                    className="mt-3 w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
-                  >
-                    Lär känna teamet
-                    <ArrowRight className="w-4 h-4" />
-                  </a>
-                </div>
-              </div>
-
-              {/* Pricing card */}
-              <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-                <div className="px-6 py-6 bg-slate-50 border-b border-slate-100">
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-[32px] sm:text-[36px] font-bold text-slate-900 tracking-tight leading-none">4 995 kr</span>
-                    <span className="text-[14px] font-semibold text-slate-400">fast, per bil</span>
-                  </div>
-                  <p className="text-slate-500 text-[13px] leading-[1.6]">
-                    En avgift täcker hela sökningen. Alla märken, alla modeller – jämför hur många du vill.
-                  </p>
-                </div>
-
-                <div className="px-6 py-5 flex-1 flex flex-col">
-                  <ul className="space-y-3 mb-6 flex-1">
-                    {[
-                      'Betalas bara om affären blir av – noll bindning',
-                      'Snittbesparing 15 000 kr+ per genomförd affär',
-                      'Inga dolda avgifter eller provision från handlare',
-                      'Vi jobbar alltid för dig – aldrig för handlaren',
-                    ].map((point) => (
-                      <li key={point} className="flex items-start gap-3 text-slate-700 text-[13px] sm:text-[14px] leading-snug">
-                        <div className="w-5 h-5 rounded-full bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mt-0.5">
-                          <Check className="w-3 h-3 text-[#0e6efe]" strokeWidth={3} />
-                        </div>
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <button
-                    type="button"
-                    onClick={() => openBuyDrawer()}
-                    className="w-full h-12 rounded-xl bg-slate-900 text-white font-bold text-[15px] hover:bg-slate-800 transition inline-flex items-center justify-center gap-2 shadow-md"
-                  >
-                    Kom igång med Bilköpshjälpen
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                  <p className="mt-3 text-center text-slate-400 text-[12px]">Fast pris · Noll bindning · Betalas vid köp</p>
-                  <a
-                    href={PHONE_TEL}
-                    className="mt-3 w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
-                  >
-                    <Phone className="w-4 h-4 shrink-0" />
-                    Ring oss: {PHONE}
-                  </a>
-                </div>
-              </div>
+            <div className="mt-8 flex items-end gap-3 sm:gap-4">
+              <span className="text-[72px] sm:text-[92px] font-bold leading-none tracking-[-0.07em] text-slate-700">4 995 kr</span>
+              <span className="mb-2 text-[18px] sm:text-[25px] text-slate-500">fast, per bil</span>
             </div>
+            <p className="mt-3 max-w-3xl text-[17px] sm:text-[21px] leading-[1.4] text-slate-500">
+              En avgift täcker hela sökningen. Alla märken, alla modeller – jämför hur många du vill.
+            </p>
 
-            <div className="flex items-center justify-center gap-1.5 mt-6">
-              <ShieldCheck className="w-4 h-4 text-white/70 shrink-0" />
-              <p className="text-white/70 text-[13px] drop-shadow">Vi jobbar alltid för dig – aldrig för handlaren</p>
-            </div>
+            <ul className="mt-9 space-y-5 sm:space-y-6">
+              {[
+                'En personlig mänsklig expert tilldelad dig',
+                'Vi koordinerar research, förhandling, papper och leverans',
+                'Hanterar handlarens samtal, mejl och det finstilta',
+                'Personligt: vi slutar inte förrän du sitter i bilen',
+              ].map((point) => (
+                <li key={point} className="flex items-start gap-4 text-[17px] sm:text-[22px] leading-[1.35] text-slate-600">
+                  <Check className="mt-1 h-5 w-5 shrink-0 text-[#0e6efe] sm:h-6 sm:w-6" strokeWidth={2.5} />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+
+            <button
+              type="button"
+              onClick={() => openBuyDrawer()}
+              className="mt-10 flex h-16 w-full items-center justify-center gap-3 rounded-2xl bg-[#0e6efe] px-5 text-[17px] sm:text-[21px] font-semibold text-white shadow-lg shadow-[#0e6efe]/25 transition hover:bg-[#0a57cc] hover:shadow-xl"
+            >
+              Kom igång med Bilto Bilköpshjälp
+              <ArrowRight className="h-6 w-6" />
+            </button>
           </div>
         </div>
       </section>
