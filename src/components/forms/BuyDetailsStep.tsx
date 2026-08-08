@@ -18,9 +18,9 @@ function isElectricCarName(name: string): boolean {
 }
 
 const BUYING_STAGES = [
-  { value: 'just_started', label: 'Precis börjat kolla' },
-  { value: 'comparing', label: 'Jämför alternativ' },
-  { value: 'ready_to_buy', label: 'Redo att köpa' },
+  { value: 'just_started', label: 'Precis börjat kolla', desc: 'Jag tittar lite grand, ingen brådska' },
+  { value: 'comparing', label: 'Jämför alternativ', desc: 'Jag vet ungefär vad jag vill ha' },
+  { value: 'ready_to_buy', label: 'Redo att köpa', desc: 'Jag vill köpa snart, gärna inom en månad' },
 ];
 
 const FUEL_TYPES = [
@@ -395,6 +395,11 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
 
   return (
     <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
+      <div className="pb-5 mb-2 p-4 rounded-xl bg-[#faf8f5] border border-slate-200">
+        <p className="text-[13.5px] text-slate-600 leading-[1.55]">
+          <strong className="text-slate-900">Berätta om bilen du vill ha.</strong> Allt du fyller i här hjälper vår expert att förstå vad du letar efter och förhandla rätt bil åt dig. Fält markerade som frivilliga kan du hoppa över.
+        </p>
+      </div>
       <div className="pb-6 sm:pb-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
           Märke och modell
@@ -571,22 +576,23 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
 
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Var i processen är du?
+          Hur långt har du kommit?
         </label>
-        <p className="text-sm text-slate-500 mb-4">Välj det alternativ som bäst beskriver dig.</p>
+        <p className="text-sm text-slate-500 mb-4">Så vi vet hur snabbt vi ska börja leta.</p>
         <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
           {BUYING_STAGES.map(s => (
             <button
               key={s.value}
               type="button"
               onClick={() => set('buyingStage', s.value)}
-              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-xl text-[14px] font-medium transition-all text-left sm:text-center ${
+              className={`w-full sm:w-auto px-4 sm:px-5 h-auto py-2.5 rounded-xl text-[14px] font-medium transition-all text-left sm:text-center ${
                 d.buyingStage === s.value
                   ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                   : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
               }`}
             >
               {s.label}
+              <span className="block text-[11px] font-normal opacity-80 mt-0.5">{s.desc}</span>
             </button>
           ))}
         </div>
@@ -643,6 +649,11 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
 
   return (
     <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
+      <div className="pb-5 mb-2 p-4 rounded-xl bg-[#faf8f5] border border-slate-200">
+        <p className="text-[13.5px] text-slate-600 leading-[1.55]">
+          <strong className="text-slate-900">Inte säker på vilken bil?</strong> Ingen fara! Berätta vad som är viktigt för dig så letar vår expert upp rätt bil på marknaden. Du behöver inte veta märke eller modell.
+        </p>
+      </div>
       <div className="pb-6 sm:pb-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
           Vilken typ av bil söker du?
@@ -822,22 +833,23 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
 
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Var i processen är du?
+          Hur långt har du kommit?
         </label>
-        <p className="text-sm text-slate-500 mb-4">Välj det alternativ som bäst beskriver dig.</p>
+        <p className="text-sm text-slate-500 mb-4">Så vi vet hur snabbt vi ska börja leta.</p>
         <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
           {BUYING_STAGES.map(s => (
             <button
               key={s.value}
               type="button"
               onClick={() => set('buyingStage', s.value)}
-              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-xl text-[14px] font-medium transition-all text-left sm:text-center ${
+              className={`w-full sm:w-auto px-4 sm:px-5 h-auto py-2.5 rounded-xl text-[14px] font-medium transition-all text-left sm:text-center ${
                 d.buyingStage === s.value
                   ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                   : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
               }`}
             >
               {s.label}
+              <span className="block text-[11px] font-normal opacity-80 mt-0.5">{s.desc}</span>
             </button>
           ))}
         </div>
@@ -1502,13 +1514,14 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           key={s.value}
           type="button"
           onClick={() => set('buyingStage', s.value)}
-          className={`w-full sm:w-auto px-5 h-11 rounded-xl text-[14px] font-medium transition-all active:scale-[0.97] text-left sm:text-center ${
+          className={`w-full sm:w-auto px-5 h-auto py-2.5 rounded-xl text-[14px] font-medium transition-all active:scale-[0.97] text-left sm:text-center ${
             d.buyingStage === s.value
               ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
               : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
           }`}
         >
           {s.label}
+          <span className="block text-[11px] font-normal opacity-80 mt-0.5">{s.desc}</span>
         </button>
       ))}
     </div>
