@@ -1,5 +1,5 @@
 import { useEffect, useState, Suspense, lazy } from 'react';
-import { ArrowRight, Check, ChevronDown, Menu, Minus, Phone, Star, X } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, Menu, Minus, Phone, Star, X, MessageCircle, Clock, MapPin } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { setPageMeta } from '../lib/pageMeta';
@@ -87,11 +87,24 @@ const FEATURE_CARDS = [
   { icon: 'repeat', title: 'Inbyteskoordinering', body: 'Vi hämtar bud på din gamla bil och förhandlar inbytespriset åt dig.' },
 ];
 
-const STATS = [
-  { value: '15 000+ kr', label: 'Genomsnittlig besparing per affär' },
-  { value: '6 år', label: 'På bilens sida' },
-  { value: '100+', label: 'Genomförda bilaffärer' },
-  { value: 'Hela Sverige', label: 'Vi jobbar överallt' },
+const TEAM_MEMBERS = [
+  { name: 'Daniel', role: 'Grundare & Head Coach', img: '/daniel-portrait.jpg' },
+  { name: 'Justise', role: 'Nya bilar & leasing', img: '/Man_in_car_showroom_portrait copy.png' },
+  { name: 'Sarah', role: 'Begagnade bilar', img: '/Man_in_car_showroom_portrait copy copy.png' },
+  { name: 'Erik', role: 'Lyxbilar', img: EXPERT_PHOTO },
+  { name: 'Maria', role: 'Inbyte & värdering', img: '/daniel-portrait.jpg' },
+  { name: 'Johan', role: 'Nya & begagnade bilar', img: '/Man_in_car_showroom_portrait copy.png' },
+  { name: 'Lisa', role: 'Leasing & finansiering', img: '/Man_in_car_showroom_portrait copy copy.png' },
+  { name: 'Anders', role: 'Nya & begagnade bilar', img: EXPERT_PHOTO },
+];
+
+const PRESS_LOGOS = ['Aftonbladet', 'Dagens Industri', 'SVT Nyheter', 'TV4', 'Bil Sweden'];
+
+const COUNTER_STATS = [
+  { value: '15 000+ kr', sub: 'Besparing per affär', desc: 'Riktiga pengar. Snittet över alla affärer det senaste året.', link: 'Se effekt', href: '/om-oss' },
+  { value: '100+', sub: 'Genomförda bilaffärer', desc: 'Under det senaste året. Riktiga kontrakt.', link: 'Läs mer', href: '/om-oss' },
+  { value: '10K+', sub: 'Följare', desc: 'YouTube, Instagram, TikTok, Facebook.', link: 'Följ oss', href: '/om-oss' },
+  { value: '20+ år', sub: 'Samlad erfarenhet', desc: 'Ett helt team. Alla sidor av disken.', link: 'Möt teamet', href: '/om-oss' },
 ];
 
 const CUSTOMER_RESULTS = [
@@ -192,7 +205,23 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
           </div>
         </section>
 
-        {/* Service overview - Concierge style */}
+        {/* "Not sure what fits?" consultation banner */}
+        <section className="bg-[#0e6efe] px-5 sm:px-8 py-12 sm:py-16">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 mb-5">
+              <Clock className="w-4 h-4 text-white" />
+              <span className="text-[13px] font-semibold text-white">Snittsvar: 12 min</span>
+            </div>
+            <h2 className="text-[24px] sm:text-[32px] font-bold tracking-[-0.03em] text-white">Osäker på vad som passar?</h2>
+            <p className="mt-3 max-w-2xl mx-auto text-[15px] sm:text-[17px] leading-[1.5] text-white/85">15 minuter med vårt team. Vi lyssnar på din situation och rekommenderar Bilköptjänsten eller att du gör det själv – det som passar din budget, tidslinje och hur mycket du vill slippa. Inget säljtryck.</p>
+            <div className="mt-7 flex flex-col sm:flex-row justify-center gap-3">
+              <a href="/gratis-konsultation" className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-white text-[#0e6efe] font-bold hover:bg-slate-100 transition">Boka ett samtal <ArrowRight className="w-5 h-5" /></a>
+              <a href={PHONE_TEL} className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl border border-white/30 text-white font-semibold hover:bg-white/10 transition"><Phone className="w-4 h-4" /> Ring {PHONE}</a>
+            </div>
+          </div>
+        </section>
+
+        {/* Service overview */}
         <section className="bg-white px-5 sm:px-8 py-16 sm:py-24">
           <div className="max-w-5xl mx-auto">
             <div className="max-w-3xl mb-10">
@@ -295,26 +324,59 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
           </div>
         </section>
 
-        {/* Stats section */}
-        <section className="bg-[#172b63] px-5 sm:px-8 py-16 sm:py-20 text-white">
+        {/* Stats - counter cards like CarEdge */}
+        <section className="bg-[#172b63] px-5 sm:px-8 py-16 sm:py-24">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-10">
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-blue-300 mb-3">Siffrorna talar för sig själva</p>
-              <h2 className="text-[28px] sm:text-[40px] font-bold tracking-[-0.04em] text-white">Riktiga besparingar. Riktiga affärer.</h2>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-blue-300 mb-3">Anlitad av bilköpare i hela Sverige</p>
+              <h2 className="text-[28px] sm:text-[40px] font-bold tracking-[-0.04em] text-white">Sex år med att ge bilköpare en rättvis affär.</h2>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {STATS.map((stat) => (
-                <div key={stat.label} className="text-center">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+              {COUNTER_STATS.map((stat) => (
+                <div key={stat.sub} className="rounded-2xl bg-white/5 border border-white/10 p-5 sm:p-6 text-center hover:bg-white/10 transition">
                   <p className="text-[28px] sm:text-[36px] font-bold tracking-[-0.03em] text-white">{stat.value}</p>
-                  <p className="mt-2 text-[13px] sm:text-[14px] leading-[1.4] text-blue-200">{stat.label}</p>
+                  <p className="mt-1 text-[13px] sm:text-[14px] font-semibold text-blue-200">{stat.sub}</p>
+                  <p className="mt-2 text-[12px] sm:text-[13px] leading-[1.4] text-blue-300/70">{stat.desc}</p>
+                  <a href={stat.href} className="mt-3 inline-flex items-center gap-1 text-[12px] font-semibold text-white hover:underline">{stat.link} <ArrowRight className="w-3 h-3" /></a>
                 </div>
               ))}
+            </div>
+            <div className="mt-10 flex items-center justify-center gap-2 text-blue-200">
+              <MapPin className="w-5 h-5" />
+              <p className="text-[15px] sm:text-[17px] font-semibold">Verksamma i hela Sverige – var du än bor har vi hjälpt bilköpare där.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Team grid */}
+        <section className="bg-white px-5 sm:px-8 py-16 sm:py-24">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-10">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0e6efe] mb-3">Riktiga experter</p>
+              <h2 className="text-[28px] sm:text-[40px] font-bold tracking-[-0.04em] text-slate-700">Teamet bakom varje affär.</h2>
+              <p className="mt-3 text-[15px] sm:text-[17px] text-slate-500">20+ år i branschen, i snitt. Varje Bilto-expert har tillbringat år på handlarens sida. De känner varje rad på kontraktet. Nu använder de den kunskapen för dig.</p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+              {TEAM_MEMBERS.map((member) => (
+                <div key={member.name} className="group rounded-2xl overflow-hidden bg-[#f7f9fc] border border-slate-200 hover:border-[#0e6efe]/40 hover:shadow-md transition">
+                  <div className="aspect-[3/4] overflow-hidden bg-slate-100">
+                    <img src={member.img} alt={member.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition duration-300" loading="lazy" />
+                  </div>
+                  <div className="p-4 text-center">
+                    <p className="font-bold text-slate-700 text-[15px]">{member.name}</p>
+                    <p className="mt-0.5 text-[12px] sm:text-[13px] text-slate-500">{member.role}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 text-center">
+              <a href="/om-oss" className="inline-flex items-center gap-2 text-[#0e6efe] font-semibold hover:underline">Möt hela teamet <ArrowRight className="w-4 h-4" /></a>
             </div>
           </div>
         </section>
 
         {/* Customer results */}
-        <section className="bg-white px-5 sm:px-8 py-16 sm:py-24 overflow-hidden">
+        <section className="bg-[#f7f9fc] px-5 sm:px-8 py-16 sm:py-24 overflow-hidden">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-10">
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0e6efe] mb-3">Riktiga kunder. Riktiga besparingar.</p>
@@ -388,6 +450,18 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
                 <p className="mt-2 min-h-[48px] text-[14px] leading-[1.5] text-slate-500">15 minuter med någon i vårt team. Vi rekommenderar rätt väg.</p>
                 <a href="/gratis-konsultation" className="mt-6 inline-flex items-center font-semibold text-[14px] text-[#0e6efe]">Boka samtal <ArrowRight className="inline w-4 h-4" /></a>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured in / press */}
+        <section className="bg-white px-5 sm:px-8 py-12 sm:py-16 border-b border-slate-100">
+          <div className="max-w-4xl mx-auto text-center">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-6">Omnämnd i</p>
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
+              {PRESS_LOGOS.map((logo) => (
+                <span key={logo} className="text-[16px] sm:text-[20px] font-bold text-slate-300 tracking-tight">{logo}</span>
+              ))}
             </div>
           </div>
         </section>
