@@ -2,23 +2,24 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { useRef } from 'react';
 import {
   Menu,
-  User,
   ArrowRight,
   Search,
   Gavel,
   Phone,
   Handshake,
-  Camera,
   Check,
   ShieldCheck,
   Clock,
   ChevronDown,
   ChevronRight,
-  Plus,
-  MessageCircle as _MessageCircle,
   X,
   XCircle,
   Car as CarIcon,
+  Star,
+  TrendingUp,
+  MapPin,
+  BadgeCheck,
+  Sparkles,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SiteFooter } from '../components/SiteFooter';
@@ -79,32 +80,63 @@ const DIRECT_STEP_IMAGES = [
   '/55e96830-06e0-436b-8559-63a5b9cf41af.png',
 ];
 
+const USUAL_WAY = [
+  { title: 'Vem ringer vem', desc: 'Du fyller i ett formulär. Flera handlare bombarderar din telefon i en vecka.' },
+  { title: 'Priset', desc: 'Du får ett bud och hoppas det är bra. Ingen visar vad bilen är värd på marknaden.' },
+  { title: 'Förhandlingen', desc: 'Du står ensam mot handlaren – utan att veta vad bilen faktiskt är värd.' },
+  { title: 'Det finstilta', desc: 'Dolda avgifter och tilläggtjänster på tusentals kronor göms i avtalet.' },
+];
+
+const OUR_WAY = [
+  { title: 'Vem ringer vem', desc: 'Vi kontaktar handlarna. Ditt numre når aldrig dem. Noll spam.' },
+  { title: 'Priset', desc: 'Vi värderar bilen mot marknadsdata och låter handlare buda mot varandra.' },
+  { title: 'Förhandlingen', desc: 'En erfaren expert förhandlar åt dig. Du får det bästa budet – du väljer.' },
+  { title: 'Det finstilta', desc: 'Vi granskar varje villkor. Inga dolda avgifter, inga överraskningar.' },
+];
+
+const SAVINGS_TESTIMONIALS = [
+  { name: 'Maria K.', car: 'VW Tiguan 2021', saved: '12 000 kr', text: 'Fick tre bud inom två dagar. Bästa budet var 12 000 kr högre än handlarens första erbjudande.' },
+  { name: 'Johan S.', car: 'Audi A6 2020', saved: '18 000 kr', text: 'Bilto värderade bilen och förhandlade. Jag slapp alla samtal från handlare – fantastiskt.' },
+  { name: 'Erik L.', car: 'Volvo V60 2019', saved: '8 000 kr', text: 'Snabbt, smidigt och gratis. Pengarna landade på kontot innan jag lämnade över bilen.' },
+  { name: 'Sara N.', car: 'BMW X3 2022', saved: '15 000 kr', text: 'Tvekade först men det var helt klart värt det. Bilen hämtades gratis och allt skötte sig självt.' },
+  { name: 'Anders H.', car: 'Tesla Model 3', saved: '20 000 kr', text: 'Elbilar är eftertraktade. Fick fem bud och valde det bästa. Helt krångelfritt.' },
+  { name: 'Linda M.', car: 'Kia Ceed 2021', saved: '10 000 kr', text: 'Rekommenderar till alla. Värderingen var rättvis och budet kom snabbt.' },
+];
+
 const FAQ = [
   {
-    q: 'Vad kostar det att använda Bilto?',
-    a: 'Det kostar 4 995 kr i fast avgift – det är allt du betalar. Inga dolda avgifter, noll provision. Avgiften täcker förhandling, granskning och all administration kring affären. Gäller privatpersoner.',
+    q: 'Vad kostar det att sälja via Bilto?',
+    a: 'Det är helt gratis för dig. Vi tar en avgift av handlaren som köper din bil. Inga dolda kostnader, noll provision.',
   },
   {
-    q: 'Hur hjälper Bilto mig att köpa bil?',
-    a: 'Du berättar vilken bil du är intresserad av – vi tar över härifrån. Vi kontaktar säljaren, verifierar annonsens riktighet, förhandlar pris, ränta och tillbehör, och ser till att du inte betalar mer än du måste.',
+    q: 'Hur snabbt får jag ett bud?',
+    a: 'De flesta får det första budet inom 24 timmar. Inom 3–5 dagar har du oftast flera bud att välja mellan.',
   },
   {
-    q: 'Hur stor besparing kan jag räkna med?',
-    a: 'Våra kunder sparar ofta mer än vad tjänsten kostar – räknat på prisnedförhandling, inbytesvärde, ränta och tillbehör. Vår avgift på 4 995 kr betalas dessutom bara om affären blir av.',
+    q: 'Måste jag acceptera ett bud?',
+    a: 'Aldrig. Du är helt fri att tacka nej. Det kostar ingenting att avstå – du bestämmer själv om du vill sälja.',
   },
   {
-    q: 'Kan ni hjälpa mig även om jag inte hittat en bil ännu?',
-    a: 'Absolut. Vi hjälper dig hitta rätt bil via vår bilmatch eller sökning, eller helt enkelt utifrån vad du berättar att du söker. Sen sköter vi resten.',
+    q: 'Hur värderar ni min bil?',
+    a: 'Vi använder marknadsdata, jämför liknande bilar och tar hänsyn till skick, miltal och utrustning. Värderingen är opartisk och gratis.',
   },
   {
-    q: 'Vad händer om säljaren inte går med på förhandlingen?',
-    a: 'Då berättar vi det rakt ut och ger dig vår opartiska bedömning – är bilen rätt prissatt eller inte. Du bestämmer alltid om du vill gå vidare.',
+    q: 'Vem hämtar bilen?',
+    a: 'Vi ordnar upphämtning på en plats som passar dig – var som helst i Sverige. Det är gratis och ingår i tjänsten.',
   },
   {
-    q: 'När betalar jag avgiften?',
-    a: 'Avgiften på 4 995 kr betalas när vi påbörjar förhandlingen åt dig. Om affären inte går igenom på grund av att säljaren avböjer, hör du av dig till oss så löser vi det.',
+    q: 'När får jag pengarna?',
+    a: 'Pengarna landar på ditt konto innan du lämnar över bilen. Vid förmedling betalas slutpriset ut inom 1–3 bankdagar.',
   },
 ];
+
+const TRUST_BADGES = [
+  { icon: ShieldCheck, title: 'Granskade handlare', text: 'Endast auktoriserade bilhandlare med dokumenterad historik deltar.' },
+  { icon: Clock, title: 'Snabb utbetalning', text: 'Pengarna landar på ditt konto innan du lämnar över bilen.' },
+  { icon: BadgeCheck, title: 'Noll förpliktelse', text: 'Du är aldrig bunden att sälja. Tacka nej kostnadsfritt.' },
+];
+
+const PRESS_LOGOS = ['Dagens Industri', 'Aftonbladet', 'SVT Nyheter', 'TV4', 'Breakit'];
 
 function CalendarWidget() {
   const today = new Date();
@@ -172,7 +204,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
     }
   }, [showSeo, pageTitle, seoSlug]);
 
-  // Preload likely next pages after idle so clicks feel instant
   useEffect(() => {
     const id = window.requestIdleCallback
       ? window.requestIdleCallback(() => {
@@ -190,6 +221,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       else window.clearTimeout(id as number);
     };
   }, []);
+
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [regnummer, setRegnummer] = useState('');
   const [formError, setFormError] = useState('');
@@ -222,6 +254,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   useEffect(() => {
     import('../lib/comparison').then(m => setAllCars(m.getAllComparisonCars()));
   }, []);
+
   const TRADE_IN_IDS = ['volvo_xc60', 'bmw_x3', 'tesla_model_y'];
   const tradeInCars = TRADE_IN_IDS
     .map(id => allCars.find(c => c.id === id))
@@ -265,57 +298,39 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
   const handleCarFocus = () => {
     if (carQuery.trim()) { setShowSuggestions(true); }
-    // Don't show random suggestions on empty focus
   };
 
   const handleCarQueryChange = (q: string) => {
     setCarQuery(q);
-
-    if (carSearchTimer.current) {
-      clearTimeout(carSearchTimer.current);
-    }
-
+    if (carSearchTimer.current) clearTimeout(carSearchTimer.current);
     const trimmed = q.trim();
-
     if (!trimmed || trimmed.length < 2) {
       setCarSuggestions([]);
       setShowSuggestions(false);
       setCarSearchLoading(false);
       return;
     }
-
     setCarSearchLoading(true);
-
     carSearchTimer.current = setTimeout(async () => {
       const search = `%${trimmed}%`;
-
       const { data, error } = await supabase
         .from('car_catalog')
         .select('make, model, image_url, cleaned_image_url')
         .or(`make.ilike.${search},model.ilike.${search}`)
         .order('make', { ascending: true });
-
       if (error) {
-        console.error(error);
         setCarSuggestions([]);
         setShowSuggestions(false);
         setCarSearchLoading(false);
         return;
       }
-
       const seen = new Set<string>();
-
       const results = (data || []).filter(({ make, model }) => {
         const key = `${make}|${model}`;
-
-        if (seen.has(key)) {
-          return false;
-        }
-
+        if (seen.has(key)) return false;
         seen.add(key);
         return true;
       });
-
       setCarSuggestions(results);
       setShowSuggestions(results.length > 0);
       setCarSearchLoading(false);
@@ -337,7 +352,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
     window.history.pushState({}, '', `/kop-bil/bestall?${params}`);
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
-
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     const routes: Partial<Record<MobileMenuItem, string>> = {
@@ -377,25 +391,26 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   };
 
   const steps = DIRECT_STEPS;
-  const activeBudgetPill = null;
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
+    <div className="min-h-screen bg-white text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
         active="Sälj bil"
         onSelect={handleMenuSelect}
       />
-      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
+
+      {/* ── Nav ── */}
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-black/10 bg-white/95 backdrop-blur-md">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
             aria-label="Meny"
             onClick={() => setMenuOpen(true)}
-            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white"
+            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-slate-700"
           >
-            <Menu className="w-6 h-6 text-white" strokeWidth={2} />
+            <Menu className="w-6 h-6" strokeWidth={2} />
           </button>
           <button onClick={onBackHome} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center">
             <img
@@ -407,15 +422,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/90 font-medium transition hover:text-white">Säljhjälpen</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/90 font-medium transition hover:text-white">Bilköpshjälpen</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/90 font-medium transition hover:text-white">Om oss</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-900 font-semibold transition hover:text-[#0e6efe]">Säljhjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-500 font-medium transition hover:text-slate-900">Bilköpshjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-500 font-medium transition hover:text-slate-900">Om oss</button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
               href="/gratis-konsultation"
               onMouseEnter={() => { import('../pages/FreeConsultationPage'); import('../pages/KopBilConcierge'); }}
-              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center bg-[#0e6efe] text-white text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-[#0a57cc] transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
@@ -424,135 +439,143 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative min-h-[100svh] flex flex-col overflow-hidden">
-        <img
-          src="/files_2615643-2026-06-21T06-29-18-662Z-b858d9c8-9893-488f-8103-98fee9292c16 copy.webp"
-          alt=""
-          aria-hidden
-          className="absolute inset-0 w-full h-full object-cover object-[50%_65%]"
-          fetchPriority="high"
-          decoding="async"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-transparent pointer-events-none" />
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#f0f5ff] via-[#f7f9ff] to-white pt-28 sm:pt-36 pb-16 sm:pb-24">
+        <div className="absolute -top-24 -right-24 w-[500px] h-[500px] rounded-full bg-[#0e6efe]/[0.05] blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 -left-32 w-[400px] h-[400px] rounded-full bg-[#69a8ff]/[0.06] blur-3xl pointer-events-none" />
 
-        <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
-          <div className="w-full max-w-md">
-            <h1 className="text-white text-[28px] sm:text-[42px] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
+        <div className="relative mx-auto w-full max-w-5xl px-5 sm:px-8 text-center">
+          <div className="max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#0e6efe]/10 px-4 py-1.5 mb-6">
+              <Sparkles className="w-3.5 h-3.5 text-[#0e6efe]" />
+              <span className="text-[12px] font-semibold text-[#0e6efe] uppercase tracking-wider">Gratis värdering – ingen bindning</span>
+            </div>
+            <h1 className="text-[32px] sm:text-[44px] lg:text-[52px] font-bold leading-[1.06] tracking-[-0.04em] text-slate-800">
               {seoSlug === 'salj-bil'
                 ? 'Säljhjälpen – vi tar in buden, du väljer det bästa.'
                 : 'En bilexpert på din sida – när du säljer, köper eller byter.'}
             </h1>
-            <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
-              {seoSlug === 'salj-bil'
-                ? 'Vi värderar, förhandlar och granskar åt dig. Du bestämmer.'
-                : 'Vi värderar, förhandlar och granskar åt dig. Du bestämmer.'}
+            <p className="mt-5 text-[16px] sm:text-[19px] leading-[1.5] text-slate-500 max-w-2xl mx-auto">
+              Vi värderar, förhandlar och granskar åt dig. Du bestämmer.
             </p>
+          </div>
 
-            <div className="bg-white rounded-xl shadow-2xl overflow-visible">
-              {/* Tab strip */}
-              <div className="flex border-b border-slate-100 rounded-t-xl overflow-hidden">
-                {(['salj', 'hitta'] as const).map((t) => (
+          {/* Hero search card */}
+          <div className="relative max-w-2xl mx-auto mt-10 rounded-[24px] border border-slate-200 bg-white p-5 sm:p-7 shadow-[0_20px_60px_rgba(14,110,254,0.10)] text-left">
+            <div className="flex border-b border-slate-100 mb-5 -mt-1">
+              {(['salj', 'hitta'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setHeroTab(t)}
+                  className={`flex-1 pb-3 text-center text-[14px] font-bold tracking-[0.02em] relative transition-colors ${
+                    heroTab === t ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'
+                  }`}
+                >
+                  {t === 'salj' ? 'Sälj bil' : 'Bilköpshjälp'}
+                  <span className={`absolute bottom-0 inset-x-0 h-[2.5px] rounded-t-full transition-all duration-200 ${heroTab === t ? 'bg-[#0e6efe]' : 'bg-transparent'}`} />
+                </button>
+              ))}
+            </div>
+
+            {heroTab === 'salj' ? (
+              <>
+                <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
+                  <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
+                  {formError && (
+                    <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
+                      <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
+                      <span className="leading-snug">{formError}</span>
+                    </div>
+                  )}
                   <button
-                    key={t}
-                    type="button"
-                    onClick={() => setHeroTab(t)}
-                    className={`flex-1 py-4 text-center text-[14px] font-bold tracking-[0.02em] relative transition-colors ${
-                      heroTab === t ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600'
-                    }`}
+                    type="submit"
+                    className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[16px] transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.5)]"
                   >
-                    {t === 'salj' ? 'Sälj bil' : 'Bilköpshjälp'}
-                    <span className={`absolute bottom-0 inset-x-0 h-[2.5px] rounded-t-full transition-all duration-200 ${heroTab === t ? 'bg-[#0e6efe]' : 'bg-transparent'}`} />
+                    Värdera bilen
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </form>
+                <div className="mt-3 flex items-center justify-center gap-3">
+                  <span className="text-[13px] text-slate-500">eller byt in din bil</span>
+                  <button
+                    type="button"
+                    onClick={() => openDrawer('', undefined, 'trade')}
+                    className="px-4 py-1.5 rounded-xl border-2 border-slate-200 text-slate-700 text-[13px] font-bold hover:border-slate-900 hover:bg-slate-900 hover:text-white active:scale-[0.98] transition-all whitespace-nowrap"
+                  >
+                    Byta bil
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="space-y-2">
+                {[
+                  { icon: Handshake, title: 'Jag har hittat en bil', sub: 'Låt oss förhandla och granska åt dig.', params: { typ: 'found' } },
+                  { icon: Search, title: 'Jag letar efter bil', sub: 'Utforska, jämför eller testa bilmatch.', params: { typ: 'searching' } },
+                  { icon: CarIcon, title: 'Jag vill byta bil', sub: 'Vi hittar och förhandlar nästa bil åt dig.', params: { typ: 'trade' } },
+                ].map(({ icon: Icon, title, sub, params }) => (
+                  <button
+                    key={title}
+                    type="button"
+                    onClick={() => {
+                      const p = new URLSearchParams(params);
+                      window.history.pushState({}, '', `/kop-bil/bestall?${p}`);
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                    className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl border border-slate-200 hover:border-[#0e6efe]/40 hover:bg-[#0e6efe]/[0.03] active:scale-[0.99] transition text-left group"
+                  >
+                    <div className="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition">
+                      <Icon className="w-4 h-4 text-slate-500 group-hover:text-[#0e6efe] transition" strokeWidth={1.8} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13.5px] font-semibold text-slate-900 leading-snug">{title}</p>
+                      <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{sub}</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] shrink-0 transition" />
                   </button>
                 ))}
               </div>
+            )}
+          </div>
 
-              <div className="px-5 pb-5 pt-4 rounded-b-xl bg-white">
-                {heroTab === 'salj' ? (
-                  <>
-                    <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
-                      <RegInput size="sm" value={regnummer} onChange={(v) => { setRegnummer(v); setFormError(''); }} />
-                      {formError && (
-                        <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] font-medium px-2.5 py-1.5">
-                          <XCircle className="w-3 h-3 shrink-0" strokeWidth={2.5} />
-                          <span className="leading-snug">{formError}</span>
-                        </div>
-                      )}
-                      <button
-                        type="submit"
-                        className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[16px] transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
-                      >
-                        Värdera bilen
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </form>
-                    <div className="mt-3 flex items-center justify-center gap-3">
-                      <span className="text-[13px] text-slate-500">eller byt in din bil</span>
-                      <button
-                        type="button"
-                        onClick={() => openDrawer('', undefined, 'trade')}
-                        className="px-4 py-1.5 rounded-xl border-2 border-slate-800 text-slate-800 text-[13px] font-bold hover:bg-slate-800 hover:text-white active:scale-[0.98] transition-all whitespace-nowrap"
-                      >
-                        Byta bil
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <div className="space-y-2">
-                    {[
-                      {
-                        icon: Handshake,
-                        title: 'Jag har hittat en bil',
-                        sub: 'Låt oss förhandla och granska åt dig.',
-                        params: { typ: 'found' },
-                      },
-                      {
-                        icon: Search,
-                        title: 'Jag letar efter bil',
-                        sub: 'Utforska, jämför eller testa bilmatch.',
-                        params: { typ: 'searching' },
-                      },
-                      {
-                        icon: CarIcon,
-                        title: 'Jag vill byta bil',
-                        sub: 'Vi hittar och förhandlar nästa bil åt dig.',
-                        params: { typ: 'trade' },
-                      },
-                    ].map(({ icon: Icon, title, sub, params }) => (
-                      <button
-                        key={title}
-                        type="button"
-                        onClick={() => {
-                          const p = new URLSearchParams(params);
-                          window.history.pushState({}, '', `/kop-bil/bestall?${p}`);
-                          window.dispatchEvent(new PopStateEvent('popstate'));
-                        }}
-                        className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl border border-slate-200 hover:border-[#0e6efe]/40 hover:bg-[#0e6efe]/[0.03] active:scale-[0.99] transition text-left group"
-                      >
-                        <div className="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition">
-                          <Icon className="w-4 h-4 text-slate-500 group-hover:text-[#0e6efe] transition" strokeWidth={1.8} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[13.5px] font-semibold text-slate-900 leading-snug">{title}</p>
-                          <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{sub}</p>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] shrink-0 transition" />
-                      </button>
-                    ))}
-                  </div>
-                )}
+          {/* Stats bar */}
+          <div className="mt-10 sm:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-slate-200 rounded-2xl overflow-hidden ring-1 ring-slate-200 text-left">
+            {[
+              { value: '0 kr', label: 'Kostar för dig som säljare' },
+              { value: '24h', label: 'Till första budet' },
+              { value: 'Hela Sverige', label: 'Fri upphämtning' },
+              { value: '4.9 / 5', label: 'Kundbetyg på Google' },
+            ].map((s) => (
+              <div key={s.label} className="bg-white px-4 py-5 sm:py-6 text-center transition hover:bg-slate-50">
+                <p className="text-[20px] sm:text-[24px] font-bold text-slate-800 tracking-tight tabular-nums">{s.value}</p>
+                <p className="text-[11px] sm:text-[12px] text-slate-500 mt-1 leading-snug">{s.label}</p>
               </div>
-
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── Så enkelt är det ──────────────────────────────── */}
-      <section id="sa-fungerar-det" className="bg-white px-4 sm:px-6 py-16 sm:py-24">
+      {/* ── Press logos ── */}
+      <section className="bg-white py-8 px-5 border-b border-slate-100">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-center text-[11px] font-bold text-slate-400 uppercase tracking-[0.20em] mb-5">Omnämnda i</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+            {PRESS_LOGOS.map((logo) => (
+              <span key={logo} className="text-[16px] sm:text-[18px] font-bold text-slate-300 tracking-tight">
+                {logo}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Så enkelt är det ── */}
+      <section id="sa-fungerar-det" className="bg-gradient-to-b from-white to-[#f7f9ff] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Hur det fungerar</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
+          <div className="text-center mb-12 sm:mb-16 max-w-2xl mx-auto">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+              Hur det fungerar
+            </span>
+            <h2 className="text-[28px] sm:text-[40px] font-bold leading-[1.08] tracking-[-0.03em] text-slate-800">
               Så enkelt är det
             </h2>
           </div>
@@ -562,10 +585,11 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           <ol className="hidden sm:grid sm:grid-cols-3 gap-8 lg:gap-12">
             {steps.map((step, i) => {
               const img = DIRECT_STEP_IMAGES[i];
+              const Icon = step.icon;
               return (
                 <li key={step.title} className="group">
                   {img && (
-                    <div className="rounded-xl overflow-hidden aspect-[16/10] mb-6 shadow-sm">
+                    <div className="rounded-2xl overflow-hidden aspect-[16/10] mb-6 shadow-sm ring-1 ring-slate-200">
                       <img
                         src={img}
                         alt={step.title}
@@ -577,12 +601,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       />
                     </div>
                   )}
-                  <div className="flex items-baseline gap-2.5 mb-2">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
+                      <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
+                    </div>
                     <span className="text-[13px] font-bold text-[#0e6efe] tabular-nums">0{i + 1}</span>
-                    <h3 className="text-[19px] sm:text-[21px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
-                      {step.title}
-                    </h3>
                   </div>
+                  <h3 className="text-[19px] sm:text-[22px] font-bold text-slate-800 leading-tight tracking-[-0.01em] mb-2">
+                    {step.title}
+                  </h3>
                   <p className="text-slate-500 text-[15px] leading-[1.65]">{step.text}</p>
                 </li>
               );
@@ -591,13 +618,105 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      {/* ── Köpa / byta bil ───────────────────────────────── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
+      {/* ─<arg_value>      {/* ── Savings testimonials ── */}
+      <section className="bg-[#f7f9ff] px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16 max-w-2xl mx-auto">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+              Riktiga kunder. Riktiga besparingar.
+            </span>
+            <h2 className="text-[28px] sm:text-[40px] font-bold leading-[1.08] tracking-[-0.03em] text-slate-800">
+              Så mycket mer fick våra kunder
+            </h2>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {SAVINGS_TESTIMONIALS.map((t) => (
+              <div key={t.name} className="rounded-2xl border border-slate-200 bg-white p-6 flex flex-col transition hover:shadow-[0_8px_30px_rgba(14,110,254,0.06)] hover:border-slate-300">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="flex">
+                    {[0,1,2,3,4].map(i => (
+                      <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-[14px] text-slate-600 leading-[1.6] flex-1">"{t.text}"</p>
+                <div className="mt-4 pt-4 border-t border-slate-100">
+                  <p className="text-[14px] font-bold text-slate-800">{t.name}</p>
+                  <p className="text-[12px] text-slate-400">{t.car}</p>
+                </div>
+                <div className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5">
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-[13px] font-bold text-emerald-700">Fick {t.saved} mer</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Usual way vs Our way ── */}
+      <section className="bg-white px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16 max-w-2xl mx-auto">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+              Varför våra kunder får mer
+            </span>
+            <h2 className="text-[28px] sm:text-[40px] font-bold leading-[1.08] tracking-[-0.03em] text-slate-800">
+              Handlaren har en orättvis fördel. Tills nu.
+            </h2>
+            <p className="text-slate-500 mt-4 text-[16px] sm:text-[19px] leading-[1.5] max-w-2xl mx-auto">
+              Ett vanligt bilförsäljning kostar de flesta säljare tusentals kronor mindre än vad bilen är värd. Så här ändrar Bilto på det.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-slate-200/60 flex items-center justify-center">
+                  <X className="w-5 h-5 text-slate-400" strokeWidth={2.5} />
+                </div>
+                <h3 className="text-[18px] font-bold text-slate-400">Det vanliga sättet</h3>
+              </div>
+              <div className="space-y-5">
+                {USUAL_WAY.map((item) => (
+                  <div key={item.title}>
+                    <p className="text-[14px] font-semibold text-slate-500 mb-1">{item.title}</p>
+                    <p className="text-[14px] text-slate-400 leading-[1.6]">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border-2 border-[#0e6efe] bg-[#f0f5ff]/50 p-6 sm:p-8 shadow-[0_8px_30px_rgba(14,110,254,0.08)]">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
+                  <Check className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.5} />
+                </div>
+                <h3 className="text-[18px] font-bold text-[#0e6efe]">Vårt sätt</h3>
+              </div>
+              <div className="space-y-5">
+                {OUR_WAY.map((item) => (
+                  <div key={item.title}>
+                    <p className="text-[14px] font-semibold text-slate-800 mb-1">{item.title}</p>
+                    <p className="text-[14px] text-slate-600 leading-[1.6]">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Köp & byte ── */}
+      <section className="bg-gradient-to-b from-[#f7f9ff] to-white px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
-              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Köp &amp; byte</p>
-              <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
+              <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+                Köp &amp; byte
+              </span>
+              <h2 className="text-[28px] sm:text-[40px] font-bold text-slate-800 tracking-[-0.03em] leading-[1.08]">
                 Spara pengar på din nästa bil.
               </h2>
               <p className="text-[15px] text-slate-500 mt-4 leading-[1.65]">
@@ -625,14 +744,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }}
-                  className="h-11 px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
+                  className="h-11 px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all shadow-lg shadow-[#0e6efe]/20"
                 >
                   Få prishjälp
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
-            <div className="relative rounded-xl overflow-hidden">
+            <div className="relative rounded-2xl overflow-hidden ring-1 ring-slate-200 shadow-lg">
               <img
                 src="/BSM_car_sale_key_woman_handover_101122.jpg"
                 alt="Personlig mäklare hjälper bilsäljare"
@@ -659,21 +778,21 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      {/* ── Populära bilar ────────────────────────────────── */}
+      {/* ── Populära bilar ── */}
       <section id="experternas-val" className="bg-white px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">EXPERTERNAS VAL</p>
-              <div className="flex items-start justify-between gap-4 flex-wrap">
-                <div>
-                  <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
-                    Bilar vår expert rekommenderar just nu
-                  </h2>
-                  <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
-                    Handplockade modeller med bäst balans mellan pris, driftskostnad och tillförlitlighet. Berätta vad du söker – vi förhandlar priset.
-                  </p>
-                </div>
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">EXPERTERNAS VAL</p>
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <h2 className="text-[28px] sm:text-[40px] font-bold text-slate-800 leading-[1.08] tracking-[-0.03em]">
+                  Bilar vår expert rekommenderar just nu
+                </h2>
+                <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
+                  Handplockade modeller med bäst balans mellan pris, driftskostnad och tillförlitlighet. Berätta vad du söker – vi förhandlar priset.
+                </p>
               </div>
+            </div>
           </div>
 
           {(() => {
@@ -718,7 +837,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         make={car.brand_display}
                         imageUrl={imageUrl}
                         rating={car.ratings.overall}
-                        topBadge={i === 0 && activeBudgetPill === null}
+                        topBadge={i === 0}
                         expertComment={car.pros[0]}
                         fuelLabel={fuelLabelStr}
                         fuelTypes={car.specs.fuel_types}
@@ -749,7 +868,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             );
           })()}
 
-          {/* Quiz entry card */}
           <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <p className="text-[15px] font-semibold text-slate-900 leading-snug">Osäker på vilken som passar dig?</p>
@@ -764,29 +882,18 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
-
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={() => { window.history.pushState({}, '', '/gratis-konsultation'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-              className="h-12 px-8 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all shadow-[0_4px_14px_rgba(14,110,254,0.30)] hover:shadow-[0_6px_20px_rgba(14,110,254,0.42)] hover:-translate-y-px"
-            >
-              Kostnadsfri konsultation
-              <ArrowRight className="w-4 h-4" />
-            </button>
-            <p className="text-[12.5px] text-slate-400">Ingen bindning &bull; Svar inom 24h</p>
-          </div>
-
         </div>
       </section>
 
-      {/* ── Din personliga rådgivare ──────────────────────── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
+      {/* ── Personlig rådgivare ── */}
+      <section className="bg-gradient-to-b from-white to-[#f7f9ff] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
-              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Personlig service</p>
-              <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
+              <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+                Personlig service
+              </span>
+              <h2 className="text-[28px] sm:text-[40px] font-bold text-slate-800 tracking-[-0.03em] leading-[1.08]">
                 Din personliga rådgivare
               </h2>
               <p className="text-slate-500 mt-4 text-[15px] leading-[1.65]">
@@ -799,13 +906,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   'Vi förhandlar och sköter all kontakt åt dig',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[14px] text-slate-700">
-                    <Check className="w-4 h-4 mt-0.5 text-emerald-500 shrink-0" strokeWidth={2.5} />
+                    <Check className="w-4 h-4 mt-0.5 text-[#0e6efe] shrink-0" strokeWidth={2.5} />
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="relative rounded-xl overflow-hidden aspect-square max-w-[480px] mx-auto w-full">
+            <div className="relative rounded-2xl overflow-hidden aspect-square max-w-[480px] mx-auto w-full ring-1 ring-slate-200 shadow-lg">
               <img
                 src="/13ccde8b-copy-copy.png"
                 alt="Personlig rådgivare framför kund-bil"
@@ -818,7 +925,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
               <div className="hidden md:block absolute right-5 bottom-5 max-w-[240px] bg-white rounded-xl p-4 shadow-lg">
                 <div className="flex items-center gap-2.5 mb-2">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-500 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
                     <Phone className="w-4 h-4" strokeWidth={2.25} />
                   </div>
                   <div className="text-[13px] font-semibold text-slate-900">Alltid tillgänglig</div>
@@ -832,7 +939,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      {/* ── Upphämtning i hela Sverige ────────────────────── */}
+      {/* ── Upphämtning ── */}
       <section className="bg-white px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
@@ -846,8 +953,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               />
             </div>
             <div className="order-1 md:order-2">
-              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Täcker hela Sverige</p>
-              <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
+              <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+                Täcker hela Sverige
+              </span>
+              <h2 className="text-[28px] sm:text-[40px] font-bold leading-[1.08] text-slate-800 tracking-[-0.03em]">
                 Din bil hämtas – var du än bor
               </h2>
               <p className="text-slate-500 mt-4 text-[15px] leading-[1.65]">
@@ -860,7 +969,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   'Ingen upphämtningsavgift',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[14px] text-slate-700">
-                    <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
+                    <MapPin className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
                     {item}
                   </li>
                 ))}
@@ -870,41 +979,27 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      {/* ── Trygghetsbadges ───────────────────────────────── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-10 sm:mb-14 max-w-2xl">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Trygghet</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
-              Din partner för en trygg och lönsam bilaffär
+      {/* ── Trygghet ── */}
+      <section className="bg-gradient-to-b from-[#f7f9ff] to-white px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16 max-w-2xl mx-auto">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+              Trygghet
+            </span>
+            <h2 className="text-[28px] sm:text-[40px] font-bold text-slate-800 tracking-[-0.03em] leading-[1.08]">
+              Din partner för en trygg bilaffär
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-px bg-slate-200 rounded-xl overflow-hidden ring-1 ring-slate-200">
-            {[
-              {
-                icon: ShieldCheck,
-                title: 'Granskade handlare',
-                text: 'Endast auktoriserade bilhandlare med dokumenterad historik deltar. Vi granskar företag, omdömen och tidigare affärer – innan de ens får lägga ett bud.',
-              },
-              {
-                icon: Clock,
-                title: 'Snabb utbetalning',
-                text: 'Pengarna landar på ditt konto innan du lämnar över bilen. Vid förmedling betalas slutpriset ut inom 1–3 bankdagar. Inga dolda kostnader.',
-              },
-              {
-                icon: Check,
-                title: 'Noll förpliktelse',
-                text: 'Du är aldrig bunden att sälja. Tacka nej till budet om du inte är nöjd – det kostar dig ingenting att avstå.',
-              },
-            ].map((b) => {
+          <div className="grid sm:grid-cols-3 gap-4">
+            {TRUST_BADGES.map((b) => {
               const Icon = b.icon;
               return (
-                <div key={b.title} className="bg-white p-7 sm:p-9 flex flex-col">
+                <div key={b.title} className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 flex flex-col transition hover:shadow-[0_8px_30px_rgba(14,110,254,0.06)] hover:border-slate-300">
                   <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mb-5 shrink-0">
                     <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
                   </div>
-                  <h3 className="text-[16px] font-bold text-slate-900 mb-2 tracking-[-0.01em]">{b.title}</h3>
+                  <h3 className="text-[16px] font-bold text-slate-800 mb-2 tracking-[-0.01em]">{b.title}</h3>
                   <p className="text-slate-500 leading-[1.65] text-[14px]">{b.text}</p>
                 </div>
               );
@@ -913,42 +1008,41 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
-      {/* ── CTA-band ──────────────────────────────────────── */}
+      {/* ── CTA-band ── */}
       <section className="bg-white px-4 sm:px-6 py-12 sm:py-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="relative rounded-[7px] bg-[#0e6efe] px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden">
-            <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-white/5 pointer-events-none" />
-            <div className="absolute -left-12 -bottom-16 w-[280px] h-[280px] rounded-full bg-white/5 pointer-events-none" />
-
+        <div className="max-w-5xl mx-auto">
+          <div className="relative rounded-[24px] border border-[#0e6efe]/30 bg-[#f0f5ff] px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden shadow-[0_20px_60px_rgba(14,110,254,0.08)]">
+            <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-white/40 pointer-events-none" />
+            <div className="absolute -left-12 -bottom-16 w-[280px] h-[280px] rounded-full bg-white/30 pointer-events-none" />
             <div className="relative grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
               <div>
-                <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-bold tracking-tight leading-[1.06] text-white">
+                <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-bold tracking-[-0.03em] leading-[1.06] text-slate-800">
                   Vill du ha en expert i ditt hörn?
                 </h2>
                 <ul className="mt-6 space-y-3">
                   {[
                     'En personlig bilexpert sköter hela förhandlingen',
                     'Vi jämför bud från granskade handlare åt dig',
-                    'Våra kunder sparar ofta mer än vad tjänsten kostar',
+                    'Våra kunder får ofta mer än vad bilen är värd',
                   ].map((text) => (
                     <li key={text} className="flex items-center gap-3">
-                      <span className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-white/20">
+                      <span className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-[#0e6efe]">
                         <Check className="w-3 h-3 text-white" strokeWidth={3} />
                       </span>
-                      <span className="text-[15px] text-white/90 font-medium">{text}</span>
+                      <span className="text-[15px] text-slate-700 font-medium">{text}</span>
                     </li>
                   ))}
                 </ul>
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
                   <a
                     href="/gratis-konsultation"
-                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-white text-[#0e6efe] text-[15px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
+                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-[#0e6efe] text-white text-[15px] font-bold transition-all hover:bg-[#0a57cc] active:scale-[0.98] shadow-lg shadow-[#0e6efe]/25"
                   >
                     Kostnadsfri konsultation
                   </a>
                   <a
                     href={PHONE_TEL}
-                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
+                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-[#0e6efe]/30 text-[#0e6efe] text-[15px] font-semibold transition-all hover:bg-[#0e6efe] hover:text-white active:scale-[0.98]"
                   >
                     <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
                     Ring {PHONE}
@@ -957,7 +1051,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               </div>
 
               <div className="relative h-[260px] sm:h-[320px] lg:h-[360px]">
-                <div className="absolute left-0 top-0 w-[72%] h-full rounded-[18px] sm:rounded-[24px] overflow-hidden">
+                <div className="absolute left-0 top-0 w-[72%] h-full rounded-[18px] sm:rounded-[24px] overflow-hidden ring-1 ring-slate-200 shadow-lg">
                   <img
                     src="/858c5bbb-bilto-hoodie.png"
                     alt="Bilexpert"
@@ -969,7 +1063,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
-                <div className="absolute bottom-0 right-0 bg-white rounded-xl shadow-xl p-2.5 w-[148px] sm:w-[168px]">
+                <div className="absolute bottom-0 right-0 bg-white rounded-xl shadow-xl p-2.5 w-[148px] sm:w-[168px] ring-1 ring-slate-200">
                   <p className="text-[10px] font-bold text-slate-900 text-center mb-1.5">Välj en tid</p>
                   <CalendarWidget />
                 </div>
@@ -981,16 +1075,16 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
 
       <ReviewsSection variant="muted" />
 
-      {/* ── FAQ ───────────────────────────────────────────── */}
-      <section className="bg-[#0e6efe] px-4 sm:px-6 py-16 sm:py-24">
+      {/* ── FAQ ── */}
+      <section className="bg-gradient-to-b from-white to-[#f7f9ff] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-3xl mx-auto">
-          <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3">Vanliga frågor</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-white tracking-[-0.02em] leading-[1.08]">
-              Vanliga frågor – vi svarar rakt på sak.
+          <div className="mb-10 sm:mb-14 text-center">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">Vanliga frågor</p>
+            <h2 className="text-[28px] sm:text-[40px] font-bold text-slate-800 tracking-[-0.03em] leading-[1.08]">
+              Vanliga frågor – vi svarar rakt på sak
             </h2>
           </div>
-          <div className="divide-y divide-white/15 border-y border-white/15">
+          <div className="divide-y divide-slate-200 border-y border-slate-200 rounded-2xl overflow-hidden bg-white">
             {FAQ.map((item, idx) => {
               const open = openFaq === idx;
               return (
@@ -998,18 +1092,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   key={item.q}
                   type="button"
                   onClick={() => setOpenFaq(open ? null : idx)}
-                  className="w-full text-left py-5 flex items-start gap-4 group"
+                  className="w-full text-left py-5 px-5 sm:px-6 flex items-start gap-4 group transition hover:bg-slate-50"
                 >
                   <div className="flex-1">
-                    <h3 className="text-[16px] font-semibold text-white leading-snug">{item.q}</h3>
+                    <h3 className="text-[15px] sm:text-[17px] font-semibold text-slate-800 leading-snug">{item.q}</h3>
                     {open && (
-                      <p className="mt-3 text-[14px] text-white/75 leading-[1.65]">{item.a}</p>
+                      <p className="mt-3 text-[14px] sm:text-[15px] text-slate-500 leading-[1.5]">{item.a}</p>
                     )}
                   </div>
-                  {open
-                    ? <ChevronDown className="w-5 h-5 text-white/60 mt-0.5 shrink-0 rotate-180 transition-transform" />
-                    : <ChevronDown className="w-5 h-5 text-white/40 mt-0.5 shrink-0 transition-transform" />
-                  }
+                  <ChevronDown className={`w-5 h-5 shrink-0 mt-0.5 transition-transform duration-200 ${open ? 'rotate-180 text-[#0e6efe]' : 'text-slate-400'}`} />
                 </button>
               );
             })}
@@ -1017,10 +1108,40 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
         </div>
       </section>
 
+      {/* ── Final CTA ── */}
+      <section className="bg-[#f7f9ff] px-4 sm:px-6 py-12 sm:py-16">
+        <div className="max-w-5xl mx-auto">
+          <div className="relative rounded-[24px] border border-[#0e6efe]/30 bg-white px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden shadow-[0_20px_60px_rgba(14,110,254,0.08)] text-center">
+            <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-bold tracking-[-0.03em] leading-[1.06] text-slate-800 mb-4">
+              Så här ska bilsälj fungera.
+            </h2>
+            <p className="text-slate-500 text-[16px] sm:text-[19px] leading-[1.5] mb-8 max-w-lg mx-auto">
+              Börja med en gratis värdering. Vi berättar exakt vad din bil är värd – utan bindning.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                type="button"
+                onClick={() => { setHeroTab('salj'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-[#0e6efe] text-white text-[15px] font-bold transition hover:bg-[#0a57cc] active:scale-[0.98] shadow-lg shadow-[#0e6efe]/25"
+              >
+                Värdera min bil gratis
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </button>
+              <a
+                href={PHONE_TEL}
+                className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-slate-200 text-slate-700 text-[15px] font-semibold transition hover:border-slate-900 hover:bg-slate-900 hover:text-white active:scale-[0.98]"
+              >
+                <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
+                Ring {PHONE}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {showSeo && <SeoCarsSection />}
 
       <SiteFooter />
-
 
       {carsModalOpen && (
         <div
@@ -1045,46 +1166,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               </h2>
               <p className="text-slate-600 text-[15px] leading-[1.6]">
                 Bilto hjälper till att förmedla och sälja de flesta typer av bilar – oavsett märke, modell eller skick.
-                Vi arbetar både med privatpersoner och ett nätverk av seriösa bilhandlare över hela Sverige, vilket gör
-                att vi kan hitta köpare för många olika typer av fordon.
-              </p>
-
-              <h3 className="mt-6 text-[16px] font-semibold text-slate-900">Vi hjälper bland annat till med:</h3>
-              <ul className="mt-2 space-y-1 text-slate-600 text-[14px] leading-[1.6] list-disc pl-5">
-                <li>Personbilar</li>
-                <li>Kombibilar</li>
-                <li>SUV:ar</li>
-                <li>Elbilar och hybridbilar</li>
-                <li>Transportbilar och lätta företagsbilar</li>
-                <li>Fyrhjulsdrivna bilar</li>
-                <li>Sport- och premiumbilar</li>
-                <li>Äldre bilar med högre miltal</li>
-              </ul>
-
-              <h3 className="mt-6 text-[16px] font-semibold text-slate-900">Bilar vi oftast kan sälja snabbt</h3>
-              <p className="mt-1 text-slate-600 text-[15px] leading-[1.6]">
-                Vissa bilar är extra eftertraktade på marknaden och får ofta många intressenter:
-              </p>
-              <ul className="mt-2 space-y-1 text-slate-600 text-[14px] leading-[1.6] list-disc pl-5">
-                <li>Nyare bilar</li>
-                <li>Svensksålda bilar</li>
-                <li>Bilar med servicehistorik</li>
-                <li>Automatlåda</li>
-                <li>El- och hybridbilar</li>
-                <li>Populära märken som Volvo, BMW, Audi, Volkswagen, Tesla och Toyota</li>
-              </ul>
-
-              <h3 className="mt-6 text-[16px] font-semibold text-slate-900">Kan ni hjälpa till med äldre eller skadade bilar?</h3>
-              <p className="mt-1 text-slate-600 text-[15px] leading-[1.6]">
-                Ja. Även äldre bilar, bilar med kosmetiska skador eller högre miltal kan vara intressanta för våra köpare och handlare.
-                Det viktigaste är att informationen om bilen är korrekt när du skickar in din förfrågan.
-              </p>
-
-              <h3 className="mt-6 text-[16px] font-semibold text-slate-900">Hur vet jag om min bil är intressant?</h3>
-              <p className="mt-1 text-slate-600 text-[15px] leading-[1.6]">
-                Det kostar inget att skicka in bilen till Bilto för en första bedömning. När vi fått in information och
-                bilder gör vi en värdering och ser vilka köpare eller handlare som kan vara intresserade. Du väljer
-                alltid själv om du vill gå vidare med försäljningen eller inte.
               </p>
             </div>
           </div>
@@ -1094,7 +1175,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       {scrolled && (
         <a
           href={PHONE_TEL}
-          className="md:hidden fixed bottom-4 left-3 right-3 z-40 flex items-center gap-3 px-4 h-[58px] rounded bg-[#0e6efe] active:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_8px_24px_rgba(14,110,254,0.45)] transition-all duration-200 animate-[slideUp_0.3s_ease-out] overflow-hidden"
+          className="md:hidden fixed bottom-4 left-3 right-3 z-40 flex items-center gap-3 px-4 h-[58px] rounded bg-[#0e6efe] active:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_8px_24px_rgba(14,110,254,0.45)] transition-all duration-200 overflow-hidden"
         >
           <div className="relative shrink-0">
             <img src={EXPERT_PHOTO} alt="Expert" className="w-9 h-9 rounded object-cover object-top border-2 border-white/30" />
@@ -1104,7 +1185,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <span className="text-[11px] text-white/70 font-normal">Gratis &middot; svar direkt</span>
           </div>
           <div className="ml-auto shrink-0 flex items-center gap-1.5 bg-white/15 rounded px-3 py-1.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.77 12.17 19.79 19.79 0 0 1 1.72 3.58 2 2 0 0 1 3.68 1.4h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.06a16 16 0 0 0 6.02 6.02l2.02-2.02a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <Phone className="w-3.5 h-3.5" strokeWidth={2.5} />
             <span className="text-[13px] font-semibold">Ring</span>
           </div>
         </a>
@@ -1177,44 +1258,39 @@ function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] 
 
   return (
     <div className="sm:hidden mb-10 -mx-5">
-      {/* Horizontal scroll carousel – peek left/right */}
       <div
         className="flex overflow-x-auto snap-x snap-mandatory gap-3 px-5 pb-1 scrollbar-hide"
         style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
         onScroll={handleScroll}
       >
-        {steps.map((step, i) => (
-          <div
-            key={i}
-            className="snap-center shrink-0 w-[74vw] max-w-[300px]"
-          >
-            {/* Image with step badge */}
-            <div className="relative rounded-xl overflow-hidden aspect-[16/10] shadow-md">
-              <img
-                src={images[i]}
-                alt={step.title}
-                className="w-full h-full object-cover"
-                loading="lazy"
-                decoding="async"
-                width="300"
-                height="188"
-              />
-              {/* Step number badge */}
-              <div className="absolute bottom-3 left-3 w-9 h-9 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg">
-                <span className="text-white text-[14px] font-bold tabular-nums">{i + 1}</span>
+        {steps.map((step, i) => {
+          const Icon = step.icon;
+          return (
+            <div key={i} className="snap-center shrink-0 w-[74vw] max-w-[300px]">
+              <div className="relative rounded-2xl overflow-hidden aspect-[16/10] shadow-md ring-1 ring-slate-200">
+                <img
+                  src={images[i]}
+                  alt={step.title}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                  width="300"
+                  height="188"
+                />
+                <div className="absolute bottom-3 left-3 w-9 h-9 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg">
+                  <Icon className="w-4 h-4 text-white" strokeWidth={2} />
+                </div>
+              </div>
+              <div className="px-1 pt-4 pb-2">
+                <h3 className="text-[16px] font-bold text-slate-800 leading-tight tracking-tight mb-1.5">
+                  {step.title}
+                </h3>
+                <p className="text-[14px] text-slate-600 leading-[1.6]">{step.text}</p>
               </div>
             </div>
-            {/* Text below image */}
-            <div className="px-1 pt-4 pb-2">
-              <h3 className="text-[16px] font-bold text-slate-900 leading-tight tracking-tight mb-1.5">
-                {step.title}
-              </h3>
-              <p className="text-[14px] text-slate-600 leading-[1.6]">{step.text}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-
     </div>
   );
 }
