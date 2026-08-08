@@ -89,8 +89,6 @@ const TRUST_BADGES = [
   { icon: Check, title: 'Noll förpliktelse', text: 'Du är aldrig bunden att sälja. Tacka nej kostnadsfritt.' },
 ];
 
-const PRESS_LOGOS = ['Dagens Industri', 'Aftonbladet', 'SVT Nyheter', 'TV4', 'Breakit'];
-
 export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTitle, seoSlug }: HowItWorksProps) {
   useEffect(() => {
     if (seoSlug === 'sa-funkar-det') {
@@ -266,20 +264,6 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 <p className="text-[20px] sm:text-[24px] font-bold text-slate-800 tracking-tight tabular-nums">{s.value}</p>
                 <p className="text-[11px] sm:text-[12px] text-slate-500 mt-1 leading-snug">{s.label}</p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Press logos ── */}
-      <section className="bg-white py-8 px-5 border-b border-slate-100">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-center text-[11px] font-bold text-slate-400 uppercase tracking-[0.20em] mb-5">Omnämnda i</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-            {PRESS_LOGOS.map((logo) => (
-              <span key={logo} className="text-[16px] sm:text-[18px] font-bold text-slate-300 tracking-tight">
-                {logo}
-              </span>
             ))}
           </div>
         </div>
