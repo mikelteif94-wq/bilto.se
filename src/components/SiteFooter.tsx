@@ -52,7 +52,7 @@ export function SiteFooter() {
             <ul className="space-y-3">
               {[
                 { label: 'Sälj din bil', href: '/salj-bil' },
-                { label: 'Köp bil med hjälp', href: '/kop-bil' },
+                { label: 'Bilköptjänsten', href: '/kop-bil' },
                 { label: 'Bli handlare', href: '/handlare/registrera' },
               ].map(({ label, href }) => (
                 <li key={label}>

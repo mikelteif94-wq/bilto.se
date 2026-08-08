@@ -651,7 +651,7 @@ type QuizStep = 'idle' | 'active' | 'analyzing' | 'results';
 
 /* ───────────── nav ───────────── */
 
-const NAV_ITEMS = ['Sälj bil', 'Köp bil med hjälp'] as const;
+const NAV_ITEMS = ['Sälj bil', 'Bilköptjänsten'] as const;
 
 interface CompareCarsPageProps {
   onBackHome: () => void;
@@ -741,7 +741,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
     if (track) params.set('typ', track);
     if (car) params.set('bil', car);
     if (tradeReg) params.set('reg', tradeReg);
-    window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
+    window.history.pushState({}, '', `/kop-bil?${params.toString()}`);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'auto' });
   };

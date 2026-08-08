@@ -111,9 +111,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
     const routes: Partial<Record<MobileMenuItem, string>> = {
-      'Köp bil': '/kop-bil',
-      'Köp bil med hjälp': '/kop-bil',
-      'Bilköpshjälpen': '/kop-bil',
+      'Bilköptjänsten': '/kop-bil',
       'Guider': '/guider',
       'Priser': '/priser',
       'Vanliga frågor': '/vanliga-fragor',
@@ -153,7 +151,7 @@ export default function AboutPage({ onBackHome }: AboutPageProps) {
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             <button type="button" onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 font-medium transition hover:text-white">Säljhjälpen</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 font-medium transition hover:text-white">Bilköpshjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 font-medium transition hover:text-white">Bilköptjänsten</button>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white font-semibold transition hover:text-white/80">Om oss</button>
           </nav>
           <div className="flex items-center ml-auto">

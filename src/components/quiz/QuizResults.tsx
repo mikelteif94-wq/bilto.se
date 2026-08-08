@@ -277,7 +277,7 @@ export function QuizResults({ answers, onBack, onSelectCar }: QuizResultsProps) 
               const params = new URLSearchParams();
               params.set('bil', `${top.make} ${top.model}`);
               params.set('source', 'Quiz resultat');
-              window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
+              window.history.pushState({}, '', `/kop-bil?${params.toString()}`);
               window.dispatchEvent(new PopStateEvent('popstate'));
               window.scrollTo({ top: 0, behavior: 'auto' });
             }}

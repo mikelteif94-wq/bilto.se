@@ -301,14 +301,14 @@ export default function BilsparaPage({ onBackHome }: BilsparaPageProps) {
 
   const navItems: { id: MobileMenuItem; label: string }[] = [
     { id: 'Sälj bil', label: 'Säljhjälpen' },
-    { id: 'Köp bil', label: 'Bilköpshjälpen' },
+    { id: 'Bilköptjänsten', label: 'Bilköptjänsten' },
     { id: 'Om oss', label: 'Om oss' },
   ];
 
   const handleMenuSelect = (id: MobileMenuItem) => {
     setMenuOpen(false);
     const routes: Partial<Record<MobileMenuItem, string>> = {
-      'Köp bil': '/kop-bil',
+      'Bilköptjänsten': '/kop-bil',
       'Om oss': '/om-oss',
     };
     const route = routes[id];

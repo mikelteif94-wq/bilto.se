@@ -9,7 +9,6 @@ import ConsultationDrawer from './components/ConsultationDrawer';
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
 const HomePage = lazy(() => import('./pages/HomePage'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
-const BuyCarPage = lazy(() => import('./pages/BuyCarPage'));
 const DealerRegister = lazy(() => import('./pages/DealerRegister'));
 const DealerLogin = lazy(() => import('./pages/DealerLogin'));
 const DealerCarsList = lazy(() => import('./pages/DealerCarsList'));
@@ -495,25 +494,9 @@ function App() {
   }
 
   if (path === '/kop-bil/bestall') {
-    const buyParams = new URLSearchParams(window.location.search);
-    const buyBil = buyParams.get('bil') || '';
-    const buyTyp = buyParams.get('typ');
-    const buyReg = buyParams.get('reg') || '';
-    const buySource = buyParams.get('source') || '';
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <>
-          <BuyCarPage
-            initialBil={buyBil}
-            initialTyp={buyTyp === 'found' || buyTyp === 'searching' || buyTyp === 'trade' ? buyTyp : undefined}
-            initialReg={buyReg}
-            source={buySource}
-            onBack={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
-          />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
-        </>
-      </Suspense>
-    );
+    window.history.replaceState({}, '', '/kop-bil');
+    setPath('/kop-bil');
+    return null;
   }
 
   if (path === '/utforska') {
@@ -777,12 +760,9 @@ function App() {
             initialTelefon={publicRoute.telefon}
             initialMiltal={publicRoute.miltal}
             onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-            onNavigateTrade={(reg, mil) => {
-              const params = new URLSearchParams({ typ: 'trade' });
-              if (reg) params.set('reg', reg);
-              if (mil) params.set('mil', mil.toString());
-              window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
-              setPath('/kop-bil/bestall');
+            onNavigateTrade={() => {
+              window.history.pushState({}, '', '/kop-bil');
+              setPath('/kop-bil');
               setPublicRoute({ page: 'home' });
             }}
           />

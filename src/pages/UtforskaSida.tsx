@@ -83,7 +83,7 @@ export default function UtforskaSida({ onBack }: Props) {
   };
 
   const navigateToBuy = (carLabel: string) => {
-    window.history.pushState({}, '', `/kop-bil/bestall?bil=${encodeURIComponent(carLabel)}&typ=found`);
+    window.history.pushState({}, '', `/kop-bil?bil=${encodeURIComponent(carLabel)}&typ=found`);
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
@@ -400,7 +400,7 @@ export default function UtforskaSida({ onBack }: Props) {
           <button
             type="button"
             onClick={() => {
-              window.history.pushState({}, '', '/kop-bil/bestall');
+              window.history.pushState({}, '', '/kop-bil');
               window.dispatchEvent(new PopStateEvent('popstate'));
             }}
             className="inline-flex items-center gap-2 h-13 px-8 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-slate-100 transition shadow-lg"
@@ -422,7 +422,7 @@ export default function UtforskaSida({ onBack }: Props) {
             if (fitQuizCar) {
               const name = encodeURIComponent(`${fitQuizCar.brand_display} ${fitQuizCar.model_display}`);
               setFitQuizCar(null);
-              window.history.pushState({}, '', `/kop-bil/bestall?bil=${name}&typ=found`);
+              window.history.pushState({}, '', `/kop-bil?bil=${name}&typ=found`);
               window.dispatchEvent(new PopStateEvent('popstate'));
             }
           }}
