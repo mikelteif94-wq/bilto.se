@@ -13,6 +13,7 @@ import {
   FileCheck,
   X,
   Sparkles,
+  TrendingDown,
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
@@ -240,73 +241,82 @@ export default function HomePage({
         </div>
       </header>
 
-      {/* ── Hero ── */}
-      <section className="relative min-h-[100svh] flex flex-col overflow-hidden">
-        <img
-          src="/files_2615643-2026-06-21T06-29-18-662Z-b858d9c8-9893-488f-8103-98fee9292c16 copy.webp"
-          alt=""
-          aria-hidden
-          className="absolute inset-0 w-full h-full object-cover object-[50%_65%]"
-          fetchPriority="high"
-          decoding="async"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-transparent pointer-events-none" />
+      {/* ── Hero (CarEdge-inspired light design) ── */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#e7f3ff] via-[#f2f8ff] to-[#faf8f5] pt-32 sm:pt-40 pb-16 sm:pb-24">
+        {/* Decorative blurred shapes */}
+        <div className="absolute -top-24 -right-24 w-[400px] h-[400px] rounded-full bg-[#0e6efe]/[0.06] blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 -left-32 w-[320px] h-[320px] rounded-full bg-[#69a8ff]/[0.08] blur-3xl pointer-events-none" />
 
-        <div className="relative flex-1 flex flex-col items-center justify-center pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
-          <div className="w-full max-w-2xl text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-6">
-              <Sparkles className="w-3.5 h-3.5 text-[#38bdf8]" />
-              <span className="text-[12px] font-medium text-white/90">Nytt: AI-bilköpshjälp på gång</span>
+        <div className="relative mx-auto w-full max-w-5xl px-5 sm:px-8">
+          <div className="max-w-4xl mb-10 sm:mb-14">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0e6efe]/[0.08] border border-[#69a8ff]/40 mb-6">
+              <Sparkles className="w-3.5 h-3.5 text-[#0e6efe]" />
+              <span className="text-[12px] font-medium text-[#0e6efe]">Nytt: AI-bilköpshjälp på gång</span>
             </div>
 
-            <h1 className="text-white text-[28px] sm:text-[42px] lg:text-[52px] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-4">
-              Spara 15 000 kr eller mer på din nästa bil – utan att besöka en enda handlare
+            <h1 className="text-[42px] sm:text-[64px] lg:text-[76px] font-bold leading-[0.98] tracking-[-0.055em] text-slate-700">
+              Spara 15 000 kr eller mer<br />
+              <span className="text-slate-700">på din nästa bil.</span>
             </h1>
-            <p className="text-white/80 text-center text-[15px] sm:text-[18px] mb-8 drop-shadow leading-relaxed max-w-xl mx-auto">
-              Oavsett om du leasar eller köper kontaktar Biltos experter handlaren åt dig, förhandlar bästa pris och sköter varje steg – du sparar tid och pengar.
+            <p className="mt-8 max-w-4xl text-[16px] sm:text-[19px] leading-[1.5] tracking-[-0.01em] text-slate-500">
+              Oavsett om du leasar eller köper kontaktar Biltos experter handlaren åt dig, förhandlar bästa pris och sköter varje steg – du sparar tid och pengar.{' '}
+              <a href="/gratis-konsultation" className="font-medium text-[#0e6efe] hover:text-[#0a57cc] transition">
+                Boka ett kostnadsfritt samtal på 15 minuter
+              </a>{' '}
+              – vi lyssnar och rekommenderar rätt lösning, ingen säljpitch.
+            </p>
+          </div>
+
+          {/* Search card */}
+          <div className="relative max-w-4xl rounded-[28px] border border-[#69a8ff] bg-[#e4efff]/80 px-5 pb-7 pt-11 sm:px-10 sm:pb-10 sm:pt-12 shadow-[0_20px_60px_rgba(14,110,254,0.12)]">
+            <div className="absolute -top-4 left-5 sm:left-10 inline-flex items-center gap-2 rounded-full bg-[#237cf5] px-3.5 py-2 text-[13px] sm:text-[15px] font-bold leading-none text-white shadow-md">
+              <Search className="w-4 h-4" strokeWidth={2.5} />
+              Hitta rätt bil
+            </div>
+
+            <h2 className="text-[27px] sm:text-[36px] font-bold leading-tight tracking-[-0.04em] text-slate-700">
+              Sök och förhandla – vi sköter resten
+            </h2>
+            <p className="mt-3 max-w-3xl text-[16px] sm:text-[19px] leading-[1.5] text-slate-500">
+              Skriv in en bilmodell du är intresserad av. Vår expert kontaktar handlaren, förhandlar priset och granskar historiken åt dig.
             </p>
 
-            {/* Search card */}
-            <div className="bg-white rounded-xl shadow-2xl p-5 sm:p-6 max-w-xl mx-auto">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
-                    type="text"
-                    value={carQuery}
-                    onChange={(e) => setCarQuery(e.target.value)}
-                    placeholder="Sök bilmodell (t.ex. Volvo XC60)"
-                    className="w-full h-12 pl-11 pr-4 rounded-xl border border-slate-200 text-[14px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe] focus:border-transparent"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => openBuyDrawer(carQuery || undefined)}
-                  className="h-12 px-6 rounded-xl bg-[#0e6efe] text-white font-semibold text-[14px] hover:bg-[#0a57cc] transition whitespace-nowrap inline-flex items-center justify-center gap-2"
-                >
-                  Hitta bästa pris
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+            <div className="mt-7 flex flex-col sm:flex-row gap-3">
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="text"
+                  value={carQuery}
+                  onChange={(e) => setCarQuery(e.target.value)}
+                  placeholder="Sök bilmodell (t.ex. Volvo XC60)"
+                  className="w-full h-14 pl-12 pr-4 rounded-2xl border border-[#69a8ff]/60 bg-white text-[15px] sm:text-[17px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe] focus:border-transparent transition"
+                />
               </div>
-              <p className="mt-3 text-[12px] text-slate-400 text-center">
-                Få tillgång till målskillnad, inköpspris och OTD-uppskattning
-              </p>
+              <button
+                type="button"
+                onClick={() => openBuyDrawer(carQuery || undefined)}
+                className="h-14 px-7 rounded-2xl bg-[#0e6efe] text-white font-bold text-[15px] sm:text-[17px] hover:bg-[#0a57cc] transition whitespace-nowrap inline-flex items-center justify-center gap-2 shadow-lg shadow-[#0e6efe]/25"
+              >
+                Hitta bästa pris
+                <ArrowRight className="w-5 h-5" />
+              </button>
             </div>
+            <p className="mt-4 text-[13px] sm:text-[14px] text-slate-500 leading-snug">
+              Få tillgång till målskillnad, inköpspris och OTD-uppskattning
+            </p>
 
-            <div className="flex items-center justify-center gap-1.5 mt-5">
-              <ShieldCheck className="w-4 h-4 text-white/70 shrink-0" />
-              <p className="text-white/70 text-[13px] drop-shadow">Vi jobbar alltid för dig – aldrig för handlaren</p>
+            <div className="mt-5 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-[#0e6efe] shrink-0" />
+              <p className="text-[13px] sm:text-[14px] text-slate-500">Vi jobbar alltid för dig – aldrig för handlaren</p>
             </div>
           </div>
-        </div>
 
-        {/* Stats bar */}
-        <div className="relative w-full bg-black/30 backdrop-blur-sm border-t border-white/10">
-          <div className="max-w-5xl mx-auto grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10">
+          {/* Stats bar */}
+          <div className="mt-10 sm:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#69a8ff]/30 rounded-2xl overflow-hidden ring-1 ring-[#69a8ff]/30">
             {STATS.map((s) => (
-              <div key={s.label} className="px-4 py-5 text-center">
-                <p className="text-[20px] sm:text-[24px] font-bold text-white tracking-tight">{s.value}</p>
-                <p className="text-[11px] sm:text-[12px] text-white/50 mt-1 leading-snug">{s.label}</p>
+              <div key={s.label} className="bg-[#e4efff]/50 px-4 py-5 sm:py-6 text-center transition hover:bg-[#e4efff]/80">
+                <p className="text-[20px] sm:text-[24px] font-bold text-slate-700 tracking-tight tabular-nums">{s.value}</p>
+                <p className="text-[11px] sm:text-[12px] text-slate-500 mt-1 leading-snug">{s.label}</p>
               </div>
             ))}
           </div>
@@ -314,7 +324,7 @@ export default function HomePage({
       </section>
 
       {/* ── Press logos ── */}
-      <section className="bg-white py-8 px-5 border-b border-slate-100">
+      <section className="bg-gradient-to-b from-[#faf8f5] to-[#f2f8ff] py-8 px-5">
         <div className="max-w-4xl mx-auto">
           <p className="text-center text-[11px] font-bold text-slate-400 uppercase tracking-[0.20em] mb-5">Omnämnda i</p>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
@@ -328,25 +338,25 @@ export default function HomePage({
       </section>
 
       {/* ── Why our buyers save ── */}
-      <section className="bg-[#faf8f5] py-16 sm:py-24 px-4 sm:px-6">
+      <section className="bg-gradient-to-b from-[#f2f8ff] via-[#e7f3ff] to-[#f2f8ff] py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12 sm:mb-16 max-w-2xl mx-auto">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
               Varför våra kunder sparar 15 000 kr
             </span>
-            <h2 className="text-[24px] sm:text-[48px] font-semibold leading-[1.15] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
+            <h2 className="text-[27px] sm:text-[36px] font-bold leading-[1.1] tracking-[-0.03em] text-slate-700">
               Handlaren har en orättvis fördel. Tills nu.
             </h2>
-            <p className="text-slate-600 mt-4 sm:mt-6 text-[15px] sm:text-[18px] leading-[1.6] max-w-2xl mx-auto">
+            <p className="text-slate-500 mt-4 sm:mt-5 text-[16px] sm:text-[19px] leading-[1.5] max-w-2xl mx-auto">
               Ett vanligt handlarbesök tar fyra timmar och kostar de flesta köpare 10 000–20 000 kr mer än det borde. Så här ändrar Bilto på det.
             </p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
             {/* Usual way */}
-            <div className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8">
+            <div className="rounded-2xl border border-[#69a8ff]/40 bg-[#e4efff]/30 p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-slate-200/60 flex items-center justify-center">
                   <X className="w-5 h-5 text-slate-400" strokeWidth={2.5} />
                 </div>
                 <h3 className="text-[18px] font-bold text-slate-400">Det vanliga sättet</h3>
@@ -362,7 +372,7 @@ export default function HomePage({
             </div>
 
             {/* Our way */}
-            <div className="rounded-xl border-2 border-[#0e6efe] bg-white p-6 sm:p-8 shadow-lg">
+            <div className="rounded-2xl border-2 border-[#0e6efe] bg-[#e4efff]/50 p-6 sm:p-8 shadow-[0_8px_30px_rgba(14,110,254,0.08)]">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
                   <Check className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.5} />
@@ -372,7 +382,7 @@ export default function HomePage({
               <div className="space-y-5">
                 {OUR_WAY.map((item) => (
                   <div key={item.title}>
-                    <p className="text-[14px] font-semibold text-slate-900 mb-1">{item.title}</p>
+                    <p className="text-[14px] font-semibold text-slate-700 mb-1">{item.title}</p>
                     <p className="text-[14px] text-slate-600 leading-[1.6]">{item.desc}</p>
                   </div>
                 ))}
@@ -383,28 +393,28 @@ export default function HomePage({
       </section>
 
       {/* ── Vad ingår ── */}
-      <section className="bg-[#0e6efe] py-16 sm:py-24 px-5 sm:px-8">
+      <section className="bg-gradient-to-b from-[#f2f8ff] to-[#e7f3ff] py-16 sm:py-24 px-5 sm:px-8">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-12">
-            <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3">Ingår i tjänsten</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-white leading-[1.08] tracking-[-0.02em]">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">Ingår i tjänsten</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-700 leading-[1.1] tracking-[-0.03em]">
               Allt från idé till nyckel
             </h2>
-            <p className="text-white/70 mt-3 text-[15px] leading-[1.65] max-w-xl">
+            <p className="text-slate-500 mt-3 text-[16px] sm:text-[19px] leading-[1.5] max-w-xl">
               Vi gör jobbet åt dig – hela vägen.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 rounded-xl overflow-hidden ring-1 ring-white/10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {INCLUDED.map((item) => {
               const Icon = item.icon;
               return (
-                <div key={item.title} className="flex flex-col bg-white/[0.07] p-6 sm:p-7">
-                  <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0 mb-4">
-                    <Icon className="w-4 h-4 text-white" strokeWidth={2} />
+                <div key={item.title} className="flex flex-col rounded-2xl border border-[#69a8ff]/50 bg-[#e4efff]/50 p-6 sm:p-7 transition hover:border-[#69a8ff] hover:bg-[#e4efff]/70 hover:shadow-[0_8px_30px_rgba(14,110,254,0.08)]">
+                  <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mb-4">
+                    <Icon className="w-4 h-4 text-[#0e6efe]" strokeWidth={2} />
                   </div>
-                  <p className="text-white font-semibold text-[14px] sm:text-[15px] leading-snug">{item.title}</p>
-                  <p className="text-white/60 text-[13px] mt-1.5 leading-relaxed">{item.desc}</p>
+                  <p className="text-slate-700 font-semibold text-[14px] sm:text-[15px] leading-snug">{item.title}</p>
+                  <p className="text-slate-500 text-[13px] mt-1.5 leading-[1.5]">{item.desc}</p>
                 </div>
               );
             })}
@@ -414,7 +424,7 @@ export default function HomePage({
             <button
               type="button"
               onClick={() => openBuyDrawer()}
-              className="h-12 px-8 sm:px-10 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-[#faf8f5] transition shadow-lg inline-flex items-center gap-2 group"
+              className="h-12 px-8 sm:px-10 rounded-xl bg-[#0e6efe] text-white font-bold text-[15px] hover:bg-[#0a57cc] transition shadow-lg shadow-[#0e6efe]/25 inline-flex items-center gap-2 group"
             >
               Få prishjälp
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -424,38 +434,38 @@ export default function HomePage({
       </section>
 
       {/* ── Savings breakdown ── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-gradient-to-b from-[#e7f3ff] to-[#f2f8ff] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-14 max-w-2xl">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Vad vi förhandlar fram</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">Vad vi förhandlar fram</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-700 tracking-[-0.03em] leading-[1.1]">
               Spara 15 000 kr eller mer på din nästa bil
             </h2>
-            <p className="mt-3 text-slate-500 text-[15px] leading-[1.65] max-w-lg">
+            <p className="mt-3 text-slate-500 text-[16px] sm:text-[19px] leading-[1.5] max-w-lg">
               Oavsett om du leasar eller köper förhandlar Biltos experter pris, ränta och tillval åt dig.
             </p>
           </div>
 
-          <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-            <div className="bg-white divide-y divide-slate-100">
+          <div className="rounded-2xl overflow-hidden border border-[#69a8ff] shadow-[0_8px_30px_rgba(14,110,254,0.08)]">
+            <div className="bg-[#e4efff]/40 divide-y divide-[#69a8ff]/20">
               {SAVINGS_ITEMS.map((item) => (
                 <div key={item.label} className="flex items-center gap-4 px-6 sm:px-8 py-4 sm:py-5">
-                  <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/[0.08] flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/[0.1] flex items-center justify-center shrink-0">
                     <Check className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.5} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-semibold text-slate-900 leading-snug">{item.label}</p>
+                    <p className="text-[14px] font-semibold text-slate-700 leading-snug">{item.label}</p>
                     <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5 leading-snug">{item.desc}</p>
                   </div>
                   <span className="text-[13px] sm:text-[14px] font-bold text-[#0e6efe] shrink-0 tabular-nums">{item.amount}</span>
                 </div>
               ))}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 px-6 sm:px-8 py-4 sm:py-5 bg-slate-50">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 px-6 sm:px-8 py-4 sm:py-5 bg-[#e4efff]/60">
                 <p className="text-[13px] sm:text-[14px] font-semibold text-slate-700">Typisk total besparing per affär</p>
-                <span className="text-[20px] sm:text-[18px] font-bold text-slate-900 tabular-nums">13 000–22 000 kr</span>
+                <span className="text-[18px] sm:text-[20px] font-bold text-slate-700 tabular-nums">13 000–22 000 kr</span>
               </div>
-              <div className="bg-slate-50 border-t border-slate-100 px-6 sm:px-8 py-3">
-                <p className="text-[11px] text-slate-400 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
+              <div className="bg-[#e4efff]/60 border-t border-[#69a8ff]/20 px-6 sm:px-8 py-3">
+                <p className="text-[11px] text-slate-500 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
               </div>
             </div>
           </div>
@@ -463,11 +473,11 @@ export default function HomePage({
       </section>
 
       {/* ── Pricing ── */}
-      <section className="bg-white py-16 sm:py-24 px-4 sm:px-6 border-t border-slate-100">
+      <section className="bg-gradient-to-b from-[#f2f8ff] to-[#e7f3ff] py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12 max-w-2xl mx-auto">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">Priser i korthet</span>
-            <h2 className="text-[24px] sm:text-[48px] font-semibold leading-[1.15] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
+            <h2 className="text-[27px] sm:text-[36px] font-bold leading-[1.1] tracking-[-0.03em] text-slate-700">
               Från gör-det-själv till allt-fixat-åt-dig
             </h2>
           </div>
@@ -475,10 +485,10 @@ export default function HomePage({
             {PRICING_PLANS.map((plan) => (
               <div
                 key={plan.name}
-                className={`relative rounded-xl p-6 sm:p-7 flex flex-col transition-all duration-300 ${
+                className={`relative rounded-2xl p-6 sm:p-7 flex flex-col transition-all duration-300 ${
                   plan.highlight
-                    ? 'bg-white border-2 border-[#0e6efe] shadow-xl lg:-translate-y-2'
-                    : 'bg-white border border-slate-200 shadow-sm hover:shadow-md'
+                    ? 'bg-[#e4efff]/60 border-2 border-[#0e6efe] shadow-[0_8px_30px_rgba(14,110,254,0.12)] lg:-translate-y-2'
+                    : 'bg-[#e4efff]/40 border border-[#69a8ff]/50 hover:border-[#69a8ff] hover:shadow-[0_8px_30px_rgba(14,110,254,0.08)]'
                 }`}
               >
                 {plan.highlight && (
@@ -486,15 +496,15 @@ export default function HomePage({
                     Mest populärt
                   </span>
                 )}
-                <h3 className="text-[16px] font-bold text-slate-900 mb-1">{plan.name}</h3>
+                <h3 className="text-[16px] font-bold text-slate-700 mb-1">{plan.name}</h3>
                 <div className="flex items-baseline gap-1.5 mb-2">
-                  <span className="text-[28px] font-bold text-slate-900 tracking-tight">{plan.price}</span>
-                  <span className="text-[13px] text-slate-400">{plan.period}</span>
+                  <span className="text-[28px] font-bold text-slate-700 tracking-tight">{plan.price}</span>
+                  <span className="text-[13px] text-slate-500">{plan.period}</span>
                 </div>
                 <p className="text-[13px] text-slate-500 leading-[1.6] mb-5">{plan.desc}</p>
                 <ul className="space-y-2.5 mb-6 flex-1">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2.5 text-[13px] text-slate-700">
+                    <li key={f} className="flex items-start gap-2.5 text-[13px] text-slate-600">
                       <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
                       {f}
                     </li>
@@ -505,8 +515,8 @@ export default function HomePage({
                   onClick={() => handlePlanCta(plan.action)}
                   className={`w-full h-11 rounded-xl font-semibold text-[14px] transition whitespace-nowrap ${
                     plan.highlight
-                      ? 'bg-[#0e6efe] text-white hover:bg-[#0a57cc]'
-                      : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                      ? 'bg-[#0e6efe] text-white hover:bg-[#0a57cc] shadow-lg shadow-[#0e6efe]/25'
+                      : 'bg-white text-slate-700 hover:bg-slate-50 border border-[#69a8ff]/50'
                   }`}
                 >
                   {plan.cta}
@@ -531,14 +541,14 @@ export default function HomePage({
       <ReviewsSection variant="muted" />
 
       {/* ── Founder / About ── */}
-      <section className="bg-white py-16 sm:py-24 px-4 sm:px-6 border-t border-slate-100">
+      <section className="bg-gradient-to-b from-[#e7f3ff] to-[#f2f8ff] py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
               <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
                 Byggt av branschinsidare
               </span>
-              <h2 className="text-[24px] sm:text-[36px] font-semibold tracking-[-0.02em] text-slate-900 leading-[1.1] mb-4">
+              <h2 className="text-[27px] sm:text-[36px] font-bold tracking-[-0.03em] text-slate-700 leading-[1.1] mb-4">
                 Experter på din sida – inte handlarens
               </h2>
               <p className="text-[15px] text-slate-600 leading-[1.7] mb-4">
@@ -547,14 +557,14 @@ export default function HomePage({
               <p className="text-[15px] text-slate-600 leading-[1.7] mb-6">
                 Det vi hörde om och om igen: "Jag önskar bara att någon jag litade på kunde göra det här åt mig." Det är Bilto. Expertvänner på insidan, backade av data och ett team av människor som sett varje trick.
               </p>
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-[#e4efff]/50 border border-[#69a8ff]/50">
                 <img
                   src={EXPERT_PHOTO}
                   alt="Alexander"
                   className="w-14 h-14 rounded-xl object-cover object-top shrink-0"
                 />
                 <div className="min-w-0">
-                  <p className="text-[15px] font-bold text-slate-900 leading-snug">Alexander</p>
+                  <p className="text-[15px] font-bold text-slate-700 leading-snug">Alexander</p>
                   <p className="text-[13px] text-slate-500 mt-0.5">VD och medgrundare</p>
                 </div>
               </div>
@@ -563,14 +573,14 @@ export default function HomePage({
               <img
                 src="/BSM_car_sale_key_woman_handover_101122.jpg"
                 alt="Bilexpert hjälper kund"
-                className="absolute inset-0 w-full h-full object-cover rounded-xl shadow-lg"
+                className="absolute inset-0 w-full h-full object-cover rounded-2xl border border-[#69a8ff]/40 shadow-lg"
                 loading="lazy"
                 decoding="async"
               />
-              <div className="absolute bottom-4 right-4 bg-white rounded-xl shadow-xl p-4 w-[170px]">
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Avgift</p>
-                <p className="text-[22px] font-bold text-slate-900 leading-none">4 995 kr</p>
-                <p className="text-[11px] text-slate-400 mt-1 leading-snug">Betalas bara om affären blir av</p>
+              <div className="absolute bottom-4 right-4 bg-[#e4efff] rounded-xl border border-[#69a8ff] shadow-xl p-4 w-[170px]">
+                <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-widest mb-1">Avgift</p>
+                <p className="text-[22px] font-bold text-slate-700 leading-none">4 995 kr</p>
+                <p className="text-[11px] text-slate-500 mt-1 leading-snug">Betalas bara om affären blir av</p>
               </div>
             </div>
           </div>
@@ -578,15 +588,15 @@ export default function HomePage({
       </section>
 
       {/* ── FAQ ── */}
-      <section className="bg-[#0e6efe] px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-gradient-to-b from-[#f2f8ff] to-[#e7f3ff] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-3xl mx-auto">
           <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3">Vanliga frågor</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-white tracking-[-0.02em] leading-[1.08]">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">Vanliga frågor</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-700 tracking-[-0.03em] leading-[1.1]">
               Vanliga frågor – vi svarar rakt på sak
             </h2>
           </div>
-          <div className="divide-y divide-white/15 border-y border-white/15">
+          <div className="divide-y divide-[#69a8ff]/30 border-y border-[#69a8ff]/30 rounded-2xl overflow-hidden bg-[#e4efff]/30">
             {FAQS.map((faq, i) => {
               const open = openFaq === i;
               return (
@@ -594,15 +604,15 @@ export default function HomePage({
                   key={i}
                   type="button"
                   onClick={() => setOpenFaq(open ? null : i)}
-                  className="w-full text-left py-5 flex items-start gap-4 group"
+                  className="w-full text-left py-5 px-5 sm:px-6 flex items-start gap-4 group transition hover:bg-[#e4efff]/50"
                 >
                   <div className="flex-1">
-                    <h3 className="text-[16px] font-semibold text-white leading-snug">{faq.q}</h3>
+                    <h3 className="text-[15px] sm:text-[17px] font-semibold text-slate-700 leading-snug">{faq.q}</h3>
                     {open && (
-                      <p className="mt-3 text-[14px] text-white/75 leading-[1.65]">{faq.a}</p>
+                      <p className="mt-3 text-[14px] sm:text-[15px] text-slate-500 leading-[1.5]">{faq.a}</p>
                     )}
                   </div>
-                  <ChevronDown className={`w-5 h-5 shrink-0 mt-0.5 transition-transform duration-200 ${open ? 'rotate-180 text-white/60' : 'text-white/40'}`} />
+                  <ChevronDown className={`w-5 h-5 shrink-0 mt-0.5 transition-transform duration-200 ${open ? 'rotate-180 text-[#0e6efe]' : 'text-slate-400'}`} />
                 </button>
               );
             })}
@@ -611,29 +621,29 @@ export default function HomePage({
       </section>
 
       {/* ── Final CTA ── */}
-      <section className="bg-white px-4 sm:px-6 py-12 sm:py-16">
+      <section className="bg-gradient-to-b from-[#e7f3ff] to-[#f2f8ff] px-4 sm:px-6 py-12 sm:py-16">
         <div className="max-w-5xl mx-auto">
-          <div className="relative rounded-xl bg-[#0e6efe] px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden">
-            <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-white/5 pointer-events-none" />
-            <div className="absolute -left-12 -bottom-16 w-[280px] h-[280px] rounded-full bg-white/5 pointer-events-none" />
+          <div className="relative rounded-[28px] border border-[#69a8ff] bg-[#e4efff]/80 px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden shadow-[0_20px_60px_rgba(14,110,254,0.12)]">
+            <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-white/40 pointer-events-none" />
+            <div className="absolute -left-12 -bottom-16 w-[280px] h-[280px] rounded-full bg-white/30 pointer-events-none" />
             <div className="relative text-center max-w-2xl mx-auto">
-              <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-bold tracking-[-0.02em] leading-[1.06] text-white mb-4">
+              <h2 className="text-[27px] sm:text-[36px] lg:text-[42px] font-bold tracking-[-0.03em] leading-[1.1] text-slate-700 mb-4">
                 Så här ska bilköp fungera.
               </h2>
-              <p className="text-white/80 text-[16px] leading-relaxed mb-8 max-w-lg mx-auto">
+              <p className="text-slate-500 text-[16px] sm:text-[19px] leading-[1.5] mb-8 max-w-lg mx-auto">
                 Börja med ett kostnadsfritt samtal på 15 minuter. Vi berättar exakt vad som passar dig – även om svaret är "du behöver oss inte än".
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <a
                   href="/gratis-konsultation"
-                  className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-white text-[#0e6efe] text-[15px] font-bold transition hover:bg-slate-100 active:scale-[0.98] shadow-lg"
+                  className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-[#0e6efe] text-white text-[15px] font-bold transition hover:bg-[#0a57cc] active:scale-[0.98] shadow-lg shadow-[#0e6efe]/25"
                 >
                   Starta kostnadsfri konsultation
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </a>
                 <a
                   href={PHONE_TEL}
-                  className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-white/40 text-white text-[15px] font-semibold transition hover:bg-white/10 active:scale-[0.98]"
+                  className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-[#69a8ff] text-[#0e6efe] text-[15px] font-semibold transition hover:bg-[#0e6efe] hover:text-white active:scale-[0.98]"
                 >
                   <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
                   Ring {PHONE}
