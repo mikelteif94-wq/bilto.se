@@ -402,13 +402,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       />
 
       {/* ── Nav ── */}
-      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-black/10 bg-white/95 backdrop-blur-md">
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
             aria-label="Meny"
             onClick={() => setMenuOpen(true)}
-            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-slate-700"
+            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white"
           >
             <Menu className="w-6 h-6" strokeWidth={2} />
           </button>
@@ -422,15 +422,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             />
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-900 font-semibold transition hover:text-[#0e6efe]">Säljhjälpen</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-500 font-medium transition hover:text-slate-900">Bilköpshjälpen</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-slate-500 font-medium transition hover:text-slate-900">Om oss</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/salj-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white font-semibold transition hover:text-white/80">Säljhjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 font-medium transition hover:text-white">Bilköpshjälpen</button>
+            <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 font-medium transition hover:text-white">Om oss</button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
               href="/gratis-konsultation"
               onMouseEnter={() => { import('../pages/FreeConsultationPage'); import('../pages/KopBilConcierge'); }}
-              className="inline-flex items-center bg-[#0e6efe] text-white text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-[#0a57cc] transition whitespace-nowrap"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
