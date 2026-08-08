@@ -380,14 +380,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
   const activeBudgetPill = null;
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
+    <div className="min-h-screen bg-[#f6f4f9] text-[#161616]">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
         active="Sälj bil"
         onSelect={handleMenuSelect}
       />
-      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-16 xl:inset-x-28 z-40 h-[58px] lg:h-[68px] rounded-2xl shadow-lg ring-1 ring-black/10 bg-[#111111]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
             type="button"
@@ -401,7 +401,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <img
               src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
-              className="h-20 lg:h-32 w-auto object-contain"
+              className="h-16 lg:h-24 w-auto object-contain brightness-0 invert"
               fetchPriority="high"
               decoding="async"
             />
@@ -415,7 +415,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <a
               href="/gratis-konsultation"
               onMouseEnter={() => { import('../pages/FreeConsultationPage'); import('../pages/KopBilConcierge'); }}
-              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+              className="inline-flex items-center bg-[#63d4e3] text-[#111111] text-[11px] lg:text-[13px] font-bold px-[14px] lg:px-[18px] h-9 rounded-full hover:bg-[#8be2ed] transition whitespace-nowrap"
             >
               Kostnadsfri konsultation
             </a>
@@ -433,24 +433,24 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/10 pointer-events-none" />
 
         <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8">
           <div className="w-full max-w-md">
-            <h1 className="text-white text-[28px] sm:text-[42px] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
+            <h1 className="text-white text-[30px] sm:text-[48px] lg:text-[56px] font-black leading-[0.98] tracking-[-0.04em] text-center drop-shadow-lg mb-3 max-w-2xl">
               {seoSlug === 'salj-bil'
                 ? 'Säljhjälpen – vi tar in buden, du väljer det bästa.'
                 : 'En bilexpert på din sida – när du säljer, köper eller byter.'}
             </h1>
-            <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
+            <p className="text-white/80 text-center text-[15px] sm:text-[17px] mb-6 sm:mb-7 drop-shadow max-w-xl">
               {seoSlug === 'salj-bil'
                 ? 'Vi värderar, förhandlar och granskar åt dig. Du bestämmer.'
                 : 'Vi värderar, förhandlar och granskar åt dig. Du bestämmer.'}
             </p>
 
-            <div className="bg-white rounded-xl shadow-2xl overflow-visible">
+            <div className="bg-white rounded-[24px] shadow-2xl overflow-visible border border-black/[0.06]">
               {/* Tab strip */}
-              <div className="flex border-b border-slate-100 rounded-t-xl overflow-hidden">
+              <div className="flex border-b border-slate-100 rounded-t-[24px] overflow-hidden">
                 {(['salj', 'hitta'] as const).map((t) => (
                   <button
                     key={t}
@@ -461,12 +461,12 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     }`}
                   >
                     {t === 'salj' ? 'Sälj bil' : 'Bilköpshjälp'}
-                    <span className={`absolute bottom-0 inset-x-0 h-[2.5px] rounded-t-full transition-all duration-200 ${heroTab === t ? 'bg-[#0e6efe]' : 'bg-transparent'}`} />
+                    <span className={`absolute bottom-0 inset-x-0 h-[3px] rounded-t-full transition-all duration-200 ${heroTab === t ? 'bg-[#111111]' : 'bg-transparent'}`} />
                   </button>
                 ))}
               </div>
 
-              <div className="px-5 pb-5 pt-4 rounded-b-xl bg-white">
+              <div className="px-5 pb-5 pt-4 rounded-b-[24px] bg-white">
                 {heroTab === 'salj' ? (
                   <>
                     <form onSubmit={handleHeroSubmit} className="flex flex-col gap-2.5">
@@ -479,7 +479,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       )}
                       <button
                         type="submit"
-                        className="h-12 w-full rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[16px] transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)]"
+                        className="h-12 w-full rounded-xl bg-[#111111] hover:bg-[#2a2a2a] active:scale-[0.98] text-white font-bold text-[16px] transition-all inline-flex items-center justify-center gap-2 shadow-lg"
                       >
                         Värdera bilen
                         <ArrowRight className="w-4 h-4" />
@@ -490,7 +490,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                       <button
                         type="button"
                         onClick={() => openDrawer('', undefined, 'trade')}
-                        className="px-4 py-1.5 rounded-xl border-2 border-slate-800 text-slate-800 text-[13px] font-bold hover:bg-slate-800 hover:text-white active:scale-[0.98] transition-all whitespace-nowrap"
+                        className="px-4 py-1.5 rounded-full border-2 border-[#111111] text-[#111111] text-[13px] font-bold hover:bg-[#111111] hover:text-white active:scale-[0.98] transition-all whitespace-nowrap"
                       >
                         Byta bil
                       </button>
@@ -528,14 +528,14 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                         }}
                         className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl border border-slate-200 hover:border-[#0e6efe]/40 hover:bg-[#0e6efe]/[0.03] active:scale-[0.99] transition text-left group"
                       >
-                        <div className="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-[#0e6efe]/10 flex items-center justify-center shrink-0 transition">
-                          <Icon className="w-4 h-4 text-slate-500 group-hover:text-[#0e6efe] transition" strokeWidth={1.8} />
+                        <div className="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-[#63d4e3]/20 flex items-center justify-center shrink-0 transition">
+                          <Icon className="w-4 h-4 text-slate-500 group-hover:text-[#163f44] transition" strokeWidth={1.8} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-[13.5px] font-semibold text-slate-900 leading-snug">{title}</p>
                           <p className="text-[12px] text-slate-400 mt-0.5 leading-snug">{sub}</p>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] shrink-0 transition" />
+                        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#163f44] shrink-0 transition" />
                       </button>
                     ))}
                   </div>
@@ -551,8 +551,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <section id="sa-fungerar-det" className="bg-white px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Hur det fungerar</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
+            <p className="text-[11px] font-bold text-[#4c8f99] uppercase tracking-[0.22em] mb-3">Hur det fungerar</p>
+            <h2 className="text-[32px] sm:text-[44px] lg:text-[52px] font-black leading-[0.98] text-[#111111] tracking-[-0.04em]">
               Så enkelt är det
             </h2>
           </div>
@@ -578,7 +578,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     </div>
                   )}
                   <div className="flex items-baseline gap-2.5 mb-2">
-                    <span className="text-[13px] font-bold text-[#0e6efe] tabular-nums">0{i + 1}</span>
+                    <span className="text-[13px] font-bold text-[#4c8f99] tabular-nums">0{i + 1}</span>
                     <h3 className="text-[19px] sm:text-[21px] font-semibold text-slate-900 leading-tight tracking-[-0.01em]">
                       {step.title}
                     </h3>
@@ -592,12 +592,12 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       </section>
 
       {/* ── Köpa / byta bil ───────────────────────────────── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-[#f6f4f9] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
-              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Köp &amp; byte</p>
-              <h2 className="text-[28px] sm:text-[38px] font-semibold text-slate-900 tracking-[-0.02em] leading-[1.08]">
+              <p className="text-[11px] font-bold text-[#4c8f99] uppercase tracking-[0.22em] mb-3">Köp &amp; byte</p>
+              <h2 className="text-[32px] sm:text-[44px] lg:text-[52px] font-black text-[#111111] tracking-[-0.04em] leading-[0.98]">
                 Spara pengar på din nästa bil.
               </h2>
               <p className="text-[15px] text-slate-500 mt-4 leading-[1.65]">
@@ -611,7 +611,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   'Fungerar vid köp, byte och leasing',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <span className="w-5 h-5 rounded-full bg-[#0e6efe] text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="w-5 h-5 rounded-full bg-[#111111] text-white flex items-center justify-center shrink-0 mt-0.5">
                       <Check className="w-3 h-3" strokeWidth={3} />
                     </span>
                     <span className="text-[14px] text-slate-700 leading-[1.55]">{item}</span>
@@ -625,7 +625,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     window.history.pushState({}, '', '/kop-bil');
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }}
-                  className="h-11 px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
+                  className="h-11 px-6 rounded-full bg-[#111111] hover:bg-[#2a2a2a] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
                 >
                   Få prishjälp
                   <ArrowRight className="w-4 h-4" />
@@ -643,9 +643,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 height="640"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-              <div className="hidden sm:block absolute left-6 bottom-6 bg-white rounded-xl p-4 shadow-lg max-w-xs">
+              <div className="hidden sm:block absolute left-6 bottom-6 bg-white rounded-2xl p-4 shadow-lg max-w-xs">
                 <div className="flex items-center gap-3 mb-1.5">
-                  <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/10 text-[#0e6efe] flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-[#63d4e3]/20 text-[#163f44] flex items-center justify-center">
                     <Handshake className="w-5 h-5" strokeWidth={2} />
                   </div>
                   <div className="text-[14px] font-semibold text-slate-900">Vi förhandlar åt dig</div>
@@ -663,10 +663,10 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <section id="experternas-val" className="bg-white px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">EXPERTERNAS VAL</p>
+            <p className="text-[11px] font-bold text-[#4c8f99] uppercase tracking-[0.22em] mb-3">EXPERTERNAS VAL</p>
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
-                  <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
+                  <h2 className="text-[32px] sm:text-[44px] lg:text-[52px] font-black text-[#111111] leading-[0.98] tracking-[-0.04em]">
                     Bilar vår expert rekommenderar just nu
                   </h2>
                   <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
@@ -738,7 +738,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                     <button
                       type="button"
                       onClick={() => setShowAllCars(true)}
-                      className="h-11 px-7 rounded-xl border border-slate-200 hover:border-[#0e6efe] text-slate-600 hover:text-[#0e6efe] font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
+                      className="h-11 px-7 rounded-full border border-slate-200 hover:border-[#111111] text-slate-600 hover:text-[#111111] font-semibold text-[14px] inline-flex items-center gap-2 transition-all"
                     >
                       Se fler bilar
                       <ArrowRight className="w-4 h-4" />
@@ -758,7 +758,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <button
               type="button"
               onClick={() => popularCars.length > 0 && setFitQuizCar(popularCars[0])}
-              className="shrink-0 h-10 px-5 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[13px] inline-flex items-center gap-2 transition-all whitespace-nowrap"
+              className="shrink-0 h-10 px-5 rounded-full bg-[#111111] hover:bg-[#2a2a2a] text-white font-semibold text-[13px] inline-flex items-center gap-2 transition-all whitespace-nowrap"
             >
               Testa bilmatch – tar 60 sekunder
               <ArrowRight className="w-4 h-4" />
@@ -769,7 +769,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
             <button
               type="button"
               onClick={() => { window.history.pushState({}, '', '/gratis-konsultation'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-              className="h-12 px-8 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all shadow-[0_4px_14px_rgba(14,110,254,0.30)] hover:shadow-[0_6px_20px_rgba(14,110,254,0.42)] hover:-translate-y-px"
+              className="h-12 px-8 rounded-full bg-[#111111] hover:bg-[#2a2a2a] text-white font-semibold text-[14px] inline-flex items-center gap-2 transition-all shadow-lg hover:shadow-xl hover:-translate-y-px"
             >
               Kostnadsfri konsultation
               <ArrowRight className="w-4 h-4" />
@@ -781,12 +781,12 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       </section>
 
       {/* ── Din personliga rådgivare ──────────────────────── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-[#f6f4f9] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
-              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Personlig service</p>
-              <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
+              <p className="text-[11px] font-bold text-[#4c8f99] uppercase tracking-[0.22em] mb-3">Personlig service</p>
+              <h2 className="text-[32px] sm:text-[44px] lg:text-[52px] font-black text-[#111111] tracking-[-0.04em] leading-[0.98]">
                 Din personliga rådgivare
               </h2>
               <p className="text-slate-500 mt-4 text-[15px] leading-[1.65]">
@@ -816,9 +816,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 height="480"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-              <div className="hidden md:block absolute right-5 bottom-5 max-w-[240px] bg-white rounded-xl p-4 shadow-lg">
+              <div className="hidden md:block absolute right-5 bottom-5 max-w-[240px] bg-white rounded-2xl p-4 shadow-lg">
                 <div className="flex items-center gap-2.5 mb-2">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-500 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-[#63d4e3]/20 text-[#163f44] flex items-center justify-center">
                     <Phone className="w-4 h-4" strokeWidth={2.25} />
                   </div>
                   <div className="text-[13px] font-semibold text-slate-900">Alltid tillgänglig</div>
@@ -846,8 +846,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               />
             </div>
             <div className="order-1 md:order-2">
-              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Täcker hela Sverige</p>
-              <h2 className="text-[28px] sm:text-[38px] font-bold leading-[1.08] text-slate-900 tracking-[-0.02em]">
+              <p className="text-[11px] font-bold text-[#4c8f99] uppercase tracking-[0.22em] mb-3">Täcker hela Sverige</p>
+              <h2 className="text-[32px] sm:text-[44px] lg:text-[52px] font-black leading-[0.98] text-[#111111] tracking-[-0.04em]">
                 Din bil hämtas – var du än bor
               </h2>
               <p className="text-slate-500 mt-4 text-[15px] leading-[1.65]">
@@ -860,7 +860,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   'Ingen upphämtningsavgift',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-[14px] text-slate-700">
-                    <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
+                    <Check className="w-4 h-4 text-[#163f44] shrink-0 mt-0.5" strokeWidth={2.5} />
                     {item}
                   </li>
                 ))}
@@ -871,16 +871,16 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       </section>
 
       {/* ── Trygghetsbadges ───────────────────────────────── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-[#f6f4f9] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="mb-10 sm:mb-14 max-w-2xl">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Trygghet</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
+            <p className="text-[11px] font-bold text-[#4c8f99] uppercase tracking-[0.22em] mb-3">Trygghet</p>
+            <h2 className="text-[32px] sm:text-[44px] lg:text-[52px] font-black text-[#111111] tracking-[-0.04em] leading-[0.98]">
               Din partner för en trygg och lönsam bilaffär
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-px bg-slate-200 rounded-xl overflow-hidden ring-1 ring-slate-200">
+          <div className="grid sm:grid-cols-3 gap-px bg-slate-200 rounded-[24px] overflow-hidden ring-1 ring-slate-200">
             {[
               {
                 icon: ShieldCheck,
@@ -901,8 +901,8 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
               const Icon = b.icon;
               return (
                 <div key={b.title} className="bg-white p-7 sm:p-9 flex flex-col">
-                  <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mb-5 shrink-0">
-                    <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
+                  <div className="w-10 h-10 rounded-xl bg-[#63d4e3]/20 flex items-center justify-center mb-5 shrink-0">
+                    <Icon className="w-5 h-5 text-[#163f44]" strokeWidth={2} />
                   </div>
                   <h3 className="text-[16px] font-bold text-slate-900 mb-2 tracking-[-0.01em]">{b.title}</h3>
                   <p className="text-slate-500 leading-[1.65] text-[14px]">{b.text}</p>
@@ -916,9 +916,9 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       {/* ── CTA-band ──────────────────────────────────────── */}
       <section className="bg-white px-4 sm:px-6 py-12 sm:py-16">
         <div className="max-w-6xl mx-auto">
-          <div className="relative rounded-[7px] bg-[#0e6efe] px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden">
-            <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-white/5 pointer-events-none" />
-            <div className="absolute -left-12 -bottom-16 w-[280px] h-[280px] rounded-full bg-white/5 pointer-events-none" />
+          <div className="relative rounded-[28px] bg-[#111111] px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden">
+            <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-[#63d4e3]/[0.06] pointer-events-none" />
+            <div className="absolute -left-12 -bottom-16 w-[280px] h-[280px] rounded-full bg-[#63d4e3]/[0.06] pointer-events-none" />
 
             <div className="relative grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
               <div>
@@ -942,13 +942,13 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
                   <a
                     href="/gratis-konsultation"
-                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-white text-[#0e6efe] text-[15px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
+                    className="inline-flex items-center justify-center h-12 px-7 rounded-full bg-[#63d4e3] text-[#111111] text-[15px] font-bold transition-all hover:bg-[#8be2ed] active:scale-[0.98] shadow-lg"
                   >
                     Kostnadsfri konsultation
                   </a>
                   <a
                     href={PHONE_TEL}
-                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
+                    className="inline-flex items-center justify-center h-12 px-7 rounded-full border-2 border-white/30 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
                   >
                     <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
                     Ring {PHONE}
@@ -969,7 +969,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
-                <div className="absolute bottom-0 right-0 bg-white rounded-xl shadow-xl p-2.5 w-[148px] sm:w-[168px]">
+                <div className="absolute bottom-0 right-0 bg-white rounded-2xl shadow-xl p-2.5 w-[148px] sm:w-[168px]">
                   <p className="text-[10px] font-bold text-slate-900 text-center mb-1.5">Välj en tid</p>
                   <CalendarWidget />
                 </div>
@@ -982,15 +982,15 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       <ReviewsSection variant="muted" />
 
       {/* ── FAQ ───────────────────────────────────────────── */}
-      <section className="bg-[#0e6efe] px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-[#111111] px-4 sm:px-6 py-16 sm:py-24">
         <div className="max-w-3xl mx-auto">
           <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3">Vanliga frågor</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-white tracking-[-0.02em] leading-[1.08]">
+            <p className="text-[11px] font-bold text-[#63d4e3] uppercase tracking-[0.22em] mb-3">Vanliga frågor</p>
+            <h2 className="text-[32px] sm:text-[44px] lg:text-[52px] font-black text-white tracking-[-0.04em] leading-[0.98]">
               Vanliga frågor – vi svarar rakt på sak.
             </h2>
           </div>
-          <div className="divide-y divide-white/15 border-y border-white/15">
+          <div className="divide-y divide-white/10 border-y border-white/10">
             {FAQ.map((item, idx) => {
               const open = openFaq === idx;
               return (
@@ -1094,8 +1094,7 @@ export default function HowItWorks({ onBackHome, onSell, showSeo = false, pageTi
       {scrolled && (
         <a
           href={PHONE_TEL}
-          className="md:hidden fixed bottom-4 left-3 right-3 z-40 flex items-center gap-3 px-4 h-[58px] rounded bg-[#0e6efe] active:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_8px_24px_rgba(14,110,254,0.45)] transition-all duration-200 animate-[slideUp_0.3s_ease-out] overflow-hidden"
-          style={{ background: 'linear-gradient(135deg,#1a7fff 0%,#0e6efe 50%,#0a57cc 100%)' }}
+          className="md:hidden fixed bottom-4 left-3 right-3 z-40 flex items-center gap-3 px-4 h-[58px] rounded-2xl bg-[#111111] active:bg-[#2a2a2a] text-white font-semibold text-[15px] shadow-lg transition-all duration-200 animate-[slideUp_0.3s_ease-out] overflow-hidden"
         >
           <div className="relative shrink-0">
             <img src={EXPERT_PHOTO} alt="Expert" className="w-9 h-9 rounded object-cover object-top border-2 border-white/30" />
@@ -1201,7 +1200,7 @@ function DirectStepsMobile({ steps, images }: { steps: Step[]; images: string[] 
                 height="188"
               />
               {/* Step number badge */}
-              <div className="absolute bottom-3 left-3 w-9 h-9 rounded-xl bg-[#0e6efe] flex items-center justify-center shadow-lg">
+              <div className="absolute bottom-3 left-3 w-9 h-9 rounded-xl bg-[#111111] flex items-center justify-center shadow-lg">
                 <span className="text-white text-[14px] font-bold tabular-nums">{i + 1}</span>
               </div>
             </div>
