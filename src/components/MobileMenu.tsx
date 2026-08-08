@@ -8,7 +8,7 @@ export type MobileMenuItem =
   | 'Bilköptjänsten'
   | 'Om oss'
   | 'Vi förhandlar åt dig'
-  | 'Bilköpshjälpen'
+  | 'Bilköptjänsten'
   | 'Guider'
   | 'Vanliga frågor'
   | 'Bilspara';

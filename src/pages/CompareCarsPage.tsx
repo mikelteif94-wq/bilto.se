@@ -1100,7 +1100,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
               Säljhjälpen
             </button>
             <span className="text-[15px] text-white font-semibold">
-              Bilköpshjälpen
+              Bilköptjänsten
             </span>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }}
               className="text-[15px] text-white/90 hover:text-white transition font-medium"
@@ -1119,7 +1119,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
-        active="Köp bil med hjälp"
+        active="Bilköptjänsten"
         onSelect={() => { setMenuOpen(false); }}
       />
 
@@ -1139,7 +1139,7 @@ export default function CompareCarsPage({ onBackHome, pageSlug = 'kop-bil', hero
         <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-36 pb-10 px-5 sm:px-8">
           <div className="w-full max-w-md sm:max-w-lg">
             <h1 className="text-white text-[clamp(24px,4vw,50px)] font-bold leading-[1.15] tracking-tight text-center drop-shadow-lg mb-4 sm:mb-5">
-              {heroTitle ?? 'Bilköpshjälpen – vi förhandlar, du bestämmer.'}
+              {heroTitle ?? 'Bilköptjänsten – vi förhandlar, du bestämmer.'}
             </h1>
             <p className="text-white/80 text-center text-[15px] sm:text-[17px] leading-relaxed mb-8 sm:mb-10 drop-shadow">
               {heroSubtitle ?? 'Vi kontaktar säljaren, förhandlar priset och granskar bilen åt dig. Betala bara vid affär.'}

@@ -326,7 +326,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             <button type="button" onClick={onBack}
               className="text-[15px] text-white/70 hover:text-white transition font-medium">
-              Köp bil
+              Bilköptjänsten
             </button>
             <span className="text-[15px] text-white font-bold underline underline-offset-4 decoration-white/50">
               Jämför bilar
@@ -350,7 +350,7 @@ export default function JamforBilarPage({ onBack, onNavigateBuy, initialIds = []
         </div>
       </header>
 
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} active="Köp bil med hjälp" />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} active="Bilköptjänsten" />
 
       {/* ── Blue hero ── */}
       <div className="bg-[#0e6efe]" style={{ background: 'linear-gradient(135deg, #0a57cc 0%, #0e6efe 60%, #1a7fff 100%)' }}>

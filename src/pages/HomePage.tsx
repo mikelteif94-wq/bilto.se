@@ -65,7 +65,7 @@ const SAVINGS_ITEMS = [
 const FAQS = [
   {
     q: 'Vad kostar det att använda Bilto?',
-    a: 'Bilköpshjälpen kostar 4 995 kr i fast avgift – betalas bara om affären blir av. Säljhjälpen är gratis för dig; vi tar en avgift av handlaren. Inga dolda kostnader, noll provision.',
+    a: 'Bilköptjänsten kostar 4 995 kr i fast avgift – betalas bara om affären blir av. Säljhjälpen är gratis för dig; vi tar en avgift av handlaren. Inga dolda kostnader, noll provision.',
   },
   {
     q: 'Hur hjälper Bilto mig att köpa bil?',
@@ -122,7 +122,7 @@ export default function HomePage({
       document.title = pageTitle;
     } else {
       setPageMeta({
-        title: 'Köp bil med expert – spara 15 000 kr eller mer | Bilto',
+        title: 'Bilköptjänsten – spara 15 000 kr eller mer | Bilto',
         description: 'Biltos experter hjälper dig hitta, förhandla och köpa rätt bil. Vi sköter kontakten med handlare åt dig – 4 995 kr om affären blir av.',
         canonical: 'https://bilto.se/',
       });
@@ -170,7 +170,7 @@ export default function HomePage({
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
     if (item === 'Sälj bil') { onNavigateSell?.(); return; }
-    if (item === 'Köp bil') { onNavigateBuy?.(); return; }
+    if (item === 'Bilköptjänsten') { onNavigateBuy?.(); return; }
     const routes: Partial<Record<MobileMenuItem, string>> = {
       'Guider': '/guider',
       'Vanliga frågor': '/vanliga-fragor',
@@ -188,7 +188,7 @@ export default function HomePage({
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
-        active="Köp bil"
+        active="Bilköptjänsten"
         onSelect={handleMenuSelect}
       />
 
@@ -218,7 +218,7 @@ export default function HomePage({
           </button>
           <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
             <button type="button" onClick={() => onNavigateSell?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">Sälj bil</button>
-            <button type="button" onClick={() => onNavigateBuy?.()} className="text-[15px] text-white font-semibold transition">Köp bil</button>
+            <button type="button" onClick={() => onNavigateBuy?.()} className="text-[15px] text-white font-semibold transition">Bilköptjänsten</button>
             <button type="button" onClick={() => onNavigateHowItWorks?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">Så funkar det</button>
           </nav>
           <div className="flex items-center ml-auto">

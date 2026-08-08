@@ -269,7 +269,7 @@ export default function SeoTopicPage({ topic, onBack, onNavigateConsultation, on
           <div className="flex flex-wrap gap-2">
             {[
               { label: 'Förhandla bil', path: '/forhandla-bil' },
-              { label: 'Bilköpshjälp', path: '/bilkopshjalp' },
+              { label: 'Bilköptjänsten', path: '/bilkopshjalp' },
               { label: 'Spara pengar på bilköp', path: '/spara-pengar-bilkop' },
               { label: 'Sänk månadskostnad', path: '/sank-manadskostnad-bil' },
               { label: 'Byta bil', path: '/byta-bil' },

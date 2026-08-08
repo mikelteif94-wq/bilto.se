@@ -30,7 +30,7 @@ const COMPARISON = [
 
 const PRICING = [
   { name: 'Gör det själv', price: '0 kr', detail: 'Du söker, jämför och förhandlar själv.', action: 'Sök själv', muted: true },
-  { name: 'Bilto Bilköpshjälp', price: '4 995 kr', detail: 'En personlig expert sköter hela bilaffären åt dig.', action: 'Kom igång', featured: true },
+  { name: 'Bilto Bilköptjänsten', price: '4 995 kr', detail: 'En personlig expert sköter hela bilaffären åt dig.', action: 'Kom igång', featured: true },
   { name: 'Kostnadsfritt samtal', price: '0 kr', detail: '15 minuter med någon i vårt team. Vi rekommenderar rätt väg.', action: 'Boka samtal', muted: true },
 ];
 
@@ -68,7 +68,7 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
     if (item === 'Sälj bil') { onBack(); return; }
     const routes: Partial<Record<MobileMenuItem, string>> = {
       'Bilköptjänsten': '/kop-bil',
-      'Bilköpshjälpen': '/kop-bil',
+      'Bilköptjänsten': '/kop-bil',
       'Guider': '/guider',
       'Vanliga frågor': '/vanliga-fragor',
     };
@@ -81,7 +81,7 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
 
   return (
     <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} active="Köp bil" onSelect={handleMenuSelect} />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} active="Bilköptjänsten" onSelect={handleMenuSelect} />
 
       <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
@@ -100,7 +100,7 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
         <section className="relative overflow-hidden bg-gradient-to-b from-[#e7f3ff] via-[#f2f8ff] to-[#f7f9fc] pt-32 sm:pt-40 pb-16 sm:pb-24">
           <div className="relative mx-auto w-full max-w-5xl px-5 sm:px-8">
             <div className="max-w-4xl mb-10 sm:mb-14">
-              <p className="text-[11px] sm:text-[12px] font-bold uppercase tracking-[0.2em] text-[#0e6efe] mb-4">Bilto Bilköpshjälp</p>
+              <p className="text-[11px] sm:text-[12px] font-bold uppercase tracking-[0.2em] text-[#0e6efe] mb-4">Bilto Bilköptjänsten</p>
               <h1 className="text-[32px] sm:text-[44px] lg:text-[52px] font-bold leading-[1.05] tracking-[-0.04em] text-slate-700">Vi förhandlar din nästa bil.<br /><span>Du hämtar nycklarna.</span></h1>
               <p className="mt-7 max-w-3xl text-[16px] sm:text-[19px] leading-[1.5] text-slate-500">En personlig bilexpert sköter sökning, research, förhandling och papper åt dig. Köp eller leasing, ny eller begagnad, alla märken.</p>
               <div className="mt-7 flex flex-wrap gap-3"><button type="button" onClick={() => openBuyDrawer()} className="inline-flex items-center gap-2 h-12 px-6 rounded-xl bg-[#0e6efe] text-white font-bold hover:bg-[#0a57cc] transition shadow-lg shadow-[#0e6efe]/20">Kom igång <ArrowRight className="w-5 h-5" /></button><a href="/gratis-konsultation" className="inline-flex items-center h-12 px-6 rounded-xl border border-slate-300 bg-white text-slate-700 font-semibold hover:border-[#0e6efe] transition">Boka ett gratis samtal</a></div>
