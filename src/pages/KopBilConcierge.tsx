@@ -264,7 +264,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             </a>
 
             <div className="mt-8 flex items-end gap-3 sm:gap-4">
-              <span className="text-[72px] sm:text-[92px] font-bold leading-none tracking-[-0.07em] text-slate-700">4 995 kr</span>
+              <span className="text-[48px] sm:text-[72px] font-bold leading-none tracking-[-0.07em] text-slate-700">4 995 kr</span>
               <span className="mb-2 text-[18px] sm:text-[25px] text-slate-500">fast, per bil</span>
             </div>
             <p className="mt-3 max-w-3xl text-[17px] sm:text-[21px] leading-[1.4] text-slate-500">
