@@ -64,6 +64,7 @@ const DealerProfile = lazy(() => import('./pages/DealerProfile'));
 const DealerIntegrationer = lazy(() => import('./pages/DealerIntegrationer'));
 const DealerValuationLeads = lazy(() => import('./pages/DealerValuationLeads'));
 const DealerApprovals = lazy(() => import('./pages/DealerApprovals'));
+const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
 
 // Dealer portal (new)
 const DealerAtgarder = lazy(() => import('./pages/DealerAtgarder'));
@@ -162,29 +163,19 @@ function detectRecovery(): boolean {
 
 function App() {
   const [publicRoute, setPublicRoute] = useState<PublicRoute>({ page: 'home' });
-  const [path, setPath] = useState(() => {
-    const p = window.location.pathname;
-    return p === '/gratis-konsultation' ? '/' : p;
-  });
+  const [path, setPath] = useState(() => window.location.pathname);
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [recoveryMode, setRecoveryMode] = useState<boolean>(detectRecovery());
   const [recoveryTarget, setRecoveryTarget] = useState<string>('/handlare/oversikt');
   const [adminVerified, setAdminVerified] = useState<boolean | null>(null);
-  const [consultationOpen, setConsultationOpen] = useState(() => window.location.pathname === '/gratis-konsultation');
+  const [consultationOpen, setConsultationOpen] = useState(false);
 
   const openConsultation = () => setConsultationOpen(true);
 
   useEffect(() => {
     const onPop = () => {
-      const p = window.location.pathname;
-      if (p === '/gratis-konsultation') {
-        setConsultationOpen(true);
-        window.history.replaceState({}, '', document.referrer ? document.referrer : '/');
-        setPath(window.location.pathname);
-        return;
-      }
-      setPath(p);
+      setPath(window.location.pathname);
     };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
@@ -207,14 +198,6 @@ function App() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [path]);
-
-  useEffect(() => {
-    if (path === '/gratis-konsultation') {
-      window.history.replaceState({}, '', '/');
-      setPath('/');
-      setConsultationOpen(true);
-    }
   }, [path]);
 
   useEffect(() => {
@@ -478,8 +461,13 @@ function App() {
   }
 
   if (path === '/gratis-konsultation') {
-    // Open drawer and redirect — handled via useEffect to avoid render-time state mutation
-    return null;
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <FreeConsultationPage
+          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
   }
 
   if (path === '/nya-bilar') {
