@@ -11,7 +11,6 @@ export type MobileMenuItem =
   | 'Vi förhandlar åt dig'
   | 'Bilköpshjälpen'
   | 'Guider'
-  | 'Priser'
   | 'Vanliga frågor'
   | 'Bilspara';
 

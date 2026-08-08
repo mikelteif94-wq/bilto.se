@@ -31,7 +31,6 @@ interface HomePageProps {
   onNavigateBuy?: (bil?: string) => void;
   onNavigateSell?: () => void;
   onNavigateHowItWorks?: () => void;
-  onNavigatePricing?: () => void;
   showSeo?: boolean;
   pageTitle?: string;
 }
@@ -61,39 +60,6 @@ const SAVINGS_ITEMS = [
   { label: 'Prisförhandling på bilen', amount: '8 000–12 000 kr', desc: 'Vi vet vad handlaren betalat och var marginalen finns – och utnyttjar det.' },
   { label: 'Ränterabatt på finansiering', amount: '3 000–6 000 kr', desc: 'Vi jämför och förhandlar räntan mot flera finansaktörer och pressar den nedåt.' },
   { label: 'Däck & tillval', amount: '2 000–4 000 kr', desc: 'Vinterdäck, golvmattor och service tas med i paketet – utan extrakostnad.' },
-];
-
-const PRICING_PLANS = [
-  {
-    name: 'Gratis värdering',
-    price: '0 kr',
-    period: 'alltid',
-    desc: 'Marknadsdata, bilmatch, värdering av din bil.',
-    features: ['Värdera din bil gratis', 'Förhandla ditt pris', 'Bilmatch-quiz'],
-    cta: 'Börja gratis',
-    highlight: false,
-    action: 'sell' as const,
-  },
-  {
-    name: 'Bilköpshjälpen',
-    price: '4 995 kr',
-    period: 'per affär',
-    desc: 'En expert söker, förhandlar och granskar åt dig – betalas bara om affären blir av.',
-    features: ['Söker hela marknaden', 'Förhandlar pris, ränta och tillval', 'Granskar historik och skick', 'Koordinerar hemleverans'],
-    cta: 'Skicka förfrågan',
-    highlight: true,
-    action: 'buy' as const,
-  },
-  {
-    name: 'Säljhjälpen',
-    price: '0 kr',
-    period: 'vi tar en avgift av handlaren',
-    desc: 'Granskade handlare konkurrerar om din bil. Du väljer bästa bud.',
-    features: ['Gratis värdering', 'Handlare bjuder mot varandra', 'Fri upphämtning', 'Pengar på kontot'],
-    cta: 'Värdera min bil',
-    highlight: false,
-    action: 'sell' as const,
-  },
 ];
 
 const FAQS = [
@@ -137,7 +103,6 @@ export default function HomePage({
   onNavigateBuy,
   onNavigateSell,
   onNavigateHowItWorks,
-  onNavigatePricing,
   showSeo = false,
   pageTitle,
 }: HomePageProps) {
@@ -208,7 +173,6 @@ export default function HomePage({
     if (item === 'Köp bil') { onNavigateBuy?.(); return; }
     const routes: Partial<Record<MobileMenuItem, string>> = {
       'Guider': '/guider',
-      'Priser': '/priser',
       'Vanliga frågor': '/vanliga-fragor',
       'Så funkar det': '/sa-funkar-det',
     };
@@ -217,11 +181,6 @@ export default function HomePage({
       window.history.pushState({}, '', route);
       window.dispatchEvent(new PopStateEvent('popstate'));
     }
-  };
-
-  const handlePlanCta = (action: 'buy' | 'sell') => {
-    if (action === 'buy') openBuyDrawer();
-    else onNavigateSell?.();
   };
 
   return (
@@ -261,7 +220,6 @@ export default function HomePage({
             <button type="button" onClick={() => onNavigateSell?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">Sälj bil</button>
             <button type="button" onClick={() => onNavigateBuy?.()} className="text-[15px] text-white font-semibold transition">Köp bil</button>
             <button type="button" onClick={() => onNavigateHowItWorks?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">Så funkar det</button>
-            <button type="button" onClick={() => onNavigatePricing?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">Priser</button>
           </nav>
           <div className="flex items-center ml-auto">
             <a
@@ -559,71 +517,6 @@ export default function HomePage({
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ── Pricing ── */}
-      <section className="bg-gradient-to-b from-[#f2f8ff] to-[#e7f3ff] py-16 sm:py-24 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12 max-w-2xl mx-auto">
-            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">Priser i korthet</span>
-            <h2 className="text-[27px] sm:text-[36px] font-bold leading-[1.1] tracking-[-0.03em] text-slate-700">
-              Från gör-det-själv till allt-fixat-åt-dig
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-5 sm:gap-6">
-            {PRICING_PLANS.map((plan) => (
-              <div
-                key={plan.name}
-                className={`relative rounded-2xl p-6 sm:p-7 flex flex-col transition-all duration-300 ${
-                  plan.highlight
-                    ? 'bg-[#e4efff]/60 border-2 border-[#0e6efe] shadow-[0_8px_30px_rgba(14,110,254,0.12)] lg:-translate-y-2'
-                    : 'bg-[#e4efff]/40 border border-[#69a8ff]/50 hover:border-[#69a8ff] hover:shadow-[0_8px_30px_rgba(14,110,254,0.08)]'
-                }`}
-              >
-                {plan.highlight && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#0e6efe] text-white text-[11px] font-bold uppercase tracking-wider whitespace-nowrap">
-                    Mest populärt
-                  </span>
-                )}
-                <h3 className="text-[16px] font-bold text-slate-700 mb-1">{plan.name}</h3>
-                <div className="flex items-baseline gap-1.5 mb-2">
-                  <span className="text-[28px] font-bold text-slate-700 tracking-tight">{plan.price}</span>
-                  <span className="text-[13px] text-slate-500">{plan.period}</span>
-                </div>
-                <p className="text-[13px] text-slate-500 leading-[1.6] mb-5">{plan.desc}</p>
-                <ul className="space-y-2.5 mb-6 flex-1">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2.5 text-[13px] text-slate-600">
-                      <Check className="w-4 h-4 text-[#0e6efe] shrink-0 mt-0.5" strokeWidth={2.5} />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  type="button"
-                  onClick={() => handlePlanCta(plan.action)}
-                  className={`w-full h-11 rounded-xl font-semibold text-[14px] transition whitespace-nowrap ${
-                    plan.highlight
-                      ? 'bg-[#0e6efe] text-white hover:bg-[#0a57cc] shadow-lg shadow-[#0e6efe]/25'
-                      : 'bg-white text-slate-700 hover:bg-slate-50 border border-[#69a8ff]/50'
-                  }`}
-                >
-                  {plan.cta}
-                </button>
-              </div>
-            ))}
-          </div>
-          <p className="text-center mt-8">
-            <button
-              type="button"
-              onClick={() => onNavigatePricing?.()}
-              className="inline-flex items-center gap-1 text-[14px] font-semibold text-[#0e6efe] hover:underline"
-            >
-              Se fullständig prisjämförelse
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </p>
         </div>
       </section>
 

@@ -56,7 +56,6 @@ const entries = [
   url('/kop-bil',       { priority: '0.9', changefreq: 'daily' }),
   url('/kop-bil-hjalp', { priority: '0.8' }),
   url('/kontakt',       { priority: '0.8' }),
-  url('/priser',        { priority: '0.8', changefreq: 'monthly' }),
   url('/vanliga-fragor',{ priority: '0.7', changefreq: 'monthly' }),
   url('/guider',        { priority: '0.8' }),
   url('/om-oss',        { priority: '0.6', changefreq: 'monthly' }),

@@ -52,7 +52,6 @@ const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 const VanligaFragorPage = lazy(() => import('./pages/VanligaFragorPage'));
-const PriserPage = lazy(() => import('./pages/PriserPage'));
 const GuidePage = lazy(() => import('./pages/GuidePage'));
 const BilsparaPage = lazy(() => import('./pages/BilsparaPage'));
 const DealerCampaigns = lazy(() => import('./pages/DealerCampaigns'));
@@ -627,16 +626,6 @@ function App() {
     );
   }
 
-  if (path === '/priser') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <PriserPage
-          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-        />
-      </Suspense>
-    );
-  }
-
   if (path === '/bilspara') {
     return (
       <Suspense fallback={<PageLoader />}>
@@ -786,7 +775,6 @@ function App() {
             }}
             onNavigateSell={() => { window.history.pushState({}, '', '/salj-bil'); setPath('/salj-bil'); }}
             onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
-            onNavigatePricing={() => { window.history.pushState({}, '', '/priser'); setPath('/priser'); }}
           />
         )}
         {publicRoute.page === 'sell' && (
