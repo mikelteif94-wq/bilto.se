@@ -26,7 +26,6 @@ export default function WebbplatskartaPage({ onBack }: WebbplatskartaPageProps) 
     { label: 'Om oss', path: '/om-oss', desc: 'Lär känna teamet bakom Bilto' },
     { label: 'Blogg', path: '/blogg', desc: 'Tips och råd för smarta bilaffärer' },
     { label: 'Bli handlare', path: '/handlare/registrera', desc: 'Ansök om att bli Bilto-handlare' },
-    { label: 'Förhandlare', path: '/forhandlare', desc: 'Hitta och kontakta Bilto-förhandlare' },
     { label: 'Logga in', path: '/logga-in', desc: 'Kundportal – se dina erbjudanden' },
     { label: 'Användarvillkor', path: '/anvandarvillkor', desc: 'Våra användarvillkor' },
     { label: 'Integritetspolicy', path: '/integritetspolicy', desc: 'Hur vi hanterar dina personuppgifter' },

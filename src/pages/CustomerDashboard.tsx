@@ -7,7 +7,6 @@ import {
   Car as CarIcon,
   Gift,
   Clock,
-  Calendar,
   CheckCircle2,
   ChevronRight,
   Phone,
@@ -26,7 +25,6 @@ import {
 import { supabase } from '../lib/supabase';
 import CustomerOfferCard from '../components/CustomerOfferCard';
 import PortalLayout from '../components/PortalLayout';
-import { CustomerBookingTimeline } from '../components/BookingTimeline';
 import { PHONE, PHONE_TEL } from '../config/site';
 
 const STATUS_META: Record<string, { label: string; step: number; color: string; bg: string; topColor: string }> = {
@@ -95,20 +93,6 @@ interface OfferRow {
   sent_at: string | null;
 }
 
-interface BookingRow {
-  id: string;
-  created_at: string;
-  booking_date: string;
-  booking_time: string;
-  syfte: string;
-  namn: string;
-  telefon: string;
-  email: string;
-  meddelande: string;
-  status: string;
-  forhandlare_slug: string;
-}
-
 interface QuoteRequestRow {
   id: string;
   created_at: string;
@@ -128,7 +112,6 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
   const [offers, setOffers] = useState<OfferRow[]>([]);
   const [bidsByCar, setBidsByCar] = useState<Record<string, BidRow[]>>({});
   const [quoteRequests, setQuoteRequests] = useState<QuoteRequestRow[]>([]);
-  const [bookings, setBookings] = useState<BookingRow[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const handleCopyLink = async (carId: string, token: string) => {
     const url = `${window.location.origin}/min-bil/${token}`;
@@ -169,20 +152,6 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
             .in('id', unviewed.map((o) => o.id))
             .then(() => {});
         }
-      }
-
-      // Fetch user email for booking matching
-      const { data: userData } = await supabase.auth.getUser();
-      const email = userData.user?.email ?? null;
-
-      // Fetch bookings matching this user's email
-      if (email) {
-        const { data: bookingRows } = await supabase
-          .from('consultation_bookings' as never)
-          .select('*')
-          .eq('email', email)
-          .order('created_at', { ascending: false }) as unknown as { data: BookingRow[] | null };
-        setBookings(bookingRows ?? []);
       }
 
       const { data: customerRows } = await supabase
@@ -355,65 +324,9 @@ export default function CustomerDashboard({ userId, onLoggedOut, onOpenCar }: Cu
               </div>
             )}
 
-            {/* Bookings with timeline */}
-            {bookings.length > 0 && (
-              <div>
-                <SectionLabel
-                  text="Mina bokningar"
-                  icon={<Calendar className="w-3.5 h-3.5 text-[#0e6efe]" />}
-                  badge={bookings.length}
-                />
-                <div className="space-y-4">
-                  {bookings.map(booking => {
-                    const syfteLabel: Record<string,string> = { kop_bil: 'Köpa bil', salj_bil: 'Sälja bil', inbyte: 'Inbyte', ovrig: 'Annat' };
-                    const bStatusMeta: Record<string, { label: string; cls: string; topColor: string }> = {
-                      pending:   { label: 'Väntar',    cls: 'bg-amber-50 border-amber-200 text-amber-700',    topColor: 'bg-amber-400' },
-                      confirmed: { label: 'Bekräftad', cls: 'bg-blue-50 border-blue-200 text-blue-700',     topColor: 'bg-[#0e6efe]' },
-                      completed: { label: 'Genomförd', cls: 'bg-emerald-50 border-emerald-200 text-emerald-700', topColor: 'bg-emerald-500' },
-                      cancelled: { label: 'Avbokad',   cls: 'bg-slate-100 border-slate-200 text-slate-600', topColor: 'bg-slate-300' },
-                    };
-                    const bMeta = bStatusMeta[booking.status] ?? bStatusMeta.pending;
-                    return (
-                      <div key={booking.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                        <div className={`h-0.5 w-full ${bMeta.topColor}`} />
-                        <div className="px-5 sm:px-6 pt-5 pb-4 flex items-start justify-between gap-4">
-                          <div>
-                            <div className="flex items-center gap-2 mb-1.5">
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded-xl text-[11px] font-semibold border ${bMeta.cls}`}>
-                                {bMeta.label}
-                              </span>
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900 leading-tight">
-                              {syfteLabel[booking.syfte] ?? booking.syfte}
-                            </h3>
-                            <div className="flex items-center gap-3 text-[12px] text-slate-500 mt-1 flex-wrap">
-                              <span className="inline-flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{booking.booking_date}</span>
-                              <span className="inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" />kl. {booking.booking_time}</span>
-                            </div>
-                          </div>
-                        </div>
-                        {booking.forhandlare_slug && (
-                          <div className="px-5 sm:px-6 pb-2">
-                            <p className="text-[11px] text-slate-400">Din rådgivare: {booking.forhandlare_slug}</p>
-                          </div>
-                        )}
-                        {/* Live timeline */}
-                        <div className="px-5 sm:px-6 pb-5 border-t border-slate-100 pt-4">
-                          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Tidslinje</p>
-                          <CustomerBookingTimeline bookingId={booking.id} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
             {/* Cars */}
-            {cars.length === 0 && bookings.length === 0 ? (
+            {cars.length === 0 ? (
               <EmptyState />
-            ) : cars.length === 0 ? (
-              <div />
             ) : (
               <div>
                 <SectionLabel

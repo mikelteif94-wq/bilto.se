@@ -54,7 +54,6 @@ export function SiteFooter() {
                 { label: 'Sälj din bil', href: '/salj-bil' },
                 { label: 'Köp bil med hjälp', href: '/kop-bil' },
                 { label: 'Bli handlare', href: '/handlare/registrera' },
-                { label: 'Förhandlare', href: '/forhandlare' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <a href={href} className="text-[13.5px] text-slate-500 hover:text-white transition-colors duration-200 hover:pl-1 inline-block transition-all">{label}</a>

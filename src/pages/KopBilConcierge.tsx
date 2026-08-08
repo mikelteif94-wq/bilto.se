@@ -9,16 +9,7 @@ import {
   Menu,
   Banknote,
   Clock,
-  Star,
-  MapPin,
-  Users,
-  TrendingUp,
-  Shield,
-  ChevronRight,
-  Gauge,
-  Scale,
 } from 'lucide-react';
-import { FALLBACK_FORHANDLARE } from '../lib/forhandlare-data';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { setPageMeta } from '../lib/pageMeta';
@@ -282,12 +273,18 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 <button
                   type="button"
                   onClick={() => openBuyDrawer()}
-                  className="w-full h-11 rounded-xl bg-[#0e6efe] text-white font-bold text-[15px] hover:bg-[#0a57cc] transition inline-flex items-center justify-center gap-2 group"
                 >
                   Få prishjälp
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
                 </button>
-                <p className="text-center text-slate-400 text-[12px]">Från 4995 kr – betalas bara om affären blir av</p>
+                <p className="text-center text-slate-400 text-[12px]">Fast pris 4&nbsp;995 kr – betalas bara om affären blir av</p>
+                <a
+                  href={PHONE_TEL}
+                  className="w-full h-11 rounded-xl border border-slate-200 text-slate-600 font-medium text-[14px] hover:bg-[#faf8f5] transition inline-flex items-center justify-center gap-2"
+                >
+                  <Phone className="w-4 h-4 shrink-0" />
+                  Ring oss: {PHONE}
+                </a>
               </div>
             </div>
 
@@ -300,52 +297,86 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Grundlig genomgång ── */}
-      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-14 sm:py-20 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10 sm:mb-14 max-w-2xl mx-auto">
-            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-12 sm:py-20 px-4 sm:px-6 overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8 sm:mb-16 max-w-3xl mx-auto px-2">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
               Grundlig genomgång
             </span>
-            <h2 className="text-[26px] sm:text-[40px] font-semibold leading-[1.12] sm:leading-[1.06] text-slate-900 tracking-[-0.02em]">
+            <h2 className="text-[24px] sm:text-[48px] font-semibold leading-[1.15] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
               Vi granskar varje detalj – så slipper du oroa dig
             </h2>
-            <p className="text-slate-600 mt-4 sm:mt-5 text-[15px] sm:text-[17px] leading-[1.6]">
+            <p className="text-slate-600 mt-4 sm:mt-6 text-[15px] sm:text-[18px] leading-[1.6] max-w-2xl mx-auto">
               Innan vi rekommenderar en bil till dig går vi igenom fem kritiska datapunkter. Inget lämnas åt slumpen.
             </p>
           </div>
 
-          {/* Infographic + points */}
-          <div className="flex flex-col items-center lg:flex-row lg:items-center lg:justify-center gap-8 sm:gap-10 mb-10 sm:mb-14">
-            <img
-              src="/infographic_antal_agare.svg"
-              alt="Infografik: antal ägare och bilhistorik"
-              className="w-40 h-40 sm:w-56 sm:h-56 lg:w-64 lg:h-64 shrink-0"
-              loading="lazy"
-              decoding="async"
-              width="256"
-              height="256"
-            />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 w-full max-w-xl">
+          {/* Mobile */}
+          <div className="lg:hidden">
+            <div className="flex items-center justify-center mb-6">
+              <img
+                src="/infographic_antal_agare.svg"
+                alt="Infografik: antal ägare och bilhistorik"
+                className="w-full max-w-[340px] h-auto"
+                loading="lazy"
+                decoding="async"
+                width="340"
+                height="340"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               {[
-                { icon: ShieldCheck, label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
-                { icon: Users, label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
-                { icon: Gauge, label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket.' },
-                { icon: MapPin, label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
-                { icon: Scale, label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
-              ].map((point) => {
-                const Icon = point.icon;
-                return (
-                  <div key={point.label} className="flex items-start gap-3">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center shrink-0">
-                      <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#0e6efe]" strokeWidth={2} />
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className="text-[14px] sm:text-[15px] font-semibold text-slate-900 mb-0.5">{point.label}</h4>
-                      <p className="text-[12px] sm:text-[13px] text-slate-500 leading-[1.5]">{point.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
+                { label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
+                { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
+                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket.' },
+                { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
+                { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
+              ].map((point) => (
+                <div key={point.label}>
+                  <h4 className="text-[14px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[12px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop */}
+          <div className="hidden lg:grid lg:grid-cols-5 gap-12 items-center">
+            <div className="lg:col-span-1 space-y-8">
+              {[
+                { label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
+                { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
+              ].map((point) => (
+                <div key={point.label} className="text-right">
+                  <h4 className="text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="lg:col-span-3 flex items-center justify-center">
+              <img
+                src="/infographic_antal_agare.svg"
+                alt="Infografik: antal ägare och bilhistorik"
+                className="w-full max-w-[700px] h-auto"
+                loading="lazy"
+                decoding="async"
+                width="700"
+                height="700"
+              />
+            </div>
+
+            <div className="lg:col-span-1 space-y-8">
+              {[
+                { label: 'Bilens skick', desc: 'Från lack och inredning till maskinellt och elektronik – vi bedömer det faktiska skicket.' },
+                { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
+                { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
+              ].map((point) => (
+                <div key={point.label}>
+                  <h4 className="text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -511,105 +542,6 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
           <SavingsInfoBox />
         </div>
       </section>
-      {/* ── Förhandlare ── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24 border-t border-slate-100">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 sm:mb-12">
-            <div>
-              <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Certifierade förhandlare</p>
-              <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
-                Välj din expert – eller låt oss matcha dig
-              </h2>
-              <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
-                Alla förhandlare är certifierade, bakgrundskontrollerade och betygsatta baserat på verkliga affärer. Du betalar bara om affären blir av.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => { window.history.pushState({}, '', '/forhandlare'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-              className="shrink-0 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#0e6efe] hover:underline whitespace-nowrap"
-            >
-              Se alla förhandlare
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {FALLBACK_FORHANDLARE.slice(0, 3).map((f) => (
-              <button
-                key={f.id}
-                type="button"
-                onClick={() => { window.history.pushState({}, '', `/f/${f.slug}`); window.dispatchEvent(new PopStateEvent('popstate')); }}
-                className="group bg-white rounded-2xl border border-slate-200 hover:border-[#0e6efe]/40 hover:shadow-lg hover:shadow-blue-50 transition-all duration-200 text-left p-5 active:scale-[0.99]"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-slate-200 to-slate-300 shrink-0 overflow-hidden">
-                    {f.avatar_url && (
-                      <img src={f.avatar_url} alt={f.name} className="w-full h-full object-cover" loading="lazy" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[15px] font-bold text-slate-900 truncate">{f.name}</span>
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold border ${
-                        f.certifiering === 'Master' ? 'bg-amber-100 text-amber-800 border-amber-200' :
-                        f.certifiering === 'Elite'  ? 'bg-blue-100 text-[#0e6efe] border-blue-200' :
-                        'bg-emerald-100 text-emerald-800 border-emerald-200'
-                      }`}>
-                        <Shield className="w-3 h-3" />
-                        {f.certifiering}
-                      </span>
-                    </div>
-                    {f.city && (
-                      <div className="flex items-center gap-1 mt-0.5 text-[12px] text-slate-400">
-                        <MapPin className="w-3 h-3 shrink-0" />
-                        {f.city}
-                      </div>
-                    )}
-                    <div className="flex items-center gap-4 mt-2 flex-wrap">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                        <span className="text-[13px] font-bold text-slate-800">{f.rating.toFixed(1)}</span>
-                        <span className="text-[12px] text-slate-400">({f.review_count})</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-[12px] text-slate-500">
-                        <Users className="w-3.5 h-3.5" />
-                        {f.deal_count} affärer
-                      </div>
-                      <div className="flex items-center gap-1 text-[12px] text-emerald-700 font-semibold">
-                        <TrendingUp className="w-3.5 h-3.5" />
-                        {(f.avg_saving_kr / 1000).toFixed(0)} tkr snitt
-                      </div>
-                    </div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] shrink-0 mt-1 transition-colors" />
-                </div>
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100">
-                  <span className="text-[12px] text-slate-400">{f.specialties.slice(0, 2).join(' · ')}</span>
-                  <span className="text-[13px] font-bold text-slate-900">{f.fee_kr.toLocaleString('sv-SE')} kr</span>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-8 flex flex-col sm:flex-row items-center gap-4 p-6 bg-white rounded-2xl border border-slate-200">
-            <div className="flex-1">
-              <p className="text-[15px] font-bold text-slate-900">Osäker på vilken förhandlare som passar dig?</p>
-              <p className="text-[13px] text-slate-500 mt-1">Vi matchar dig automatiskt baserat på din situation – kostnadsfritt.</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => { window.history.pushState({}, '', '/forhandlare'); window.dispatchEvent(new PopStateEvent('popstate')); }}
-              className="shrink-0 inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl text-white font-bold text-[14px] transition active:scale-[0.98]"
-              style={{ background: 'linear-gradient(135deg,#1a7fff 0%,#0e6efe 60%,#0a57cc 100%)', boxShadow: '0 4px 16px rgba(14,110,254,0.28)' }}
-            >
-              Se alla förhandlare
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </section>
-
 
       {/* ── CTA band ── */}
       <section className="bg-white px-4 sm:px-6 py-12 sm:py-16">

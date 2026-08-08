@@ -524,7 +524,15 @@ export default function BuyCarPage({
                 </div>
               </div>
 
-
+              <div className="text-center">
+                <a
+                  href={PHONE_TEL}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-100 text-slate-700 text-[14px] font-medium hover:bg-slate-200 transition"
+                >
+                  <Phone className="w-4 h-4" />
+                  Ring oss direkt: {PHONE}
+                </a>
+              </div>
             </div>
           )}
         </div>
@@ -532,7 +540,15 @@ export default function BuyCarPage({
 
       {step === 'track' && <BuyFlowFAQ variant="buy" />}
 
-
+      {scrolled && step !== 'done' && (
+        <a
+          href={PHONE_TEL}
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3 rounded-full bg-[#0e6efe] text-white text-[13px] font-semibold shadow-lg hover:bg-[#0a57cc] transition-all"
+        >
+          <Phone className="w-4 h-4" />
+          Ring oss
+        </a>
+      )}
 
       {guidanceOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4 py-6">

@@ -5,8 +5,6 @@ import type { Session } from '@supabase/supabase-js';
 import { slugToCity, slugToBrand } from './lib/seo-pages';
 import { slugToTopic } from './lib/seo-topics';
 import ConsultationDrawer from './components/ConsultationDrawer';
-import { captureAttribution } from './lib/attribution';
-import type { Forhandlare } from './lib/forhandlare.types';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
@@ -78,14 +76,6 @@ const DealerProvisioner = lazy(() => import('./pages/DealerProvisioner'));
 const BudPage = lazy(() => import('./pages/BudPage'));
 const AvtalPage = lazy(() => import('./pages/AvtalPage'));
 
-// Förhandlare
-const ForhandlarListPage = lazy(() => import('./pages/ForhandlarListPage'));
-const ForhandlarProfilPage = lazy(() => import('./pages/ForhandlarProfilPage'));
-const ForhandlareOnboarding = lazy(() => import('./pages/ForhandlareOnboarding'));
-const ForhandlareLogin = lazy(() => import('./pages/ForhandlareLogin'));
-const ForhandlarePortal = lazy(() => import('./pages/ForhandlarePortal'));
-const AdminForhandlareApplications = lazy(() => import('./pages/AdminForhandlareApplications'));
-
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
     <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
@@ -151,11 +141,6 @@ function matchAvtalToken(path: string): string | null {
   return m ? decodeURIComponent(m[1]) : null;
 }
 
-function matchForhandlarProfil(path: string): string | null {
-  const m = path.match(/^\/f\/([a-z0-9-]+)\/?$/);
-  return m ? decodeURIComponent(m[1]) : null;
-}
-
 function matchMyCar(path: string): string | null {
   const m = path.match(/^\/min-bil\/([^/]+)\/?$/);
   return m ? decodeURIComponent(m[1]) : null;
@@ -187,15 +172,8 @@ function App() {
   const [recoveryTarget, setRecoveryTarget] = useState<string>('/handlare/oversikt');
   const [adminVerified, setAdminVerified] = useState<boolean | null>(null);
   const [consultationOpen, setConsultationOpen] = useState(() => window.location.pathname === '/gratis-konsultation');
-  const [consultationForhandlare, setConsultationForhandlare] = useState<Forhandlare | null>(null);
 
-  const openConsultation = (forhandlare?: Forhandlare) => {
-    setConsultationForhandlare(forhandlare ?? null);
-    setConsultationOpen(true);
-  };
-
-  // Capture ?via= attribution on every navigation
-  useEffect(() => { captureAttribution(); }, [path]);
+  const openConsultation = () => setConsultationOpen(true);
 
   useEffect(() => {
     const onPop = () => {
@@ -304,10 +282,6 @@ function App() {
   const onAdminRoute = path.startsWith('/admin');
   const onDealerRegister = path === '/handlare/registrera';
   const onDealerApply = path === '/handlare/ansok';
-  const onForhandlareRegister = path === '/forhandlare/registrera';
-  const onForhandlareApply = path === '/forhandlare/ansok';
-  const onForhandlareLogin = path === '/forhandlare/logga-in';
-  const onForhandlarePortal = path === '/forhandlare/portal';
   const onDealerLogin = path === '/handlare/logga-in';
   const onDealerApp =
     path === '/handlare' ||
@@ -426,47 +400,6 @@ function App() {
     );
   }
 
-  if (onForhandlareRegister) {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <ForhandlareOnboarding mode="landing" onBack={() => navigate('/')} onNavigateApply={() => navigate('/forhandlare/ansok')} />
-      </Suspense>
-    );
-  }
-
-  if (onForhandlareApply) {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <ForhandlareOnboarding mode="form" onBack={() => navigate('/forhandlare/registrera')} />
-      </Suspense>
-    );
-  }
-
-  if (onForhandlareLogin) {
-    if (authLoading) return <PageLoader />;
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <ForhandlareLogin
-          onLoggedIn={() => navigate('/forhandlare/portal')}
-          onBack={() => navigate('/forhandlare')}
-        />
-      </Suspense>
-    );
-  }
-
-  if (onForhandlarePortal) {
-    if (authLoading) return <PageLoader />;
-    if (!session) { navigate('/forhandlare/logga-in'); return null; }
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <ForhandlarePortal
-          userId={session.user.id}
-          onLoggedOut={() => { sessionStorage.removeItem('bilto_portal'); navigate('/forhandlare/logga-in'); }}
-        />
-      </Suspense>
-    );
-  }
-
   if (onDealerLogin) {
     if (authLoading) return <PageLoader />;
     return (
@@ -529,7 +462,6 @@ function App() {
       else if (page === 'katalog') navigate('/admin/katalog');
       else if (page === 'bokningar') navigate('/admin/bokningar');
       else if (page === 'handlarpool') navigate('/admin/handlarpool');
-      else if (page === 'forhandlare-ansokningar') navigate('/admin/forhandlare-ansokningar');
     };
 
     return (
@@ -548,39 +480,6 @@ function App() {
   if (path === '/gratis-konsultation') {
     // Open drawer and redirect — handled via useEffect to avoid render-time state mutation
     return null;
-  }
-
-  if (path === '/forhandlare') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <>
-          <ForhandlarListPage
-            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-            onSelectForhandlare={(slug) => { window.history.pushState({}, '', `/f/${slug}`); setPath(`/f/${slug}`); }}
-            onOpenConsultation={() => openConsultation()}
-          />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
-        </>
-      </Suspense>
-    );
-  }
-
-  const forhandlarSlug = matchForhandlarProfil(path);
-  if (forhandlarSlug) {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <>
-          <ForhandlarProfilPage
-            slug={forhandlarSlug}
-            onBack={() => { window.history.pushState({}, '', '/forhandlare'); setPath('/forhandlare'); }}
-            onOpenConsultation={(f) => openConsultation(f)}
-            onNavigateBuy={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
-            onNavigateSell={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: '' }); }}
-          />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
-        </>
-      </Suspense>
-    );
   }
 
   if (path === '/nya-bilar') {
@@ -611,7 +510,7 @@ function App() {
             source={buySource}
             onBack={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
         </>
       </Suspense>
     );
@@ -622,7 +521,7 @@ function App() {
       <Suspense fallback={<PageLoader />}>
         <>
           <UtforskaSida onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }} />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
         </>
       </Suspense>
     );
@@ -644,7 +543,7 @@ function App() {
               setPath('/sa-funkar-det');
             }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
         </>
       </Suspense>
     );
@@ -670,7 +569,7 @@ function App() {
           <AboutPage
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
         </>
       </Suspense>
     );
@@ -711,7 +610,7 @@ function App() {
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
             onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
         </>
       </Suspense>
     );
@@ -793,7 +692,7 @@ function App() {
               onNavigateConsultation={openConsultation}
               onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
             />
-            <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+            <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
           </>
         </Suspense>
       );
@@ -852,7 +751,7 @@ function App() {
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
             onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
         </>
       </Suspense>
     );
@@ -1069,14 +968,6 @@ function AdminRoutes({ path, setPath, session, adminNavigate }: AdminRoutesProps
 
   if (path === '/admin/handlarpool') {
     return <AdminHandlarpool onLoggedOut={() => navigate('/admin')} onNavigate={adminNavigate} />;
-  }
-
-  if (path === '/admin/forhandlare-ansokningar') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <AdminForhandlareApplications onBack={() => navigate('/admin/oversikt')} onNavigate={adminNavigate} />
-      </Suspense>
-    );
   }
 
   if (path !== '/admin/bilar') {

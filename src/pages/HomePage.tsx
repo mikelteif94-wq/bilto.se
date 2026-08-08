@@ -207,18 +207,6 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
             >
               Så funkar det
             </a>
-            <a
-              href="/guider"
-              className={`text-[15px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
-            >
-              Guider
-            </a>
-            <a
-              href="/om-oss"
-              className={`text-[15px] font-medium transition ${scrolled ? 'text-slate-700 hover:text-slate-900' : 'text-white/70 hover:text-white'}`}
-            >
-              Om oss
-            </a>
           </nav>
           <div className="ml-auto flex items-center gap-3">
             <a

@@ -31,20 +31,12 @@ export default function Navigation({ currentPage, onNavigate }: NavigationProps)
 
         <div className="flex items-center gap-2">
           {currentPage === 'home' && (
-            <>
-              <button
-                onClick={() => onNavigate('home')}
-                className="px-4 py-2 text-white/80 text-[14px] font-medium hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
-              >
-                Start
-              </button>
-              <a
-                href="/forhandlare"
-                className="px-4 py-2 text-white/80 text-[14px] font-medium hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
-              >
-                Förhandlare
-              </a>
-            </>
+            <button
+              onClick={() => onNavigate('home')}
+              className="px-4 py-2 text-white/80 text-[14px] font-medium hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+            >
+              Start
+            </button>
           )}
         </div>
       </div>

@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Calendar, Clock, Phone, Mail, User, ChevronDown, Check, Search, RefreshCw, MessageSquare } from 'lucide-react';
+import { Calendar, Clock, Phone, Mail, User, ChevronDown, Check, Search, RefreshCw } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAdminNav } from '../hooks/useAdminNav';
 import PortalLayout from '../components/PortalLayout';
-import { CustomerBookingTimeline } from '../components/BookingTimeline';
 
 interface AdminConsultationBookingsProps {
   onNavigate: (page: import('../hooks/useAdminNav').AdminPage) => void;
@@ -217,15 +216,6 @@ export default function AdminConsultationBookings({ onNavigate }: AdminConsultat
                           {b.meddelande}
                         </div>
                       )}
-
-                      {/* Timeline — admin can see updates posted by förhandlare */}
-                      <div className="mt-3 border-t border-slate-100 pt-3">
-                        <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                          <MessageSquare className="w-3 h-3" />
-                          Tidslinje
-                        </p>
-                        <CustomerBookingTimeline bookingId={b.id} />
-                      </div>
                     </div>
 
                     {/* Status changer – desktop only */}
