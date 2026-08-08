@@ -300,7 +300,7 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-10">
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-blue-300 mb-3">Siffrorna talar för sig själva</p>
-              <h2 className="text-[28px] sm:text-[40px] font-bold tracking-[-0.04em]">Riktiga besparingar. Riktiga affärer.</h2>
+              <h2 className="text-[28px] sm:text-[40px] font-bold tracking-[-0.04em] text-white">Riktiga besparingar. Riktiga affärer.</h2>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               {STATS.map((stat) => (
@@ -395,15 +395,15 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
         {/* FAQ */}
         <section className="bg-[#172b63] px-5 sm:px-8 py-16 sm:py-24 text-white">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-center text-[28px] sm:text-[40px] font-bold tracking-[-0.04em]">Vanliga frågor</h2>
-            <p className="mt-3 text-center text-[15px] text-blue-200">Frågorna vi får oftast innan kunder kommer igång. Saknas något? Teamet finns ett samtal bort.</p>
+            <h2 className="text-center text-[28px] sm:text-[40px] font-bold tracking-[-0.04em] text-white">Vanliga frågor</h2>
+            <p className="mt-3 text-center text-[15px] text-blue-100">Frågorna vi får oftast innan kunder kommer igång. Saknas något? Teamet finns ett samtal bort.</p>
             <div className="mt-10 divide-y divide-white/15">
               {FAQS.map((faq, i) => {
                 const open = openFaq === i;
                 return (
                   <button key={faq.q} type="button" onClick={() => setOpenFaq(open ? null : i)} className="w-full py-5 text-left flex items-start gap-4">
                     <div className="flex-1">
-                      <h3 className="text-[16px] sm:text-[18px] font-semibold">{faq.q}</h3>
+                      <h3 className="text-[16px] sm:text-[18px] font-semibold text-white">{faq.q}</h3>
                       {open && <p className="mt-3 text-[14px] sm:text-[16px] leading-[1.6] text-blue-100">{faq.a}</p>}
                     </div>
                     <ChevronDown className={`w-5 h-5 shrink-0 mt-0.5 text-blue-200 transition-transform ${open ? 'rotate-180' : ''}`} />
