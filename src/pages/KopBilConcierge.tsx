@@ -245,41 +245,41 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             </p>
           </div>
 
-          <div className="relative max-w-4xl rounded-[28px] border-2 border-[#69a8ff] bg-[#e4efff]/80 px-6 pb-8 pt-12 sm:px-10 sm:pb-12 sm:pt-14 shadow-[0_20px_60px_rgba(14,110,254,0.12)]">
-            <div className="absolute -top-5 left-6 sm:left-10 inline-flex items-center gap-2 rounded-full bg-[#237cf5] px-4 py-2 text-[15px] sm:text-[18px] font-bold leading-none text-white shadow-md">
+          <div className="relative max-w-4xl rounded-[28px] border border-[#69a8ff] bg-[#e4efff]/80 px-5 pb-7 pt-11 sm:px-10 sm:pb-10 sm:pt-12 shadow-[0_20px_60px_rgba(14,110,254,0.12)]">
+            <div className="absolute -top-4 left-5 sm:left-10 inline-flex items-center gap-2 rounded-full bg-[#237cf5] px-3.5 py-2 text-[13px] sm:text-[15px] font-bold leading-none text-white shadow-md">
               <span aria-hidden className="text-[19px] leading-none">✣</span>
               Fullservice, personlig
             </div>
 
-            <h2 className="text-[30px] sm:text-[42px] font-bold leading-tight tracking-[-0.045em] text-slate-700">
+            <h2 className="text-[27px] sm:text-[36px] font-bold leading-tight tracking-[-0.04em] text-slate-700">
               Bilto Bilköpshjälp
             </h2>
-            <p className="mt-4 max-w-3xl text-[18px] sm:text-[23px] leading-[1.4] text-slate-500">
+            <p className="mt-3 max-w-3xl text-[16px] sm:text-[19px] leading-[1.5] text-slate-500">
               En personlig expert från vårt team sköter allt, från början till slut. Du skriver på pappren och hämtar nycklarna.
             </p>
 
-            <a href="/om-oss" className="mt-6 inline-flex items-center gap-2 text-[16px] sm:text-[20px] font-medium text-[#0e6efe] hover:text-[#0a57cc] transition">
+            <a href="/om-oss" className="mt-5 inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] sm:text-[17px] font-medium text-[#0e6efe] hover:text-[#0a57cc] transition">
               Lär känna teamet <ArrowRight className="h-5 w-5" />
               <span className="text-slate-500">År på handlarens sida. Nu på din.</span>
             </a>
 
-            <div className="mt-8 flex items-end gap-3 sm:gap-4">
-              <span className="text-[48px] sm:text-[72px] font-bold leading-none tracking-[-0.07em] text-slate-700">4 995 kr</span>
-              <span className="mb-2 text-[18px] sm:text-[25px] text-slate-500">fast, per bil</span>
+            <div className="mt-7 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="whitespace-nowrap text-[44px] sm:text-[62px] font-bold leading-none tracking-[-0.06em] text-slate-700">4 995 kr</span>
+              <span className="text-[15px] sm:text-[19px] text-slate-500">fast, per bil</span>
             </div>
-            <p className="mt-3 max-w-3xl text-[17px] sm:text-[21px] leading-[1.4] text-slate-500">
+            <p className="mt-3 max-w-3xl text-[15px] sm:text-[18px] leading-[1.5] text-slate-500">
               En avgift täcker hela sökningen. Alla märken, alla modeller – jämför hur många du vill.
             </p>
 
-            <ul className="mt-9 space-y-5 sm:space-y-6">
+            <ul className="mt-8 space-y-4 sm:space-y-5">
               {[
                 'En personlig mänsklig expert tilldelad dig',
                 'Vi koordinerar research, förhandling, papper och leverans',
                 'Hanterar handlarens samtal, mejl och det finstilta',
                 'Personligt: vi slutar inte förrän du sitter i bilen',
               ].map((point) => (
-                <li key={point} className="flex items-start gap-4 text-[17px] sm:text-[22px] leading-[1.35] text-slate-600">
-                  <Check className="mt-1 h-5 w-5 shrink-0 text-[#0e6efe] sm:h-6 sm:w-6" strokeWidth={2.5} />
+                <li key={point} className="flex items-start gap-3 text-[15px] sm:text-[18px] leading-[1.45] text-slate-600">
+                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#0e6efe]" strokeWidth={2.5} />
                   <span>{point}</span>
                 </li>
               ))}
@@ -288,7 +288,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={() => openBuyDrawer()}
-              className="mt-10 flex h-16 w-full items-center justify-center gap-3 rounded-2xl bg-[#0e6efe] px-5 text-[17px] sm:text-[21px] font-semibold text-white shadow-lg shadow-[#0e6efe]/25 transition hover:bg-[#0a57cc] hover:shadow-xl"
+              className="mt-9 flex h-14 sm:h-15 w-full items-center justify-center gap-3 rounded-2xl bg-[#0e6efe] px-5 text-[15px] sm:text-[18px] font-semibold text-white shadow-lg shadow-[#0e6efe]/25 transition hover:bg-[#0a57cc] hover:shadow-xl"
             >
               Kom igång med Bilto Bilköpshjälp
               <ArrowRight className="h-6 w-6" />
