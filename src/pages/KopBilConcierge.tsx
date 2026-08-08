@@ -5,10 +5,10 @@ import {
   ChevronDown,
   Phone,
   ShieldCheck,
-  Handshake,
   Menu,
   Banknote,
   Clock,
+  TrendingDown,
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
@@ -67,22 +67,24 @@ const SAVINGS_ITEMS = [
   { label: 'Däck & tillval', amount: '2 000–4 000 kr', desc: 'Vinterdäck, golvmattor och service tas med i paketet – utan extrakostnad.' },
 ];
 
-/* ── Shared type scale (matches hero) ──
-   Section h2:  text-[27px] sm:text-[36px]
-   Section sub: text-[16px] sm:text-[19px]
-   Card title:  text-[15px] sm:text-[17px]
-   Card body:   text-[14px] sm:text-[15px]
-   Label:       text-[11px] sm:text-[12px] uppercase tracking-[0.18em]
+/* ── Shared design system (matches hero) ──
+   Backgrounds:  #e7f3ff → #f2f8ff → #faf8f5 (hero gradient)
+   Cards:        bg-[#e4efff]/80, border-[#69a8ff]
+   Primary:      #0e6efe
+   Dark:         #0a57cc
+   Badge:        #237cf5
+   Text:         slate-700 / slate-500 / slate-600
+   Label:        text-[11px] sm:text-[12px] uppercase tracking-[0.18em] text-[#0e6efe]
 */
 
 function SavingsInfoBox() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="mt-10 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-      <div className="bg-[#0e6efe] px-5 sm:px-8 py-6 sm:py-7">
+    <div className="mt-10 rounded-2xl overflow-hidden border border-[#69a8ff] shadow-[0_8px_30px_rgba(14,110,254,0.08)]">
+      <div className="bg-gradient-to-br from-[#0e6efe] to-[#0a57cc] px-5 sm:px-8 py-6 sm:py-7">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
-            <Banknote className="w-4 h-4 text-white" strokeWidth={2} />
+            <TrendingDown className="w-4 h-4 text-white" strokeWidth={2} />
           </div>
           <p className="text-[11px] sm:text-[12px] font-semibold text-white/70 uppercase tracking-[0.18em]">Vad vi förhandlar fram</p>
         </div>
@@ -103,25 +105,25 @@ function SavingsInfoBox() {
       </div>
 
       {open && (
-        <div className="bg-white divide-y divide-slate-100">
+        <div className="bg-[#e4efff]/40 divide-y divide-[#69a8ff]/20">
           {SAVINGS_ITEMS.map((item) => (
             <div key={item.label} className="flex items-center gap-4 px-5 sm:px-8 py-4 sm:py-5">
-              <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/[0.08] flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/[0.1] flex items-center justify-center shrink-0">
                 <Check className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.5} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-semibold text-slate-900 leading-snug">{item.label}</p>
+                <p className="text-[14px] font-semibold text-slate-700 leading-snug">{item.label}</p>
                 <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5 leading-snug">{item.desc}</p>
               </div>
               <span className="text-[13px] sm:text-[14px] font-bold text-[#0e6efe] shrink-0 tabular-nums">{item.amount}</span>
             </div>
           ))}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 px-5 sm:px-8 py-4 sm:py-5 bg-slate-50">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 px-5 sm:px-8 py-4 sm:py-5 bg-[#e4efff]/60">
             <p className="text-[13px] sm:text-[14px] font-semibold text-slate-700">Typisk total besparing per affär</p>
-            <span className="text-[18px] sm:text-[20px] font-bold text-slate-900 tabular-nums">13 000–22 000 kr</span>
+            <span className="text-[18px] sm:text-[20px] font-bold text-slate-700 tabular-nums">13 000–22 000 kr</span>
           </div>
-          <div className="bg-slate-50 border-t border-slate-100 px-5 sm:px-8 py-3">
-            <p className="text-[11px] text-slate-400 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
+          <div className="bg-[#e4efff]/60 border-t border-[#69a8ff]/20 px-5 sm:px-8 py-3">
+            <p className="text-[11px] text-slate-500 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
           </div>
         </div>
       )}
@@ -306,13 +308,13 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Grundlig genomgång ── */}
-      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-12 sm:py-20 px-5 sm:px-8 overflow-hidden">
+      <section className="bg-gradient-to-b from-[#f2f8ff] via-[#e7f3ff] to-[#f2f8ff] py-12 sm:py-20 px-5 sm:px-8 overflow-hidden">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8 sm:mb-14 max-w-3xl mx-auto px-2">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
               Grundlig genomgång
             </span>
-            <h2 className="text-[27px] sm:text-[36px] font-bold leading-[1.1] tracking-[-0.03em] text-slate-900">
+            <h2 className="text-[27px] sm:text-[36px] font-bold leading-[1.1] tracking-[-0.03em] text-slate-700">
               Vi granskar varje detalj – så slipper du oroa dig
             </h2>
             <p className="text-slate-500 mt-4 sm:mt-5 text-[16px] sm:text-[19px] leading-[1.5] max-w-2xl mx-auto">
@@ -341,8 +343,8 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 { label: 'Körsträcka', desc: 'Vi verifierar miltal mot servicehistorik för att upptäcka eventuella felaktigheter.' },
                 { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
               ].map((point) => (
-                <div key={point.label}>
-                  <h4 className="text-[15px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                <div key={point.label} className="rounded-xl border border-[#69a8ff]/40 bg-[#e4efff]/40 p-3">
+                  <h4 className="text-[15px] font-semibold text-slate-700 mb-1">{point.label}</h4>
                   <p className="text-[13px] text-slate-500 leading-[1.5]">{point.desc}</p>
                 </div>
               ))}
@@ -357,7 +359,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
               ].map((point) => (
                 <div key={point.label} className="text-right">
-                  <h4 className="text-[17px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <h4 className="text-[17px] font-semibold text-slate-700 mb-1">{point.label}</h4>
                   <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
                 </div>
               ))}
@@ -382,7 +384,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
               ].map((point) => (
                 <div key={point.label}>
-                  <h4 className="text-[17px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <h4 className="text-[17px] font-semibold text-slate-700 mb-1">{point.label}</h4>
                   <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
                 </div>
               ))}
@@ -392,11 +394,11 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Expertens toppval ── */}
-      <section className="bg-[#faf8f5] px-5 sm:px-8 py-12 sm:py-20 border-t border-slate-100">
+      <section className="bg-gradient-to-b from-[#f2f8ff] to-[#e7f3ff] px-5 sm:px-8 py-12 sm:py-20">
         <div className="max-w-5xl mx-auto">
           <div className="mb-8 sm:mb-12">
             <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">EXPERTERNAS VAL</p>
-            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-900 leading-[1.1] tracking-[-0.03em]">
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-700 leading-[1.1] tracking-[-0.03em]">
               Bilar vår expert rekommenderar just nu
             </h2>
             <p className="mt-3 text-slate-500 text-[16px] sm:text-[19px] leading-[1.5] max-w-xl">
@@ -453,27 +455,27 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Vad ingår ── */}
-      <section className="bg-[#0e6efe] py-12 sm:py-20 px-5 sm:px-8">
+      <section className="bg-gradient-to-b from-[#e7f3ff] to-[#f2f8ff] py-12 sm:py-20 px-5 sm:px-8">
         <div className="max-w-5xl mx-auto">
           <div className="mb-8 sm:mb-12">
-            <p className="text-[11px] sm:text-[12px] font-semibold text-white/60 uppercase tracking-[0.18em] mb-3">Ingår i tjänsten</p>
-            <h2 className="text-[27px] sm:text-[36px] font-bold text-white leading-[1.1] tracking-[-0.03em]">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">Ingår i tjänsten</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-700 leading-[1.1] tracking-[-0.03em]">
               Allt från idé till nyckel
             </h2>
-            <p className="text-white/70 mt-3 text-[16px] sm:text-[19px] leading-[1.5] max-w-xl">
+            <p className="text-slate-500 mt-3 text-[16px] sm:text-[19px] leading-[1.5] max-w-xl">
               Vi gör jobbet åt dig – hela vägen.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 rounded-xl overflow-hidden ring-1 ring-white/10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {INCLUDED.map((item) => (
-              <div key={item.title} className="flex items-start gap-4 bg-white/[0.07] p-5 sm:p-6">
-                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
-                  <Check className="w-4 h-4 text-white" strokeWidth={2.5} />
+              <div key={item.title} className="flex items-start gap-4 rounded-2xl border border-[#69a8ff]/50 bg-[#e4efff]/50 p-5 sm:p-6 transition hover:border-[#69a8ff] hover:bg-[#e4efff]/70 hover:shadow-[0_8px_30px_rgba(14,110,254,0.08)]">
+                <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <Check className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.5} />
                 </div>
                 <div>
-                  <p className="text-white font-semibold text-[15px] sm:text-[17px] leading-snug">{item.title}</p>
-                  <p className="text-white/60 text-[13px] sm:text-[14px] mt-1 leading-[1.5]">{item.desc}</p>
+                  <p className="text-slate-700 font-semibold text-[15px] sm:text-[17px] leading-snug">{item.title}</p>
+                  <p className="text-slate-500 text-[13px] sm:text-[14px] mt-1 leading-[1.5]">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -483,7 +485,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             <button
               type="button"
               onClick={() => openBuyDrawer()}
-              className="h-12 px-7 sm:px-9 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[17px] hover:bg-[#faf8f5] transition shadow-lg inline-flex items-center gap-2 group"
+              className="h-12 px-7 sm:px-9 rounded-xl bg-[#0e6efe] text-white font-bold text-[15px] sm:text-[17px] hover:bg-[#0a57cc] transition shadow-lg shadow-[#0e6efe]/25 inline-flex items-center gap-2 group"
             >
               Få prishjälp
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -493,16 +495,16 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Trygghet ── */}
-      <section className="bg-[#faf8f5] px-5 sm:px-8 py-12 sm:py-20">
+      <section className="bg-gradient-to-b from-[#f2f8ff] to-[#e7f3ff] px-5 sm:px-8 py-12 sm:py-20">
         <div className="max-w-5xl mx-auto">
           <div className="mb-8 sm:mb-12 max-w-2xl">
             <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">Trygghet</p>
-            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-900 tracking-[-0.03em] leading-[1.1]">
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-700 tracking-[-0.03em] leading-[1.1]">
               Din partner för en trygg och lönsam bilaffär
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-px bg-slate-200 rounded-xl overflow-hidden ring-1 ring-slate-200">
+          <div className="grid sm:grid-cols-3 gap-4">
             {[
               {
                 icon: ShieldCheck,
@@ -522,25 +524,25 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             ].map((b) => {
               const Icon = b.icon;
               return (
-                <div key={b.title} className="bg-white p-6 sm:p-8 flex flex-col">
+                <div key={b.title} className="rounded-2xl border border-[#69a8ff]/50 bg-[#e4efff]/50 p-6 sm:p-8 flex flex-col transition hover:border-[#69a8ff] hover:bg-[#e4efff]/70 hover:shadow-[0_8px_30px_rgba(14,110,254,0.08)]">
                   <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mb-4 shrink-0">
                     <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
                   </div>
-                  <h3 className="text-[15px] sm:text-[17px] font-bold text-slate-900 mb-2 tracking-[-0.01em]">{b.title}</h3>
+                  <h3 className="text-[15px] sm:text-[17px] font-bold text-slate-700 mb-2 tracking-[-0.01em]">{b.title}</h3>
                   <p className="text-slate-500 leading-[1.5] text-[14px] sm:text-[15px]">{b.text}</p>
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-8 flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200">
+          <div className="mt-8 flex items-center gap-4 p-5 rounded-2xl bg-[#e4efff]/50 border border-[#69a8ff]/50">
             <img
               src={EXPERT_PHOTO}
               alt="Alexander"
               className="w-14 h-14 rounded-xl object-cover object-top shrink-0"
             />
             <div className="min-w-0">
-              <p className="text-[15px] font-bold text-slate-900 leading-snug">Alexander</p>
+              <p className="text-[15px] font-bold text-slate-700 leading-snug">Alexander</p>
               <p className="text-[13px] text-slate-500 mt-0.5">VD och medgrundare</p>
               <p className="text-[13px] text-slate-600 mt-1 leading-snug">
                 Har du frågor? Jag och mitt team hjälper dig hitta och förhandla rätt bil – helt utan bindning.
@@ -553,15 +555,15 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── CTA band ── */}
-      <section className="bg-white px-5 sm:px-8 py-12 sm:py-16">
+      <section className="bg-gradient-to-b from-[#e7f3ff] to-[#f2f8ff] px-5 sm:px-8 py-12 sm:py-16">
         <div className="max-w-5xl mx-auto">
-          <div className="relative rounded-[7px] bg-[#0e6efe] px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden">
-            <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-white/5 pointer-events-none" />
-            <div className="absolute -left-12 -bottom-16 w-[280px] h-[280px] rounded-full bg-white/5 pointer-events-none" />
+          <div className="relative rounded-[28px] border border-[#69a8ff] bg-[#e4efff]/80 px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden shadow-[0_20px_60px_rgba(14,110,254,0.12)]">
+            <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-white/40 pointer-events-none" />
+            <div className="absolute -left-12 -bottom-16 w-[280px] h-[280px] rounded-full bg-white/30 pointer-events-none" />
 
             <div className="relative grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
               <div>
-                <h2 className="text-[27px] sm:text-[36px] lg:text-[42px] font-bold tracking-[-0.03em] leading-[1.1] text-white">
+                <h2 className="text-[27px] sm:text-[36px] lg:text-[42px] font-bold tracking-[-0.03em] leading-[1.1] text-slate-700">
                   Vill du ha en expert i ditt hörn?
                 </h2>
                 <ul className="mt-6 space-y-3">
@@ -571,10 +573,10 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                     'Våra kunder sparar ofta mer än vad tjänsten kostar',
                   ].map((text) => (
                     <li key={text} className="flex items-center gap-3">
-                      <span className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-white/20">
-                        <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                      <span className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-[#0e6efe]/15">
+                        <Check className="w-3 h-3 text-[#0e6efe]" strokeWidth={3} />
                       </span>
-                      <span className="text-[15px] sm:text-[17px] text-white/90 font-medium">{text}</span>
+                      <span className="text-[15px] sm:text-[17px] text-slate-600 font-medium">{text}</span>
                     </li>
                   ))}
                 </ul>
@@ -582,14 +584,14 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                   <button
                     type="button"
                     onClick={() => openBuyDrawer()}
-                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-white text-[#0e6efe] text-[15px] font-bold transition-all hover:bg-slate-100 active:scale-[0.98] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
+                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-[#0e6efe] text-white text-[15px] font-bold transition-all hover:bg-[#0a57cc] active:scale-[0.98] shadow-lg shadow-[#0e6efe]/25"
                   >
                     Skicka en förfrågan
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </button>
                   <a
                     href={PHONE_TEL}
-                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-white/40 text-white text-[15px] font-semibold transition-all hover:bg-white/10 active:scale-[0.98]"
+                    className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-[#69a8ff] text-[#0e6efe] text-[15px] font-semibold transition-all hover:bg-[#0e6efe] hover:text-white active:scale-[0.98]"
                   >
                     <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
                     Ring {PHONE}
@@ -598,7 +600,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               </div>
 
               <div className="hidden lg:block relative h-[280px]">
-                <div className="absolute left-0 top-0 w-[72%] h-full rounded-[18px] overflow-hidden">
+                <div className="absolute left-0 top-0 w-[72%] h-full rounded-[18px] overflow-hidden border border-[#69a8ff]/40 shadow-lg">
                   <img
                     src="/BSM_car_sale_key_woman_handover_101122.jpg"
                     alt="Bilexpert hjälper kund"
@@ -610,10 +612,10 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
-                <div className="absolute bottom-0 right-0 bg-white rounded-xl shadow-xl p-4 w-[160px]">
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Avgift</p>
-                  <p className="text-[22px] font-bold text-slate-900 leading-none">4 995 kr</p>
-                  <p className="text-[11px] text-slate-400 mt-1 leading-snug">Betalas bara om affären blir av</p>
+                <div className="absolute bottom-0 right-0 bg-[#e4efff] rounded-xl border border-[#69a8ff] shadow-xl p-4 w-[160px]">
+                  <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-widest mb-1">Avgift</p>
+                  <p className="text-[22px] font-bold text-slate-700 leading-none">4 995 kr</p>
+                  <p className="text-[11px] text-slate-500 mt-1 leading-snug">Betalas bara om affären blir av</p>
                 </div>
               </div>
             </div>
@@ -624,15 +626,15 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       <ReviewsSection variant="muted" />
 
       {/* ── FAQ ── */}
-      <section className="bg-[#0e6efe] px-5 sm:px-8 py-12 sm:py-20">
+      <section className="bg-gradient-to-b from-[#f2f8ff] to-[#e7f3ff] px-5 sm:px-8 py-12 sm:py-20">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8 sm:mb-12">
-            <p className="text-[11px] sm:text-[12px] font-semibold text-white/60 uppercase tracking-[0.18em] mb-3">Vanliga frågor</p>
-            <h2 className="text-[27px] sm:text-[36px] font-bold text-white tracking-[-0.03em] leading-[1.1]">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">Vanliga frågor</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-700 tracking-[-0.03em] leading-[1.1]">
               Vanliga frågor – vi svarar rakt på sak.
             </h2>
           </div>
-          <div className="divide-y divide-white/15 border-y border-white/15">
+          <div className="divide-y divide-[#69a8ff]/30 border-y border-[#69a8ff]/30 rounded-2xl overflow-hidden bg-[#e4efff]/30">
             {FAQS.map((faq, i) => {
               const open = openFaq === i;
               return (
@@ -640,15 +642,15 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                   key={i}
                   type="button"
                   onClick={() => setOpenFaq(open ? null : i)}
-                  className="w-full text-left py-5 flex items-start gap-4 group"
+                  className="w-full text-left py-5 px-5 sm:px-6 flex items-start gap-4 group transition hover:bg-[#e4efff]/50"
                 >
                   <div className="flex-1">
-                    <h3 className="text-[15px] sm:text-[17px] font-semibold text-white leading-snug">{faq.q}</h3>
+                    <h3 className="text-[15px] sm:text-[17px] font-semibold text-slate-700 leading-snug">{faq.q}</h3>
                     {open && (
-                      <p className="mt-3 text-[14px] sm:text-[15px] text-white/75 leading-[1.5]">{faq.a}</p>
+                      <p className="mt-3 text-[14px] sm:text-[15px] text-slate-500 leading-[1.5]">{faq.a}</p>
                     )}
                   </div>
-                  <ChevronDown className={`w-5 h-5 shrink-0 mt-0.5 transition-transform duration-200 ${open ? 'rotate-180 text-white/60' : 'text-white/40'}`} />
+                  <ChevronDown className={`w-5 h-5 shrink-0 mt-0.5 transition-transform duration-200 ${open ? 'rotate-180 text-[#0e6efe]' : 'text-slate-400'}`} />
                 </button>
               );
             })}
