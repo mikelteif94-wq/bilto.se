@@ -7,6 +7,7 @@ import { slugToTopic } from './lib/seo-topics';
 import ConsultationDrawer from './components/ConsultationDrawer';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
+const HomePage = lazy(() => import('./pages/HomePage'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
 const BuyCarPage = lazy(() => import('./pages/BuyCarPage'));
 const DealerRegister = lazy(() => import('./pages/DealerRegister'));
@@ -776,17 +777,16 @@ function App() {
     <Suspense fallback={<PageLoader />}>
       <>
         {publicRoute.page === 'home' && (
-          <KopBilConcierge
-            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+          <HomePage
+            onNavigate={(reg, tel) => setPublicRoute({ page: 'sell', regnummer: reg })}
             onNavigateBuy={(bil?: string) => {
               const url = bil ? `/kop-bil/bestall?bil=${encodeURIComponent(bil)}&typ=found` : '/kop-bil/bestall';
               window.history.pushState({}, '', url);
               setPath(url.split('?')[0]);
             }}
-            onNavigateHowItWorks={() => {
-              window.history.pushState({}, '', '/sa-funkar-det');
-              setPath('/sa-funkar-det');
-            }}
+            onNavigateSell={() => { window.history.pushState({}, '', '/salj-bil'); setPath('/salj-bil'); }}
+            onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
+            onNavigatePricing={() => { window.history.pushState({}, '', '/priser'); setPath('/priser'); }}
           />
         )}
         {publicRoute.page === 'sell' && (
