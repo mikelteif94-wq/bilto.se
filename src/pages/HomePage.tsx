@@ -13,12 +13,16 @@ import {
   FileCheck,
   X,
   TrendingDown,
+  Link2,
+  Loader2,
+  Car,
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import ReviewsSection from '../components/ReviewsSection';
 import { setPageMeta } from '../lib/pageMeta';
 import { PHONE, PHONE_TEL, EXPERT_PHOTO } from '../config/site';
+import { useVehicleLookup, type VehicleData } from '../lib/useVehicleLookup';
 
 const BuyDrawer = lazy(() => import('../components/BuyDrawer'));
 
@@ -142,6 +146,11 @@ export default function HomePage({
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
   const [carQuery, setCarQuery] = useState('');
+  const [regInput, setRegInput] = useState('');
+  const [adLink, setAdLink] = useState('');
+  const [lookupError, setLookupError] = useState<string | null>(null);
+  const [foundCar, setFoundCar] = useState<VehicleData | null>(null);
+  const lookup = useVehicleLookup(regInput);
 
   useEffect(() => {
     if (pageTitle) {
@@ -167,6 +176,31 @@ export default function HomePage({
 
   const openBuyDrawer = (car?: string) => setBuyDrawerCar(car ?? '');
   const closeBuyDrawer = () => setBuyDrawerCar(null);
+
+  useEffect(() => {
+    if (lookup.status === 'found') {
+      setFoundCar(lookup.data);
+      setLookupError(null);
+    } else if (lookup.status === 'not_found') {
+      setFoundCar(null);
+      setLookupError('Inget fordon hittades på det regnumret.');
+    } else if (lookup.status === 'error') {
+      setFoundCar(null);
+      setLookupError('Kunde inte hämta biluppgifter just nu.');
+    } else if (lookup.status === 'idle') {
+      setFoundCar(null);
+      setLookupError(null);
+    }
+  }, [lookup.status, lookup.data]);
+
+  const handleHeroSubmit = () => {
+    const carDesc = foundCar
+      ? `${foundCar.marke} ${foundCar.modell} ${foundCar.variant}`.trim()
+      : adLink.trim()
+        ? adLink.trim()
+        : regInput.trim();
+    openBuyDrawer(carDesc || undefined);
+  };
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
@@ -280,38 +314,102 @@ export default function HomePage({
             </button>
           </div>
 
-          <div id="home-search" className="relative max-w-3xl mx-auto mt-6 rounded-[24px] border border-[#69a8ff]/70 bg-white/90 p-1.5 shadow-[0_18px_50px_rgba(14,110,254,0.14)] text-left">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
-              <button type="button" className="h-14 px-4 flex flex-col justify-center text-left hover:bg-[#f2f8ff] transition rounded-t-[18px] sm:rounded-l-[18px] sm:rounded-tr-none">
-                <span className="text-[12px] text-slate-400">Biltyp</span>
-                <span className="text-[15px] font-medium text-slate-700">Ny eller begagnad <ChevronDown className="inline w-4 h-4 ml-1 text-slate-400" /></span>
-              </button>
-              <button type="button" className="h-14 px-4 flex flex-col justify-center text-left hover:bg-[#f2f8ff] transition">
-                <span className="text-[12px] text-slate-400">Märke</span>
-                <span className="text-[15px] font-medium text-slate-700">Alla märken <ChevronDown className="inline w-4 h-4 ml-1 text-slate-400" /></span>
-              </button>
-              <div className="h-14 px-4 flex flex-col justify-center">
-                <label htmlFor="home-car-model" className="text-[12px] text-slate-400">Modell</label>
+          <div id="home-search" className="relative max-w-2xl mx-auto mt-8 rounded-[24px] border border-[#69a8ff]/70 bg-white/90 p-5 sm:p-7 shadow-[0_18px_50px_rgba(14,110,254,0.14)] text-left">
+            <div className="flex items-center gap-2 mb-4">
+              <Car className="w-5 h-5 text-[#0e6efe]" />
+              <h2 className="text-[18px] sm:text-[20px] font-bold tracking-[-0.02em] text-slate-700">
+                Hittat en bil? Låt oss förhandla priset åt dig
+              </h2>
+            </div>
+            <p className="text-[14px] text-slate-500 leading-[1.5] mb-5">
+              Skriv in regnumret så hämtar vi bilens uppgifter automatiskt. Eller klistra in länken till annonsen om du inte har regnumret.
+            </p>
+
+            {/* Regnummer input */}
+            <div className="mb-3">
+              <label className="block text-[12px] font-medium text-slate-500 mb-1.5">Regnummer</label>
+              <div className="flex items-stretch h-13 rounded-xl border border-slate-300 bg-white overflow-hidden transition focus-within:ring-2 focus-within:ring-[#0e6efe]/20 focus-within:border-[#0e6efe]">
+                <span className="flex items-center justify-center w-11 bg-[#0e6efe] text-white font-bold shrink-0 text-[18px]">S</span>
                 <input
-                  id="home-car-model"
                   type="text"
-                  value={carQuery}
-                  onChange={(e) => setCarQuery(e.target.value)}
-                  placeholder="Alla modeller"
-                  className="w-full bg-transparent text-[15px] font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none"
+                  value={regInput}
+                  onChange={(e) => {
+                    const cleaned = e.target.value.toUpperCase().replace(/[^A-ZÅÄÖ0-9]/g, '').slice(0, 6);
+                    setRegInput(cleaned);
+                  }}
+                  placeholder="ABC123"
+                  maxLength={6}
+                  autoComplete="off"
+                  className="flex-1 min-w-0 px-3 bg-white text-[18px] font-bold tracking-widest text-slate-900 placeholder:text-slate-400 placeholder:font-normal placeholder:tracking-normal focus:outline-none"
+                />
+                {lookup.status === 'loading' && (
+                  <span className="flex items-center justify-center w-11 shrink-0">
+                    <Loader2 className="w-5 h-5 text-[#0e6efe] animate-spin" />
+                  </span>
+                )}
+                {lookup.status === 'found' && (
+                  <span className="flex items-center justify-center w-11 shrink-0">
+                    <span className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
+                      <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
+                    </span>
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 my-4">
+              <div className="flex-1 h-px bg-slate-200" />
+              <span className="text-[12px] text-slate-400 font-medium">eller</span>
+              <div className="flex-1 h-px bg-slate-200" />
+            </div>
+
+            {/* Ad link input */}
+            <div className="mb-5">
+              <label className="block text-[12px] font-medium text-slate-500 mb-1.5">Länk till annonsen</label>
+              <div className="relative">
+                <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="url"
+                  value={adLink}
+                  onChange={(e) => setAdLink(e.target.value)}
+                  placeholder="https://www.blocket.se/..."
+                  className="w-full h-12 pl-11 pr-4 rounded-xl border border-slate-300 bg-white text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] transition"
                 />
               </div>
-              <button
-                type="button"
-                onClick={() => openBuyDrawer(carQuery || undefined)}
-                className="m-1 h-12 rounded-xl bg-[#0e6efe] text-white font-bold text-[15px] hover:bg-[#0a57cc] transition inline-flex items-center justify-center gap-2 shadow-md"
-              >
-                Sök
-                <ArrowRight className="w-4 h-4" />
-              </button>
             </div>
+
+            {/* Error */}
+            {lookupError && (
+              <p className="text-[13px] text-red-600 mb-3">{lookupError}</p>
+            )}
+
+            {/* Found car preview */}
+            {foundCar && (
+              <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50/60 p-3.5 flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-600 shrink-0" strokeWidth={2.5} />
+                <div className="min-w-0">
+                  <p className="text-[14px] font-semibold text-slate-700 truncate">
+                    {foundCar.marke} {foundCar.modell} {foundCar.variant}
+                  </p>
+                  <p className="text-[12px] text-slate-500">
+                    {foundCar.ar ?? '—'} · {foundCar.bransle || '—'} · {foundCar.miltal ? `${foundCar.miltal.toLocaleString('sv-SE')} mil` : '—'}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={handleHeroSubmit}
+              disabled={!regInput && !adLink}
+              className="w-full h-13 py-3.5 rounded-xl bg-[#0e6efe] text-white font-bold text-[15px] hover:bg-[#0a57cc] transition inline-flex items-center justify-center gap-2 shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Låt Bilto förhandla priset
+              <ArrowRight className="w-5 h-5" />
+            </button>
+            <p className="mt-3 text-center text-[12px] text-slate-500">Ingen kostnad förrän affären är klar</p>
           </div>
-          <p className="mt-4 text-[12px] sm:text-[13px] text-slate-500">Få tillgång till målpris, inköpsdata och uppskattad totalkostnad</p>
 
           <div className="mt-10 sm:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#69a8ff]/30 rounded-2xl overflow-hidden ring-1 ring-[#69a8ff]/30 text-left">
             {STATS.map((s) => (
