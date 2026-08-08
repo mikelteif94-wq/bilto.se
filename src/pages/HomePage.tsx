@@ -319,8 +319,8 @@ export default function HomePage({
             {/* Regnummer input */}
             <div className="mb-3">
               <label className="block text-[12px] font-medium text-slate-500 mb-1.5">Regnummer</label>
-              <div className="flex items-stretch h-13 rounded-xl border border-slate-300 bg-white overflow-hidden transition focus-within:ring-2 focus-within:ring-[#0e6efe]/20 focus-within:border-[#0e6efe]">
-                <span className="flex items-center justify-center w-11 bg-[#0e6efe] text-white font-bold shrink-0 text-[18px]">S</span>
+              <div className="flex items-stretch h-14 rounded-xl border border-slate-300 bg-white overflow-hidden transition focus-within:ring-2 focus-within:ring-[#0e6efe]/20 focus-within:border-[#0e6efe]">
+                <span className="flex items-center justify-center w-12 bg-[#0e6efe] text-white font-bold shrink-0 text-[20px]">S</span>
                 <input
                   type="text"
                   value={regInput}
@@ -331,7 +331,7 @@ export default function HomePage({
                   placeholder="ABC123"
                   maxLength={6}
                   autoComplete="off"
-                  className="flex-1 min-w-0 px-3 bg-white text-[15px] font-semibold tracking-widest text-slate-900 placeholder:text-slate-400 placeholder:font-normal placeholder:tracking-normal focus:outline-none"
+                  className="flex-1 min-w-0 px-4 bg-white text-[18px] font-semibold tracking-widest text-slate-900 placeholder:text-slate-400 placeholder:font-normal placeholder:tracking-normal focus:outline-none"
                 />
                 {lookup.status === 'loading' && (
                   <span className="flex items-center justify-center w-11 shrink-0">
@@ -359,13 +359,13 @@ export default function HomePage({
             <div className="mb-5">
               <label className="block text-[12px] font-medium text-slate-500 mb-1.5">Länk till annonsen</label>
               <div className="relative">
-                <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <Link2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="url"
                   value={adLink}
                   onChange={(e) => setAdLink(e.target.value)}
                   placeholder="https://www.blocket.se/..."
-                  className="w-full h-12 pl-11 pr-4 rounded-xl border border-slate-300 bg-white text-[15px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] transition"
+                  className="w-full h-14 pl-12 pr-4 rounded-xl border border-slate-300 bg-white text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] transition"
                 />
               </div>
             </div>
@@ -394,7 +394,7 @@ export default function HomePage({
               type="button"
               onClick={handleHeroSubmit}
               disabled={!regInput && !adLink}
-              className="w-full h-13 py-3.5 rounded-xl bg-[#0e6efe] text-white font-bold text-[15px] hover:bg-[#0a57cc] transition inline-flex items-center justify-center gap-2 shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full h-14 rounded-xl bg-[#0e6efe] text-white font-bold text-[16px] hover:bg-[#0a57cc] transition inline-flex items-center justify-center gap-2 shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Låt Bilto förhandla priset
               <ArrowRight className="w-5 h-5" />
