@@ -12,7 +12,6 @@ import {
   Handshake,
   FileCheck,
   X,
-  Sparkles,
   TrendingDown,
 } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
@@ -241,24 +240,18 @@ export default function HomePage({
         </div>
       </header>
 
-      {/* ── Hero (CarEdge-inspired light design) ── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#e7f3ff] via-[#f2f8ff] to-[#faf8f5] pt-32 sm:pt-40 pb-16 sm:pb-24">
-        {/* Decorative blurred shapes */}
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#e7f3ff] via-[#f2f8ff] to-[#faf8f5] pt-32 sm:pt-40 pb-14 sm:pb-20">
         <div className="absolute -top-24 -right-24 w-[400px] h-[400px] rounded-full bg-[#0e6efe]/[0.06] blur-3xl pointer-events-none" />
         <div className="absolute top-1/3 -left-32 w-[320px] h-[320px] rounded-full bg-[#69a8ff]/[0.08] blur-3xl pointer-events-none" />
 
-        <div className="relative mx-auto w-full max-w-5xl px-5 sm:px-8">
-          <div className="max-w-4xl mb-10 sm:mb-14">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0e6efe]/[0.08] border border-[#69a8ff]/40 mb-6">
-              <Sparkles className="w-3.5 h-3.5 text-[#0e6efe]" />
-              <span className="text-[12px] font-medium text-[#0e6efe]">Nytt: AI-bilköpshjälp på gång</span>
-            </div>
-
-            <h1 className="text-[42px] sm:text-[64px] lg:text-[76px] font-bold leading-[0.98] tracking-[-0.055em] text-slate-700">
+        <div className="relative mx-auto w-full max-w-5xl px-5 sm:px-8 text-center">
+          <div className="max-w-3xl mx-auto">
+            <h1 className="text-[42px] sm:text-[60px] lg:text-[72px] font-bold leading-[0.98] tracking-[-0.055em] text-slate-700">
               Spara 15 000 kr eller mer<br />
-              <span className="text-slate-700">på din nästa bil.</span>
+              på din nästa bil.
             </h1>
-            <p className="mt-8 max-w-4xl text-[16px] sm:text-[19px] leading-[1.5] tracking-[-0.01em] text-slate-500">
+            <p className="mt-8 text-[16px] sm:text-[19px] leading-[1.5] tracking-[-0.01em] text-slate-500">
               Oavsett om du leasar eller köper kontaktar Biltos experter handlaren åt dig, förhandlar bästa pris och sköter varje steg – du sparar tid och pengar.{' '}
               <a href="/gratis-konsultation" className="font-medium text-[#0e6efe] hover:text-[#0a57cc] transition">
                 Boka ett kostnadsfritt samtal på 15 minuter
@@ -267,52 +260,60 @@ export default function HomePage({
             </p>
           </div>
 
-          {/* Search card */}
-          <div className="relative max-w-4xl rounded-[28px] border border-[#69a8ff] bg-[#e4efff]/80 px-5 pb-7 pt-11 sm:px-10 sm:pb-10 sm:pt-12 shadow-[0_20px_60px_rgba(14,110,254,0.12)]">
-            <div className="absolute -top-4 left-5 sm:left-10 inline-flex items-center gap-2 rounded-full bg-[#237cf5] px-3.5 py-2 text-[13px] sm:text-[15px] font-bold leading-none text-white shadow-md">
-              <Search className="w-4 h-4" strokeWidth={2.5} />
-              Hitta rätt bil
-            </div>
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => document.getElementById('home-search')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+              className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-white text-slate-700 font-semibold text-[14px] shadow-[0_4px_16px_rgba(15,23,42,0.08)] ring-1 ring-slate-200 hover:ring-[#69a8ff] hover:text-[#0e6efe] transition"
+            >
+              <Search className="w-4 h-4" />
+              Sök bland bilar
+            </button>
+            <button
+              type="button"
+              onClick={() => openBuyDrawer()}
+              className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-white text-slate-700 font-semibold text-[14px] shadow-[0_4px_16px_rgba(15,23,42,0.08)] ring-1 ring-slate-200 hover:ring-[#69a8ff] hover:text-[#0e6efe] transition"
+            >
+              Fråga en bilexpert
+              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] text-[11px] font-bold">✦</span>
+              <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">NYTT</span>
+            </button>
+          </div>
 
-            <h2 className="text-[27px] sm:text-[36px] font-bold leading-tight tracking-[-0.04em] text-slate-700">
-              Sök och förhandla – vi sköter resten
-            </h2>
-            <p className="mt-3 max-w-3xl text-[16px] sm:text-[19px] leading-[1.5] text-slate-500">
-              Skriv in en bilmodell du är intresserad av. Vår expert kontaktar handlaren, förhandlar priset och granskar historiken åt dig.
-            </p>
-
-            <div className="mt-7 flex flex-col sm:flex-row gap-3">
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <div id="home-search" className="relative max-w-3xl mx-auto mt-6 rounded-[24px] border border-[#69a8ff]/70 bg-white/90 p-1.5 shadow-[0_18px_50px_rgba(14,110,254,0.14)] text-left">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
+              <button type="button" className="h-14 px-4 flex flex-col justify-center text-left hover:bg-[#f2f8ff] transition rounded-t-[18px] sm:rounded-l-[18px] sm:rounded-tr-none">
+                <span className="text-[12px] text-slate-400">Biltyp</span>
+                <span className="text-[15px] font-medium text-slate-700">Ny eller begagnad <ChevronDown className="inline w-4 h-4 ml-1 text-slate-400" /></span>
+              </button>
+              <button type="button" className="h-14 px-4 flex flex-col justify-center text-left hover:bg-[#f2f8ff] transition">
+                <span className="text-[12px] text-slate-400">Märke</span>
+                <span className="text-[15px] font-medium text-slate-700">Alla märken <ChevronDown className="inline w-4 h-4 ml-1 text-slate-400" /></span>
+              </button>
+              <div className="h-14 px-4 flex flex-col justify-center">
+                <label htmlFor="home-car-model" className="text-[12px] text-slate-400">Modell</label>
                 <input
+                  id="home-car-model"
                   type="text"
                   value={carQuery}
                   onChange={(e) => setCarQuery(e.target.value)}
-                  placeholder="Sök bilmodell (t.ex. Volvo XC60)"
-                  className="w-full h-14 pl-12 pr-4 rounded-2xl border border-[#69a8ff]/60 bg-white text-[15px] sm:text-[17px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe] focus:border-transparent transition"
+                  placeholder="Alla modeller"
+                  className="w-full bg-transparent text-[15px] font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none"
                 />
               </div>
               <button
                 type="button"
                 onClick={() => openBuyDrawer(carQuery || undefined)}
-                className="h-14 px-7 rounded-2xl bg-[#0e6efe] text-white font-bold text-[15px] sm:text-[17px] hover:bg-[#0a57cc] transition whitespace-nowrap inline-flex items-center justify-center gap-2 shadow-lg shadow-[#0e6efe]/25"
+                className="m-1 h-12 rounded-xl bg-[#0e6efe] text-white font-bold text-[15px] hover:bg-[#0a57cc] transition inline-flex items-center justify-center gap-2 shadow-md"
               >
-                Hitta bästa pris
-                <ArrowRight className="w-5 h-5" />
+                Sök
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
-            <p className="mt-4 text-[13px] sm:text-[14px] text-slate-500 leading-snug">
-              Få tillgång till målskillnad, inköpspris och OTD-uppskattning
-            </p>
-
-            <div className="mt-5 flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-[#0e6efe] shrink-0" />
-              <p className="text-[13px] sm:text-[14px] text-slate-500">Vi jobbar alltid för dig – aldrig för handlaren</p>
-            </div>
           </div>
+          <p className="mt-4 text-[12px] sm:text-[13px] text-slate-500">Få tillgång till målpris, inköpsdata och uppskattad totalkostnad</p>
 
-          {/* Stats bar */}
-          <div className="mt-10 sm:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#69a8ff]/30 rounded-2xl overflow-hidden ring-1 ring-[#69a8ff]/30">
+          <div className="mt-10 sm:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#69a8ff]/30 rounded-2xl overflow-hidden ring-1 ring-[#69a8ff]/30 text-left">
             {STATS.map((s) => (
               <div key={s.label} className="bg-[#e4efff]/50 px-4 py-5 sm:py-6 text-center transition hover:bg-[#e4efff]/80">
                 <p className="text-[20px] sm:text-[24px] font-bold text-slate-700 tracking-tight tabular-nums">{s.value}</p>
