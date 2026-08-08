@@ -69,7 +69,7 @@ const PRICING_PLANS = [
     price: '0 kr',
     period: 'alltid',
     desc: 'Marknadsdata, bilmatch, värdering av din bil.',
-    features: ['Värdera din bil gratis', 'Sök bland bilar', 'Bilmatch-quiz'],
+    features: ['Värdera din bil gratis', 'Förhandla ditt pris', 'Bilmatch-quiz'],
     cta: 'Börja gratis',
     highlight: false,
     action: 'sell' as const,
@@ -294,14 +294,6 @@ export default function HomePage({
           </div>
 
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={() => document.getElementById('home-search')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-              className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-white text-slate-700 font-semibold text-[14px] shadow-[0_4px_16px_rgba(15,23,42,0.08)] ring-1 ring-slate-200 hover:ring-[#69a8ff] hover:text-[#0e6efe] transition"
-            >
-              <Search className="w-4 h-4" />
-              Sök bland bilar
-            </button>
             <button
               type="button"
               onClick={() => openBuyDrawer()}
