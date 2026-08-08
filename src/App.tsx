@@ -533,11 +533,6 @@ function App() {
         <>
           <KopBilConcierge
             onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-            onNavigateBuy={(bil?: string) => {
-              const url = bil ? `/kop-bil/bestall?bil=${encodeURIComponent(bil)}&typ=found` : '/kop-bil/bestall';
-              window.history.pushState({}, '', url);
-              setPath(url.split('?')[0]);
-            }}
             onNavigateHowItWorks={() => {
               window.history.pushState({}, '', '/sa-funkar-det');
               setPath('/sa-funkar-det');

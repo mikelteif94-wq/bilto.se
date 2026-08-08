@@ -269,7 +269,7 @@ export default function BuyCarPage({
             <div className="max-w-4xl mx-auto text-center">
               <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-5">Bilköpshjälpen</p>
               <h1 className="text-[32px] sm:text-[44px] lg:text-[52px] font-bold text-slate-800 leading-[1.06] tracking-[-0.04em]">
-                We negotiate your next car.<br className="hidden sm:block" /> You pick it up.
+                Vi förhandlar din nästa bil.<br className="hidden sm:block" /> Du hämtar nycklarna.
               </h1>
               <p className="mt-5 text-slate-500 text-[16px] sm:text-[19px] leading-[1.5] max-w-2xl mx-auto">
                 Vi förhandlar din nästa bil åt dig. Du väljer bilen, vi sköter kontakten, priset och alla detaljer fram till upphämtning.
