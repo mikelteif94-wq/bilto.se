@@ -7,6 +7,7 @@ import { slugToTopic } from './lib/seo-topics';
 import ConsultationDrawer from './components/ConsultationDrawer';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
+const SaFunkarDetPage = lazy(() => import('./pages/SaFunkarDetPage'));
 const HomePage = lazy(() => import('./pages/HomePage'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
 const DealerRegister = lazy(() => import('./pages/DealerRegister'));
@@ -708,14 +709,28 @@ function App() {
     return null;
   }
 
-  if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
+  if (path === '/sa-funkar-det') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <>
+          <SaFunkarDetPage
+            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSell={() => { window.history.pushState({}, '', '/salj-bil'); setPath('/salj-bil'); }}
+            onBuy={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+        </>
+      </Suspense>
+    );
+  }
+
+  if (path === '/salj-din-bil') {
     return (
       <Suspense fallback={<PageLoader />}>
         <>
           <HowItWorks
-            showSeo={path === '/salj-din-bil'}
-            seoSlug={path === '/sa-funkar-det' ? 'sa-funkar-det' : undefined}
-            pageTitle={path === '/salj-din-bil' ? 'Sälj din bil | Bilto' : undefined}
+            showSeo
+            pageTitle="Sälj din bil | Bilto"
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
             onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
           />
