@@ -67,21 +67,29 @@ const SAVINGS_ITEMS = [
   { label: 'Däck & tillval', amount: '2 000–4 000 kr', desc: 'Vinterdäck, golvmattor och service tas med i paketet – utan extrakostnad.' },
 ];
 
+/* ── Shared type scale (matches hero) ──
+   Section h2:  text-[27px] sm:text-[36px]
+   Section sub: text-[16px] sm:text-[19px]
+   Card title:  text-[15px] sm:text-[17px]
+   Card body:   text-[14px] sm:text-[15px]
+   Label:       text-[11px] sm:text-[12px] uppercase tracking-[0.18em]
+*/
+
 function SavingsInfoBox() {
   const [open, setOpen] = useState(false);
   return (
     <div className="mt-10 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-      <div className="bg-[#0e6efe] px-6 sm:px-8 py-6 sm:py-7">
+      <div className="bg-[#0e6efe] px-5 sm:px-8 py-6 sm:py-7">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
             <Banknote className="w-4 h-4 text-white" strokeWidth={2} />
           </div>
-          <p className="text-[11px] font-semibold text-white/70 uppercase tracking-[0.15em]">Vad vi förhandlar fram</p>
+          <p className="text-[11px] sm:text-[12px] font-semibold text-white/70 uppercase tracking-[0.18em]">Vad vi förhandlar fram</p>
         </div>
         <h3 className="text-[22px] sm:text-[28px] font-bold text-white leading-snug tracking-[-0.02em]">
           Spara 15 000 kr eller mer på din nästa bil
         </h3>
-        <p className="mt-2 text-white/75 text-[14px] sm:text-[15px] leading-[1.65] max-w-lg">
+        <p className="mt-2 text-white/75 text-[14px] sm:text-[15px] leading-[1.6] max-w-lg">
           Oavsett om du leasar eller köper förhandlar Biltos experter pris, ränta och tillval åt dig – du sparar tid och pengar.
         </p>
         <button
@@ -97,7 +105,7 @@ function SavingsInfoBox() {
       {open && (
         <div className="bg-white divide-y divide-slate-100">
           {SAVINGS_ITEMS.map((item) => (
-            <div key={item.label} className="flex items-center gap-4 px-6 sm:px-8 py-4 sm:py-5">
+            <div key={item.label} className="flex items-center gap-4 px-5 sm:px-8 py-4 sm:py-5">
               <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/[0.08] flex items-center justify-center shrink-0">
                 <Check className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.5} />
               </div>
@@ -108,11 +116,11 @@ function SavingsInfoBox() {
               <span className="text-[13px] sm:text-[14px] font-bold text-[#0e6efe] shrink-0 tabular-nums">{item.amount}</span>
             </div>
           ))}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 px-6 sm:px-8 py-4 sm:py-5 bg-slate-50">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 px-5 sm:px-8 py-4 sm:py-5 bg-slate-50">
             <p className="text-[13px] sm:text-[14px] font-semibold text-slate-700">Typisk total besparing per affär</p>
-            <span className="text-[20px] sm:text-[18px] font-bold text-slate-900 tabular-nums">13 000–22 000 kr</span>
+            <span className="text-[18px] sm:text-[20px] font-bold text-slate-900 tabular-nums">13 000–22 000 kr</span>
           </div>
-          <div className="bg-slate-50 border-t border-slate-100 px-6 sm:px-8 py-3">
+          <div className="bg-slate-50 border-t border-slate-100 px-5 sm:px-8 py-3">
             <p className="text-[11px] text-slate-400 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
           </div>
         </div>
@@ -236,7 +244,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               Vi förhandlar din nästa bil.<br />
               <span className="text-slate-700">Du hämtar nycklarna.</span>
             </h1>
-            <p className="mt-8 max-w-4xl text-[19px] sm:text-[25px] leading-[1.5] tracking-[-0.02em] text-slate-500">
+            <p className="mt-8 max-w-4xl text-[16px] sm:text-[19px] leading-[1.5] tracking-[-0.01em] text-slate-500">
               Två sätt att köpa bil utan handlarbesök. Osäker på vad som passar?{' '}
               <a href="/gratis-konsultation" className="font-medium text-[#0e6efe] hover:text-[#0a57cc] transition">
                 Boka ett kostnadsfritt samtal på 15 minuter med någon i vårt team
@@ -298,16 +306,16 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Grundlig genomgång ── */}
-      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-12 sm:py-20 px-4 sm:px-6 overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8 sm:mb-16 max-w-3xl mx-auto px-2">
+      <section className="bg-gradient-to-b from-white via-slate-50 to-white py-12 sm:py-20 px-5 sm:px-8 overflow-hidden">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8 sm:mb-14 max-w-3xl mx-auto px-2">
             <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
               Grundlig genomgång
             </span>
-            <h2 className="text-[24px] sm:text-[48px] font-semibold leading-[1.15] sm:leading-[1.04] text-slate-900 tracking-[-0.02em]">
+            <h2 className="text-[27px] sm:text-[36px] font-bold leading-[1.1] tracking-[-0.03em] text-slate-900">
               Vi granskar varje detalj – så slipper du oroa dig
             </h2>
-            <p className="text-slate-600 mt-4 sm:mt-6 text-[15px] sm:text-[18px] leading-[1.6] max-w-2xl mx-auto">
+            <p className="text-slate-500 mt-4 sm:mt-5 text-[16px] sm:text-[19px] leading-[1.5] max-w-2xl mx-auto">
               Innan vi rekommenderar en bil till dig går vi igenom fem kritiska datapunkter. Inget lämnas åt slumpen.
             </p>
           </div>
@@ -318,11 +326,11 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               <img
                 src="/infographic_antal_agare.svg"
                 alt="Infografik: antal ägare och bilhistorik"
-                className="w-full max-w-[340px] h-auto"
+                className="w-full max-w-[300px] h-auto"
                 loading="lazy"
                 decoding="async"
-                width="340"
-                height="340"
+                width="300"
+                height="300"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -334,22 +342,22 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
               ].map((point) => (
                 <div key={point.label}>
-                  <h4 className="text-[14px] font-semibold text-slate-900 mb-1">{point.label}</h4>
-                  <p className="text-[12px] text-slate-500 leading-[1.5]">{point.desc}</p>
+                  <h4 className="text-[15px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <p className="text-[13px] text-slate-500 leading-[1.5]">{point.desc}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Desktop */}
-          <div className="hidden lg:grid lg:grid-cols-5 gap-12 items-center">
+          <div className="hidden lg:grid lg:grid-cols-5 gap-10 items-center">
             <div className="lg:col-span-1 space-y-8">
               {[
                 { label: 'Olycksrisk', desc: 'Vi genomför certifierade kontroller och historikutdrag för att säkerställa att bilen inte har dolda skador.' },
                 { label: 'Antal ägare', desc: 'Färre ägare betyder bättre omhändertagen bil. Vi utreder ägarhistoriken.' },
               ].map((point) => (
                 <div key={point.label} className="text-right">
-                  <h4 className="text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <h4 className="text-[17px] font-semibold text-slate-900 mb-1">{point.label}</h4>
                   <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
                 </div>
               ))}
@@ -359,11 +367,11 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
               <img
                 src="/infographic_antal_agare.svg"
                 alt="Infografik: antal ägare och bilhistorik"
-                className="w-full max-w-[700px] h-auto"
+                className="w-full max-w-[600px] h-auto"
                 loading="lazy"
                 decoding="async"
-                width="700"
-                height="700"
+                width="600"
+                height="600"
               />
             </div>
 
@@ -374,7 +382,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                 { label: 'Bilalternativ', desc: 'Vi jämför priset mot liknande bilar på marknaden så att du inte betalar för mycket.' },
               ].map((point) => (
                 <div key={point.label}>
-                  <h4 className="text-[18px] font-semibold text-slate-900 mb-1">{point.label}</h4>
+                  <h4 className="text-[17px] font-semibold text-slate-900 mb-1">{point.label}</h4>
                   <p className="text-[14px] text-slate-500 leading-[1.5]">{point.desc}</p>
                 </div>
               ))}
@@ -384,14 +392,14 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Expertens toppval ── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24 border-t border-slate-100">
+      <section className="bg-[#faf8f5] px-5 sm:px-8 py-12 sm:py-20 border-t border-slate-100">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">EXPERTERNAS VAL</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 leading-[1.08] tracking-[-0.02em]">
+          <div className="mb-8 sm:mb-12">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">EXPERTERNAS VAL</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-900 leading-[1.1] tracking-[-0.03em]">
               Bilar vår expert rekommenderar just nu
             </h2>
-            <p className="mt-3 text-slate-500 text-[15px] max-w-xl leading-[1.65]">
+            <p className="mt-3 text-slate-500 text-[16px] sm:text-[19px] leading-[1.5] max-w-xl">
               Handplockade modeller med bäst balans mellan pris, driftskostnad och tillförlitlighet. Berätta vad du söker – vi förhandlar priset.
             </p>
           </div>
@@ -445,37 +453,37 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Vad ingår ── */}
-      <section className="bg-[#0e6efe] py-16 sm:py-24 px-5 sm:px-8">
+      <section className="bg-[#0e6efe] py-12 sm:py-20 px-5 sm:px-8">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-10 sm:mb-12">
-            <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3">Ingår i tjänsten</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-white leading-[1.08] tracking-[-0.02em]">
+          <div className="mb-8 sm:mb-12">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-white/60 uppercase tracking-[0.18em] mb-3">Ingår i tjänsten</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-white leading-[1.1] tracking-[-0.03em]">
               Allt från idé till nyckel
             </h2>
-            <p className="text-white/70 mt-3 text-[15px] leading-[1.65] max-w-xl">
+            <p className="text-white/70 mt-3 text-[16px] sm:text-[19px] leading-[1.5] max-w-xl">
               Vi gör jobbet åt dig – hela vägen.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 rounded-xl overflow-hidden ring-1 ring-white/10">
             {INCLUDED.map((item) => (
-              <div key={item.title} className="flex items-start gap-4 bg-white/[0.07] p-6 sm:p-7">
+              <div key={item.title} className="flex items-start gap-4 bg-white/[0.07] p-5 sm:p-6">
                 <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-white" strokeWidth={2.5} />
                 </div>
                 <div>
-                  <p className="text-white font-semibold text-[14px] sm:text-[15px] leading-snug">{item.title}</p>
-                  <p className="text-white/60 text-[13px] mt-1 leading-relaxed">{item.desc}</p>
+                  <p className="text-white font-semibold text-[15px] sm:text-[17px] leading-snug">{item.title}</p>
+                  <p className="text-white/60 text-[13px] sm:text-[14px] mt-1 leading-[1.5]">{item.desc}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-10 sm:mt-12">
+          <div className="mt-8 sm:mt-10">
             <button
               type="button"
               onClick={() => openBuyDrawer()}
-              className="h-12 px-8 sm:px-10 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] hover:bg-[#faf8f5] transition shadow-lg inline-flex items-center gap-2 group"
+              className="h-12 px-7 sm:px-9 rounded-xl bg-white text-[#0e6efe] font-bold text-[15px] sm:text-[17px] hover:bg-[#faf8f5] transition shadow-lg inline-flex items-center gap-2 group"
             >
               Få prishjälp
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
@@ -485,11 +493,11 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── Trygghet ── */}
-      <section className="bg-[#faf8f5] px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-[#faf8f5] px-5 sm:px-8 py-12 sm:py-20">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-10 sm:mb-14 max-w-2xl">
-            <p className="text-xs font-semibold text-[#0e6efe] uppercase tracking-widest mb-3">Trygghet</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-slate-900 tracking-[-0.02em] leading-[1.08]">
+          <div className="mb-8 sm:mb-12 max-w-2xl">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">Trygghet</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-900 tracking-[-0.03em] leading-[1.1]">
               Din partner för en trygg och lönsam bilaffär
             </h2>
           </div>
@@ -514,18 +522,18 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             ].map((b) => {
               const Icon = b.icon;
               return (
-                <div key={b.title} className="bg-white p-7 sm:p-9 flex flex-col">
-                  <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mb-5 shrink-0">
+                <div key={b.title} className="bg-white p-6 sm:p-8 flex flex-col">
+                  <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mb-4 shrink-0">
                     <Icon className="w-5 h-5 text-[#0e6efe]" strokeWidth={2} />
                   </div>
-                  <h3 className="text-[16px] font-bold text-slate-900 mb-2 tracking-[-0.01em]">{b.title}</h3>
-                  <p className="text-slate-500 leading-[1.65] text-[14px]">{b.text}</p>
+                  <h3 className="text-[15px] sm:text-[17px] font-bold text-slate-900 mb-2 tracking-[-0.01em]">{b.title}</h3>
+                  <p className="text-slate-500 leading-[1.5] text-[14px] sm:text-[15px]">{b.text}</p>
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-10 flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200">
+          <div className="mt-8 flex items-center gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200">
             <img
               src={EXPERT_PHOTO}
               alt="Alexander"
@@ -545,7 +553,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       </section>
 
       {/* ── CTA band ── */}
-      <section className="bg-white px-4 sm:px-6 py-12 sm:py-16">
+      <section className="bg-white px-5 sm:px-8 py-12 sm:py-16">
         <div className="max-w-5xl mx-auto">
           <div className="relative rounded-[7px] bg-[#0e6efe] px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden">
             <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-white/5 pointer-events-none" />
@@ -553,7 +561,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
 
             <div className="relative grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
               <div>
-                <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-bold tracking-[-0.02em] leading-[1.06] text-white">
+                <h2 className="text-[27px] sm:text-[36px] lg:text-[42px] font-bold tracking-[-0.03em] leading-[1.1] text-white">
                   Vill du ha en expert i ditt hörn?
                 </h2>
                 <ul className="mt-6 space-y-3">
@@ -566,7 +574,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                       <span className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-white/20">
                         <Check className="w-3 h-3 text-white" strokeWidth={3} />
                       </span>
-                      <span className="text-[15px] text-white/90 font-medium">{text}</span>
+                      <span className="text-[15px] sm:text-[17px] text-white/90 font-medium">{text}</span>
                     </li>
                   ))}
                 </ul>
@@ -616,11 +624,11 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       <ReviewsSection variant="muted" />
 
       {/* ── FAQ ── */}
-      <section className="bg-[#0e6efe] px-4 sm:px-6 py-16 sm:py-24">
+      <section className="bg-[#0e6efe] px-5 sm:px-8 py-12 sm:py-20">
         <div className="max-w-3xl mx-auto">
-          <div className="mb-10 sm:mb-14">
-            <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3">Vanliga frågor</p>
-            <h2 className="text-[28px] sm:text-[38px] font-bold text-white tracking-[-0.02em] leading-[1.08]">
+          <div className="mb-8 sm:mb-12">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-white/60 uppercase tracking-[0.18em] mb-3">Vanliga frågor</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-white tracking-[-0.03em] leading-[1.1]">
               Vanliga frågor – vi svarar rakt på sak.
             </h2>
           </div>
@@ -635,9 +643,9 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
                   className="w-full text-left py-5 flex items-start gap-4 group"
                 >
                   <div className="flex-1">
-                    <h3 className="text-[16px] font-semibold text-white leading-snug">{faq.q}</h3>
+                    <h3 className="text-[15px] sm:text-[17px] font-semibold text-white leading-snug">{faq.q}</h3>
                     {open && (
-                      <p className="mt-3 text-[14px] text-white/75 leading-[1.65]">{faq.a}</p>
+                      <p className="mt-3 text-[14px] sm:text-[15px] text-white/75 leading-[1.5]">{faq.a}</p>
                     )}
                   </div>
                   <ChevronDown className={`w-5 h-5 shrink-0 mt-0.5 transition-transform duration-200 ${open ? 'rotate-180 text-white/60' : 'text-white/40'}`} />
