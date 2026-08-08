@@ -181,21 +181,6 @@ function App() {
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
-  // Intercept anchor clicks to /gratis-konsultation and open drawer instead
-  useEffect(() => {
-    const onClick = (e: MouseEvent) => {
-      const anchor = (e.target as Element).closest('a');
-      if (!anchor) return;
-      const href = anchor.getAttribute('href');
-      if (href === '/gratis-konsultation') {
-        e.preventDefault();
-        setConsultationOpen(true);
-      }
-    };
-    document.addEventListener('click', onClick, { capture: true });
-    return () => document.removeEventListener('click', onClick, { capture: true });
-  }, []);
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [path]);
@@ -691,9 +676,8 @@ function App() {
   }
 
   if (path === '/kontakt') {
-    window.history.replaceState({}, '', '/');
-    setPath('/');
-    setConsultationOpen(true);
+    window.history.replaceState({}, '', '/gratis-konsultation');
+    setPath('/gratis-konsultation');
     return null;
   }
 
