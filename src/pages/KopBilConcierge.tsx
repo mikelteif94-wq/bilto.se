@@ -1,5 +1,5 @@
 import { useEffect, useState, Suspense, lazy } from 'react';
-import { ArrowRight, Check, ChevronDown, Menu, Minus, Phone, Star, X, MessageCircle, Clock, MapPin } from 'lucide-react';
+import { ArrowRight, CalendarDays, Check, ChevronDown, Menu, Minus, Phone, Star, X, MessageCircle, Clock, MapPin } from 'lucide-react';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { setPageMeta } from '../lib/pageMeta';
@@ -349,28 +349,66 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
         </section>
 
         {/* Team grid */}
-        <section className="bg-white px-5 sm:px-8 py-16 sm:py-24">
+        <section className="bg-[#f4f4f5] px-5 sm:px-8 py-14 sm:py-20">
           <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-10">
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0e6efe] mb-3">Riktiga experter</p>
-              <h2 className="text-[28px] sm:text-[40px] font-bold tracking-[-0.04em] text-slate-700">Teamet bakom varje affär.</h2>
-              <p className="mt-3 text-[15px] sm:text-[17px] text-slate-500">20+ år i branschen, i snitt. Varje Bilto-expert har tillbringat år på handlarens sida. De känner varje rad på kontraktet. Nu använder de den kunskapen för dig.</p>
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-7">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0e6efe] mb-3">Riktiga experter</p>
+                <h2 className="text-[28px] sm:text-[38px] font-bold tracking-[-0.05em] text-[#45465f]">Teamet bakom varje affär.</h2>
+              </div>
+              <div className="flex items-center gap-3">
+                <button type="button" aria-label="Föregående experter" className="w-9 h-9 rounded-full border border-slate-200 bg-white text-slate-500 flex items-center justify-center hover:border-[#0e6efe] hover:text-[#0e6efe] transition"><ArrowRight className="w-4 h-4 rotate-180" /></button>
+                <button type="button" aria-label="Nästa experter" className="w-9 h-9 rounded-full border border-slate-200 bg-white text-slate-500 flex items-center justify-center hover:border-[#0e6efe] hover:text-[#0e6efe] transition"><ArrowRight className="w-4 h-4" /></button>
+                <a href="/gratis-konsultation" className="hidden sm:inline-flex items-center gap-2 h-9 rounded-full bg-[#0e6efe] px-4 text-[12px] font-bold text-white hover:bg-[#0a57cc] transition">Boka gratis konsultation <ArrowRight className="w-3.5 h-3.5" /></a>
+              </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
-              {TEAM_MEMBERS.map((member) => (
-                <div key={member.name} className="group rounded-2xl overflow-hidden bg-[#f7f9fc] border border-slate-200 hover:border-[#0e6efe]/40 hover:shadow-md transition">
-                  <div className="aspect-[3/4] overflow-hidden bg-slate-100">
-                    <img src={member.img} alt={member.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition duration-300" loading="lazy" />
+            <div className="flex gap-4 overflow-x-auto pb-2 snap-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {TEAM_MEMBERS.slice(0, 6).map((member) => (
+                <div key={member.name} className="group min-w-[178px] sm:min-w-0 sm:flex-1 snap-start rounded-[20px] border border-slate-200 bg-white px-4 py-5 text-center shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-md transition">
+                  <div className="mx-auto h-[72px] w-[72px] overflow-hidden rounded-full bg-[#dfeaf4] ring-4 ring-[#eef2f4]">
+                    <img src={member.img} alt={member.name} className="h-full w-full object-cover object-top group-hover:scale-105 transition duration-300" loading="lazy" />
                   </div>
-                  <div className="p-4 text-center">
-                    <p className="font-bold text-slate-700 text-[15px]">{member.name}</p>
-                    <p className="mt-0.5 text-[12px] sm:text-[13px] text-slate-500">{member.role}</p>
-                  </div>
+                  <p className="mt-4 text-[14px] font-bold text-[#45465f]">{member.name}</p>
+                  <p className="mt-1 min-h-[30px] text-[11px] leading-[1.25] text-[#77788b]">{member.role}</p>
                 </div>
               ))}
             </div>
-            <div className="mt-8 text-center">
-              <a href="/om-oss" className="inline-flex items-center gap-2 text-[#0e6efe] font-semibold hover:underline">Möt hela teamet <ArrowRight className="w-4 h-4" /></a>
+            <a href="/gratis-konsultation" className="mt-5 inline-flex sm:hidden items-center gap-2 h-10 rounded-full bg-[#0e6efe] px-5 text-[12px] font-bold text-white">Boka gratis konsultation <ArrowRight className="w-3.5 h-3.5" /></a>
+
+            <div className="mt-12 border-t border-slate-200 pt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-7">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#77788b] mb-4">Omnämnd i</p>
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                  {PRESS_LOGOS.map((logo) => <span key={logo} className="text-[16px] sm:text-[19px] font-bold tracking-tight text-[#85868c]">{logo}</span>)}
+                </div>
+              </div>
+              <div className="sm:text-right">
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#77788b] mb-4">Följ arbetet</p>
+                <div className="flex items-center gap-2 sm:justify-end">
+                  {['YouTube', 'Instagram', 'TikTok', 'Facebook'].map((network) => <a key={network} href="/om-oss" aria-label={network} className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-[10px] font-bold text-[#77788b] hover:border-[#0e6efe] hover:text-[#0e6efe] transition">{network.slice(0, 1)}</a>)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-slate-200 bg-[#f8f8f9] px-5 sm:px-8 py-10 sm:py-12">
+          <div className="max-w-5xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="flex items-start gap-3 max-w-2xl">
+              <div className="flex shrink-0 -space-x-3 pt-1">
+                {TEAM_MEMBERS.slice(0, 5).map((member) => <img key={member.name} src={member.name + member.img} alt="" className="h-9 w-9 rounded-full border-2 border-[#f8f8f9] object-cover object-top" />)}
+              </div>
+              <div>
+                <p className="text-[14px] font-bold text-[#45465f]">Justise & team</p>
+                <p className="text-[12px] text-[#77788b]">Snittsvar: 12 min</p>
+                <h3 className="mt-5 text-[24px] sm:text-[30px] font-bold leading-[1.05] tracking-[-0.04em] text-[#45465f]">Osäker på vad som passar? Vi hjälper dig.</h3>
+                <p className="mt-3 text-[14px] leading-[1.5] text-[#77788b]">15 minuter med vårt team. Vi lyssnar på din situation och rekommenderar rätt väg utifrån budget, tidslinje och hur mycket du vill slippa. Inget säljtryck.</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 lg:shrink-0">
+              <a href="/kontakt" className="inline-flex items-center gap-2 h-11 rounded-full border border-slate-200 bg-white px-4 text-[13px] font-semibold text-[#5f6072] hover:border-[#0e6efe] transition"><MessageCircle className="w-4 h-4" /> Livechatt</a>
+              <a href="/gratis-konsultation" className="inline-flex items-center gap-2 h-11 rounded-full border border-slate-200 bg-white px-4 text-[13px] font-semibold text-[#5f6072] hover:border-[#0e6efe] transition"><CalendarDays className="w-4 h-4" /> Boka samtal</a>
+              <a href={PHONE_TEL} className="inline-flex items-center gap-2 h-11 rounded-full bg-[#0e6efe] px-4 text-[13px] font-bold text-white hover:bg-[#0a57cc] transition"><Phone className="w-4 h-4" /> {PHONE}</a>
             </div>
           </div>
         </section>
@@ -450,18 +488,6 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
                 <p className="mt-2 min-h-[48px] text-[14px] leading-[1.5] text-slate-500">15 minuter med någon i vårt team. Vi rekommenderar rätt väg.</p>
                 <a href="/gratis-konsultation" className="mt-6 inline-flex items-center font-semibold text-[14px] text-[#0e6efe]">Boka samtal <ArrowRight className="inline w-4 h-4" /></a>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Featured in / press */}
-        <section className="bg-white px-5 sm:px-8 py-12 sm:py-16 border-b border-slate-100">
-          <div className="max-w-4xl mx-auto text-center">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-6">Omnämnd i</p>
-            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
-              {PRESS_LOGOS.map((logo) => (
-                <span key={logo} className="text-[16px] sm:text-[20px] font-bold text-slate-300 tracking-tight">{logo}</span>
-              ))}
             </div>
           </div>
         </section>
