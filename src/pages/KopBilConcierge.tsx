@@ -242,7 +242,7 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
       <section className="relative overflow-hidden bg-gradient-to-b from-[#e7f3ff] via-[#f2f8ff] to-[#faf8f5] pt-32 sm:pt-40 pb-16 sm:pb-24">
         <div className="relative mx-auto w-full max-w-5xl px-5 sm:px-8">
           <div className="max-w-4xl mb-10 sm:mb-14">
-            <h1 className="text-[42px] sm:text-[64px] lg:text-[76px] font-bold leading-[0.98] tracking-[-0.055em] text-slate-700">
+            <h1 className="text-[32px] sm:text-[44px] lg:text-[52px] font-bold leading-[1.05] tracking-[-0.04em] text-slate-700">
               Vi förhandlar din nästa bil.<br />
               <span className="text-slate-700">Du hämtar nycklarna.</span>
             </h1>
@@ -274,8 +274,8 @@ export default function KopBilConcierge({ onBack, onNavigateBuy, onNavigateHowIt
             </a>
 
             <div className="mt-7 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="whitespace-nowrap text-[44px] sm:text-[62px] font-bold leading-none tracking-[-0.06em] text-slate-700">4 995 kr</span>
-              <span className="text-[15px] sm:text-[19px] text-slate-500">fast, per bil</span>
+              <span className="whitespace-nowrap text-[32px] sm:text-[44px] font-bold leading-none tracking-[-0.04em] text-slate-700">4 995 kr</span>
+              <span className="text-[14px] sm:text-[17px] text-slate-500">fast, per bil</span>
             </div>
             <p className="mt-3 max-w-3xl text-[15px] sm:text-[18px] leading-[1.5] text-slate-500">
               En avgift täcker hela sökningen. Alla märken, alla modeller – jämför hur många du vill.
