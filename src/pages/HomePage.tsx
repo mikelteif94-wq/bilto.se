@@ -523,47 +523,65 @@ export default function HomePage({
       {/* ── Reviews ── */}
       <ReviewsSection variant="muted" />
 
-      {/* ── Founder / About ── */}
+      {/* ── Meet the experts ── */}
       <section className="bg-gradient-to-b from-[#e7f3ff] to-[#f2f8ff] py-16 sm:py-24 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <div>
-              <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
-                Byggt av branschinsidare
-              </span>
-              <h2 className="text-[27px] sm:text-[36px] font-bold tracking-[-0.03em] text-slate-700 leading-[1.1] mb-4">
-                Experter på din sida – inte handlarens
-              </h2>
-              <p className="text-[15px] text-slate-600 leading-[1.7] mb-4">
-                Vi har tillbringat år inne i bilbranschen och sett hur köpare systematiskt betalar för mycket. Nu står vi på din sida.
-              </p>
-              <p className="text-[15px] text-slate-600 leading-[1.7] mb-6">
-                Det vi hörde om och om igen: "Jag önskar bara att någon jag litade på kunde göra det här åt mig." Det är Bilto. Expertvänner på insidan, backade av data och ett team av människor som sett varje trick.
-              </p>
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-[#e4efff]/50 border border-[#69a8ff]/50">
-                <img
-                  src={EXPERT_PHOTO}
-                  alt="Alexander"
-                  className="w-14 h-14 rounded-xl object-cover object-top shrink-0"
-                />
-                <div className="min-w-0">
-                  <p className="text-[15px] font-bold text-slate-700 leading-snug">Alexander</p>
-                  <p className="text-[13px] text-slate-500 mt-0.5">VD och medgrundare</p>
-                </div>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10 sm:mb-14">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+              Möt experterna
+            </span>
+            <h2 className="text-[27px] sm:text-[36px] lg:text-[42px] font-bold tracking-[-0.03em] text-slate-700 leading-[1.1]">
+              Byggt av branschinsidare – nu på din sida
+            </h2>
+          </div>
+
+          {/* Large image */}
+          <div className="relative rounded-2xl overflow-hidden border border-[#69a8ff]/40 shadow-[0_12px_40px_rgba(14,110,254,0.10)] mb-8 sm:mb-12">
+            <img
+              src="/BSM_car_sale_key_woman_handover_101122.jpg"
+              alt="Bilto-experter med över 4000 sålda och inhandlade bilar"
+              className="w-full h-[280px] sm:h-[420px] lg:h-[480px] object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
+              <div className="flex flex-wrap gap-3 sm:gap-4">
+                {[
+                  { value: '4 000+', label: 'Bilar sålda & inhandlade' },
+                  { value: 'Topp­säljare', label: 'På Riddermar Bil' },
+                  { value: '100%', label: 'På kundens sida' },
+                ].map((stat) => (
+                  <div key={stat.label} className="rounded-xl bg-white/90 backdrop-blur-sm px-4 py-3 shadow-lg">
+                    <p className="text-[18px] sm:text-[22px] font-bold text-slate-700 leading-none">{stat.value}</p>
+                    <p className="text-[11px] sm:text-[12px] text-slate-500 mt-1 leading-snug">{stat.label}</p>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="relative h-[320px] sm:h-[400px]">
+          </div>
+
+          {/* Story text */}
+          <div className="max-w-3xl mx-auto">
+            <p className="text-[16px] sm:text-[18px] text-slate-600 leading-[1.7] mb-5">
+              Vi började inne i bilbranschen. Som topp­säljare på Riddermar Bil sålde vi mest av alla – flest bilar, mest försäljning, år efter år. Under åren sålde och köpte vi in över 4 000 bilar. Vi lärde oss varenda trick, varje marginal och varje knapp som handlaren trycker på.
+            </p>
+            <p className="text-[16px] sm:text-[18px] text-slate-600 leading-[1.7] mb-5">
+              Ju mer vi såg, desto tydligare blev det: köparen betalar alltid för mycket. Inte för att handlaren är ond – utan för att informationen är ojämnt fördelad. Handlaren vet allt. Köparen vet nästan inget.
+            </p>
+            <p className="text-[16px] sm:text-[18px] text-slate-600 leading-[1.7] mb-8">
+              Det vi hörde om och om igen var: <em className="text-slate-700">"Jag önskar bara att någon jag litade på kunde göra det här åt mig."</em> Det är Bilto. Vi bytte sida. Nu står vi på kundens sida – med all den bransch­kunskap som tidigare satt hos handlaren.
+            </p>
+
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-[#e4efff]/50 border border-[#69a8ff]/50">
               <img
-                src="/BSM_car_sale_key_woman_handover_101122.jpg"
-                alt="Bilexpert hjälper kund"
-                className="absolute inset-0 w-full h-full object-cover rounded-2xl border border-[#69a8ff]/40 shadow-lg"
-                loading="lazy"
-                decoding="async"
+                src={EXPERT_PHOTO}
+                alt="Alexander"
+                className="w-14 h-14 rounded-xl object-cover object-top shrink-0"
               />
-              <div className="absolute bottom-4 right-4 bg-[#e4efff] rounded-xl border border-[#69a8ff] shadow-xl p-4 w-[170px]">
-                <p className="text-[11px] font-bold text-[#0e6efe] uppercase tracking-widest mb-1">Avgift</p>
-                <p className="text-[22px] font-bold text-slate-700 leading-none">4 995 kr</p>
-                <p className="text-[11px] text-slate-500 mt-1 leading-snug">Betalas bara om affären blir av</p>
+              <div className="min-w-0">
+                <p className="text-[15px] font-bold text-slate-700 leading-snug">Alexander</p>
+                <p className="text-[13px] text-slate-500 mt-0.5">Tidigare topp­säljare på Riddermar Bil – nu din expert på insidan</p>
               </div>
             </div>
           </div>
