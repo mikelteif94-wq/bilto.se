@@ -90,7 +90,7 @@ const FAQS = [
 ];
 
 const STATS = [
-  { value: 'Under 18 000 kr', label: 'Snittbesparing per affär' },
+  { value: '18 000 kr', label: 'Snittbesparing per affär' },
   { value: '3–7 dagar', label: 'Till klart erbjudande' },
   { value: '4 995 kr', label: 'Fast avgift – bara om affären blir av' },
   { value: '4.9 / 5', label: 'Kundbetyg på Google' },
