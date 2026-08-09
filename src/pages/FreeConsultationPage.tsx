@@ -239,7 +239,7 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
 
   if (done) {
     return (
-      <div className="min-h-screen bg-[#faf8f5] text-slate-900 flex flex-col">
+      <div className="min-h-screen bg-[#f7f9fc] text-slate-900 flex flex-col">
         <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
           <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
             <button onClick={onBack} className="shrink-0 flex items-center">
@@ -279,7 +279,7 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
   }
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
+    <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
@@ -316,31 +316,30 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
       </header>
 
       {/* Hero */}
-      <section className="bg-[#0e6efe] pt-32 pb-20 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-1.5 bg-white/15 text-white text-xs font-semibold px-3 py-1.5 rounded-xl mb-6 tracking-wide uppercase">
-            <Sparkles className="w-3.5 h-3.5" />
-            100% gratis · Ingen bindning
-          </div>
-          <h1 className="text-[30px] sm:text-[40px] font-bold text-white leading-[1.15] tracking-tight">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#e7f3ff] via-[#f2f8ff] to-[#f7f9fc] pt-32 sm:pt-40 pb-16 sm:pb-24 px-5 sm:px-8">
+        <div className="absolute -top-24 -right-24 w-[400px] h-[400px] rounded-full bg-[#0e6efe]/[0.06] blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 -left-32 w-[320px] h-[320px] rounded-full bg-[#69a8ff]/[0.08] blur-3xl pointer-events-none" />
+        <div className="relative max-w-3xl mx-auto text-center">
+          <p className="text-[11px] sm:text-[12px] font-bold uppercase tracking-[0.2em] text-[#0e6efe] mb-4">Gratis konsultation</p>
+          <h1 className="text-[30px] sm:text-[40px] lg:text-[48px] font-bold text-slate-700 leading-[1.1] tracking-[-0.04em]">
             Osäker på vad som passar dig?<br />Vi tar reda på det tillsammans.
           </h1>
-          <p className="mt-5 text-blue-100 text-[16px] sm:text-[18px] max-w-xl mx-auto leading-relaxed">
+          <p className="mt-7 text-[16px] sm:text-[19px] text-slate-500 max-w-xl mx-auto leading-[1.5]">
             Lägg 15 minuter med en av våra experter. Vi lyssnar på vad du vill uppnå och rekommenderar rätt väg framåt. Även om det ärliga svaret är att du inte behöver oss än.
           </p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-blue-100 text-[14px]">
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4" /> Kostnadsfritt</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4" /> Ingen säljpitch</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4" /> Under 15 minuter</span>
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-slate-500 text-[14px]">
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#0e6efe]" /> Kostnadsfritt</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#0e6efe]" /> Ingen säljpitch</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#0e6efe]" /> Under 15 minuter</span>
           </div>
         </div>
       </section>
 
       {/* Contact cards */}
       {mode === 'choose' && (
-        <section className="py-12 px-4">
+        <section className="py-12 sm:py-16 px-5 sm:px-8">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-[22px] font-bold text-slate-900 text-center mb-1">Hur vill du ha kontakt?</h2>
+            <h2 className="text-[22px] font-bold text-slate-700 text-center mb-1 tracking-[-0.03em]">Hur vill du ha kontakt?</h2>
             <p className="text-slate-500 text-[15px] text-center mb-8">Välj det alternativ som passar dig bäst.</p>
             <div className="grid sm:grid-cols-2 gap-4">
               {/* Schedule a call */}
@@ -387,7 +386,7 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
 
       {/* Schedule / Callback form */}
       {mode !== 'choose' && (
-        <section className="py-10 px-4">
+        <section className="py-10 sm:py-16 px-5 sm:px-8">
           <div className="max-w-lg mx-auto">
             <button
               type="button"
@@ -473,7 +472,7 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
                         const selected = form.booking_time === t;
                         if (booked) {
                           return (
-                            <div key={t} className="flex items-center justify-center gap-1.5 py-3 rounded-xl border border-slate-100 bg-[#faf8f5] text-slate-300 cursor-not-allowed select-none">
+                            <div key={t} className="flex items-center justify-center gap-1.5 py-3 rounded-xl border border-slate-100 bg-[#f7f9fc] text-slate-300 cursor-not-allowed select-none">
                               <Lock className="w-3 h-3 shrink-0" />
                               <span className="text-[13px] font-medium">{t}</span>
                             </div>
@@ -581,7 +580,7 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
 
       {/* Trust badges */}
       {mode === 'choose' && (
-        <section className="py-10 px-4">
+        <section className="py-10 px-5 sm:px-8">
           <div className="max-w-3xl mx-auto">
             <div className="flex flex-col sm:flex-row items-stretch divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
               {[
@@ -605,9 +604,9 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
       )}
 
       {/* Team section */}
-      <section className="bg-white py-16 px-4">
+      <section className="bg-[#f7f9fc] py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-[26px] font-bold text-slate-900 mb-3">Riktiga människor. Som svarar i telefon.</h2>
+          <h2 className="text-[26px] font-bold text-slate-700 mb-3 tracking-[-0.03em]">Riktiga människor. Som svarar i telefon.</h2>
           <p className="text-slate-500 text-[15px] max-w-xl mx-auto leading-relaxed mb-10">
             När du bokar ett samtal pratar du med någon från Biltos team. De lyssnar på din situation, rekommenderar vad som passar dig – och säger rakt ifall vi inte är rätt för dig. Ingen säljpitch, ingen provision.
           </p>
@@ -631,9 +630,9 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
       </section>
 
       {/* What we help with */}
-      <section className="py-16 px-4 bg-[#faf8f5]">
+      <section className="py-16 px-4 bg-white">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-[24px] font-bold text-slate-900 text-center mb-10">Vad vi kan hjälpa dig med</h2>
+          <h2 className="text-[24px] font-bold text-slate-700 text-center mb-10 tracking-[-0.03em]">Vad vi kan hjälpa dig med</h2>
           <div className="grid sm:grid-cols-3 gap-5">
             {[
               { icon: Car, title: 'Köpa bil', desc: 'Hitta rätt bil, kolla priset och förhandla ner det åt dig.' },
@@ -653,9 +652,9 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
       </section>
 
       {/* FAQ */}
-      <section className="py-16 px-4">
+      <section className="bg-[#f7f9fc] py-16 px-4">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-[24px] font-bold text-slate-900 text-center mb-8">Vanliga frågor</h2>
+          <h2 className="text-[24px] font-bold text-slate-700 text-center mb-8 tracking-[-0.03em]">Vanliga frågor</h2>
           <div className="bg-white rounded-2xl border border-slate-200 px-6">
             {FAQS.map((faq, i) => (
               <FaqItem key={i} faq={faq} defaultOpen={i === 0} />
@@ -665,14 +664,14 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
       </section>
 
       {/* Bottom CTA */}
-      <section className="pb-16 px-4">
+      <section className="bg-[#0e6efe] py-16 px-4">
         <div className="max-w-lg mx-auto text-center">
-          <h2 className="text-[22px] font-bold text-slate-900 mb-2">Redo att prata med oss?</h2>
-          <p className="text-slate-500 text-[14px] mb-6">15 minuter. Helt gratis. Ingen bindning.</p>
+          <h2 className="text-[24px] sm:text-[32px] font-bold text-white mb-3 tracking-[-0.03em]">Redo att prata med oss?</h2>
+          <p className="text-white/85 text-[15px] sm:text-[17px] mb-7">15 minuter. Helt gratis. Ingen bindning.</p>
           <button
             type="button"
             onClick={() => { setMode('schedule'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            className="btn-primary px-8 h-12"
+            className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-white text-[#0e6efe] font-bold hover:bg-slate-100 transition shadow-lg"
           >
             <Calendar className="w-4 h-4" />
             Boka ett samtal
