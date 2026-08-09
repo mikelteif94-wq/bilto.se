@@ -341,6 +341,7 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
                 </div>
               ))}
             </div>
+            <p className="mt-6 text-center text-[12px] text-blue-300/70 leading-snug max-w-2xl mx-auto">Snittbesparingar bygger på resultat från tidigare kunder och är inte en garanti. Din besparing beror på bil, handlare och marknadsläge.</p>
             <div className="mt-10 flex items-center justify-center gap-2 text-blue-200">
               <MapPin className="w-5 h-5" />
               <p className="text-[15px] sm:text-[17px] font-semibold">Verksamma i hela Sverige – var du än bor har vi hjälpt bilköpare där.</p>
@@ -435,6 +436,7 @@ export default function KopBilConcierge({ onBack }: KopBilConciergProps) {
                 </article>
               ))}
             </div>
+            <p className="mt-6 text-center text-[12px] text-slate-400 leading-snug max-w-2xl mx-auto">Kundberättelser är referenser från verkliga affärer. Besparingarna är individuella och inte en garanti för vad du kommer att spara.</p>
           </div>
         </section>
 

@@ -73,7 +73,7 @@ const FAQS = [
   },
   {
     q: 'Hur stor besparing kan jag räkna med?',
-    a: 'Snittbesparingen är 18 000 kr per affär – räknat på prisnedförhandling, ränta och tillbehör. Vår avgift på 4 995 kr betalas dessutom bara om affären blir av.',
+    a: 'Snittbesparingen är 18 000 kr per affär – räknat på prisnedförhandling, ränta och tillbehör. Siffran bygger på resultat från tidigare kunder och är inte en garanti; din besparing varierar beroende på bil och handlare. Vår avgift på 4 995 kr betalas dessutom bara om affären blir av.',
   },
   {
     q: 'Kommer handlare att bombardera min telefon?',
@@ -368,6 +368,7 @@ export default function HomePage({
               </div>
             ))}
           </div>
+          <p className="mt-4 text-center text-[11px] text-slate-400 leading-snug max-w-xl mx-auto">Snittbesparingar bygger på resultat från tidigare kunder och är inte en garanti. Din besparing beror på bil, handlare och marknadsläge.</p>
         </div>
       </section>
 
@@ -513,7 +514,7 @@ export default function HomePage({
                 <span className="text-[18px] sm:text-[20px] font-bold text-slate-700 tabular-nums">13 000–22 000 kr</span>
               </div>
               <div className="bg-[#e4efff]/60 border-t border-[#69a8ff]/20 px-6 sm:px-8 py-3">
-                <p className="text-[11px] text-slate-500 leading-snug">Baserat på genomsnitt från genomförda affärer. Besparingen varierar beroende på bil och handlare. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
+                <p className="text-[11px] text-slate-500 leading-snug">Siffrorna bygger på genomsnitt från genomförda affärer och är inte en garanti för framtida besparing. Din besparing varierar beroende på bil, handlare och marknadsläge. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
               </div>
             </div>
           </div>
