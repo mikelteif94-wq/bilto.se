@@ -360,11 +360,11 @@ export default function HomePage({
             <p className="mt-3 text-center text-[12px] text-slate-500">Ingen kostnad förrän affären är klar</p>
           </div>
 
-          <div className="mt-10 sm:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#69a8ff]/30 rounded-2xl overflow-hidden ring-1 ring-[#69a8ff]/30 text-left">
+          <div className="mt-10 sm:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-left">
             {STATS.map((s) => (
-              <div key={s.label} className="bg-[#e4efff]/50 px-4 py-5 sm:py-6 text-center transition hover:bg-[#e4efff]/80">
-                <p className="text-[20px] sm:text-[24px] font-bold text-slate-700 tracking-tight tabular-nums">{s.value}</p>
-                <p className="text-[11px] sm:text-[12px] text-slate-500 mt-1 leading-snug">{s.label}</p>
+              <div key={s.label} className="rounded-2xl bg-white/80 border border-[#69a8ff]/30 px-4 py-5 sm:py-6 text-center shadow-sm transition hover:border-[#69a8ff]/60 hover:shadow-md hover:bg-white">
+                <p className="text-[18px] sm:text-[22px] lg:text-[24px] font-bold text-slate-700 tracking-tight tabular-nums leading-tight">{s.value}</p>
+                <p className="text-[11px] sm:text-[12px] text-slate-500 mt-1.5 leading-snug">{s.label}</p>
               </div>
             ))}
           </div>
