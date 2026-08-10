@@ -401,91 +401,118 @@ export default function HomePage({
       </section>
 
       {/* ── Live besparingar ── */}
-      <section className="bg-gradient-to-b from-[#faf8f5] via-[#f0f6ff] to-[#f2f8ff] py-10 sm:py-14 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center justify-center gap-2 mb-5">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-            </span>
-            <span className="text-[11px] sm:text-[12px] font-bold text-emerald-600 uppercase tracking-[0.18em]">Live besparingar</span>
+      <section className="relative bg-gradient-to-b from-[#faf8f5] via-[#eef5ff] to-[#f2f8ff] py-12 sm:py-16 px-4 sm:px-6 overflow-hidden">
+        {/* Ambient background glows */}
+        <div className="absolute top-1/4 -left-20 w-72 h-72 rounded-full bg-[#0e6efe]/[0.04] blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 -right-20 w-80 h-80 rounded-full bg-emerald-400/[0.05] blur-3xl pointer-events-none" />
+
+        <div className="relative max-w-5xl mx-auto">
+          {/* Header */}
+          <div className="flex flex-col items-center text-center mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50/80 border border-emerald-200/50 px-3.5 py-1.5 mb-4">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="text-[11px] font-bold text-emerald-600 uppercase tracking-[0.18em]">Live besparingar</span>
+            </div>
+            <h2 className="text-[22px] sm:text-[28px] font-bold text-slate-700 tracking-[-0.03em] leading-tight">
+              Riktiga kunder. Riktiga besparingar.
+            </h2>
+            <p className="mt-2 text-[14px] sm:text-[15px] text-slate-500 max-w-lg leading-relaxed">
+              Varje dag förhandlar vi fram bättre priser åt svenska bilköpare. Så här mycket har sparats – hittills i år.
+            </p>
           </div>
 
-          <div className="grid lg:grid-cols-[1fr_1.2fr] gap-4 lg:gap-6 items-stretch">
-            {/* Total saved counter */}
-            <div className="relative rounded-2xl border border-[#69a8ff]/40 bg-gradient-to-br from-[#e4efff]/80 to-white p-6 sm:p-8 overflow-hidden">
-              <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#0e6efe]/[0.05] blur-2xl pointer-events-none" />
-              <div className="relative">
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="w-4 h-4 text-[#0e6efe]" />
-                  <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">Totalt sparade av våra kunder</p>
+          {/* Main card */}
+          <div className="relative rounded-3xl border border-[#69a8ff]/30 bg-white/70 backdrop-blur-sm shadow-[0_20px_60px_rgba(14,110,254,0.08)] overflow-hidden">
+            {/* Top accent bar */}
+            <div className="h-[3px] bg-gradient-to-r from-transparent via-[#0e6efe] to-transparent" />
+
+            <div className="grid lg:grid-cols-[1fr_1.3fr]">
+              {/* Total saved counter */}
+              <div className="relative p-7 sm:p-9 lg:border-r border-[#69a8ff]/15 bg-gradient-to-br from-[#e4efff]/40 to-transparent">
+                <div className="absolute top-6 right-6 w-10 h-10 rounded-2xl bg-[#0e6efe]/[0.07] flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-[#0e6efe]" />
                 </div>
-                <p className="text-[36px] sm:text-[44px] lg:text-[52px] font-bold text-slate-700 tracking-[-0.03em] tabular-nums leading-none">
-                  {totalSaved.toLocaleString('sv-SE')}<span className="text-[20px] sm:text-[24px] text-slate-400 ml-1">kr</span>
+
+                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.14em] mb-4">Totalt sparade</p>
+                <p className="text-[40px] sm:text-[48px] lg:text-[56px] font-bold text-slate-700 tracking-[-0.04em] tabular-nums leading-[0.95]">
+                  {totalSaved.toLocaleString('sv-SE')}
+                  <span className="text-[20px] sm:text-[24px] text-slate-400 font-medium ml-1.5">kr</span>
                 </p>
-                <p className="mt-4 text-[13px] text-slate-500 leading-relaxed">
-                  Varje affär vi förhandlar åt våra kunder betyder tusentals kronor mindre på prislappen. Så här långt i år.
-                </p>
-                <div className="mt-5 flex items-center gap-4 text-[12px] text-slate-400">
-                  <span className="inline-flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Uppdateras live</span>
-                  <span className="inline-flex items-center gap-1.5"><TrendingDown className="w-3.5 h-3.5" /> Priserna går ner</span>
+
+                <div className="mt-6 space-y-2.5">
+                  <div className="flex items-center gap-2 text-[12px] text-slate-500">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Uppdateras i realtid
+                  </div>
+                  <div className="flex items-center gap-2 text-[12px] text-slate-500">
+                    <TrendingDown className="w-3.5 h-3.5 text-[#0e6efe]" />
+                    Priserna går ner för våra kunder
+                  </div>
+                </div>
+              </div>
+
+              {/* Rotating customer card */}
+              <div className="relative p-7 sm:p-9 min-h-[260px] flex flex-col">
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.14em]">Senaste besparing</p>
+                  <div className="flex items-center gap-1.5">
+                    {LIVE_SAVINGS.map((_, i) => (
+                      <span
+                        key={i}
+                        className={`h-1.5 rounded-full transition-all duration-500 ${i === savingsIdx ? 'w-5 bg-[#0e6efe]' : 'w-1.5 bg-slate-200'}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex-1 flex items-center mt-4">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={savingsIdx}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                      className="w-full"
+                    >
+                      {/* Customer info row */}
+                      <div className="flex items-center justify-between mb-5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#e4efff] to-[#d4e4ff] flex items-center justify-center shrink-0 ring-1 ring-[#69a8ff]/20">
+                            <Car className="w-5 h-5 text-[#0e6efe]" />
+                          </div>
+                          <div>
+                            <h3 className="text-[18px] sm:text-[20px] font-bold text-slate-700 leading-tight">{LIVE_SAVINGS[savingsIdx].name}</h3>
+                            <p className="text-[12px] text-slate-400 mt-0.5">{LIVE_SAVINGS[savingsIdx].city} · {LIVE_SAVINGS[savingsIdx].days} dagar sedan</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Car model */}
+                      <p className="text-[15px] font-semibold text-slate-600 mb-4">{LIVE_SAVINGS[savingsIdx].car}</p>
+
+                      {/* Savings amount */}
+                      <div className="relative rounded-2xl bg-gradient-to-r from-emerald-50/80 to-emerald-50/40 border border-emerald-200/50 px-5 py-4 flex items-center justify-between overflow-hidden">
+                        <div className="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-emerald-300/20 blur-2xl pointer-events-none" />
+                        <div className="relative">
+                          <p className="text-[11px] font-medium text-emerald-600 uppercase tracking-wider">Sparade</p>
+                          <p className="text-[12px] text-slate-400 mt-0.5">vs. handlarens lista­pris</p>
+                        </div>
+                        <span className="relative text-[28px] sm:text-[32px] font-bold text-emerald-600 tabular-nums tracking-[-0.02em]">
+                          {LIVE_SAVINGS[savingsIdx].saved.toLocaleString('sv-SE')} kr
+                        </span>
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               </div>
             </div>
-
-            {/* Rotating customer card */}
-            <div className="relative rounded-2xl border border-[#69a8ff]/40 bg-white p-6 sm:p-8 overflow-hidden shadow-[0_8px_30px_rgba(14,110,254,0.06)]">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0e6efe] via-[#69a8ff] to-[#0e6efe]" />
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={savingsIdx}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.4, ease: 'easeOut' }}
-                  className="relative"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <p className="text-[13px] font-medium text-slate-400">Senaste besparing</p>
-                      <h3 className="text-[20px] sm:text-[24px] font-bold text-slate-700 mt-0.5">{LIVE_SAVINGS[savingsIdx].name}</h3>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[11px] text-slate-400">{LIVE_SAVINGS[savingsIdx].city}</p>
-                      <p className="text-[11px] text-slate-400">{LIVE_SAVINGS[savingsIdx].days} dagar sedan</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="w-11 h-11 rounded-xl bg-[#e4efff] flex items-center justify-center shrink-0">
-                      <Car className="w-5 h-5 text-[#0e6efe]" />
-                    </div>
-                    <div>
-                      <p className="text-[15px] font-semibold text-slate-700">{LIVE_SAVINGS[savingsIdx].car}</p>
-                      <p className="text-[12px] text-slate-500">Förhandlad av Biltos experter</p>
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl bg-emerald-50/70 border border-emerald-200/60 px-4 py-3 flex items-center justify-between">
-                    <span className="text-[13px] font-medium text-emerald-700">Sparade</span>
-                    <span className="text-[22px] sm:text-[26px] font-bold text-emerald-600 tabular-nums">{LIVE_SAVINGS[savingsIdx].saved.toLocaleString('sv-SE')} kr</span>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-
-              {/* Progress dots */}
-              <div className="flex items-center justify-center gap-1.5 mt-5">
-                {LIVE_SAVINGS.map((_, i) => (
-                  <span
-                    key={i}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${i === savingsIdx ? 'w-6 bg-[#0e6efe]' : 'w-1.5 bg-slate-200'}`}
-                  />
-                ))}
-              </div>
-            </div>
           </div>
 
-          <p className="mt-4 text-center text-[11px] text-slate-400 leading-snug max-w-xl mx-auto">Exempel baserade på genomförda affärer. Din besparing beror på bil, handlare och marknadsläge.</p>
+          <p className="mt-5 text-center text-[11px] text-slate-400 leading-snug max-w-xl mx-auto">Exempel baserade på genomförda affärer. Din besparing beror på bil, handlare och marknadsläge.</p>
         </div>
       </section>
 
