@@ -1,417 +1,832 @@
-import { useState, Suspense, lazy } from 'react';
+import { useEffect, useState, Suspense, lazy, useCallback } from 'react';
 import {
   ArrowRight,
-  BadgeCheck,
   Check,
   ChevronDown,
-  LineChart,
-  Menu,
   Phone,
-  Search,
   ShieldCheck,
-  Sparkles,
-  Star,
-  Users,
+  Menu,
+  Banknote,
+  Clock,
+  Search,
+  Handshake,
+  FileCheck,
   X,
-  Zap,
+  TrendingDown,
+  Link2,
+  Loader2,
+  Car,
+  Sparkles,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { SiteFooter } from '../components/SiteFooter';
-import MobileMenu, { type MobileMenuItem } from '../components/MobileMenu';
+import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
+import ReviewsSection from '../components/ReviewsSection';
 import { setPageMeta } from '../lib/pageMeta';
+import { PHONE, PHONE_TEL, EXPERT_PHOTO } from '../config/site';
+import { useVehicleLookup, type VehicleData } from '../lib/useVehicleLookup';
 
 const BuyDrawer = lazy(() => import('../components/BuyDrawer'));
 
 interface HomePageProps {
   onNavigate: (regnummer: string, telefon: string) => void;
-  onNavigateBuy?: () => void;
+  onNavigateBuy?: (bil?: string) => void;
   onNavigateSell?: () => void;
   onNavigateHowItWorks?: () => void;
   showSeo?: boolean;
   pageTitle?: string;
 }
 
-const savings = [
-  { name: 'Patrick D.', car: '2023 Ford F-150 Lariat', amount: '4 100' },
-  { name: 'Nattalie K.', car: '2026 Mazda CX-70', amount: '3 250' },
-  { name: 'Julie & Adrienne T.', car: 'Kia K5 GT', amount: '2 400' },
-  { name: 'David D.', car: '2026 Kia Sportage EX', amount: '2 900' },
-  { name: 'Fernando B.', car: '2025 Toyota Tacoma SR5', amount: '3 100' },
-  { name: 'Grant G.', car: '2018 Toyota RAV4 XLE', amount: '4 800' },
-  { name: 'Eric S.', car: '2026 Toyota Crown Signia', amount: '3 200' },
-  { name: 'Erin B.', car: '2026 Mini Countryman S', amount: '2 700' },
+const USUAL_WAY = [
+  { title: 'Vem ringer vem', desc: 'Du fyller i ett formulär. Fem handlare bombarderar din telefon i en vecka.' },
+  { title: 'Siffrorna', desc: 'Handlaren har alla siffror – inköpspris, rabatter, marginaler. Du ser prislappen och hoppas.' },
+  { title: 'Förhandlingen', desc: 'Du sitter i showroom i fyra timmar under press, utan någon som står på din sida.' },
+  { title: 'Det finstilta', desc: 'Tilläggtjänster och dolda avgifter på tusentals kronor göms i avtalet.' },
 ];
 
-const comparison = [
-  { label: 'Vem ringer vem', usual: 'Du fyller i ett formulär. Fem handlare ringer dig en hel vecka.', bilto: 'Vi kontaktar handlarna. Ditt nummer når dem aldrig.' },
-  { label: 'Prisinformationen', usual: 'Handlaren har alla siffror. Du ser prislappen och hoppas.', bilto: 'Vi visar fakturapris, målspris och total kostnad. Samma siffror som handlaren.' },
-  { label: 'Förhandlingen', usual: 'Du sitter i showroom i fyra timmar under press, utan spelrum.', bilto: 'En erfaren förhandlare sköter dialogen innan du ens besöker handlaren.' },
-  { label: 'Det finstilta', usual: 'Dolda avgifter och tillägg för 20 000 kr smygs in i avtalet.', bilto: 'Varje rad kontrolleras. Skräpavgifter rensas bort innan du skriver på.' },
+const OUR_WAY = [
+  { title: 'Vem ringer vem', desc: 'Vi kontaktar handlaren. Ditt nummer når aldrig dem.' },
+  { title: 'Siffrorna', desc: 'Vi vet vad handlaren betalat och var marginalen finns. Samma siffror som handlaren ser.' },
+  { title: 'Förhandlingen', desc: 'En erfaren expert förhandlar innan du ens besöker handlaren. Du går in med ett låst pris – eller går inte alls.' },
+  { title: 'Det finstilta', desc: 'Varje rad i avtalet granskas. Dolda avgifter tas bort innan du skriver på.' },
 ];
 
-const plans = [
+const INCLUDED = [
+  { icon: Search, title: 'Sökning i hela marknaden', desc: 'Vi letar på alla plattformar – inte bara ett handlares lager.' },
+  { icon: Handshake, title: 'Prisförhandling', desc: 'Vi vet vad handlaren betalt för bilen och var marginalen finns.' },
+  { icon: FileCheck, title: 'Historikkontroll', desc: 'Ägarhistorik, skador, miltal och service – granskat innan erbjudande.' },
+  { icon: Banknote, title: 'Ränteförhandling', desc: 'Vi jämför finansiering och pressar räntan mot flera aktörer.' },
+];
+
+const SAVINGS_ITEMS = [
+  { label: 'Prisförhandling på bilen', amount: '8 000–12 000 kr', desc: 'Vi vet vad handlaren betalat och var marginalen finns – och utnyttjar det.' },
+  { label: 'Ränterabatt på finansiering', amount: '3 000–6 000 kr', desc: 'Vi jämför och förhandlar räntan mot flera finansaktörer och pressar den nedåt.' },
+  { label: 'Däck & tillval', amount: '2 000–4 000 kr', desc: 'Vinterdäck, golvmattor och service tas med i paketet – utan extrakostnad.' },
+];
+
+const FAQS = [
   {
-    name: 'Gratis',
-    price: '0 kr',
-    period: 'för alltid',
-    desc: 'Marknadsdata, sök bland bilar, och rådgivning via chatt.',
-    cta: 'Börja gratis',
-    icon: Search,
-    features: ['Marknadsdata och priser', 'Sök bland 50 000+ bilar', 'Fråga våra bilrådgivare'],
+    q: 'Vad kostar det att använda Bilto?',
+    a: 'Bilköptjänsten kostar 4 995 kr i fast avgift – betalas bara om affären blir av. Säljhjälpen är gratis för dig; vi tar en avgift av handlaren. Inga dolda kostnader, noll provision.',
   },
   {
-    name: 'Bilto Pro',
-    price: '49 kr',
-    period: '/månad',
-    desc: 'Fakturapriser, målspriser och totala kostnadsuppskattningar.',
-    cta: 'Skaffa Pro',
-    icon: LineChart,
-    features: ['Allt i Gratis, plus:', 'Fakturapriser och målspriser', 'OTD-uppskattningar', 'Jämförelseverktyg'],
+    q: 'Hur hjälper Bilto mig att köpa bil?',
+    a: 'Du berättar vilken bil du är intresserad av – vi tar över därifrån. Vi kontaktar säljaren, verifierar annonsen, förhandlar pris, ränta och tillbehör, och ser till att du inte betalar mer än du måste.',
   },
   {
-    name: 'AI-förhandlare',
-    price: '790 kr',
-    period: 'per sökning',
-    desc: 'AI förhandlar totalpriset och rensar bort dolda avgifter.',
-    cta: 'Starta AI-sökning',
-    icon: Zap,
-    badge: 'Beta',
-    features: ['Allt i Pro, plus:', 'AI förhandlar OTD', 'Rensar bort skräpavgifter', 'En fast avgift oavsett antal bilar'],
+    q: 'Hur stor besparing kan jag räkna med?',
+    a: 'Snittbesparingen är 18 000 kr per affär – räknat på prisnedförhandling, ränta och tillbehör. Siffran bygger på resultat från tidigare kunder och är inte en garanti; din besparing varierar beroende på bil och handlare. Vår avgift på 4 995 kr betalas dessutom bara om affären blir av.',
   },
   {
-    name: 'Concierge',
-    price: '9 995 kr',
-    period: 'per bilköp',
-    desc: 'En erfaren proffs sköter hela affären från start till mål.',
-    cta: 'Boka Concierge',
-    icon: BadgeCheck,
-    features: ['Allt i AI-förhandlare, plus:', '20-årig branschexpert', 'Samtal, sms och escalation', 'Hela vägen till signering'],
+    q: 'Kommer handlare att bombardera min telefon?',
+    a: 'Aldrig. Ditt nummer stannar hos dig. Vi hanterar alla mejl, samtal och meddelanden åt dig. Noll spam.',
+  },
+  {
+    q: 'Hur lång tid tar det?',
+    a: 'De flesta kunder har ett klart erbjudande inom 3–7 dagar. Har du redan hittat en specifik bil kan det gå snabbare, ibland inom 24 timmar.',
+  },
+  {
+    q: 'Vad händer om jag inte köper en bil?',
+    a: 'Ingenting. Det finns inga förpliktelser. Du tackar enkelt nej – och betalar inget om ingen affär görs.',
   },
 ];
 
-const testimonials = [
-  { quote: 'Inom 48 timmar hade jag fyra bilar att titta på. Min rådgivare förhandlade fram ett totalpris på 35 337 kr. Bilens nya listpris var 43 995 kr. Det här är sättet att köpa bil på.', name: 'Dave E.' },
-  { quote: 'Stuart förhandlade hela min affär från start till mål. Allt jag behövde göra var att gå till handlaren, skriva på pappren och köra hem min nya bil. Det var lika enkelt.', name: 'H. Garrett' },
-  { quote: 'Jerry hittade exakt den bil jag letade efter på mindre än tre dagar till ett betydligt lägre totalpris. Otroligt! Rekommenderas varmt!', name: 'Gina O.' },
+const STATS = [
+  { value: '18 000 kr', label: 'Snittbesparing per affär' },
+  { value: '3–7 dagar', label: 'Till klart erbjudande' },
+  { value: '4 995 kr', label: 'Fast avgift – bara om affären blir av' },
+  { value: '4.9 / 5', label: 'Kundbetyg på Google' },
 ];
 
-const faqs = [
-  { q: 'Vad är skillnaden mellan AI-förhandlare och Concierge?', a: 'AI-förhandlare (790 kr i beta) är mjukvara som mailar handlare, förhandlar totalpriset och rensar bort dolda avgifter. Concierge (9 995 kr) är en erfaren branschexpert som sköter hela affären från samtal till signering.' },
-  { q: 'Kommer handlare att ringa mig?', a: 'Aldrig. Ditt nummer stays hos dig. Vi hanterar varje mejl, samtal och sms å dina vägnar. Noll spam.' },
-  { q: 'Hur lång tid tar förhandlingen?', a: 'Det beror på hur snabbt du vill gå framåt. Första svaren från handlare kommer oftast inom 24 timmar och motbud inom 48. De flesta avslutas på 3–5 dagar.' },
-  { q: 'Vad händer om jag inte köper en bil?', a: 'AI-förhandlare kostar 790 kr i beta och du behåller all data även om du avbryter. Concierge faktureras per affär och endast när vi levererar en bil du faktiskt vill köpa.' },
-  { q: 'Måste jag betala för att börja?', a: 'Nej. Gratis ger dig marknadsdata, rådgivning via chatt och tillgång till 50 000+ bilar för alltid. Uppgradera först när du vill ha målspriser, OTD-uppskattningar eller förhandlingshjälp.' },
+const PRESS_LOGOS = ['Dagens Industri', 'Aftonbladet', 'SVT Nyheter', 'TV4', 'Breakit'];
+
+const LIVE_SAVINGS = [
+  { name: 'Johan', car: 'Volvo XC40', saved: 34000, city: 'Göteborg', days: 4 },
+  { name: 'Maria', car: 'BMW X3', saved: 28000, city: 'Stockholm', days: 6 },
+  { name: 'Erik', car: 'Audi Q5', saved: 31000, city: 'Malmö', days: 5 },
+  { name: 'Sofia', car: 'Tesla Model Y', saved: 22000, city: 'Uppsala', days: 3 },
+  { name: 'Anders', car: 'Mercedes GLC', saved: 38000, city: 'Göteborg', days: 7 },
+  { name: 'Lisa', car: 'Kia Sportage', saved: 19000, city: 'Linköping', days: 5 },
+  { name: 'Mikael', car: 'VW ID.4', saved: 25000, city: 'Helsingborg', days: 4 },
+  { name: 'Anna', car: 'Polestar 2', saved: 30000, city: 'Stockholm', days: 6 },
 ];
 
-function StarRating() {
-  return (
-    <div className="flex items-center gap-1">
-      {[...Array(5)].map((_, i) => (
-        <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
-      ))}
-    </div>
-  );
-}
+const TOTAL_SAVED_BASE = 2_847_000;
 
-function BrandMark() {
-  return (
-    <span className="flex items-center gap-2.5">
-      <span className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-[#0b1b3a]">
-        <span className="text-[15px] font-extrabold text-white">B</span>
-      </span>
-      <span className="text-[22px] font-extrabold tracking-[-0.04em] text-[#0b1b3a]">Bilto</span>
-    </span>
-  );
-}
-
-export default function HomePage({ onNavigateBuy, onNavigateSell, onNavigateHowItWorks, pageTitle }: HomePageProps) {
+export default function HomePage({
+  onNavigate,
+  onNavigateBuy,
+  onNavigateSell,
+  onNavigateHowItWorks,
+  showSeo = false,
+  pageTitle,
+}: HomePageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [buyDrawerCar, setBuyDrawerCar] = useState<string | null>(null);
+  const [carQuery, setCarQuery] = useState('');
+  const [regInput, setRegInput] = useState('');
+  const [adLink, setAdLink] = useState('');
+  const [lookupError, setLookupError] = useState<string | null>(null);
+  const [foundCar, setFoundCar] = useState<VehicleData | null>(null);
+  const [savingsIdx, setSavingsIdx] = useState(0);
+  const [totalSaved, setTotalSaved] = useState(TOTAL_SAVED_BASE);
+  const lookup = useVehicleLookup(regInput);
 
-  if (pageTitle) document.title = pageTitle;
-  else setPageMeta({ title: 'Bilto – Vi förhandlar din bilaffar', description: 'Bilto förhandlar din bilaffär åt dig. Spara 25 000 kr eller mer på ditt nästa bilköp.', canonical: 'https://bilto.se/' });
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSavingsIdx((prev) => (prev + 1) % LIVE_SAVINGS.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, []);
 
-  const openBuyDrawer = () => setBuyDrawerCar('');
+  useEffect(() => {
+    setTotalSaved((prev) => prev + LIVE_SAVINGS[savingsIdx].saved);
+  }, [savingsIdx]);
+
+  useEffect(() => {
+    if (pageTitle) {
+      document.title = pageTitle;
+    } else {
+      setPageMeta({
+        title: 'Bilköptjänsten – spara 15 000 kr eller mer | Bilto',
+        description: 'Biltos experter hjälper dig hitta, förhandla och köpa rätt bil. Vi sköter kontakten med handlare åt dig – 4 995 kr om affären blir av.',
+        canonical: 'https://bilto.se/',
+      });
+    }
+  }, [pageTitle]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const threshold = typeof window !== 'undefined' ? window.innerHeight * 0.8 : 600;
+      setScrolled(window.scrollY > threshold);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const openBuyDrawer = (car?: string) => setBuyDrawerCar(car ?? '');
   const closeBuyDrawer = () => setBuyDrawerCar(null);
+
+  useEffect(() => {
+    if (lookup.status === 'found') {
+      setFoundCar(lookup.data);
+      setLookupError(null);
+    } else if (lookup.status === 'not_found') {
+      setFoundCar(null);
+      setLookupError('Inget fordon hittades på det regnumret.');
+    } else if (lookup.status === 'error') {
+      setFoundCar(null);
+      setLookupError('Kunde inte hämta biluppgifter just nu.');
+    } else if (lookup.status === 'idle') {
+      setFoundCar(null);
+      setLookupError(null);
+    }
+  }, [lookup.status, lookup.data]);
+
+  const handleHeroSubmit = () => {
+    const carDesc = foundCar
+      ? `${foundCar.marke} ${foundCar.modell} ${foundCar.variant}`.trim()
+      : adLink.trim()
+        ? adLink.trim()
+        : regInput.trim();
+    openBuyDrawer(carDesc || undefined);
+  };
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
-    if (item === 'Sälj bil') onNavigateSell?.();
-    if (item === 'Bilköptjänsten') onNavigateBuy?.();
+    if (item === 'Sälj bil') { onNavigateSell?.(); return; }
+    if (item === 'Bilköptjänsten') { onNavigateBuy?.(); return; }
+    const routes: Partial<Record<MobileMenuItem, string>> = {
+      'Guider': '/guider',
+      'Vanliga frågor': '/vanliga-fragor',
+      'Så funkar det': '/sa-funkar-det',
+    };
+    const route = routes[item];
+    if (route) {
+      window.history.pushState({}, '', route);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
   };
 
   return (
-    <div className="min-h-screen bg-white text-[#0b1b3a]">
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} active="Bilköptjänsten" onSelect={handleMenuSelect} />
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
+      <MobileMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        active="Bilköptjänsten"
+        onSelect={handleMenuSelect}
+      />
 
-      {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-5 lg:px-8">
-          <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Bilto startsida">
-            <BrandMark />
+      {/* ── Nav ── */}
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
+        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
+          <button
+            type="button"
+            aria-label="Meny"
+            onClick={() => setMenuOpen(true)}
+            className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white"
+          >
+            <Menu className="w-6 h-6" strokeWidth={2} />
           </button>
-          <nav className="hidden items-center gap-7 text-[14px] font-medium text-[#3a4a63] md:flex">
-            <button type="button" onClick={() => onNavigateBuy?.()} className="hover:text-[#0b1b3a]">Köp bil</button>
-            <button type="button" onClick={() => onNavigateSell?.()} className="hover:text-[#0b1b3a]">Sälj bil</button>
-            <button type="button" onClick={() => onNavigateHowItWorks?.()} className="hover:text-[#0b1b3a]">Så fungerar det</button>
-            <button type="button" onClick={() => window.history.pushState({}, '', '/om-oss')} className="hover:text-[#0b1b3a]">Om oss</button>
-            <button type="button" onClick={() => window.history.pushState({}, '', '/vanliga-fragor')} className="hover:text-[#0b1b3a]">Vanliga frågor</button>
+          <button
+            type="button"
+            onClick={() => { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); }}
+            className="shrink-0 flex items-center"
+          >
+            <img
+              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
+              alt="Bilto"
+              className="h-20 lg:h-32 w-auto object-contain"
+              fetchPriority="high"
+              decoding="async"
+            />
+          </button>
+          <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
+            <button type="button" onClick={() => onNavigateSell?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">Sälj bil</button>
+            <button type="button" onClick={() => onNavigateBuy?.()} className="text-[15px] text-white font-semibold transition">Bilköptjänsten</button>
+            <button type="button" onClick={() => onNavigateHowItWorks?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">Så funkar det</button>
           </nav>
-          <div className="flex items-center gap-3">
-            <button type="button" onClick={openBuyDrawer} className="hidden rounded-lg bg-[#0b1b3a] px-5 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[#172d58] sm:block">
-              Förhandla min bil
-            </button>
-            <button type="button" aria-label="Öppna meny" onClick={() => setMenuOpen(true)} className="p-2 md:hidden">
-              <Menu className="h-5 w-5" />
-            </button>
+          <div className="flex items-center ml-auto">
+            <a
+              href="/gratis-konsultation"
+              className="inline-flex items-center bg-white text-[#0e6efe] text-[11px] lg:text-[13px] font-semibold px-[14px] lg:px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+            >
+              Kostnadsfri konsultation
+            </a>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-[#0b1b3a] py-16 lg:py-24">
-        <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(ellipse at 70% 30%, rgba(56,189,248,0.15) 0%, transparent 50%), radial-gradient(ellipse at 20% 80%, rgba(99,102,241,0.12) 0%, transparent 50%)' }} />
-        <div className="relative mx-auto max-w-[1200px] px-5 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[13px] font-medium text-white/80 backdrop-blur-sm">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-400" />
-              Live nu – förhandling varje vardag
-            </div>
-            <h1 className="text-[42px] font-bold leading-[1.05] tracking-[-0.03em] text-white sm:text-[56px] lg:text-[64px]">
-              Spara <span className="text-emerald-400">25 000 kr</span> eller mer på ditt nästa bilköp – utan att sätta foten på en bilhall.
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#e7f3ff] via-[#f2f8ff] to-[#faf8f5] pt-32 sm:pt-40 pb-14 sm:pb-20">
+        <div className="absolute -top-24 -right-24 w-[400px] h-[400px] rounded-full bg-[#0e6efe]/[0.06] blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 -left-32 w-[320px] h-[320px] rounded-full bg-[#69a8ff]/[0.08] blur-3xl pointer-events-none" />
+
+        <div className="relative mx-auto w-full max-w-5xl px-5 sm:px-8 text-center">
+          <div className="max-w-3xl mx-auto">
+            <h1 className="text-[30px] sm:text-[40px] lg:text-[48px] font-bold leading-[1.1] tracking-[-0.04em] text-slate-700">
+              Spara 15 000 kr eller mer på din nästa bil – utan att besöka en bilhall.
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-white/70">
-              Oavsett om du köper eller säljer, kontaktar Bilto handlarna åt dig, förhandlar fram bästa pris och hanterar varje steg. Du sparar tid och pengar.
+            <p className="mt-8 text-[16px] sm:text-[19px] leading-[1.5] tracking-[-0.01em] text-slate-500">
+              Oavsett om du leasar eller köper kontaktar Biltos experter handlaren åt dig, förhandlar bästa pris och sköter varje steg – du sparar tid och pengar.{' '}
+              <a href="/gratis-konsultation" className="font-medium text-[#0e6efe] hover:text-[#0a57cc] transition">
+                Boka ett kostnadsfritt samtal på 15 minuter
+              </a>{' '}
+              – vi lyssnar och rekommenderar rätt lösning, ingen säljpitch.
             </p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <button type="button" onClick={openBuyDrawer} className="inline-flex items-center gap-2 rounded-lg bg-white px-7 py-3.5 text-[15px] font-bold text-[#0b1b3a] transition hover:bg-slate-100">
-                Starta gratis konsultation <ArrowRight className="h-4 w-4" />
-              </button>
-              <button type="button" onClick={() => onNavigateHowItWorks?.()} className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-7 py-3.5 text-[15px] font-semibold text-white transition hover:bg-white/10">
-                Se hur det fungerar
-              </button>
-            </div>
-            <p className="mt-4 text-[13px] text-white/50">Få tillgång till målspriser, fakturadata och OTD-uppskattningar.</p>
           </div>
-        </div>
-      </section>
 
-      {/* Real customers savings */}
-      <section className="border-b border-slate-100 bg-white py-14">
-        <div className="mx-auto max-w-[1200px] px-5 lg:px-8">
-          <h2 className="mb-2 text-center text-[28px] font-bold tracking-[-0.02em] text-[#0b1b3a]">Riktiga kunder. Riktiga besparingar.</h2>
-          <p className="mb-10 text-center text-[15px] text-slate-500">Tusentals svenska bilköpare har sparat med Bilto.</p>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {savings.map((s) => (
-              <div key={s.name + s.car} className="rounded-xl border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-md">
-                <div className="mb-2 flex items-center gap-1 text-emerald-600">
-                  <span className="text-[13px] font-bold">Sparade</span>
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => openBuyDrawer()}
+              className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-white text-slate-700 font-semibold text-[14px] shadow-[0_4px_16px_rgba(15,23,42,0.08)] ring-1 ring-slate-200 hover:ring-[#69a8ff] hover:text-[#0e6efe] transition"
+            >
+              Fråga en bilexpert
+              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#0e6efe]/10 text-[#0e6efe] text-[11px] font-bold">✦</span>
+              <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">NYTT</span>
+            </button>
+          </div>
+
+          <div id="home-search" className="relative max-w-2xl mx-auto mt-8 rounded-[24px] border border-[#69a8ff]/70 bg-white/90 p-5 sm:p-7 shadow-[0_18px_50px_rgba(14,110,254,0.14)] text-left">
+            <div className="flex items-center gap-2 mb-4">
+              <Car className="w-5 h-5 text-[#0e6efe]" />
+              <h2 className="text-[18px] sm:text-[20px] font-bold tracking-[-0.02em] text-slate-700">
+                Hittat en bil? Låt oss förhandla priset åt dig
+              </h2>
+            </div>
+            <p className="text-[14px] text-slate-500 leading-[1.5] mb-5">
+              Skriv in regnumret så hämtar vi bilens uppgifter automatiskt. Eller klistra in länken till annonsen om du inte har regnumret.
+            </p>
+
+            {/* Regnummer input */}
+            <div className="mb-3">
+              <label className="block text-[12px] font-medium text-slate-500 mb-1.5">Regnummer</label>
+              <div className="flex items-stretch h-14 rounded-xl border border-slate-300 bg-white overflow-hidden transition focus-within:ring-2 focus-within:ring-[#0e6efe]/20 focus-within:border-[#0e6efe]">
+                <span className="flex items-center justify-center w-12 bg-[#0e6efe] text-white font-bold shrink-0 text-[20px]">S</span>
+                <input
+                  type="text"
+                  value={regInput}
+                  onChange={(e) => {
+                    const cleaned = e.target.value.toUpperCase().replace(/[^A-ZÅÄÖ0-9]/g, '').slice(0, 6);
+                    setRegInput(cleaned);
+                  }}
+                  placeholder="ABC123"
+                  maxLength={6}
+                  autoComplete="off"
+                  className="flex-1 min-w-0 px-4 bg-white text-[18px] font-semibold tracking-widest text-slate-900 placeholder:text-slate-400 placeholder:font-normal placeholder:tracking-normal focus:outline-none"
+                />
+                {lookup.status === 'loading' && (
+                  <span className="flex items-center justify-center w-11 shrink-0">
+                    <Loader2 className="w-5 h-5 text-[#0e6efe] animate-spin" />
+                  </span>
+                )}
+                {lookup.status === 'found' && (
+                  <span className="flex items-center justify-center w-11 shrink-0">
+                    <span className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
+                      <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
+                    </span>
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 my-4">
+              <div className="flex-1 h-px bg-slate-200" />
+              <span className="text-[12px] text-slate-400 font-medium">eller</span>
+              <div className="flex-1 h-px bg-slate-200" />
+            </div>
+
+            {/* Ad link input */}
+            <div className="mb-5">
+              <label className="block text-[12px] font-medium text-slate-500 mb-1.5">Länk till annonsen</label>
+              <div className="relative">
+                <Link2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="url"
+                  value={adLink}
+                  onChange={(e) => setAdLink(e.target.value)}
+                  placeholder="https://www.blocket.se/..."
+                  className="w-full h-14 pl-12 pr-4 rounded-xl border border-slate-300 bg-white text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e6efe]/20 focus:border-[#0e6efe] transition"
+                />
+              </div>
+            </div>
+
+            {/* Error */}
+            {lookupError && (
+              <p className="text-[13px] text-red-600 mb-3">{lookupError}</p>
+            )}
+
+            {/* Found car preview */}
+            {foundCar && (
+              <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50/60 p-3.5 flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-600 shrink-0" strokeWidth={2.5} />
+                <div className="min-w-0">
+                  <p className="text-[14px] font-semibold text-slate-700 truncate">
+                    {foundCar.marke} {foundCar.modell} {foundCar.variant}
+                  </p>
+                  <p className="text-[12px] text-slate-500">
+                    {foundCar.ar ?? '—'} · {foundCar.bransle || '—'} · {foundCar.miltal ? `${foundCar.miltal.toLocaleString('sv-SE')} mil` : '—'}
+                  </p>
                 </div>
-                <p className="text-[28px] font-bold tracking-[-0.02em] text-[#0b1b3a]">{s.amount} kr</p>
-                <p className="mt-1 text-[13px] font-medium text-slate-700">{s.name}</p>
-                <p className="text-[12px] text-slate-400">{s.car}</p>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={handleHeroSubmit}
+              disabled={!regInput && !adLink}
+              className="w-full h-14 rounded-xl bg-[#0e6efe] text-white font-bold text-[16px] hover:bg-[#0a57cc] transition inline-flex items-center justify-center gap-2 shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Låt Bilto förhandla priset
+              <ArrowRight className="w-5 h-5" />
+            </button>
+            <p className="mt-3 text-center text-[12px] text-slate-500">Ingen kostnad förrän affären är klar</p>
+          </div>
+
+          <div className="mt-10 sm:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-left">
+            {STATS.map((s) => (
+              <div key={s.label} className="rounded-2xl bg-white/80 border border-[#69a8ff]/30 px-4 py-5 sm:py-6 text-center shadow-sm transition hover:border-[#69a8ff]/60 hover:shadow-md hover:bg-white">
+                <p className="text-[18px] sm:text-[22px] lg:text-[24px] font-bold text-slate-700 tracking-tight tabular-nums leading-tight">{s.value}</p>
+                <p className="text-[11px] sm:text-[12px] text-slate-500 mt-1.5 leading-snug">{s.label}</p>
               </div>
             ))}
           </div>
+          <p className="mt-4 text-center text-[11px] text-slate-400 leading-snug max-w-xl mx-auto">Snittbesparingar bygger på resultat från tidigare kunder och är inte en garanti. Din besparing beror på bil, handlare och marknadsläge.</p>
         </div>
       </section>
 
-      {/* As featured in */}
-      <section className="border-b border-slate-100 bg-[#f8f9fb] py-8">
-        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-center gap-x-10 gap-y-4 px-5 lg:px-8">
-          <span className="text-[12px] font-semibold uppercase tracking-wider text-slate-400">Om oss i</span>
-          {['Aftonbladet', 'Dagens Industri', 'SVT Nyheter', 'Teknikens Värld', 'Auto Motor & Sport'].map((m) => (
-            <span key={m} className="text-[16px] font-bold text-slate-300">{m}</span>
-          ))}
-        </div>
-      </section>
+      {/* ── Live besparingar ── */}
+      <section className="relative bg-gradient-to-b from-[#faf8f5] via-[#eef5ff] to-[#f2f8ff] py-12 sm:py-16 px-4 sm:px-6 overflow-hidden">
+        {/* Ambient background glows */}
+        <div className="absolute top-1/4 -left-20 w-72 h-72 rounded-full bg-[#0e6efe]/[0.04] blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 -right-20 w-80 h-80 rounded-full bg-emerald-400/[0.05] blur-3xl pointer-events-none" />
 
-      {/* Comparison: usual way vs Bilto way */}
-      <section className="bg-white py-16 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-5 lg:px-8">
-          <div className="mb-3 text-center">
-            <span className="text-[13px] font-bold uppercase tracking-wider text-emerald-600">Varför våra kunder sparar 25 000 kr</span>
-          </div>
-          <h2 className="mb-12 text-center text-[32px] font-bold tracking-[-0.02em] text-[#0b1b3a] sm:text-[40px]">
-            Handlarna har en orättvis fördel.<br />Fram tills nu.
-          </h2>
-          <p className="mx-auto mb-12 max-w-2xl text-center text-[16px] leading-relaxed text-slate-500">
-            Ett vanligt handlarbesök tar fyra timmar och kostar de flesta köpare 20 000–40 000 kr mer än det borde. Så här ändras allt när Bilto sköter affären:
-          </p>
-          <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
-            <div className="grid grid-cols-3 border-b border-slate-200 bg-slate-50">
-              <div className="px-5 py-4 text-[13px] font-bold uppercase tracking-wider text-slate-400">Område</div>
-              <div className="border-l border-slate-200 px-5 py-4 text-[14px] font-bold text-slate-500">Det vanliga sättet</div>
-              <div className="border-l border-slate-200 bg-[#0b1b3a] px-5 py-4 text-[14px] font-bold text-white">Bilto sättet</div>
+        <div className="relative max-w-5xl mx-auto">
+          {/* Header */}
+          <div className="flex flex-col items-center text-center mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50/80 border border-emerald-200/50 px-3.5 py-1.5 mb-4">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="text-[11px] font-bold text-emerald-600 uppercase tracking-[0.18em]">Live besparingar</span>
             </div>
-            {comparison.map((row, i) => (
-              <div key={row.label} className={`grid grid-cols-3 ${i !== comparison.length - 1 ? 'border-b border-slate-100' : ''}`}>
-                <div className="px-5 py-5 text-[14px] font-semibold text-[#0b1b3a]">{row.label}</div>
-                <div className="border-l border-slate-100 px-5 py-5 text-[14px] leading-relaxed text-slate-500">{row.usual}</div>
-                <div className="border-l border-slate-100 bg-[#f0f7ff] px-5 py-5 text-[14px] leading-relaxed font-medium text-[#0b1b3a]">{row.bilto}</div>
-              </div>
-            ))}
+            <h2 className="text-[22px] sm:text-[28px] font-bold text-slate-700 tracking-[-0.03em] leading-tight">
+              Riktiga kunder. Riktiga besparingar.
+            </h2>
+            <p className="mt-2 text-[14px] sm:text-[15px] text-slate-500 max-w-lg leading-relaxed">
+              Varje dag förhandlar vi fram bättre priser åt svenska bilköpare. Så här mycket har sparats – hittills i år.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* Pricing */}
-      <section className="border-y border-slate-100 bg-[#f8f9fb] py-16 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-5 lg:px-8">
-          <div className="mb-3 text-center">
-            <span className="text-[13px] font-bold uppercase tracking-wider text-emerald-600">Priser i korthet</span>
-          </div>
-          <h2 className="mb-3 text-center text-[32px] font-bold tracking-[-0.02em] text-[#0b1b3a] sm:text-[40px]">Från gör-det-själv till klart-åt-dig.</h2>
-          <p className="mb-12 text-center text-[15px] text-slate-500">
-            <button type="button" onClick={() => window.history.pushState({}, '', '/vanliga-fragor')} className="font-semibold text-[#0b1b3a] underline underline-offset-2">Se fullständig jämförelse</button>
-          </p>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {plans.map((plan) => {
-              const Icon = plan.icon;
-              return (
-                <div key={plan.name} className="relative flex flex-col rounded-2xl border border-slate-200 bg-white p-6 transition hover:shadow-lg">
-                  {plan.badge && (
-                    <span className="absolute -top-3 right-6 rounded-full bg-emerald-500 px-3 py-1 text-[11px] font-bold uppercase text-white">{plan.badge}</span>
-                  )}
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50">
-                    <Icon className="h-6 w-6 text-[#0b1b3a]" strokeWidth={1.5} />
+          {/* Main card */}
+          <div className="relative rounded-3xl border border-[#69a8ff]/30 bg-white/70 backdrop-blur-sm shadow-[0_20px_60px_rgba(14,110,254,0.08)] overflow-hidden">
+            {/* Top accent bar */}
+            <div className="h-[3px] bg-gradient-to-r from-transparent via-[#0e6efe] to-transparent" />
+
+            <div className="grid lg:grid-cols-[1fr_1.3fr]">
+              {/* Total saved counter */}
+              <div className="relative p-7 sm:p-9 lg:border-r border-[#69a8ff]/15 bg-gradient-to-br from-[#e4efff]/40 to-transparent">
+                <div className="absolute top-6 right-6 w-10 h-10 rounded-2xl bg-[#0e6efe]/[0.07] flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-[#0e6efe]" />
+                </div>
+
+                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.14em] mb-4">Totalt sparade</p>
+                <p className="text-[40px] sm:text-[48px] lg:text-[56px] font-bold text-slate-700 tracking-[-0.04em] tabular-nums leading-[0.95]">
+                  {totalSaved.toLocaleString('sv-SE')}
+                  <span className="text-[20px] sm:text-[24px] text-slate-400 font-medium ml-1.5">kr</span>
+                </p>
+
+                <div className="mt-6 space-y-2.5">
+                  <div className="flex items-center gap-2 text-[12px] text-slate-500">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Uppdateras i realtid
                   </div>
-                  <h3 className="text-[18px] font-bold text-[#0b1b3a]">{plan.name}</h3>
-                  <div className="mt-2 flex items-baseline gap-1">
-                    <span className="text-[32px] font-bold tracking-[-0.02em] text-[#0b1b3a]">{plan.price}</span>
-                    <span className="text-[13px] text-slate-400">{plan.period}</span>
+                  <div className="flex items-center gap-2 text-[12px] text-slate-500">
+                    <TrendingDown className="w-3.5 h-3.5 text-[#0e6efe]" />
+                    Priserna går ner för våra kunder
                   </div>
-                  <p className="mt-2 text-[13px] leading-relaxed text-slate-500">{plan.desc}</p>
-                  <ul className="mt-5 flex-1 space-y-2.5">
-                    {plan.features.map((f, i) => (
-                      <li key={f} className={`flex items-start gap-2 text-[13px] ${i === 0 && plan.features.length > 1 ? 'font-semibold text-[#0b1b3a]' : 'text-slate-600'}`}>
-                        {i === 0 && plan.features.length > 1 ? null : <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />}
-                        {f}
-                      </li>
+                </div>
+              </div>
+
+              {/* Rotating customer card */}
+              <div className="relative p-7 sm:p-9 min-h-[260px] flex flex-col">
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.14em]">Senaste besparing</p>
+                  <div className="flex items-center gap-1.5">
+                    {LIVE_SAVINGS.map((_, i) => (
+                      <span
+                        key={i}
+                        className={`h-1.5 rounded-full transition-all duration-500 ${i === savingsIdx ? 'w-5 bg-[#0e6efe]' : 'w-1.5 bg-slate-200'}`}
+                      />
                     ))}
-                  </ul>
-                  <button
-                    type="button"
-                    onClick={openBuyDrawer}
-                    className={`mt-6 h-11 rounded-lg text-[14px] font-semibold transition ${
-                      plan.name === 'AI-förhandlare'
-                        ? 'bg-[#0b1b3a] text-white hover:bg-[#172d58]'
-                        : 'border border-slate-300 text-[#0b1b3a] hover:bg-slate-50'
-                    }`}
-                  >
-                    {plan.cta}
-                  </button>
+                  </div>
                 </div>
+
+                <div className="flex-1 flex items-center mt-4">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={savingsIdx}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                      className="w-full"
+                    >
+                      {/* Customer info row */}
+                      <div className="flex items-center justify-between mb-5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#e4efff] to-[#d4e4ff] flex items-center justify-center shrink-0 ring-1 ring-[#69a8ff]/20">
+                            <Car className="w-5 h-5 text-[#0e6efe]" />
+                          </div>
+                          <div>
+                            <h3 className="text-[18px] sm:text-[20px] font-bold text-slate-700 leading-tight">{LIVE_SAVINGS[savingsIdx].name}</h3>
+                            <p className="text-[12px] text-slate-400 mt-0.5">{LIVE_SAVINGS[savingsIdx].city} · {LIVE_SAVINGS[savingsIdx].days} dagar sedan</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Car model */}
+                      <p className="text-[15px] font-semibold text-slate-600 mb-4">{LIVE_SAVINGS[savingsIdx].car}</p>
+
+                      {/* Savings amount */}
+                      <div className="relative rounded-2xl bg-gradient-to-r from-emerald-50/80 to-emerald-50/40 border border-emerald-200/50 px-5 py-4 flex items-center justify-between overflow-hidden">
+                        <div className="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-emerald-300/20 blur-2xl pointer-events-none" />
+                        <div className="relative">
+                          <p className="text-[11px] font-medium text-emerald-600 uppercase tracking-wider">Sparade</p>
+                          <p className="text-[12px] text-slate-400 mt-0.5">vs. handlarens lista­pris</p>
+                        </div>
+                        <span className="relative text-[28px] sm:text-[32px] font-bold text-emerald-600 tabular-nums tracking-[-0.02em]">
+                          {LIVE_SAVINGS[savingsIdx].saved.toLocaleString('sv-SE')} kr
+                        </span>
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-5 text-center text-[11px] text-slate-400 leading-snug max-w-xl mx-auto">Exempel baserade på genomförda affärer. Din besparing beror på bil, handlare och marknadsläge.</p>
+        </div>
+      </section>
+
+      {/* ── Press logos ── */}
+      <section className="bg-gradient-to-b from-[#faf8f5] to-[#f2f8ff] py-8 px-5">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-center text-[11px] font-bold text-slate-400 uppercase tracking-[0.20em] mb-5">Omnämnda i</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+            {PRESS_LOGOS.map((logo) => (
+              <span key={logo} className="text-[16px] sm:text-[18px] font-bold text-slate-300 tracking-tight">
+                {logo}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Why our buyers save ── */}
+      <section className="bg-gradient-to-b from-[#f2f8ff] via-[#e7f3ff] to-[#f2f8ff] py-16 sm:py-24 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16 max-w-2xl mx-auto">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 sm:mb-4 block">
+              Varför våra kunder sparar 15 000 kr
+            </span>
+            <h2 className="text-[27px] sm:text-[36px] font-bold leading-[1.1] tracking-[-0.03em] text-slate-700">
+              Handlaren har en orättvis fördel. Tills nu.
+            </h2>
+            <p className="text-slate-500 mt-4 sm:mt-5 text-[16px] sm:text-[19px] leading-[1.5] max-w-2xl mx-auto">
+              Ett vanligt handlarbesök tar fyra timmar och kostar de flesta köpare 10 000–20 000 kr mer än det borde. Så här ändrar Bilto på det.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+            {/* Usual way */}
+            <div className="rounded-2xl border border-[#69a8ff]/40 bg-[#e4efff]/30 p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-slate-200/60 flex items-center justify-center">
+                  <X className="w-5 h-5 text-slate-400" strokeWidth={2.5} />
+                </div>
+                <h3 className="text-[18px] font-bold text-slate-400">Det vanliga sättet</h3>
+              </div>
+              <div className="space-y-5">
+                {USUAL_WAY.map((item) => (
+                  <div key={item.title}>
+                    <p className="text-[14px] font-semibold text-slate-500 mb-1">{item.title}</p>
+                    <p className="text-[14px] text-slate-400 leading-[1.6]">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Our way */}
+            <div className="rounded-2xl border-2 border-[#0e6efe] bg-[#e4efff]/50 p-6 sm:p-8 shadow-[0_8px_30px_rgba(14,110,254,0.08)]">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center">
+                  <Check className="w-5 h-5 text-[#0e6efe]" strokeWidth={2.5} />
+                </div>
+                <h3 className="text-[18px] font-bold text-[#0e6efe]">Vårt sätt</h3>
+              </div>
+              <div className="space-y-5">
+                {OUR_WAY.map((item) => (
+                  <div key={item.title}>
+                    <p className="text-[14px] font-semibold text-slate-700 mb-1">{item.title}</p>
+                    <p className="text-[14px] text-slate-600 leading-[1.6]">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Vad ingår ── */}
+      <section className="bg-gradient-to-b from-[#f2f8ff] to-[#e7f3ff] py-16 sm:py-24 px-5 sm:px-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-10 sm:mb-12">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">Ingår i tjänsten</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-700 leading-[1.1] tracking-[-0.03em]">
+              Allt från idé till nyckel
+            </h2>
+            <p className="text-slate-500 mt-3 text-[16px] sm:text-[19px] leading-[1.5] max-w-xl">
+              Vi gör jobbet åt dig – hela vägen.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {INCLUDED.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.title} className="flex flex-col rounded-2xl border border-[#69a8ff]/50 bg-[#e4efff]/50 p-6 sm:p-7 transition hover:border-[#69a8ff] hover:bg-[#e4efff]/70 hover:shadow-[0_8px_30px_rgba(14,110,254,0.08)]">
+                  <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/10 flex items-center justify-center shrink-0 mb-4">
+                    <Icon className="w-4 h-4 text-[#0e6efe]" strokeWidth={2} />
+                  </div>
+                  <p className="text-slate-700 font-semibold text-[14px] sm:text-[15px] leading-snug">{item.title}</p>
+                  <p className="text-slate-500 text-[13px] mt-1.5 leading-[1.5]">{item.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-10 sm:mt-12">
+            <button
+              type="button"
+              onClick={() => openBuyDrawer()}
+              className="h-12 px-8 sm:px-10 rounded-xl bg-[#0e6efe] text-white font-bold text-[15px] hover:bg-[#0a57cc] transition shadow-lg shadow-[#0e6efe]/25 inline-flex items-center gap-2 group"
+            >
+              Få prishjälp
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Savings breakdown ── */}
+      <section className="bg-gradient-to-b from-[#e7f3ff] to-[#f2f8ff] px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-10 sm:mb-14 max-w-2xl">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">Vad vi förhandlar fram</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-700 tracking-[-0.03em] leading-[1.1]">
+              Spara 15 000 kr eller mer på din nästa bil
+            </h2>
+            <p className="mt-3 text-slate-500 text-[16px] sm:text-[19px] leading-[1.5] max-w-lg">
+              Oavsett om du leasar eller köper förhandlar Biltos experter pris, ränta och tillval åt dig.
+            </p>
+          </div>
+
+          <div className="rounded-2xl overflow-hidden border border-[#69a8ff] shadow-[0_8px_30px_rgba(14,110,254,0.08)]">
+            <div className="bg-[#e4efff]/40 divide-y divide-[#69a8ff]/20">
+              {SAVINGS_ITEMS.map((item) => (
+                <div key={item.label} className="flex items-center gap-4 px-6 sm:px-8 py-4 sm:py-5">
+                  <div className="w-8 h-8 rounded-lg bg-[#0e6efe]/[0.1] flex items-center justify-center shrink-0">
+                    <Check className="w-4 h-4 text-[#0e6efe]" strokeWidth={2.5} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-semibold text-slate-700 leading-snug">{item.label}</p>
+                    <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5 leading-snug">{item.desc}</p>
+                  </div>
+                  <span className="text-[13px] sm:text-[14px] font-bold text-[#0e6efe] shrink-0 tabular-nums">{item.amount}</span>
+                </div>
+              ))}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 px-6 sm:px-8 py-4 sm:py-5 bg-[#e4efff]/60">
+                <p className="text-[13px] sm:text-[14px] font-semibold text-slate-700">Typisk total besparing per affär</p>
+                <span className="text-[18px] sm:text-[20px] font-bold text-slate-700 tabular-nums">13 000–22 000 kr</span>
+              </div>
+              <div className="bg-[#e4efff]/60 border-t border-[#69a8ff]/20 px-6 sm:px-8 py-3">
+                <p className="text-[11px] text-slate-500 leading-snug">Siffrorna bygger på genomsnitt från genomförda affärer och är inte en garanti för framtida besparing. Din besparing varierar beroende på bil, handlare och marknadsläge. Biltos avgift är 4 995 kr och betalas endast om affären blir av.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Reviews ── */}
+      <ReviewsSection variant="muted" />
+
+      {/* ── Meet the experts ── */}
+      <section className="bg-gradient-to-b from-[#e7f3ff] to-[#f2f8ff] py-16 sm:py-24 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10 sm:mb-14">
+            <span className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3 block">
+              Möt experterna
+            </span>
+            <h2 className="text-[27px] sm:text-[36px] lg:text-[42px] font-bold tracking-[-0.03em] text-slate-700 leading-[1.1]">
+              Byggt av branschinsidare – nu på din sida
+            </h2>
+          </div>
+
+          {/* Large image */}
+          <div className="relative rounded-2xl overflow-hidden border border-[#69a8ff]/40 shadow-[0_12px_40px_rgba(14,110,254,0.10)] mb-8 sm:mb-12">
+            <img
+              src="/BSM_car_sale_key_woman_handover_101122.jpg"
+              alt="Bilto-experter med över 4000 sålda och inhandlade bilar"
+              className="w-full h-[280px] sm:h-[420px] lg:h-[480px] object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
+              <div className="flex flex-wrap gap-3 sm:gap-4">
+                {[
+                  { value: '100%', label: 'På kundens sida' },
+                ].map((stat) => (
+                  <div key={stat.label} className="rounded-xl bg-white/90 backdrop-blur-sm px-4 py-3 shadow-lg">
+                    <p className="text-[18px] sm:text-[22px] font-bold text-slate-700 leading-none">{stat.value}</p>
+                    <p className="text-[11px] sm:text-[12px] text-slate-500 mt-1 leading-snug">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Story text */}
+          <div className="max-w-3xl mx-auto">
+            <p className="text-[16px] sm:text-[18px] text-slate-600 leading-[1.7] mb-5">
+              Vi började inne i bilbranschen. Vi sålde mest av alla – flest bilar, mest försäljning, år efter år. Vi lärde oss varenda trick, varje marginal och varje knapp som handlaren trycker på.
+            </p>
+            <p className="text-[16px] sm:text-[18px] text-slate-600 leading-[1.7] mb-5">
+              Ju mer vi såg, desto tydligare blev det: köparen betalar alltid för mycket. Inte för att handlaren är ond – utan för att informationen är ojämnt fördelad. Handlaren vet allt. Köparen vet nästan inget.
+            </p>
+            <p className="text-[16px] sm:text-[18px] text-slate-600 leading-[1.7] mb-8">
+              Det vi hörde om och om igen var: <em className="text-slate-700">"Jag önskar bara att någon jag litade på kunde göra det här åt mig."</em> Det är Bilto. Vi bytte sida. Nu står vi på kundens sida – med all den bransch­kunskap som tidigare satt hos handlaren.
+            </p>
+
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-[#e4efff]/50 border border-[#69a8ff]/50">
+              <img
+                src={EXPERT_PHOTO}
+                alt="Alexander"
+                className="w-14 h-14 rounded-xl object-cover object-top shrink-0"
+              />
+              <div className="min-w-0">
+                <p className="text-[15px] font-bold text-slate-700 leading-snug">Alexander</p>
+                <p className="text-[13px] text-slate-500 mt-0.5">Din expert på insidan av bilbranschen</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section className="bg-gradient-to-b from-[#f2f8ff] to-[#e7f3ff] px-4 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-10 sm:mb-14">
+            <p className="text-[11px] sm:text-[12px] font-semibold text-[#0e6efe] uppercase tracking-[0.18em] mb-3">Vanliga frågor</p>
+            <h2 className="text-[27px] sm:text-[36px] font-bold text-slate-700 tracking-[-0.03em] leading-[1.1]">
+              Vanliga frågor – vi svarar rakt på sak
+            </h2>
+          </div>
+          <div className="divide-y divide-[#69a8ff]/30 border-y border-[#69a8ff]/30 rounded-2xl overflow-hidden bg-[#e4efff]/30">
+            {FAQS.map((faq, i) => {
+              const open = openFaq === i;
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setOpenFaq(open ? null : i)}
+                  className="w-full text-left py-5 px-5 sm:px-6 flex items-start gap-4 group transition hover:bg-[#e4efff]/50"
+                >
+                  <div className="flex-1">
+                    <h3 className="text-[15px] sm:text-[17px] font-semibold text-slate-700 leading-snug">{faq.q}</h3>
+                    {open && (
+                      <p className="mt-3 text-[14px] sm:text-[15px] text-slate-500 leading-[1.5]">{faq.a}</p>
+                    )}
+                  </div>
+                  <ChevronDown className={`w-5 h-5 shrink-0 mt-0.5 transition-transform duration-200 ${open ? 'rotate-180 text-[#0e6efe]' : 'text-slate-400'}`} />
+                </button>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="bg-white py-16 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-5 lg:px-8">
-          <h2 className="mb-3 text-center text-[28px] font-bold tracking-[-0.02em] text-[#0b1b3a]">Ta inte bara vårt ord för det.</h2>
-          <div className="mb-10 flex items-center justify-center gap-4">
-            <StarRating />
-            <span className="text-[14px] text-slate-500">
-              <strong className="text-[#0b1b3a]">4,4 på Trustpilot</strong> · <strong className="text-[#0b1b3a]">4,9 på Google</strong>
-            </span>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {testimonials.map((t) => (
-              <div key={t.name} className="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
-                <div className="mb-4"><StarRating /></div>
-                <p className="text-[15px] leading-relaxed text-slate-700">"{t.quote}"</p>
-                <p className="mt-5 text-[13px] font-semibold text-[#0b1b3a]">— {t.name}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Founder story */}
-      <section className="border-y border-slate-100 bg-[#f8f9fb] py-16 lg:py-24">
-        <div className="mx-auto max-w-[900px] px-5 text-center lg:px-8">
-          <div className="mb-6 flex justify-center gap-3">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#0b1b3a] text-[20px] font-bold text-white">D</div>
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#172d58] text-[20px] font-bold text-white">E</div>
-          </div>
-          <h2 className="mb-4 text-[28px] font-bold tracking-[-0.02em] text-[#0b1b3a]">Byggt av Daniel & Erik</h2>
-          <p className="text-[14px] font-semibold uppercase tracking-wider text-slate-400">Far och son. 40+ år inom bilbranschen. Nu på din sida.</p>
-          <p className="mx-auto mt-6 max-w-2xl text-[16px] leading-relaxed text-slate-600">
-            Daniel tillbringade 40 år som bilhandlare. Erik växte upp i branschen. Tillsammans har de spenderat det senaste decenniet med att lära köpare vad handlare inte berättar. De höll ständigt samma sak: <em>"Jag önskar bara att någon jag litade på kunde göra det här åt mig."</em>
-          </p>
-          <p className="mx-auto mt-4 max-w-2xl text-[16px] leading-relaxed text-slate-600">Det är Bilto. Expertvänner på insidan, backade av data, AI och ett team av människor som sett varje knep.</p>
-          <button type="button" onClick={() => window.history.pushState({}, '', '/om-oss')} className="mt-8 inline-flex items-center gap-2 text-[15px] font-semibold text-[#0b1b3a] underline underline-offset-2">
-            Möt experterna <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="bg-white py-16 lg:py-24">
-        <div className="mx-auto max-w-[800px] px-5 lg:px-8">
-          <h2 className="mb-10 text-center text-[28px] font-bold tracking-[-0.02em] text-[#0b1b3a]">Vanliga frågor</h2>
-          <div className="space-y-3">
-            {faqs.map((faq, i) => (
-              <div key={i} className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                <button
-                  type="button"
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="flex w-full items-center justify-between px-6 py-5 text-left"
+      {/* ── Final CTA ── */}
+      <section className="bg-gradient-to-b from-[#e7f3ff] to-[#f2f8ff] px-4 sm:px-6 py-12 sm:py-16">
+        <div className="max-w-5xl mx-auto">
+          <div className="relative rounded-[28px] border border-[#69a8ff] bg-[#e4efff]/80 px-6 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 overflow-hidden shadow-[0_20px_60px_rgba(14,110,254,0.12)]">
+            <div className="absolute -right-20 -top-20 w-[360px] h-[360px] rounded-full bg-white/40 pointer-events-none" />
+            <div className="absolute -left-12 -bottom-16 w-[280px] h-[280px] rounded-full bg-white/30 pointer-events-none" />
+            <div className="relative text-center max-w-2xl mx-auto">
+              <h2 className="text-[27px] sm:text-[36px] lg:text-[42px] font-bold tracking-[-0.03em] leading-[1.1] text-slate-700 mb-4">
+                Så här ska bilköp fungera.
+              </h2>
+              <p className="text-slate-500 text-[16px] sm:text-[19px] leading-[1.5] mb-8 max-w-lg mx-auto">
+                Börja med ett kostnadsfritt samtal på 15 minuter. Vi berättar exakt vad som passar dig – även om svaret är "du behöver oss inte än".
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <a
+                  href="/gratis-konsultation"
+                  className="inline-flex items-center justify-center h-12 px-7 rounded-xl bg-[#0e6efe] text-white text-[15px] font-bold transition hover:bg-[#0a57cc] active:scale-[0.98] shadow-lg shadow-[#0e6efe]/25"
                 >
-                  <span className="text-[16px] font-semibold text-[#0b1b3a]">{faq.q}</span>
-                  <ChevronDown className={`h-5 w-5 shrink-0 text-slate-400 transition-transform ${openFaq === i ? 'rotate-180' : ''}`} />
-                </button>
-                {openFaq === i && (
-                  <div className="px-6 pb-5 text-[15px] leading-relaxed text-slate-600">{faq.a}</div>
-                )}
+                  Starta kostnadsfri konsultation
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </a>
+                <a
+                  href={PHONE_TEL}
+                  className="inline-flex items-center justify-center h-12 px-7 rounded-xl border-2 border-[#69a8ff] text-[#0e6efe] text-[15px] font-semibold transition hover:bg-[#0e6efe] hover:text-white active:scale-[0.98]"
+                >
+                  <Phone className="w-4 h-4 mr-2 shrink-0" strokeWidth={2.5} />
+                  Ring {PHONE}
+                </a>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="bg-[#0b1b3a] py-16 lg:py-24">
-        <div className="mx-auto max-w-[800px] px-5 text-center lg:px-8">
-          <h2 className="text-[32px] font-bold tracking-[-0.02em] text-white sm:text-[40px]">Så här ska bilköp fungera.</h2>
-          <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-white/70">
-            Börja med ett gratis samtal på 15 minuter med vårt team. Vi berättar exakt vad som passar dig – även om svaret är "du behöver oss inte än."
-          </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <button type="button" onClick={openBuyDrawer} className="inline-flex items-center gap-2 rounded-lg bg-white px-7 py-3.5 text-[15px] font-bold text-[#0b1b3a] transition hover:bg-slate-100">
-              Starta gratis konsultation <ArrowRight className="h-4 w-4" />
-            </button>
-            <button type="button" onClick={() => window.history.pushState({}, '', '/vanliga-fragor')} className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-7 py-3.5 text-[15px] font-semibold text-white transition hover:bg-white/10">
-              Se priser och paket
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust badges strip */}
-      <section className="border-t border-slate-100 bg-white py-8">
-        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-center gap-6 px-5 lg:px-8">
-          {[
-            { icon: ShieldCheck, label: 'Säker betalning' },
-            { icon: Users, label: 'Granskade handlare' },
-            { icon: BadgeCheck, label: 'Nöjd kund-garanti' },
-            { icon: Sparkles, label: 'Oberoende rådgivning' },
-          ].map(({ icon: Icon, label }) => (
-            <div key={label} className="flex items-center gap-2 text-[13px] font-medium text-slate-500">
-              <Icon className="h-5 w-5 text-slate-400" strokeWidth={1.5} />
-              {label}
             </div>
-          ))}
+          </div>
         </div>
       </section>
 
       <SiteFooter />
 
+      {/* ── Scrolled mobile CTA ── */}
+      {scrolled && (
+        <a
+          href={PHONE_TEL}
+          className="md:hidden fixed bottom-4 left-3 right-3 z-40 flex items-center gap-3 px-4 h-[58px] rounded bg-[#0e6efe] active:bg-[#0047B3] text-white font-semibold text-[15px] shadow-[0_8px_24px_rgba(14,110,254,0.45)] transition-all duration-200 overflow-hidden"
+          style={{ background: 'linear-gradient(135deg,#1a7fff 0%,#0e6efe 50%,#0a57cc 100%)' }}
+        >
+          <div className="relative shrink-0">
+            <img src={EXPERT_PHOTO} alt="Expert" className="w-9 h-9 rounded object-cover object-top border-2 border-white/30" />
+          </div>
+          <div className="flex flex-col leading-tight min-w-0">
+            <span className="text-[15px] font-bold tracking-[-0.01em] truncate">Ring expert nu</span>
+            <span className="text-[11px] text-white/70 font-normal">Gratis &middot; svar direkt</span>
+          </div>
+          <div className="ml-auto shrink-0 flex items-center gap-1.5 bg-white/15 rounded px-3 py-1.5">
+            <Phone className="w-3.5 h-3.5" strokeWidth={2.5} />
+            <span className="text-[13px] font-semibold">Ring</span>
+          </div>
+        </a>
+      )}
+
       <Suspense fallback={null}>
-        <BuyDrawer car={buyDrawerCar} onClose={closeBuyDrawer} onBack={() => onNavigateBuy?.()} />
+        <BuyDrawer
+          car={buyDrawerCar}
+          onBack={() => onNavigateSell?.()}
+          onClose={closeBuyDrawer}
+        />
       </Suspense>
     </div>
   );
