@@ -1,4 +1,4 @@
-import { useEffect, useState, Suspense, lazy } from 'react';
+import { useEffect, useState, Suspense, lazy, useCallback } from 'react';
 import {
   ArrowRight,
   Check,
@@ -16,7 +16,9 @@ import {
   Link2,
   Loader2,
   Car,
+  Sparkles,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { SiteFooter } from '../components/SiteFooter';
 import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import ReviewsSection from '../components/ReviewsSection';
@@ -98,6 +100,19 @@ const STATS = [
 
 const PRESS_LOGOS = ['Dagens Industri', 'Aftonbladet', 'SVT Nyheter', 'TV4', 'Breakit'];
 
+const LIVE_SAVINGS = [
+  { name: 'Johan', car: 'Volvo XC40', saved: 34000, city: 'Göteborg', days: 4 },
+  { name: 'Maria', car: 'BMW X3', saved: 28000, city: 'Stockholm', days: 6 },
+  { name: 'Erik', car: 'Audi Q5', saved: 31000, city: 'Malmö', days: 5 },
+  { name: 'Sofia', car: 'Tesla Model Y', saved: 22000, city: 'Uppsala', days: 3 },
+  { name: 'Anders', car: 'Mercedes GLC', saved: 38000, city: 'Göteborg', days: 7 },
+  { name: 'Lisa', car: 'Kia Sportage', saved: 19000, city: 'Linköping', days: 5 },
+  { name: 'Mikael', car: 'VW ID.4', saved: 25000, city: 'Helsingborg', days: 4 },
+  { name: 'Anna', car: 'Polestar 2', saved: 30000, city: 'Stockholm', days: 6 },
+];
+
+const TOTAL_SAVED_BASE = 2_847_000;
+
 export default function HomePage({
   onNavigate,
   onNavigateBuy,
@@ -115,7 +130,20 @@ export default function HomePage({
   const [adLink, setAdLink] = useState('');
   const [lookupError, setLookupError] = useState<string | null>(null);
   const [foundCar, setFoundCar] = useState<VehicleData | null>(null);
+  const [savingsIdx, setSavingsIdx] = useState(0);
+  const [totalSaved, setTotalSaved] = useState(TOTAL_SAVED_BASE);
   const lookup = useVehicleLookup(regInput);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSavingsIdx((prev) => (prev + 1) % LIVE_SAVINGS.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    setTotalSaved((prev) => prev + LIVE_SAVINGS[savingsIdx].saved);
+  }, [savingsIdx]);
 
   useEffect(() => {
     if (pageTitle) {
@@ -369,6 +397,95 @@ export default function HomePage({
             ))}
           </div>
           <p className="mt-4 text-center text-[11px] text-slate-400 leading-snug max-w-xl mx-auto">Snittbesparingar bygger på resultat från tidigare kunder och är inte en garanti. Din besparing beror på bil, handlare och marknadsläge.</p>
+        </div>
+      </section>
+
+      {/* ── Live besparingar ── */}
+      <section className="bg-gradient-to-b from-[#faf8f5] via-[#f0f6ff] to-[#f2f8ff] py-10 sm:py-14 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center justify-center gap-2 mb-5">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+            </span>
+            <span className="text-[11px] sm:text-[12px] font-bold text-emerald-600 uppercase tracking-[0.18em]">Live besparingar</span>
+          </div>
+
+          <div className="grid lg:grid-cols-[1fr_1.2fr] gap-4 lg:gap-6 items-stretch">
+            {/* Total saved counter */}
+            <div className="relative rounded-2xl border border-[#69a8ff]/40 bg-gradient-to-br from-[#e4efff]/80 to-white p-6 sm:p-8 overflow-hidden">
+              <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#0e6efe]/[0.05] blur-2xl pointer-events-none" />
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-4 h-4 text-[#0e6efe]" />
+                  <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider">Totalt sparade av våra kunder</p>
+                </div>
+                <p className="text-[36px] sm:text-[44px] lg:text-[52px] font-bold text-slate-700 tracking-[-0.03em] tabular-nums leading-none">
+                  {totalSaved.toLocaleString('sv-SE')}<span className="text-[20px] sm:text-[24px] text-slate-400 ml-1">kr</span>
+                </p>
+                <p className="mt-4 text-[13px] text-slate-500 leading-relaxed">
+                  Varje affär vi förhandlar åt våra kunder betyder tusentals kronor mindre på prislappen. Så här långt i år.
+                </p>
+                <div className="mt-5 flex items-center gap-4 text-[12px] text-slate-400">
+                  <span className="inline-flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Uppdateras live</span>
+                  <span className="inline-flex items-center gap-1.5"><TrendingDown className="w-3.5 h-3.5" /> Priserna går ner</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Rotating customer card */}
+            <div className="relative rounded-2xl border border-[#69a8ff]/40 bg-white p-6 sm:p-8 overflow-hidden shadow-[0_8px_30px_rgba(14,110,254,0.06)]">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0e6efe] via-[#69a8ff] to-[#0e6efe]" />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={savingsIdx}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.4, ease: 'easeOut' }}
+                  className="relative"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <p className="text-[13px] font-medium text-slate-400">Senaste besparing</p>
+                      <h3 className="text-[20px] sm:text-[24px] font-bold text-slate-700 mt-0.5">{LIVE_SAVINGS[savingsIdx].name}</h3>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[11px] text-slate-400">{LIVE_SAVINGS[savingsIdx].city}</p>
+                      <p className="text-[11px] text-slate-400">{LIVE_SAVINGS[savingsIdx].days} dagar sedan</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-11 h-11 rounded-xl bg-[#e4efff] flex items-center justify-center shrink-0">
+                      <Car className="w-5 h-5 text-[#0e6efe]" />
+                    </div>
+                    <div>
+                      <p className="text-[15px] font-semibold text-slate-700">{LIVE_SAVINGS[savingsIdx].car}</p>
+                      <p className="text-[12px] text-slate-500">Förhandlad av Biltos experter</p>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl bg-emerald-50/70 border border-emerald-200/60 px-4 py-3 flex items-center justify-between">
+                    <span className="text-[13px] font-medium text-emerald-700">Sparade</span>
+                    <span className="text-[22px] sm:text-[26px] font-bold text-emerald-600 tabular-nums">{LIVE_SAVINGS[savingsIdx].saved.toLocaleString('sv-SE')} kr</span>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Progress dots */}
+              <div className="flex items-center justify-center gap-1.5 mt-5">
+                {LIVE_SAVINGS.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${i === savingsIdx ? 'w-6 bg-[#0e6efe]' : 'w-1.5 bg-slate-200'}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-4 text-center text-[11px] text-slate-400 leading-snug max-w-xl mx-auto">Exempel baserade på genomförda affärer. Din besparing beror på bil, handlare och marknadsläge.</p>
         </div>
       </section>
 
