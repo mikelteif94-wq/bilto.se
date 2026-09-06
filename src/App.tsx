@@ -5,11 +5,12 @@ import type { Session } from '@supabase/supabase-js';
 import { slugToCity, slugToBrand } from './lib/seo-pages';
 import { slugToTopic } from './lib/seo-topics';
 import ConsultationDrawer from './components/ConsultationDrawer';
+import { captureAttribution } from './lib/attribution';
+import type { Forhandlare } from './lib/forhandlare.types';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
-const SaFunkarDetPage = lazy(() => import('./pages/SaFunkarDetPage'));
-const HomePage = lazy(() => import('./pages/HomePage'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
+const BuyCarPage = lazy(() => import('./pages/BuyCarPage'));
 const DealerRegister = lazy(() => import('./pages/DealerRegister'));
 const DealerLogin = lazy(() => import('./pages/DealerLogin'));
 const DealerCarsList = lazy(() => import('./pages/DealerCarsList'));
@@ -52,6 +53,7 @@ const SeoLandingPage = lazy(() => import('./pages/SeoLandingPage'));
 const SeoTopicPage = lazy(() => import('./pages/SeoTopicPage'));
 const WebbplatskartaPage = lazy(() => import('./pages/WebbplatskartaPage'));
 const VanligaFragorPage = lazy(() => import('./pages/VanligaFragorPage'));
+const PriserPage = lazy(() => import('./pages/PriserPage'));
 const GuidePage = lazy(() => import('./pages/GuidePage'));
 const BilsparaPage = lazy(() => import('./pages/BilsparaPage'));
 const DealerCampaigns = lazy(() => import('./pages/DealerCampaigns'));
@@ -64,7 +66,6 @@ const DealerProfile = lazy(() => import('./pages/DealerProfile'));
 const DealerIntegrationer = lazy(() => import('./pages/DealerIntegrationer'));
 const DealerValuationLeads = lazy(() => import('./pages/DealerValuationLeads'));
 const DealerApprovals = lazy(() => import('./pages/DealerApprovals'));
-const FreeConsultationPage = lazy(() => import('./pages/FreeConsultationPage'));
 
 // Dealer portal (new)
 const DealerAtgarder = lazy(() => import('./pages/DealerAtgarder'));
@@ -76,6 +77,10 @@ const DealerProvisioner = lazy(() => import('./pages/DealerProvisioner'));
 // Public token pages
 const BudPage = lazy(() => import('./pages/BudPage'));
 const AvtalPage = lazy(() => import('./pages/AvtalPage'));
+
+// Förhandlare
+const ForhandlarListPage = lazy(() => import('./pages/ForhandlarListPage'));
+const ForhandlarProfilPage = lazy(() => import('./pages/ForhandlarProfilPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
@@ -142,6 +147,11 @@ function matchAvtalToken(path: string): string | null {
   return m ? decodeURIComponent(m[1]) : null;
 }
 
+function matchForhandlarProfil(path: string): string | null {
+  const m = path.match(/^\/f\/([a-z0-9-]+)\/?$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
 function matchMyCar(path: string): string | null {
   const m = path.match(/^\/min-bil\/([^/]+)\/?$/);
   return m ? decodeURIComponent(m[1]) : null;
@@ -163,26 +173,66 @@ function detectRecovery(): boolean {
 
 function App() {
   const [publicRoute, setPublicRoute] = useState<PublicRoute>({ page: 'home' });
-  const [path, setPath] = useState(() => window.location.pathname);
+  const [path, setPath] = useState(() => {
+    const p = window.location.pathname;
+    return p === '/gratis-konsultation' ? '/' : p;
+  });
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [recoveryMode, setRecoveryMode] = useState<boolean>(detectRecovery());
   const [recoveryTarget, setRecoveryTarget] = useState<string>('/handlare/oversikt');
   const [adminVerified, setAdminVerified] = useState<boolean | null>(null);
-  const [consultationOpen, setConsultationOpen] = useState(false);
+  const [consultationOpen, setConsultationOpen] = useState(() => window.location.pathname === '/gratis-konsultation');
+  const [consultationForhandlare, setConsultationForhandlare] = useState<Forhandlare | null>(null);
 
-  const openConsultation = () => setConsultationOpen(true);
+  const openConsultation = (forhandlare?: Forhandlare) => {
+    setConsultationForhandlare(forhandlare ?? null);
+    setConsultationOpen(true);
+  };
+
+  // Capture ?via= attribution on every navigation
+  useEffect(() => { captureAttribution(); }, [path]);
 
   useEffect(() => {
     const onPop = () => {
-      setPath(window.location.pathname);
+      const p = window.location.pathname;
+      if (p === '/gratis-konsultation') {
+        setConsultationOpen(true);
+        window.history.replaceState({}, '', document.referrer ? document.referrer : '/');
+        setPath(window.location.pathname);
+        return;
+      }
+      setPath(p);
     };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
+  // Intercept anchor clicks to /gratis-konsultation and open drawer instead
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const anchor = (e.target as Element).closest('a');
+      if (!anchor) return;
+      const href = anchor.getAttribute('href');
+      if (href === '/gratis-konsultation') {
+        e.preventDefault();
+        setConsultationOpen(true);
+      }
+    };
+    document.addEventListener('click', onClick, { capture: true });
+    return () => document.removeEventListener('click', onClick, { capture: true });
+  }, []);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [path]);
+
+  useEffect(() => {
+    if (path === '/gratis-konsultation') {
+      window.history.replaceState({}, '', '/');
+      setPath('/');
+      setConsultationOpen(true);
+    }
   }, [path]);
 
   useEffect(() => {
@@ -446,11 +496,39 @@ function App() {
   }
 
   if (path === '/gratis-konsultation') {
+    // Open drawer and redirect — handled via useEffect to avoid render-time state mutation
+    return null;
+  }
+
+  if (path === '/forhandlare') {
     return (
       <Suspense fallback={<PageLoader />}>
-        <FreeConsultationPage
-          onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-        />
+        <>
+          <ForhandlarListPage
+            onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSelectForhandlare={(slug) => { window.history.pushState({}, '', `/f/${slug}`); setPath(`/f/${slug}`); }}
+            onOpenConsultation={() => openConsultation()}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+        </>
+      </Suspense>
+    );
+  }
+
+  const forhandlarSlug = matchForhandlarProfil(path);
+  if (forhandlarSlug) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <>
+          <ForhandlarProfilPage
+            slug={forhandlarSlug}
+            onBack={() => { window.history.pushState({}, '', '/forhandlare'); setPath('/forhandlare'); }}
+            onOpenConsultation={(f) => openConsultation(f)}
+            onNavigateBuy={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
+            onNavigateSell={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: '' }); }}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+        </>
       </Suspense>
     );
   }
@@ -468,9 +546,25 @@ function App() {
   }
 
   if (path === '/kop-bil/bestall') {
-    window.history.replaceState({}, '', '/kop-bil');
-    setPath('/kop-bil');
-    return null;
+    const buyParams = new URLSearchParams(window.location.search);
+    const buyBil = buyParams.get('bil') || '';
+    const buyTyp = buyParams.get('typ');
+    const buyReg = buyParams.get('reg') || '';
+    const buySource = buyParams.get('source') || '';
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <>
+          <BuyCarPage
+            initialBil={buyBil}
+            initialTyp={buyTyp === 'found' || buyTyp === 'searching' || buyTyp === 'trade' ? buyTyp : undefined}
+            initialReg={buyReg}
+            source={buySource}
+            onBack={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
+          />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
+        </>
+      </Suspense>
+    );
   }
 
   if (path === '/utforska') {
@@ -478,7 +572,7 @@ function App() {
       <Suspense fallback={<PageLoader />}>
         <>
           <UtforskaSida onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }} />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
         </>
       </Suspense>
     );
@@ -490,12 +584,17 @@ function App() {
         <>
           <KopBilConcierge
             onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onNavigateBuy={(bil?: string) => {
+              const url = bil ? `/kop-bil/bestall?bil=${encodeURIComponent(bil)}&typ=found` : '/kop-bil/bestall';
+              window.history.pushState({}, '', url);
+              setPath(url.split('?')[0]);
+            }}
             onNavigateHowItWorks={() => {
               window.history.pushState({}, '', '/sa-funkar-det');
               setPath('/sa-funkar-det');
             }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
         </>
       </Suspense>
     );
@@ -521,7 +620,7 @@ function App() {
           <AboutPage
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
         </>
       </Suspense>
     );
@@ -562,7 +661,7 @@ function App() {
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
             onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
         </>
       </Suspense>
     );
@@ -572,6 +671,16 @@ function App() {
     return (
       <Suspense fallback={<PageLoader />}>
         <VanligaFragorPage
+          onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+        />
+      </Suspense>
+    );
+  }
+
+  if (path === '/priser') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <PriserPage
           onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
         />
       </Suspense>
@@ -634,7 +743,7 @@ function App() {
               onNavigateConsultation={openConsultation}
               onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
             />
-            <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+            <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
           </>
         </Suspense>
       );
@@ -676,37 +785,24 @@ function App() {
   }
 
   if (path === '/kontakt') {
-    window.history.replaceState({}, '', '/gratis-konsultation');
-    setPath('/gratis-konsultation');
+    window.history.replaceState({}, '', '/');
+    setPath('/');
+    setConsultationOpen(true);
     return null;
   }
 
-  if (path === '/sa-funkar-det') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <>
-          <SaFunkarDetPage
-            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-            onSell={() => { window.history.pushState({}, '', '/salj-bil'); setPath('/salj-bil'); }}
-            onBuy={() => { window.history.pushState({}, '', '/kop-bil'); setPath('/kop-bil'); }}
-          />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
-        </>
-      </Suspense>
-    );
-  }
-
-  if (path === '/salj-din-bil') {
+  if (path === '/sa-funkar-det' || path === '/salj-din-bil') {
     return (
       <Suspense fallback={<PageLoader />}>
         <>
           <HowItWorks
-            showSeo
-            pageTitle="Sälj din bil | Bilto"
+            showSeo={path === '/salj-din-bil'}
+            seoSlug={path === '/sa-funkar-det' ? 'sa-funkar-det' : undefined}
+            pageTitle={path === '/salj-din-bil' ? 'Sälj din bil | Bilto' : undefined}
             onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
             onSell={(reg) => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'sell', regnummer: reg }); }}
           />
-          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} />
+          <ConsultationDrawer open={consultationOpen} onClose={() => setConsultationOpen(false)} defaultForhandlare={consultationForhandlare} />
         </>
       </Suspense>
     );
@@ -731,14 +827,10 @@ function App() {
     <Suspense fallback={<PageLoader />}>
       <>
         {publicRoute.page === 'home' && (
-          <HomePage
-            onNavigate={(reg, tel) => setPublicRoute({ page: 'sell', regnummer: reg })}
-            onNavigateBuy={() => {
-              window.history.pushState({}, '', '/kop-bil');
-              setPath('/kop-bil');
-            }}
-            onNavigateSell={() => { window.history.pushState({}, '', '/salj-bil'); setPath('/salj-bil'); }}
-            onNavigateHowItWorks={() => { window.history.pushState({}, '', '/sa-funkar-det'); setPath('/sa-funkar-det'); }}
+          <HowItWorks
+            seoSlug="home"
+            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSell={(reg) => setPublicRoute({ page: 'sell', regnummer: reg })}
           />
         )}
         {publicRoute.page === 'sell' && (
@@ -747,9 +839,12 @@ function App() {
             initialTelefon={publicRoute.telefon}
             initialMiltal={publicRoute.miltal}
             onBack={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-            onNavigateTrade={() => {
-              window.history.pushState({}, '', '/kop-bil');
-              setPath('/kop-bil');
+            onNavigateTrade={(reg, mil) => {
+              const params = new URLSearchParams({ typ: 'trade' });
+              if (reg) params.set('reg', reg);
+              if (mil) params.set('mil', mil.toString());
+              window.history.pushState({}, '', `/kop-bil/bestall?${params.toString()}`);
+              setPath('/kop-bil/bestall');
               setPublicRoute({ page: 'home' });
             }}
           />

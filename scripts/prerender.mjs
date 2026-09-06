@@ -26,6 +26,7 @@ const ROUTES = [
   { path: '/kop-bil',                        selector: 'h1' },
   { path: '/om-oss',                         selector: 'h1' },
   { path: '/vanliga-fragor',                 selector: 'h1' },
+  { path: '/priser',                         selector: 'h1' },
   { path: '/kontakt',                        selector: 'h1' },
   { path: '/guider',                         selector: 'h1' },
   { path: '/guider/kopa-begagnad-bil',       selector: 'h1' },

@@ -376,10 +376,6 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                     <p className="text-[12px] font-semibold text-slate-800 leading-tight">Bilto-expert tillgänglig</p>
                     <p className="text-[11px] text-slate-400 leading-tight">Vi hör av oss inom en arbetsdag</p>
                   </div>
-                  <div className="ml-auto flex items-center gap-1.5 text-[11px] text-emerald-600 font-medium">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Online nu
-                  </div>
                 </div>
               )}
               <div className="flex items-start justify-between gap-3">
@@ -475,14 +471,8 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
 
               {step === 'carIntent' && (
                 <div className="py-2 space-y-3">
-                  <div className="mb-4 p-4 rounded-xl bg-[#faf8f5] border border-slate-200">
-                    <p className="text-[13.5px] text-slate-600 leading-[1.55]">
-                      <strong className="text-slate-900">Hej! Vad vill du göra?</strong> Välj ett alternativ nedan så hjälper vi dig vidare. Det tar 2 minuter att fylla i och du är aldrig bunden till något.
-                    </p>
-                  </div>
-
                   {car && (
-                    <div className="flex items-center gap-2 mb-3 p-3 rounded-xl bg-[#0e6efe]/8 border border-[#0e6efe]/20">
+                    <div className="flex items-center gap-2 mb-5 p-3 rounded-xl bg-[#0e6efe]/8 border border-[#0e6efe]/20">
                       <div className="w-2 h-2 rounded-full bg-[#0e6efe] shrink-0" />
                       <p className="text-[13px] font-semibold text-[#0e6efe]">{car}</p>
                     </div>
@@ -496,11 +486,10 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                       setError(null);
                       setStep('details');
                     }}
-                    className="w-full p-4 rounded-xl text-white text-[15px] font-bold transition-all active:scale-[0.98] text-left"
+                    className="w-full h-14 rounded-xl text-white text-[15px] font-bold transition-all active:scale-[0.98]"
                     style={{ background: 'linear-gradient(135deg,#1a7fff 0%,#0e6efe 60%,#0a57cc 100%)', boxShadow: '0 4px 16px rgba(14,110,254,0.30)' }}
                   >
                     Köpa bil
-                    <span className="block text-[12px] font-normal text-white/80 mt-0.5">Jag har hittat en bil och vill ha hjälp att förhandla priset</span>
                   </button>
 
                   {/* Byta bil */}
@@ -511,10 +500,9 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                       setError(null);
                       setStep('details');
                     }}
-                    className="w-full p-4 rounded-xl border-2 border-[#0e6efe] text-[#0e6efe] text-[15px] font-bold bg-white hover:bg-[#0e6efe]/5 transition-all active:scale-[0.98] text-left"
+                    className="w-full h-14 rounded-xl border-2 border-[#0e6efe] text-[#0e6efe] text-[15px] font-bold bg-white hover:bg-[#0e6efe]/5 transition-all active:scale-[0.98]"
                   >
                     Byta bil
-                    <span className="block text-[12px] font-normal text-slate-500 mt-0.5">Jag vill byta in min nuvarande bil mot en ny</span>
                   </button>
 
                   {/* Sälja bil */}
@@ -525,10 +513,9 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                         onClose();
                         onBack();
                       }}
-                      className="w-full p-4 rounded-xl border-2 border-slate-200 text-slate-700 text-[15px] font-bold bg-white hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-[0.98] text-left"
+                      className="w-full h-14 rounded-xl border-2 border-slate-200 text-slate-700 text-[15px] font-bold bg-white hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-[0.98]"
                     >
                       Sälja bil
-                      <span className="block text-[12px] font-normal text-slate-500 mt-0.5">Jag vill sälja min bil och få bud från handlare</span>
                     </button>
                   )}
                 </div>
@@ -536,11 +523,9 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
 
               {step === 'condition' && (
                 <div className="py-2 space-y-3">
-                  <div className="mb-4 p-4 rounded-xl bg-[#faf8f5] border border-slate-200">
-                    <p className="text-[13.5px] text-slate-600 leading-[1.55]">
-                      <strong className="text-slate-900">Ny eller begagnad?</strong> Det hjälper oss veta vilka handlare vi ska kontakta. Är du osäker? Välj "Spelar ingen roll" så avgör vi åt dig.
-                    </p>
-                  </div>
+                  <p className="text-[14.5px] text-slate-500 leading-[1.55]">
+                    Vad letar du efter?
+                  </p>
 
                   <button
                     type="button"
@@ -662,11 +647,8 @@ export default function BuyDrawer({ car, initialTrack, skipIntent, skipToContact
                   <h2 className="text-[22px] sm:text-[26px] font-bold text-slate-900 mb-2">
                     Tack, {contact.namn.split(' ')[0]}!
                   </h2>
-                  <p className="text-[14.5px] text-slate-500 leading-relaxed max-w-sm mx-auto mb-4">
+                  <p className="text-[14.5px] text-slate-500 leading-relaxed max-w-sm mx-auto mb-6">
                     Förfrågan är skickad. Vi hör av oss{preferredTimeLabel(contact.preferredTime, 'inline')}.
-                  </p>
-                  <p className="text-[13px] text-slate-400 leading-relaxed max-w-sm mx-auto mb-6">
-                    En Bilto-expert ringer dig, lyssnar på vad du vill ha och lägger en plan. Sen förhandlar vi priset åt dig – du lutar dig tillbaka.
                   </p>
 
                   {portalToken ? (

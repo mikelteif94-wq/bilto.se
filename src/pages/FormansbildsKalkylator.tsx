@@ -209,7 +209,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             <button type="button" onClick={onBack}
               className="text-[15px] text-white/70 hover:text-white transition font-medium">
-              Bilköptjänsten
+              Bilköpshjälpen
             </button>
             <span className="text-[15px] text-white font-bold underline underline-offset-4 decoration-white/50">
               Förmånsbil
@@ -224,7 +224,7 @@ export default function FormansbildsKalkylator({ onBack, onNavigateConsultation 
         </div>
       </header>
 
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} active="Bilköptjänsten" />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} active="Köp bil med hjälp" />
 
       {/* Hero — primary blue */}
       <div style={{ background: 'linear-gradient(135deg, #0a57cc 0%, #0e6efe 60%, #1a7fff 100%)' }}>

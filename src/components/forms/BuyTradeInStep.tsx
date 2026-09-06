@@ -86,12 +86,6 @@ export default function BuyTradeInStep({ initialData, onNext }: BuyTradeInStepPr
 
   return (
     <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
-      <div className="pb-5 mb-2 p-4 rounded-xl bg-[#faf8f5] border border-slate-200">
-        <p className="text-[13.5px] text-slate-600 leading-[1.55]">
-          <strong className="text-slate-900">Inbyte?</strong> Om du har en bil idag kan vi värdera den gratis och använda värdet som delbetalning för nästa bil. Vi sköter hela inbytet – du slipper sälja den själv.
-        </p>
-      </div>
-
       {/* Har du inbytesbil? */}
       <div className="pb-6 sm:pb-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
@@ -152,10 +146,10 @@ export default function BuyTradeInStep({ initialData, onNext }: BuyTradeInStepPr
           {/* Befintligt lån? */}
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-              Har bilen ett lån sedan tidigare?
+              Har bilen befintligt lån?
             </label>
             <p className="text-sm text-slate-500 mb-4">
-              Om du fortfarande betalar av ett billån kan vi lösa det åt dig när du byter in bilen. Du behöver inte göra något själv.
+              Vi hjälper dig lösa befintligt lån vid inbytet.
             </p>
             <div className="flex gap-3 sm:max-w-xs">
               {([true, false] as const).map(val => (

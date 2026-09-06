@@ -52,7 +52,7 @@ export function SiteFooter() {
             <ul className="space-y-3">
               {[
                 { label: 'Sälj din bil', href: '/salj-bil' },
-                { label: 'Bilköptjänsten', href: '/kop-bil' },
+                { label: 'Köp bil med hjälp', href: '/kop-bil' },
                 { label: 'Bli handlare', href: '/handlare/registrera' },
               ].map(({ label, href }) => (
                 <li key={label}>
@@ -67,6 +67,7 @@ export function SiteFooter() {
             <h4 className="text-[11px] font-bold uppercase tracking-[0.18em] mb-5 text-slate-300">Resurser</h4>
             <ul className="space-y-3">
               {[
+                { label: 'Priser', href: '/priser' },
                 { label: 'Guider', href: '/guider' },
                 { label: 'Vanliga frågor', href: '/vanliga-fragor' },
                 { label: 'Så funkar det', href: '/sa-funkar-det' },

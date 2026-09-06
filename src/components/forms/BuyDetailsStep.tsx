@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { ChevronDown, Search, CheckCircle, XCircle, Loader2, Info } from 'lucide-react';
+import { ChevronDown, Search, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import type { BuyTrack } from './BuyTrackStep';
 import FieldError from './FieldError';
 import RegInput from '../RegInput';
@@ -18,9 +18,9 @@ function isElectricCarName(name: string): boolean {
 }
 
 const BUYING_STAGES = [
-  { value: 'just_started', label: 'Precis börjat kolla', desc: 'Jag tittar lite grand, ingen brådska' },
-  { value: 'comparing', label: 'Jämför alternativ', desc: 'Jag vet ungefär vad jag vill ha' },
-  { value: 'ready_to_buy', label: 'Redo att köpa', desc: 'Jag vill köpa snart, gärna inom en månad' },
+  { value: 'just_started', label: 'Precis börjat kolla' },
+  { value: 'comparing', label: 'Jämför alternativ' },
+  { value: 'ready_to_buy', label: 'Redo att köpa' },
 ];
 
 const FUEL_TYPES = [
@@ -327,10 +327,10 @@ function LinkField({
   return (
     <div>
       <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-        Har du hittat en bil? Dela länken eller handlarens namn
+        Länk till annonsen eller handlarens namn
       </label>
-      <p className="text-sm text-slate-500 mb-3 leading-[1.5]">
-        Klistra in en länk eller skriv handlarens namn – så kollar jag priset och förhandlar åt dig.
+      <p className="text-sm text-slate-500 mb-3">
+        Klistra in Blocket-länken, eller skriv handlarens namn.
       </p>
       <div className="relative">
         <input
@@ -395,18 +395,10 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
 
   return (
     <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
-      <div className="pb-5 mb-2 p-4 rounded-xl bg-[#faf8f5] border border-slate-200">
-        <p className="text-[14px] text-slate-600 leading-[1.6]">
-          <strong className="text-slate-900">Hej! Nu ska vi berätta om bilen du letar efter.</strong> Jag ställer några enkla frågor för att hitta och förhandla rätt bil åt dig. Allt stannar mellan oss.
-        </p>
-      </div>
       <div className="pb-6 sm:pb-7">
-        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Vilken bil drömmer du om?
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+          Märke och modell
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-3 leading-[1.5]">
-          Välj märke och modell. Hittar du inte modellen? Välj “Annan” och skriv fritt.
-        </p>
         {lockedCar ? (
           <div className="flex items-center h-11 px-4 bg-[#faf8f5] border border-slate-200 rounded-xl text-slate-700 font-medium text-[14px]">
             {lockedCar}
@@ -436,8 +428,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
       {carCondition === 'begagnad' && (
         <>
           <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">Vilka årsmodeller är OK?</label>
-            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Nyare = dyrare men bättre teknik. Äldre = billigare men mer underhåll.</p>
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Årsmodell</label>
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
@@ -457,7 +448,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
           </div>
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-0.5">Max miltal</label>
-            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Högre miltal = lägre pris, men kortare livslängd. Sätt en gräns som känns bra.</p>
+            <p className="text-[13.5px] text-slate-500 mb-4">Hur många mil får bilen max ha gått?</p>
             <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
@@ -471,10 +462,10 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
 
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Vad vill du lägga max?
+          Max budget (kr)
           <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Totalpriset. Ingen fast budget? Hoppa över – jag hittar bilen först.</p>
+        <p className="text-[13.5px] text-slate-500 mb-4">Totalpris för bilen.</p>
             <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
@@ -486,11 +477,10 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
 
       {!hideFuel && (
         <div className="py-6 sm:py-7">
-          <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-            Bränsle – spelar det någon roll?
+          <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+            Drivmedel
             <span className="ml-2 text-[13px] font-normal text-slate-400">Frivilligt</span>
           </label>
-          <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Bryr du dig inte? Välj “Spelar ingen roll” – jag hittar det som ger bäst värde.</p>
           <div className="flex flex-wrap gap-2">
             {FUEL_TYPES.map(f => (
               <button
@@ -514,7 +504,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Hur vill du betala?
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Kontant, finansiering eller leasing – styr vilka upplägg jag letar efter.</p>
+        <p className="text-sm text-slate-500 mb-4">Välj betalningssätt – det hjälper oss hitta rätt upplägg.</p>
         <div className="flex flex-wrap gap-2">
           {PAYMENT_TYPES.map(p => (
             <button
@@ -581,23 +571,22 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
 
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Var befinner du dig just nu?
+          Var i processen är du?
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Det här hjälper mig att anpassa takten. Är du nyfiken och bara kollar runt så tar vi det lugnt. Redo att köpa snart så sätter jag igång direkt och börjar leta redan idag.</p>
+        <p className="text-sm text-slate-500 mb-4">Välj det alternativ som bäst beskriver dig.</p>
         <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
           {BUYING_STAGES.map(s => (
             <button
               key={s.value}
               type="button"
               onClick={() => set('buyingStage', s.value)}
-              className={`w-full sm:w-auto px-4 sm:px-5 h-auto py-2.5 rounded-xl text-[14px] font-medium transition-all text-left sm:text-center ${
+              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-xl text-[14px] font-medium transition-all text-left sm:text-center ${
                 d.buyingStage === s.value
                   ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                   : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
               }`}
             >
               {s.label}
-              <span className="block text-[11px] font-normal opacity-80 mt-0.5">{s.desc}</span>
             </button>
           ))}
         </div>
@@ -609,7 +598,7 @@ function KnowDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondition
           type="submit"
           className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-xl transition shadow-sm"
         >
-          Gå vidare
+          Nästa
         </button>
       </div>
     </form>
@@ -654,16 +643,10 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
 
   return (
     <form onSubmit={handleSubmit} noValidate className="divide-y divide-slate-200">
-      <div className="pb-5 mb-2 p-4 rounded-xl bg-[#faf8f5] border border-slate-200">
-        <p className="text-[14px] text-slate-600 leading-[1.6]">
-          <strong className="text-slate-900">Inte säker på vilken bil du vill ha? Det är helt OK.</strong> De flesta vet faktiskt inte exakt – och det är just då jag kan hjälpa dig mest. Berätta vad som är viktigt för dig så letar jag upp rätt bil på marknaden. Du behöver inte veta märke eller modell.
-        </p>
-      </div>
       <div className="pb-6 sm:pb-7">
-        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Vad för slags bil letar du efter?
+        <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">
+          Vilken typ av bil söker du?
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-3 leading-[1.5]">Behöver du en rymlig SUV för familjen, en liten bil för pendling, eller en bekväm kombi? Välj den typ som passar din livsstil så vet jag var jag ska leta.</p>
         <div className="flex flex-wrap gap-2">
           {CAR_TYPES.map(t => (
             <button
@@ -687,8 +670,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
       {carCondition === 'begagnad' && (
         <>
           <div className="py-6 sm:py-7">
-            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">Vilka årsmodeller är OK?</label>
-            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Nyare = dyrare men bättre teknik. Äldre = billigare men mer underhåll.</p>
+            <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3">Årsmodell</label>
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
@@ -708,7 +690,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
           </div>
           <div className="py-6 sm:py-7">
             <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-0.5">Max miltal</label>
-            <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Högre miltal = lägre pris, men kortare livslängd. Sätt en gräns som känns bra.</p>
+            <p className="text-[13.5px] text-slate-500 mb-4">Hur många mil får bilen max ha gått?</p>
             <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
@@ -722,9 +704,9 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
 
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Vad är viktigast för dig i bilen?
+          Vad är viktigast för dig?
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-3 leading-[1.5]">Tänk på vad du verkligen använder bilen till. Dragkrok för husvagn? Stort bagage för semestern? Låga driftkostnader för mycket pendling? Välj upp till 3 saker som spelar störst roll för dig.</p>
+        <p className="text-[13.5px] text-slate-500 mb-3">Välj upp till 3 saker.</p>
         <div className="flex flex-wrap gap-2">
           {MUST_HAVES.map(m => {
             const selected = mustHaves.includes(m.value);
@@ -773,7 +755,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
           Hur vill du betala?
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Kontant, finansiering eller leasing – styr vilka upplägg jag letar efter.</p>
+        <p className="text-sm text-slate-500 mb-4">Välj betalningssätt – det hjälper oss hitta rätt upplägg.</p>
         <div className="flex flex-wrap gap-2">
           {PAYMENT_TYPES.map(p => (
             <button
@@ -840,23 +822,22 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
 
       <div className="py-6 sm:py-7">
         <label className="block text-[16px] sm:text-[17px] font-bold text-slate-900 mb-1">
-          Var befinner du dig just nu?
+          Var i processen är du?
         </label>
-        <p className="text-[13.5px] text-slate-500 mb-4 leading-[1.5]">Det här hjälper mig att anpassa takten. Är du nyfiken och bara kollar runt så tar vi det lugnt. Redo att köpa snart så sätter jag igång direkt och börjar leta redan idag.</p>
+        <p className="text-sm text-slate-500 mb-4">Välj det alternativ som bäst beskriver dig.</p>
         <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2">
           {BUYING_STAGES.map(s => (
             <button
               key={s.value}
               type="button"
               onClick={() => set('buyingStage', s.value)}
-              className={`w-full sm:w-auto px-4 sm:px-5 h-auto py-2.5 rounded-xl text-[14px] font-medium transition-all text-left sm:text-center ${
+              className={`w-full sm:w-auto px-4 sm:px-5 h-10 rounded-xl text-[14px] font-medium transition-all text-left sm:text-center ${
                 d.buyingStage === s.value
                   ? 'bg-[#0e6efe] text-white ring-1 ring-inset ring-[#0e6efe] shadow-sm'
                   : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
               }`}
             >
               {s.label}
-              <span className="block text-[11px] font-normal opacity-80 mt-0.5">{s.desc}</span>
             </button>
           ))}
         </div>
@@ -868,7 +849,7 @@ function ExploreDetailsStep({ initialData, onNext, hideFuel, autoFuel, carCondit
           type="submit"
           className="w-full sm:w-auto sm:min-w-[200px] h-12 px-8 bg-[#0e6efe] hover:bg-[#0b5cd8] text-white font-semibold text-[15px] rounded-xl transition shadow-sm"
         >
-          Gå vidare
+          Nästa
         </button>
       </div>
     </form>
@@ -1061,8 +1042,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
   const fuelTypeSelector = hideFuel ? null : (
     <div className="py-6">
-      <label className="block text-[15px] font-bold text-slate-900 mb-1">Bränsle – spelar det någon roll?</label>
-      <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">Bryr du dig inte? Välj “Spelar ingen roll” – jag hittar det som ger bäst värde.</p>
+      <label className="block text-[15px] font-bold text-slate-900 mb-1">Drivmedel</label>
       <div className="flex flex-wrap gap-2">
         {filteredFuelTypes.map(f => {
           const isSelected = d.fuelType === f.value;
@@ -1090,7 +1070,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
         Hur vill du betala?
       </label>
-      <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">Kontant, finansiering eller leasing – styr vilka upplägg jag letar efter.</p>
+      <p className="text-[13px] text-slate-500 mb-3 leading-snug">Välj betalningssätt – hjälper oss hitta rätt upplägg.</p>
       <div className="flex flex-wrap gap-2">
         {PAYMENT_TYPES.map(p => (
           <button
@@ -1180,10 +1160,10 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-1">
-              Har handlaren redan gett dig ett pris?
+              Har du fått en offert på bilen?
             </label>
-            <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">
-              Redan ett pris? Jag jämför med marknaden och försöker slå det. Saknas pris? Tar jag fram ett.
+            <p className="text-[13px] text-slate-500 mb-3">
+              Det hjälper oss att veta om vi ska förhandla ett bättre pris.
             </p>
             <div className="flex gap-3 sm:max-w-xs">
               {([{ value: true, label: 'Ja' }, { value: false, label: 'Nej' }] as const).map(opt => (
@@ -1208,12 +1188,9 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           {!lockedCar && (
             <div className="py-5">
-              <label className="block text-[15px] font-bold text-slate-900 mb-1">
-                Vilken bil är det du tittar på?
+              <label className="block text-[15px] font-bold text-slate-900 mb-3">
+                Vilken bil?
               </label>
-              <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">
-                Välj märke och modell. Hittar du inte modellen? Välj “Annan” och skriv fritt.
-              </p>
               <BrandModelSelector
                 brand={d.carBrand}
                 model={d.carModel}
@@ -1236,11 +1213,11 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-1">
-              Vad kostar bilen?
+              Bilens pris (kr)
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">
-              Hjälper mig räkna ut finansiering. Vet du inte? Hoppa över – jag kollar priset.
+            <p className="text-[13px] text-slate-500 mb-4">
+              Används för att visa ett finansieringsexempel.
             </p>
               <ButtonGroupInput
               value={d.carPrice}
@@ -1260,8 +1237,8 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
             <label className="block text-[15px] font-bold text-slate-900 mb-1">
               Max miltal
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">
-              Högre miltal = lägre pris, men kortare livslängd. Sätt en gräns som känns bra.
+            <p className="text-[13px] text-slate-500 mb-4">
+              Hur många mil får bilen max ha gått?
             </p>
             <ButtonGroupInput
               value={d.maxMiltal}
@@ -1273,10 +1250,9 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           </div>
 
           <div className="py-5">
-            <label className="block text-[15px] font-bold text-slate-900 mb-1">
-              Vilka årsmodeller är OK?
+            <label className="block text-[15px] font-bold text-slate-900 mb-3">
+              Årsmodell
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Nyare = dyrare men bättre teknik. Äldre = billigare men mer underhåll.</p>
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
@@ -1301,10 +1277,10 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-1">
-              Vad vill du lägga max?
+              Max budget (kr)
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Totalpriset. Ingen fast budget? Hoppa över – jag hittar bilen först.</p>
+            <p className="text-[13px] text-slate-500 mb-4">Totalpris för bilen.</p>
               <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
@@ -1366,10 +1342,10 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           <div className="pb-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
-              Vilken bil letar du efter?
+              Vilket märke och modell?
             </label>
-            <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">
-              Välj märke och modell. Osäker? Använd bilmatchen ovan.
+            <p className="text-[13px] text-slate-500 mb-3 leading-snug">
+              Välj märke och modell, eller använd bilmatch om du är osäker.
             </p>
             <BrandModelSelector
               brand={d.carBrand}
@@ -1388,7 +1364,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-0.5">Max miltal</label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Högre miltal = lägre pris, men kortare livslängd. Sätt en gräns som känns bra.</p>
+            <p className="text-[13px] text-slate-500 mb-4 leading-snug">Hur många mil får bilen max ha gått?</p>
             <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
@@ -1399,8 +1375,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           </div>
 
           <div className="py-5">
-            <label className="block text-[15px] font-bold text-slate-900 mb-1">Vilka årsmodeller är OK?</label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Nyare = dyrare men bättre teknik. Äldre = billigare men mer underhåll.</p>
+            <label className="block text-[15px] font-bold text-slate-900 mb-3">Årsmodell</label>
             <div className="grid grid-cols-2 gap-3 sm:max-w-xs">
               <div>
                 <p className="text-xs text-slate-500 mb-1.5">Från</p>
@@ -1425,10 +1400,10 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-1">
-              Vad vill du lägga max?
+              Max budget (kr)
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Totalpriset. Ingen fast budget? Hoppa över – jag hittar bilen först.</p>
+            <p className="text-[13px] text-slate-500 mb-4">Totalpris för bilen.</p>
               <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
@@ -1481,10 +1456,10 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-1">
-              Max miltal på nästa bil
+              Max miltal
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Högre miltal = lägre pris, men kortare livslängd. Sätt en gräns som känns bra.</p>
+            <p className="text-[13px] text-slate-500 mb-4">Hur många mil får nästa bil max ha gått?</p>
             <ButtonGroupInput
               value={d.maxMiltal}
               onChange={v => set('maxMiltal', v)}
@@ -1500,10 +1475,10 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
 
           <div className="py-5">
             <label className="block text-[15px] font-bold text-slate-900 mb-1">
-              Vad vill du lägga max på nästa bil?
+              Budget för nästa bil (kr)
               <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
             </label>
-            <p className="text-[13px] text-slate-500 mb-4 leading-[1.5]">Totalpriset. Ingen fast budget? Hoppa över – jag hittar bilen först.</p>
+            <p className="text-[13px] text-slate-500 mb-4">Totalpris eller finansiering – vi hjälper dig hitta rätt upplägg.</p>
               <ButtonGroupInput
               value={d.carPrice}
               onChange={v => set('carPrice', v)}
@@ -1518,23 +1493,22 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       {/* ── Var i processen ── */}
   <div className="py-6">
     <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
-      Var befinner du dig just nu?
+      Var i processen är du?
     </label>
-    <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">Hjälper mig anpassa takten – från lugn koll till direkt uppslag.</p>
+    <p className="text-[13px] text-slate-500 mb-3 leading-snug">Välj det alternativ som bäst beskriver dig.</p>
     <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2">
       {BUYING_STAGES.map(s => (
         <button
           key={s.value}
           type="button"
           onClick={() => set('buyingStage', s.value)}
-          className={`w-full sm:w-auto px-5 h-auto py-2.5 rounded-xl text-[14px] font-medium transition-all active:scale-[0.97] text-left sm:text-center ${
+          className={`w-full sm:w-auto px-5 h-11 rounded-xl text-[14px] font-medium transition-all active:scale-[0.97] text-left sm:text-center ${
             d.buyingStage === s.value
               ? 'bg-[#0e6efe] text-white shadow-sm shadow-[#0e6efe]/25'
               : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
           }`}
         >
           {s.label}
-          <span className="block text-[11px] font-normal opacity-80 mt-0.5">{s.desc}</span>
         </button>
       ))}
     </div>
@@ -1545,11 +1519,11 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
       {track !== 'searching' && (
       <div className="py-6">
         <label className="block text-[15px] font-bold text-slate-900 mb-0.5">
-          Något mer du vill berätta?
+          Övriga önskemål
           <span className="ml-2 text-[12px] font-normal text-slate-400">Frivilligt</span>
         </label>
-        <p className="text-[13px] text-slate-500 mb-3 leading-[1.5]">
-          Färg, tillval, garanti eller annat? Ju mer jag vet, desto bättre hittar jag rätt.
+        <p className="text-[13px] text-slate-500 mb-3 leading-snug">
+          T.ex. färg, tillval, garanti eller annat som är viktigt.
         </p>
         <textarea
           value={d.additionalRequests}
@@ -1567,7 +1541,7 @@ export default function BuyDetailsStep({ track, initialData, initialBil, lockedC
           type="submit"
           className="w-full h-12 bg-[#0e6efe] hover:bg-[#0b5cd8] active:bg-[#0950c0] text-white font-bold text-[15px] rounded-xl transition-all duration-150 shadow-sm shadow-[#0e6efe]/20 active:scale-[0.99]"
         >
-          Gå vidare
+          Nästa
         </button>
       </div>
     </form>

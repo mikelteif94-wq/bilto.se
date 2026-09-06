@@ -11,11 +11,6 @@ import {
   Car,
   Loader2,
   AlertCircle,
-  Calendar,
-  ChevronDown,
-  Sparkles,
-  Handshake,
-  TrendingUp,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { SiteFooter } from '../components/SiteFooter';
@@ -23,17 +18,28 @@ import MobileMenu, { MobileMenuItem } from '../components/MobileMenu';
 import { setPageMeta } from '../lib/pageMeta';
 import FieldError from '../components/forms/FieldError';
 import { validateSwedishPhone } from '../lib/utils';
+import RegInput from '../components/RegInput';
+import { useVehicleLookup } from '../lib/useVehicleLookup';
+import BuyTrackStep, { type BuyTrack } from '../components/forms/BuyTrackStep';
+import BuyDetailsStep, { type BuyDetailsData } from '../components/forms/BuyDetailsStep';
+import BuyTradeInStep, { type BuyTradeInData } from '../components/forms/BuyTradeInStep';
+
+interface FreeConsultationPageProps {
+  onBack: () => void;
+  onNavigateBuy?: () => void;
+  onNavigateHowItWorks?: () => void;
+}
 
 type Syfte = 'kop_bil' | 'salj_bil' | 'inbyte' | 'ovrig';
 
-const SYFTE_OPTIONS: { value: Syfte; label: string; desc: string }[] = [
-  { value: 'kop_bil',  label: 'Köpa bil',  desc: 'Hitta rätt bil till rätt pris' },
-  { value: 'salj_bil', label: 'Sälja bil', desc: 'Få bästa pris för din bil' },
-  { value: 'inbyte',   label: 'Inbyte',    desc: 'Byt in din bil mot en ny' },
-  { value: 'ovrig',    label: 'Annat',     desc: 'En annan fråga om bil' },
+const SYFTE_OPTIONS: { value: Syfte; label: string; desc: string; img: string }[] = [
+  { value: 'kop_bil',  label: 'Köpa bil',  desc: 'Jag vill ha hjälp att hitta rätt bil',   img: '/benefit1.f6fa1ca3.svg' },
+  { value: 'salj_bil', label: 'Sälja bil', desc: 'Jag vill sälja min bil till bästa pris', img: '/benefit2.e5b8ac47.svg' },
+  { value: 'inbyte',   label: 'Inbyte',    desc: 'Jag vill byta in min bil mot en ny',     img: '/benefit3.d9e1ec2e_(1).svg' },
+  { value: 'ovrig',    label: 'Annat',     desc: 'Jag har en annan fråga',                 img: '/benefit4.dfeb51b1_(1).svg' },
 ];
 
-const TIME_SLOTS = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'];
+const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
 function getBookedSlots(dateStr: string): Set<string> {
   let seed = 0;
@@ -43,7 +49,7 @@ function getBookedSlots(dateStr: string): Set<string> {
   const booked = new Set<string>();
   const available = [...TIME_SLOTS];
   let s = seed;
-  while (booked.size < 5 && available.length > 0) {
+  while (booked.size < 4 && available.length > 0) {
     s = ((s * 1664525) + 1013904223) >>> 0;
     const idx = s % available.length;
     booked.add(available[idx]);
@@ -58,7 +64,7 @@ function getAvailableDates(): { date: Date; dateStr: string; label: string; day:
   const monthNames = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
   let added = 0;
   let offset = 1;
-  while (added < 8) {
+  while (added < 4) {
     const d = new Date();
     d.setDate(d.getDate() + offset);
     offset++;
@@ -78,6 +84,10 @@ function getAvailableDates(): { date: Date; dateStr: string; label: string; day:
   return days;
 }
 
+// kop_sub = sub-step for kop_bil (hittat / letar)
+// salj_reg = sub-step for salj_bil / inbyte (regnummer)
+type Step = 'syfte' | 'kop_sub' | 'kop_track' | 'kop_details' | 'kop_tradein' | 'salj_reg' | 'salj_condition' | 'inbyte_details' | 'kontakt' | 'tid' | 'bekraftelse';
+
 interface FormData {
   syfte: Syfte | '';
   namn: string;
@@ -86,6 +96,15 @@ interface FormData {
   meddelande: string;
   booking_date: string;
   booking_time: string;
+  // kop_bil extras
+  kop_status: 'hittat' | 'letar' | '';
+  bil_link: string;
+  // salj/inbyte extras
+  regnummer: string;
+  bil_marke: string;
+  bil_modell: string;
+  bil_ar: string;
+  bil_miltal: string;
 }
 
 const INITIAL: FormData = {
@@ -96,75 +115,325 @@ const INITIAL: FormData = {
   meddelande: '',
   booking_date: '',
   booking_time: '',
+  kop_status: '',
+  bil_link: '',
+  regnummer: '',
+  bil_marke: '',
+  bil_modell: '',
+  bil_ar: '',
+  bil_miltal: '',
 };
 
-const FAQS = [
-  {
-    q: 'Är verkligen konsultationen gratis?',
-    a: 'Ja, helt gratis. Ingen bindning, ingen dold avgift. Om vi inte kan hjälpa dig säger vi det rakt ut.',
-  },
-  {
-    q: 'Måste jag bestämma mig under samtalet?',
-    a: 'Nej. De flesta tar sig ett par dagar på sig. Vi hör av oss en gång och lämnar dig sedan ifred.',
-  },
-  {
-    q: 'Vad händer om jag inte är redo att köpa än?',
-    a: 'Vi berättar vad du ska hålla utkik efter – pristrender, rabatter, tillgänglighet – och när det är rätt läge att slå till. Ibland är det bästa rådet "vänta två månader".',
-  },
-  {
-    q: 'Vem är det jag pratar med?',
-    a: 'En riktig person från Biltos team. Ingen bot, inget callcenter. Någon som kan bilar och ger dig ärliga råd – även om det betyder att du inte behöver vår hjälp just nu.',
-  },
-  {
-    q: 'Hur lång tid tar samtalet?',
-    a: 'Vanligtvis 15 minuter. Vi håller det kort och konkret – bara det du behöver veta.',
-  },
-];
+const STEP_LABELS = ['Ärende', 'Uppgifter', 'Tid'];
 
-function FaqItem({ faq, defaultOpen }: { faq: typeof FAQS[number]; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(!!defaultOpen);
+function ProgressBar({ step }: { step: Step }) {
+  const displayIdx = (step === 'syfte' || step === 'kop_sub' || step === 'kop_track' || step === 'kop_details' || step === 'kop_tradein' || step === 'salj_reg' || step === 'salj_condition' || step === 'inbyte_details') ? 0 : step === 'kontakt' ? 1 : step === 'tid' ? 2 : 3;
+
   return (
-    <div className="border-b border-slate-200">
-      <button
-        type="button"
-        onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between gap-4 py-5 text-left group"
-      >
-        <span className="font-semibold text-[15px] text-slate-900 group-hover:text-[#0e6efe] transition">{faq.q}</span>
-        <ChevronDown className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
-      </button>
-      <div className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-60 pb-5' : 'max-h-0'}`}>
-        <p className="text-[14px] text-slate-600 leading-relaxed pr-8">{faq.a}</p>
-      </div>
+    <div className="flex items-center gap-0 mb-10">
+      {STEP_LABELS.map((label, i) => (
+        <div key={label} className="flex items-center flex-1 last:flex-none">
+          <div className="flex flex-col items-center gap-1.5">
+            <div
+              className={`w-9 h-9 rounded-xl flex items-center justify-center text-[13px] font-bold transition-all duration-200 ${
+                i < displayIdx
+                  ? 'bg-[#0e6efe] text-white shadow-md shadow-blue-200'
+                  : i === displayIdx
+                  ? 'bg-[#0e6efe] text-white ring-4 ring-[#0e6efe]/15 shadow-md shadow-blue-200'
+                  : 'bg-slate-100 text-slate-400'
+              }`}
+            >
+              {i < displayIdx ? <Check className="w-4 h-4" strokeWidth={2.5} /> : i + 1}
+            </div>
+            <span className={`text-[11px] font-medium whitespace-nowrap ${i <= displayIdx ? 'text-slate-700' : 'text-slate-400'}`}>
+              {label}
+            </span>
+          </div>
+          {i < STEP_LABELS.length - 1 && (
+            <div className={`h-[2px] flex-1 mx-2 mb-5 rounded-xl transition-all duration-300 ${i < displayIdx ? 'bg-[#0e6efe]' : 'bg-slate-200'}`} />
+          )}
+        </div>
+      ))}
     </div>
   );
 }
 
-export default function FreeConsultationPage({ onBack }: { onBack: () => void }) {
-  const [mode, setMode] = useState<'choose' | 'schedule' | 'callback'>('choose');
+// Sub-component for vehicle lookup display
+function VehicleCard({ regnummer }: { regnummer: string }) {
+  const lookup = useVehicleLookup(regnummer);
+  if (lookup.status === 'loading') {
+    return (
+      <div className="flex items-center gap-2 mt-3 px-4 py-3 bg-blue-50 rounded-xl border border-blue-100 text-blue-700 text-sm">
+        <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+        Hämtar uppgifter...
+      </div>
+    );
+  }
+  if (lookup.status === 'found') {
+    return (
+      <div className="mt-3 px-4 py-3 bg-emerald-50 rounded-xl border border-emerald-100">
+        <div className="flex items-center gap-2 mb-1">
+          <Check className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={2.5} />
+          <span className="text-[13px] font-semibold text-emerald-800">Bilen hittad</span>
+        </div>
+        <p className="text-[14px] font-bold text-slate-900">
+          {lookup.data.marke} {lookup.data.modell}
+          {lookup.data.ar ? ` · ${lookup.data.ar}` : ''}
+        </p>
+        <p className="text-[12px] text-slate-500 mt-0.5">
+          {[lookup.data.bransle, lookup.data.farg, lookup.data.miltal ? `${lookup.data.miltal.toLocaleString('sv-SE')} mil` : ''].filter(Boolean).join(' · ')}
+        </p>
+      </div>
+    );
+  }
+  if (lookup.status === 'not_found' || lookup.status === 'error') {
+    return (
+      <div className="flex items-center gap-2 mt-3 px-4 py-3 bg-amber-50 rounded-xl border border-amber-100 text-amber-800 text-[13px]">
+        <AlertCircle className="w-4 h-4 shrink-0" />
+        Kunde inte hämta uppgifter – du kan ändå fortsätta.
+      </div>
+    );
+  }
+  return null;
+}
+
+const SKICK_OPTS = [
+  { value: 'mycket_bra', label: 'Mycket bra', desc: 'Inga synliga defekter' },
+  { value: 'bra',        label: 'Bra',        desc: 'Mindre brister, välskött' },
+  { value: 'okej',       label: 'Okej',       desc: 'Normalt slitage för åldern' },
+  { value: 'slitet',     label: 'Slitet',     desc: 'Tydligt slitage, behöver service' },
+  { value: 'skadat',     label: 'Skadat',     desc: 'Skador som påverkar funktion/utseende' },
+];
+
+interface SellCarData {
+  regnummer: string;
+  marke: string;
+  modell: string;
+  ar: number;
+  miltal: number;
+  skick: string;
+  skickKommentar: string;
+}
+
+function SellCarMiniForm({
+  initialData,
+  onNext,
+  onBack,
+}: {
+  initialData: SellCarData;
+  onNext: (data: SellCarData) => void;
+  onBack: () => void;
+}) {
+  const [reg, setReg] = useState(initialData.regnummer);
+  const [miltal, setMiltal] = useState<string>(initialData.miltal ? String(initialData.miltal) : '');
+  const [skick, setSkick] = useState(initialData.skick);
+  const [autoData, setAutoData] = useState<{ marke: string; modell: string; ar: number } | null>(
+    initialData.marke ? { marke: initialData.marke, modell: initialData.modell, ar: initialData.ar } : null
+  );
+  const [errors, setErrors] = useState<{ regnummer?: string; skick?: string }>({});
+  const lookup = useVehicleLookup(reg);
+
+  useEffect(() => {
+    if (lookup.status === 'found') {
+      const d = lookup.data;
+      setAutoData({ marke: d.marke, modell: d.modell, ar: d.ar ?? 0 });
+      if (d.miltal && d.miltal > 0) setMiltal(String(d.miltal));
+    }
+  }, [lookup.status]);
+
+  const handleNext = () => {
+    const errs: { regnummer?: string; skick?: string } = {};
+    const regClean = reg.trim().toUpperCase().replace(/\s/g, '');
+    if (!/^[A-Z0-9]{6}$/.test(regClean)) errs.regnummer = 'Ange ett giltigt regnummer (6 tecken)';
+    if (!skick) errs.skick = 'Välj ett skick';
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+    onNext({
+      regnummer: regClean,
+      marke: autoData?.marke ?? '',
+      modell: autoData?.modell ?? '',
+      ar: autoData?.ar ?? 0,
+      miltal: Number(miltal) || 0,
+      skick,
+      skickKommentar: '',
+    });
+  };
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={onBack}
+        className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+      >
+        <ArrowLeft className="w-3.5 h-3.5" />
+        Ändra ämne
+      </button>
+
+      <h2 className="text-[22px] font-bold text-slate-900 mb-1">Din bil</h2>
+      <p className="text-slate-500 text-[14px] mb-6">Ange regnummer så hämtar vi uppgifterna automatiskt.</p>
+
+      {/* Regnummer */}
+      <div className="mb-5">
+        <label className="block text-sm font-semibold text-slate-900 mb-2">Registreringsnummer *</label>
+        <RegInput
+          value={reg}
+          onChange={(v) => {
+            setReg(v);
+            setAutoData(null);
+            setErrors(e => ({ ...e, regnummer: undefined }));
+          }}
+          error={!!errors.regnummer}
+        />
+        {errors.regnummer && <p className="mt-1 text-xs text-red-500">{errors.regnummer}</p>}
+
+        {lookup.status === 'loading' && (
+          <div className="flex items-center gap-2 mt-3 px-4 py-3 bg-blue-50 rounded-xl border border-blue-100 text-blue-700 text-[13px]">
+            <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+            Hämtar uppgifter...
+          </div>
+        )}
+        {lookup.status === 'found' && autoData && (
+          <div className="mt-3 px-4 py-3 bg-emerald-50 rounded-xl border border-emerald-100">
+            <div className="flex items-center gap-2 mb-1">
+              <Check className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={2.5} />
+              <span className="text-[13px] font-semibold text-emerald-800">Bilen hittad</span>
+            </div>
+            <p className="text-[14px] font-bold text-slate-900">
+              {autoData.marke} {autoData.modell}{autoData.ar ? ` · ${autoData.ar}` : ''}
+            </p>
+            {lookup.data.bransle && (
+              <p className="text-[12px] text-slate-500 mt-0.5">
+                {[lookup.data.bransle, lookup.data.farg].filter(Boolean).join(' · ')}
+              </p>
+            )}
+          </div>
+        )}
+        {(lookup.status === 'not_found' || lookup.status === 'error') && (
+          <div className="flex items-center gap-2 mt-3 px-4 py-3 bg-amber-50 rounded-xl border border-amber-100 text-amber-800 text-[13px]">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            Kunde inte hämta uppgifter – du kan ändå fortsätta.
+          </div>
+        )}
+      </div>
+
+      {/* Miltal */}
+      <div className="mb-5">
+        <label className="block text-sm font-semibold text-slate-900 mb-2">
+          Miltal <span className="text-slate-400 font-normal">(valfritt)</span>
+        </label>
+        <div className="relative">
+          <input
+            type="text"
+            inputMode="numeric"
+            value={miltal}
+            onChange={e => setMiltal(e.target.value.replace(/\D/g, ''))}
+            placeholder="T.ex. 850"
+            className="form-control"
+          />
+          {lookup.status === 'found' && miltal && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-[11px] text-emerald-600 font-medium pointer-events-none">
+              <Check className="w-3 h-3" strokeWidth={2.5} />
+              Fyllt i automatiskt
+            </div>
+          )}
+        </div>
+        <p className="mt-1 text-xs text-slate-400">Antal mil · fylls i automatiskt från regnumret</p>
+      </div>
+
+      {/* Skick */}
+      <div className="mb-7">
+        <label className="block text-sm font-semibold text-slate-900 mb-2">Vilket skick är bilen i? *</label>
+        <div className="flex flex-wrap gap-2">
+          {SKICK_OPTS.map(opt => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { setSkick(opt.value); setErrors(e => ({ ...e, skick: undefined })); }}
+              className={`px-4 h-10 rounded-xl text-[14px] font-medium transition-all ${
+                skick === opt.value
+                  ? 'bg-[#0e6efe] text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+        {skick && (
+          <p className="text-sm text-slate-500 mt-2">{SKICK_OPTS.find(o => o.value === skick)?.desc}</p>
+        )}
+        {errors.skick && <p className="mt-1 text-xs text-red-500">{errors.skick}</p>}
+      </div>
+
+      <button type="button" onClick={handleNext} className="btn-primary w-full h-12 text-[15px]">
+        Fortsätt
+        <ArrowRight className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
+
+export default function FreeConsultationPage({ onBack, onNavigateBuy, onNavigateHowItWorks }: FreeConsultationPageProps) {
+  const [step, setStep] = useState<Step>('syfte');
   const [form, setForm] = useState<FormData>(INITIAL);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Buy sub-steps state
+  const [buyTrack, setBuyTrack] = useState<BuyTrack>('found');
+  const [buyDetails, setBuyDetails] = useState<BuyDetailsData>({
+    linkOrSeller: '', carModel: '', carBrand: '', paymentType: '',
+    buyingStage: '', fuelType: '', regnummer: '', miltal: '',
+    targetCar: '', desiredMonthlyCost: '', leasingType: '',
+    additionalRequests: '', carPrice: '', yearFrom: '', yearTo: '', maxMiltal: '',
+    hasQuote: null,
+  });
+  const [buyTradeIn, setBuyTradeIn] = useState<BuyTradeInData>({
+    hasTradeIn: null, tradeInReg: '', hasLoan: null, loanAmount: '', interestRate: '',
+  });
+
+  // Sell car sub-steps state
+  const [sellCar, setSellCar] = useState<SellCarData>({ regnummer: '', marke: '', modell: '', ar: 0, miltal: 0, skick: '', skickKommentar: '' });
+  const [sellUtrustning, setSellUtrustning] = useState<string[]>([]);
+
   const availableDates = useMemo(() => getAvailableDates(), []);
+
   const bookedSlots = useMemo(
     () => form.booking_date ? getBookedSlots(form.booking_date) : new Set<string>(),
     [form.booking_date]
   );
 
+  const vehicleLookup = useVehicleLookup(form.regnummer);
+
   useEffect(() => {
+    const isKontakt = window.location.pathname === '/kontakt';
     setPageMeta({
-      title: 'Gratis konsultation – Köp eller sälj bil med expertstöd | Bilto',
-      description: 'Boka en kostnadsfri konsultation med Biltos experter. Vi hjälper dig förhandla, värdera och genomföra din bilaffär – oavsett om du köper eller säljer.',
-      canonical: 'https://bilto.se/gratis-konsultation',
+      title: isKontakt ? 'Kontakt & gratis konsultation | Bilto' : 'Gratis konsultation – Köp eller sälj bil med expertstöd | Bilto',
+      description: isKontakt
+        ? 'Kontakta Biltos experter eller boka ett kostnadsfritt samtal. Vi hjälper dig sälja, köpa eller värdera din bil – ingen säljpitch.'
+        : 'Boka en kostnadsfri konsultation med Biltos experter. Vi hjälper dig förhandla, värdera och genomföra din bilaffär – oavsett om du köper eller säljer.',
+      canonical: isKontakt ? 'https://bilto.se/kontakt' : 'https://bilto.se/gratis-konsultation',
     });
   }, []);
 
-  const validate = () => {
+  // Sync vehicle data into form when lookup finds a car
+  useEffect(() => {
+    if (vehicleLookup.status === 'found') {
+      const d = vehicleLookup.data;
+      setForm(f => ({
+        ...f,
+        bil_marke: d.marke,
+        bil_modell: d.modell,
+        bil_ar: d.ar ? String(d.ar) : '',
+        bil_miltal: d.miltal ? String(d.miltal) : '',
+      }));
+    }
+  }, [vehicleLookup.status]);
+
+  const validateKontakt = () => {
     const errs: Partial<Record<keyof FormData, string>> = {};
-    if (!form.syfte) errs.syfte = 'Välj ett ärende';
     if (!form.namn.trim()) errs.namn = 'Namn är obligatoriskt';
     const phoneErr = validateSwedishPhone(form.telefon);
     if (phoneErr) errs.telefon = phoneErr;
@@ -173,26 +442,76 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       errs.email = 'Ogiltig e-postadress';
     }
-    if (mode === 'schedule') {
-      if (!form.booking_date) errs.booking_date = 'Välj ett datum';
-      if (!form.booking_time) errs.booking_time = 'Välj en tid';
-    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
 
+  const handleSyfteSelect = (s: Syfte) => {
+    setForm(f => ({ ...f, syfte: s }));
+    if (s === 'kop_bil') {
+      setStep('kop_track');
+    } else if (s === 'salj_bil') {
+      setStep('salj_condition');
+    } else if (s === 'inbyte') {
+      setStep('salj_condition');
+    } else {
+      setStep('kontakt');
+    }
+  };
+
+  const handleKontaktNext = () => {
+    if (validateKontakt()) setStep('tid');
+  };
+
+  const selectedDateLabel = availableDates.find(d => d.dateStr === form.booking_date)?.label ?? '';
+
   const handleSubmit = async () => {
-    if (!validate()) return;
+    const errs: Partial<Record<keyof FormData, string>> = {};
+    if (!form.syfte) errs.syfte = 'Välj ett ärende';
+    if (!form.booking_date) errs.booking_date = 'Välj ett datum';
+    if (!form.booking_time) errs.booking_time = 'Välj en tid';
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+
     setSubmitting(true);
     try {
+      const buyContext = form.syfte === 'kop_bil' ? [
+        buyTrack === 'found' ? 'Hittat bil' : buyTrack === 'trade' ? 'Inbyte' : 'Letar',
+        buyDetails.carBrand || buyDetails.carModel ? `Bil: ${[buyDetails.carBrand, buyDetails.carModel].filter(Boolean).join(' ')}` : '',
+        buyDetails.linkOrSeller ? `Länk: ${buyDetails.linkOrSeller}` : '',
+        buyDetails.paymentType ? `Betalning: ${buyDetails.paymentType}` : '',
+        buyDetails.desiredMonthlyCost ? `Månadskostnad: ${buyDetails.desiredMonthlyCost} kr` : '',
+        buyDetails.carPrice ? `Budget: ${buyDetails.carPrice}` : '',
+        buyTradeIn.hasTradeIn ? `Inbytesbil: ${buyTradeIn.tradeInReg || 'Ja'}` : '',
+        buyDetails.additionalRequests,
+      ].filter(Boolean).join(' | ') : '';
+
+      const sellContext = (form.syfte === 'salj_bil' || form.syfte === 'inbyte') && sellCar.regnummer ? [
+        sellCar.regnummer ? `Regnummer: ${sellCar.regnummer}` : '',
+        sellCar.marke || sellCar.modell ? `Bil: ${[sellCar.marke, sellCar.modell].filter(Boolean).join(' ')}${sellCar.ar ? ` (${sellCar.ar})` : ''}` : '',
+        sellCar.miltal ? `Miltal: ${sellCar.miltal} mil` : '',
+        sellCar.skick ? `Skick: ${sellCar.skick}` : '',
+        sellCar.skickKommentar ? `Kommentar: ${sellCar.skickKommentar}` : '',
+        sellUtrustning.length ? `Utrustning: ${sellUtrustning.join(', ')}` : '',
+      ].filter(Boolean).join(' | ') : '';
+
+      const fullMeddelande = [
+        form.meddelande,
+        buyContext,
+        sellContext,
+        form.kop_status === 'hittat' && form.bil_link ? `Bil-länk: ${form.bil_link}` : '',
+        form.kop_status === 'letar' ? 'Letar efter bil' : '',
+        form.regnummer ? `Regnummer: ${form.regnummer}` : '',
+        form.bil_marke ? `Bil: ${form.bil_marke} ${form.bil_modell} (${form.bil_ar})` : '',
+      ].filter(Boolean).join('\n');
+
       const { error } = await supabase.from('consultation_bookings').insert({
-        booking_date: mode === 'schedule' ? form.booking_date : null,
-        booking_time: mode === 'schedule' ? form.booking_time : null,
+        booking_date: form.booking_date,
+        booking_time: form.booking_time,
         syfte: form.syfte,
         namn: form.namn,
         telefon: form.telefon,
         email: form.email,
-        meddelande: form.meddelande || (mode === 'callback' ? 'Begär återringning' : ''),
+        meddelande: fullMeddelande,
         status: 'pending',
       });
       if (error) throw error;
@@ -203,13 +522,13 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
           telefon: form.telefon,
           email: form.email,
           syfte: form.syfte,
-          booking_date: mode === 'schedule' ? form.booking_date : null,
-          booking_time: mode === 'schedule' ? form.booking_time : null,
-          meddelande: form.meddelande || (mode === 'callback' ? 'Begär återringning' : ''),
+          booking_date: form.booking_date,
+          booking_time: form.booking_time,
+          meddelande: fullMeddelande,
         },
       }).catch(() => {});
 
-      setDone(true);
+      setStep('bekraftelse');
     } catch {
       setErrors({ booking_time: 'Något gick fel – försök igen.' });
     } finally {
@@ -221,7 +540,8 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
     setMenuOpen(false);
     if (item === 'Sälj bil') { onBack(); return; }
     const routes: Partial<Record<MobileMenuItem, string>> = {
-      'Bilköptjänsten': '/kop-bil',
+      'Köp bil': '/kop-bil',
+      'Bilköpshjälpen': '/kop-bil',
       'Guider': '/guider',
       'Priser': '/priser',
       'Vanliga frågor': '/vanliga-fragor',
@@ -235,51 +555,10 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
     onBack();
   };
 
-  const selectedDateLabel = availableDates.find(d => d.dateStr === form.booking_date)?.label ?? '';
-
-  if (done) {
-    return (
-      <div className="min-h-screen bg-[#f7f9fc] text-slate-900 flex flex-col">
-        <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
-          <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
-            <button onClick={onBack} className="shrink-0 flex items-center">
-              <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
-            </button>
-          </div>
-        </header>
-        <div className="flex-1 flex items-center justify-center px-4 pt-32 pb-20">
-          <div className="max-w-md text-center">
-            <div className="w-16 h-16 rounded-xl bg-green-100 flex items-center justify-center mx-auto mb-5">
-              <Check className="w-8 h-8 text-green-600" strokeWidth={2.5} />
-            </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Tack, {form.namn.split(' ')[0]}!</h2>
-            <p className="text-slate-600 text-base mb-1">
-              {mode === 'schedule'
-                ? 'Din konsultation är bokad.'
-                : 'Vi ringer dig inom 15 minuter under kontorstid.'}
-            </p>
-            {mode === 'schedule' && (
-              <p className="font-semibold text-[#0e6efe] text-base mb-6">
-                {selectedDateLabel} kl. {form.booking_time}
-              </p>
-            )}
-            {form.email && (
-              <p className="text-sm text-slate-500 mb-8">
-                En bekräftelse skickas till <span className="font-medium text-slate-700">{form.email}</span>
-              </p>
-            )}
-            <button type="button" onClick={onBack} className="btn-primary px-8 h-12">
-              Tillbaka till startsidan
-            </button>
-          </div>
-        </div>
-        <SiteFooter />
-      </div>
-    );
-  }
+  const selectedSyfte = SYFTE_OPTIONS.find(o => o.value === form.syfte);
 
   return (
-    <div className="min-h-screen bg-[#f7f9fc] text-slate-900">
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
       <MobileMenu
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
@@ -287,7 +566,6 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
         onSelect={handleMenuSelect}
       />
 
-      {/* Header */}
       <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
           <button
@@ -299,15 +577,25 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
             <Menu className="w-6 h-6" strokeWidth={2} />
           </button>
           <button onClick={onBack} className="shrink-0 flex items-center">
-            <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
+            <img
+              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
+              alt="Bilto"
+              className="h-20 lg:h-32 w-auto object-contain"
+              fetchPriority="high"
+              decoding="async"
+            />
           </button>
           <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
             <button type="button" onClick={onBack} className="text-[15px] text-white/80 hover:text-white transition font-medium">Sälj bil</button>
-            <button type="button" onClick={() => { window.history.pushState({}, '', '/kop-bil'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Bilköptjänsten</button>
+            <button type="button" onClick={() => onNavigateBuy?.()} className="text-[15px] text-white/80 hover:text-white transition font-medium">Köp bil</button>
             <button type="button" onClick={() => { window.history.pushState({}, '', '/om-oss'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="text-[15px] text-white/80 hover:text-white transition font-medium">Om oss</button>
           </nav>
           <div className="ml-auto">
-            <button type="button" onClick={onBack} className="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-sm transition">
+            <button
+              type="button"
+              onClick={onBack}
+              className="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-sm transition"
+            >
               <ArrowLeft className="w-4 h-4" />
               <span className="hidden sm:inline">Tillbaka</span>
             </button>
@@ -316,281 +604,423 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#e7f3ff] via-[#f2f8ff] to-[#f7f9fc] pt-32 sm:pt-40 pb-16 sm:pb-24 px-5 sm:px-8">
-        <div className="absolute -top-24 -right-24 w-[400px] h-[400px] rounded-full bg-[#0e6efe]/[0.06] blur-3xl pointer-events-none" />
-        <div className="absolute top-1/3 -left-32 w-[320px] h-[320px] rounded-full bg-[#69a8ff]/[0.08] blur-3xl pointer-events-none" />
-        <div className="relative max-w-3xl mx-auto text-center">
-          <p className="text-[11px] sm:text-[12px] font-bold uppercase tracking-[0.2em] text-[#0e6efe] mb-4">Gratis konsultation</p>
-          <h1 className="text-[30px] sm:text-[40px] lg:text-[48px] font-bold text-slate-700 leading-[1.1] tracking-[-0.04em]">
-            Osäker på vad som passar dig?<br />Vi tar reda på det tillsammans.
+      <div className="bg-[#0e6efe] pt-32 pb-16 px-4">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="inline-flex items-center gap-1.5 bg-white/15 text-white text-xs font-semibold px-3 py-1.5 rounded-xl mb-5 tracking-wide uppercase">
+            Gratis – ingen bindning
+          </div>
+          <h1 className="text-[28px] sm:text-4xl font-bold text-white leading-tight tracking-tight">
+            Boka gratis samtal med en bilexpert
           </h1>
-          <p className="mt-7 text-[16px] sm:text-[19px] text-slate-500 max-w-xl mx-auto leading-[1.5]">
-            Lägg 15 minuter med en av våra experter. Vi lyssnar på vad du vill uppnå och rekommenderar rätt väg framåt. Även om det ärliga svaret är att du inte behöver oss än.
+          <p className="mt-3 text-blue-100 text-[15px] sm:text-base max-w-lg mx-auto leading-relaxed">
+            En expert ringer vid en tid du väljer. Konkreta råd, inga säljtricks – och absolut noll bindning.
           </p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-slate-500 text-[14px]">
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#0e6efe]" /> Kostnadsfritt</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#0e6efe]" /> Ingen säljpitch</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-[#0e6efe]" /> Under 15 minuter</span>
-          </div>
         </div>
-      </section>
+      </div>
 
-      {/* Contact cards */}
-      {mode === 'choose' && (
-        <section className="py-12 sm:py-16 px-5 sm:px-8">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-[22px] font-bold text-slate-700 text-center mb-1 tracking-[-0.03em]">Hur vill du ha kontakt?</h2>
-            <p className="text-slate-500 text-[15px] text-center mb-8">Välj det alternativ som passar dig bäst.</p>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {/* Schedule a call */}
-              <button
-                type="button"
-                onClick={() => setMode('schedule')}
-                className="group flex flex-col items-start p-6 rounded-2xl border border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-xl hover:shadow-blue-50 active:scale-[0.99] transition-all duration-150 text-left"
-              >
-                <div className="w-12 h-12 rounded-xl bg-[#0e6efe]/10 group-hover:bg-[#0e6efe]/15 flex items-center justify-center mb-4 transition-colors">
-                  <Calendar className="w-6 h-6 text-[#0e6efe]" />
-                </div>
-                <h3 className="text-[17px] font-bold text-slate-900 mb-1">Boka ett samtal</h3>
-                <p className="text-[14px] text-slate-500 leading-relaxed mb-4">
-                  Välj en tid som passar dig. Vi skickar en kalenderinbjudan med samtalsdetaljerna.
-                </p>
-                <span className="inline-flex items-center gap-1.5 text-[#0e6efe] font-semibold text-[14px] group-hover:gap-2.5 transition-all">
-                  Välj en tid
-                  <ArrowRight className="w-4 h-4" />
-                </span>
-              </button>
+      {/* Form */}
+      <div className="py-10 px-4">
+        <div className="max-w-lg mx-auto">
+          {step !== 'bekraftelse' && <ProgressBar step={step} />}
 
-              {/* Request callback */}
-              <button
-                type="button"
-                onClick={() => setMode('callback')}
-                className="group flex flex-col items-start p-6 rounded-2xl border border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-xl hover:shadow-blue-50 active:scale-[0.99] transition-all duration-150 text-left"
-              >
-                <div className="w-12 h-12 rounded-xl bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center mb-4 transition-colors">
-                  <Phone className="w-6 h-6 text-emerald-600" />
-                </div>
-                <h3 className="text-[17px] font-bold text-slate-900 mb-1">Ring mig</h3>
-                <p className="text-[14px] text-slate-500 leading-relaxed mb-4">
-                  Vi ringer dig inom 15 minuter under kontorstid. Ingen väntmusik, ingen kö.
-                </p>
-                <span className="inline-flex items-center gap-1.5 text-[#0e6efe] font-semibold text-[14px] group-hover:gap-2.5 transition-all">
-                  Begär återringning
-                  <ArrowRight className="w-4 h-4" />
-                </span>
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Schedule / Callback form */}
-      {mode !== 'choose' && (
-        <section className="py-10 sm:py-16 px-5 sm:px-8">
-          <div className="max-w-lg mx-auto">
-            <button
-              type="button"
-              onClick={() => setMode('choose')}
-              className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              Tillbaka
-            </button>
-
-            <h2 className="text-[24px] font-bold text-slate-900 mb-1">
-              {mode === 'schedule' ? 'Boka din 15-minuters konsultation' : 'Vi ringer dig'}
-            </h2>
-            <p className="text-slate-500 text-[14px] mb-7">
-              {mode === 'schedule'
-                ? 'Välj en ledig tid nedan. Vi skickar en kalenderinbjudan.'
-                : 'Fyll i dina uppgifter så ringer vi dig inom 15 minuter under kontorstid.'}
-            </p>
-
-            {/* Syfte */}
-            <div className="mb-6">
-              <label className="block text-sm font-semibold text-slate-900 mb-2">Vad behöver du hjälp med?</label>
-              <div className="grid grid-cols-2 gap-2">
+          {/* Step 1: Syfte */}
+          {step === 'syfte' && (
+            <div>
+              <h2 className="text-[22px] font-bold text-slate-900 mb-1">Vad behöver du hjälp med?</h2>
+              <p className="text-slate-500 text-[14px] mb-6">Välj det alternativ som passar bäst.</p>
+              <div className="space-y-2.5">
                 {SYFTE_OPTIONS.map(opt => (
                   <button
                     key={opt.value}
                     type="button"
-                    onClick={() => { setForm(f => ({ ...f, syfte: opt.value })); setErrors(e => ({ ...e, syfte: undefined })); }}
-                    className={`flex flex-col items-start px-4 py-3 rounded-xl border text-left transition-all ${
-                      form.syfte === opt.value
-                        ? 'border-[#0e6efe] bg-[#0e6efe]/5 shadow-sm'
-                        : 'border-slate-200 bg-white hover:border-slate-300'
-                    }`}
+                    onClick={() => handleSyfteSelect(opt.value)}
+                    className="group w-full flex items-center gap-4 px-5 py-4 rounded-xl border border-slate-200 bg-white hover:border-[#0e6efe] hover:shadow-md hover:shadow-blue-50 active:scale-[0.99] transition-all duration-150 text-left"
                   >
-                    <span className={`text-[14px] font-semibold ${form.syfte === opt.value ? 'text-[#0e6efe]' : 'text-slate-800'}`}>{opt.label}</span>
-                    <span className="text-[12px] text-slate-500 mt-0.5">{opt.desc}</span>
+                    <div className="w-9 h-9 rounded-xl bg-[#0e6efe]/8 group-hover:bg-[#0e6efe]/12 flex items-center justify-center shrink-0 transition-colors">
+                      <img src={opt.img} alt={opt.label} className="w-5 h-5 object-contain" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-semibold text-slate-900 text-[15px] leading-snug">{opt.label}</div>
+                      <div className="text-slate-500 text-[13px] mt-0.5 truncate">{opt.desc}</div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#0e6efe] ml-auto shrink-0 transition-colors" />
                   </button>
                 ))}
               </div>
-              {errors.syfte && <p className="mt-1.5 text-xs text-red-500">{errors.syfte}</p>}
             </div>
+          )}
 
-            {/* Schedule: date + time */}
-            {mode === 'schedule' && (
-              <>
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-slate-900 mb-3">Välj dag</label>
-                  <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
-                    {availableDates.map(d => {
-                      const selected = form.booking_date === d.dateStr;
+          {/* Step kop_track */}
+          {step === 'kop_track' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setStep('syfte')}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Ändra ämne
+              </button>
+              <BuyTrackStep
+                onChoose={(t) => {
+                  setBuyTrack(t);
+                  setStep('kop_details');
+                }}
+                onGuidance={() => setStep('kontakt')}
+              />
+            </div>
+          )}
+
+          {/* Step kop_details */}
+          {step === 'kop_details' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setStep('kop_track')}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Tillbaka
+              </button>
+              <BuyDetailsStep
+                track={buyTrack}
+                initialData={buyDetails}
+                initialBil=""
+                onNext={(data) => {
+                  setBuyDetails(data);
+                  setStep('kop_tradein');
+                }}
+                onExplore={() => setStep('kontakt')}
+                onQuiz={() => setStep('kontakt')}
+              />
+            </div>
+          )}
+
+          {/* Step kop_tradein */}
+          {step === 'kop_tradein' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setStep('kop_details')}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Tillbaka
+              </button>
+              <BuyTradeInStep
+                initialData={buyTradeIn}
+                onNext={(data) => {
+                  setBuyTradeIn(data);
+                  setStep('kontakt');
+                }}
+              />
+            </div>
+          )}
+
+          {/* Step salj_condition: reg + miltal + skick */}
+          {(step === 'salj_reg' || step === 'salj_condition') && (
+            <SellCarMiniForm
+              initialData={sellCar}
+              onBack={() => setStep('syfte')}
+              onNext={(data) => {
+                setSellCar(data);
+                setStep(form.syfte === 'inbyte' ? 'inbyte_details' : 'kontakt');
+              }}
+            />
+          )}
+
+          {/* Step inbyte_details: target car for inbyte */}
+          {step === 'inbyte_details' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setStep('salj_condition')}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Tillbaka
+              </button>
+              <BuyDetailsStep
+                track="trade"
+                initialData={buyDetails}
+                initialBil=""
+                onNext={(data) => {
+                  setBuyDetails(data);
+                  setStep('kontakt');
+                }}
+                onExplore={() => setStep('kontakt')}
+                onQuiz={() => setStep('kontakt')}
+              />
+            </div>
+          )}
+
+          {/* Step 2: Kontakt */}
+          {step === 'kontakt' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (form.syfte === 'kop_bil') setStep('kop_tradein');
+                  else if (form.syfte === 'inbyte') setStep('inbyte_details');
+                  else if (form.syfte === 'salj_bil') setStep('salj_condition');
+                  else setStep('syfte');
+                }}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Tillbaka
+              </button>
+
+              {/* Summary chip */}
+              {form.syfte && (
+                <div className="flex items-center gap-2 mb-5 px-3 py-2 bg-[#0e6efe]/5 rounded-xl border border-[#0e6efe]/15">
+                  <Car className="w-4 h-4 text-[#0e6efe] shrink-0" />
+                  <span className="text-[13px] font-medium text-[#0e6efe]">
+                    {selectedSyfte?.label}
+                    {form.kop_status === 'hittat' && form.bil_link && ` · Har hittat bil`}
+                    {form.kop_status === 'letar' && ` · Letar fortfarande`}
+                    {form.regnummer && ` · ${form.regnummer}`}
+                    {form.bil_marke && ` – ${form.bil_marke} ${form.bil_modell}`}
+                  </span>
+                </div>
+              )}
+
+              <h2 className="text-[22px] font-bold text-slate-900 mb-6">Dina uppgifter</h2>
+
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Fullständigt namn *</label>
+                  <input
+                    type="text"
+                    autoComplete="name"
+                    value={form.namn}
+                    onChange={e => { setForm(f => ({ ...f, namn: e.target.value })); setErrors(p => ({ ...p, namn: undefined })); }}
+                    placeholder="Johan Andersson"
+                    className={`form-control ${errors.namn ? 'form-control-error' : ''}`}
+                  />
+                  <FieldError message={errors.namn} />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Telefonnummer *</label>
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={form.telefon}
+                    onChange={e => { setForm(f => ({ ...f, telefon: e.target.value })); setErrors(p => ({ ...p, telefon: undefined })); }}
+                    placeholder="070-123 45 67"
+                    className={`form-control ${errors.telefon ? 'form-control-error' : ''}`}
+                  />
+                  <FieldError message={errors.telefon} />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">E-postadress *</label>
+                  <input
+                    type="text"
+                    inputMode="email"
+                    autoComplete="email"
+                    value={form.email}
+                    onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setErrors(p => ({ ...p, email: undefined })); }}
+                    placeholder="johan@example.com"
+                    className={`form-control ${errors.email ? 'form-control-error' : ''}`}
+                  />
+                  <FieldError message={errors.email} />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">
+                    Meddelande <span className="text-slate-400 font-normal">(valfritt)</span>
+                  </label>
+                  <textarea
+                    value={form.meddelande}
+                    onChange={e => setForm(f => ({ ...f, meddelande: e.target.value }))}
+                    placeholder="Berätta gärna mer om vad du letar efter, din budget eller andra önskemål..."
+                    rows={3}
+                    className="form-control"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleKontaktNext}
+                className="btn-primary w-full mt-7 h-12 text-[15px]"
+              >
+                Välj datum och tid
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Step 3: Tid */}
+          {step === 'tid' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setStep('kontakt')}
+                className="inline-flex items-center gap-1.5 text-[13px] text-slate-400 hover:text-slate-700 mb-6 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Tillbaka
+              </button>
+              <h2 className="text-[22px] font-bold text-slate-900 mb-1">Välj datum och tid</h2>
+              <p className="text-slate-500 text-[14px] mb-6">Välj ett av de närmaste lediga alternativen.</p>
+
+              <div className="grid grid-cols-4 gap-2 mb-7">
+                {availableDates.map(d => {
+                  const selected = form.booking_date === d.dateStr;
+                  return (
+                    <button
+                      key={d.dateStr}
+                      type="button"
+                      onClick={() => {
+                        setForm(f => ({ ...f, booking_date: d.dateStr, booking_time: '' }));
+                        setErrors(e => ({ ...e, booking_date: undefined, booking_time: undefined }));
+                      }}
+                      className={`flex flex-col items-center gap-0.5 py-3.5 px-2 rounded-xl border transition-all duration-150 active:scale-[0.97] ${
+                        selected
+                          ? 'border-[#0e6efe] bg-[#0e6efe] text-white shadow-md shadow-blue-200'
+                          : 'border-slate-200 bg-white hover:border-[#0e6efe]/50 hover:bg-blue-50/40 text-slate-700'
+                      }`}
+                    >
+                      <span className={`text-[11px] font-semibold uppercase tracking-wide ${selected ? 'text-blue-100' : 'text-slate-400'}`}>{d.day}</span>
+                      <span className={`text-[22px] font-bold leading-none ${selected ? 'text-white' : 'text-slate-800'}`}>{d.date2}</span>
+                      <span className={`text-[11px] font-medium ${selected ? 'text-blue-100' : 'text-slate-400'}`}>{d.month}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              {errors.booking_date && <p className="text-red-500 text-xs -mt-4 mb-4">{errors.booking_date}</p>}
+
+              {form.booking_date && (
+                <>
+                  <p className="text-[13px] font-semibold text-slate-700 mb-3">
+                    Tillgängliga tider – <span className="font-normal text-slate-500">{selectedDateLabel}</span>
+                  </p>
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    {TIME_SLOTS.map(t => {
+                      const booked = bookedSlots.has(t);
+                      const selected = form.booking_time === t;
+                      if (booked) {
+                        return (
+                          <div
+                            key={t}
+                            className="flex items-center justify-center gap-1.5 py-3 rounded-xl border border-slate-100 bg-[#faf8f5] text-slate-300 cursor-not-allowed select-none"
+                          >
+                            <Lock className="w-3 h-3 shrink-0" />
+                            <span className="text-[13px] font-medium">{t}</span>
+                          </div>
+                        );
+                      }
                       return (
                         <button
-                          key={d.dateStr}
+                          key={t}
                           type="button"
                           onClick={() => {
-                            setForm(f => ({ ...f, booking_date: d.dateStr, booking_time: '' }));
-                            setErrors(e => ({ ...e, booking_date: undefined, booking_time: undefined }));
+                            setForm(f => ({ ...f, booking_time: t }));
+                            setErrors(e => ({ ...e, booking_time: undefined }));
                           }}
-                          className={`flex flex-col items-center gap-0.5 py-3.5 px-3.5 rounded-xl border transition-all duration-150 active:scale-[0.97] shrink-0 min-w-[68px] ${
+                          className={`flex items-center justify-center gap-1.5 py-3 rounded-xl border transition-all duration-150 active:scale-[0.97] ${
                             selected
                               ? 'border-[#0e6efe] bg-[#0e6efe] text-white shadow-md shadow-blue-200'
-                              : 'border-slate-200 bg-white hover:border-[#0e6efe]/50 hover:bg-blue-50/40 text-slate-700'
+                              : 'border-slate-200 hover:border-[#0e6efe]/50 hover:bg-blue-50/40 text-slate-700'
                           }`}
                         >
-                          <span className={`text-[11px] font-semibold uppercase tracking-wide ${selected ? 'text-blue-100' : 'text-slate-400'}`}>{d.day}</span>
-                          <span className={`text-[22px] font-bold leading-none ${selected ? 'text-white' : 'text-slate-800'}`}>{d.date2}</span>
-                          <span className={`text-[11px] font-medium ${selected ? 'text-blue-100' : 'text-slate-400'}`}>{d.month}</span>
+                          <Clock className={`w-3.5 h-3.5 shrink-0 ${selected ? 'text-blue-100' : 'text-slate-400'}`} />
+                          <span className={`text-[13px] font-semibold ${selected ? 'text-white' : ''}`}>{t}</span>
                         </button>
                       );
                     })}
                   </div>
-                  {errors.booking_date && <p className="text-red-500 text-xs mt-2">{errors.booking_date}</p>}
-                </div>
+                  <p className="text-[12px] text-slate-400 mb-5 flex items-center gap-1.5">
+                    <Lock className="w-3 h-3 shrink-0" /> Grå tider är redan bokade
+                  </p>
+                </>
+              )}
 
-                {form.booking_date && (
-                  <div className="mb-6">
-                    <p className="text-[13px] font-semibold text-slate-700 mb-3">
-                      Lediga tider – <span className="font-normal text-slate-500">{selectedDateLabel}</span>
-                    </p>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                      {TIME_SLOTS.map(t => {
-                        const booked = bookedSlots.has(t);
-                        const selected = form.booking_time === t;
-                        if (booked) {
-                          return (
-                            <div key={t} className="flex items-center justify-center gap-1.5 py-3 rounded-xl border border-slate-100 bg-[#f7f9fc] text-slate-300 cursor-not-allowed select-none">
-                              <Lock className="w-3 h-3 shrink-0" />
-                              <span className="text-[13px] font-medium">{t}</span>
-                            </div>
-                          );
-                        }
-                        return (
-                          <button
-                            key={t}
-                            type="button"
-                            onClick={() => { setForm(f => ({ ...f, booking_time: t })); setErrors(e => ({ ...e, booking_time: undefined })); }}
-                            className={`flex items-center justify-center gap-1.5 py-3 rounded-xl border transition-all duration-150 active:scale-[0.97] ${
-                              selected
-                                ? 'border-[#0e6efe] bg-[#0e6efe] text-white shadow-md shadow-blue-200'
-                                : 'border-slate-200 hover:border-[#0e6efe]/50 hover:bg-blue-50/40 text-slate-700'
-                            }`}
-                          >
-                            <Clock className={`w-3.5 h-3.5 shrink-0 ${selected ? 'text-blue-100' : 'text-slate-400'}`} />
-                            <span className={`text-[13px] font-semibold ${selected ? 'text-white' : ''}`}>{t}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                    <p className="text-[12px] text-slate-400 mt-3 flex items-center gap-1.5">
-                      <Lock className="w-3 h-3 shrink-0" /> Grå tider är redan bokade
-                    </p>
-                    {errors.booking_time && <p className="text-red-500 text-xs mt-2">{errors.booking_time}</p>}
-                  </div>
-                )}
-              </>
-            )}
+              {errors.booking_time && (
+                <p className="text-red-500 text-xs mb-3">{errors.booking_time}</p>
+              )}
 
-            {/* Contact info */}
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Fullständigt namn *</label>
-                <input
-                  type="text"
-                  autoComplete="name"
-                  value={form.namn}
-                  onChange={e => { setForm(f => ({ ...f, namn: e.target.value })); setErrors(p => ({ ...p, namn: undefined })); }}
-                  placeholder="Johan Andersson"
-                  className={`form-control ${errors.namn ? 'form-control-error' : ''}`}
-                />
-                <FieldError message={errors.namn} />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Telefonnummer *</label>
-                <input
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  value={form.telefon}
-                  onChange={e => { setForm(f => ({ ...f, telefon: e.target.value })); setErrors(p => ({ ...p, telefon: undefined })); }}
-                  placeholder="070-123 45 67"
-                  className={`form-control ${errors.telefon ? 'form-control-error' : ''}`}
-                />
-                <FieldError message={errors.telefon} />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">E-postadress *</label>
-                <input
-                  type="text"
-                  inputMode="email"
-                  autoComplete="email"
-                  value={form.email}
-                  onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setErrors(p => ({ ...p, email: undefined })); }}
-                  placeholder="johan@example.com"
-                  className={`form-control ${errors.email ? 'form-control-error' : ''}`}
-                />
-                <FieldError message={errors.email} />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">
-                  Meddelande <span className="text-slate-400 font-normal">(valfritt)</span>
-                </label>
-                <textarea
-                  value={form.meddelande}
-                  onChange={e => setForm(f => ({ ...f, meddelande: e.target.value }))}
-                  placeholder="Berätta gärna mer om vad du behöver hjälp med..."
-                  rows={3}
-                  className="form-control"
-                />
-              </div>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={submitting}
+                className="btn-primary w-full h-12 text-[15px] disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+              >
+                {submitting
+                  ? <><Loader2 className="w-4 h-4 animate-spin" />Bokar...</>
+                  : <>Boka konsultation <ArrowRight className="w-4 h-4" /></>
+                }
+              </button>
+
+              <p className="text-center text-[12px] text-slate-400 mt-3">
+                Ingen bindning. Avboka när som helst.
+              </p>
             </div>
+          )}
 
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={submitting}
-              className="btn-primary w-full h-12 text-[15px] disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
-            >
-              {submitting
-                ? <><Loader2 className="w-4 h-4 animate-spin" />Bokar...</>
-                : mode === 'schedule'
-                  ? <>Boka konsultation <ArrowRight className="w-4 h-4" /></>
-                  : <>Begär återringning <ArrowRight className="w-4 h-4" /></>
-              }
-            </button>
-            <p className="text-center text-[12px] text-slate-400 mt-3">
-              Ingen bindning. Avboka när som helst.
-            </p>
-          </div>
-        </section>
-      )}
+          {/* Step 4: Bekräftelse */}
+          {step === 'bekraftelse' && (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 rounded-xl bg-green-100 flex items-center justify-center mx-auto mb-5">
+                <Check className="w-8 h-8 text-green-600" strokeWidth={2.5} />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 mb-2">Tack, {form.namn.split(' ')[0]}!</h2>
+              <p className="text-slate-600 text-base mb-1">Din konsultation är bokad</p>
+              <p className="font-semibold text-[#0e6efe] text-base mb-8">
+                {selectedDateLabel} kl. {form.booking_time}
+              </p>
 
-      {/* Trust badges */}
-      {mode === 'choose' && (
-        <section className="py-10 px-5 sm:px-8">
-          <div className="max-w-3xl mx-auto">
+              <div className="bg-[#faf8f5] rounded-xl p-5 text-left mb-8 border border-slate-100 max-w-sm mx-auto">
+                <h3 className="font-semibold text-sm text-slate-700 mb-3">Din bokning</h3>
+                <div className="grid gap-2.5 text-sm">
+                  {[
+                    { label: 'Namn',   value: form.namn },
+                    { label: 'Telefon', value: form.telefon },
+                    { label: 'Ärende', value: selectedSyfte?.label ?? '' },
+                    form.regnummer ? { label: 'Regnummer', value: form.regnummer } : null,
+                    form.bil_marke ? { label: 'Bil', value: `${form.bil_marke} ${form.bil_modell}` } : null,
+                    { label: 'Datum',  value: selectedDateLabel },
+                    { label: 'Tid',    value: `kl. ${form.booking_time}` },
+                  ].filter(Boolean).map(row => row && (
+                    <div key={row.label} className="flex justify-between">
+                      <span className="text-slate-400">{row.label}</span>
+                      <span className="font-medium text-slate-800">{row.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {form.email && (
+                <p className="text-sm text-slate-500 mb-6">
+                  En bekräftelse skickas till <span className="font-medium text-slate-700">{form.email}</span>
+                </p>
+              )}
+
+              <button
+                type="button"
+                onClick={onBack}
+                className="btn-primary px-8 h-12"
+              >
+                Tillbaka till startsidan
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {step !== 'bekraftelse' && (
+        <div className="border-t border-slate-100 py-10 px-4 mt-4">
+          <div className="max-w-lg mx-auto">
             <div className="flex flex-col sm:flex-row items-stretch divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
               {[
-                { icon: Check, color: 'text-emerald-600', bg: 'bg-emerald-50', title: 'Kostnadsfritt', desc: 'Du betalar ingenting för konsultationen.' },
-                { icon: Phone, color: 'text-[#0e6efe]', bg: 'bg-blue-50', title: 'Vi ringer dig', desc: 'Vi tar initiativet – ingen väntan i kö.' },
-                { icon: ShieldCheck, color: 'text-slate-600', bg: 'bg-slate-100', title: 'Inga förpliktelser', desc: 'Tacka nej när du vill, utan förklaring.' },
+                { icon: Check,       color: 'text-emerald-600', bg: 'bg-emerald-50',  title: 'Kostnadsfritt',     desc: 'Du betalar ingenting för konsultationen.' },
+                { icon: Phone,       color: 'text-[#0e6efe]',   bg: 'bg-blue-50',     title: 'Vi ringer dig',     desc: 'Vi tar initiativet – ingen väntan i kö.' },
+                { icon: ShieldCheck, color: 'text-slate-600',   bg: 'bg-slate-100',   title: 'Inga förpliktelser', desc: 'Tacka nej när du vill, utan förklaring.' },
               ].map(item => (
                 <div key={item.title} className="flex-1 flex items-start gap-3 py-5 sm:py-0 sm:px-6 first:pt-0 last:pb-0 sm:first:pl-0 sm:last:pr-0">
                   <div className={`w-9 h-9 rounded-xl ${item.bg} flex items-center justify-center shrink-0 mt-0.5`}>
-                    <item.icon className={item.color} strokeWidth={2} style={{ width: 18, height: 18 }} />
+                    <item.icon className={`w-4.5 h-4.5 ${item.color}`} strokeWidth={2} style={{ width: 18, height: 18 }} />
                   </div>
                   <div>
                     <div className="font-semibold text-[14px] text-slate-900 leading-snug">{item.title}</div>
@@ -600,84 +1030,8 @@ export default function FreeConsultationPage({ onBack }: { onBack: () => void })
               ))}
             </div>
           </div>
-        </section>
+        </div>
       )}
-
-      {/* Team section */}
-      <section className="bg-[#f7f9fc] py-16 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-[26px] font-bold text-slate-700 mb-3 tracking-[-0.03em]">Riktiga människor. Som svarar i telefon.</h2>
-          <p className="text-slate-500 text-[15px] max-w-xl mx-auto leading-relaxed mb-10">
-            När du bokar ett samtal pratar du med någon från Biltos team. De lyssnar på din situation, rekommenderar vad som passar dig – och säger rakt ifall vi inte är rätt för dig. Ingen säljpitch, ingen provision.
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {[
-              { name: 'Daniel', role: 'Grundare & expert', img: '/daniel-portrait.jpg' },
-              { name: 'Team Bilto', role: 'Bilexpert', img: '/Man_in_car_showroom_portrait.png' },
-              { name: 'Team Bilto', role: 'Bilexpert', img: '/Man_in_car_showroom_portrait copy.png' },
-              { name: 'Team Bilto', role: 'Bilexpert', img: '/Man_in_car_showroom_portrait copy copy.png' },
-            ].map((member, i) => (
-              <div key={i} className="flex flex-col items-center">
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-slate-100 ring-2 ring-slate-100 mb-3">
-                  <img src={member.img} alt={member.name} className="w-full h-full object-cover" loading="lazy" />
-                </div>
-                <div className="font-semibold text-[14px] text-slate-900">{member.name}</div>
-                <div className="text-[12px] text-slate-500">{member.role}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* What we help with */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-[24px] font-bold text-slate-700 text-center mb-10 tracking-[-0.03em]">Vad vi kan hjälpa dig med</h2>
-          <div className="grid sm:grid-cols-3 gap-5">
-            {[
-              { icon: Car, title: 'Köpa bil', desc: 'Hitta rätt bil, kolla priset och förhandla ner det åt dig.' },
-              { icon: TrendingUp, title: 'Sälja bil', desc: 'Värdera din bil och få ut bud från flera handlare.' },
-              { icon: Handshake, title: 'Inbyte', desc: 'Byt in din bil och få ett bra pris på nästa.' },
-            ].map(item => (
-              <div key={item.title} className="bg-white rounded-2xl border border-slate-200 p-6 text-center">
-                <div className="w-12 h-12 rounded-xl bg-[#0e6efe]/10 flex items-center justify-center mx-auto mb-4">
-                  <item.icon className="w-6 h-6 text-[#0e6efe]" />
-                </div>
-                <h3 className="font-bold text-[15px] text-slate-900 mb-1.5">{item.title}</h3>
-                <p className="text-[13px] text-slate-500 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="bg-[#f7f9fc] py-16 px-4">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-[24px] font-bold text-slate-700 text-center mb-8 tracking-[-0.03em]">Vanliga frågor</h2>
-          <div className="bg-white rounded-2xl border border-slate-200 px-6">
-            {FAQS.map((faq, i) => (
-              <FaqItem key={i} faq={faq} defaultOpen={i === 0} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Bottom CTA */}
-      <section className="bg-[#0e6efe] py-16 px-4">
-        <div className="max-w-lg mx-auto text-center">
-          <h2 className="text-[24px] sm:text-[32px] font-bold text-white mb-3 tracking-[-0.03em]">Redo att prata med oss?</h2>
-          <p className="text-white/85 text-[15px] sm:text-[17px] mb-7">15 minuter. Helt gratis. Ingen bindning.</p>
-          <button
-            type="button"
-            onClick={() => { setMode('schedule'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-white text-[#0e6efe] font-bold hover:bg-slate-100 transition shadow-lg"
-          >
-            <Calendar className="w-4 h-4" />
-            Boka ett samtal
-          </button>
-        </div>
-      </section>
 
       <SiteFooter />
     </div>

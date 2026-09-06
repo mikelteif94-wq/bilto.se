@@ -180,7 +180,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
               onClick={() => onNavigateBuy()}
               className="text-[15px] font-medium text-white/70 hover:text-white transition"
             >
-              Bilköptjänsten
+              Bilköpshjälpen
             </button>
             <button
               type="button"

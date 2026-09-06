@@ -84,11 +84,6 @@ export default function BuyContactStep({ initialData, onNext, submitting = false
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
-      <div className="mb-2 p-4 rounded-xl bg-[#faf8f5] border border-slate-200">
-        <p className="text-[13.5px] text-slate-600 leading-[1.55]">
-          <strong className="text-slate-900">Snart klart!</strong> Fyll i dina uppgifter så ringer en Bilto-expert upp dig. Samtalet är kostnadsfritt och du är inte bunden till något. Vi behöver din e-post för att skicka en bekräftelse och en länk till din personliga portal.
-        </p>
-      </div>
       <div>
         <label className="block text-sm font-semibold text-slate-900 mb-2">Fullständigt namn</label>
         <input

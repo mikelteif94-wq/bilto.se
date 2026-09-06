@@ -11,6 +11,7 @@ import {
   Loader2,
   AlertCircle,
   X,
+  Shield,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
@@ -21,6 +22,7 @@ import { useVehicleLookup } from '../lib/useVehicleLookup';
 import BuyTrackStep, { type BuyTrack } from './forms/BuyTrackStep';
 import BuyDetailsStep, { type BuyDetailsData } from './forms/BuyDetailsStep';
 import BuyTradeInStep, { type BuyTradeInData } from './forms/BuyTradeInStep';
+import { readAttribution } from '../lib/attribution';
 
 type Syfte = 'kop_bil' | 'salj_bil' | 'inbyte' | 'ovrig';
 
@@ -367,9 +369,10 @@ interface ConsultationDrawerProps {
   open: boolean;
   onClose: () => void;
   initialSyfte?: Syfte;
+  defaultForhandlare?: { slug: string; name: string; certifiering: string } | null;
 }
 
-export default function ConsultationDrawer({ open, onClose, initialSyfte }: ConsultationDrawerProps) {
+export default function ConsultationDrawer({ open, onClose, initialSyfte, defaultForhandlare }: ConsultationDrawerProps) {
   const [step, setStep] = useState<Step>('syfte');
   const [form, setForm] = useState<FormData>(INITIAL);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
@@ -531,6 +534,8 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
         email: form.email,
         meddelande: fullMeddelande,
         status: 'pending',
+        ...(defaultForhandlare ? { forhandlare_slug: defaultForhandlare.slug } : {}),
+        ...(readAttribution() ? { via: readAttribution() } : {}),
       });
       if (error) throw error;
 
@@ -583,8 +588,25 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
               </div>
               <div className="flex items-center justify-between px-5 pt-2 pb-3 border-b border-slate-100">
                 <div>
-                  <h2 className="text-[16px] font-bold text-slate-900 leading-tight">Boka gratis konsultation</h2>
-                  <p className="text-[12px] text-slate-400 mt-0.5">En expert ringer vid vald tid · Ingen bindning</p>
+                  {defaultForhandlare ? (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-[16px] font-bold text-slate-900 leading-tight">
+                          Samtal med {defaultForhandlare.name}
+                        </h2>
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <Shield className="w-3 h-3" />
+                          {defaultForhandlare.certifiering}
+                        </span>
+                      </div>
+                      <p className="text-[12px] text-slate-400 mt-0.5">Kostnadsfritt · Ingen bindning</p>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="text-[16px] font-bold text-slate-900 leading-tight">Boka gratis konsultation</h2>
+                      <p className="text-[12px] text-slate-400 mt-0.5">En expert ringer vid vald tid · Ingen bindning</p>
+                    </>
+                  )}
                 </div>
                 <button
                   type="button"
@@ -984,9 +1006,17 @@ export default function ConsultationDrawer({ open, onClose, initialSyfte }: Cons
                     </div>
                     <h3 className="text-[22px] font-bold text-slate-900 mb-1">Tack, {form.namn.split(' ')[0]}!</h3>
                     <p className="text-slate-600 text-[14px] mb-1">Din konsultation är bokad</p>
-                    <p className="font-semibold text-[#0e6efe] text-[15px] mb-7">
+                    <p className="font-semibold text-[#0e6efe] text-[15px] mb-2">
                       {selectedDateLabel} kl. {form.booking_time}
                     </p>
+                    {defaultForhandlare && (
+                      <p className="text-[13px] text-slate-500 mb-5">
+                        {defaultForhandlare.name} ringer dig vid vald tid.
+                        <br />
+                        <span className="text-slate-400">Därefter uppdragsavtal — 0 kr tills affären är klar.</span>
+                      </p>
+                    )}
+                    {!defaultForhandlare && <div className="mb-7" />}
 
                     <div className="bg-[#faf8f5] rounded-xl p-4 text-left mb-6 border border-slate-100 max-w-sm mx-auto">
                       <h4 className="font-semibold text-[13px] text-slate-700 mb-3">Din bokning</h4>

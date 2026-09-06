@@ -82,32 +82,26 @@ export default function BuyTrackStep({ initialBil, onChoose, onGuidance }: BuyTr
 
   return (
     <div className="space-y-2.5">
-      <div className="mb-4 p-4 rounded-xl bg-[#faf8f5] border border-slate-200">
-        <p className="text-[13.5px] text-slate-600 leading-[1.55]">
-          <strong className="text-slate-900">Så här funkar det:</strong> Du berättar vad du vill ha. En Bilto-expert ringer dig upp, lägger en plan och förhandlar priset åt dig. Du betalar inget förrän affären är klar – och du är aldrig bunden.
-        </p>
-      </div>
-
-      <p className="text-[14px] font-semibold text-slate-700 mb-3">Vad vill du göra?</p>
+      <p className="text-[13.5px] text-slate-400 mb-5">Välj det som passar dig bäst.</p>
 
       <OptionButton
         icon={Handshake}
         title={initialBil ? `Jag har hittat en ${initialBil}` : 'Jag har hittat en bil'}
-        sub="Klistra in länken till annonsen – vi förhandlar ner priset och granskar bilen åt dig."
+        sub="Låt oss förhandla och granska åt dig."
         onClick={() => onChoose('found')}
       />
 
       <OptionButton
         icon={Search}
         title={initialBil ? `Jag letar efter en ${initialBil}` : 'Jag letar efter bil'}
-        sub="Berätta vad du vill ha – vi söker hela marknaden och hittar rätt bil."
+        sub="Utforska, jämför eller testa bilmatch."
         onClick={() => initialBil ? onChoose('know') : setMainChoice('searching')}
       />
 
       <OptionButton
         icon={ArrowLeftRight}
         title="Jag vill byta bil"
-        sub="Vi värderar din nuvarande bil, säljer den och förhandlar fram nästa."
+        sub="Vi hittar och förhandlar nästa bil åt dig."
         onClick={() => onChoose('trade')}
       />
 

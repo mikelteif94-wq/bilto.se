@@ -43,12 +43,12 @@ export default function DealerRegister({ onBack, mode = 'landing', onNavigateApp
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköptjänsten', 'Priser', 'Bilspara'];
+  const navItems: MobileMenuItem[] = ['Sälj bil', 'Bilköpshjälpen', 'Priser', 'Bilspara'];
 
   const handleMenuSelect = (item: MobileMenuItem) => {
     setMenuOpen(false);
     const routes: Partial<Record<MobileMenuItem, string>> = {
-      'Bilköptjänsten': '/kop-bil',
+      'Bilköpshjälpen': '/kop-bil',
       'Guider': '/guider',
       'Priser': '/priser',
       'Vanliga frågor': '/vanliga-fragor',

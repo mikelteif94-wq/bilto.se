@@ -402,14 +402,14 @@ export default function GuidePage({ slug, onBackHome }: GuidePageProps) {
 
   const navItems: { id: MobileMenuItem; label: string }[] = [
     { id: 'Sälj bil', label: 'Säljhjälpen' },
-    { id: 'Bilköptjänsten', label: 'Bilköptjänsten' },
+    { id: 'Köp bil', label: 'Bilköpshjälpen' },
     { id: 'Om oss', label: 'Om oss' },
   ];
 
   const handleMenuSelect = (id: MobileMenuItem) => {
     setMenuOpen(false);
     const routes: Partial<Record<MobileMenuItem, string>> = {
-      'Bilköptjänsten': '/kop-bil',
+      'Köp bil': '/kop-bil',
       'Om oss': '/om-oss',
     };
     const route = routes[id];

@@ -21,7 +21,8 @@ export default function WebbplatskartaPage({ onBack }: WebbplatskartaPageProps) 
   const staticPages = [
     { label: 'Startsida', path: '/', desc: 'Biltos startsida – värdera och sälj din bil' },
     { label: 'Sälj din bil', path: '/salj-din-bil', desc: 'Steg-för-steg guide för att sälja din bil via Bilto' },
-    { label: 'Bilköptjänsten', path: '/kop-bil', desc: 'Låt oss hitta och förhandla fram rätt bil åt dig' },
+    { label: 'Köp bil med hjälp', path: '/kop-bil', desc: 'Låt oss hitta och förhandla fram rätt bil åt dig' },
+    { label: 'Köp bil – beställ', path: '/kop-bil/bestall', desc: 'Starta din köpprocess' },
     { label: 'Om oss', path: '/om-oss', desc: 'Lär känna teamet bakom Bilto' },
     { label: 'Blogg', path: '/blogg', desc: 'Tips och råd för smarta bilaffärer' },
     { label: 'Bli handlare', path: '/handlare/registrera', desc: 'Ansök om att bli Bilto-handlare' },

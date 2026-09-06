@@ -5,11 +5,13 @@ export type MobileMenuItem =
   | 'Sälj bil'
   | 'Förmedling'
   | 'Hitta bil'
-  | 'Bilköptjänsten'
+  | 'Köp bil'
+  | 'Köp bil med hjälp'
   | 'Om oss'
   | 'Vi förhandlar åt dig'
-  | 'Bilköptjänsten'
+  | 'Bilköpshjälpen'
   | 'Guider'
+  | 'Priser'
   | 'Vanliga frågor'
   | 'Bilspara';
 
@@ -41,7 +43,7 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
 
   const items: { label: string; path: string; id: MobileMenuItem }[] = [
     { label: 'Säljhjälpen', path: '/salj-bil', id: 'Sälj bil' },
-    { label: 'Bilköptjänsten', path: '/kop-bil', id: 'Bilköptjänsten' },
+    { label: 'Bilköpshjälpen', path: '/kop-bil', id: 'Köp bil' },
     { label: 'Om oss', path: '/om-oss', id: 'Om oss' },
   ];
 
