@@ -172,11 +172,11 @@ export default function HomePage({ onNavigate, showSeo = false, pageTitle }: Hom
           </button>
           <a href="/" className="shrink-0 lg:mr-10 flex items-center">
             <img
-              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
+              src="/a_clean_graphic_logo_on_a_transparent_background.png"
               alt="Bilto"
               fetchPriority="high"
               decoding="async"
-              className="hidden lg:block h-24 w-auto object-contain"
+              className="hidden lg:block h-20 w-auto object-contain"
               style={{ filter: scrolled ? 'none' : 'brightness(0) invert(1)' }}
             />
           </a>
