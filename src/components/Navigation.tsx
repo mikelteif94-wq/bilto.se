@@ -21,7 +21,7 @@ export default function Navigation({ currentPage, onNavigate }: NavigationProps)
           aria-label="Bilto startsida"
         >
           <img
-            src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
+            src="/a_clean_graphic_logo_on_a_transparent_background.png"
             alt="Bilto"
             className="h-16 lg:h-24 w-auto object-contain transition-opacity duration-200 group-hover:opacity-90"
             fetchPriority="high"
