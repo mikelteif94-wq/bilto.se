@@ -1,0 +1,92 @@
+[functions.approve-dealer]
+verify_jwt = true
+
+[functions.catalog-import]
+verify_jwt = true
+
+[functions.cleanup-otp]
+verify_jwt = false
+
+[functions.close-auctions]
+verify_jwt = false
+
+[functions.create-staff-user]
+verify_jwt = true
+
+[functions.customer-car]
+verify_jwt = false
+
+[functions.customer-quote]
+verify_jwt = false
+
+[functions.dispatch-dealers]
+verify_jwt = true
+
+[functions.invite-dealer-member]
+verify_jwt = true
+
+[functions.link-customer-account]
+verify_jwt = false
+
+[functions.lookup-vehicle]
+verify_jwt = false
+
+[functions.notify-bid-approved]
+verify_jwt = false
+
+[functions.notify-car-offer]
+verify_jwt = false
+
+[functions.notify-consultation-booking]
+verify_jwt = false
+
+[functions.notify-customer-decision-admin]
+verify_jwt = false
+
+[functions.notify-customer-submitted]
+verify_jwt = false
+
+[functions.notify-dealer-dispatch]
+verify_jwt = false
+
+[functions.notify-dealer-proposal]
+verify_jwt = false
+
+[functions.notify-dealers-new-car]
+verify_jwt = false
+
+[functions.notify-new-bid]
+verify_jwt = false
+
+[functions.notify-new-car]
+verify_jwt = false
+
+[functions.notify-new-dealer]
+verify_jwt = false
+
+[functions.notify-new-lead]
+verify_jwt = false
+
+[functions.notify-quote-request]
+verify_jwt = false
+
+[functions.notify-valuation-request]
+verify_jwt = false
+
+[functions.scrape-car-prices]
+verify_jwt = true
+
+[functions.send-magic-link]
+verify_jwt = false
+
+[functions.send-otp]
+verify_jwt = false
+
+[functions.sync-blocket-inventory]
+verify_jwt = true
+
+[functions.verify-magic-link]
+verify_jwt = false
+
+[functions.verify-otp]
+verify_jwt = false
