@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import {
   ArrowLeft, ArrowRight, BarChart3, Bell, Building2, Car, Check, CheckCircle2,
-  ChevronRight, Clock, DollarSign, FileText, Grid2X2, Handshake, LayoutDashboard,
-  MapPin, Menu, Network, Plus, Search, Settings, ShieldCheck, Star, TrendingUp,
-  Users, X, Zap,
+  ChevronRight, Clock, DollarSign, FileText, Handshake, LayoutDashboard,
+  MapPin, Menu, Network, Search, Settings, ShieldCheck, Star, TrendingUp,
+  X, Zap,
 } from 'lucide-react';
 import {
-  DEMO_DEALER_STATS, DEMO_OPPORTUNITIES, DEMO_VEHICLE, formatSEK, PLATFORM_FEE,
+  DEMO_DEALER_STATS, DEMO_OPPORTUNITIES, formatSEK,
 } from '../lib/formedling-data';
 
 type DealerView = 'overview' | 'opportunities' | 'opportunity-detail' | 'offer-form' | 'assignments' | 'sold' | 'stats' | 'profile' | 'network';
@@ -21,24 +21,24 @@ export default function FormedlingDealerPortal() {
   const navigate = (next: DealerView) => { setView(next); setMenuOpen(false); setOfferSent(false); };
 
   return (
-    <div className="min-h-screen bg-[#f5f7fa] text-slate-900">
-      <header className="lg:hidden h-16 bg-[#0a0f1a] text-white flex items-center px-4 justify-between sticky top-0 z-30">
-        <button onClick={() => setMenuOpen(true)} className="w-10 h-10 flex items-center justify-center"><Menu className="w-5 h-5" /></button>
-        <span className="font-black">Bilto<span className="text-bilto-400">.</span> <span className="font-medium text-white/50">Förmedlare</span></span>
+    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
+      <header className="lg:hidden h-16 bg-white border-b border-slate-200 flex items-center px-4 justify-between sticky top-0 z-30">
+        <button onClick={() => setMenuOpen(true)} className="w-10 h-10 flex items-center justify-center"><Menu className="w-5 h-5 text-slate-700" /></button>
+        <span className="font-black text-slate-900">Bilto<span className="text-bilto-500">.</span> <span className="font-medium text-slate-400">Förmedlare</span></span>
         <div className="w-10" />
       </header>
 
       <div className="flex min-h-screen">
-        <aside className={`fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-[#0a0f1a] text-white flex flex-col transition-transform duration-300 ${menuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-          <div className="h-20 flex items-center px-6 border-b border-white/8">
-            <span className="text-[20px] font-black">Bilto<span className="text-bilto-400">.</span></span>
-            <span className="ml-2 text-[11px] text-white/40">Förmedlare</span>
-            <button onClick={() => setMenuOpen(false)} className="ml-auto lg:hidden"><X className="w-5 h-5 text-white/60" /></button>
+        <aside className={`fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300 ${menuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+          <div className="h-16 flex items-center px-6 border-b border-slate-100">
+            <span className="text-[20px] font-black text-slate-900">Bilto<span className="text-bilto-500">.</span></span>
+            <span className="ml-2 text-[11px] text-slate-400">Förmedlare</span>
+            <button onClick={() => setMenuOpen(false)} className="ml-auto lg:hidden"><X className="w-5 h-5 text-slate-500" /></button>
           </div>
-          <div className="px-4 py-5 border-b border-white/8">
+          <div className="px-4 py-5 border-b border-slate-100">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center"><Building2 className="w-5 h-5 text-white/70" /></div>
-              <div><p className="text-[14px] font-semibold">Nordic Auto</p><p className="text-[11px] text-white/40">Verifierad partner</p></div>
+              <div className="w-10 h-10 rounded-md bg-bilto-50 flex items-center justify-center"><Building2 className="w-5 h-5 text-bilto-500" /></div>
+              <div><p className="text-[14px] font-semibold text-slate-900">Nordic Auto</p><p className="text-[11px] text-slate-400">Verifierad partner</p></div>
             </div>
           </div>
           <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -48,21 +48,21 @@ export default function FormedlingDealerPortal() {
             <SidebarItem icon={Handshake} label="Aktiva uppdrag" active={view === 'assignments'} onClick={() => navigate('assignments')} />
             <SidebarItem icon={CheckCircle2} label="Sålda bilar" active={view === 'sold'} onClick={() => navigate('sold')} />
             <SidebarItem icon={BarChart3} label="Statistik" active={view === 'stats'} onClick={() => navigate('stats')} />
-            <div className="h-px bg-white/8 my-4" />
+            <div className="h-px bg-slate-100 my-4" />
             <SidebarItem icon={Network} label="Fordonsnätverk" muted badge="Snart" active={view === 'network'} onClick={() => navigate('network')} />
             <SidebarItem icon={Settings} label="Profil" active={view === 'profile'} onClick={() => navigate('profile')} />
           </nav>
-          <div className="p-4 border-t border-white/8">
-            <a href="/formedling" className="flex items-center gap-2 text-[12px] text-white/40 hover:text-white transition"><ArrowLeft className="w-3.5 h-3.5" /> Till konsumentsidan</a>
+          <div className="p-4 border-t border-slate-100">
+            <a href="/formedling" className="flex items-center gap-2 text-[12px] text-slate-400 hover:text-slate-900 transition"><ArrowLeft className="w-3.5 h-3.5" /> Till konsumentsidan</a>
           </div>
         </aside>
         {menuOpen && <button aria-label="Stäng meny" onClick={() => setMenuOpen(false)} className="fixed inset-0 z-30 bg-black/60 lg:hidden" />}
 
         <main className="flex-1 min-w-0">
-          <div className="hidden lg:flex h-20 bg-white border-b border-slate-200 items-center justify-end px-8 gap-5">
-            <button className="relative w-10 h-10 rounded-xl hover:bg-slate-50 flex items-center justify-center"><Bell className="w-5 h-5 text-slate-500" /><span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" /></button>
+          <div className="hidden lg:flex h-16 bg-white border-b border-slate-200 items-center justify-end px-8 gap-5">
+            <button className="relative w-10 h-10 rounded-md hover:bg-slate-50 flex items-center justify-center"><Bell className="w-5 h-5 text-slate-500" /><span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" /></button>
             <div className="h-8 w-px bg-slate-200" />
-            <div className="flex items-center gap-3"><div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center"><Building2 className="w-4 h-4 text-slate-500" /></div><span className="text-[14px] font-semibold">Nordic Auto</span></div>
+            <div className="flex items-center gap-3"><div className="w-9 h-9 rounded-md bg-slate-100 flex items-center justify-center"><Building2 className="w-4 h-4 text-slate-500" /></div><span className="text-[14px] font-semibold text-slate-900">Nordic Auto</span></div>
           </div>
 
           <div className="max-w-7xl mx-auto p-5 lg:p-8">
@@ -83,11 +83,11 @@ export default function FormedlingDealerPortal() {
 }
 
 function SidebarItem({ icon: Icon, label, active, onClick, badge, muted }: { icon: typeof LayoutDashboard; label: string; active: boolean; onClick: () => void; badge?: string; muted?: boolean }) {
-  return <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] transition ${active ? 'bg-white/10 text-white' : muted ? 'text-white/35 hover:bg-white/5 hover:text-white/60' : 'text-white/55 hover:bg-white/5 hover:text-white/90'}`}><Icon className="w-4 h-4 shrink-0" strokeWidth={1.8} /><span className="flex-1 text-left">{label}</span>{badge && <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${badge === 'Snart' ? 'bg-white/8 text-white/35' : 'bg-bilto-500 text-white'}`}>{badge}</span>}</button>;
+  return <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] transition ${active ? 'bg-bilto-50 text-bilto-700' : muted ? 'text-slate-300 hover:bg-slate-50 hover:text-slate-500' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}><Icon className="w-4 h-4 shrink-0" strokeWidth={1.8} /><span className="flex-1 text-left">{label}</span>{badge && <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${badge === 'Snart' ? 'bg-slate-100 text-slate-400' : 'bg-bilto-500 text-white'}`}>{badge}</span>}</button>;
 }
 
 function PageHeading({ eyebrow, title, text, action }: { eyebrow?: string; title: string; text?: string; action?: React.ReactNode }) {
-  return <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8"><div>{eyebrow && <p className="text-[11px] font-bold text-bilto-600 uppercase tracking-[0.18em] mb-2">{eyebrow}</p>}<h1 className="text-[28px] font-black tracking-tight text-slate-900">{title}</h1>{text && <p className="text-[15px] text-slate-500 mt-2">{text}</p>}</div>{action}</div>;
+  return <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8"><div>{eyebrow && <p className="section-label mb-2">{eyebrow}</p>}<h1 className="text-[28px] font-black tracking-tight text-slate-900">{title}</h1>{text && <p className="text-[15px] text-slate-500 mt-2">{text}</p>}</div>{action}</div>;
 }
 
 function Overview({ onNavigate }: { onNavigate: (v: DealerView) => void }) {
@@ -98,27 +98,246 @@ function Overview({ onNavigate }: { onNavigate: (v: DealerView) => void }) {
     { label: 'Sålda denna månad', value: DEMO_DEALER_STATS.soldThisMonth, icon: CheckCircle2, color: 'text-slate-600', bg: 'bg-slate-100' },
   ];
   return <>
-    <PageHeading eyebrow="Översikt" title="God eftermiddag, Nordic Auto" text="Här är en sammanfattning av din förmedlarverksamhet." action={<button onClick={() => onNavigate('opportunities')} className="h-11 px-5 rounded-xl bg-slate-900 text-white font-semibold text-[13px] hover:bg-slate-700 transition inline-flex items-center gap-2"><Search className="w-4 h-4" /> Hitta bilar</button>} />
-    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">{metrics.map(m => { const Icon = m.icon; return <div key={m.label} className="bg-white rounded-xl border border-slate-200 p-5"><div className="flex items-center justify-between mb-4"><div className={`w-9 h-9 rounded-lg ${m.bg} flex items-center justify-center`}><Icon className={`w-4.5 h-4.5 ${m.color}`} /></div><TrendingUp className="w-4 h-4 text-emerald-500" /></div><p className="text-[27px] font-black text-slate-900">{m.value}</p><p className="text-[12px] text-slate-500 mt-1">{m.label}</p></div>; })}</div>
+    <PageHeading eyebrow="Översikt" title="God eftermiddag, Nordic Auto" text="Här är en sammanfattning av din förmedlarverksamhet." action={<button onClick={() => onNavigate('opportunities')} className="btn-primary h-11 px-5 text-[13px]"><Search className="w-4 h-4" /> Hitta bilar</button>} />
+    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+      {metrics.map(m => { const Icon = m.icon; return (
+        <div key={m.label} className="card-base p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className={`w-9 h-9 rounded-md ${m.bg} flex items-center justify-center`}><Icon className={`w-4 h-4 ${m.color}`} /></div>
+            <TrendingUp className="w-4 h-4 text-emerald-500" />
+          </div>
+          <p className="text-[27px] font-black text-slate-900">{m.value}</p>
+          <p className="text-[12px] text-slate-500 mt-1">{m.label}</p>
+        </div>
+      ); })}
+    </div>
     <div className="grid xl:grid-cols-3 gap-6">
-      <div className="xl:col-span-2 bg-white rounded-xl border border-slate-200 p-6"><div className="flex items-center justify-between mb-6"><div><h2 className="text-[17px] font-bold">Nya möjligheter</h2><p className="text-[13px] text-slate-500 mt-1">Bilar som matchar din profil</p></div><button onClick={() => onNavigate('opportunities')} className="text-[13px] font-semibold text-bilto-600 hover:text-bilto-700">Visa alla <ChevronRight className="w-3.5 h-3.5 inline" /></button></div><div className="space-y-3">{DEMO_OPPORTUNITIES.slice(0, 3).map(op => <MiniOpportunity key={op.id} opportunity={op} onClick={() => onNavigate('opportunity-detail')} />)}</div></div>
-      <div className="bg-slate-900 rounded-xl p-6 text-white"><div className="flex items-center gap-2 mb-6"><BarChart3 className="w-5 h-5 text-bilto-400" /><h2 className="text-[17px] font-bold">Din statistik</h2></div><div className="space-y-5"><StatLine label="Genomsnittlig försäljningstid" value={`${DEMO_DEALER_STATS.avgSaleTime} dagar`} /><StatLine label="Konverteringsgrad" value={`${DEMO_DEALER_STATS.conversionRate} %`} /><StatLine label="Aktiv sedan" value="Mars 2025" /></div><button onClick={() => onNavigate('stats')} className="w-full h-10 mt-8 rounded-lg border border-white/15 hover:bg-white/5 text-white/70 text-[13px] font-semibold transition">Se detaljerad statistik</button></div>
+      <div className="xl:col-span-2 card-base p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div><h2 className="text-[17px] font-bold text-slate-900">Nya möjligheter</h2><p className="text-[13px] text-slate-500 mt-1">Bilar som matchar din profil</p></div>
+          <button onClick={() => onNavigate('opportunities')} className="text-[13px] font-semibold text-bilto-600 hover:text-bilto-700">Visa alla <ChevronRight className="w-3.5 h-3.5 inline" /></button>
+        </div>
+        <div className="space-y-3">{DEMO_OPPORTUNITIES.slice(0, 3).map(op => <MiniOpportunity key={op.id} opportunity={op} onClick={() => onNavigate('opportunities')} />)}</div>
+      </div>
+      <div className="bg-slate-900 rounded-md p-6 text-white">
+        <div className="flex items-center gap-2 mb-6"><BarChart3 className="w-5 h-5 text-bilto-400" /><h2 className="text-[17px] font-bold">Din statistik</h2></div>
+        <div className="space-y-5">
+          <StatLine label="Genomsnittlig försäljningstid" value={`${DEMO_DEALER_STATS.avgSaleTime} dagar`} />
+          <StatLine label="Konverteringsgrad" value={`${DEMO_DEALER_STATS.conversionRate} %`} />
+          <StatLine label="Aktiv sedan" value="Mars 2025" />
+        </div>
+        <button onClick={() => onNavigate('stats')} className="w-full h-10 mt-8 rounded-md border border-white/15 hover:bg-white/5 text-white/70 text-[13px] font-semibold transition">Se detaljerad statistik</button>
+      </div>
     </div>
   </>;
 }
 
-function MiniOpportunity({ opportunity, onClick }: { opportunity: typeof DEMO_OPPORTUNITIES[number]; onClick: () => void }) { return <button onClick={onClick} className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 text-left transition"><div className="w-11 h-11 rounded-lg bg-slate-100 flex items-center justify-center shrink-0"><Car className="w-5 h-5 text-slate-500" /></div><div className="flex-1 min-w-0"><p className="text-[14px] font-semibold truncate">{opportunity.make} {opportunity.model}</p><p className="text-[12px] text-slate-500">{opportunity.year} · {opportunity.mileage.toLocaleString('sv-SE')} mil · {opportunity.city}</p></div><div className="hidden sm:block text-right"><p className="text-[13px] font-semibold">{formatSEK(opportunity.marketLow)}–{formatSEK(opportunity.marketHigh)}</p><p className="text-[11px] text-slate-400">Marknadsspann</p></div><ChevronRight className="w-4 h-4 text-slate-300" /></button>; }
-function StatLine({ label, value }: { label: string; value: string }) { return <div className="flex justify-between items-center"><span className="text-[13px] text-white/50">{label}</span><span className="text-[15px] font-bold text-white">{value}</span></div>; }
+function MiniOpportunity({ opportunity, onClick }: { opportunity: typeof DEMO_OPPORTUNITIES[number]; onClick: () => void }) {
+  return <button onClick={onClick} className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-slate-50 text-left transition">
+    <div className="w-11 h-11 rounded-md bg-slate-100 flex items-center justify-center shrink-0"><Car className="w-5 h-5 text-slate-500" /></div>
+    <div className="flex-1 min-w-0"><p className="text-[14px] font-semibold text-slate-900 truncate">{opportunity.make} {opportunity.model}</p><p className="text-[12px] text-slate-500">{opportunity.year} · {opportunity.mileage.toLocaleString('sv-SE')} mil · {opportunity.city}</p></div>
+    <div className="hidden sm:block text-right"><p className="text-[13px] font-semibold text-slate-900">{formatSEK(opportunity.marketLow)}–{formatSEK(opportunity.marketHigh)}</p><p className="text-[11px] text-slate-400">Marknadsspann</p></div>
+    <ChevronRight className="w-4 h-4 text-slate-300" />
+  </button>;
+}
 
-function Opportunities({ onOpen }: { onOpen: (op: typeof DEMO_OPPORTUNITIES[number]) => void }) { return <><PageHeading eyebrow="Nya möjligheter" title="Bilar att förmedla" text="Välj vilka bilar du vill lämna erbjudande på." /><div className="flex gap-3 mb-6"><div className="relative flex-1 max-w-sm"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" /><input className="w-full h-11 bg-white border border-slate-200 rounded-xl pl-10 pr-4 text-[14px] focus:outline-none focus:border-bilto-500" placeholder="Sök märke eller modell" /></div><button className="h-11 px-4 bg-white border border-slate-200 rounded-xl text-[13px] font-semibold text-slate-600">Filtrera</button></div><div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">{DEMO_OPPORTUNITIES.map(op => <div key={op.id} className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-card-hover transition"><div className="flex items-start justify-between mb-5"><div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center"><Car className="w-6 h-6 text-slate-500" /></div><span className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[11px] font-semibold">Ny möjlighet</span></div><h3 className="text-[17px] font-bold">{op.make} {op.model}</h3><p className="text-[13px] text-slate-500 mt-1">{op.year} · {op.mileage.toLocaleString('sv-SE')} mil · {op.fuel}</p><div className="flex items-center gap-1.5 text-[12px] text-slate-500 mt-3"><MapPin className="w-3.5 h-3.5" /> {op.city}</div><div className="border-t border-slate-100 mt-5 pt-4"><p className="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Uppskattat marknadsspann</p><p className="text-[16px] font-bold mt-1">{formatSEK(op.marketLow)} – {formatSEK(op.marketHigh)}</p></div><button onClick={() => onOpen(op)} className="w-full h-10 mt-5 rounded-lg bg-slate-900 text-white text-[13px] font-semibold hover:bg-slate-700 transition">Visa bil <ArrowRight className="w-3.5 h-3.5 inline ml-1" /></button></div>)}</div></>; }
+function StatLine({ label, value }: { label: string; value: string }) {
+  return <div className="flex justify-between items-center"><span className="text-[13px] text-white/50">{label}</span><span className="text-[15px] font-bold text-white">{value}</span></div>;
+}
 
-function OpportunityDetail({ opportunity, onBack, onOffer }: { opportunity: typeof DEMO_OPPORTUNITIES[number]; onBack: () => void; onOffer: () => void }) { return <><button onClick={onBack} className="flex items-center gap-1 text-slate-500 hover:text-slate-900 text-sm mb-6"><ArrowLeft className="w-4 h-4" /> Tillbaka</button><PageHeading eyebrow="Möjlighet" title={`${opportunity.make} ${opportunity.model}`} text="Granska informationen som bilägaren har lämnat." /><div className="grid lg:grid-cols-3 gap-6"><div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-6"><div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">{[['Årsmodell', String(opportunity.year)], ['Miltal', `${opportunity.mileage.toLocaleString('sv-SE')} mil`], ['Drivmedel', opportunity.fuel], ['Ort', opportunity.city]].map(([l,v]) => <div key={l}><p className="text-[11px] text-slate-400 uppercase font-bold tracking-wider">{l}</p><p className="text-[15px] font-semibold mt-1">{v}</p></div>)}</div><h3 className="text-[16px] font-bold mb-4">Bilens skick och utrustning</h3><div className="grid sm:grid-cols-2 gap-3 text-[14px] text-slate-600">{['Fullständig servicehistorik', '2 nycklar', 'Sommar- och vinterdäck', 'Mycket bra skick', 'Dragkrok', 'Panoramatak', '360-kamera', 'Premiumljud'].map(x => <div key={x} className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" />{x}</div>)}</div><div className="mt-8 p-5 bg-[#faf8f5] rounded-xl"><p className="text-[12px] font-bold text-slate-400 uppercase tracking-wider mb-2">Bilägarens önskemål</p><p className="text-[15px] text-slate-700">"Jag söker en professionell förmedlare som kan ta hand om hela försäljningen."</p></div></div><div className="bg-slate-900 text-white rounded-xl p-6 h-fit"><p className="text-[12px] font-bold text-white/40 uppercase tracking-wider mb-3">Uppskattat marknadsvärde</p><p className="text-[27px] font-black">{formatSEK(opportunity.marketLow)} – {formatSEK(opportunity.marketHigh)}</p><p className="text-[13px] text-white/45 mt-2">Baserat på bilens uppgifter och aktuell marknad.</p><button onClick={onOffer} className="w-full h-12 mt-8 rounded-xl bg-white text-slate-900 font-bold text-[14px] hover:bg-slate-100 transition">Lämna erbjudande <ArrowRight className="w-4 h-4 inline ml-1" /></button></div></div></>; }
+function Opportunities({ onOpen }: { onOpen: (op: typeof DEMO_OPPORTUNITIES[number]) => void }) {
+  return <>
+    <PageHeading eyebrow="Nya möjligheter" title="Bilar att förmedla" text="Välj vilka bilar du vill lämna erbjudande på." />
+    <div className="flex gap-3 mb-6">
+      <div className="relative flex-1 max-w-sm"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" /><input className="form-control pl-10" placeholder="Sök märke eller modell" /></div>
+      <button className="h-12 px-4 bg-white border border-slate-200 rounded-md text-[13px] font-semibold text-slate-600">Filtrera</button>
+    </div>
+    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+      {DEMO_OPPORTUNITIES.map(op => (
+        <div key={op.id} className="card-base card-lift p-5">
+          <div className="flex items-start justify-between mb-5">
+            <div className="w-12 h-12 rounded-md bg-slate-100 flex items-center justify-center"><Car className="w-6 h-6 text-slate-500" /></div>
+            <span className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[11px] font-semibold">Ny möjlighet</span>
+          </div>
+          <h3 className="text-[17px] font-bold text-slate-900">{op.make} {op.model}</h3>
+          <p className="text-[13px] text-slate-500 mt-1">{op.year} · {op.mileage.toLocaleString('sv-SE')} mil · {op.fuel}</p>
+          <div className="flex items-center gap-1.5 text-[12px] text-slate-500 mt-3"><MapPin className="w-3.5 h-3.5" /> {op.city}</div>
+          <div className="border-t border-slate-100 mt-5 pt-4">
+            <p className="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Uppskattat marknadsspann</p>
+            <p className="text-[16px] font-bold text-slate-900 mt-1">{formatSEK(op.marketLow)} – {formatSEK(op.marketHigh)}</p>
+          </div>
+          <button onClick={() => onOpen(op)} className="btn-primary w-full h-10 mt-5 text-[13px]">Visa bil <ArrowRight className="w-3.5 h-3.5 inline ml-1" /></button>
+        </div>
+      ))}
+    </div>
+  </>;
+}
 
-function OfferForm({ offer, setOffer, sent, onBack, onSubmit }: { offer: { salePrice: string; commission: string; days: string; storage: string }; setOffer: (o: typeof offer) => void; sent: boolean; onBack: () => void; onSubmit: () => void }) { const net = Math.max(0, (parseInt(offer.salePrice) || 0) - (parseInt(offer.commission) || 0)); return <><button onClick={onBack} className="flex items-center gap-1 text-slate-500 hover:text-slate-900 text-sm mb-6"><ArrowLeft className="w-4 h-4" /> Tillbaka</button>{sent ? <div className="max-w-lg mx-auto text-center py-12"><div className="w-20 h-20 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-6"><CheckCircle2 className="w-10 h-10 text-emerald-500" /></div><h1 className="text-[28px] font-black">Erbjudandet är skickat.</h1><p className="text-slate-500 mt-3">Bilägaren kan nu jämföra ert erbjudande med andra förmedlare.</p><button onClick={onBack} className="h-11 px-6 mt-8 rounded-xl bg-slate-900 text-white font-semibold text-[14px]">Tillbaka till bilen</button></div> : <><PageHeading eyebrow="Nytt erbjudande" title="Lämna erbjudande" text="Sätt tydliga villkor för bilägaren." /><div className="max-w-2xl bg-white rounded-xl border border-slate-200 p-6 space-y-5"><div className="grid sm:grid-cols-2 gap-4"><FormInput label="Förväntat försäljningspris" value={offer.salePrice} onChange={v => setOffer({ ...offer, salePrice: v })} suffix="kr" /><FormInput label="Förmedlingsavgift" value={offer.commission} onChange={v => setOffer({ ...offer, commission: v })} suffix="kr" /></div><div className="bg-bilto-50 border border-bilto-100 rounded-xl p-5 flex items-center justify-between"><div><p className="text-[12px] font-bold text-bilto-700 uppercase tracking-wider">Beräknat till bilägaren</p><p className="text-[28px] font-black text-slate-900 mt-1">{formatSEK(net)}</p></div><DollarSign className="w-8 h-8 text-bilto-500" /></div><div><label className="block text-[13px] font-semibold mb-2">Förväntad försäljningstid</label><select value={offer.days} onChange={e => setOffer({ ...offer, days: e.target.value })} className="form-control"><option>10–18 dagar</option><option>14–21 dagar</option><option>21–30 dagar</option><option>30+ dagar</option></select></div><div><label className="block text-[13px] font-semibold mb-2">Var bilen förvaras</label><div className="flex flex-wrap gap-2">{[['dealer','Hos oss'], ['owner','Hos bilägaren'], ['agreed','Efter överenskommelse']].map(([v,l]) => <button key={v} onClick={() => setOffer({ ...offer, storage: v })} className={`px-4 py-2.5 rounded-xl text-[14px] font-medium ${offer.storage === v ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'}`}>{l}</button>)}</div></div><div><label className="block text-[13px] font-semibold mb-2">Vad ingår?</label><div className="grid sm:grid-cols-2 gap-2">{['Fotografering','Annonsering','Provkörningar','Finansiering','Betalningshantering','Ägarbyte'].map(x => <label key={x} className="flex items-center gap-2 text-[14px] text-slate-600"><input type="checkbox" defaultChecked className="accent-[#0e6efe]" />{x}</label>)}</div></div><div><label className="block text-[13px] font-semibold mb-2">Kommentar till bilägaren</label><textarea className="form-control h-24 resize-none" placeholder="Berätta varför ni är rätt förmedlare..." /></div><div className="flex items-center justify-between border-t border-slate-100 pt-5"><div><p className="text-[13px] font-semibold">Erbjudandet gäller</p><p className="text-[12px] text-slate-500">Bilägaren har 48 timmar att svara</p></div><button onClick={onSubmit} className="h-12 px-7 rounded-xl bg-slate-900 text-white font-semibold text-[14px] hover:bg-slate-700 transition">Skicka erbjudande <ArrowRight className="w-4 h-4 inline ml-1" /></button></div></div></>}</>; }
-function FormInput({ label, value, onChange, suffix }: { label: string; value: string; onChange: (v: string) => void; suffix?: string }) { return <div><label className="block text-[13px] font-semibold mb-2">{label}</label><div className="relative"><input value={value} onChange={e => onChange(e.target.value.replace(/[^0-9]/g, ''))} className="form-control pr-12" />{suffix && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-slate-400">{suffix}</span>}</div></div>; }
+function OpportunityDetail({ opportunity, onBack, onOffer }: { opportunity: typeof DEMO_OPPORTUNITIES[number]; onBack: () => void; onOffer: () => void }) {
+  return <>
+    <button onClick={onBack} className="flex items-center gap-1 text-slate-500 hover:text-slate-900 text-sm mb-6"><ArrowLeft className="w-4 h-4" /> Tillbaka</button>
+    <PageHeading eyebrow="Möjlighet" title={`${opportunity.make} ${opportunity.model}`} text="Granska informationen som bilägaren har lämnat." />
+    <div className="grid lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2 card-base p-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+          {[['Årsmodell', String(opportunity.year)], ['Miltal', `${opportunity.mileage.toLocaleString('sv-SE')} mil`], ['Drivmedel', opportunity.fuel], ['Ort', opportunity.city]].map(([l,v]) => (
+            <div key={l}><p className="text-[11px] text-slate-400 uppercase font-bold tracking-wider">{l}</p><p className="text-[15px] font-semibold text-slate-900 mt-1">{v}</p></div>
+          ))}
+        </div>
+        <h3 className="text-[16px] font-bold text-slate-900 mb-4">Bilens skick och utrustning</h3>
+        <div className="grid sm:grid-cols-2 gap-3 text-[14px] text-slate-600">
+          {['Fullständig servicehistorik','2 nycklar','Sommar- och vinterdäck','Mycket bra skick','Dragkrok','Panoramatak','360-kamera','Premiumljud'].map(x => (
+            <div key={x} className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" />{x}</div>
+          ))}
+        </div>
+        <div className="mt-8 p-5 bg-[#faf8f5] rounded-md">
+          <p className="text-[12px] font-bold text-slate-400 uppercase tracking-wider mb-2">Bilägarens önskemål</p>
+          <p className="text-[15px] text-slate-700">&ldquo;Jag söker en professionell förmedlare som kan ta hand om hela försäljningen.&rdquo;</p>
+        </div>
+      </div>
+      <div className="bg-slate-900 text-white rounded-md p-6 h-fit">
+        <p className="text-[12px] font-bold text-white/40 uppercase tracking-wider mb-3">Uppskattat marknadsvärde</p>
+        <p className="text-[27px] font-black">{formatSEK(opportunity.marketLow)} – {formatSEK(opportunity.marketHigh)}</p>
+        <p className="text-[13px] text-white/45 mt-2">Baserat på bilens uppgifter och aktuell marknad.</p>
+        <button onClick={onOffer} className="btn-primary w-full h-12 mt-8 text-[14px]">Lämna erbjudande <ArrowRight className="w-4 h-4 inline ml-1" /></button>
+      </div>
+    </div>
+  </>;
+}
 
-function Assignments() { return <><PageHeading eyebrow="Aktiva uppdrag" title="Mina uppdrag" text="Följ bilarna ni har fått i uppdrag att sälja." /><div className="space-y-3">{[['Volvo XC60 T6 Recharge','Inspektion bokad','14 dagar'],['BMW 520d Touring','Annonseras nu','8 dagar'],['Mercedes GLC 300e','Prisförhandling','21 dagar'],['Audi A4 Avant','Nya bilder behövs','5 dagar']].map(([car,status,days]) => <div key={car} className="bg-white border border-slate-200 rounded-xl p-5 flex flex-wrap items-center gap-4"><div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center"><Car className="w-6 h-6 text-slate-500" /></div><div className="flex-1"><p className="text-[15px] font-bold">{car}</p><p className="text-[13px] text-slate-500 mt-1">Aktiv i {days}</p></div><span className="px-3 py-1.5 rounded-full bg-bilto-50 text-bilto-600 text-[12px] font-semibold">{status}</span><ChevronRight className="w-4 h-4 text-slate-300" /></div>)}</div></>; }
-function Sold() { return <><PageHeading eyebrow="Sålda bilar" title="Sålda denna månad" text="En översikt över era genomförda affärer." /><div className="bg-white rounded-xl border border-slate-200 overflow-hidden"><div className="grid grid-cols-4 px-5 py-3 bg-slate-50 text-[11px] font-bold text-slate-400 uppercase tracking-wider"><span>Bil</span><span>Slutpris</span><span>Dagar</span><span>Din intäkt</span></div>{[['Volvo V90','358 000 kr','16','12 605 kr'],['Kia EV6','329 000 kr','12','10 095 kr'],['BMW X3','412 000 kr','24','15 500 kr'],['Audi Q5','387 000 kr','19','13 200 kr']].map(r => <div key={r[0]} className="grid grid-cols-4 px-5 py-4 border-t border-slate-100 text-[13px]"><span className="font-semibold">{r[0]}</span><span>{r[1]}</span><span>{r[2]} dagar</span><span className="font-semibold text-emerald-600">{r[3]}</span></div>)}</div></>; }
-function Stats() { return <><PageHeading eyebrow="Statistik" title="Din utveckling" text="Följ hur verksamheten växer." /><div className="grid sm:grid-cols-3 gap-4 mb-6">{[['Genomsnittlig försäljningstid','18 dagar'],['Konverteringsgrad','31 %'],['Genomsnittligt netto','13 850 kr']].map(([l,v]) => <div key={l} className="bg-white rounded-xl border border-slate-200 p-5"><p className="text-[12px] text-slate-500">{l}</p><p className="text-[25px] font-black mt-2">{v}</p><p className="text-[12px] text-emerald-600 mt-2">+12 % mot förra månaden</p></div>)}</div><div className="bg-white rounded-xl border border-slate-200 p-6"><h2 className="text-[17px] font-bold mb-6">Förmedlingar per månad</h2><div className="h-48 flex items-end gap-4 sm:gap-8 border-b border-slate-200 px-4">{[5,8,7,11,9,12,14,12].map((v,i) => <div key={i} className="flex-1 flex flex-col items-center gap-2"><div className="w-full max-w-10 bg-bilto-500 rounded-t-lg" style={{ height: `${v * 10}px` }} /><span className="text-[10px] text-slate-400">{['jan','feb','mar','apr','maj','jun','jul','aug'][i]}</span></div>)}</div></div></>; }
-function Profile() { return <><PageHeading eyebrow="Profil" title="Företagsprofil" text="Information som bilägare ser när de jämför erbjudanden." /><div className="max-w-2xl bg-white rounded-xl border border-slate-200 p-6 space-y-5"><div className="flex items-center gap-4 pb-5 border-b border-slate-100"><div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center"><Building2 className="w-7 h-7 text-slate-500" /></div><div><h2 className="text-[18px] font-bold">Nordic Auto</h2><p className="text-[13px] text-emerald-600 flex items-center gap-1 mt-1"><ShieldCheck className="w-3.5 h-3.5" /> Verifierad förmedlare</p></div></div>{[['Företagsnamn','Nordic Auto'],['Ort','Stockholm'],['E-post','kontakt@nordicauto.se'],['Telefon','08-123 45 67']].map(([l,v]) => <div key={l}><label className="block text-[12px] font-bold text-slate-400 uppercase tracking-wider mb-2">{l}</label><input value={v} readOnly className="form-control bg-slate-50" /></div>)}<button className="h-11 px-6 rounded-xl bg-slate-900 text-white font-semibold text-[14px]">Spara ändringar</button></div></>; }
-function NetworkTeaser() { return <div className="max-w-2xl mx-auto text-center py-20"><div className="w-20 h-20 rounded-2xl bg-bilto-50 flex items-center justify-center mx-auto mb-7"><Network className="w-10 h-10 text-bilto-500" strokeWidth={1.5} /></div><p className="text-[11px] font-bold text-bilto-600 uppercase tracking-[0.2em] mb-3">Kommer snart</p><h1 className="text-[32px] font-black tracking-tight">Ett större lager utan att binda mer kapital.</h1><p className="text-[16px] text-slate-500 leading-relaxed mt-4 max-w-lg mx-auto">Snart kan anslutna partners söka bland verifierade bilar i nätverket och matcha dem mot sina kunder.</p><button disabled className="h-11 px-6 mt-8 rounded-xl bg-slate-200 text-slate-400 font-semibold text-[14px]">Fordonsnätverk — kommer snart</button></div>; }
+function OfferForm({ offer, setOffer, sent, onBack, onSubmit }: { offer: { salePrice: string; commission: string; days: string; storage: string }; setOffer: (o: typeof offer) => void; sent: boolean; onBack: () => void; onSubmit: () => void }) {
+  const net = Math.max(0, (parseInt(offer.salePrice) || 0) - (parseInt(offer.commission) || 0));
+  if (sent) {
+    return <div className="max-w-lg mx-auto text-center py-12">
+      <div className="w-20 h-20 rounded-md bg-emerald-50 flex items-center justify-center mx-auto mb-6"><CheckCircle2 className="w-10 h-10 text-emerald-500" /></div>
+      <h1 className="text-[28px] font-black text-slate-900">Erbjudandet är skickat.</h1>
+      <p className="text-slate-500 mt-3">Bilägaren kan nu jämföra ert erbjudande med andra förmedlare.</p>
+      <button onClick={onBack} className="btn-primary h-11 px-6 mt-8 text-[14px]">Tillbaka till bilen</button>
+    </div>;
+  }
+  return <>
+    <button onClick={onBack} className="flex items-center gap-1 text-slate-500 hover:text-slate-900 text-sm mb-6"><ArrowLeft className="w-4 h-4" /> Tillbaka</button>
+    <PageHeading eyebrow="Nytt erbjudande" title="Lämna erbjudande" text="Sätt tydliga villkor för bilägaren." />
+    <div className="max-w-2xl card-base p-6 space-y-5">
+      <div className="grid sm:grid-cols-2 gap-4">
+        <FormInput label="Förväntat försäljningspris" value={offer.salePrice} onChange={v => setOffer({...offer, salePrice: v})} suffix="kr" />
+        <FormInput label="Förmedlingsavgift" value={offer.commission} onChange={v => setOffer({...offer, commission: v})} suffix="kr" />
+      </div>
+      <div className="bg-bilto-50 border border-bilto-100 rounded-md p-5 flex items-center justify-between">
+        <div><p className="text-[12px] font-bold text-bilto-700 uppercase tracking-wider">Beräknat till bilägaren</p><p className="text-[28px] font-black text-slate-900 mt-1">{formatSEK(net)}</p></div>
+        <DollarSign className="w-8 h-8 text-bilto-500" />
+      </div>
+      <div>
+        <label className="block text-[13px] font-semibold text-slate-700 mb-2">Förväntad försäljningstid</label>
+        <select value={offer.days} onChange={e => setOffer({...offer, days: e.target.value})} className="form-control">
+          <option>10–18 dagar</option><option>14–21 dagar</option><option>21–30 dagar</option><option>30+ dagar</option>
+        </select>
+      </div>
+      <div>
+        <label className="block text-[13px] font-semibold text-slate-700 mb-2">Var bilen förvaras</label>
+        <div className="flex flex-wrap gap-2">
+          {[['dealer','Hos oss'],['owner','Hos bilägaren'],['agreed','Efter överenskommelse']].map(([v,l]) => (
+            <button key={v} onClick={() => setOffer({...offer, storage: v})} className={`px-4 py-2.5 rounded-md text-[14px] font-medium ${offer.storage === v ? 'bg-bilto-500 text-white' : 'bg-slate-100 text-slate-600'}`}>{l}</button>
+          ))}
+        </div>
+      </div>
+      <div>
+        <label className="block text-[13px] font-semibold text-slate-700 mb-2">Vad ingår?</label>
+        <div className="grid sm:grid-cols-2 gap-2">
+          {['Fotografering','Annonsering','Provkörningar','Finansiering','Betalningshantering','Ägarbyte'].map(x => (
+            <label key={x} className="flex items-center gap-2 text-[14px] text-slate-600"><input type="checkbox" defaultChecked className="accent-bilto-500" />{x}</label>
+          ))}
+        </div>
+      </div>
+      <div>
+        <label className="block text-[13px] font-semibold text-slate-700 mb-2">Kommentar till bilägaren</label>
+        <textarea className="form-control h-24 resize-none" placeholder="Berätta varför ni är rätt förmedlare..." />
+      </div>
+      <div className="flex items-center justify-between border-t border-slate-100 pt-5">
+        <div><p className="text-[13px] font-semibold text-slate-900">Erbjudandet gäller</p><p className="text-[12px] text-slate-500">Bilägaren har 48 timmar att svara</p></div>
+        <button onClick={onSubmit} className="btn-primary h-12 px-7 text-[14px]">Skicka erbjudande <ArrowRight className="w-4 h-4 inline ml-1" /></button>
+      </div>
+    </div>
+  </>;
+}
+
+function FormInput({ label, value, onChange, suffix }: { label: string; value: string; onChange: (v: string) => void; suffix?: string }) {
+  return <div><label className="block text-[13px] font-semibold text-slate-700 mb-2">{label}</label><div className="relative"><input value={value} onChange={e => onChange(e.target.value.replace(/[^0-9]/g, ''))} className="form-control pr-12" />{suffix && <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-slate-400">{suffix}</span>}</div></div>;
+}
+
+function Assignments() {
+  return <>
+    <PageHeading eyebrow="Aktiva uppdrag" title="Mina uppdrag" text="Följ bilarna ni har fått i uppdrag att sälja." />
+    <div className="space-y-3">
+      {[['Volvo XC60 T6 Recharge','Inspektion bokad','14 dagar'],['BMW 520d Touring','Annonseras nu','8 dagar'],['Mercedes GLC 300e','Prisförhandling','21 dagar'],['Audi A4 Avant','Nya bilder behövs','5 dagar']].map(([car,status,days]) => (
+        <div key={car} className="card-base p-5 flex flex-wrap items-center gap-4">
+          <div className="w-12 h-12 rounded-md bg-slate-100 flex items-center justify-center"><Car className="w-6 h-6 text-slate-500" /></div>
+          <div className="flex-1"><p className="text-[15px] font-bold text-slate-900">{car}</p><p className="text-[13px] text-slate-500 mt-1">Aktiv i {days}</p></div>
+          <span className="px-3 py-1.5 rounded-full bg-bilto-50 text-bilto-700 text-[12px] font-semibold">{status}</span>
+          <ChevronRight className="w-4 h-4 text-slate-300" />
+        </div>
+      ))}
+    </div>
+  </>;
+}
+
+function Sold() {
+  return <>
+    <PageHeading eyebrow="Sålda bilar" title="Sålda denna månad" text="En översikt över era genomförda affärer." />
+    <div className="card-base overflow-hidden">
+      <div className="grid grid-cols-4 px-5 py-3 bg-slate-50 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+        <span>Bil</span><span>Slutpris</span><span>Dagar</span><span>Din intäkt</span>
+      </div>
+      {[['Volvo V90','358 000 kr','16','12 605 kr'],['Kia EV6','329 000 kr','12','10 095 kr'],['BMW X3','412 000 kr','24','15 500 kr'],['Audi Q5','387 000 kr','19','13 200 kr']].map(r => (
+        <div key={r[0]} className="grid grid-cols-4 px-5 py-4 border-t border-slate-100 text-[13px]">
+          <span className="font-semibold text-slate-900">{r[0]}</span><span className="text-slate-600">{r[1]}</span><span className="text-slate-600">{r[2]} dagar</span><span className="font-semibold text-emerald-600">{r[3]}</span>
+        </div>
+      ))}
+    </div>
+  </>;
+}
+
+function Stats() {
+  return <>
+    <PageHeading eyebrow="Statistik" title="Din utveckling" text="Följ hur verksamheten växer." />
+    <div className="grid sm:grid-cols-3 gap-4 mb-6">
+      {[['Genomsnittlig försäljningstid','18 dagar'],['Konverteringsgrad','31 %'],['Genomsnittligt netto','13 850 kr']].map(([l,v]) => (
+        <div key={l} className="card-base p-5"><p className="text-[12px] text-slate-500">{l}</p><p className="text-[25px] font-black text-slate-900 mt-2">{v}</p><p className="text-[12px] text-emerald-600 mt-2">+12 % mot förra månaden</p></div>
+      ))}
+    </div>
+    <div className="card-base p-6">
+      <h2 className="text-[17px] font-bold text-slate-900 mb-6">Förmedlingar per månad</h2>
+      <div className="h-48 flex items-end gap-4 sm:gap-8 border-b border-slate-200 px-4">
+        {[5,8,7,11,9,12,14,12].map((v,i) => (
+          <div key={i} className="flex-1 flex flex-col items-center gap-2"><div className="w-full max-w-10 bg-bilto-500 rounded-t-md" style={{height: `${v * 10}px`}} /><span className="text-[10px] text-slate-400">{['jan','feb','mar','apr','maj','jun','jul','aug'][i]}</span></div>
+        ))}
+      </div>
+    </div>
+  </>;
+}
+
+function Profile() {
+  return <>
+    <PageHeading eyebrow="Profil" title="Företagsprofil" text="Information som bilägare ser när de jämför erbjudanden." />
+    <div className="max-w-2xl card-base p-6 space-y-5">
+      <div className="flex items-center gap-4 pb-5 border-b border-slate-100">
+        <div className="w-16 h-16 rounded-md bg-slate-100 flex items-center justify-center"><Building2 className="w-7 h-7 text-slate-500" /></div>
+        <div><h2 className="text-[18px] font-bold text-slate-900">Nordic Auto</h2><p className="text-[13px] text-emerald-600 flex items-center gap-1 mt-1"><ShieldCheck className="w-3.5 h-3.5" /> Verifierad förmedlare</p></div>
+      </div>
+      {[['Företagsnamn','Nordic Auto'],['Ort','Stockholm'],['E-post','kontakt@nordicauto.se'],['Telefon','08-123 45 67']].map(([l,v]) => (
+        <div key={l}><label className="block text-[12px] font-bold text-slate-400 uppercase tracking-wider mb-2">{l}</label><input value={v} readOnly className="form-control bg-slate-50" /></div>
+      ))}
+      <button className="btn-primary h-11 px-6 text-[14px]">Spara ändringar</button>
+    </div>
+  </>;
+}
+
+function NetworkTeaser() {
+  return <div className="max-w-2xl mx-auto text-center py-20">
+    <div className="w-20 h-20 rounded-md bg-bilto-50 flex items-center justify-center mx-auto mb-7"><Network className="w-10 h-10 text-bilto-500" strokeWidth={1.5} /></div>
+    <p className="section-label mb-3">Kommer snart</p>
+    <h1 className="text-[32px] font-black tracking-tight text-slate-900">Ett större lager utan att binda mer kapital.</h1>
+    <p className="text-[16px] text-slate-500 leading-relaxed mt-4 max-w-lg mx-auto">Snart kan anslutna partners söka bland verifierade bilar i nätverket och matcha dem mot sina kunder.</p>
+    <button disabled className="h-11 px-6 mt-8 rounded-md bg-slate-200 text-slate-400 font-semibold text-[14px]">Fordonsnätverk — kommer snart</button>
+  </div>;
+}
