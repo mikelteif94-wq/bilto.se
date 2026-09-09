@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { ArrowRight, Check, Clock, MapPin, TrendingUp } from 'lucide-react';
+import { Check, Clock, TrendingUp } from 'lucide-react';
 import {
   VEHICLES, DEALERS, DEALER_OPPORTUNITIES, DEALER_ASSIGNMENTS,
-  getDealer, formatSEK, ownerNet,
-  type Dealer, type Offer,
+  formatSEK,
 } from '../lib/formedling-data';
 
 type Tab = 'opportunities' | 'offer-form' | 'assignments';
@@ -17,7 +16,7 @@ export default function FormedlingDealerPortal() {
   const [offerSent, setOfferSent] = useState(false);
   const [assignmentStatuses, setAssignmentStatuses] = useState<Record<string, string>>({});
 
-  const dealer = DEALERS[0]; // Nordic Auto
+  const dealer = DEALERS[0];
 
   const selectedVehicle = selectedVehicleId ? VEHICLES.find(v => v.id === selectedVehicleId) : null;
   const liveNet = (parseInt(salePrice) || 0) - (parseInt(commission) || 0);
@@ -32,9 +31,8 @@ export default function FormedlingDealerPortal() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Top bar */}
-      <header className="h-14 border-b border-slate-200 flex items-center px-5 sticky top-0 bg-white z-30">
+    <div className="min-h-screen bg-[#faf8f5] flex flex-col">
+      <header className="h-14 border-b border-slate-200 flex items-center px-5 sticky top-0 bg-[#faf8f5] z-30">
         <a href="/formedling" className="text-[18px] font-bold text-slate-900 mr-2">Bilto</a>
         <span className="text-[12px] text-slate-400">Förmedlare</span>
         <div className="ml-auto">
@@ -47,7 +45,7 @@ export default function FormedlingDealerPortal() {
       <main className="flex-1 px-5 py-8">
         <div className="max-w-2xl mx-auto">
           {/* Förmedlarens historik */}
-          <div className="rounded-xl border border-slate-200 p-5 mb-6">
+          <div className="card-base p-5 mb-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-[14px] font-bold text-slate-600">
                 {dealer.initials}
@@ -83,8 +81,8 @@ export default function FormedlingDealerPortal() {
                 const v = VEHICLES.find(x => x.id === opp.vehicleId);
                 if (!v) return null;
                 return (
-                  <div key={opp.vehicleId} className="rounded-xl border border-slate-200 p-4 flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-slate-100 overflow-hidden shrink-0">
+                  <div key={opp.vehicleId} className="card-base p-4 flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-md bg-slate-100 overflow-hidden shrink-0">
                       <img src={v.image} alt="" className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -98,7 +96,7 @@ export default function FormedlingDealerPortal() {
                     </div>
                     <button
                       onClick={() => openOfferForm(v.id)}
-                      className="h-10 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[13px] transition shrink-0"
+                      className="btn-primary h-10 px-4 text-[13px] shrink-0"
                     >
                       Lämna erbjudande
                     </button>
@@ -117,19 +115,19 @@ export default function FormedlingDealerPortal() {
 
               {offerSent ? (
                 <div className="text-center py-12">
-                  <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6">
-                    <Check className="w-8 h-8 text-emerald-600" strokeWidth={2} />
+                  <div className="w-16 h-16 rounded-full bg-bilto-50 flex items-center justify-center mx-auto mb-6">
+                    <Check className="w-8 h-8 text-bilto-500" strokeWidth={2} />
                   </div>
                   <h1 className="text-[24px] font-bold text-slate-900 mb-2">Erbjudande skickat</h1>
                   <p className="text-slate-500 text-[16px] mb-8">Ägaren kan nu jämföra ditt erbjudande med andra.</p>
-                  <button onClick={() => setTab('opportunities')} className="h-12 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[15px] transition">
+                  <button onClick={() => setTab('opportunities')} className="btn-primary h-12 px-8 text-[15px]">
                     Tillbaka till förfrågningar
                   </button>
                 </div>
               ) : (
                 <div>
-                  <div className="rounded-xl border border-slate-200 p-4 mb-6 flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-slate-100 overflow-hidden shrink-0">
+                  <div className="card-base p-4 mb-6 flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-md bg-slate-100 overflow-hidden shrink-0">
                       <img src={selectedVehicle.image} alt="" className="w-full h-full object-cover" />
                     </div>
                     <div>
@@ -147,7 +145,7 @@ export default function FormedlingDealerPortal() {
                         type="text"
                         value={salePrice}
                         onChange={e => setSalePrice(e.target.value.replace(/[^0-9]/g, ''))}
-                        className="form-input"
+                        className="form-control"
                         placeholder="t.ex. 379000"
                       />
                     </div>
@@ -157,13 +155,13 @@ export default function FormedlingDealerPortal() {
                         type="text"
                         value={commission}
                         onChange={e => setCommission(e.target.value.replace(/[^0-9]/g, ''))}
-                        className="form-input"
+                        className="form-control"
                         placeholder="t.ex. 14900"
                       />
                     </div>
                     <div>
                       <label className="block text-[13px] font-semibold text-slate-700 mb-2">Förväntad säljtid</label>
-                      <select value={saleTimeWeeks} onChange={e => setSaleTimeWeeks(e.target.value)} className="form-input">
+                      <select value={saleTimeWeeks} onChange={e => setSaleTimeWeeks(e.target.value)} className="form-control">
                         <option>1–2 veckor</option>
                         <option>2–3 veckor</option>
                         <option>3–4 veckor</option>
@@ -173,18 +171,18 @@ export default function FormedlingDealerPortal() {
                   </div>
 
                   {/* Live netto */}
-                  <div className="mt-6 rounded-xl bg-emerald-50 border border-emerald-200 p-5 flex items-center justify-between">
+                  <div className="mt-6 rounded-md bg-bilto-50 border border-bilto-100 p-5 flex items-center justify-between">
                     <div>
-                      <p className="text-[12px] font-bold text-emerald-700 uppercase tracking-wider">Ägaren får</p>
+                      <p className="text-[12px] font-bold text-bilto-700 uppercase tracking-wider">Ägaren får</p>
                       <p className="text-[28px] font-bold text-slate-900 mt-1">{formatSEK(liveNet)}</p>
                     </div>
-                    <TrendingUp className="w-8 h-8 text-emerald-600" />
+                    <TrendingUp className="w-8 h-8 text-bilto-500" />
                   </div>
 
                   <button
                     onClick={() => setOfferSent(true)}
                     disabled={!salePrice || !commission}
-                    className="w-full h-12 mt-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-[15px] transition"
+                    className="btn-primary w-full h-12 mt-6 text-[15px] disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Skicka erbjudande
                   </button>
@@ -201,9 +199,9 @@ export default function FormedlingDealerPortal() {
                 if (!v) return null;
                 const currentStatus = assignmentStatuses[a.vehicleId] ?? a.status;
                 return (
-                  <div key={a.vehicleId} className="rounded-xl border border-slate-200 p-5">
+                  <div key={a.vehicleId} className="card-base p-5">
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-14 h-14 rounded-xl bg-slate-100 overflow-hidden shrink-0">
+                      <div className="w-14 h-14 rounded-md bg-slate-100 overflow-hidden shrink-0">
                         <img src={v.image} alt="" className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1">
@@ -229,7 +227,7 @@ export default function FormedlingDealerPortal() {
                     <select
                       value={currentStatus}
                       onChange={e => setAssignmentStatuses(prev => ({ ...prev, [a.vehicleId]: e.target.value }))}
-                      className="form-input"
+                      className="form-control"
                     >
                       <option>Bilen annonseras</option>
                       <option>Köpare hittad</option>
@@ -263,7 +261,7 @@ function TabButton({ active, onClick, children }: { active: boolean; onClick: ()
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2.5 rounded-xl text-[14px] font-semibold transition ${active ? 'bg-emerald-600 text-white' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+      className={`px-4 py-2.5 rounded-md text-[14px] font-semibold transition ${active ? 'bg-bilto-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
     >
       {children}
     </button>

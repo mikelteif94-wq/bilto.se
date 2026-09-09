@@ -4,8 +4,8 @@ export default function FormedlingAdminPage() {
   const totalOffers = ['v1', 'v2', 'v3'].reduce((sum, id) => sum + getOffersForVehicle(id).length, 0);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <header className="h-14 border-b border-slate-200 flex items-center px-5 sticky top-0 bg-white z-30">
+    <div className="min-h-screen bg-[#faf8f5] flex flex-col">
+      <header className="h-14 border-b border-slate-200 flex items-center px-5 sticky top-0 bg-[#faf8f5] z-30">
         <a href="/formedling" className="text-[18px] font-bold text-slate-900">Bilto</a>
         <span className="ml-2 text-[12px] text-slate-400">Admin</span>
         <div className="ml-auto">
@@ -27,7 +27,7 @@ export default function FormedlingAdminPage() {
             <Stat label="Aktiva uppdrag" value="2" />
           </div>
 
-          <div className="rounded-xl border border-slate-200 overflow-hidden">
+          <div className="card-base overflow-hidden">
             <div className="px-5 py-3 bg-slate-50 text-[12px] font-bold text-slate-400 uppercase tracking-wider">
               Förmedlare
             </div>
@@ -64,7 +64,7 @@ export default function FormedlingAdminPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 p-5">
+    <div className="card-base p-5">
       <p className="text-[12px] text-slate-400">{label}</p>
       <p className="text-[24px] font-bold text-slate-900 mt-1">{value}</p>
     </div>
