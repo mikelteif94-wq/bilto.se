@@ -122,44 +122,40 @@ export default function JamforFormedlingPage() {
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full"
               style={{ background: 'radial-gradient(circle, rgba(14,110,254,0.06) 0%, transparent 70%)' }} />
           </div>
-          <div className="relative flex-1 flex flex-col justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8"><div className="w-full max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-bilto-50 border border-bilto-100 mb-8">
-                  <Sparkles className="w-3.5 h-3.5 text-bilto-500" strokeWidth={2} />
-                  <span className="text-[12px] font-medium text-bilto-700">Ny tjänst — Bilförmedling</span>
+          <div className="relative flex-1 flex flex-col items-center justify-start pt-28 sm:pt-36 pb-16 px-5 sm:px-8">
+            <div className="w-full max-w-md">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
+                <Sparkles className="w-3.5 h-3.5 text-white" strokeWidth={2} />
+                <span className="text-[12px] font-medium text-white/90">Ny tjänst — Bilförmedling</span>
+              </div>
+              <h1 className="text-white text-[28px] sm:text-[42px] font-bold leading-[1.08] tracking-tight text-center drop-shadow-lg mb-2">
+                Sälj bilen smartare.
+              </h1>
+              <p className="text-white/80 text-center text-[14px] sm:text-[15px] mb-6 sm:mb-7 drop-shadow">
+                Låt verifierade bilförmedlare konkurrera om att sälja din bil. Jämför pris, avgift och försäljningstid — och välj erbjudandet som passar dig.
+              </p>
+              <div className="bg-white rounded-xl shadow-2xl p-5">
+                <label className="block text-[13px] font-semibold text-slate-700 mb-2.5">Registreringsnummer</label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="flex-1 flex items-stretch h-12 rounded-xl border border-slate-200 bg-white overflow-hidden focus-within:border-[#0e6efe] focus-within:ring-2 focus-within:ring-[#0e6efe]/15 transition">
+                    <span className="flex items-center justify-center w-11 bg-[#0e6efe] text-white font-bold text-[18px] shrink-0">S</span>
+                    <input type="text" value={regnummer} onChange={e => { setRegnummer(e.target.value); setRegError(''); }} onKeyDown={e => e.key === 'Enter' && handleRegSubmit()} placeholder="ABC 123" maxLength={7}
+                      className="flex-1 min-w-0 px-3 bg-transparent text-[16px] font-bold tracking-widest text-slate-900 placeholder:text-slate-300 placeholder:font-normal placeholder:tracking-normal focus:outline-none" />
+                  </div>
+                  <button onClick={handleRegSubmit} disabled={loadingVehicle} className="h-12 px-6 rounded-xl bg-[#0e6efe] hover:bg-[#0a57cc] active:scale-[0.98] text-white font-bold text-[15px] transition-all inline-flex items-center justify-center gap-2 shadow-[0_4px_18px_-4px_rgba(14,110,254,0.6)] whitespace-nowrap">
+                    {loadingVehicle ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Värdera <ArrowRight className="w-4 h-4" /></>}
+                  </button>
                 </div>
-                <h1 className="font-black leading-[1.0] tracking-[-0.03em] text-white mb-6 drop-shadow-lg" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
-                  Sälj bilen<br />smartare.
-                </h1>
-                <p className="text-white/80 text-[17px] leading-relaxed max-w-md mb-10 drop-shadow">
-                  Låt verifierade bilförmedlare konkurrera om att sälja din bil. Jämför pris, avgift och försäljningstid — och välj erbjudandet som passar dig.
-                </p>
-                <div className="max-w-md bg-white rounded-xl shadow-2xl p-5 sm:p-6">
-                  <label className="block text-[13px] font-semibold text-slate-700 mb-2.5">Registreringsnummer</label>
-                  <div className="flex gap-2">
-                    <div className="flex-1 flex items-stretch h-14 rounded-md border border-slate-200 bg-white overflow-hidden focus-within:border-bilto-500 focus-within:ring-2 focus-within:ring-bilto-500/15 transition">
-                      <span className="flex items-center justify-center w-12 bg-bilto-500 text-white font-bold text-[20px] shrink-0">S</span>
-                      <input type="text" value={regnummer} onChange={e => { setRegnummer(e.target.value); setRegError(''); }} onKeyDown={e => e.key === 'Enter' && handleRegSubmit()} placeholder="ABC 123" maxLength={7}
-                        className="flex-1 min-w-0 px-3 bg-transparent text-[18px] font-bold tracking-widest text-slate-900 placeholder:text-slate-300 placeholder:font-normal placeholder:tracking-normal focus:outline-none" />
-                    </div>
-                    <button onClick={handleRegSubmit} disabled={loadingVehicle} className="btn-primary h-14 px-6 text-[15px] whitespace-nowrap">
-                      {loadingVehicle ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Värdera min bil <ArrowRight className="w-4 h-4" /></>}
-                    </button>
-                  </div>
-                  {regError && <p className="mt-2 text-[13px] text-red-500">{regError}</p>}
-                  <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5">
-                    {['100 % kostnadsfritt', 'Ingen bindning', 'Tar ca 2 minuter'].map(t => (
-                      <span key={t} className="flex items-center gap-1.5 text-[13px] text-slate-500">
-                        <Check className="w-3.5 h-3.5 text-emerald-500" strokeWidth={2.5} />{t}
-                      </span>
-                    ))}
-                  </div>
+                {regError && <p className="mt-2 text-[13px] text-red-500">{regError}</p>}
+                <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1.5">
+                  {['100 % kostnadsfritt', 'Ingen bindning', 'Tar ca 2 min'].map(t => (
+                    <span key={t} className="flex items-center gap-1.5 text-[12px] text-slate-500">
+                      <Check className="w-3.5 h-3.5 text-emerald-500" strokeWidth={2.5} />{t}
+                    </span>
+                  ))}
                 </div>
               </div>
-
             </div>
-          </div>
           </div>
         </section>
 
