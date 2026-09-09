@@ -203,6 +203,17 @@
     @apply w-full h-12 px-4 text-[15px] bg-white border border-slate-200 rounded-md text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-bilto-500 focus:ring-2 focus:ring-bilto-500/15 transition-all duration-200;
     box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
+  .form-input {
+    @apply w-full h-12 px-4 text-[15px] bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10 transition;
+  }
+  textarea.form-input {
+    @apply h-auto py-3 resize-none;
+  }
+  select.form-input {
+    @apply appearance-none pr-10 font-medium bg-no-repeat;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-position: right 12px center;
+  }
   .form-control:hover {
     border-color: #94a3b8;
   }

@@ -1,59 +1,72 @@
-import { Activity, ArrowLeft, BarChart3, Building2, Car, CheckCircle2, DollarSign, FileText } from 'lucide-react';
-import { DEMO_ADMIN_STATS, formatSEK } from '../lib/formedling-data';
+import { DEALERS, VEHICLES, getOffersForVehicle, formatSEK } from '../lib/formedling-data';
 
 export default function FormedlingAdminPage() {
-  const metrics = [
-    { label:'Inkomna bilar', value:DEMO_ADMIN_STATS.incomingVehicles, icon:Car },
-    { label:'Aktiva förmedlare', value:DEMO_ADMIN_STATS.activeDealers, icon:Building2 },
-    { label:'Erbjudanden', value:DEMO_ADMIN_STATS.offers, icon:FileText },
-    { label:'Accepterade erbjudanden', value:DEMO_ADMIN_STATS.acceptedOffers, icon:CheckCircle2 },
-    { label:'Sålda bilar', value:DEMO_ADMIN_STATS.sold, icon:Activity },
-    { label:'Platform revenue', value:formatSEK(DEMO_ADMIN_STATS.platformRevenue), icon:DollarSign },
-  ];
+  const totalOffers = ['v1', 'v2', 'v3'].reduce((sum, id) => sum + getOffersForVehicle(id).length, 0);
+
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-slate-900">
-      <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-5 lg:px-10">
-        <div className="flex items-center gap-3">
-          <span className="text-[20px] font-black text-slate-900">Bilto<span className="text-bilto-500">.</span></span>
-          <span className="text-[12px] text-slate-400">Admin · Förmedling</span>
+    <div className="min-h-screen bg-white flex flex-col">
+      <header className="h-14 border-b border-slate-200 flex items-center px-5 sticky top-0 bg-white z-30">
+        <a href="/formedling" className="text-[18px] font-bold text-slate-900">Bilto</a>
+        <span className="ml-2 text-[12px] text-slate-400">Admin</span>
+        <div className="ml-auto">
+          <a href="/formedling" className="text-[13px] text-slate-500 hover:text-slate-900 transition">
+            Till publik sida
+          </a>
         </div>
-        <a href="/formedling" className="text-[13px] text-slate-500 hover:text-slate-900 flex items-center gap-1"><ArrowLeft className="w-3.5 h-3.5" /> Publik sida</a>
       </header>
-      <main className="max-w-7xl mx-auto p-5 lg:p-8">
-        <div className="mb-8">
-          <p className="section-label mb-2">Översikt</p>
-          <h1 className="text-[30px] font-black text-slate-900">Förmedlingsplattformen</h1>
-          <p className="text-[15px] text-slate-500 mt-2">Demo-data — alla siffror är fiktiva.</p>
-        </div>
-        <div className="grid grid-cols-2 xl:grid-cols-6 gap-4 mb-8">
-          {metrics.map(m => { const Icon = m.icon; return (
-            <div key={m.label} className="card-base p-5">
-              <Icon className="w-5 h-5 text-bilto-500 mb-4" />
-              <p className="text-[24px] font-black text-slate-900 break-words">{m.value}</p>
-              <p className="text-[12px] text-slate-500 mt-1">{m.label}</p>
-            </div>
-          ); })}
-        </div>
-        <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 card-base p-6">
-            <div className="flex items-center gap-2 mb-6"><BarChart3 className="w-5 h-5 text-bilto-500" /><h2 className="text-[17px] font-bold text-slate-900">Nyckeltal</h2></div>
-            <div className="space-y-5">
-              {[['Offer rate',`${DEMO_ADMIN_STATS.offerRate} %`],['Genomsnittlig plattformsavgift',formatSEK(DEMO_ADMIN_STATS.avgPlatformFee)],['Genomsnittliga dagar till försäljning',`${DEMO_ADMIN_STATS.avgDaysToSale} dagar`],['GMV',formatSEK(DEMO_ADMIN_STATS.gmv)]].map(([l,v]) => (
-                <div key={l} className="flex justify-between border-b border-slate-100 pb-4"><span className="text-[14px] text-slate-500">{l}</span><span className="font-bold text-slate-900">{v}</span></div>
-              ))}
-            </div>
+
+      <main className="flex-1 px-5 py-8">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-[24px] font-bold text-slate-900 mb-2">Förmedlingsplattformen</h1>
+          <p className="text-slate-500 text-[15px] mb-8">Demo-data — alla siffror är fiktiva.</p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            <Stat label="Bilar" value={String(VEHICLES.length)} />
+            <Stat label="Förmedlare" value={String(DEALERS.length)} />
+            <Stat label="Erbjudanden" value={String(totalOffers)} />
+            <Stat label="Aktiva uppdrag" value="2" />
           </div>
-          <div className="bg-slate-900 text-white rounded-md p-6">
-            <h2 className="text-[18px] font-bold">Plattformens flöde</h2>
-            <p className="text-[14px] text-white/45 leading-relaxed mt-3">En bilägare lägger in bilen en gång. Plattformen matchar bilen mot relevanta verifierade förmedlare.</p>
-            <div className="space-y-3 mt-7">
-              {['Bil registrerad','Förmedlare matchade','Erbjudande accepterat','Bil såld'].map((x,i) => (
-                <div key={x} className="flex items-center gap-3 text-[13px] text-white/70"><div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[11px]">{i+1}</div>{x}</div>
-              ))}
+
+          <div className="rounded-xl border border-slate-200 overflow-hidden">
+            <div className="px-5 py-3 bg-slate-50 text-[12px] font-bold text-slate-400 uppercase tracking-wider">
+              Förmedlare
             </div>
+            {DEALERS.map(d => (
+              <div key={d.id} className="px-5 py-4 border-t border-slate-100 flex items-center gap-4">
+                <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-[12px] font-bold text-slate-600">
+                  {d.initials}
+                </div>
+                <div className="flex-1">
+                  <p className="text-[14px] font-semibold text-slate-900">{d.name}</p>
+                  <p className="text-[12px] text-slate-500">{d.city} · {d.completedSales} försäljningar</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[14px] font-semibold text-slate-900">{d.avgAchievedPct} %</p>
+                  <p className="text-[11px] text-slate-400">uppnått pris</p>
+                </div>
+                {d.overpromiser && (
+                  <span className="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-bold">
+                    Lovar för mycket
+                  </span>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </main>
+
+      <footer className="border-t border-slate-200 py-8 px-5 text-center">
+        <p className="text-[13px] text-slate-400">Detta är en demo med påhittad data.</p>
+      </footer>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-slate-200 p-5">
+      <p className="text-[12px] text-slate-400">{label}</p>
+      <p className="text-[24px] font-bold text-slate-900 mt-1">{value}</p>
     </div>
   );
 }
