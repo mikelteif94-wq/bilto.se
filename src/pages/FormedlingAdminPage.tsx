@@ -1,3 +1,4 @@
+import { SiteFooter } from '../components/SiteFooter';
 import { DEALERS, VEHICLES, getOffersForVehicle, formatSEK } from '../lib/formedling-data';
 
 export default function FormedlingAdminPage() {
@@ -5,17 +6,21 @@ export default function FormedlingAdminPage() {
 
   return (
     <div className="min-h-screen bg-[#faf8f5] flex flex-col">
-      <header className="h-14 border-b border-slate-200 flex items-center px-5 sticky top-0 bg-[#faf8f5] z-30">
-        <a href="/formedling" className="text-[18px] font-bold text-slate-900">Bilto</a>
-        <span className="ml-2 text-[12px] text-slate-400">Admin</span>
-        <div className="ml-auto">
-          <a href="/formedling" className="text-[13px] text-slate-500 hover:text-slate-900 transition">
-            Till publik sida
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-30 h-14 lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
+        <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
+          <a href="/formedling" className="shrink-0 flex items-center">
+            <img src="/a_clean_graphic_logo_on_a_transparent_background.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
           </a>
+          <span className="ml-2 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/15 text-white/80">Admin</span>
+          <div className="ml-auto flex items-center gap-3">
+            <a href="/formedling" className="inline-flex items-center bg-white text-[#0e6efe] text-[13px] font-semibold px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
+              Till publik sida
+            </a>
+          </div>
         </div>
       </header>
 
-      <main className="flex-1 px-5 py-8">
+      <main className="flex-1 px-5 pt-28 pb-8">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-[24px] font-bold text-slate-900 mb-2">Förmedlingsplattformen</h1>
           <p className="text-slate-500 text-[15px] mb-8">Demo-data — alla siffror är fiktiva.</p>
@@ -55,9 +60,7 @@ export default function FormedlingAdminPage() {
         </div>
       </main>
 
-      <footer className="border-t border-slate-200 py-8 px-5 text-center">
-        <p className="text-[13px] text-slate-400">Detta är en demo med påhittad data.</p>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

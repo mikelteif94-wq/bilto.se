@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { ArrowRight, Check, Clock, MapPin, AlertTriangle, Award, Car } from 'lucide-react';
+import { ArrowRight, Check, Clock, MapPin, AlertTriangle, Award, Car, Loader2 } from 'lucide-react';
 import { setPageMeta } from '../lib/pageMeta';
+import { SiteFooter } from '../components/SiteFooter';
+import { useVehicleLookup, type VehicleData } from '../lib/useVehicleLookup';
 import {
   VEHICLES, DEALERS, getOffersForVehicle, getPendingForVehicle, getDealer,
-  lookupByRegnr, ownerNet, formatSEK, medianExpectedPrice, isOverpromising,
-  highestNetOfferId, type Vehicle, type Offer, type Dealer,
+  ownerNet, formatSEK, isOverpromising, highestNetOfferId,
+  type Offer, type Dealer,
 } from '../lib/formedling-data';
 
 type View = 'home' | 'add-car' | 'add-car-step2' | 'add-car-step3' | 'submitted' | 'compare' | 'chosen' | 'status';
@@ -12,8 +14,9 @@ type View = 'home' | 'add-car' | 'add-car-step2' | 'add-car-step3' | 'submitted'
 export default function JamforFormedlingPage() {
   const [view, setView] = useState<View>('home');
   const [regnr, setRegnr] = useState('');
-  const [regError, setRegError] = useState('');
-  const [foundVehicle, setFoundVehicle] = useState<Vehicle | null>(null);
+  const [lookupTrigger, setLookupTrigger] = useState('');
+  const lookup = useVehicleLookup(lookupTrigger);
+  const [foundVehicle, setFoundVehicle] = useState<VehicleData | null>(null);
   const [mileage, setMileage] = useState('');
   const [city, setCity] = useState('');
   const [serviceBook, setServiceBook] = useState('');
@@ -32,12 +35,32 @@ export default function JamforFormedlingPage() {
     });
   }, []);
 
+  // När uppslaget är klart, gå vidare till formuläret
+  useEffect(() => {
+    if (lookup.status === 'found' && lookup.data) {
+      setFoundVehicle(lookup.data);
+      setMileage(lookup.data.miltal ? String(lookup.data.miltal) : '');
+      setView('add-car');
+    } else if (lookup.status === 'not_found') {
+      // fallback till demo-bil
+      setFoundVehicle({ marke: 'Volvo', modell: 'XC60', variant: 'T6 Recharge', ar: 2021, bransle: 'Laddhybrid', farg: 'Svart', fordonstyp: 'Personbil', miltal: 6420 });
+      setMileage('6420');
+      setView('add-car');
+    }
+  }, [lookup.status]);
+
+  function handleRegLookup() {
+    const clean = regnr.trim().toUpperCase().replace(/\s/g, '');
+    if (clean.length < 5) return;
+    setLookupTrigger(clean);
+  }
+
   // ── SIDA 1 — STARTSIDA ──
   if (view === 'home') {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex flex-col">
-        <TopBar />
-        <main className="flex-1 flex flex-col items-center justify-center px-5 py-16">
+        <FormedlingHeader />
+        <main className="flex-1 flex flex-col items-center justify-center px-5 pt-28 pb-16">
           <div className="w-full max-w-lg text-center">
             <p className="section-label mb-4">Bilförmedling</p>
             <h1 className="font-black tracking-[-0.02em] text-slate-900 leading-[1.05] mb-4" style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)' }}>
@@ -50,20 +73,22 @@ export default function JamforFormedlingPage() {
               <input
                 type="text"
                 value={regnr}
-                onChange={e => { setRegnr(e.target.value); setRegError(''); }}
+                onChange={e => setRegnummer(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleRegLookup()}
                 placeholder="Registreringsnummer"
                 className="flex-1 h-12 px-4 rounded-md border border-slate-200 bg-white text-[16px] font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-bilto-500 focus:ring-2 focus:ring-bilto-500/15 transition"
               />
               <button
                 onClick={handleRegLookup}
+                disabled={lookup.status === 'loading'}
                 className="btn-primary h-12 px-6 text-[15px] whitespace-nowrap"
               >
-                Se vad din bil kan ge
-                <ArrowRight className="w-4 h-4" />
+                {lookup.status === 'loading' ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Se vad din bil kan ge <ArrowRight className="w-4 h-4" /></>}
               </button>
             </div>
-            {regError && <p className="mt-2 text-[14px] text-red-500">{regError}</p>}
+            {lookup.status === 'not_found' && (
+              <p className="mt-2 text-[14px] text-slate-500">Kunde inte hitta bilen — vi visar en demo i stället.</p>
+            )}
             <div className="mt-10 flex flex-col sm:flex-row gap-6 justify-center">
               {[
                 'Lägg in bilen på två minuter',
@@ -78,34 +103,19 @@ export default function JamforFormedlingPage() {
             </div>
           </div>
         </main>
-        <Footer />
+        <SiteFooter />
       </div>
     );
-  }
 
-  function handleRegLookup() {
-    const clean = regnr.trim().toUpperCase().replace(/\s/g, '');
-    if (clean.length < 5) { setRegError('Ange ett giltigt registreringsnummer'); return; }
-    const v = lookupByRegnr(clean);
-    if (v) {
-      setFoundVehicle(v);
-      setMileage(String(v.mileage));
-      setCity(v.city);
-      setView('add-car');
-    } else {
-      setFoundVehicle(VEHICLES[0]);
-      setMileage(String(VEHICLES[0].mileage));
-      setCity(VEHICLES[0].city);
-      setView('add-car');
-    }
+    function setRegnummer(v: string) { setRegnr(v); }
   }
 
   // ── SIDA 2 — LÄGG IN BIL ──
   if (view === 'add-car' && foundVehicle) {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex flex-col">
-        <TopBar onBack={() => setView('home')} />
-        <main className="flex-1 px-5 py-8">
+        <FormedlingHeader onBack={() => setView('home')} />
+        <main className="flex-1 px-5 pt-28 pb-8">
           <div className="max-w-lg mx-auto">
             <StepIndicator current={1} total={3} />
             <h1 className="text-[24px] font-bold text-slate-900 mb-1 mt-6">Fordonsuppgifter</h1>
@@ -113,16 +123,16 @@ export default function JamforFormedlingPage() {
             <div className="space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <Field label="Märke">
-                  <input value={foundVehicle.make} readOnly className="form-control bg-slate-50" />
+                  <input value={foundVehicle.marke} readOnly className="form-control bg-slate-50" />
                 </Field>
                 <Field label="Modell">
-                  <input value={foundVehicle.model} readOnly className="form-control bg-slate-50" />
+                  <input value={foundVehicle.modell} readOnly className="form-control bg-slate-50" />
                 </Field>
                 <Field label="Årsmodell">
-                  <input value={String(foundVehicle.year)} readOnly className="form-control bg-slate-50" />
+                  <input value={foundVehicle.ar ? String(foundVehicle.ar) : ''} readOnly className="form-control bg-slate-50" />
                 </Field>
                 <Field label="Drivmedel">
-                  <input value={foundVehicle.fuel} readOnly className="form-control bg-slate-50" />
+                  <input value={foundVehicle.bransle} readOnly className="form-control bg-slate-50" />
                 </Field>
               </div>
               <Field label="Mätarställning (mil)">
@@ -133,12 +143,11 @@ export default function JamforFormedlingPage() {
               </Field>
             </div>
             <button onClick={() => setView('add-car-step2')} className="btn-primary w-full h-12 mt-8 text-[15px]">
-              Fortsätt
-              <ArrowRight className="w-4 h-4" />
+              Fortsätt <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </main>
-        <Footer />
+        <SiteFooter />
       </div>
     );
   }
@@ -146,8 +155,8 @@ export default function JamforFormedlingPage() {
   if (view === 'add-car-step2') {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex flex-col">
-        <TopBar onBack={() => setView('add-car')} />
-        <main className="flex-1 px-5 py-8">
+        <FormedlingHeader onBack={() => setView('add-car')} />
+        <main className="flex-1 px-5 pt-28 pb-8">
           <div className="max-w-lg mx-auto">
             <StepIndicator current={2} total={3} />
             <h1 className="text-[24px] font-bold text-slate-900 mb-1 mt-6">Skick och historik</h1>
@@ -173,12 +182,11 @@ export default function JamforFormedlingPage() {
               </Field>
             </div>
             <button onClick={() => setView('add-car-step3')} className="btn-primary w-full h-12 mt-8 text-[15px]">
-              Fortsätt
-              <ArrowRight className="w-4 h-4" />
+              Fortsätt <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </main>
-        <Footer />
+        <SiteFooter />
       </div>
     );
   }
@@ -187,8 +195,8 @@ export default function JamforFormedlingPage() {
     const slots = ['Fram', 'Bak', 'Sida', 'Interiör', 'Hjul', 'Skador'];
     return (
       <div className="min-h-screen bg-[#faf8f5] flex flex-col">
-        <TopBar onBack={() => setView('add-car-step2')} />
-        <main className="flex-1 px-5 py-8">
+        <FormedlingHeader onBack={() => setView('add-car-step2')} />
+        <main className="flex-1 px-5 pt-28 pb-8">
           <div className="max-w-lg mx-auto">
             <StepIndicator current={3} total={3} />
             <h1 className="text-[24px] font-bold text-slate-900 mb-1 mt-6">Bilder</h1>
@@ -210,23 +218,16 @@ export default function JamforFormedlingPage() {
             </div>
             <p className="text-[13px] text-slate-400 mt-4">{images.length} av 4 minst — {images.length >= 4 ? 'klart' : 'lägg till fler'}</p>
             <div className="flex gap-3 mt-8">
-              <button
-                onClick={() => setView('submitted')}
-                disabled={images.length < 4}
-                className="btn-primary flex-1 h-12 text-[15px] disabled:opacity-40 disabled:cursor-not-allowed"
-              >
+              <button onClick={() => setView('submitted')} disabled={images.length < 4} className="btn-primary flex-1 h-12 text-[15px] disabled:opacity-40 disabled:cursor-not-allowed">
                 Skicka in förfrågan
               </button>
-              <button
-                onClick={() => setView('submitted')}
-                className="h-12 px-5 rounded-md border border-slate-200 text-slate-600 font-semibold text-[15px] hover:bg-slate-50 transition"
-              >
+              <button onClick={() => setView('submitted')} className="h-12 px-5 rounded-md border border-slate-200 text-slate-600 font-semibold text-[15px] hover:bg-slate-50 transition">
                 Hoppa över
               </button>
             </div>
           </div>
         </main>
-        <Footer />
+        <SiteFooter />
       </div>
     );
   }
@@ -235,53 +236,47 @@ export default function JamforFormedlingPage() {
   if (view === 'submitted' && foundVehicle) {
     return (
       <div className="min-h-screen bg-[#faf8f5] flex flex-col">
-        <TopBar />
-        <main className="flex-1 px-5 py-8">
+        <FormedlingHeader />
+        <main className="flex-1 px-5 pt-28 pb-8">
           <div className="max-w-lg mx-auto text-center pt-12">
             <div className="w-16 h-16 rounded-full bg-bilto-50 flex items-center justify-center mx-auto mb-6">
               <Check className="w-8 h-8 text-bilto-500" strokeWidth={2} />
             </div>
             <h1 className="text-[26px] font-bold text-slate-900 mb-3">Förfrågan skickad</h1>
             <p className="text-slate-500 text-[16px] mb-2">
-              Din {foundVehicle.make} {foundVehicle.model} har skickats till förmedlare i {city || foundVehicle.city}.
+              Din {foundVehicle.marke} {foundVehicle.modell} har skickats till förmedlare i {city || 'Stockholm'}.
             </p>
-            <p className="text-slate-500 text-[16px] mb-10">
-              Erbjudanden brukar komma inom 48 timmar.
-            </p>
-            <button
-              onClick={() => setView('compare')}
-              className="btn-primary h-12 px-8 text-[15px]"
-            >
-              Se erbjudanden
-              <ArrowRight className="w-4 h-4" />
+            <p className="text-slate-500 text-[16px] mb-10">Erbjudanden brukar komma inom 48 timmar.</p>
+            <button onClick={() => setView('compare')} className="btn-primary h-12 px-8 text-[15px]">
+              Se erbjudanden <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </main>
-        <Footer />
+        <SiteFooter />
       </div>
     );
   }
 
   // ── SIDA 3 — JÄMFÖR ERBJUDANDEN ──
   if (view === 'compare' && foundVehicle) {
-    const offers = getOffersForVehicle(foundVehicle.id);
-    const pending = getPendingForVehicle(foundVehicle.id);
+    const demoVehicle = VEHICLES[0]; // använder v1 för demo-erbjudanden
+    const offers = getOffersForVehicle(demoVehicle.id);
+    const pending = getPendingForVehicle(demoVehicle.id);
     const sorted = [...offers].sort((a, b) => ownerNet(b) - ownerNet(a));
     const highestId = highestNetOfferId(offers);
 
     return (
       <div className="min-h-screen bg-[#faf8f5] flex flex-col">
-        <TopBar onBack={() => setView('home')} />
-        <main className="flex-1 px-5 py-8">
+        <FormedlingHeader onBack={() => setView('home')} />
+        <main className="flex-1 px-5 pt-28 pb-8">
           <div className="max-w-2xl mx-auto">
-            {/* Bil-kort */}
             <div className="card-base p-4 mb-6 flex items-center gap-4">
               <div className="w-16 h-16 rounded-md bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
-                <img src={foundVehicle.image} alt="" className="w-full h-full object-cover" />
+                <img src={demoVehicle.image} alt="" className="w-full h-full object-cover" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[16px] font-semibold text-slate-900">{foundVehicle.make} {foundVehicle.model}</p>
-                <p className="text-[13px] text-slate-500">{foundVehicle.year} · {Number(mileage).toLocaleString('sv-SE')} mil · {city || foundVehicle.city}</p>
+                <p className="text-[16px] font-semibold text-slate-900">{foundVehicle.marke} {foundVehicle.modell}</p>
+                <p className="text-[13px] text-slate-500">{foundVehicle.ar} · {Number(mileage).toLocaleString('sv-SE')} mil · {city || 'Stockholm'}</p>
               </div>
               <div className="text-right shrink-0">
                 <p className="text-[15px] font-bold text-slate-900">{offers.length} erbjudanden</p>
@@ -291,7 +286,6 @@ export default function JamforFormedlingPage() {
               </div>
             </div>
 
-            {/* Erbjudanden */}
             <div className="space-y-4">
               {sorted.map(offer => {
                 const dealer = getDealer(offer.dealerId);
@@ -311,7 +305,6 @@ export default function JamforFormedlingPage() {
               })}
             </div>
 
-            {/* Väntande förmedlare */}
             {pending.length > 0 && (
               <div className="mt-4 rounded-md bg-slate-50 border border-slate-100 p-4">
                 {pending.map(p => (
@@ -323,28 +316,28 @@ export default function JamforFormedlingPage() {
               </div>
             )}
 
-            {/* Disclaimer */}
             <p className="mt-6 text-[13px] text-slate-400 leading-relaxed">
               Väntat pris är förmedlarens bedömning, inte en garanti. Historiken visar vad förmedlaren faktiskt uppnått på tidigare uppdrag.
             </p>
           </div>
         </main>
-        <Footer />
+        <SiteFooter />
       </div>
     );
   }
 
   // ── BEKRÄFTELSEDIALOG ──
   if (view === 'chosen' && foundVehicle && selectedOfferId) {
-    const offers = getOffersForVehicle(foundVehicle.id);
+    const demoVehicle = VEHICLES[0];
+    const offers = getOffersForVehicle(demoVehicle.id);
     const offer = offers.find(o => o.id === selectedOfferId);
     const dealer = offer ? getDealer(offer.dealerId) : null;
     if (!offer || !dealer) return null;
 
     return (
       <div className="min-h-screen bg-[#faf8f5] flex flex-col">
-        <TopBar onBack={() => setView('compare')} />
-        <main className="flex-1 px-5 py-8">
+        <FormedlingHeader onBack={() => setView('compare')} />
+        <main className="flex-1 px-5 pt-28 pb-8">
           <div className="max-w-lg mx-auto">
             <div className="card-base p-6">
               <h1 className="text-[22px] font-bold text-slate-900 mb-1">Du väljer {dealer.name}</h1>
@@ -356,23 +349,21 @@ export default function JamforFormedlingPage() {
                 <SummaryRow label="Du får" value={formatSEK(ownerNet(offer))} bold />
                 <SummaryRow label="Förväntad säljtid" value={offer.expectedSaleTimeWeeks} />
               </div>
-              <button
-                onClick={() => setView('status')}
-                className="btn-primary w-full h-12 text-[15px]"
-              >
+              <button onClick={() => setView('status')} className="btn-primary w-full h-12 text-[15px]">
                 Bekräfta och gå vidare
               </button>
             </div>
           </div>
         </main>
-        <Footer />
+        <SiteFooter />
       </div>
     );
   }
 
   // ── SIDA 4 — STATUS ──
   if (view === 'status' && foundVehicle && selectedOfferId) {
-    const offers = getOffersForVehicle(foundVehicle.id);
+    const demoVehicle = VEHICLES[0];
+    const offers = getOffersForVehicle(demoVehicle.id);
     const offer = offers.find(o => o.id === selectedOfferId);
     const dealer = offer ? getDealer(offer.dealerId) : null;
     if (!offer || !dealer) return null;
@@ -388,8 +379,8 @@ export default function JamforFormedlingPage() {
 
     return (
       <div className="min-h-screen bg-[#faf8f5] flex flex-col">
-        <TopBar onBack={() => setView('compare')} />
-        <main className="flex-1 px-5 py-8">
+        <FormedlingHeader onBack={() => setView('compare')} />
+        <main className="flex-1 px-5 pt-28 pb-8">
           <div className="max-w-lg mx-auto">
             <h1 className="text-[24px] font-bold text-slate-900 mb-2">Status</h1>
             <p className="text-slate-500 text-[15px] mb-8">Här följer du försäljningen steg för steg.</p>
@@ -417,22 +408,16 @@ export default function JamforFormedlingPage() {
                 {timeline.map((step, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${step.done ? 'bg-bilto-500' : 'bg-slate-100'}`}>
-                      {step.done ? (
-                        <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
-                      ) : (
-                        <span className="text-[11px] font-bold text-slate-400">{i + 1}</span>
-                      )}
+                      {step.done ? <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} /> : <span className="text-[11px] font-bold text-slate-400">{i + 1}</span>}
                     </div>
-                    <span className={`text-[15px] ${step.done ? 'font-semibold text-slate-900' : 'text-slate-500'}`}>
-                      {step.label}
-                    </span>
+                    <span className={`text-[15px] ${step.done ? 'font-semibold text-slate-900' : 'text-slate-500'}`}>{step.label}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
         </main>
-        <Footer />
+        <SiteFooter />
       </div>
     );
   }
@@ -440,43 +425,47 @@ export default function JamforFormedlingPage() {
   return null;
 }
 
-// ── Komponenter ──
-
-function TopBar({ onBack }: { onBack?: () => void }) {
+// ── Delad header (samma stil som resten av sajten) ──
+function FormedlingHeader({ onBack }: { onBack?: () => void }) {
   return (
-    <header className="h-14 border-b border-slate-200 flex items-center px-5 sticky top-0 bg-[#faf8f5] z-30">
-      {onBack && (
-        <button onClick={onBack} className="text-[14px] text-slate-500 hover:text-slate-900 transition mr-3">
-          Tillbaka
-        </button>
-      )}
-      <span className="text-[18px] font-bold text-slate-900">Bilto</span>
-      <span className="ml-2 text-[12px] text-slate-400">Förmedling</span>
-      <div className="ml-auto">
-        <a href="/formedling/forhandlare" className="text-[13px] text-slate-500 hover:text-slate-900 transition">
-          Förmedlare
+    <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-30 h-14 lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
+      <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8">
+        {onBack ? (
+          <button onClick={onBack} className="shrink-0 flex items-center text-white/80 hover:text-white transition text-[14px] font-medium mr-3">
+            Tillbaka
+          </button>
+        ) : null}
+        <a href="/formedling" className="shrink-0 flex items-center">
+          <img
+            src="/a_clean_graphic_logo_on_a_transparent_background.png"
+            alt="Bilto"
+            className="h-20 lg:h-32 w-auto object-contain"
+            fetchPriority="high"
+            decoding="async"
+          />
         </a>
+        <span className="ml-2 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/15 text-white/80">Förmedling</span>
+        <div className="ml-auto flex items-center gap-3">
+          <a href="/formedling/forhandlare" className="hidden lg:inline-flex text-[14px] font-medium text-white/90 hover:text-white transition">Förmedlare</a>
+          <a href="/formedling/partner" className="hidden lg:inline-flex text-[14px] font-medium text-white/90 hover:text-white transition">Partner</a>
+          <a
+            href="/formedling/forhandlare"
+            className="inline-flex items-center bg-white text-[#0e6efe] text-[13px] font-semibold px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap"
+          >
+            Förmedlarportalen
+          </a>
+        </div>
       </div>
     </header>
   );
 }
 
-function Footer() {
-  return (
-    <footer className="border-t border-slate-200 py-8 px-5 text-center">
-      <p className="text-[13px] text-slate-400">Detta är en demo med påhittad data. Inga riktiga erbjudanden.</p>
-    </footer>
-  );
-}
-
+// ── Komponenter ──
 function StepIndicator({ current, total }: { current: number; total: number }) {
   return (
     <div className="flex items-center gap-2">
       {Array.from({ length: total }).map((_, i) => (
-        <div
-          key={i}
-          className={`h-1.5 flex-1 rounded-full transition ${i < current ? 'bg-bilto-500' : 'bg-slate-200'}`}
-        />
+        <div key={i} className={`h-1.5 flex-1 rounded-full transition ${i < current ? 'bg-bilto-500' : 'bg-slate-200'}`} />
       ))}
     </div>
   );
@@ -517,7 +506,6 @@ function OfferCard({ offer, dealer, isHighest, overpromising, onSelect }: {
   const net = ownerNet(offer);
   return (
     <div className={`card-base p-5 ${isHighest ? 'ring-2 ring-bilto-500' : ''}`}>
-      {/* Förmedlare */}
       <div className="flex items-start justify-between mb-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-[14px] font-bold text-slate-600">
@@ -544,7 +532,6 @@ function OfferCard({ offer, dealer, isHighest, overpromising, onSelect }: {
         </div>
       </div>
 
-      {/* Siffror */}
       <div className="grid grid-cols-4 gap-3 mb-4">
         <div>
           <p className="text-[11px] text-slate-400 mb-1">Du får</p>
@@ -564,17 +551,13 @@ function OfferCard({ offer, dealer, isHighest, overpromising, onSelect }: {
         </div>
       </div>
 
-      {/* Historik */}
       <div className={`rounded-md p-3 mb-4 ${overpromising ? 'bg-amber-50' : 'bg-slate-50'}`}>
         <p className={`text-[13px] ${overpromising ? 'text-amber-700' : 'text-slate-500'}`}>
           Uppnår i snitt {dealer.avgAchievedPct} % av utlovat pris · median {dealer.medianDaysToSale} dagar
         </p>
       </div>
 
-      <button
-        onClick={onSelect}
-        className="btn-primary w-full h-11 text-[14px]"
-      >
+      <button onClick={onSelect} className="btn-primary w-full h-11 text-[14px]">
         Välj {dealer.name}
       </button>
     </div>
