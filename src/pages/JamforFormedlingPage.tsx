@@ -117,25 +117,25 @@ export default function JamforFormedlingPage() {
         <FormedlingNav scrolled={scrolled} menuOpen={menuOpen} setMenuOpen={setMenuOpen} onLogo={() => { window.scrollTo({top:0}); }} navTo={navTo} />
 
         {/* HERO */}
-        <section className="relative pt-28 pb-20 px-5">
+        <section className="relative min-h-[100svh] flex flex-col overflow-hidden bg-cover bg-center" style={{ backgroundImage: "linear-gradient(180deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0.08) 100%), url('/files_2615643-2026-06-21T06-29-18-662Z-b858d9c8-9893-488f-8103-98fee9292c16 copy.webp')" }}>
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full"
               style={{ background: 'radial-gradient(circle, rgba(14,110,254,0.06) 0%, transparent 70%)' }} />
           </div>
-          <div className="relative max-w-6xl mx-auto">
+          <div className="relative flex-1 flex flex-col justify-start pt-28 sm:pt-32 pb-10 px-5 sm:px-8"><div className="w-full max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-bilto-50 border border-bilto-100 mb-8">
                   <Sparkles className="w-3.5 h-3.5 text-bilto-500" strokeWidth={2} />
                   <span className="text-[12px] font-medium text-bilto-700">Ny tjänst — Bilförmedling</span>
                 </div>
-                <h1 className="font-black leading-[1.0] tracking-[-0.03em] text-slate-900 mb-6" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
+                <h1 className="font-black leading-[1.0] tracking-[-0.03em] text-white mb-6 drop-shadow-lg" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
                   Sälj bilen<br />smartare.
                 </h1>
-                <p className="text-slate-500 text-[17px] leading-relaxed max-w-md mb-10">
+                <p className="text-white/80 text-[17px] leading-relaxed max-w-md mb-10 drop-shadow">
                   Låt verifierade bilförmedlare konkurrera om att sälja din bil. Jämför pris, avgift och försäljningstid — och välj erbjudandet som passar dig.
                 </p>
-                <div className="max-w-md">
+                <div className="max-w-md bg-white rounded-xl shadow-2xl p-5 sm:p-6">
                   <label className="block text-[13px] font-semibold text-slate-700 mb-2.5">Registreringsnummer</label>
                   <div className="flex gap-2">
                     <div className="flex-1 flex items-stretch h-14 rounded-md border border-slate-200 bg-white overflow-hidden focus-within:border-bilto-500 focus-within:ring-2 focus-within:ring-bilto-500/15 transition">
@@ -157,26 +157,9 @@ export default function JamforFormedlingPage() {
                   </div>
                 </div>
               </div>
-              <div className="hidden lg:block relative">
-                <div className="relative rounded-md overflow-hidden ring-1 ring-slate-200 shadow-card">
-                  <img src="https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Modern bil" className="w-full h-[440px] object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#faf8f5] via-transparent to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <div className="bg-white/90 backdrop-blur-sm rounded-md p-4 shadow-card">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-md bg-bilto-50 flex items-center justify-center">
-                          <Handshake className="w-5 h-5 text-bilto-500" strokeWidth={1.8} />
-                        </div>
-                        <div>
-                          <p className="text-[14px] font-semibold text-slate-900">En bil. En förfrågan. Flera förmedlare.</p>
-                          <p className="text-[12px] text-slate-500">Du jämför — du väljer.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
             </div>
+          </div>
           </div>
         </section>
 
@@ -780,25 +763,23 @@ function FormedlingNav({ scrolled, menuOpen, setMenuOpen, onLogo, navTo }: {
   ];
   return (
     <>
-      <header className={`fixed top-0 inset-x-0 z-30 h-16 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100' : 'bg-transparent'}`}>
+      <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-10">
-          <button className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center" onClick={() => setMenuOpen(true)}>
-            <Menu className={`w-6 h-6 ${scrolled ? 'text-slate-900' : 'text-slate-900'}`} strokeWidth={2} />
+          <button className="lg:hidden -ml-2 w-11 h-11 flex items-center justify-center text-white" onClick={() => setMenuOpen(true)}>
+            <Menu className="w-6 h-6 text-white" strokeWidth={2} />
           </button>
-          <button onClick={onLogo} className="shrink-0 lg:mr-10 flex items-center">
-            <span className={`text-[20px] font-black tracking-tight ${scrolled ? 'text-slate-900' : 'text-slate-900'}`}>
-              Bilto<span className="text-bilto-500">.</span>
-            </span>
-            <span className={`ml-2 text-[11px] font-semibold px-2 py-0.5 rounded-full ${scrolled ? 'bg-bilto-50 text-bilto-700' : 'bg-bilto-50 text-bilto-700'}`}>Förmedling</span>
+          <button onClick={onLogo} className="shrink-0 lg:mr-10 -ml-2 lg:-ml-3 flex items-center">
+            <img src="/a_clean_graphic_logo_on_a_transparent_background.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" fetchPriority="high" decoding="async" />
+            <span className="ml-2 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/15 text-white/80">Förmedling</span>
           </button>
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {navItems.map(item => (
-              <a key={item.label} href={item.path} className="text-[14px] font-medium text-slate-600 hover:text-slate-900 transition">{item.label}</a>
+              <a key={item.label} href={item.path} className="text-[15px] text-white/90 font-medium transition hover:text-white">{item.label}</a>
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-3">
-            <button onClick={() => navTo('/logga-in')} className="hidden lg:inline-flex text-[14px] font-medium text-slate-600 hover:text-slate-900 transition">Logga in</button>
-            <button onClick={() => window.scrollTo({top:0, behavior:'smooth'})} className="btn-primary h-10 px-5 text-[13px]">Sälj din bil</button>
+            <button onClick={() => navTo('/logga-in')} className="hidden lg:inline-flex text-[14px] font-medium text-white/90 hover:text-white transition">Logga in</button>
+            <button onClick={() => window.scrollTo({top:0, behavior:'smooth'})} className="inline-flex items-center bg-white text-[#0e6efe] text-[13px] font-semibold px-[18px] h-9 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">Kostnadsfri konsultation</button>
           </div>
         </div>
       </header>
