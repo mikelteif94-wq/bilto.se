@@ -9,6 +9,7 @@ import { captureAttribution } from './lib/attribution';
 import type { Forhandlare } from './lib/forhandlare.types';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
+const HomePage = lazy(() => import('./pages/HomePage'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
 const BuyCarPage = lazy(() => import('./pages/BuyCarPage'));
 const DealerRegister = lazy(() => import('./pages/DealerRegister'));
@@ -827,11 +828,7 @@ function App() {
     <Suspense fallback={<PageLoader />}>
       <>
         {publicRoute.page === 'home' && (
-          <HowItWorks
-            seoSlug="home"
-            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
-            onSell={(reg) => setPublicRoute({ page: 'sell', regnummer: reg })}
-          />
+          <HomePage />
         )}
         {publicRoute.page === 'sell' && (
           <SellCarPage
