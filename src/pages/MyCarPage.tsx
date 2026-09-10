@@ -242,7 +242,7 @@ export default function MyCarPage({ token, onBack }: MyCarPageProps) {
       <header className="bg-[#0e6efe] h-16 flex items-center px-5 lg:px-8 sticky top-0 z-10">
         <a href="/" className="flex items-center">
           <img
-            src="/a_clean_graphic_logo_on_a_transparent_background.png"
+            src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
             alt="Bilto"
             className="h-20 lg:h-32 w-auto object-contain"
             fetchPriority="high"

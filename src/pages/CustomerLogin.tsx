@@ -60,7 +60,7 @@ export default function CustomerLogin({ onBack, initialEmail = '' }: CustomerLog
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-4 lg:px-8">
           <button onClick={onBack} className="shrink-0 flex items-center">
             <img
-              src="/a_clean_graphic_logo_on_a_transparent_background.png"
+              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
               className="h-20 lg:h-32 w-auto object-contain"
               fetchPriority="high"

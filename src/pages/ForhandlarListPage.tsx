@@ -141,7 +141,7 @@ export default function ForhandlarListPage({ onBack, onSelectForhandlare, onOpen
       <header className="fixed top-3 inset-x-3 lg:top-4 lg:inset-x-32 z-40 h-[53px] lg:h-16 rounded-xl shadow-lg ring-1 ring-white/10 bg-[#0e6efe]">
         <div className="max-w-[1400px] mx-auto h-full flex items-center px-5 lg:px-8 gap-4">
           <button onClick={onBack} className="shrink-0 flex items-center">
-            <img src="/a_clean_graphic_logo_on_a_transparent_background.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" decoding="async" />
+            <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-20 lg:h-32 w-auto object-contain" decoding="async" />
           </button>
           <div className="flex items-center ml-auto">
             <a

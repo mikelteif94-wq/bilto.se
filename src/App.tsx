@@ -73,10 +73,6 @@ const DealerArenden = lazy(() => import('./pages/DealerArenden'));
 const DealerMittLager = lazy(() => import('./pages/DealerMittLager'));
 const DealerEkonomi = lazy(() => import('./pages/DealerEkonomi'));
 const DealerProvisioner = lazy(() => import('./pages/DealerProvisioner'));
-const JamforFormedlingPage = lazy(() => import('./pages/JamforFormedlingPage'));
-const FormedlingDealerPortal = lazy(() => import('./pages/FormedlingDealerPortal'));
-const FormedlingPartnerPage = lazy(() => import('./pages/FormedlingPartnerPage'));
-const FormedlingAdminPage = lazy(() => import('./pages/FormedlingAdminPage'));
 
 // Public token pages
 const BudPage = lazy(() => import('./pages/BudPage'));
@@ -502,38 +498,6 @@ function App() {
   if (path === '/gratis-konsultation') {
     // Open drawer and redirect — handled via useEffect to avoid render-time state mutation
     return null;
-  }
-
-  if (path === '/formedling') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <JamforFormedlingPage />
-      </Suspense>
-    );
-  }
-
-  if (path === '/formedling/forhandlare') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <FormedlingDealerPortal />
-      </Suspense>
-    );
-  }
-
-  if (path === '/formedling/partner') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <FormedlingPartnerPage />
-      </Suspense>
-    );
-  }
-
-  if (path === '/formedling/admin') {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <FormedlingAdminPage />
-      </Suspense>
-    );
   }
 
   if (path === '/forhandlare') {

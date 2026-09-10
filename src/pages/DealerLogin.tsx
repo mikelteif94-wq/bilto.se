@@ -143,7 +143,7 @@ export default function DealerLogin({
           </button>
           <button onClick={onBack} className="shrink-0 lg:mr-10 ml-2 lg:ml-0 flex items-center">
             <img
-              src="/a_clean_graphic_logo_on_a_transparent_background.png"
+              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
               alt="Bilto"
               className="h-20 lg:h-32 w-auto object-contain"
               fetchPriority="high"

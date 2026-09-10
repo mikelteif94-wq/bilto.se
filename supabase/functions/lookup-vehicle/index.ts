@@ -49,10 +49,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // Cache miss or stale — fetch from external API
-    const apiKey = Deno.env.get("BILUPPGIFTER_API_KEY");
-    if (!apiKey) {
-      return jsonResp({ error: "Fordonsuppslag är inte konfigurerat" }, 503);
-    }
+    const apiKey = Deno.env.get("BILUPPGIFTER_API_KEY") ?? "ozMv_omy5skrUSmrLhD4rNZkkjgfW86S3e0Q3XAyScI";
     const apiUrl = `https://data.biluppgifter.se/api/v1/vehicle/regno/${encodeURIComponent(regnummer.toLowerCase())}`;
 
     const apiResp = await fetch(apiUrl, {

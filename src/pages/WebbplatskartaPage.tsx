@@ -37,7 +37,7 @@ export default function WebbplatskartaPage({ onBack }: WebbplatskartaPageProps) 
       <header className="fixed top-0 inset-x-0 z-30 h-16 bg-[#0e6efe]">
         <div className="max-w-5xl mx-auto h-full flex items-center px-5">
           <button onClick={onBack} className="flex items-center">
-            <img src="/a_clean_graphic_logo_on_a_transparent_background.png" alt="Bilto" className="h-14 w-auto object-contain" />
+            <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="h-14 w-auto object-contain" />
           </button>
         </div>
       </header>
