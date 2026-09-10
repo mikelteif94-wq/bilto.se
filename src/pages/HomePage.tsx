@@ -175,8 +175,8 @@ export default function HomePage() {
               onClick={scrollToTools}
               className={`inline-flex items-center px-5 py-2.5 rounded-xl text-[12px] lg:text-[13px] font-semibold transition whitespace-nowrap ${
                 scrolled
-                  ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                  : 'bg-emerald-500 text-white hover:bg-emerald-400'
+                  ? 'bg-bilto-600 text-white hover:bg-bilto-700'
+                  : 'bg-bilto-500 text-white hover:bg-bilto-400'
               }`}
             >
               Kolla min premie
@@ -198,9 +198,9 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1a]/20 via-transparent to-[#0a0f1a]" />
 
         <div className="relative z-10 flex flex-col items-center justify-center text-center px-5 pt-24 pb-0" style={{ minHeight: '100svh' }}>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
-            <Zap className="w-4 h-4 text-emerald-400" strokeWidth={2} />
-            <span className="text-[13px] font-medium text-emerald-300">Elbilspremie 2026: upp till 64 800 kr</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bilto-500/10 border border-bilto-500/20 mb-6">
+            <Zap className="w-4 h-4 text-bilto-400" strokeWidth={2} />
+            <span className="text-[13px] font-medium text-bilto-300">Elbilspremie 2026: upp till 64 800 kr</span>
           </div>
 
           <h1 className="font-black leading-[1.0] tracking-[-0.03em] text-white mb-6 max-w-3xl"
@@ -215,7 +215,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center gap-3 mb-12">
             <button
               onClick={scrollToTools}
-              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[15px] transition group"
+              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-xl bg-bilto-600 hover:bg-bilto-700 text-white font-semibold text-[15px] transition group"
             >
               Kolla om du får premien
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
@@ -282,7 +282,7 @@ export default function HomePage() {
                       isActive
                         ? 'bg-slate-900 text-white'
                         : isDone
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        ? 'bg-bilto-50 text-bilto-700 border border-bilto-200'
                         : 'bg-slate-50 text-slate-400 border border-slate-100'
                     }`}
                   >
@@ -294,7 +294,7 @@ export default function HomePage() {
                     {step.label}
                   </button>
                   {i < steps.length - 1 && (
-                    <div className={`w-4 sm:w-6 h-px ${isDone ? 'bg-emerald-300' : 'bg-slate-200'}`} />
+                    <div className={`w-4 sm:w-6 h-px ${isDone ? 'bg-bilto-300' : 'bg-slate-200'}`} />
                   )}
                 </div>
               );
@@ -416,7 +416,7 @@ export default function HomePage() {
                 <ul className="flex flex-col gap-2">
                   {b.perks.map((p) => (
                     <li key={p} className="flex items-center gap-2 text-[14px] text-slate-600 font-medium">
-                      <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" strokeWidth={2} />
+                      <CheckCircle className="w-4 h-4 text-bilto-500 shrink-0" strokeWidth={2} />
                       {p}
                     </li>
                   ))}
@@ -486,13 +486,13 @@ export default function HomePage() {
           <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
             <button
               onClick={scrollToTools}
-              className="inline-flex items-center gap-2.5 h-12 px-8 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 font-semibold text-[15px] transition group"
+              className="inline-flex items-center gap-2.5 h-12 px-8 rounded-xl bg-bilto-600 text-white hover:bg-bilto-700 font-semibold text-[15px] transition group"
             >
               Kolla min premie
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />
             </button>
             <p className="text-white/35 text-[14px] flex items-center gap-1.5">
-              <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" strokeWidth={2} />
+              <CheckCircle className="w-4 h-4 text-bilto-400 shrink-0" strokeWidth={2} />
               Kostnadsfri rådgivning — du betalar inget
             </p>
           </div>
@@ -577,7 +577,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
             <button
               onClick={scrollToTools}
-              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[16px] transition group"
+              className="inline-flex items-center gap-2.5 h-13 px-8 rounded-xl bg-bilto-600 hover:bg-bilto-700 text-white font-semibold text-[16px] transition group"
             >
               Starta premiekollen
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2} />

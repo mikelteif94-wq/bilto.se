@@ -23,8 +23,8 @@ export default function BilKalkylatorn({ onContinue }: { onContinue?: () => void
     <div className="bg-white rounded-xl shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
       <div className="p-5 sm:p-6">
         <div className="flex items-center gap-2.5 mb-5">
-          <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center">
-            <Car className="w-5 h-5 text-blue-600" strokeWidth={1.8} />
+          <div className="w-9 h-9 rounded-lg bg-bilto-50 flex items-center justify-center">
+            <Car className="w-5 h-5 text-bilto-600" strokeWidth={1.8} />
           </div>
           <div>
             <h3 className="text-[16px] font-bold text-slate-900 leading-tight">Bilkalkylatorn</h3>
@@ -42,7 +42,7 @@ export default function BilKalkylatorn({ onContinue }: { onContinue?: () => void
                 onChange={(e) => setRegnummer(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
                 placeholder="ABC123"
                 maxLength={6}
-                className="w-full h-12 px-4 text-[15px] bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 tracking-widest font-bold italic focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition"
+                className="w-full h-12 px-4 text-[15px] bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 tracking-widest font-bold italic focus:outline-none focus:border-bilto-500 focus:ring-2 focus:ring-bilto-500/15 transition"
               />
             </div>
 
@@ -54,7 +54,7 @@ export default function BilKalkylatorn({ onContinue }: { onContinue?: () => void
                 value={mileage}
                 onChange={(e) => setMileage(e.target.value.replace(/[^0-9]/g, ''))}
                 placeholder="t.ex. 1500"
-                className="w-full h-12 px-4 text-[15px] bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition"
+                className="w-full h-12 px-4 text-[15px] bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-bilto-500 focus:ring-2 focus:ring-bilto-500/15 transition"
               />
             </div>
 
@@ -64,14 +64,14 @@ export default function BilKalkylatorn({ onContinue }: { onContinue?: () => void
                 <button
                   type="button"
                   onClick={() => setFuelType('petrol')}
-                  className={`flex-1 h-11 rounded-xl border text-[14px] font-medium transition ${fuelType === 'petrol' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}
+                  className={`flex-1 h-11 rounded-xl border text-[14px] font-medium transition ${fuelType === 'petrol' ? 'border-bilto-500 bg-bilto-50 text-bilto-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}
                 >
                   Bensin
                 </button>
                 <button
                   type="button"
                   onClick={() => setFuelType('diesel')}
-                  className={`flex-1 h-11 rounded-xl border text-[14px] font-medium transition ${fuelType === 'diesel' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}
+                  className={`flex-1 h-11 rounded-xl border text-[14px] font-medium transition ${fuelType === 'diesel' ? 'border-bilto-500 bg-bilto-50 text-bilto-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}
                 >
                   Diesel
                 </button>
@@ -82,7 +82,7 @@ export default function BilKalkylatorn({ onContinue }: { onContinue?: () => void
               type="button"
               onClick={handleCalculate}
               disabled={!regnummer || !mileage || loading}
-              className="w-full h-13 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-semibold text-[15px] transition active:scale-[0.99]"
+              className="w-full h-13 py-3.5 rounded-xl bg-bilto-600 hover:bg-bilto-700 disabled:bg-slate-300 text-white font-semibold text-[15px] transition active:scale-[0.99]"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -109,15 +109,15 @@ export default function BilKalkylatorn({ onContinue }: { onContinue?: () => void
                 <p className="text-[11px] text-slate-400">Uppskattat marknadsvärde</p>
               </div>
 
-              <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4">
+              <div className="rounded-xl bg-bilto-50 border border-bilto-200 p-4">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <TrendingDown className="w-3.5 h-3.5 text-emerald-600" strokeWidth={2} />
-                  <span className="text-[11px] font-medium text-emerald-700 uppercase tracking-wide">Sparar/år</span>
+                  <TrendingDown className="w-3.5 h-3.5 text-bilto-600" strokeWidth={2} />
+                  <span className="text-[11px] font-medium text-bilto-700 uppercase tracking-wide">Sparar/år</span>
                 </div>
-                <p className="text-[22px] font-black text-emerald-700 tracking-tight">
+                <p className="text-[22px] font-black text-bilto-700 tracking-tight">
                   {result.annualSavings > 0 ? result.annualSavings.toLocaleString('sv-SE') : '0'}
                 </p>
-                <p className="text-[11px] text-emerald-600">kr per år</p>
+                <p className="text-[11px] text-bilto-600">kr per år</p>
               </div>
             </div>
 
@@ -132,15 +132,15 @@ export default function BilKalkylatorn({ onContinue }: { onContinue?: () => void
               <div className="h-px bg-slate-100" />
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Leaf className="w-4 h-4 text-emerald-500" strokeWidth={1.8} />
+                  <Leaf className="w-4 h-4 text-bilto-500" strokeWidth={1.8} />
                   <span className="text-[13px] text-slate-600">Med elbil</span>
                 </div>
-                <span className="text-[15px] font-bold text-emerald-700">{result.monthlyCostEv.toLocaleString('sv-SE')} kr/mån</span>
+                <span className="text-[15px] font-bold text-bilto-700">{result.monthlyCostEv.toLocaleString('sv-SE')} kr/mån</span>
               </div>
               <div className="h-px bg-slate-100" />
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Leaf className="w-4 h-4 text-emerald-500" strokeWidth={1.8} />
+                  <Leaf className="w-4 h-4 text-bilto-500" strokeWidth={1.8} />
                   <span className="text-[13px] text-slate-600">CO₂-minskning/år</span>
                 </div>
                 <span className="text-[15px] font-bold text-slate-900">{result.co2Reduction.toLocaleString('sv-SE')} kg</span>

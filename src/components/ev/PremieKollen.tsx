@@ -23,8 +23,8 @@ export default function PremieKollen({ onContinue }: { onContinue?: () => void }
     <div className="bg-white rounded-xl shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
       <div className="p-5 sm:p-6">
         <div className="flex items-center gap-2.5 mb-5">
-          <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center">
-            <Zap className="w-5 h-5 text-emerald-600" strokeWidth={1.8} />
+          <div className="w-9 h-9 rounded-lg bg-bilto-50 flex items-center justify-center">
+            <Zap className="w-5 h-5 text-bilto-600" strokeWidth={1.8} />
           </div>
           <div>
             <h3 className="text-[16px] font-bold text-slate-900 leading-tight">Premiekollen</h3>
@@ -45,7 +45,7 @@ export default function PremieKollen({ onContinue }: { onContinue?: () => void }
                   onChange={(e) => setPostnummer(e.target.value.replace(/[^0-9\s]/g, ''))}
                   placeholder="t.ex. 981 91"
                   maxLength={7}
-                  className="w-full h-12 pl-10 pr-4 text-[15px] bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 transition"
+                  className="w-full h-12 pl-10 pr-4 text-[15px] bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-bilto-500 focus:ring-2 focus:ring-bilto-500/15 transition"
                 />
               </div>
             </div>
@@ -58,7 +58,7 @@ export default function PremieKollen({ onContinue }: { onContinue?: () => void }
                 value={income}
                 onChange={(e) => setIncome(e.target.value.replace(/[^0-9\s]/g, ''))}
                 placeholder="t.ex. 25 000"
-                className="w-full h-12 px-4 text-[15px] bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 transition"
+                className="w-full h-12 px-4 text-[15px] bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-bilto-500 focus:ring-2 focus:ring-bilto-500/15 transition"
               />
               <p className="mt-1 text-[12px] text-slate-400">Hela hushållets inkomst före skatt</p>
             </div>
@@ -69,14 +69,14 @@ export default function PremieKollen({ onContinue }: { onContinue?: () => void }
                 <button
                   type="button"
                   onClick={() => setHasEv(true)}
-                  className={`flex-1 h-11 rounded-xl border text-[14px] font-medium transition ${hasEv ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}
+                  className={`flex-1 h-11 rounded-xl border text-[14px] font-medium transition ${hasEv ? 'border-bilto-500 bg-bilto-50 text-bilto-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}
                 >
                   Ja
                 </button>
                 <button
                   type="button"
                   onClick={() => setHasEv(false)}
-                  className={`flex-1 h-11 rounded-xl border text-[14px] font-medium transition ${!hasEv ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}
+                  className={`flex-1 h-11 rounded-xl border text-[14px] font-medium transition ${!hasEv ? 'border-bilto-500 bg-bilto-50 text-bilto-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}
                 >
                   Nej
                 </button>
@@ -87,7 +87,7 @@ export default function PremieKollen({ onContinue }: { onContinue?: () => void }
               type="button"
               onClick={handleCheck}
               disabled={!postnummer || !income || loading}
-              className="w-full h-13 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-semibold text-[15px] transition active:scale-[0.99]"
+              className="w-full h-13 py-3.5 rounded-xl bg-bilto-600 hover:bg-bilto-700 disabled:bg-slate-300 text-white font-semibold text-[15px] transition active:scale-[0.99]"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -104,15 +104,15 @@ export default function PremieKollen({ onContinue }: { onContinue?: () => void }
           <div className="space-y-4">
             {result.eligible === 'yes' && (
               <>
-                <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-5 text-center">
+                <div className="rounded-xl bg-bilto-50 border border-bilto-200 p-5 text-center">
                   <div className="flex justify-center mb-2">
-                    <CheckCircle className="w-8 h-8 text-emerald-600" strokeWidth={2} />
+                    <CheckCircle className="w-8 h-8 text-bilto-600" strokeWidth={2} />
                   </div>
-                  <p className="text-[13px] font-medium text-emerald-700 mb-1">Du kan ha rätt till</p>
-                  <p className="text-[36px] font-black text-emerald-700 tracking-tight">
+                  <p className="text-[13px] font-medium text-bilto-700 mb-1">Du kan ha rätt till</p>
+                  <p className="text-[36px] font-black text-bilto-700 tracking-tight">
                     {result.amount.toLocaleString('sv-SE')} kr
                   </p>
-                  <p className="text-[13px] text-emerald-600 mt-1">
+                  <p className="text-[13px] text-bilto-600 mt-1">
                     {result.hasStartTillaegg ? 'Inkl. starttillägg för låg inkomst' : 'Grundbelopp'}
                   </p>
                 </div>
@@ -120,7 +120,7 @@ export default function PremieKollen({ onContinue }: { onContinue?: () => void }
                 <div className="space-y-2">
                   {result.reasons.map((r, i) => (
                     <div key={i} className="flex items-start gap-2 text-[13px] text-slate-600">
-                      <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" strokeWidth={2} />
+                      <CheckCircle className="w-4 h-4 text-bilto-500 shrink-0 mt-0.5" strokeWidth={2} />
                       <span>{r}</span>
                     </div>
                   ))}

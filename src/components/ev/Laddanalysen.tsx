@@ -28,8 +28,8 @@ export default function Laddanalysen({ onContinue }: { onContinue?: () => void }
     <div className="bg-white rounded-xl shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
       <div className="p-5 sm:p-6">
         <div className="flex items-center gap-2.5 mb-5">
-          <div className="w-9 h-9 rounded-lg bg-cyan-50 flex items-center justify-center">
-            <Zap className="w-5 h-5 text-cyan-600" strokeWidth={1.8} />
+          <div className="w-9 h-9 rounded-lg bg-bilto-50 flex items-center justify-center">
+            <Zap className="w-5 h-5 text-bilto-600" strokeWidth={1.8} />
           </div>
           <div>
             <h3 className="text-[16px] font-bold text-slate-900 leading-tight">Laddanalysen</h3>
@@ -48,7 +48,7 @@ export default function Laddanalysen({ onContinue }: { onContinue?: () => void }
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="t.ex. Storgatan 12, Kiruna"
-                  className="w-full h-12 pl-10 pr-4 text-[15px] bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/15 transition"
+                  className="w-full h-12 pl-10 pr-4 text-[15px] bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-bilto-500 focus:ring-2 focus:ring-bilto-500/15 transition"
                 />
               </div>
             </div>
@@ -61,7 +61,7 @@ export default function Laddanalysen({ onContinue }: { onContinue?: () => void }
                     key={value}
                     type="button"
                     onClick={() => setHousingType(value)}
-                    className={`flex items-center gap-2 h-11 px-3 rounded-xl border text-[13px] font-medium transition ${housingType === value ? 'border-cyan-500 bg-cyan-50 text-cyan-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}
+                    className={`flex items-center gap-2 h-11 px-3 rounded-xl border text-[13px] font-medium transition ${housingType === value ? 'border-bilto-500 bg-bilto-50 text-bilto-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}
                   >
                     <Icon className="w-4 h-4 shrink-0" strokeWidth={1.8} />
                     {label}
@@ -74,7 +74,7 @@ export default function Laddanalysen({ onContinue }: { onContinue?: () => void }
               type="button"
               onClick={handleAnalyze}
               disabled={!address || !housingType || loading}
-              className="w-full h-13 py-3.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 disabled:bg-slate-300 text-white font-semibold text-[15px] transition active:scale-[0.99]"
+              className="w-full h-13 py-3.5 rounded-xl bg-bilto-600 hover:bg-bilto-700 disabled:bg-slate-300 text-white font-semibold text-[15px] transition active:scale-[0.99]"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -90,12 +90,12 @@ export default function Laddanalysen({ onContinue }: { onContinue?: () => void }
         {result && (
           <div className="space-y-4">
             <div className={`rounded-xl border p-5 text-center ${
-              result.canChargeHome === 'yes' ? 'bg-emerald-50 border-emerald-200' :
+              result.canChargeHome === 'yes' ? 'bg-bilto-50 border-bilto-200' :
               result.canChargeHome === 'maybe' ? 'bg-amber-50 border-amber-200' :
               'bg-red-50 border-red-200'
             }`}>
               <div className="flex justify-center mb-2">
-                {result.canChargeHome === 'yes' && <CheckCircle className="w-8 h-8 text-emerald-600" strokeWidth={2} />}
+                {result.canChargeHome === 'yes' && <CheckCircle className="w-8 h-8 text-bilto-600" strokeWidth={2} />}
                 {result.canChargeHome === 'maybe' && <AlertCircle className="w-8 h-8 text-amber-600" strokeWidth={2} />}
                 {result.canChargeHome === 'no' && <XCircle className="w-8 h-8 text-red-500" strokeWidth={2} />}
               </div>
@@ -116,8 +116,8 @@ export default function Laddanalysen({ onContinue }: { onContinue?: () => void }
                 </div>
                 {result.afterGreenDeduction && (
                   <div className="flex items-center justify-between">
-                    <span className="text-[13px] text-emerald-600">Efter grönt avdrag (50 %)</span>
-                    <span className="text-[15px] font-bold text-emerald-700">{result.afterGreenDeduction.toLocaleString('sv-SE')} kr</span>
+                    <span className="text-[13px] text-bilto-700">Efter grönt avdrag (50 %)</span>
+                    <span className="text-[15px] font-bold text-bilto-700">{result.afterGreenDeduction.toLocaleString('sv-SE')} kr</span>
                   </div>
                 )}
                 <p className="text-[12px] text-slate-400 pt-1">
@@ -127,8 +127,8 @@ export default function Laddanalysen({ onContinue }: { onContinue?: () => void }
             )}
 
             {result.brfInfo && (
-              <div className="rounded-xl bg-blue-50 border border-blue-200 p-4">
-                <p className="text-[13px] text-blue-800 leading-relaxed">{result.brfInfo}</p>
+              <div className="rounded-xl bg-bilto-50 border border-bilto-200 p-4">
+                <p className="text-[13px] text-bilto-800 leading-relaxed">{result.brfInfo}</p>
               </div>
             )}
 

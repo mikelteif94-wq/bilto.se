@@ -38,8 +38,8 @@ export default function KonverteringForm() {
     return (
       <div className="bg-white rounded-xl shadow-[0_32px_80px_rgba(0,0,0,0.5)] p-8 text-center">
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center">
-            <CheckCircle className="w-9 h-9 text-emerald-600" strokeWidth={1.8} />
+          <div className="w-16 h-16 rounded-full bg-bilto-50 flex items-center justify-center">
+            <CheckCircle className="w-9 h-9 text-bilto-600" strokeWidth={1.8} />
           </div>
         </div>
         <h3 className="text-[22px] font-bold text-slate-900 mb-2">Tack, {name.split(' ')[0]}!</h3>
@@ -47,7 +47,7 @@ export default function KonverteringForm() {
           Vi hör av oss inom 24 timmar. En rådgivare går igenom din situation och hjälper dig med hela bytet — från värdering till laddning.
         </p>
         <div className="mt-6 flex items-center justify-center gap-2 text-[13px] text-slate-400">
-          <ShieldCheck className="w-4 h-4 text-emerald-500" strokeWidth={1.8} />
+          <ShieldCheck className="w-4 h-4 text-bilto-500" strokeWidth={1.8} />
           Inga dolda avgifter · Du bestämmer
         </div>
       </div>
