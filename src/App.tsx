@@ -9,7 +9,6 @@ import { captureAttribution } from './lib/attribution';
 import type { Forhandlare } from './lib/forhandlare.types';
 
 const HowItWorks = lazy(() => import('./pages/HowItWorks'));
-const HomePage = lazy(() => import('./pages/HomePage'));
 const SellCarPage = lazy(() => import('./pages/SellCarPage'));
 const BuyCarPage = lazy(() => import('./pages/BuyCarPage'));
 const DealerRegister = lazy(() => import('./pages/DealerRegister'));
@@ -74,6 +73,10 @@ const DealerArenden = lazy(() => import('./pages/DealerArenden'));
 const DealerMittLager = lazy(() => import('./pages/DealerMittLager'));
 const DealerEkonomi = lazy(() => import('./pages/DealerEkonomi'));
 const DealerProvisioner = lazy(() => import('./pages/DealerProvisioner'));
+const JamforFormedlingPage = lazy(() => import('./pages/JamforFormedlingPage'));
+const FormedlingDealerPortal = lazy(() => import('./pages/FormedlingDealerPortal'));
+const FormedlingPartnerPage = lazy(() => import('./pages/FormedlingPartnerPage'));
+const FormedlingAdminPage = lazy(() => import('./pages/FormedlingAdminPage'));
 
 // Public token pages
 const BudPage = lazy(() => import('./pages/BudPage'));
@@ -501,6 +504,38 @@ function App() {
     return null;
   }
 
+  if (path === '/formedling') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <JamforFormedlingPage />
+      </Suspense>
+    );
+  }
+
+  if (path === '/formedling/forhandlare') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <FormedlingDealerPortal />
+      </Suspense>
+    );
+  }
+
+  if (path === '/formedling/partner') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <FormedlingPartnerPage />
+      </Suspense>
+    );
+  }
+
+  if (path === '/formedling/admin') {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <FormedlingAdminPage />
+      </Suspense>
+    );
+  }
+
   if (path === '/forhandlare') {
     return (
       <Suspense fallback={<PageLoader />}>
@@ -828,7 +863,11 @@ function App() {
     <Suspense fallback={<PageLoader />}>
       <>
         {publicRoute.page === 'home' && (
-          <HomePage />
+          <HowItWorks
+            seoSlug="home"
+            onBackHome={() => { window.history.pushState({}, '', '/'); setPath('/'); setPublicRoute({ page: 'home' }); }}
+            onSell={(reg) => setPublicRoute({ page: 'sell', regnummer: reg })}
+          />
         )}
         {publicRoute.page === 'sell' && (
           <SellCarPage

@@ -166,7 +166,7 @@ export default function NyaBilarPage({ onBack, onNavigateBuy, onNavigateConsulta
           </button>
           <button type="button" onClick={onBack} className="shrink-0 lg:mr-10 flex items-center">
             <img
-              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
+              src="/a_clean_graphic_logo_on_a_transparent_background.png"
               alt="Bilto"
               fetchPriority="high"
               decoding="async"

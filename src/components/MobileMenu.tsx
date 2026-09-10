@@ -42,9 +42,9 @@ export default function MobileMenu({ open, onClose, active }: MobileMenuProps) {
   }, [open, onClose]);
 
   const items: { label: string; path: string; id: MobileMenuItem }[] = [
-    { label: 'Premiekollen', path: '/', id: 'Sälj bil' },
-    { label: 'Bilkalkylatorn', path: '/', id: 'Köp bil' },
-    { label: 'Så funkar det', path: '/sa-funkar-det', id: 'Om oss' },
+    { label: 'Säljhjälpen', path: '/salj-bil', id: 'Sälj bil' },
+    { label: 'Bilköpshjälpen', path: '/kop-bil', id: 'Köp bil' },
+    { label: 'Om oss', path: '/om-oss', id: 'Om oss' },
   ];
 
   return (

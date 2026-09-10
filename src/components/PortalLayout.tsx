@@ -48,7 +48,7 @@ export default function PortalLayout({
       {/* Logo / brand */}
       <div className={`flex items-center border-b border-white/10 shrink-0 h-14 ${compactSidebar && !isMobile ? 'justify-center px-0' : 'px-4 gap-2.5'}`}>
         <div className="w-7 h-7 rounded-lg bg-[#0e6efe] flex items-center justify-center shrink-0">
-          <img src="/ChatGPT_Image_9_maj_2026_15_33_44.png" alt="Bilto" className="w-5 h-5 object-contain" />
+          <img src="/a_clean_graphic_logo_on_a_transparent_background.png" alt="Bilto" className="w-5 h-5 object-contain" />
         </div>
         {(!compactSidebar || isMobile) && (
           <span className="text-[15px] font-bold tracking-tight text-white">Bilto</span>

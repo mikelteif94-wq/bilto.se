@@ -21,7 +21,7 @@ export function SiteFooter() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <img
-              src="/ChatGPT_Image_9_maj_2026_15_33_44.png"
+              src="/a_clean_graphic_logo_on_a_transparent_background.png"
               alt="Bilto"
               loading="lazy"
               decoding="async"
